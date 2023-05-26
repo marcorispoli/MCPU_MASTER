@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/Translate"/>
+    <qresource prefix="/Sym">
+        <file>Sym/ImmagineTest.png</file>
+        <file>Sym/alarmPix.png</file>
+    </qresource>
+    <qresource prefix="/Errors">
+        <file>Errors/errorPix.png</file>
+        <file>Errors/infoPix.png</file>
+        <file>Errors/warningPix.png</file>
+    </qresource>
+</RCC>

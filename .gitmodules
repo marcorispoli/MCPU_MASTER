@@ -1,0 +1,3 @@
+[submodule "MCPU_SHARED_MODULES"]
+	path = MCPU_SHARED_MODULES
+	url = git@gitlab.tecnico.local:metaltronica/software/control/z190-maincpu/mcpu_shared_modules.git

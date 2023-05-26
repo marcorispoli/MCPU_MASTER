@@ -4,41 +4,41 @@
 #include <QObject>
 #include "configfile.h"
 
-class sysConfig : public configFile
+
+class pkgConfig : public configFile
 {
     public:
 
 
-    #define REVISION     1  // This is the revision code
-    #define CONFIG_FILENAME     "C:\\OEM\\Gantry\\Config\\SystemConfig.cnf" // This is the configuration file name and path
+    #define PKG_REVISION     1  // This is the revision code
+    #define PKG_CONFIG_FILENAME     "C:\\OEM\\Gantry\\Config\\PackageConfig.cnf" // This is the configuration file name and path
 
     // This section defines labels helping the param identification along the application
-    #define LOCALHOST_PARAM         "LOCALHOST"
-    #define AWSPORT_PARAM           "AWS_PORT"
-    #define GENERATOR_PORT_PARAM    "GENERATOR_PORT"
-    #define POWERSERVICE_PORT_PARAM   "POWER_SERVICE_PORT"
-    #define FILTER_PORT_PARAM       "FILTER_PORT"
-    #define COLLIMATOR_PORT_PARAM   "COLLIMATOR_PORT"
-    #define COMPRESSOR_PORT_PARAM   "COMPRESSOR_PORT"
-    #define POTTER_PORT_PARAM       "POTTER_PORT"
-    #define MOTORS_PORT_PARAM       "MOTORS_PORT"
-    #define BIOPSY_PORT_PARAM       "BIOPSY_PORT"
+    #define PKG_ID                  "PACKAGE_ID"
+    #define PKG_MCPU_MASTER         "MCPU_MASTER_REV"
+    #define PKG_MCPU_POWER_SERVICE  "MCPU_POWER_SERVICE_REV"
+    #define PKG_MCPU_COMPRESSOR     "MCPU_COMPRESSOR_REV"
+    #define PKG_MCPU_COLLIMATOR     "MCPU_COLLIMATOR_REV"
+    #define PKG_MCPU_FILTER         "MCPU_FILTER_REV"
+    #define PKG_MCPU_POTTER         "MCPU_POTTER_REV"
+    #define PKG_MCPU_GENERATOR      "MCPU_GENERATOR_REV"
+    #define PKG_MCPU_MOTORS         "MCPU_MOTORS_REV"
+
 
     // your class constructor
-    sysConfig():configFile( (const configFile::fileDescriptorT)
+    pkgConfig():configFile( (const configFile::fileDescriptorT)
         {
-            CONFIG_FILENAME, REVISION,
+            PKG_CONFIG_FILENAME, PKG_REVISION,
             {{
-                { LOCALHOST_PARAM,          {{ "127.0.0.1" }},   "Address of the localhost used for application"},
-                { AWSPORT_PARAM,            {{ "10000" }},       "Port for the AWS connection"},
-                { GENERATOR_PORT_PARAM,     {{ "10001" }},       "Port for generator driver"},
-                { POWERSERVICE_PORT_PARAM,  {{ "10002" }},       "Port for Power service driver"},
-                { FILTER_PORT_PARAM,        {{ "10003" }},       "Port for Filter driver"},
-                { COLLIMATOR_PORT_PARAM,    {{ "10004" }},       "Port for Collimator driver"},
-                { COMPRESSOR_PORT_PARAM,    {{ "10005" }},       "Port for Compressor driver"},
-                { POTTER_PORT_PARAM,        {{ "10006" }},       "Port for Potter driver"},
-                { MOTORS_PORT_PARAM,        {{ "10009" }},       "Port for Motors driver"},
-                { BIOPSY_PORT_PARAM,        {{ "10010" }},       "Port for Biopsy driver"},
+                { PKG_ID,                   {{ "01" }},     "Package revision code"},
+                { PKG_MCPU_MASTER,          {{ "0","1" }},  "MCPU Master Major and Minor revision codes"},
+                { PKG_MCPU_POWER_SERVICE,   {{ "0","1" }},  "MCPU Power Service Major and Minor revision codes"},
+                { PKG_MCPU_COMPRESSOR,      {{ "0","1" }},  "MCPU Compressor Major and Minor revision codes"},
+                { PKG_MCPU_COLLIMATOR,      {{ "0","1" }},  "MCPU Collimator Major and Minor revision codes"},
+                { PKG_MCPU_FILTER,          {{ "0","1" }},  "MCPU Filter Major and Minor revision codes"},
+                { PKG_MCPU_POTTER,          {{ "0","1" }},  "MCPU Potter Major and Minor revision codes"},
+                { PKG_MCPU_GENERATOR,       {{ "0","1" }},  "MCPU Generator Major and Minor revision codes"},
+                { PKG_MCPU_MOTORS,          {{ "0","1" }},  "MCPU Motors Major and Minor revision codes"},
 
             }}
         })
@@ -49,5 +49,4 @@ class sysConfig : public configFile
 
 
 }; // End class definition
-
 #endif // CONFIG_H

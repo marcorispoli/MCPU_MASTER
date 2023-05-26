@@ -28,17 +28,25 @@ DISTFILES +=
 
 SOURCES += \
     $${SHARED}/CONFIGFILE/configfile.cpp \
+    $${SHARED}/APPLICATION_INTERFACE/masterInterface.cpp \
     $${SHARED}/APPLOG/applog.cpp \
+    $${SHARED}/WINDOWS/windows.cpp \
     $${TARGET_SOURCE}/main.cpp \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.cpp \
+    $${TARGET_SOURCE}/DRIVERS/power_service.cpp  \
+
 
 
 HEADERS += \
     $${TARGET_SOURCE}/application.h \
     $${SHARED}/CONFIGFILE/configfile.h \
+    $${SHARED}/CONFIGFILE/sysconfig.h \
+    $${SHARED}/APPLICATION_INTERFACE/masterInterface.h \
     $${SHARED}/APPLOG/applog.h \
+    $${SHARED}/WINDOWS/windows.h \
     $${TARGET_SOURCE}/CONFIGURATION/config.h \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.h \
+    $${TARGET_SOURCE}/DRIVERS/power_service.h  \
 
 
 
@@ -47,10 +55,11 @@ INCLUDEPATH += \
     $${SHARED}/APPLICATION_INTERFACE \
     $${SHARED}/CAN_CLIENT \
     $${SHARED}/APPLOG \
-    $${SHARED}/CONFIGFILE \
-    $${SHARED}/CAN_DEVICE_PROTOCOL \
+    $${SHARED}/CONFIGFILE \    
+    $${SHARED}/WINDOWS \
     $${TARGET_SOURCE} \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP \
     $${TARGET_SOURCE}/CONFIGURATION  \
+    $${TARGET_SOURCE}/DRIVERS  \
 
 

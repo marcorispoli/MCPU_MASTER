@@ -72,19 +72,29 @@ namespace Application
 #include <QTimer>
 #include "time.h"
 #include "config.h"
+#include "sysconfig.h"
 #include "startup.h"
+#include "power_service.h"
 
 #define     SYSCONFIG          pSysConfig
+#define     PKGCONFIG          pPkgConfig
 #define     STARTUP            pStartup
+#define     POWERSERVICE       pPowerService
+
 
 // Global definitions
 #ifdef MAIN_CPP
      sysConfig*                SYSCONFIG;
+     pkgConfig*                PKGCONFIG;
      startup*                  STARTUP;
+     powerService*             POWERSERVICE;
 
 #else
     extern sysConfig*                SYSCONFIG;
+    extern pkgConfig*                PKGCONFIG;
     extern startup*                  STARTUP;
+    extern powerService*             POWERSERVICE;
+
 #endif
 
 #ifdef TIME_MEASURE

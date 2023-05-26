@@ -6,6 +6,8 @@
  */
 #include <QWidget>
 #include "applog.h"
+#include "windows.h"
+
 
 
 QT_BEGIN_NAMESPACE
@@ -13,12 +15,12 @@ namespace Ui { class startupWindow; }
 QT_END_NAMESPACE
 
 
-class startup : public QWidget
+class startup : public windowsClass
 {
     Q_OBJECT
 
 public:
-    startup( QWidget *parent = nullptr);
+    startup( int W, int H,QWidget *parent = nullptr);
     ~startup();
 
     //static void debugMessageHandler(QtMsgType type, QString msg); //!< Handles the debug messages in case of -win Application
@@ -40,11 +42,17 @@ public slots:
 
 private slots:
 
+
 private:
 
    Ui::startupWindow *ui;
 
+   uchar startup_fase;
+   enum{
+       _STARTUP_STARTING_PROCESS,
+   }startup_fase_enum;
 
+   void startupActivateFase(void);
 };
 
 

@@ -27,7 +27,9 @@ int main(int argc, char *argv[])
 
     // Open the application config file
     SYSCONFIG = new sysConfig();
-    STARTUP = new startup(0);
+    PKGCONFIG = new pkgConfig();
+    STARTUP = new startup(600, 1024);
+    POWERSERVICE = new powerService();
 
     // Initialize the WINDOW to nullptr so that in case of Operating mode
     // the application skips the WINDOW callbacks
@@ -40,7 +42,8 @@ int main(int argc, char *argv[])
     //}
 
 
-    STARTUP->show();
+    // Enter the STARTUP status
+    STARTUP->openWindow();
     return a.exec();
 }
 

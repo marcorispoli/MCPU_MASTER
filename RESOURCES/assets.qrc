@@ -9,4 +9,7 @@
         <file>Errors/infoPix.png</file>
         <file>Errors/warningPix.png</file>
     </qresource>
+    <qresource prefix="/Windows">
+        <file>Windows/background.png</file>
+    </qresource>
 </RCC>

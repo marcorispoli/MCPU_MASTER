@@ -66,6 +66,10 @@ void startup::startupFase(void)
         ui->power_sevice_revision->setText("__.__.__");
         ui->power_service_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
 
+        // Assignes the packaga revision to the driver
+        POWERSERVICE->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_POWER_SERVICE,0), PKGCONFIG->getParam<uint>(PKG_MCPU_POWER_SERVICE,1));
+
+        POWERSERVICE->startDriver();
         startup_fase = _STARTUP_SERVICE_CONNECTION;
         tmo = 50;
         QTimer::singleShot(100,this, SLOT(startupFase()));
@@ -86,12 +90,22 @@ void startup::startupFase(void)
         break;
 
     case _STARTUP_SERVICE_POWER_REVISION:
-        if(!POWERSERVICE->isValidRevision()){
+        if(!POWERSERVICE->isReceivedRevision()){
             tmo--;
             if(tmo==0) startup_fase = _STARTUP_SERVICE_POWER_ERROR;
             POWERSERVICE->SEND_GET_REVISION();
             QTimer::singleShot(20,this, SLOT(startupFase()));
             return;
+        }
+
+
+        ui->power_sevice_revision->setText(QString("%1.%2 [%4.%5]").arg(POWERSERVICE->getMajRevision()).arg(POWERSERVICE->getMinRevision()).arg(POWERSERVICE->getMajPkgRevision()).arg(POWERSERVICE->getMinPkgRevision())  );
+
+        // Test the expected release and the actual release
+        if(!POWERSERVICE->isValidRevision()){
+           startup_fase = _STARTUP_SERVICE_POWER_ERROR;
+           QTimer::singleShot(20,this, SLOT(startupFase()));
+           return;
         }
 
         ui->power_service_frame->setStyleSheet(CORRECT_FRAME_BORDER );

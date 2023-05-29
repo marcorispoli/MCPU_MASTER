@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'startup.ui'
 **
-** Created by: Qt User Interface Compiler version 6.2.4
+** Created by: Qt User Interface Compiler version 6.2.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -72,7 +72,6 @@ public:
         startup_label->setObjectName(QString::fromUtf8("startup_label"));
         startup_label->setGeometry(QRect(40, 30, 511, 61));
         QFont font1;
-        font1.setFamilies({QString::fromUtf8("Arial")});
         font1.setPointSize(30);
         font1.setBold(true);
         font1.setItalic(true);
@@ -107,7 +106,6 @@ public:
         label_3->setEnabled(true);
         label_3->setGeometry(QRect(10, 20, 251, 41));
         QFont font2;
-        font2.setFamilies({QString::fromUtf8("Arial")});
         font2.setPointSize(20);
         font2.setBold(true);
         font2.setItalic(false);
@@ -121,15 +119,15 @@ public:
         label_3->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         power_sevice_revision = new QLabel(power_service_frame);
         power_sevice_revision->setObjectName(QString::fromUtf8("power_sevice_revision"));
-        power_sevice_revision->setGeometry(QRect(330, 20, 121, 31));
+        power_sevice_revision->setGeometry(QRect(290, 20, 181, 31));
         power_sevice_revision->setFont(font2);
         power_sevice_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        power_sevice_revision->setText(QString::fromUtf8("__.__.__"));
-        power_sevice_revision->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        power_sevice_revision->setText(QString::fromUtf8("__.__  [__.__]"));
+        power_sevice_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         compressor_frame = new QFrame(process_start);
         compressor_frame->setObjectName(QString::fromUtf8("compressor_frame"));
         compressor_frame->setGeometry(QRect(20, 210, 481, 80));
@@ -148,7 +146,7 @@ public:
         label_4->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         compressor_revision = new QLabel(compressor_frame);
         compressor_revision->setObjectName(QString::fromUtf8("compressor_revision"));
-        compressor_revision->setGeometry(QRect(330, 20, 121, 31));
+        compressor_revision->setGeometry(QRect(290, 20, 181, 31));
         compressor_revision->setFont(font2);
         compressor_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
@@ -156,7 +154,7 @@ public:
 "\n"
 ""));
         compressor_revision->setText(QString::fromUtf8("__.__.__"));
-        compressor_revision->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        compressor_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         collimator_frame = new QFrame(process_start);
         collimator_frame->setObjectName(QString::fromUtf8("collimator_frame"));
         collimator_frame->setGeometry(QRect(20, 300, 481, 80));
@@ -175,7 +173,7 @@ public:
         label_5->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         collimator_revision = new QLabel(collimator_frame);
         collimator_revision->setObjectName(QString::fromUtf8("collimator_revision"));
-        collimator_revision->setGeometry(QRect(330, 20, 121, 31));
+        collimator_revision->setGeometry(QRect(290, 20, 181, 31));
         collimator_revision->setFont(font2);
         collimator_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
@@ -183,7 +181,7 @@ public:
 "\n"
 ""));
         collimator_revision->setText(QString::fromUtf8("__.__.__"));
-        collimator_revision->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        collimator_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         filter_frame = new QFrame(process_start);
         filter_frame->setObjectName(QString::fromUtf8("filter_frame"));
         filter_frame->setGeometry(QRect(20, 390, 481, 80));
@@ -202,7 +200,7 @@ public:
         label_6->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         filter_revision = new QLabel(filter_frame);
         filter_revision->setObjectName(QString::fromUtf8("filter_revision"));
-        filter_revision->setGeometry(QRect(330, 20, 121, 31));
+        filter_revision->setGeometry(QRect(290, 20, 181, 31));
         filter_revision->setFont(font2);
         filter_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
@@ -210,7 +208,7 @@ public:
 "\n"
 ""));
         filter_revision->setText(QString::fromUtf8("__.__.__"));
-        filter_revision->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        filter_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         potter_frame = new QFrame(process_start);
         potter_frame->setObjectName(QString::fromUtf8("potter_frame"));
         potter_frame->setGeometry(QRect(20, 480, 481, 80));
@@ -229,7 +227,7 @@ public:
         label_9->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         potter_revision = new QLabel(potter_frame);
         potter_revision->setObjectName(QString::fromUtf8("potter_revision"));
-        potter_revision->setGeometry(QRect(330, 20, 121, 31));
+        potter_revision->setGeometry(QRect(290, 20, 181, 31));
         potter_revision->setFont(font2);
         potter_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
@@ -237,7 +235,7 @@ public:
 "\n"
 ""));
         potter_revision->setText(QString::fromUtf8("__.__.__"));
-        potter_revision->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        potter_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         motors_frame = new QFrame(process_start);
         motors_frame->setObjectName(QString::fromUtf8("motors_frame"));
         motors_frame->setGeometry(QRect(20, 570, 481, 80));
@@ -245,7 +243,7 @@ public:
         motors_frame->setFrameShadow(QFrame::Raised);
         motors_revision = new QLabel(motors_frame);
         motors_revision->setObjectName(QString::fromUtf8("motors_revision"));
-        motors_revision->setGeometry(QRect(330, 20, 121, 31));
+        motors_revision->setGeometry(QRect(290, 20, 181, 31));
         motors_revision->setFont(font2);
         motors_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
@@ -253,7 +251,7 @@ public:
 "\n"
 ""));
         motors_revision->setText(QString::fromUtf8("__.__.__"));
-        motors_revision->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        motors_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         label_7 = new QLabel(motors_frame);
         label_7->setObjectName(QString::fromUtf8("label_7"));
         label_7->setGeometry(QRect(10, 10, 251, 61));
@@ -283,7 +281,7 @@ public:
         label_8->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         generator_revision = new QLabel(generator_frame);
         generator_revision->setObjectName(QString::fromUtf8("generator_revision"));
-        generator_revision->setGeometry(QRect(330, 20, 121, 31));
+        generator_revision->setGeometry(QRect(290, 20, 181, 31));
         generator_revision->setFont(font2);
         generator_revision->setStyleSheet(QString::fromUtf8("\n"
 "border-width: 0px;\n"
@@ -292,7 +290,7 @@ public:
 "\n"
 ""));
         generator_revision->setText(QString::fromUtf8("__.__.__"));
-        generator_revision->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        generator_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         main_process_start_frame = new QFrame(process_start);
         main_process_start_frame->setObjectName(QString::fromUtf8("main_process_start_frame"));
         main_process_start_frame->setGeometry(QRect(20, 20, 481, 80));
@@ -314,7 +312,6 @@ public:
         package_label->setObjectName(QString::fromUtf8("package_label"));
         package_label->setGeometry(QRect(60, 100, 251, 41));
         QFont font3;
-        font3.setFamilies({QString::fromUtf8("Arial")});
         font3.setPointSize(20);
         font3.setBold(true);
         font3.setItalic(true);

@@ -54,7 +54,6 @@ background-image: url(:/Windows/Windows/background.png);
     </property>
     <property name="font">
      <font>
-      <family>Arial</family>
       <pointsize>30</pointsize>
       <italic>true</italic>
       <bold>true</bold>
@@ -127,7 +126,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -150,15 +148,14 @@ border-color: rgb(239, 190, 189);
      <widget class="QLabel" name="power_sevice_revision">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>290</x>
         <y>20</y>
-        <width>121</width>
+        <width>181</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -172,10 +169,10 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">__.__.__</string>
+       <string notr="true">__.__  [__.__]</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>
@@ -205,7 +202,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -228,15 +224,14 @@ border-color: rgb(239, 190, 189);
      <widget class="QLabel" name="compressor_revision">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>290</x>
         <y>20</y>
-        <width>121</width>
+        <width>181</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -253,7 +248,7 @@ border-color: rgb(239, 190, 189);
        <string notr="true">__.__.__</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>
@@ -283,7 +278,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -306,15 +300,14 @@ border-color: rgb(239, 190, 189);
      <widget class="QLabel" name="collimator_revision">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>290</x>
         <y>20</y>
-        <width>121</width>
+        <width>181</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -331,7 +324,7 @@ border-color: rgb(239, 190, 189);
        <string notr="true">__.__.__</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>
@@ -361,7 +354,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -384,15 +376,14 @@ border-color: rgb(239, 190, 189);
      <widget class="QLabel" name="filter_revision">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>290</x>
         <y>20</y>
-        <width>121</width>
+        <width>181</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -409,7 +400,7 @@ border-color: rgb(239, 190, 189);
        <string notr="true">__.__.__</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>
@@ -439,7 +430,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -462,15 +452,14 @@ border-color: rgb(239, 190, 189);
      <widget class="QLabel" name="potter_revision">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>290</x>
         <y>20</y>
-        <width>121</width>
+        <width>181</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -487,7 +476,7 @@ border-color: rgb(239, 190, 189);
        <string notr="true">__.__.__</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>
@@ -509,15 +498,14 @@ border-color: rgb(239, 190, 189);
      <widget class="QLabel" name="motors_revision">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>290</x>
         <y>20</y>
-        <width>121</width>
+        <width>181</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -534,7 +522,7 @@ border-color: rgb(239, 190, 189);
        <string notr="true">__.__.__</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_7">
@@ -548,7 +536,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -595,7 +582,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -618,15 +604,14 @@ border-color: rgb(239, 190, 189);
      <widget class="QLabel" name="generator_revision">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>290</x>
         <y>20</y>
-        <width>121</width>
+        <width>181</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -644,7 +629,7 @@ border-color: rgb(239, 190, 189);
        <string notr="true">__.__.__</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>
@@ -677,7 +662,6 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
         <pointsize>20</pointsize>
         <italic>false</italic>
         <bold>true</bold>
@@ -710,7 +694,6 @@ border-color: rgb(239, 190, 189);
     </property>
     <property name="font">
      <font>
-      <family>Arial</family>
       <pointsize>20</pointsize>
       <italic>true</italic>
       <bold>true</bold>
@@ -741,7 +724,6 @@ border-color: rgb(239, 190, 189);
     </property>
     <property name="font">
      <font>
-      <family>Arial</family>
       <pointsize>20</pointsize>
       <italic>true</italic>
       <bold>true</bold>

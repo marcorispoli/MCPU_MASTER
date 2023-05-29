@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 
     // Enter the STARTUP status
     STARTUP->openWindow();
+    POWERSERVICE->Start();
     return a.exec();
 }
 

@@ -19,12 +19,18 @@ class startup : public windowsClass
 {
     Q_OBJECT
 
+
+
+public slots:
+
+
 public:
     startup( int W, int H,QWidget *parent = nullptr);
     ~startup();
 
     //static void debugMessageHandler(QtMsgType type, QString msg); //!< Handles the debug messages in case of -win Application
     inline static startup* instance = nullptr; //!< Assigned to the unique instance of the class
+
 
 
 // WINDOWS MODULE VIRTUAL FUNCTIONS
@@ -41,7 +47,7 @@ public slots:
 
 
 private slots:
-
+    void startupFase(void);
 
 private:
 
@@ -49,10 +55,19 @@ private:
 
    uchar startup_fase;
    enum{
-       _STARTUP_STARTING_PROCESS,
+       _STARTUP_INIT,
+       _STARTUP_SERVICE_POWER,
+       _STARTUP_SERVICE_CONNECTION,
+       _STARTUP_SERVICE_POWER_REVISION,
+       _STARTUP_SERVICE_POWER_ERROR,
+       _STARTUP_COLLIMATOR,
+       _STARTUP_COLLIMATOR_CONNECTION,
+       _STARTUP_COLLIMATOR_REVISION,
+       _STARTUP_COLLIMATOR_ERROR,
    }startup_fase_enum;
 
-   void startupActivateFase(void);
+
+
 };
 
 

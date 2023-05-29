@@ -64,6 +64,22 @@ namespace Application
     static const unsigned short MIN_REV = 0;
     static const unsigned short SUB_REV = 1;
 
+    #define PINK_COLOR  QString("rgb(239, 190, 189);")
+    #define RED_COLOR  QString("rgb(255, 0, 0);")
+    #define GREEN_COLOR  QString("rgb(0, 255, 0);")
+    #define BLACK_COLOR  QString("rgb(0, 0, 0);")
+
+    #define NO_BACKGROUND QString("background-image: url(); background-color: rgba(0, 0, 0, 0);")
+    #define PINK_BACKGROUND QString("background-image: url(); background-color: ") + PINK_COLOR
+
+    #define FRAME_TEXT "font: 700 normal 20pt \"Arial\"; color:" + PINK_COLOR
+    #define HIGHLIGHT_FRAME_TEXT "font: 700 normal 20pt \"Arial\"; color:" + BLACK_COLOR
+    #define HIGHLIGHT_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + PINK_COLOR + PINK_BACKGROUND + HIGHLIGHT_FRAME_TEXT
+    #define NORMAL_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + PINK_COLOR + NO_BACKGROUND + FRAME_TEXT
+    #define ERROR_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + RED_COLOR + NO_BACKGROUND + FRAME_TEXT
+    #define CORRECT_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + GREEN_COLOR + NO_BACKGROUND + FRAME_TEXT
+
+
 }
 
 

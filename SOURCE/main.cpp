@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     PKGCONFIG = new pkgConfig();
     STARTUP = new startup(600, 1024);
     POWERSERVICE = new powerService();
+    CANDRIVER = new canDriver();
 
     // Initialize the WINDOW to nullptr so that in case of Operating mode
     // the application skips the WINDOW callbacks
@@ -44,6 +45,8 @@ int main(int argc, char *argv[])
 
     // Enter the STARTUP status
     STARTUP->openWindow();
+
+    CANDRIVER->Start();
     POWERSERVICE->Start();
     return a.exec();
 }

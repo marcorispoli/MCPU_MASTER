@@ -16,6 +16,7 @@ class pkgConfig : public configFile
     // This section defines labels helping the param identification along the application
     #define PKG_ID                  "PACKAGE_ID"
     #define PKG_MCPU_MASTER         "MCPU_MASTER_REV"
+    #define PKG_MCPU_CAN_DRIVER     "MCPU_CAN_DRIVER_REV"
     #define PKG_MCPU_POWER_SERVICE  "MCPU_POWER_SERVICE_REV"
     #define PKG_MCPU_COMPRESSOR     "MCPU_COMPRESSOR_REV"
     #define PKG_MCPU_COLLIMATOR     "MCPU_COLLIMATOR_REV"
@@ -32,6 +33,7 @@ class pkgConfig : public configFile
             {{
                 { PKG_ID,                   {{ "01" }},     "Package revision code"},
                 { PKG_MCPU_MASTER,          {{ "0","1" }},  "MCPU Master Major and Minor revision codes"},
+                { PKG_MCPU_CAN_DRIVER,      {{ "0","1" }},  "MCPU Can Driver Major and Minor revision codes"},
                 { PKG_MCPU_POWER_SERVICE,   {{ "0","1" }},  "MCPU Power Service Major and Minor revision codes"},
                 { PKG_MCPU_COMPRESSOR,      {{ "0","1" }},  "MCPU Compressor Major and Minor revision codes"},
                 { PKG_MCPU_COLLIMATOR,      {{ "0","1" }},  "MCPU Collimator Major and Minor revision codes"},

@@ -46,6 +46,9 @@ public:
     QLabel *generator_revision;
     QFrame *main_process_start_frame;
     QLabel *label_10;
+    QFrame *can_process_frame;
+    QLabel *label_11;
+    QLabel *can_process_revision;
     QLabel *package_label;
     QLabel *package_revision;
 
@@ -98,7 +101,7 @@ public:
         process_start->setFrameShadow(QFrame::Raised);
         power_service_frame = new QFrame(process_start);
         power_service_frame->setObjectName(QString::fromUtf8("power_service_frame"));
-        power_service_frame->setGeometry(QRect(20, 120, 481, 80));
+        power_service_frame->setGeometry(QRect(20, 200, 481, 71));
         power_service_frame->setFrameShape(QFrame::StyledPanel);
         power_service_frame->setFrameShadow(QFrame::Raised);
         label_3 = new QLabel(power_service_frame);
@@ -130,7 +133,7 @@ public:
         power_sevice_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         compressor_frame = new QFrame(process_start);
         compressor_frame->setObjectName(QString::fromUtf8("compressor_frame"));
-        compressor_frame->setGeometry(QRect(20, 210, 481, 80));
+        compressor_frame->setGeometry(QRect(20, 280, 481, 71));
         compressor_frame->setFrameShape(QFrame::StyledPanel);
         compressor_frame->setFrameShadow(QFrame::Raised);
         label_4 = new QLabel(compressor_frame);
@@ -157,7 +160,7 @@ public:
         compressor_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         collimator_frame = new QFrame(process_start);
         collimator_frame->setObjectName(QString::fromUtf8("collimator_frame"));
-        collimator_frame->setGeometry(QRect(20, 300, 481, 80));
+        collimator_frame->setGeometry(QRect(20, 360, 481, 71));
         collimator_frame->setFrameShape(QFrame::StyledPanel);
         collimator_frame->setFrameShadow(QFrame::Raised);
         label_5 = new QLabel(collimator_frame);
@@ -184,7 +187,7 @@ public:
         collimator_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         filter_frame = new QFrame(process_start);
         filter_frame->setObjectName(QString::fromUtf8("filter_frame"));
-        filter_frame->setGeometry(QRect(20, 390, 481, 80));
+        filter_frame->setGeometry(QRect(20, 440, 481, 71));
         filter_frame->setFrameShape(QFrame::StyledPanel);
         filter_frame->setFrameShadow(QFrame::Raised);
         label_6 = new QLabel(filter_frame);
@@ -211,7 +214,7 @@ public:
         filter_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         potter_frame = new QFrame(process_start);
         potter_frame->setObjectName(QString::fromUtf8("potter_frame"));
-        potter_frame->setGeometry(QRect(20, 480, 481, 80));
+        potter_frame->setGeometry(QRect(20, 520, 481, 71));
         potter_frame->setFrameShape(QFrame::StyledPanel);
         potter_frame->setFrameShadow(QFrame::Raised);
         label_9 = new QLabel(potter_frame);
@@ -238,7 +241,7 @@ public:
         potter_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         motors_frame = new QFrame(process_start);
         motors_frame->setObjectName(QString::fromUtf8("motors_frame"));
-        motors_frame->setGeometry(QRect(20, 570, 481, 80));
+        motors_frame->setGeometry(QRect(20, 600, 481, 71));
         motors_frame->setFrameShape(QFrame::StyledPanel);
         motors_frame->setFrameShadow(QFrame::Raised);
         motors_revision = new QLabel(motors_frame);
@@ -265,7 +268,7 @@ public:
         label_7->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         generator_frame = new QFrame(process_start);
         generator_frame->setObjectName(QString::fromUtf8("generator_frame"));
-        generator_frame->setGeometry(QRect(20, 660, 481, 80));
+        generator_frame->setGeometry(QRect(20, 680, 481, 71));
         generator_frame->setFrameShape(QFrame::StyledPanel);
         generator_frame->setFrameShadow(QFrame::Raised);
         label_8 = new QLabel(generator_frame);
@@ -308,6 +311,34 @@ public:
 ""));
         label_10->setText(QString::fromUtf8("MAIN CPU PROCESS ACTIVATION"));
         label_10->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        can_process_frame = new QFrame(process_start);
+        can_process_frame->setObjectName(QString::fromUtf8("can_process_frame"));
+        can_process_frame->setGeometry(QRect(20, 120, 481, 71));
+        can_process_frame->setFrameShape(QFrame::StyledPanel);
+        can_process_frame->setFrameShadow(QFrame::Raised);
+        label_11 = new QLabel(can_process_frame);
+        label_11->setObjectName(QString::fromUtf8("label_11"));
+        label_11->setEnabled(true);
+        label_11->setGeometry(QRect(10, 20, 251, 41));
+        label_11->setFont(font2);
+        label_11->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        label_11->setText(QString::fromUtf8("Can Process:"));
+        label_11->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        can_process_revision = new QLabel(can_process_frame);
+        can_process_revision->setObjectName(QString::fromUtf8("can_process_revision"));
+        can_process_revision->setGeometry(QRect(290, 20, 181, 31));
+        can_process_revision->setFont(font2);
+        can_process_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        can_process_revision->setText(QString::fromUtf8("__.__  [__.__]"));
+        can_process_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         package_label = new QLabel(mainFrame);
         package_label->setObjectName(QString::fromUtf8("package_label"));
         package_label->setGeometry(QRect(60, 100, 251, 41));

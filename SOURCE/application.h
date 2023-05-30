@@ -64,16 +64,6 @@ namespace Application
     static const unsigned short MIN_REV = 0;
     static const unsigned short SUB_REV = 1;
 
-    // Driver definition
-    static const char* POWER_SERVICE_PROCESS =  "C:\\OEM\\Gantry\\bin\\PowerService.exe";
-    static const char* COLLIMATOR_PROCESS =     "C:\\OEM\\Gantry\\bin\\Collimator.exe";
-    static const char* COMPRESSOR_PROCESS =     "C:\\OEM\\Gantry\\bin\\Compressor.exe";
-    static const char* FILTER_PROCESS =         "C:\\OEM\\Gantry\\bin\\Filter.exe";
-    static const char* POTTER_PROCESS =         "C:\\OEM\\Gantry\\bin\\Potter.exe";
-    static const char* GENERATOR_PROCESS =      "C:\\OEM\\Gantry\\bin\\Generator.exe";
-    static const char* MOTORS_PROCESS =         "C:\\OEM\\Gantry\\bin\\Motors.exe";
-
-
     // GUI Color definition
     #define PINK_COLOR  QString("rgb(239, 190, 189);")
     #define RED_COLOR  QString("rgb(255, 0, 0);")
@@ -102,11 +92,13 @@ namespace Application
 #include "sysconfig.h"
 #include "startup.h"
 #include "power_service.h"
+#include "can_driver.h"
 
 #define     SYSCONFIG          pSysConfig
 #define     PKGCONFIG          pPkgConfig
 #define     STARTUP            pStartup
 #define     POWERSERVICE       pPowerService
+#define     CANDRIVER          pCanDriver
 
 
 // Global definitions
@@ -115,12 +107,14 @@ namespace Application
      pkgConfig*                PKGCONFIG;
      startup*                  STARTUP;
      powerService*             POWERSERVICE;
+     canDriver*                CANDRIVER;
 
 #else
     extern sysConfig*                SYSCONFIG;
     extern pkgConfig*                PKGCONFIG;
     extern startup*                  STARTUP;
     extern powerService*             POWERSERVICE;
+    extern canDriver*                CANDRIVER;
 
 #endif
 

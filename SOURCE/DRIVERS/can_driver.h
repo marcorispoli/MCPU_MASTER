@@ -1,18 +1,18 @@
-#ifndef POWER_SERVICE_H
-#define POWER_SERVICE_H
+#ifndef CAN_DRIVER_H
+#define CAN_DRIVER_H
 
 #include "QObject"
 #include "masterInterface.h"
 
-class powerService : public masterInterface
+class canDriver : public masterInterface
 {
     Q_OBJECT
 
 public:
 
 
-    explicit powerService(void);
-    ~powerService(){};
+    explicit canDriver(void);
+    ~canDriver(){};
 
    void handleReceivedEvent(QList<QString>* event_content);
    void handleReceivedAck(QList<QString>* ack_content);
@@ -32,4 +32,4 @@ private:
 
 };
 
-#endif // POWER_SERVICE_H
+#endif // CAN_DRIVER_H

@@ -31,14 +31,3 @@ void powerService::handleServerConnections(bool status){
     }else qDebug() << "POWER SERVICE DISCONNECTED";
 }
 
-
-void powerService::startDriver(void){
-    QString program = SYSCONFIG->getParam<QString>(SYS_POWERSERVICE_PROCESS_PARAM,SYS_PROCESS_NAME);
-    QStringList arguments;
-    arguments.append(SYSCONFIG->getParam<QString>(SYS_POWERSERVICE_PROCESS_PARAM,SYS_PROCESS_PARAM));
-
-    qDebug() << program << " " << arguments;
-    QProcess *myProcess = new QProcess(qApp);
-    myProcess->start(program, arguments);
-
-}

@@ -34,6 +34,7 @@ SOURCES += \
     $${TARGET_SOURCE}/main.cpp \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.cpp \
     $${TARGET_SOURCE}/DRIVERS/power_service.cpp  \
+    $${TARGET_SOURCE}/DRIVERS/can_driver.cpp  \
 
 
 
@@ -47,7 +48,7 @@ HEADERS += \
     $${TARGET_SOURCE}/CONFIGURATION/config.h \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.h \
     $${TARGET_SOURCE}/DRIVERS/power_service.h  \
-
+    $${TARGET_SOURCE}/DRIVERS/can_driver.h  \
 
 
 # Aggiunge tutti i path di progetto

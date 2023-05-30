@@ -101,9 +101,9 @@ border-color: rgb(239, 190, 189);
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>120</y>
+       <y>200</y>
        <width>481</width>
-       <height>80</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -180,9 +180,9 @@ border-color: rgb(239, 190, 189);
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>210</y>
+       <y>280</y>
        <width>481</width>
-       <height>80</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -256,9 +256,9 @@ border-color: rgb(239, 190, 189);
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>300</y>
+       <y>360</y>
        <width>481</width>
-       <height>80</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -332,9 +332,9 @@ border-color: rgb(239, 190, 189);
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>390</y>
+       <y>440</y>
        <width>481</width>
-       <height>80</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -408,9 +408,9 @@ border-color: rgb(239, 190, 189);
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>480</y>
+       <y>520</y>
        <width>481</width>
-       <height>80</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -484,9 +484,9 @@ border-color: rgb(239, 190, 189);
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>570</y>
+       <y>600</y>
        <width>481</width>
-       <height>80</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -560,9 +560,9 @@ border-color: rgb(239, 190, 189);
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>660</y>
+       <y>680</y>
        <width>481</width>
-       <height>80</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -679,6 +679,85 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="can_process_frame">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>481</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_11">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>251</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;
+border-style: solid;
+border-color: rgb(239, 190, 189);
+
+</string>
+      </property>
+      <property name="text">
+       <string notr="true">Can Process:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="can_process_revision">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>20</y>
+        <width>181</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;
+border-style: solid;
+border-color: rgb(239, 190, 189);
+
+</string>
+      </property>
+      <property name="text">
+       <string notr="true">__.__  [__.__]</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>

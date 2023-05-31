@@ -38,8 +38,9 @@ SOURCES += \
     $${TARGET_SOURCE}/DRIVERS/compressor.cpp  \
     $${TARGET_SOURCE}/DRIVERS/collimator.cpp  \
     $${TARGET_SOURCE}/DRIVERS/filter.cpp  \
-
-
+    $${TARGET_SOURCE}/DRIVERS/potter.cpp  \
+    $${TARGET_SOURCE}/DRIVERS/motors.cpp  \
+    $${TARGET_SOURCE}/DRIVERS/generator.cpp  \
 
 HEADERS += \
     $${TARGET_SOURCE}/application.h \
@@ -55,6 +56,9 @@ HEADERS += \
     $${TARGET_SOURCE}/DRIVERS/compressor.h  \
     $${TARGET_SOURCE}/DRIVERS/collimator.h  \
     $${TARGET_SOURCE}/DRIVERS/filter.h  \
+    $${TARGET_SOURCE}/DRIVERS/potter.h  \
+    $${TARGET_SOURCE}/DRIVERS/motors.h  \
+    $${TARGET_SOURCE}/DRIVERS/generator.h  \
 
 
 # Aggiunge tutti i path di progetto

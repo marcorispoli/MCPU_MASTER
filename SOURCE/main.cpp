@@ -32,11 +32,15 @@ int main(int argc, char *argv[])
     PKGCONFIG = new pkgConfig();
     STARTUP = new startup(600, 1024);
 
+    CANDRIVER = new canDriver();
     POWERSERVICE = new powerService();
     COMPRESSOR = new compressorProcess();
     COLLIMATOR = new collimatorProcess();
     FILTER = new filterProcess();
-    CANDRIVER = new canDriver();
+    POTTER = new potterProcess();
+    MOTORS = new motorsProcess();
+    GENERATOR = new generatorProcess();
+
 
 
     // Enter the STARTUP status
@@ -49,6 +53,9 @@ int main(int argc, char *argv[])
     COMPRESSOR->stopDriver();
     COLLIMATOR->stopDriver();
     FILTER->stopDriver();
+    POTTER->stopDriver();
+    MOTORS->stopDriver();
+    GENERATOR->stopDriver();
     CANDRIVER->stopDriver();
 
     return 1;

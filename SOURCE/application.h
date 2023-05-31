@@ -107,6 +107,9 @@ namespace Application
 #include "compressor.h"
 #include "collimator.h"
 #include "filter.h"
+#include "potter.h"
+#include "motors.h"
+#include "generator.h"
 
 #define     SYSCONFIG          pSysConfig
 #define     PKGCONFIG          pPkgConfig
@@ -115,6 +118,9 @@ namespace Application
 #define     COMPRESSOR         pCompressorProcess
 #define     COLLIMATOR         pCollimatorProcess
 #define     FILTER             pFilterProcess
+#define     POTTER             pPotterProcess
+#define     MOTORS             pMotorsProcess
+#define     GENERATOR          pGeneratorProcess
 #define     CANDRIVER          pCanDriver
 
 
@@ -128,6 +134,9 @@ namespace Application
      compressorProcess*        COMPRESSOR;
      collimatorProcess*        COLLIMATOR;
      filterProcess*            FILTER;
+     potterProcess*            POTTER;
+     motorsProcess*            MOTORS;
+     generatorProcess*         GENERATOR;
 
 #else
     extern sysConfig*                SYSCONFIG;
@@ -138,6 +147,9 @@ namespace Application
     extern canDriver*                CANDRIVER;
     extern collimatorProcess*        COLLIMATOR;
     extern filterProcess*            FILTER;
+    extern potterProcess*            POTTER;
+    extern motorsProcess*            MOTORS;
+    extern generatorProcess*         GENERATOR;
 
 #endif
 

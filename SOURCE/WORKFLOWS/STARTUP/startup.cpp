@@ -321,10 +321,6 @@ void startup::startupFase(void)
         break;
 
 
-
-
-
-
     case _STARTUP_FILTER:
         ui->filter_frame->show();
         ui->filter_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
@@ -388,10 +384,198 @@ void startup::startupFase(void)
         startup_fase = _STARTUP_POTTER;
         break;
 
+
+
+
     case _STARTUP_POTTER:
         ui->potter_frame->show();
         ui->potter_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
 
+        // Assignes the packaga revision to the driver
+        POTTER->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_POTTER,0), PKGCONFIG->getParam<uint>(PKG_MCPU_POTTER,1));
+
+        if(!POTTER->startDriver()){
+            startup_fase = _STARTUP_POTTER_ERROR;
+            QTimer::singleShot(0,this, SLOT(startupFase()));
+            return;
+        }
+        POTTER->Start();
+
+        startup_fase = _STARTUP_POTTER_CONNECTION;
+        tmo = 50;
+        QTimer::singleShot(100,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_POTTER_CONNECTION:
+        if(!POTTER->isConnected()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_POTTER_ERROR;
+            QTimer::singleShot(100,this, SLOT(startupFase()));
+            return;
+        }
+
+        POTTER->SEND_GET_REVISION();
+        startup_fase = _STARTUP_POTTER_REVISION;
+        tmo = 10;
+        QTimer::singleShot(20,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_POTTER_REVISION:
+        if(!POTTER->isReceivedRevision()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_POTTER_ERROR;
+            POTTER->SEND_GET_REVISION();
+            QTimer::singleShot(20,this, SLOT(startupFase()));
+            return;
+        }
+
+
+        ui->potter_revision->setText(QString("%1.%2 [%4.%5]").arg(POTTER->getMajRevision()).arg(POTTER->getMinRevision()).arg(POTTER->getMajPkgRevision()).arg(POTTER->getMinPkgRevision())  );
+
+        // Test the expected release and the actual release
+        if(!POTTER->isValidRevision()){
+           startup_fase = _STARTUP_POTTER_ERROR;
+           QTimer::singleShot(20,this, SLOT(startupFase()));
+           return;
+        }
+
+        ui->potter_frame->setStyleSheet(CORRECT_FRAME_BORDER );
+        startup_fase = _STARTUP_MOTORS;
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_POTTER_ERROR:
+        ui->potter_frame->setStyleSheet(ERROR_FRAME_BORDER );
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        startup_fase = _STARTUP_MOTORS;
+        break;
+
+
+    case _STARTUP_MOTORS:
+        ui->motors_frame->show();
+        ui->motors_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
+
+        // Assignes the packaga revision to the driver
+        MOTORS->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_MOTORS,0), PKGCONFIG->getParam<uint>(PKG_MCPU_MOTORS,1));
+
+        if(!MOTORS->startDriver()){
+            startup_fase = _STARTUP_MOTORS_ERROR;
+            QTimer::singleShot(0,this, SLOT(startupFase()));
+            return;
+        }
+        MOTORS->Start();
+
+        startup_fase = _STARTUP_MOTORS_CONNECTION;
+        tmo = 50;
+        QTimer::singleShot(100,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_MOTORS_CONNECTION:
+        if(!MOTORS->isConnected()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_MOTORS_ERROR;
+            QTimer::singleShot(100,this, SLOT(startupFase()));
+            return;
+        }
+
+        MOTORS->SEND_GET_REVISION();
+        startup_fase = _STARTUP_MOTORS_REVISION;
+        tmo = 10;
+        QTimer::singleShot(20,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_MOTORS_REVISION:
+        if(!MOTORS->isReceivedRevision()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_MOTORS_ERROR;
+            MOTORS->SEND_GET_REVISION();
+            QTimer::singleShot(20,this, SLOT(startupFase()));
+            return;
+        }
+
+        ui->motors_revision->setText(QString("%1.%2 [%4.%5]").arg(MOTORS->getMajRevision()).arg(MOTORS->getMinRevision()).arg(MOTORS->getMajPkgRevision()).arg(MOTORS->getMinPkgRevision())  );
+
+        // Test the expected release and the actual release
+        if(!MOTORS->isValidRevision()){
+           startup_fase = _STARTUP_MOTORS_ERROR;
+           QTimer::singleShot(20,this, SLOT(startupFase()));
+           return;
+        }
+
+        ui->motors_frame->setStyleSheet(CORRECT_FRAME_BORDER );
+        startup_fase = _STARTUP_GENERATOR;
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_MOTORS_ERROR:
+        ui->motors_frame->setStyleSheet(ERROR_FRAME_BORDER );
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        startup_fase = _STARTUP_GENERATOR;
+        break;
+
+
+    case _STARTUP_GENERATOR:
+        ui->generator_frame->show();
+        ui->generator_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
+
+        // Assignes the packaga revision to the driver
+        GENERATOR->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_GENERATOR,0), PKGCONFIG->getParam<uint>(PKG_MCPU_GENERATOR,1));
+
+        if(!GENERATOR->startDriver()){
+            startup_fase = _STARTUP_GENERATOR_ERROR;
+            QTimer::singleShot(0,this, SLOT(startupFase()));
+            return;
+        }
+        GENERATOR->Start();
+
+        startup_fase = _STARTUP_GENERATOR_CONNECTION;
+        tmo = 50;
+        QTimer::singleShot(100,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_GENERATOR_CONNECTION:
+        if(!GENERATOR->isConnected()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_GENERATOR_ERROR;
+            QTimer::singleShot(100,this, SLOT(startupFase()));
+            return;
+        }
+
+        GENERATOR->SEND_GET_REVISION();
+        startup_fase = _STARTUP_GENERATOR_REVISION;
+        tmo = 10;
+        QTimer::singleShot(20,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_GENERATOR_REVISION:
+        if(!GENERATOR->isReceivedRevision()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_GENERATOR_ERROR;
+            GENERATOR->SEND_GET_REVISION();
+            QTimer::singleShot(20,this, SLOT(startupFase()));
+            return;
+        }
+
+        ui->generator_revision->setText(QString("%1.%2 [%4.%5]").arg(GENERATOR->getMajRevision()).arg(GENERATOR->getMinRevision()).arg(GENERATOR->getMajPkgRevision()).arg(GENERATOR->getMinPkgRevision())  );
+
+        // Test the expected release and the actual release
+        if(!GENERATOR->isValidRevision()){
+           startup_fase = _STARTUP_GENERATOR_ERROR;
+           QTimer::singleShot(20,this, SLOT(startupFase()));
+           return;
+        }
+
+        ui->generator_frame->setStyleSheet(CORRECT_FRAME_BORDER );
+        startup_fase = _STARTUP_FIRMWARE_POWER_SERVICE;
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_GENERATOR_ERROR:
+        ui->generator_frame->setStyleSheet(ERROR_FRAME_BORDER );
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        startup_fase = _STARTUP_FIRMWARE_POWER_SERVICE;
+        break;
+    case _STARTUP_FIRMWARE_POWER_SERVICE:
 
         break;
     }

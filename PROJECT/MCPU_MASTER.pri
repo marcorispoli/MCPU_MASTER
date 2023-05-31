@@ -35,6 +35,9 @@ SOURCES += \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.cpp \
     $${TARGET_SOURCE}/DRIVERS/power_service.cpp  \
     $${TARGET_SOURCE}/DRIVERS/can_driver.cpp  \
+    $${TARGET_SOURCE}/DRIVERS/compressor.cpp  \
+    $${TARGET_SOURCE}/DRIVERS/collimator.cpp  \
+    $${TARGET_SOURCE}/DRIVERS/filter.cpp  \
 
 
 
@@ -49,6 +52,9 @@ HEADERS += \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.h \
     $${TARGET_SOURCE}/DRIVERS/power_service.h  \
     $${TARGET_SOURCE}/DRIVERS/can_driver.h  \
+    $${TARGET_SOURCE}/DRIVERS/compressor.h  \
+    $${TARGET_SOURCE}/DRIVERS/collimator.h  \
+    $${TARGET_SOURCE}/DRIVERS/filter.h  \
 
 
 # Aggiunge tutti i path di progetto

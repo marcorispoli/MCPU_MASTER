@@ -31,13 +31,17 @@ void startup::exitWindow(void)
 
 }
 
-
+#define HIGHLIGHT_FRAME_BORDER  NO_BACKGROUND_IMAGE +  BACKGROUND_COLOR(CTITLE) + BORDER(1,CTITLE) + FONT_N(100,19) +  COLOR(CREVTEXT)
+#define CORRECT_FRAME_BORDER    NO_BACKGROUND_IMAGE + BACKGROUND_COLOR(TRANSPARENT) + BORDER(1,COK) + FONT_N(100,19) + COLOR(CTEXT)
+#define ERROR_FRAME_BORDER      NO_BACKGROUND_IMAGE + BACKGROUND_COLOR(TRANSPARENT) + BORDER(1,CERROR) + FONT_N(100,19) + COLOR(CTEXT)
 void startup::startupFase(void)
 {
     static unsigned int tmo = 0;
 
     switch(startup_fase){
     case _STARTUP_INIT:
+        ui->window_title_label->setStyleSheet(NO_BACKGROUND_IMAGE + BACKGROUND_COLOR(TRANSPARENT) + BOTTOM_BORDER(1,CTITLE) + FONT_I(700,30) + COLOR(CTITLE));
+        ui->installed_package_frame->setStyleSheet(NO_BACKGROUND_IMAGE + BACKGROUND_COLOR(TRANSPARENT) + NO_BORDER + FONT_I(100,20) + COLOR(CTEXT));
         ui->main_process_start_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER);
         ui->package_revision->setText(QString("ID%1").arg(PKGCONFIG->getParam<QString>(PKG_ID, 0)));
 
@@ -71,12 +75,12 @@ void startup::startupFase(void)
         // Assignes the packaga revision to the driver
         CANDRIVER->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_CAN_DRIVER,0), PKGCONFIG->getParam<uint>(PKG_MCPU_CAN_DRIVER,1));
 
-        if(!masterInterface::startDriver(SYSCONFIG->getParam<QString>(SYS_CAN_PROCESS_PARAM,SYS_PROCESS_NAME),SYSCONFIG->getParam<QString>(SYS_CAN_PROCESS_PARAM,SYS_PROCESS_PARAM), this )){
+        if(!CANDRIVER->startDriver()){
             startup_fase = _STARTUP_CAN_PROCESS_ERROR;
             QTimer::singleShot(0,this, SLOT(startupFase()));
             return;
         }
-
+        CANDRIVER->Start();
 
         startup_fase = _STARTUP_CAN_PROCESS_CONNECTION;
         QTimer::singleShot(0,this, SLOT(startupFase()));
@@ -132,11 +136,12 @@ void startup::startupFase(void)
         // Assignes the packaga revision to the driver
         POWERSERVICE->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_POWER_SERVICE,0), PKGCONFIG->getParam<uint>(PKG_MCPU_POWER_SERVICE,1));
 
-        if(!masterInterface::startDriver(SYSCONFIG->getParam<QString>(SYS_POWERSERVICE_PROCESS_PARAM,SYS_PROCESS_NAME),SYSCONFIG->getParam<QString>(SYS_POWERSERVICE_PROCESS_PARAM,SYS_PROCESS_PARAM), this )){
+        if(!POWERSERVICE->startDriver()){
             startup_fase = _STARTUP_SERVICE_POWER_ERROR;
             QTimer::singleShot(0,this, SLOT(startupFase()));
             return;
         }
+        POWERSERVICE->Start();
 
         startup_fase = _STARTUP_SERVICE_CONNECTION;
         tmo = 50;
@@ -177,24 +182,217 @@ void startup::startupFase(void)
         }
 
         ui->power_service_frame->setStyleSheet(CORRECT_FRAME_BORDER );        
-        startup_fase = _STARTUP_COLLIMATOR;
+        startup_fase = _STARTUP_COMPRESSOR;
         QTimer::singleShot(0,this, SLOT(startupFase()));
         break;
 
     case _STARTUP_SERVICE_POWER_ERROR:
         ui->power_service_frame->setStyleSheet(ERROR_FRAME_BORDER );
         QTimer::singleShot(0,this, SLOT(startupFase()));
+        startup_fase = _STARTUP_COMPRESSOR;
+        break;
+
+
+    case _STARTUP_COMPRESSOR:
+        ui->compressor_frame->show();
+        ui->compressor_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
+
+        // Assignes the packaga revision to the driver
+        COMPRESSOR->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_COMPRESSOR,0), PKGCONFIG->getParam<uint>(PKG_MCPU_COMPRESSOR,1));
+
+        if(!COMPRESSOR->startDriver()){
+            startup_fase = _STARTUP_COMPRESSOR_ERROR;
+            QTimer::singleShot(0,this, SLOT(startupFase()));
+            return;
+        }
+        COMPRESSOR->Start();
+
+        startup_fase = _STARTUP_COMPRESSOR_CONNECTION;
+        tmo = 50;
+        QTimer::singleShot(100,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_COMPRESSOR_CONNECTION:
+        if(!COMPRESSOR->isConnected()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_COMPRESSOR_ERROR;
+            QTimer::singleShot(100,this, SLOT(startupFase()));
+            return;
+        }
+
+        COMPRESSOR->SEND_GET_REVISION();
+        startup_fase = _STARTUP_COMPRESSOR_REVISION;
+        tmo = 10;
+        QTimer::singleShot(20,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_COMPRESSOR_REVISION:
+        if(!COMPRESSOR->isReceivedRevision()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_COMPRESSOR_ERROR;
+            COMPRESSOR->SEND_GET_REVISION();
+            QTimer::singleShot(20,this, SLOT(startupFase()));
+            return;
+        }
+
+
+        ui->compressor_revision->setText(QString("%1.%2 [%4.%5]").arg(COMPRESSOR->getMajRevision()).arg(COMPRESSOR->getMinRevision()).arg(COMPRESSOR->getMajPkgRevision()).arg(COMPRESSOR->getMinPkgRevision())  );
+
+        // Test the expected release and the actual release
+        if(!COMPRESSOR->isValidRevision()){
+           startup_fase = _STARTUP_COMPRESSOR_ERROR;
+           QTimer::singleShot(20,this, SLOT(startupFase()));
+           return;
+        }
+
+        ui->compressor_frame->setStyleSheet(CORRECT_FRAME_BORDER );
+        startup_fase = _STARTUP_COLLIMATOR;
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_COMPRESSOR_ERROR:
+        ui->compressor_frame->setStyleSheet(ERROR_FRAME_BORDER );
+        QTimer::singleShot(0,this, SLOT(startupFase()));
         startup_fase = _STARTUP_COLLIMATOR;
         break;
 
+
     case _STARTUP_COLLIMATOR:
         ui->collimator_frame->show();
-        ui->collimator_revision->setText("__.__.__");
         ui->collimator_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
 
-        startup_fase = _STARTUP_COLLIMATOR_REVISION;
+        // Assignes the packaga revision to the driver
+        COLLIMATOR->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_COLLIMATOR,0), PKGCONFIG->getParam<uint>(PKG_MCPU_COLLIMATOR,1));
+
+        if(!COLLIMATOR->startDriver()){
+            startup_fase = _STARTUP_COLLIMATOR_ERROR;
+            QTimer::singleShot(0,this, SLOT(startupFase()));
+            return;
+        }
+        COLLIMATOR->Start();
+
+        startup_fase = _STARTUP_COLLIMATOR_CONNECTION;
         tmo = 50;
-        //QTimer::singleShot(100,this, SLOT(startupFase()));
+        QTimer::singleShot(100,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_COLLIMATOR_CONNECTION:
+        if(!COLLIMATOR->isConnected()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_COLLIMATOR_ERROR;
+            QTimer::singleShot(100,this, SLOT(startupFase()));
+            return;
+        }
+
+        COLLIMATOR->SEND_GET_REVISION();
+        startup_fase = _STARTUP_COLLIMATOR_REVISION;
+        tmo = 10;
+        QTimer::singleShot(20,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_COLLIMATOR_REVISION:
+        if(!COLLIMATOR->isReceivedRevision()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_COLLIMATOR_ERROR;
+            COLLIMATOR->SEND_GET_REVISION();
+            QTimer::singleShot(20,this, SLOT(startupFase()));
+            return;
+        }
+
+
+        ui->collimator_revision->setText(QString("%1.%2 [%4.%5]").arg(COLLIMATOR->getMajRevision()).arg(COLLIMATOR->getMinRevision()).arg(COLLIMATOR->getMajPkgRevision()).arg(COLLIMATOR->getMinPkgRevision())  );
+
+        // Test the expected release and the actual release
+        if(!COLLIMATOR->isValidRevision()){
+           startup_fase = _STARTUP_COLLIMATOR_ERROR;
+           QTimer::singleShot(20,this, SLOT(startupFase()));
+           return;
+        }
+
+        ui->collimator_frame->setStyleSheet(CORRECT_FRAME_BORDER );
+        startup_fase = _STARTUP_FILTER;
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_COLLIMATOR_ERROR:
+        ui->collimator_frame->setStyleSheet(ERROR_FRAME_BORDER );
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        startup_fase = _STARTUP_FILTER;
+        break;
+
+
+
+
+
+
+    case _STARTUP_FILTER:
+        ui->filter_frame->show();
+        ui->filter_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
+
+        // Assignes the packaga revision to the driver
+        FILTER->setPkgRevision(PKGCONFIG->getParam<uint>(PKG_MCPU_FILTER,0), PKGCONFIG->getParam<uint>(PKG_MCPU_FILTER,1));
+
+        if(!FILTER->startDriver()){
+            startup_fase = _STARTUP_FILTER_ERROR;
+            QTimer::singleShot(0,this, SLOT(startupFase()));
+            return;
+        }
+        FILTER->Start();
+
+        startup_fase = _STARTUP_FILTER_CONNECTION;
+        tmo = 50;
+        QTimer::singleShot(100,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_FILTER_CONNECTION:
+        if(!FILTER->isConnected()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_FILTER_ERROR;
+            QTimer::singleShot(100,this, SLOT(startupFase()));
+            return;
+        }
+
+        FILTER->SEND_GET_REVISION();
+        startup_fase = _STARTUP_FILTER_REVISION;
+        tmo = 10;
+        QTimer::singleShot(20,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_FILTER_REVISION:
+        if(!FILTER->isReceivedRevision()){
+            tmo--;
+            if(tmo==0) startup_fase = _STARTUP_FILTER_ERROR;
+            FILTER->SEND_GET_REVISION();
+            QTimer::singleShot(20,this, SLOT(startupFase()));
+            return;
+        }
+
+
+        ui->filter_revision->setText(QString("%1.%2 [%4.%5]").arg(FILTER->getMajRevision()).arg(FILTER->getMinRevision()).arg(FILTER->getMajPkgRevision()).arg(FILTER->getMinPkgRevision())  );
+
+        // Test the expected release and the actual release
+        if(!FILTER->isValidRevision()){
+           startup_fase = _STARTUP_FILTER_ERROR;
+           QTimer::singleShot(20,this, SLOT(startupFase()));
+           return;
+        }
+
+        ui->filter_frame->setStyleSheet(CORRECT_FRAME_BORDER );
+        startup_fase = _STARTUP_POTTER;
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        break;
+
+    case _STARTUP_FILTER_ERROR:
+        ui->filter_frame->setStyleSheet(ERROR_FRAME_BORDER );
+        QTimer::singleShot(0,this, SLOT(startupFase()));
+        startup_fase = _STARTUP_POTTER;
+        break;
+
+    case _STARTUP_POTTER:
+        ui->potter_frame->show();
+        ui->potter_frame->setStyleSheet(HIGHLIGHT_FRAME_BORDER );
+
+
         break;
     }
 }

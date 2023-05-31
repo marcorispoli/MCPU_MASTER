@@ -1,5 +1,5 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'power_service.h'
+** Meta object code from reading C++ file 'filter.h'
 **
 ** Created by: The Qt Meta Object Compiler version 68 (Qt 6.2.2)
 **
@@ -7,11 +7,11 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../../SOURCE/DRIVERS/power_service.h"
+#include "../../../SOURCE/DRIVERS/filter.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'power_service.h' doesn't include <QObject>."
+#error "The header file 'filter.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 68
 #error "This file was generated using the moc from 6.2.2. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -21,22 +21,22 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_powerService_t {
+struct qt_meta_stringdata_filterProcess_t {
     const uint offsetsAndSize[2];
-    char stringdata0[13];
+    char stringdata0[14];
 };
 #define QT_MOC_LITERAL(ofs, len) \
-    uint(offsetof(qt_meta_stringdata_powerService_t, stringdata0) + ofs), len 
-static const qt_meta_stringdata_powerService_t qt_meta_stringdata_powerService = {
+    uint(offsetof(qt_meta_stringdata_filterProcess_t, stringdata0) + ofs), len 
+static const qt_meta_stringdata_filterProcess_t qt_meta_stringdata_filterProcess = {
     {
-QT_MOC_LITERAL(0, 12) // "powerService"
+QT_MOC_LITERAL(0, 13) // "filterProcess"
 
     },
-    "powerService"
+    "filterProcess"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_powerService[] = {
+static const uint qt_meta_data_filterProcess[] = {
 
  // content:
       10,       // revision
@@ -52,7 +52,7 @@ static const uint qt_meta_data_powerService[] = {
        0        // eod
 };
 
-void powerService::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void filterProcess::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     (void)_o;
     (void)_id;
@@ -60,14 +60,14 @@ void powerService::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     (void)_a;
 }
 
-const QMetaObject powerService::staticMetaObject = { {
+const QMetaObject filterProcess::staticMetaObject = { {
     QMetaObject::SuperData::link<masterInterface::staticMetaObject>(),
-    qt_meta_stringdata_powerService.offsetsAndSize,
-    qt_meta_data_powerService,
+    qt_meta_stringdata_filterProcess.offsetsAndSize,
+    qt_meta_data_filterProcess,
     qt_static_metacall,
     nullptr,
-qt_incomplete_metaTypeArray<qt_meta_stringdata_powerService_t
-, QtPrivate::TypeAndForceComplete<powerService, std::true_type>
+qt_incomplete_metaTypeArray<qt_meta_stringdata_filterProcess_t
+, QtPrivate::TypeAndForceComplete<filterProcess, std::true_type>
 
 
 
@@ -76,20 +76,20 @@ qt_incomplete_metaTypeArray<qt_meta_stringdata_powerService_t
 } };
 
 
-const QMetaObject *powerService::metaObject() const
+const QMetaObject *filterProcess::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *powerService::qt_metacast(const char *_clname)
+void *filterProcess::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_powerService.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_filterProcess.stringdata0))
         return static_cast<void*>(this);
     return masterInterface::qt_metacast(_clname);
 }
 
-int powerService::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int filterProcess::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = masterInterface::qt_metacall(_c, _id, _a);
     return _id;

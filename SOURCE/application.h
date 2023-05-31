@@ -64,21 +64,32 @@ namespace Application
     static const unsigned short MIN_REV = 0;
     static const unsigned short SUB_REV = 1;
 
-    // GUI Color definition
-    #define PINK_COLOR  QString("rgb(239, 190, 189);")
-    #define RED_COLOR  QString("rgb(255, 0, 0);")
-    #define GREEN_COLOR  QString("rgb(0, 255, 0);")
-    #define BLACK_COLOR  QString("rgb(0, 0, 0);")
+    #define CTITLE          239, 190, 189,255   // pink
+    #define CTEXT           255, 255, 255,255   // white
+    #define CREVTEXT        0, 0, 0,255         // black
+    #define CBORDER         239, 190, 189,255   // pink
+    #define CERROR          255, 0, 0,255       // red
+    #define COK             0, 255, 0,255       // green
+    #define TRANSPARENT     0, 0, 0,0           // Transparent
 
-    #define NO_BACKGROUND QString("background-image: url(); background-color: rgba(0, 0, 0, 0);")
-    #define PINK_BACKGROUND QString("background-image: url(); background-color: ") + PINK_COLOR
 
-    #define FRAME_TEXT "font: 700 normal 20pt \"Arial\"; color:" + PINK_COLOR
-    #define HIGHLIGHT_FRAME_TEXT "font: 700 normal 20pt \"Arial\"; color:" + BLACK_COLOR
-    #define HIGHLIGHT_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + PINK_COLOR + PINK_BACKGROUND + HIGHLIGHT_FRAME_TEXT
-    #define NORMAL_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + PINK_COLOR + NO_BACKGROUND + FRAME_TEXT
-    #define ERROR_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + RED_COLOR + NO_BACKGROUND + FRAME_TEXT
-    #define CORRECT_FRAME_BORDER  QString("border-width: 1px; border-style: solid; border-color:") + GREEN_COLOR + NO_BACKGROUND + FRAME_TEXT
+    #define FONT_N(bold,dim) QString("font: %1 normal %2pt \"Arial\";").arg(bold).arg(dim)
+    #define FONT_I(bold,dim) QString("font: %1 italic %2pt \"Arial\";").arg(bold).arg(dim)
+
+    #define _COLOR(r,g,b,a) QString("color:rgba(%1, %2, %3, %4);").arg(r).arg(g).arg(b).arg(a)
+    #define _BORDER_COLOR(r,g,b,a) QString("border-color:rgba(%1, %2, %3, %4);").arg(r).arg(g).arg(b).arg(a)
+    #define _BOTTOM_BORDER(x,r,g,b,a) QString("border-bottom-width: %1px; border-style:solid; border-color:rgba(%2, %3, %4, %5);").arg(x).arg(r).arg(g).arg(b).arg(a)
+
+    #define _BACKGROUND_COLOR(r,g,b,a) QString("background-color:rgba(%1, %2, %3, %4);").arg(r).arg(g).arg(b).arg(a)
+    #define _BORDER(x,r,g,b,a) QString("border-width: %1px; border-style: solid;border-color:rgba(%2, %3, %4, %5);").arg(x).arg(r).arg(g).arg(b).arg(a)
+
+    #define COLOR(x) _COLOR(x)
+    #define BORDER_COLOR(x) _BORDER_COLOR(x)
+    #define BACKGROUND_COLOR(x) _BACKGROUND_COLOR(x)
+    #define NO_BACKGROUND_IMAGE QString("background-image: url();border-image: url();")
+    #define NO_BORDER QString("border-width: 0px;")
+    #define BORDER(x,col) _BORDER(x,col)
+    #define BOTTOM_BORDER(x,col) _BOTTOM_BORDER(x,col)
 
 
 }
@@ -93,11 +104,17 @@ namespace Application
 #include "startup.h"
 #include "power_service.h"
 #include "can_driver.h"
+#include "compressor.h"
+#include "collimator.h"
+#include "filter.h"
 
 #define     SYSCONFIG          pSysConfig
 #define     PKGCONFIG          pPkgConfig
 #define     STARTUP            pStartup
 #define     POWERSERVICE       pPowerService
+#define     COMPRESSOR         pCompressorProcess
+#define     COLLIMATOR         pCollimatorProcess
+#define     FILTER             pFilterProcess
 #define     CANDRIVER          pCanDriver
 
 
@@ -108,13 +125,19 @@ namespace Application
      startup*                  STARTUP;
      powerService*             POWERSERVICE;
      canDriver*                CANDRIVER;
+     compressorProcess*        COMPRESSOR;
+     collimatorProcess*        COLLIMATOR;
+     filterProcess*            FILTER;
 
 #else
     extern sysConfig*                SYSCONFIG;
     extern pkgConfig*                PKGCONFIG;
     extern startup*                  STARTUP;
     extern powerService*             POWERSERVICE;
+    extern compressorProcess*        COMPRESSOR;
     extern canDriver*                CANDRIVER;
+    extern collimatorProcess*        COLLIMATOR;
+    extern filterProcess*            FILTER;
 
 #endif
 

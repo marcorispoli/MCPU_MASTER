@@ -4,6 +4,7 @@
 #include "application.h"
 
 
+
 /**
  * @brief Main
  * This is the Application Main function.
@@ -22,32 +23,34 @@
 int main(int argc, char *argv[])
 {
 
+
     QApplication a(argc, argv);
-    //appLog(argc, argv, "C:/OEM/Logs/GANTRY/PowerService.log", 0/*debugWindow::debugMessageHandler*/);
+    appLog(argc, argv, "C:/OEM/Gantry/Log/mcpu_master.log");
 
     // Open the application config file
     SYSCONFIG = new sysConfig();
     PKGCONFIG = new pkgConfig();
     STARTUP = new startup(600, 1024);
+
     POWERSERVICE = new powerService();
+    COMPRESSOR = new compressorProcess();
+    COLLIMATOR = new collimatorProcess();
+    FILTER = new filterProcess();
     CANDRIVER = new canDriver();
-
-    // Initialize the WINDOW to nullptr so that in case of Operating mode
-    // the application skips the WINDOW callbacks
-    //WINDOW = nullptr;
-
-    // Create the Window Log if necessary
-    //if(appLog::isWindow){
-    //    WINDOW = new debugWindow();
-    //    WINDOW->show();
-    //}
 
 
     // Enter the STARTUP status
     STARTUP->openWindow();
+    a.exec();
 
-    CANDRIVER->Start();
-    POWERSERVICE->Start();
-    return a.exec();
+
+    // Cleanup the Process started
+    POWERSERVICE->stopDriver();
+    COMPRESSOR->stopDriver();
+    COLLIMATOR->stopDriver();
+    FILTER->stopDriver();
+    CANDRIVER->stopDriver();
+
+    return 1;
 }
 

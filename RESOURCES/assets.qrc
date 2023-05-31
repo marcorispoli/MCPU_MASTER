@@ -12,4 +12,7 @@
     <qresource prefix="/Windows">
         <file>Windows/background.png</file>
     </qresource>
+    <qresource prefix="/Fonts">
+        <file>Fonts/Roboto-Medium.ttf</file>
+    </qresource>
 </RCC>

@@ -43,17 +43,18 @@ background-image: url(:/Windows/Windows/background.png);
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QLabel" name="startup_label">
+   <widget class="QLabel" name="window_title_label">
     <property name="geometry">
      <rect>
       <x>40</x>
       <y>30</y>
-      <width>511</width>
+      <width>521</width>
       <height>61</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <family>Arial</family>
       <pointsize>30</pointsize>
       <italic>true</italic>
       <bold>true</bold>
@@ -61,12 +62,8 @@ background-image: url(:/Windows/Windows/background.png);
     </property>
     <property name="styleSheet">
      <string notr="true">background-image: url();
-background-color: rgba(255, 255, 255, 0);
-color: rgb(239, 190, 189);
-font: 700 italic 30pt &quot;Arial&quot;;
-border-bottom-width: 1px;
-border-style: solid;
-border-color: rgb(239, 190, 189);
+background-color: rgba(0, 0, 0,0);
+font: 1000 italic 30pt &quot;Arial&quot;;
 </string>
     </property>
     <property name="text">
@@ -120,7 +117,7 @@ border-color: rgb(239, 190, 189);
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>251</width>
+        <width>301</width>
         <height>41</height>
        </rect>
       </property>
@@ -139,7 +136,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Power Service:</string>
+       <string notr="true">MCPU POWER SERVICE</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -196,7 +193,7 @@ border-color: rgb(239, 190, 189);
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>251</width>
+        <width>281</width>
         <height>41</height>
        </rect>
       </property>
@@ -215,7 +212,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Compressor:</string>
+       <string notr="true">MCPU COMPRESSOR</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -272,7 +269,7 @@ border-color: rgb(239, 190, 189);
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>251</width>
+        <width>271</width>
         <height>41</height>
        </rect>
       </property>
@@ -291,7 +288,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Collimator:</string>
+       <string notr="true">MCPU COLLIMATOR</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -367,7 +364,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Filter:</string>
+       <string notr="true">MCPU FILTER</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -443,7 +440,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Potter:</string>
+       <string notr="true">MCPU POTTER</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -549,7 +546,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Motors:</string>
+       <string notr="true">MCPU MOTORS</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -595,7 +592,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Generator:</string>
+       <string notr="true">MCPU GENERATOR</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -642,6 +639,9 @@ border-color: rgb(239, 190, 189);
        <height>80</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">font: 500 18pt &quot;Roboto&quot;;</string>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -662,9 +662,9 @@ border-color: rgb(239, 190, 189);
       </property>
       <property name="font">
        <font>
-        <pointsize>20</pointsize>
+        <pointsize>18</pointsize>
         <italic>false</italic>
-        <bold>true</bold>
+        <bold>false</bold>
        </font>
       </property>
       <property name="styleSheet">
@@ -724,7 +724,7 @@ border-color: rgb(239, 190, 189);
 </string>
       </property>
       <property name="text">
-       <string notr="true">Can Process:</string>
+       <string notr="true">MCPU CAN DRIVER</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -762,65 +762,76 @@ border-color: rgb(239, 190, 189);
      </widget>
     </widget>
    </widget>
-   <widget class="QLabel" name="package_label">
+   <widget class="QFrame" name="installed_package_frame">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>40</x>
       <y>100</y>
-      <width>251</width>
-      <height>41</height>
+      <width>521</width>
+      <height>61</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-      <italic>true</italic>
-      <bold>true</bold>
-     </font>
-    </property>
     <property name="styleSheet">
-     <string notr="true">background-image: url();
-background-color: rgba(255, 255, 255, 0);
-color: white;
-font: 700 italic 20pt &quot;Arial&quot;;
-border-bottom-width: 0px;
-border-style: solid;
-border-color: rgb(239, 190, 189);
-</string>
+     <string notr="true">background-image: url(&quot;&quot;);
+border-image: url(&quot;&quot;);
+border-color:rgba(0,0,0,0);
+background-color: rgba(0, 0, 0,0);</string>
     </property>
-    <property name="text">
-     <string>Installed Package:</string>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
     </property>
-   </widget>
-   <widget class="QLabel" name="package_revision">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>100</y>
-      <width>91</width>
-      <height>41</height>
-     </rect>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-      <italic>true</italic>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-image: url();
-background-color: rgba(255, 255, 255, 0);
-color: white;
-font: 700 italic 20pt &quot;Arial&quot;;
-border-bottom-width: 0px;
-border-style: solid;
-border-color: rgb(239, 190, 189);
-</string>
-    </property>
-    <property name="text">
-     <string>ID01</string>
-    </property>
+    <widget class="QLabel" name="package_revision">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>10</y>
+       <width>131</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>ID01</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="package_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>251</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Installed Package:</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

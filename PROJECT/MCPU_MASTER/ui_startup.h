@@ -21,7 +21,7 @@ class Ui_startupWindow
 {
 public:
     QFrame *mainFrame;
-    QLabel *startup_label;
+    QLabel *window_title_label;
     QFrame *process_start;
     QFrame *power_service_frame;
     QLabel *label_3;
@@ -49,8 +49,9 @@ public:
     QFrame *can_process_frame;
     QLabel *label_11;
     QLabel *can_process_revision;
-    QLabel *package_label;
+    QFrame *installed_package_frame;
     QLabel *package_revision;
+    QLabel *package_label;
 
     void setupUi(QWidget *startupWindow)
     {
@@ -71,21 +72,18 @@ public:
 ""));
         mainFrame->setFrameShape(QFrame::StyledPanel);
         mainFrame->setFrameShadow(QFrame::Raised);
-        startup_label = new QLabel(mainFrame);
-        startup_label->setObjectName(QString::fromUtf8("startup_label"));
-        startup_label->setGeometry(QRect(40, 30, 511, 61));
+        window_title_label = new QLabel(mainFrame);
+        window_title_label->setObjectName(QString::fromUtf8("window_title_label"));
+        window_title_label->setGeometry(QRect(40, 30, 521, 61));
         QFont font1;
+        font1.setFamilies({QString::fromUtf8("Arial")});
         font1.setPointSize(30);
         font1.setBold(true);
         font1.setItalic(true);
-        startup_label->setFont(font1);
-        startup_label->setStyleSheet(QString::fromUtf8("background-image: url();\n"
-"background-color: rgba(255, 255, 255, 0);\n"
-"color: rgb(239, 190, 189);\n"
-"font: 700 italic 30pt \"Arial\";\n"
-"border-bottom-width: 1px;\n"
-"border-style: solid;\n"
-"border-color: rgb(239, 190, 189);\n"
+        window_title_label->setFont(font1);
+        window_title_label->setStyleSheet(QString::fromUtf8("background-image: url();\n"
+"background-color: rgba(0, 0, 0,0);\n"
+"font: 1000 italic 30pt \"Arial\";\n"
 ""));
         process_start = new QFrame(mainFrame);
         process_start->setObjectName(QString::fromUtf8("process_start"));
@@ -107,7 +105,7 @@ public:
         label_3 = new QLabel(power_service_frame);
         label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setEnabled(true);
-        label_3->setGeometry(QRect(10, 20, 251, 41));
+        label_3->setGeometry(QRect(10, 20, 301, 41));
         QFont font2;
         font2.setPointSize(20);
         font2.setBold(true);
@@ -118,7 +116,7 @@ public:
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_3->setText(QString::fromUtf8("Power Service:"));
+        label_3->setText(QString::fromUtf8("MCPU POWER SERVICE"));
         label_3->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         power_sevice_revision = new QLabel(power_service_frame);
         power_sevice_revision->setObjectName(QString::fromUtf8("power_sevice_revision"));
@@ -138,14 +136,14 @@ public:
         compressor_frame->setFrameShadow(QFrame::Raised);
         label_4 = new QLabel(compressor_frame);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(10, 20, 251, 41));
+        label_4->setGeometry(QRect(10, 20, 281, 41));
         label_4->setFont(font2);
         label_4->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_4->setText(QString::fromUtf8("Compressor:"));
+        label_4->setText(QString::fromUtf8("MCPU COMPRESSOR"));
         label_4->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         compressor_revision = new QLabel(compressor_frame);
         compressor_revision->setObjectName(QString::fromUtf8("compressor_revision"));
@@ -165,14 +163,14 @@ public:
         collimator_frame->setFrameShadow(QFrame::Raised);
         label_5 = new QLabel(collimator_frame);
         label_5->setObjectName(QString::fromUtf8("label_5"));
-        label_5->setGeometry(QRect(10, 20, 251, 41));
+        label_5->setGeometry(QRect(10, 20, 271, 41));
         label_5->setFont(font2);
         label_5->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_5->setText(QString::fromUtf8("Collimator:"));
+        label_5->setText(QString::fromUtf8("MCPU COLLIMATOR"));
         label_5->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         collimator_revision = new QLabel(collimator_frame);
         collimator_revision->setObjectName(QString::fromUtf8("collimator_revision"));
@@ -199,7 +197,7 @@ public:
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_6->setText(QString::fromUtf8("Filter:"));
+        label_6->setText(QString::fromUtf8("MCPU FILTER"));
         label_6->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         filter_revision = new QLabel(filter_frame);
         filter_revision->setObjectName(QString::fromUtf8("filter_revision"));
@@ -226,7 +224,7 @@ public:
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_9->setText(QString::fromUtf8("Potter:"));
+        label_9->setText(QString::fromUtf8("MCPU POTTER"));
         label_9->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         potter_revision = new QLabel(potter_frame);
         potter_revision->setObjectName(QString::fromUtf8("potter_revision"));
@@ -264,7 +262,7 @@ public:
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_7->setText(QString::fromUtf8("Motors:"));
+        label_7->setText(QString::fromUtf8("MCPU MOTORS"));
         label_7->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         generator_frame = new QFrame(process_start);
         generator_frame->setObjectName(QString::fromUtf8("generator_frame"));
@@ -280,7 +278,7 @@ public:
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_8->setText(QString::fromUtf8("Generator:"));
+        label_8->setText(QString::fromUtf8("MCPU GENERATOR"));
         label_8->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         generator_revision = new QLabel(generator_frame);
         generator_revision->setObjectName(QString::fromUtf8("generator_revision"));
@@ -297,13 +295,18 @@ public:
         main_process_start_frame = new QFrame(process_start);
         main_process_start_frame->setObjectName(QString::fromUtf8("main_process_start_frame"));
         main_process_start_frame->setGeometry(QRect(20, 20, 481, 80));
+        main_process_start_frame->setStyleSheet(QString::fromUtf8("font: 500 18pt \"Roboto\";"));
         main_process_start_frame->setFrameShape(QFrame::StyledPanel);
         main_process_start_frame->setFrameShadow(QFrame::Raised);
         label_10 = new QLabel(main_process_start_frame);
         label_10->setObjectName(QString::fromUtf8("label_10"));
         label_10->setEnabled(true);
         label_10->setGeometry(QRect(10, 20, 451, 41));
-        label_10->setFont(font2);
+        QFont font3;
+        font3.setPointSize(18);
+        font3.setBold(false);
+        font3.setItalic(false);
+        label_10->setFont(font3);
         label_10->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
 "border-color: rgb(239, 190, 189);\n"
@@ -326,7 +329,7 @@ public:
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        label_11->setText(QString::fromUtf8("Can Process:"));
+        label_11->setText(QString::fromUtf8("MCPU CAN DRIVER"));
         label_11->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         can_process_revision = new QLabel(can_process_frame);
         can_process_revision->setObjectName(QString::fromUtf8("can_process_revision"));
@@ -339,34 +342,30 @@ public:
 ""));
         can_process_revision->setText(QString::fromUtf8("__.__  [__.__]"));
         can_process_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        package_label = new QLabel(mainFrame);
-        package_label->setObjectName(QString::fromUtf8("package_label"));
-        package_label->setGeometry(QRect(60, 100, 251, 41));
-        QFont font3;
-        font3.setPointSize(20);
-        font3.setBold(true);
-        font3.setItalic(true);
-        package_label->setFont(font3);
-        package_label->setStyleSheet(QString::fromUtf8("background-image: url();\n"
-"background-color: rgba(255, 255, 255, 0);\n"
-"color: white;\n"
-"font: 700 italic 20pt \"Arial\";\n"
-"border-bottom-width: 0px;\n"
-"border-style: solid;\n"
-"border-color: rgb(239, 190, 189);\n"
-""));
-        package_revision = new QLabel(mainFrame);
+        installed_package_frame = new QFrame(mainFrame);
+        installed_package_frame->setObjectName(QString::fromUtf8("installed_package_frame"));
+        installed_package_frame->setGeometry(QRect(40, 100, 521, 61));
+        installed_package_frame->setStyleSheet(QString::fromUtf8("background-image: url(\"\");\n"
+"border-image: url(\"\");\n"
+"border-color:rgba(0,0,0,0);\n"
+"background-color: rgba(0, 0, 0,0);"));
+        installed_package_frame->setFrameShape(QFrame::StyledPanel);
+        installed_package_frame->setFrameShadow(QFrame::Raised);
+        package_revision = new QLabel(installed_package_frame);
         package_revision->setObjectName(QString::fromUtf8("package_revision"));
-        package_revision->setGeometry(QRect(420, 100, 91, 41));
-        package_revision->setFont(font3);
-        package_revision->setStyleSheet(QString::fromUtf8("background-image: url();\n"
-"background-color: rgba(255, 255, 255, 0);\n"
-"color: white;\n"
-"font: 700 italic 20pt \"Arial\";\n"
-"border-bottom-width: 0px;\n"
-"border-style: solid;\n"
-"border-color: rgb(239, 190, 189);\n"
-""));
+        package_revision->setGeometry(QRect(370, 10, 131, 41));
+        QFont font4;
+        font4.setPointSize(20);
+        font4.setBold(true);
+        font4.setItalic(true);
+        package_revision->setFont(font4);
+        package_revision->setStyleSheet(QString::fromUtf8(""));
+        package_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        package_label = new QLabel(installed_package_frame);
+        package_label->setObjectName(QString::fromUtf8("package_label"));
+        package_label->setGeometry(QRect(10, 10, 251, 41));
+        package_label->setFont(font4);
+        package_label->setStyleSheet(QString::fromUtf8(""));
 
         retranslateUi(startupWindow);
 
@@ -376,9 +375,9 @@ public:
     void retranslateUi(QWidget *startupWindow)
     {
         startupWindow->setWindowTitle(QString());
-        startup_label->setText(QCoreApplication::translate("startupWindow", "System Startup", nullptr));
-        package_label->setText(QCoreApplication::translate("startupWindow", "Installed Package:", nullptr));
+        window_title_label->setText(QCoreApplication::translate("startupWindow", "System Startup", nullptr));
         package_revision->setText(QCoreApplication::translate("startupWindow", "ID01", nullptr));
+        package_label->setText(QCoreApplication::translate("startupWindow", "Installed Package:", nullptr));
     } // retranslateUi
 
 };

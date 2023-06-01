@@ -10,8 +10,8 @@ class pkgConfig : public configFile
     public:
 
 
-    #define PKG_REVISION     1  // This is the revision code
-    #define PKG_CONFIG_FILENAME     "C:\\OEM\\Gantry\\Config\\PackageConfig.cnf" // This is the configuration file name and path
+    #define PKG_REVISION            1  // This is the revision code
+    #define PKG_CONFIG_FILENAME     "C:\\OEM\\Gantry\\Config\\package_config.cnf" // This is the configuration file name and path
 
     // This section defines labels helping the param identification along the application
     #define PKG_ID                  "PACKAGE_ID"
@@ -24,6 +24,12 @@ class pkgConfig : public configFile
     #define PKG_MCPU_POTTER         "MCPU_POTTER_REV"
     #define PKG_MCPU_GENERATOR      "MCPU_GENERATOR_REV"
     #define PKG_MCPU_MOTORS         "MCPU_MOTORS_REV"
+
+    #define PKG_FW_POWER_SERVICE    "FW_POWER_SERVICE_REV"
+    #define PKG_FW_COMPRESSOR       "FW_COMPRESSOR_REV"
+    #define PKG_FW_COLLIMATOR       "FW_COLLIMATOR_REV"
+    #define PKG_FW_FILTER           "FW_FILTER_REV"
+    #define PKG_FW_POTTER           "FW_POTTER_REV"
 
 
     // your class constructor
@@ -41,6 +47,12 @@ class pkgConfig : public configFile
                 { PKG_MCPU_POTTER,          {{ "0","1" }},  "MCPU Potter Major and Minor revision codes"},
                 { PKG_MCPU_GENERATOR,       {{ "0","1" }},  "MCPU Generator Major and Minor revision codes"},
                 { PKG_MCPU_MOTORS,          {{ "0","1" }},  "MCPU Motors Major and Minor revision codes"},
+
+                { PKG_FW_POWER_SERVICE,     {{ "0","1" }},  "Firmware Powerservice Major and Minor revision codes"},
+                { PKG_FW_COMPRESSOR,        {{ "0","1" }},  "Firmware Compressor Major and Minor revision codes"},
+                { PKG_FW_COLLIMATOR,        {{ "0","1" }},  "Firmware Collimator Major and Minor revision codes"},
+                { PKG_FW_FILTER,            {{ "0","1" }},  "Firmware Filter Major and Minor revision codes"},
+                { PKG_FW_POTTER,            {{ "0","1" }},  "Firmware Potter Major and Minor revision codes"},
 
             }}
         })

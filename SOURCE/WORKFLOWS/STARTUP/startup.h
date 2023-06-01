@@ -47,15 +47,16 @@ public slots:
 
 
 private slots:
-    void startupFase(void);
+    void startupProcesses(void);
+    void startupDevices(void);
 
 private:
 
    Ui::startupWindow *ui;
 
-   uchar startup_fase;
-   enum{
-       _STARTUP_INIT,
+
+   typedef enum{
+       _STARTUP_PROCESS_INIT,
        _STARTUP_CAN_PROCESS,
        _STARTUP_CAN_PROCESS_CONNECTION,
        _STARTUP_CAN_PROCESS_REVISION,
@@ -88,10 +89,24 @@ private:
        _STARTUP_GENERATOR_CONNECTION,
        _STARTUP_GENERATOR_REVISION,
        _STARTUP_GENERATOR_ERROR,
-       _STARTUP_FIRMWARE_POWER_SERVICE
-   }startup_fase_enum;
+       _STARTUP_PROCESS_TERMINATED,
+       _STARTUP_PROCESS_ERROR
+   }startup_process_enum;
+    startup_process_enum startup_process_fase;
 
-
+    typedef enum{
+        _STARTUP_DEVICES_INIT,
+        _STARTUP_DEVICES_CAN_CONVERTER,
+        _STARTUP_DEVICE_CAN_STATUS,
+        _STARTUP_DEVICE_CAN_ERROR,
+        _STARTUP_DEVICE_POWERSERVICE,
+        _STARTUP_DEVICE_POWERSERVICE_BOARDINIT,
+        _STARTUP_DEVICE_POWERSERVICE_ERROR,
+        _STARTUP_DEVICE_COMPRESSOR,
+        _STARTUP_DEVICES_TERMINATED,
+        _STARTUP_DEVICES_ERROR
+    }startup_devices_enum;
+    startup_devices_enum startup_devices_fase;
 
 };
 

@@ -48,11 +48,11 @@ class pkgConfig : public configFile
                 { PKG_MCPU_GENERATOR,       {{ "0","1" }},  "MCPU Generator Major and Minor revision codes"},
                 { PKG_MCPU_MOTORS,          {{ "0","1" }},  "MCPU Motors Major and Minor revision codes"},
 
-                { PKG_FW_POWER_SERVICE,     {{ "0","1" }},  "Firmware Powerservice Major and Minor revision codes"},
-                { PKG_FW_COMPRESSOR,        {{ "0","1" }},  "Firmware Compressor Major and Minor revision codes"},
-                { PKG_FW_COLLIMATOR,        {{ "0","1" }},  "Firmware Collimator Major and Minor revision codes"},
-                { PKG_FW_FILTER,            {{ "0","1" }},  "Firmware Filter Major and Minor revision codes"},
-                { PKG_FW_POTTER,            {{ "0","1" }},  "Firmware Potter Major and Minor revision codes"},
+                { PKG_FW_POWER_SERVICE,     {{ "1","0" }},  "Firmware Powerservice Major and Minor revision codes"},
+                { PKG_FW_COMPRESSOR,        {{ "1","0" }},  "Firmware Compressor Major and Minor revision codes"},
+                { PKG_FW_COLLIMATOR,        {{ "1","0" }},  "Firmware Collimator Major and Minor revision codes"},
+                { PKG_FW_FILTER,            {{ "1","0" }},  "Firmware Filter Major and Minor revision codes"},
+                { PKG_FW_POTTER,            {{ "1","0" }},  "Firmware Potter Major and Minor revision codes"},
 
             }}
         })

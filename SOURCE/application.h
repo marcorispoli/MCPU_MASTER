@@ -69,7 +69,7 @@ namespace Application
     #define CREVTEXT        0, 0, 0,255         // black
     #define CBORDER         239, 190, 189,255   // pink
     #define CERROR          255, 0, 0,255       // red
-    #define COK             0, 255, 0,255       // green
+    #define COK             184, 217, 176,255   // green
     #define TRANSPARENT     0, 0, 0,0           // Transparent
 
 
@@ -99,6 +99,7 @@ namespace Application
 #include <QObject>
 #include <QTimer>
 #include "time.h"
+#include "messages.h"
 #include "config.h"
 #include "sysconfig.h"
 #include "startup.h"
@@ -152,6 +153,15 @@ namespace Application
     extern generatorProcess*         GENERATOR;
 
 #endif
+
+
+#define ITA "traduzione_ita.qm",":/Translate/Translate"
+#define ENG "traduzione_eng.qm",":/Translate/Translate"
+#define FRA "traduzione_fra.qm",":/Translate/Translate"
+#define ESP "traduzione_esp.qm",":/Translate/Translate"
+#define POR "traduzione_por.qm",":/Translate/Translate"
+#define RUS "traduzione_rus.qm",":/Translate/Translate"
+
 
 #ifdef TIME_MEASURE
     #define T1START  this->t1 = clock()

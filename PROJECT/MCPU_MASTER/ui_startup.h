@@ -64,7 +64,7 @@ public:
     QLabel *collimator_device_revision;
     QFrame *filter_device_frame;
     QLabel *label_15;
-    QLabel *filter_devic_revision;
+    QLabel *filter_device_revision;
     QFrame *potter_device_frame;
     QLabel *label_16;
     QLabel *potter_device_revision;
@@ -76,6 +76,24 @@ public:
     QFrame *can_device_frame;
     QLabel *label_20;
     QLabel *can_device_converter_revision;
+    QFrame *motors_startup_frame;
+    QFrame *slide_motor_frame;
+    QLabel *label_18;
+    QLabel *slide_setup_label;
+    QFrame *body_motor_frame;
+    QLabel *label_21;
+    QLabel *body_setup_label;
+    QFrame *mvert_motor_frame;
+    QLabel *label_22;
+    QLabel *mvert_setup_label;
+    QFrame *carm_motor_frame;
+    QLabel *label_23;
+    QLabel *carm_setup_label;
+    QFrame *main_motorse_start_frame;
+    QLabel *label_26;
+    QFrame *trx_motor_frame;
+    QLabel *label_27;
+    QLabel *trx_setup_label;
 
     void setupUi(QWidget *startupWindow)
     {
@@ -391,7 +409,7 @@ public:
         package_label->setStyleSheet(QString::fromUtf8(""));
         device_startup_frame = new QFrame(mainFrame);
         device_startup_frame->setObjectName(QString::fromUtf8("device_startup_frame"));
-        device_startup_frame->setGeometry(QRect(40, 210, 521, 771));
+        device_startup_frame->setGeometry(QRect(1000, 210, 521, 771));
         device_startup_frame->setStyleSheet(QString::fromUtf8("background-image: url();\n"
 "background-color: rgba(255, 255, 255, 0);\n"
 "border-width: 1px;\n"
@@ -499,17 +517,17 @@ public:
 ""));
         label_15->setText(QString::fromUtf8("FILTER DEVICE"));
         label_15->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        filter_devic_revision = new QLabel(filter_device_frame);
-        filter_devic_revision->setObjectName(QString::fromUtf8("filter_devic_revision"));
-        filter_devic_revision->setGeometry(QRect(290, 20, 181, 31));
-        filter_devic_revision->setFont(font2);
-        filter_devic_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+        filter_device_revision = new QLabel(filter_device_frame);
+        filter_device_revision->setObjectName(QString::fromUtf8("filter_device_revision"));
+        filter_device_revision->setGeometry(QRect(290, 20, 181, 31));
+        filter_device_revision->setFont(font2);
+        filter_device_revision->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
 "border-style: solid;\n"
 "border-color: rgb(239, 190, 189);\n"
 "\n"
 ""));
-        filter_devic_revision->setText(QString::fromUtf8("__.__.__"));
-        filter_devic_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        filter_device_revision->setText(QString::fromUtf8("__.__.__"));
+        filter_device_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         potter_device_frame = new QFrame(device_startup_frame);
         potter_device_frame->setObjectName(QString::fromUtf8("potter_device_frame"));
         potter_device_frame->setGeometry(QRect(20, 520, 481, 71));
@@ -610,6 +628,173 @@ public:
 ""));
         can_device_converter_revision->setText(QString::fromUtf8("API: 100.100.100"));
         can_device_converter_revision->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        motors_startup_frame = new QFrame(mainFrame);
+        motors_startup_frame->setObjectName(QString::fromUtf8("motors_startup_frame"));
+        motors_startup_frame->setGeometry(QRect(40, 210, 551, 771));
+        motors_startup_frame->setStyleSheet(QString::fromUtf8("background-image: url();\n"
+"background-color: rgba(255, 255, 255, 0);\n"
+"border-width: 1px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        motors_startup_frame->setFrameShape(QFrame::StyledPanel);
+        motors_startup_frame->setFrameShadow(QFrame::Raised);
+        slide_motor_frame = new QFrame(motors_startup_frame);
+        slide_motor_frame->setObjectName(QString::fromUtf8("slide_motor_frame"));
+        slide_motor_frame->setGeometry(QRect(20, 200, 481, 71));
+        slide_motor_frame->setFrameShape(QFrame::StyledPanel);
+        slide_motor_frame->setFrameShadow(QFrame::Raised);
+        label_18 = new QLabel(slide_motor_frame);
+        label_18->setObjectName(QString::fromUtf8("label_18"));
+        label_18->setEnabled(true);
+        label_18->setGeometry(QRect(10, 20, 221, 41));
+        label_18->setFont(font2);
+        label_18->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        label_18->setText(QString::fromUtf8("SLIDE Setup"));
+        label_18->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        slide_setup_label = new QLabel(slide_motor_frame);
+        slide_setup_label->setObjectName(QString::fromUtf8("slide_setup_label"));
+        slide_setup_label->setGeometry(QRect(230, 20, 241, 41));
+        slide_setup_label->setFont(font2);
+        slide_setup_label->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        slide_setup_label->setText(QString::fromUtf8("-"));
+        slide_setup_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        body_motor_frame = new QFrame(motors_startup_frame);
+        body_motor_frame->setObjectName(QString::fromUtf8("body_motor_frame"));
+        body_motor_frame->setGeometry(QRect(20, 280, 481, 71));
+        body_motor_frame->setFrameShape(QFrame::StyledPanel);
+        body_motor_frame->setFrameShadow(QFrame::Raised);
+        label_21 = new QLabel(body_motor_frame);
+        label_21->setObjectName(QString::fromUtf8("label_21"));
+        label_21->setGeometry(QRect(10, 20, 281, 41));
+        label_21->setFont(font2);
+        label_21->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        label_21->setText(QString::fromUtf8("BODY Setup"));
+        label_21->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        body_setup_label = new QLabel(body_motor_frame);
+        body_setup_label->setObjectName(QString::fromUtf8("body_setup_label"));
+        body_setup_label->setGeometry(QRect(290, 20, 181, 31));
+        body_setup_label->setFont(font2);
+        body_setup_label->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        body_setup_label->setText(QString::fromUtf8("-"));
+        body_setup_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        mvert_motor_frame = new QFrame(motors_startup_frame);
+        mvert_motor_frame->setObjectName(QString::fromUtf8("mvert_motor_frame"));
+        mvert_motor_frame->setGeometry(QRect(20, 360, 481, 71));
+        mvert_motor_frame->setFrameShape(QFrame::StyledPanel);
+        mvert_motor_frame->setFrameShadow(QFrame::Raised);
+        label_22 = new QLabel(mvert_motor_frame);
+        label_22->setObjectName(QString::fromUtf8("label_22"));
+        label_22->setGeometry(QRect(10, 20, 271, 41));
+        label_22->setFont(font2);
+        label_22->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        label_22->setText(QString::fromUtf8("VERTICAL Setup"));
+        label_22->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        mvert_setup_label = new QLabel(mvert_motor_frame);
+        mvert_setup_label->setObjectName(QString::fromUtf8("mvert_setup_label"));
+        mvert_setup_label->setGeometry(QRect(290, 20, 181, 31));
+        mvert_setup_label->setFont(font2);
+        mvert_setup_label->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        mvert_setup_label->setText(QString::fromUtf8("-"));
+        mvert_setup_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        carm_motor_frame = new QFrame(motors_startup_frame);
+        carm_motor_frame->setObjectName(QString::fromUtf8("carm_motor_frame"));
+        carm_motor_frame->setGeometry(QRect(20, 440, 481, 71));
+        carm_motor_frame->setFrameShape(QFrame::StyledPanel);
+        carm_motor_frame->setFrameShadow(QFrame::Raised);
+        label_23 = new QLabel(carm_motor_frame);
+        label_23->setObjectName(QString::fromUtf8("label_23"));
+        label_23->setGeometry(QRect(10, 20, 251, 41));
+        label_23->setFont(font2);
+        label_23->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        label_23->setText(QString::fromUtf8("ARM Setup"));
+        label_23->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        carm_setup_label = new QLabel(carm_motor_frame);
+        carm_setup_label->setObjectName(QString::fromUtf8("carm_setup_label"));
+        carm_setup_label->setGeometry(QRect(290, 20, 181, 31));
+        carm_setup_label->setFont(font2);
+        carm_setup_label->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        carm_setup_label->setText(QString::fromUtf8("-"));
+        carm_setup_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        main_motorse_start_frame = new QFrame(motors_startup_frame);
+        main_motorse_start_frame->setObjectName(QString::fromUtf8("main_motorse_start_frame"));
+        main_motorse_start_frame->setGeometry(QRect(20, 20, 481, 80));
+        main_motorse_start_frame->setStyleSheet(QString::fromUtf8("font: 500 18pt \"Roboto\";"));
+        main_motorse_start_frame->setFrameShape(QFrame::StyledPanel);
+        main_motorse_start_frame->setFrameShadow(QFrame::Raised);
+        label_26 = new QLabel(main_motorse_start_frame);
+        label_26->setObjectName(QString::fromUtf8("label_26"));
+        label_26->setEnabled(true);
+        label_26->setGeometry(QRect(10, 20, 451, 41));
+        label_26->setFont(font3);
+        label_26->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        label_26->setText(QString::fromUtf8("MOTORS INITIALIZATION"));
+        label_26->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        trx_motor_frame = new QFrame(motors_startup_frame);
+        trx_motor_frame->setObjectName(QString::fromUtf8("trx_motor_frame"));
+        trx_motor_frame->setGeometry(QRect(20, 120, 481, 71));
+        trx_motor_frame->setFrameShape(QFrame::StyledPanel);
+        trx_motor_frame->setFrameShadow(QFrame::Raised);
+        label_27 = new QLabel(trx_motor_frame);
+        label_27->setObjectName(QString::fromUtf8("label_27"));
+        label_27->setEnabled(true);
+        label_27->setGeometry(QRect(10, 20, 281, 41));
+        label_27->setFont(font2);
+        label_27->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        label_27->setText(QString::fromUtf8("TRX Setup"));
+        label_27->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        trx_setup_label = new QLabel(trx_motor_frame);
+        trx_setup_label->setObjectName(QString::fromUtf8("trx_setup_label"));
+        trx_setup_label->setGeometry(QRect(310, 20, 161, 41));
+        trx_setup_label->setFont(font2);
+        trx_setup_label->setStyleSheet(QString::fromUtf8("border-width: 0px;\n"
+"border-style: solid;\n"
+"border-color: rgb(239, 190, 189);\n"
+"\n"
+""));
+        trx_setup_label->setText(QString::fromUtf8("-"));
+        trx_setup_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         retranslateUi(startupWindow);
 

@@ -12,6 +12,14 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 #Include supporto per Qt Network (moduli TCP/IP)
 QT += network
 
+TRANSLATIONS = $${TARGET_RESOURCE}/Translate/traduzione_ita.ts \
+                $${TARGET_RESOURCE}/Translate/traduzione_eng.ts \
+                $${TARGET_RESOURCE}/Translate/traduzione_esp.ts \
+                $${TARGET_RESOURCE}/Translate/traduzione_por.ts \
+                $${TARGET_RESOURCE}/Translate/traduzione_fra.ts \
+                $${TARGET_RESOURCE}/Translate/traduzione_rus.ts \
+                $${TARGET_RESOURCE}/Translate/traduzione_lit.ts
+
 FORMS += \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.ui \
 
@@ -49,6 +57,8 @@ HEADERS += \
     $${SHARED}/APPLICATION_INTERFACE/masterInterface.h \
     $${SHARED}/APPLOG/applog.h \
     $${SHARED}/WINDOWS/windows.h \
+    $${SHARED}/MESSAGES/messages.h \
+    $${SHARED}/MESSAGES/sys_errors.h \
     $${TARGET_SOURCE}/CONFIGURATION/config.h \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP/startup.h \
     $${TARGET_SOURCE}/DRIVERS/power_service.h  \
@@ -68,6 +78,7 @@ INCLUDEPATH += \
     $${SHARED}/APPLOG \
     $${SHARED}/CONFIGFILE \    
     $${SHARED}/WINDOWS \
+    $${SHARED}/MESSAGES \
     $${TARGET_SOURCE} \
     $${TARGET_SOURCE}/WORKFLOWS/STARTUP \
     $${TARGET_SOURCE}/CONFIGURATION  \

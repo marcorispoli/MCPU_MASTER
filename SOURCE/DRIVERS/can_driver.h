@@ -28,11 +28,6 @@ public:
    inline uint8_t getConverterHWsrev(void){return fwRev;}
 
 
-
-   const char* GET_REVISION = "GetRevision";
-   const uchar GET_REVISION_LEN = ACK_FIRST_PARAM_CODE + 3;
-   inline void SEND_GET_REVISION(void){txCommand(QString(GET_REVISION));};
-
    const char* GET_STATUS = "GetStatus";
    const uchar GET_STATUS_LEN = ACK_FIRST_PARAM_CODE + 7;
    inline void SEND_GET_STATUS(void){status_updated = false; txCommand(QString(GET_STATUS));};

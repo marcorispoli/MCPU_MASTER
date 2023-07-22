@@ -1,0 +1,226 @@
+\doxysection{Gantry\+Status\+Registers\+::xray\+Completed\+Options Class Reference}
+\label{class_gantry_status_registers_1_1xray_completed_options}\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+
+
+This class implements the XRAY completed status register.  
+
+
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ XRAY\+\_\+\+COMPLETED\+\_\+\+OK} = 0
+, \textbf{ XRAY\+\_\+\+COMPLETED\+\_\+\+PARTIAL\+\_\+\+DOSE} = 1
+, \textbf{ XRAY\+\_\+\+COMPLETED\+\_\+\+NO\+\_\+\+DOSE} = 2
+, \textbf{ LEN}
+, \newline
+\textbf{ UNDEF} =LEN
+ \}
+\begin{DoxyCompactList}\small\item\em Definition of the register enumeration codes ~\newline
+ \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+status\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ get\+Code} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option code of the register. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ get\+Tag} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option tag of the register. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (\textbf{ options} val)
+\begin{DoxyCompactList}\small\item\em This function set the register with the option code (and related tag). \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (String$^\wedge$ val)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{\"{}OK\"{}, \"{}PARTIAL\"{}, \"{}NOK\"{}, \"{}UNDEF\"{}\}
+\begin{DoxyCompactList}\small\item\em Definition of the register tags. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the register option-\/code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the register tag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class implements the XRAY completed status register. 
+
+
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1xray_completed_options_a5ad092b6afde74713251b7c0bcd0700c} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+Definition of the register enumeration codes ~\newline
+ 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{XRAY\_COMPLETED\_OK@{XRAY\_COMPLETED\_OK}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!XRAY\_COMPLETED\_OK@{XRAY\_COMPLETED\_OK}}}\label{class_gantry_status_registers_1_1xray_completed_options_a5ad092b6afde74713251b7c0bcd0700ca2f1160d20dc4114d5236f1d9f2216d00} 
+XRAY\+\_\+\+COMPLETED\+\_\+\+OK&XRAY sequence successfully completed. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{XRAY\_COMPLETED\_PARTIAL\_DOSE@{XRAY\_COMPLETED\_PARTIAL\_DOSE}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!XRAY\_COMPLETED\_PARTIAL\_DOSE@{XRAY\_COMPLETED\_PARTIAL\_DOSE}}}\label{class_gantry_status_registers_1_1xray_completed_options_a5ad092b6afde74713251b7c0bcd0700ca460e41228f7a0fc90886e0c4d11e451b} 
+XRAY\+\_\+\+COMPLETED\+\_\+\+PARTIAL\+\_\+\+DOSE&XRAY sequence partially completed. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{XRAY\_COMPLETED\_NO\_DOSE@{XRAY\_COMPLETED\_NO\_DOSE}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!XRAY\_COMPLETED\_NO\_DOSE@{XRAY\_COMPLETED\_NO\_DOSE}}}\label{class_gantry_status_registers_1_1xray_completed_options_a5ad092b6afde74713251b7c0bcd0700ca95695c13833aeb669211bd075fdf1db7} 
+XRAY\+\_\+\+COMPLETED\+\_\+\+NO\+\_\+\+DOSE&XRAY sequence aborted without dose. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1xray_completed_options_a5ad092b6afde74713251b7c0bcd0700ca6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1xray_completed_options_a5ad092b6afde74713251b7c0bcd0700cab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1xray_completed_options_a3e966b137b5888388d26cf66f628229c} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!delegate\_status\_change@{delegate\_status\_change}}
+\index{delegate\_status\_change@{delegate\_status\_change}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{delegate\_status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::delegate\+\_\+status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab};. 
+
+\label{class_gantry_status_registers_1_1xray_completed_options_a0e4a5644545c79c2244a5e232e1330dd} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!getCode@{getCode}}
+\index{getCode@{getCode}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{getCode()}
+{\footnotesize\ttfamily static \textbf{ options} Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::get\+Code (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option code of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the option code 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1xray_completed_options_a1904f8522d686db012fe5537b6a5e8cf} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!getTag@{getTag}}
+\index{getTag@{getTag}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{getTag()}
+{\footnotesize\ttfamily static String $^\wedge$ Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::get\+Tag (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option tag of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the Tag 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1xray_completed_options_a5573416584ba72e9e7d71c4c5eef8e7f} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::set\+Code (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the register with the option code (and related tag). 
+
+The register is updated with the option code and related tag and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the option-\/code to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1xray_completed_options_aaded15f06f641a7a94070b3e1c0575dd} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::set\+Code (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+This function set the register with the option tag (and related code).
+
+The register is updated with the tag and the related option code and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the tag to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1xray_completed_options_a76abd7d9f8410360c7a71e8133e58e7d} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!code@{code}}
+\index{code@{code}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register option-\/code. 
+
+\label{class_gantry_status_registers_1_1xray_completed_options_aaea63516f2a327592535c2f35a09508b} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!tag@{tag}}
+\index{tag@{tag}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register tag. 
+
+\label{class_gantry_status_registers_1_1xray_completed_options_aa32af6d49b975fc9dbd303163cb4ca71} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::tags = gcnew array$<$String$^\wedge$$>$ \{\"{}OK\"{}, \"{}PARTIAL\"{}, \"{}NOK\"{}, \"{}UNDEF\"{}\}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Definition of the register tags. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab} 
+\index{GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatusRegisters::xrayCompletedOptions@{GantryStatusRegisters::xrayCompletedOptions}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::xray\+Completed\+Options\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: \doxyref{xray\+Completed\+Options\+::status\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab} += gcnew delegate\+\_\+status\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

@@ -1,0 +1,160 @@
+.TH "GantryStatus::projectionOptions" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatus::projectionOptions
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBLCC\fP = 0, \fBLFB\fP, \fBLISO\fP, \fBLLM\fP, \fBLLMO\fP, \fBLML\fP, \fBLMLO\fP, \fBLSIO\fP, \fBRCC\fP, \fBRFB\fP, \fBRISO\fP, \fBRLM\fP, \fBRLMO\fP, \fBRML\fP, \fBRMLO\fP, \fBRSIO\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBstatus_change\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBlista_change\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisValid\fP (String^ val)"
+.br
+.ti -1c
+.RI "static int \fBgetCode\fP (String^ val)"
+.br
+.ti -1c
+.RI "static String ^ \fBgetTag\fP (\fBoptions\fP val)"
+.br
+.ti -1c
+.RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
+.br
+.ti -1c
+.RI "static bool \fBsetTag\fP (String^ val)"
+.br
+.ti -1c
+.RI "static bool \fBsetList\fP (List< int >^ lista)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'LCC', 'LFB', 'LISO', 'LLM', 'LLMO', 'LML', 'LMLO', 'LSIO', 'RCC', 'RFB', 'RISO', 'RLM', 'RLMO', 'RML', 'RMLO', 'RSIO', 'UNDEF'}"
+.br
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBstatus_change\fP^ \fBstatus_change_event\fP"
+.br
+.ti -1c
+.RI "static \fBlista_change\fP^ \fBlista_change_event\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
+.br
+.ti -1c
+.RI "static String ^ \fBtag\fP = 'UNDEF'"
+.br
+.ti -1c
+.RI "static List< int > ^ \fBlist\fP = gcnew List<int> {}"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatus::projectionOptions::options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILCC \fP\fP
+.TP
+\fB\fILFB \fP\fP
+.TP
+\fB\fILISO \fP\fP
+.TP
+\fB\fILLM \fP\fP
+.TP
+\fB\fILLMO \fP\fP
+.TP
+\fB\fILML \fP\fP
+.TP
+\fB\fILMLO \fP\fP
+.TP
+\fB\fILSIO \fP\fP
+.TP
+\fB\fIRCC \fP\fP
+.TP
+\fB\fIRFB \fP\fP
+.TP
+\fB\fIRISO \fP\fP
+.TP
+\fB\fIRLM \fP\fP
+.TP
+\fB\fIRLMO \fP\fP
+.TP
+\fB\fIRML \fP\fP
+.TP
+\fB\fIRMLO \fP\fP
+.TP
+\fB\fIRSIO \fP\fP
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "static int GantryStatus::projectionOptions::getCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static String ^ GantryStatus::projectionOptions::getTag (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatus::projectionOptions::isValid (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "delegate void GantryStatus::projectionOptions::lista_change (void)"
+
+.SS "static bool GantryStatus::projectionOptions::setCode (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatus::projectionOptions::setList (List< int >^ lista)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatus::projectionOptions::setTag (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "delegate void GantryStatus::projectionOptions::status_change (void)"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBoptions\fP GantryStatus::projectionOptions::code = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "List<int> ^ GantryStatus::projectionOptions::list = gcnew List<int> {}\fC [static]\fP, \fC [private]\fP"
+
+.SS "String ^ GantryStatus::projectionOptions::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
+
+.SS "const array<String^> ^ GantryStatus::projectionOptions::tags = gcnew array<String^> { 'LCC', 'LFB', 'LISO', 'LLM', 'LLMO', 'LML', 'LMLO', 'LSIO', 'RCC', 'RFB', 'RISO', 'RLM', 'RLMO', 'RML', 'RMLO', 'RSIO', 'UNDEF'}\fC [static]\fP"
+
+.SH "Event Documentation"
+.PP 
+.SS "\fBlista_change\fP^ GantryStatus::projectionOptions::lista_change_event\fC [static]\fP"
+
+.SS "\fBstatus_change\fP^ GantryStatus::projectionOptions::status_change_event\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

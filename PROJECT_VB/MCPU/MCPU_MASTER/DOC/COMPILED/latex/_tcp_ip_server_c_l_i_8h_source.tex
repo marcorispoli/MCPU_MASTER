@@ -1,0 +1,65 @@
+\doxysection{C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\+Tcp\+Ip\+Server\+CLI.h}
+\label{_tcp_ip_server_c_l_i_8h_source}\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ WIN32\_LEAN\_AND\_MEAN\ \ \ \ \ \ }\textcolor{comment}{//\ Exclude\ rarely-\/used\ stuff\ from\ Windows\ headers}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}winuser.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#pragma\ comment\ (lib,\ "{}User32.lib"{}})}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{using\ namespace\ }System;}
+\DoxyCodeLine{00012\ \textcolor{keyword}{using\ namespace\ }System::Threading;}
+\DoxyCodeLine{00013\ \textcolor{keyword}{using\ namespace\ }System::Diagnostics;}
+\DoxyCodeLine{00014\ \textcolor{keyword}{using\ namespace\ }System::Net;}
+\DoxyCodeLine{00015\ \textcolor{keyword}{using\ namespace\ }System::Net::Sockets;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ TcpIpServerCLI\_DISPATCH\_MESSAGE\ (WM\_USER\ +\ 1)}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ TcpIpServerCLI\_DISCONNECTION\_MESSAGE\ (WM\_USER\ +\ 2)}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#define\ TcpIpServerCLI\_CONNECTION\_MESSAGE\ (WM\_USER\ +\ 3)}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ TcpIpServerCLI\_RX\_BUFFER\_SIZE\ (4096)}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#define\ TcpIpServerCLI\_TX\_BUFFER\_SIZE\ (4096)}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#define\ TcpIpServerCLI\_DISPATCH\_BUFFER\_SIZE\ (100)}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{ref\ class}\ TcpIpServerCLI:\ \textcolor{keyword}{public}\ System::Windows::Forms::Form}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ rxData\_slot(array<Byte>\string^\ receiveBuffer,\ \textcolor{keywordtype}{int}\ rc);}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{event}\ rxData\_slot\string^\ rxData\_event;\ }
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ connection\_slot(\textcolor{keywordtype}{bool}\ status);\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{event}\ connection\_slot\string^\ connection\_event;\ }
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ TcpIpServerCLI(String\string^\ ip,\ \textcolor{keywordtype}{int}\ port);\ }
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{void}\ send(array<Byte>\string^\ buffer);}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{protected}:\ \textcolor{keywordtype}{void}\ threadWork(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{protected}:\ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ WndProc(System::Windows::Forms::Message\%\ m)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ HWND\ window;\ }
+\DoxyCodeLine{00045\ \ \ \ \ Thread\string^\ running\_thread;}
+\DoxyCodeLine{00046\ \ \ \ \ Socket\string^\ serverSocket;}
+\DoxyCodeLine{00047\ \ \ \ \ Socket\string^\ clientSocket;}
+\DoxyCodeLine{00048\ \ \ \ \ HANDLE\ ghSemaphore;}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{bool}\ connection\_status;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{int}\ rx\_rc;}
+\DoxyCodeLine{00053\ \ \ \ \ array<Byte>\string^\ rxBuffer;}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordtype}{int}\ dispatch\_rc;}
+\DoxyCodeLine{00056\ \ \ \ \ array<Byte>\string^\ dispatchBuffer;}
+\DoxyCodeLine{00057\ \ \ \ \ }
+\DoxyCodeLine{00058\ \ \ \ \ }
+\DoxyCodeLine{00059\ \};}
+\DoxyCodeLine{00060\ }
+
+\end{DoxyCode}

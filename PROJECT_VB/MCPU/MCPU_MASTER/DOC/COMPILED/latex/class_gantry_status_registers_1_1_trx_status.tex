@@ -1,0 +1,250 @@
+\doxysection{Gantry\+Status\+Registers\+::Trx\+Status Class Reference}
+\label{class_gantry_status_registers_1_1_trx_status}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+
+
+This class handles the Trx motorization.  
+
+
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ TRX\+\_\+\+SCOUT} = 0
+, \textbf{ TRX\+\_\+\+BP\+\_\+R}
+, \textbf{ TRX\+\_\+\+BP\+\_\+L}
+, \textbf{ TRX\+\_\+\+TOMO\+\_\+H}
+, \newline
+\textbf{ TRX\+\_\+\+TOMO\+\_\+E}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\begin{DoxyCompactList}\small\item\em This is the enumeration of the possible Trx target positions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+target\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{target\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_trx_status_af52e811e4159295f5e2fbcf2b6b3fd83};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static bool \textbf{ is\+Busy} (void)
+\begin{DoxyCompactList}\small\item\em This funtion returns the Trx activation status. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Target} (\textbf{ options} tg, int id)
+\begin{DoxyCompactList}\small\item\em This function sets a new target for the Trx. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Target} (String$^\wedge$ tag, int id)
+\begin{DoxyCompactList}\small\item\em This is the same as the \doxyref{set\+Target(options tg, int id)}{p.}{class_gantry_status_registers_1_1_trx_status_a947508bc18fe1d52835b6761554cfe1d} but with the tag as parameter. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}SCOUT\"{}, \"{}BP\+\_\+\+R\"{}, \"{}BP\+\_\+\+L\"{}, \"{}TOMO\+\_\+\+H\"{}, \"{}TOMO\+\_\+\+E\"{}\}
+\begin{DoxyCompactList}\small\item\em This is the tags array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+target\+\_\+change}$^\wedge$ \textbf{ target\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the trx target is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ position\+\_\+target} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the Trx target position. \end{DoxyCompactList}\item 
+static \textbf{ options} \textbf{ current\+\_\+position} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the current Trx position ~\newline
+ \end{DoxyCompactList}\item 
+static bool \textbf{ executing} = false
+\begin{DoxyCompactList}\small\item\em Command is in execution. \end{DoxyCompactList}\item 
+static unsigned short \textbf{ executing\+\_\+id} = 0
+\begin{DoxyCompactList}\small\item\em AWS command Id. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class handles the Trx motorization. 
+
+The Trx can be activate only in discrete positions 
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::\+Trx\+Status\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+This is the enumeration of the possible Trx target positions. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRX\_SCOUT@{TRX\_SCOUT}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!TRX\_SCOUT@{TRX\_SCOUT}}}\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42a3800ee24d8a672ba13024a85a8cb50be} 
+TRX\+\_\+\+SCOUT&TRX in scout position. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRX\_BP\_R@{TRX\_BP\_R}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!TRX\_BP\_R@{TRX\_BP\_R}}}\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42a4ac02920b98f41b6d93217462e346480} 
+TRX\+\_\+\+BP\+\_\+R&TRX in Biopsy Right position. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRX\_BP\_L@{TRX\_BP\_L}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!TRX\_BP\_L@{TRX\_BP\_L}}}\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42a37d1b7eda9f88262bfbbc59787bd55ed} 
+TRX\+\_\+\+BP\+\_\+L&TRX in Biopsy Left position. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRX\_TOMO\_H@{TRX\_TOMO\_H}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!TRX\_TOMO\_H@{TRX\_TOMO\_H}}}\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42a248c2007e96a665d53aba97505958475} 
+TRX\+\_\+\+TOMO\+\_\+H&TRX in Tomo Home position. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRX\_TOMO\_E@{TRX\_TOMO\_E}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!TRX\_TOMO\_E@{TRX\_TOMO\_E}}}\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42aa177e5a3ee50b8f45bb009bc28eb2292} 
+TRX\+\_\+\+TOMO\+\_\+E&TRX in Tomo End position ~\newline
+ \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42a6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1_trx_status_a4da8c3034dbb75a7564f017479c8bb42ab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1_trx_status_aa7213813dfa20957073d749ece872de1} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!delegate\_target\_change@{delegate\_target\_change}}
+\index{delegate\_target\_change@{delegate\_target\_change}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{delegate\_target\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::\+Trx\+Status\+::delegate\+\_\+target\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{target\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_trx_status_af52e811e4159295f5e2fbcf2b6b3fd83};. 
+
+\label{class_gantry_status_registers_1_1_trx_status_aebc38054bc3c561cbf66d47d577e30d4} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!isBusy@{isBusy}}
+\index{isBusy@{isBusy}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{isBusy()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Trx\+Status\+::is\+Busy (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This funtion returns the Trx activation status. 
+
+\begin{DoxyReturn}{Returns}
+true if the Trx is executing a command
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_trx_status_a947508bc18fe1d52835b6761554cfe1d} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!setTarget@{setTarget}}
+\index{setTarget@{setTarget}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{setTarget()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Trx\+Status\+::set\+Target (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{tg,  }\item[{int}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function sets a new target for the Trx. 
+
+If the target is changed, the \doxyref{target\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_trx_status_af52e811e4159295f5e2fbcf2b6b3fd83} is generated
+
+
+\begin{DoxyParams}{Parameters}
+{\em tg} & this is the target option code\\
+\hline
+{\em id} & this is the aws command identifier\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the target is successfully set
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_trx_status_ae7e19576f5c11f9faed3106e7a924d1a} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!setTarget@{setTarget}}
+\index{setTarget@{setTarget}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{setTarget()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Trx\+Status\+::set\+Target (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{tag,  }\item[{int}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This is the same as the \doxyref{set\+Target(options tg, int id)}{p.}{class_gantry_status_registers_1_1_trx_status_a947508bc18fe1d52835b6761554cfe1d} but with the tag as parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tag} & Trx Target Tag\\
+\hline
+{\em id} & this is the aws command identifier\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the target is successfully set
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1_trx_status_a088910a47294e0f064d88207ba2aa22e} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!current\_position@{current\_position}}
+\index{current\_position@{current\_position}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{current\_position}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::\+Trx\+Status\+::current\+\_\+position = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the current Trx position ~\newline
+ 
+
+\label{class_gantry_status_registers_1_1_trx_status_a266ea762c49fd07fd4c375744cbed9db} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!executing@{executing}}
+\index{executing@{executing}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{executing}
+{\footnotesize\ttfamily bool Gantry\+Status\+Registers\+::\+Trx\+Status\+::executing = false\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Command is in execution. 
+
+\label{class_gantry_status_registers_1_1_trx_status_a4f5eaadfe02baecf1a2934cf2b4a65a2} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!executing\_id@{executing\_id}}
+\index{executing\_id@{executing\_id}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{executing\_id}
+{\footnotesize\ttfamily unsigned short Gantry\+Status\+Registers\+::\+Trx\+Status\+::executing\+\_\+id = 0\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+AWS command Id. 
+
+\label{class_gantry_status_registers_1_1_trx_status_a5a07ab2944b2500695b098e3179bbbc5} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!position\_target@{position\_target}}
+\index{position\_target@{position\_target}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{position\_target}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::\+Trx\+Status\+::position\+\_\+target = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the Trx target position. 
+
+\label{class_gantry_status_registers_1_1_trx_status_a7796f7bba4552e9c13f939f5ed99c132} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::\+Trx\+Status\+::tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}SCOUT\"{}, \"{}BP\+\_\+\+R\"{}, \"{}BP\+\_\+\+L\"{}, \"{}TOMO\+\_\+\+H\"{}, \"{}TOMO\+\_\+\+E\"{}\}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This is the tags array. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1_trx_status_af52e811e4159295f5e2fbcf2b6b3fd83} 
+\index{GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}!target\_change\_event@{target\_change\_event}}
+\index{target\_change\_event@{target\_change\_event}!GantryStatusRegisters::TrxStatus@{GantryStatusRegisters::TrxStatus}}
+\doxysubsubsection{target\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+target\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::\+Trx\+Status\+::target\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the trx target is changed. 
+
+Usage\+: \doxyref{Trx\+Status\+::target\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1_trx_status_af52e811e4159295f5e2fbcf2b6b3fd83} += gcnew delegate\+\_\+target\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

@@ -1,0 +1,293 @@
+\doxysection{Gantry\+Status\+Registers\+::Collimation\+Mode\+Register Class Reference}
+\label{class_gantry_status_registers_1_1_collimation_mode_register}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+
+
+This class handles the Collimation behavior during the exposure.  
+
+
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ COLLI\+\_\+\+AUTO}
+, \textbf{ COLLI\+\_\+24x30}
+, \textbf{ COLLI\+\_\+18x24\+\_\+C}
+, \textbf{ COLLI\+\_\+18x24\+\_\+L}
+, \newline
+\textbf{ COLLI\+\_\+18x24\+\_\+R}
+, \textbf{ COLLI\+\_\+9x21}
+, \textbf{ COLLI\+\_\+10x24}
+, \textbf{ COLLI\+\_\+\+PROSTHESIS}
+, \newline
+\textbf{ COLLI\+\_\+\+D75}
+, \textbf{ COLLI\+\_\+\+BIOP2D}
+, \textbf{ COLLI\+\_\+\+BIOP3D}
+, \textbf{ COLLI\+\_\+\+TOMO}
+, \newline
+\textbf{ COLLI\+\_\+9x9}
+, \textbf{ COLLI\+\_\+\+CUSTOM}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\begin{DoxyCompactList}\small\item\em This is the enumeration option code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+status\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_collimation_mode_register_a7b24bad2a88da8a0ba10f19ab3d573a9};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ get\+Code} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option code of the register. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ get\+Tag} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option tag of the register. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (\textbf{ options} val)
+\begin{DoxyCompactList}\small\item\em This function set the register with the option code (and related tag). \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (String$^\wedge$ val)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags}
+\begin{DoxyCompactList}\small\item\em This is the option-\/tags static array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the register option-\/code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the register tag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class handles the Collimation behavior during the exposure. 
+
+There are several collimation patterns predefined in the system.
+
+This class allows to select the current collimation mode from the available list.
+
+This class allows to handle the collimation codes and tag for other purpose (visualization). 
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+This is the enumeration option code. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_AUTO@{COLLI\_AUTO}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_AUTO@{COLLI\_AUTO}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a1d9ef8f8097c5da08c79663f40c02301} 
+COLLI\+\_\+\+AUTO&The Exposure uses the Automatic collimation set by the current detected Paddle. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_24x30@{COLLI\_24x30}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_24x30@{COLLI\_24x30}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a191e86891ad7d04abe6808ba8a343ad2} 
+COLLI\+\_\+24x30&Force the 24x30 format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_18x24\_C@{COLLI\_18x24\_C}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_18x24\_C@{COLLI\_18x24\_C}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308acca6242e51d445c9a605f910b52e3da8} 
+COLLI\+\_\+18x24\+\_\+C&Force the 18x24 CENTER format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_18x24\_L@{COLLI\_18x24\_L}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_18x24\_L@{COLLI\_18x24\_L}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a219f0ccfbe3dd76dfe133e60096cd4c8} 
+COLLI\+\_\+18x24\+\_\+L&Force the 18x24 LEFT format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_18x24\_R@{COLLI\_18x24\_R}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_18x24\_R@{COLLI\_18x24\_R}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a02a292bb64cdf7f3219f7cdbc324b013} 
+COLLI\+\_\+18x24\+\_\+R&Force the 18x24 RIGHT format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_9x21@{COLLI\_9x21}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_9x21@{COLLI\_9x21}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308aea436e925be56c14ae77631c3d51e894} 
+COLLI\+\_\+9x21&Force the 9x21(\+MAG) format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_10x24@{COLLI\_10x24}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_10x24@{COLLI\_10x24}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308abb1debcc45474c0779fa00b5622ce8a2} 
+COLLI\+\_\+10x24&Force the 10x24 format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_PROSTHESIS@{COLLI\_PROSTHESIS}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_PROSTHESIS@{COLLI\_PROSTHESIS}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308adef893884e5ffd5b27239f1ee1c832e9} 
+COLLI\+\_\+\+PROSTHESIS&Force the PROSTHESIS format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_D75@{COLLI\_D75}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_D75@{COLLI\_D75}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a07c39976a112f004815ce41ddd9d2d6c} 
+COLLI\+\_\+\+D75&Force the D75(\+MAG) format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_BIOP2D@{COLLI\_BIOP2D}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_BIOP2D@{COLLI\_BIOP2D}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a4f218174ad2030256e2a2530162b6e87} 
+COLLI\+\_\+\+BIOP2D&Force the BIOPSY 2D format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_BIOP3D@{COLLI\_BIOP3D}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_BIOP3D@{COLLI\_BIOP3D}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308ad447a4e64687bd3bbc418aceda9b6584} 
+COLLI\+\_\+\+BIOP3D&Force the BIOPSY STEREO format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_TOMO@{COLLI\_TOMO}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_TOMO@{COLLI\_TOMO}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308ad836f49a6d140e9e72cbf42b89c38d51} 
+COLLI\+\_\+\+TOMO&Force the TOMO 24x30 format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_9x9@{COLLI\_9x9}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_9x9@{COLLI\_9x9}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a920f616cde5ab80dc39d872046713479} 
+COLLI\+\_\+9x9&Force the TOMO 9x9(\+MAG) format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLLI\_CUSTOM@{COLLI\_CUSTOM}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!COLLI\_CUSTOM@{COLLI\_CUSTOM}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a154d84bbbaee6c61c546edb2a88049fd} 
+COLLI\+\_\+\+CUSTOM&Force the custom format. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308a6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1_collimation_mode_register_a4dac1c92f1b00d7d514fbb9e1ac89308ab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a0960edf781afd4aff1093db05f9733ef} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!delegate\_status\_change@{delegate\_status\_change}}
+\index{delegate\_status\_change@{delegate\_status\_change}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{delegate\_status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::delegate\+\_\+status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_collimation_mode_register_a7b24bad2a88da8a0ba10f19ab3d573a9};. 
+
+\label{class_gantry_status_registers_1_1_collimation_mode_register_aa8bef079da25e6a28b098d975ed07cc9} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!getCode@{getCode}}
+\index{getCode@{getCode}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{getCode()}
+{\footnotesize\ttfamily static \textbf{ options} Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::get\+Code (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option code of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the option code 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a284fac0576bd784400682c5b9730f392} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!getTag@{getTag}}
+\index{getTag@{getTag}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{getTag()}
+{\footnotesize\ttfamily static String $^\wedge$ Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::get\+Tag (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option tag of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the Tag 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_collimation_mode_register_ab852209045319608a8903d2362409ed5} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the register with the option code (and related tag). 
+
+The register is updated with the option code and related tag and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_collimation_mode_register_a7b24bad2a88da8a0ba10f19ab3d573a9} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the option-\/code to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a205206310c4fcf5c6ac28ff562c0ba0f} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+This function set the register with the option tag (and related code).
+
+The register is updated with the tag and the related option code and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_collimation_mode_register_a7b24bad2a88da8a0ba10f19ab3d573a9} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the tag to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a47c3cde8f8a83a4c7a964d09f6b0d7a9} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!code@{code}}
+\index{code@{code}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register option-\/code. 
+
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a8f26f430bd2fd1b2ee8d07f66ac3f7db} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!tag@{tag}}
+\index{tag@{tag}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register tag. 
+
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a73046f894fc2da703007ea6199cd2104} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::tags\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}COLLI\_AUTO"{}},\ \textcolor{stringliteral}{"{}COLLI\_24x30"{}},\ \textcolor{stringliteral}{"{}COLLI\_18x24\_C"{}},\ \textcolor{stringliteral}{"{}COLLI\_18x24\_L"{}},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}COLLI\_18x24\_R"{}},\ \textcolor{stringliteral}{"{}COLLI\_9x21"{}},\ \textcolor{stringliteral}{"{}COLLI\_10x24"{}},\ \textcolor{stringliteral}{"{}COLLI\_PROSTHESIS"{}},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}COLLI\_D75"{}},\ \textcolor{stringliteral}{"{}COLLI\_BIOP2D"{}},\ \textcolor{stringliteral}{"{}COLLI\_BIOP3D"{}},\ \textcolor{stringliteral}{"{}COLLI\_TOMO"{}},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}COLLI\_9x9"{}},\ \textcolor{stringliteral}{"{}COLLI\_CUSTOM"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\}}
+
+\end{DoxyCode}
+
+
+This is the option-\/tags static array. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1_collimation_mode_register_a7b24bad2a88da8a0ba10f19ab3d573a9} 
+\index{GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatusRegisters::CollimationModeRegister@{GantryStatusRegisters::CollimationModeRegister}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::\+Collimation\+Mode\+Register\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: \doxyref{Collimation\+Mode\+Register\+::status\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1_collimation_mode_register_a7b24bad2a88da8a0ba10f19ab3d573a9} += gcnew delegate\+\_\+status\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

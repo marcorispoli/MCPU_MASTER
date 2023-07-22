@@ -1,0 +1,37 @@
+\doxysection{Gantry Global Status Registers}
+\label{group__global_module}\index{Gantry Global Status Registers@{Gantry Global Status Registers}}
+
+
+This is the module implementing the Gantry Global Status registers.  
+
+
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \textbf{ Gantry\+Status\+Registers}
+\begin{DoxyCompactList}\small\item\em This is the class implementing the AWS Interface Module. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This is the module implementing the Gantry Global Status registers. 
+
+The Gantry internal status is defined by several data that represent the current status of some device item or system setting.
+
+Every register status is implemented with a dedicated static class with the following commmon characteristics\+:
+\begin{DoxyItemize}
+\item It is define an enumeration code;
+\item It is defined an array of strings rapresenting the tags of every code;
+\item It is defined a set of functions to access the internal data;
+\item It is defined one or more event associated to the internal data changing.
+\end{DoxyItemize}
+
+The class is commonly defined with\+:
+\begin{DoxyItemize}
+\item some\+\_\+class\+::options\+:\+:$<$enumeration\+\_\+value$>$
+\item some\+\_\+class\+::tags[] =\{\"{}tag0\"{},..,\"{}tagn\"{}\}
+\item some\+\_\+class\+::get\+Code(\+String$^\wedge$ tag)
+\item some\+\_\+class\+::get\+Tag(some\+\_\+class\+::options\+::$<$enum value$>$)
+\item some\+\_\+class\+::set\+Code(\+String$^\wedge$ tag)
+\item some\+\_\+class\+::set\+Tag(some\+\_\+class\+::options\+::$<$enum value$>$)
+\item some\+\_\+class\+::is\+Valid(\+String$^\wedge$ tag) 
+\end{DoxyItemize}

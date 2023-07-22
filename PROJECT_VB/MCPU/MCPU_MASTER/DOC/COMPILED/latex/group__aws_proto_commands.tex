@@ -1,0 +1,204 @@
+\doxysubsection{AWS Protocol Command set}
+\label{group__aws_proto_commands}\index{AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ aws\+Protocol\+::\+EXEC\+\_\+\+Open\+Study} (void)
+\begin{DoxyCompactList}\small\item\em This function Open the study. \end{DoxyCompactList}\item 
+void \textbf{ aws\+Protocol\+::\+EXEC\+\_\+\+Close\+Study} (void)
+\begin{DoxyCompactList}\small\item\em This command executes the Close Study command. \end{DoxyCompactList}\item 
+void \textbf{ aws\+Protocol\+::\+SET\+\_\+\+Projection\+List} (void)
+\begin{DoxyCompactList}\small\item\em This command populate the available projection list. \end{DoxyCompactList}\item 
+void \textbf{ aws\+Protocol\+::\+EXEC\+\_\+\+Arm\+Position} (void)
+\begin{DoxyCompactList}\small\item\em This function activate the ARM to a target position;. \end{DoxyCompactList}\item 
+void \textbf{ aws\+Protocol\+::\+EXEC\+\_\+\+Abort\+Projection} (void)
+\begin{DoxyCompactList}\small\item\em This command invalidate any selected projection. \end{DoxyCompactList}\item 
+void \textbf{ aws\+Protocol\+::\+EXEC\+\_\+\+Trx\+Position} (void)
+\begin{DoxyCompactList}\small\item\em This command executes the TRX activation. \end{DoxyCompactList}\item 
+void \textbf{ aws\+Protocol\+::\+SET\+\_\+\+Tomo\+Config} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+SET\+\_\+\+Exposure\+Mode} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+SET\+\_\+\+Exposure\+Data} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+SET\+\_\+\+Enable\+Xray\+Push} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+GET\+\_\+\+Ready\+For\+Exposure} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+EXEC\+\_\+\+Start\+Xray\+Sequence} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+GET\+\_\+\+Compressor} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+GET\+\_\+\+Components} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+GET\+\_\+\+Trx} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+GET\+\_\+\+Arm} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+GET\+\_\+\+Tube\+Temperature} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+SET\+\_\+\+Language} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+EXEC\+\_\+\+Power\+Off} (void)
+\item 
+void \textbf{ aws\+Protocol\+::\+AWS\+\_\+\+Not\+Recognized\+Command} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsubsection{Detailed Description}
+~\newline
+ 
+
+\doxysubsubsection{Function Documentation}
+\label{group__aws_proto_commands_ga792d92b5e64d3ac7c7679e8b8f688583} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!AWS\_NotRecognizedCommand@{AWS\_NotRecognizedCommand}}
+\index{AWS\_NotRecognizedCommand@{AWS\_NotRecognizedCommand}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{AWS\_NotRecognizedCommand()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+AWS\+\_\+\+Not\+Recognized\+Command (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_gae6acde6fdaa2068dc7383beedec3ece9} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!EXEC\_AbortProjection@{EXEC\_AbortProjection}}
+\index{EXEC\_AbortProjection@{EXEC\_AbortProjection}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{EXEC\_AbortProjection()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+EXEC\+\_\+\+Abort\+Projection (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+This command invalidate any selected projection. 
+
+The ARM is not activated with this command!
+
+The Arm\+Status\+::validate\+\_\+change\+\_\+event() is generated.\label{group__aws_proto_commands_ga2b1934a37009d292cf6ee2e95e8e766e} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!EXEC\_ArmPosition@{EXEC\_ArmPosition}}
+\index{EXEC\_ArmPosition@{EXEC\_ArmPosition}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{EXEC\_ArmPosition()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+EXEC\+\_\+\+Arm\+Position (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+This function activate the ARM to a target position;. 
+
+The target data in the Arm\+Status are updated;
+
+if the target angle is different of more than 1° then the Arm\+Status\+::target\+\_\+change\+\_\+event() is generated and the ARM activation initiates.\label{group__aws_proto_commands_ga33201aa0000b2ce44bd72dc24b38bbcb} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!EXEC\_CloseStudy@{EXEC\_CloseStudy}}
+\index{EXEC\_CloseStudy@{EXEC\_CloseStudy}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{EXEC\_CloseStudy()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+EXEC\+\_\+\+Close\+Study (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+This command executes the Close Study command. 
+
+The study is closed, and the gantry\+Operating\+Status\+Options\+::status\+\_\+change\+\_\+event() is generated.\label{group__aws_proto_commands_gad3d3098a2e39cb96ebb3d08dbf19df4f} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!EXEC\_OpenStudy@{EXEC\_OpenStudy}}
+\index{EXEC\_OpenStudy@{EXEC\_OpenStudy}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{EXEC\_OpenStudy()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+EXEC\+\_\+\+Open\+Study (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+This function Open the study. 
+
+The patient name is assigned and the global gantry\+Operating\+Status\+Options is changed.
+
+The gantry\+Operating\+Status\+Options\+::status\+\_\+change\+\_\+event() is generated\label{group__aws_proto_commands_gaa8b54639b5e0984e5ad02c8a6db21f81} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!EXEC\_PowerOff@{EXEC\_PowerOff}}
+\index{EXEC\_PowerOff@{EXEC\_PowerOff}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{EXEC\_PowerOff()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+EXEC\+\_\+\+Power\+Off (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_gadffbfea1616b08bf35444aec5417945c} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!EXEC\_StartXraySequence@{EXEC\_StartXraySequence}}
+\index{EXEC\_StartXraySequence@{EXEC\_StartXraySequence}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{EXEC\_StartXraySequence()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+EXEC\+\_\+\+Start\+Xray\+Sequence (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_gab659aaf1360011be9f29e4c84d41847e} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!EXEC\_TrxPosition@{EXEC\_TrxPosition}}
+\index{EXEC\_TrxPosition@{EXEC\_TrxPosition}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{EXEC\_TrxPosition()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+EXEC\+\_\+\+Trx\+Position (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+This command executes the TRX activation. 
+
+If the TRX target is changed, the Trx\+Status\+::target\+\_\+change\+\_\+event() is generated,\label{group__aws_proto_commands_ga1f416ee3003f41c300ae6333ef7798b9} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!GET\_Arm@{GET\_Arm}}
+\index{GET\_Arm@{GET\_Arm}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{GET\_Arm()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+GET\+\_\+\+Arm (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_ga58025498b86fdf29c8bc71c4e048f825} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!GET\_Components@{GET\_Components}}
+\index{GET\_Components@{GET\_Components}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{GET\_Components()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+GET\+\_\+\+Components (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_gadfbab4140dae9f80e21985778b6b78dc} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!GET\_Compressor@{GET\_Compressor}}
+\index{GET\_Compressor@{GET\_Compressor}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{GET\_Compressor()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+GET\+\_\+\+Compressor (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_ga02e0f4895328ba6689d6eb10e75003ea} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!GET\_ReadyForExposure@{GET\_ReadyForExposure}}
+\index{GET\_ReadyForExposure@{GET\_ReadyForExposure}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{GET\_ReadyForExposure()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+GET\+\_\+\+Ready\+For\+Exposure (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_gaa29bab4ca6c8adf91c1a1692ac060217} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!GET\_Trx@{GET\_Trx}}
+\index{GET\_Trx@{GET\_Trx}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{GET\_Trx()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+GET\+\_\+\+Trx (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_ga4724b78f31cca4e6cb04927697910867} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!GET\_TubeTemperature@{GET\_TubeTemperature}}
+\index{GET\_TubeTemperature@{GET\_TubeTemperature}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{GET\_TubeTemperature()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+GET\+\_\+\+Tube\+Temperature (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_ga2e0118b8aa0c0fafeebd3ec643fb06f6} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!SET\_EnableXrayPush@{SET\_EnableXrayPush}}
+\index{SET\_EnableXrayPush@{SET\_EnableXrayPush}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{SET\_EnableXrayPush()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+SET\+\_\+\+Enable\+Xray\+Push (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_ga40332ec2cd63e461c5f9bd1ea830cbcc} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!SET\_ExposureData@{SET\_ExposureData}}
+\index{SET\_ExposureData@{SET\_ExposureData}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{SET\_ExposureData()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+SET\+\_\+\+Exposure\+Data (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_gae6cb0db37ac7133cfe7faf7dad9f2f6e} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!SET\_ExposureMode@{SET\_ExposureMode}}
+\index{SET\_ExposureMode@{SET\_ExposureMode}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{SET\_ExposureMode()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+SET\+\_\+\+Exposure\+Mode (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\label{group__aws_proto_commands_ga8782414b7d77ae27b3670be6ac69ccf2} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!SET\_Language@{SET\_Language}}
+\index{SET\_Language@{SET\_Language}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{SET\_Language()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+SET\+\_\+\+Language (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\label{group__aws_proto_commands_gabd0056e2f437487f8cffcadd37d492f9} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!SET\_ProjectionList@{SET\_ProjectionList}}
+\index{SET\_ProjectionList@{SET\_ProjectionList}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{SET\_ProjectionList()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+SET\+\_\+\+Projection\+List (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+This command populate the available projection list. 
+
+The projection\+Options\+::list is updated;
+
+The projection\+Options\+::lista\+\_\+change\+\_\+event() is generated;\label{group__aws_proto_commands_ga044707b9e13950319c3b89f3440b3c01} 
+\index{AWS Protocol Command set@{AWS Protocol Command set}!SET\_TomoConfig@{SET\_TomoConfig}}
+\index{SET\_TomoConfig@{SET\_TomoConfig}!AWS Protocol Command set@{AWS Protocol Command set}}
+\doxysubsubsubsection{SET\_TomoConfig()}
+{\footnotesize\ttfamily void aws\+Protocol\+::\+SET\+\_\+\+Tomo\+Config (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+

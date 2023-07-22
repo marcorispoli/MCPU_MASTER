@@ -1,0 +1,223 @@
+\doxysection{Gantry\+Status\+Registers\+::Component\+Register Class Reference}
+\label{class_gantry_status_registers_1_1_component_register}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ COMPONENT\+\_\+\+UNDETECTED} = 0
+, \textbf{ COMPONENT\+\_\+\+PROTECTION\+\_\+3D}
+, \textbf{ COMPONENT\+\_\+\+MAG15}
+, \textbf{ COMPONENT\+\_\+\+MAG18}
+, \newline
+\textbf{ COMPONENT\+\_\+\+MAG20}
+, \textbf{ COMPONENT\+\_\+\+BIOPSY}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+status\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_component_register_afa67da2e2c511990af0fcaa2486242e4};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ get\+Code} (void)
+\item 
+static String $^\wedge$ \textbf{ get\+Tag} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option tag of the register. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (\textbf{ options} val)
+\begin{DoxyCompactList}\small\item\em This function set the register with the option code (and related tag). \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (String$^\wedge$ val)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}COMPONENT\+\_\+\+UNDETECTED\"{}, \"{}PROTECTION\+\_\+3\+D\"{}, \"{}MAG\+\_\+15\"{}, \"{}MAG\+\_\+18\"{}, \"{}MAG\+\_\+20\"{}, \"{}BIOPSY\"{}, \"{}UNDEF\"{}\}
+\begin{DoxyCompactList}\small\item\em This is the option-\/tags static array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the register option-\/code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the register tag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5b} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::\+Component\+Register\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPONENT\_UNDETECTED@{COMPONENT\_UNDETECTED}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!COMPONENT\_UNDETECTED@{COMPONENT\_UNDETECTED}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5ba64c8a35bf4732bd85a5e3e66bc8e7b84} 
+COMPONENT\+\_\+\+UNDETECTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPONENT\_PROTECTION\_3D@{COMPONENT\_PROTECTION\_3D}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!COMPONENT\_PROTECTION\_3D@{COMPONENT\_PROTECTION\_3D}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5bac1ccea23816f8b21ff9da0b08130e8cc} 
+COMPONENT\+\_\+\+PROTECTION\+\_\+3D&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPONENT\_MAG15@{COMPONENT\_MAG15}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!COMPONENT\_MAG15@{COMPONENT\_MAG15}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5ba6869c82a09c458b00b4d92f30bd14fe9} 
+COMPONENT\+\_\+\+MAG15&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPONENT\_MAG18@{COMPONENT\_MAG18}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!COMPONENT\_MAG18@{COMPONENT\_MAG18}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5ba8d08a2a08c5eb176ce0448699bf85ffe} 
+COMPONENT\+\_\+\+MAG18&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPONENT\_MAG20@{COMPONENT\_MAG20}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!COMPONENT\_MAG20@{COMPONENT\_MAG20}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5ba0d895029a705ba55086e1ae4dd610afa} 
+COMPONENT\+\_\+\+MAG20&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPONENT\_BIOPSY@{COMPONENT\_BIOPSY}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!COMPONENT\_BIOPSY@{COMPONENT\_BIOPSY}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5ba862c968e1c00d4aa7f40fe8e574cc70a} 
+COMPONENT\+\_\+\+BIOPSY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5ba6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1_component_register_a811ca2e56e5324bbb6f95e08cc21bb5bab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1_component_register_a9499e0de738c7f5214ca43864adee3a6} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!delegate\_status\_change@{delegate\_status\_change}}
+\index{delegate\_status\_change@{delegate\_status\_change}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{delegate\_status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::\+Component\+Register\+::delegate\+\_\+status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_component_register_afa67da2e2c511990af0fcaa2486242e4};. 
+
+\label{class_gantry_status_registers_1_1_component_register_a8e047399c43d7729873af4fb079db34e} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!getCode@{getCode}}
+\index{getCode@{getCode}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{getCode()}
+{\footnotesize\ttfamily static \textbf{ options} Gantry\+Status\+Registers\+::\+Component\+Register\+::get\+Code (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns the option code of the register
+
+\begin{DoxyReturn}{Returns}
+the value of the option code 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_component_register_a4f6ff212a5c7920b83e7b31938657ae4} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!getTag@{getTag}}
+\index{getTag@{getTag}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{getTag()}
+{\footnotesize\ttfamily static String $^\wedge$ Gantry\+Status\+Registers\+::\+Component\+Register\+::get\+Tag (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option tag of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the Tag 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_component_register_ac4ba73ecbb8d7f75fa696139a86ac9b1} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Component\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the register with the option code (and related tag). 
+
+The register is updated with the option code and related tag and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_component_register_afa67da2e2c511990af0fcaa2486242e4} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the option-\/code to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_component_register_abb557fbdea667b51fa739596c07929e7} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Component\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+This function set the register with the option tag (and related code).
+
+The register is updated with the tag and the related option code and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_component_register_afa67da2e2c511990af0fcaa2486242e4} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the tag to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1_component_register_a86980d593d61630e062f95af3dcd682c} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!code@{code}}
+\index{code@{code}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::\+Component\+Register\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register option-\/code. 
+
+\label{class_gantry_status_registers_1_1_component_register_a8c73514c9970c8b6ddd7572474a025f2} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!tag@{tag}}
+\index{tag@{tag}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::\+Component\+Register\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register tag. 
+
+\label{class_gantry_status_registers_1_1_component_register_a54f27eb6effc70ae36a3d7b9635dda13} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::\+Component\+Register\+::tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}COMPONENT\+\_\+\+UNDETECTED\"{}, \"{}PROTECTION\+\_\+3\+D\"{}, \"{}MAG\+\_\+15\"{}, \"{}MAG\+\_\+18\"{}, \"{}MAG\+\_\+20\"{}, \"{}BIOPSY\"{}, \"{}UNDEF\"{}\}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This is the option-\/tags static array. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1_component_register_afa67da2e2c511990af0fcaa2486242e4} 
+\index{GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatusRegisters::ComponentRegister@{GantryStatusRegisters::ComponentRegister}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::\+Component\+Register\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: \doxyref{Component\+Register\+::status\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1_component_register_afa67da2e2c511990af0fcaa2486242e4} += gcnew delegate\+\_\+status\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

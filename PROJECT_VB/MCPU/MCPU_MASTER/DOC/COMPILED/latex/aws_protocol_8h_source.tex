@@ -1,0 +1,111 @@
+\doxysection{C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/aws\+Protocol.h}
+\label{aws_protocol_8h_source}\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{keyword}{using\ namespace\ }System::Collections::Generic;}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{ref\ class}\ awsProtocol}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00030\ \ \ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ }
+\DoxyCodeLine{00033\ \ \ \ \ awsProtocol(String\string^\ ip,\ \textcolor{keywordtype}{int}\ command\_port,\ \textcolor{keywordtype}{int}\ event\_port);\ }
+\DoxyCodeLine{00034\ \ \ \ \ }
+\DoxyCodeLine{00036\ \ \ \ \ TcpIpServerCLI\string^\ getCommmandHandler(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ command\_server;\ \};}
+\DoxyCodeLine{00037\ \ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ TcpIpServerCLI\string^\ getEventHandler(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ event\_server;\ \};}
+\DoxyCodeLine{00040\ \ \ \ \ }
+\DoxyCodeLine{00042\ \ \ \ \ }
+\DoxyCodeLine{00043\ \ \ \ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{ref\ struct}\ aws\_decoded\_frame\_t\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ valid;\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}\ ID;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ String\string^\ command;}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ List<String\string^>\string^\ parameters;}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ errcode;}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ String\string^\ errstr;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ Count(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{if}\ (parameters\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{return}\ 0;\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ parameters-\/>Count;\ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ TcpIpServerCLI\string^\ event\_server;\ }
+\DoxyCodeLine{00070\ \ \ \ \ TcpIpServerCLI\string^\ command\_server;}
+\DoxyCodeLine{00071\ \ \ \ \ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{void}\ command\_rx\_handler(array<Byte>\string^\ buffer,\ \textcolor{keywordtype}{int}\ rc);}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ event\_rx\_handler(array<Byte>\string^\ buffer,\ \textcolor{keywordtype}{int}\ rc);}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{bool}\ findNextParam(\textcolor{keywordtype}{int}*\ i,\ String\string^\ sFrame,\ String\string^\ \%result,\ \textcolor{keywordtype}{bool}*\ completed);}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{int}\ decodeFrame(array<Byte>\string^\ buffer,\ \textcolor{keywordtype}{int}\ size,\ aws\_decoded\_frame\_t\string^\ \%pDecoded);}
+\DoxyCodeLine{00077\ \ \ \ \ aws\_decoded\_frame\_t\string^\ pDecodedFrame;}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}\ event\_counter;}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ command\_callback(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00081\ \ \ \ \ Dictionary<String\string^,\ command\_callback\string^>\string^\ commandExec;\ }
+\DoxyCodeLine{00082\ \ \ \ \ }
+\DoxyCodeLine{00083\ \ \ \ \ }
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keywordtype}{void}\ ackNa(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordtype}{void}\ ackOk(\textcolor{keywordtype}{void});\ \ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{void}\ ackOk(List<String\string^>\string^\ params);}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordtype}{void}\ ackNok(\textcolor{keywordtype}{void});\ \ \ \ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordtype}{void}\ ackExecuting(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordtype}{void}\ eventExecutedOk(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{void}\ eventExecutedOk(List<String\string^>\string^\ params);}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordtype}{void}\ eventExecutedNok(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}\ errcode);}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{void}\ eventExecutedNok(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}\ errcode,\ String\string^\ errorstr);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00098\ \ \ \ \ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keywordtype}{void}\ EXEC\_OpenStudy(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keywordtype}{void}\ EXEC\_CloseStudy(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ SET\_ProjectionList(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordtype}{void}\ EXEC\_ArmPosition(\textcolor{keywordtype}{void})\ ;}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keywordtype}{void}\ EXEC\_AbortProjection(\textcolor{keywordtype}{void})\ ;}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordtype}{void}\ EXEC\_TrxPosition(\textcolor{keywordtype}{void})\ ;}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordtype}{void}\ SET\_TomoConfig(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordtype}{void}\ SET\_ExposureMode(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keywordtype}{void}\ SET\_ExposureData(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{void}\ SET\_EnableXrayPush(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keywordtype}{void}\ GET\_ReadyForExposure(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keywordtype}{void}\ EXEC\_StartXraySequence(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{void}\ GET\_Compressor(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordtype}{void}\ GET\_Components(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{void}\ GET\_Trx(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{void}\ GET\_Arm(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{void}\ GET\_TubeTemperature(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordtype}{void}\ SET\_Language(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordtype}{void}\ EXEC\_PowerOff(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordtype}{void}\ AWS\_NotRecognizedCommand(\textcolor{keywordtype}{void})\ \{\ ackNa();\ \};}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00126\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_XrayPushButton(bool\ status)\ \{\};}}
+\DoxyCodeLine{00127\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_ReadyForExposure(bool\ ready,\ unsigned\ short\ code)\ \{\};}}
+\DoxyCodeLine{00128\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_XrayPulseCompleted(unsigned\ char\ pulse)\ \{\};}}
+\DoxyCodeLine{00129\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_XraySequenceCompleted(\_xray\_completed\_status\_e\ result,\ float\ kv0,\ float\ mAs0,\ \_filter\_table\_e\ flt0,}}
+\DoxyCodeLine{00130\ \textcolor{comment}{\ \ \ \ \ \ \ \ float\ kv1\ =\ 0,\ float\ mAs1\ =\ 0,\ \_filter\_table\_e\ flt1\ =\ FILTER\_NA,}}
+\DoxyCodeLine{00131\ \textcolor{comment}{\ \ \ \ \ \ \ \ float\ kv2\ =\ 0,\ float\ mAs2\ =\ 0,\ \_filter\_table\_e\ flt2\ =\ FILTER\_NA,}}
+\DoxyCodeLine{00132\ \textcolor{comment}{\ \ \ \ \ \ \ \ float\ kv3\ =\ 0,\ float\ mAs3\ =\ 0,\ \_filter\_table\_e\ flt3\ =\ FILTER\_NA,}}
+\DoxyCodeLine{00133\ \textcolor{comment}{\ \ \ \ \ \ \ \ float\ kv4\ =\ 0,\ float\ mAs4\ =\ 0,\ \_filter\_table\_e\ flt4\ =\ FILTER\_NA)\ \{\};}}
+\DoxyCodeLine{00134\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_GantryStatus(\_gantry\_operating\_status\_e\ status)\ \{\};}}
+\DoxyCodeLine{00135\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_SelectProjection(\_projection\_list\_e\ projname)\ \{\};}}
+\DoxyCodeLine{00136\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_AbortProjection(void)\ \{\};}}
+\DoxyCodeLine{00137\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_Compressor(unsigned\ short\ thick,\ unsigned\ short\ force)\ \{\};}}
+\DoxyCodeLine{00138\ \textcolor{comment}{\ \ \ \ virtual\ void\ EVENT\_Components(\_components\_options\_e\ component,\ \_compressor\_paddles\_e\ paddle,\ \_colli\_components\_options\_e\ colli\_component)\ \{\};}}
+\DoxyCodeLine{00139\ \textcolor{comment}{\ \ \ \ */}}
+\DoxyCodeLine{00141\ \};}
+\DoxyCodeLine{00142\ }
+
+\end{DoxyCode}

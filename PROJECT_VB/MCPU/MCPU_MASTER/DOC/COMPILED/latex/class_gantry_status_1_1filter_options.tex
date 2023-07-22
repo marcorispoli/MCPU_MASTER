@@ -1,0 +1,168 @@
+\doxysection{Gantry\+Status\+::filter\+Options Class Reference}
+\label{class_gantry_status_1_1filter_options}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ FILTER\+\_\+\+Ag}
+, \textbf{ FILTER\+\_\+\+Al}
+, \textbf{ FILTER\+\_\+\+Mo}
+, \textbf{ FILTER\+\_\+\+Rh}
+, \newline
+\textbf{ FILTER\+\_\+\+Cu}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ status\+\_\+change} (void)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static bool \textbf{ is\+Valid} (String$^\wedge$ val)
+\item 
+static int \textbf{ get\+Code} (String$^\wedge$ val)
+\item 
+static String $^\wedge$ \textbf{ get\+Tag} (\textbf{ options} val)
+\item 
+static bool \textbf{ set\+Code} (\textbf{ options} val)
+\item 
+static bool \textbf{ set\+Tag} (String$^\wedge$ val)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}Ag\"{}, \"{}Al\"{}, \"{}Mo\"{}, \"{}Rh\"{}, \"{}Cu\"{}, \"{}UNDEF\"{} \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!options@{options}}
+\index{options@{options}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+::filter\+Options\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Ag@{FILTER\_Ag}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!FILTER\_Ag@{FILTER\_Ag}}}\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617a6e4a58c5f70769dea6a75e648c0509f8} 
+FILTER\+\_\+\+Ag&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Al@{FILTER\_Al}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!FILTER\_Al@{FILTER\_Al}}}\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617a14d7bce70531a80b568bb8c4caea4eee} 
+FILTER\+\_\+\+Al&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Mo@{FILTER\_Mo}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!FILTER\_Mo@{FILTER\_Mo}}}\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617a483670671221d48c8f5a53ee360c8497} 
+FILTER\+\_\+\+Mo&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Rh@{FILTER\_Rh}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!FILTER\_Rh@{FILTER\_Rh}}}\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617ac2ed32ecbae438a03aec5dac12f2d69b} 
+FILTER\+\_\+\+Rh&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Cu@{FILTER\_Cu}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!FILTER\_Cu@{FILTER\_Cu}}}\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617ad164ab47e9baf57be14fae23d30057cc} 
+FILTER\+\_\+\+Cu&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!LEN@{LEN}}}\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617a6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!UNDEF@{UNDEF}}}\label{class_gantry_status_1_1filter_options_a9d8b471e1998226fee6b2c7768fe7617ab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_1_1filter_options_a97276e3906110243fe40ecb0d779ed16} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!getCode@{getCode}}
+\index{getCode@{getCode}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{getCode()}
+{\footnotesize\ttfamily static int Gantry\+Status\+::filter\+Options\+::get\+Code (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\label{class_gantry_status_1_1filter_options_a90604bceed91f761834afe332817e278} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!getTag@{getTag}}
+\index{getTag@{getTag}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{getTag()}
+{\footnotesize\ttfamily static String $^\wedge$ Gantry\+Status\+::filter\+Options\+::get\+Tag (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\label{class_gantry_status_1_1filter_options_ab234fdf87e9ccc15037e420cb93c9b9b} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!isValid@{isValid}}
+\index{isValid@{isValid}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{isValid()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+::filter\+Options\+::is\+Valid (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\label{class_gantry_status_1_1filter_options_ab77220c9e2513fad79bc1f79f0a0e9c9} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{setCode()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+::filter\+Options\+::set\+Code (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\label{class_gantry_status_1_1filter_options_aeda81bf6b852934880ebadd64eaeb99d} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!setTag@{setTag}}
+\index{setTag@{setTag}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{setTag()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+::filter\+Options\+::set\+Tag (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\label{class_gantry_status_1_1filter_options_acfe157ccb54921240a81c58e3181fc6c} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!status\_change@{status\_change}}
+\index{status\_change@{status\_change}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+::filter\+Options\+::status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_1_1filter_options_a16068aacf65fea624798797e5bda2421} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!code@{code}}
+\index{code@{code}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+::filter\+Options\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+\label{class_gantry_status_1_1filter_options_ad70ac43ee13ccf4acd4f2fcb305b1f04} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!tag@{tag}}
+\index{tag@{tag}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+::filter\+Options\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+\label{class_gantry_status_1_1filter_options_a8876c46338b699687cd864dff1ba3beb} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!tags@{tags}}
+\index{tags@{tags}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+::filter\+Options\+::tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}Ag\"{}, \"{}Al\"{}, \"{}Mo\"{}, \"{}Rh\"{}, \"{}Cu\"{}, \"{}UNDEF\"{} \}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_1_1filter_options_a43752fe78e7047c0a131433c4bc84176} 
+\index{GantryStatus::filterOptions@{GantryStatus::filterOptions}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatus::filterOptions@{GantryStatus::filterOptions}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ status\+\_\+change}$^\wedge$ Gantry\+Status\+::filter\+Options\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

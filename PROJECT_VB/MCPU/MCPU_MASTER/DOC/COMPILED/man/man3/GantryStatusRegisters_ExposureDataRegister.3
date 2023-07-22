@@ -1,0 +1,124 @@
+.TH "GantryStatusRegisters::ExposureDataRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::ExposureDataRegister \- This register handle the Exposure pulse data info\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBexposurePulse\fP"
+.br
+.RI "Internal class uses to group the exposure data pulses\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBsetPulse\fP (unsigned char seq, double kV, double mAs, String^ filter_tag)"
+.br
+.RI "This function sets the exposure data of a given exposure pulse number\&. "
+.ti -1c
+.RI "static bool \fBsetPulse\fP (unsigned char seq, double kV, double mAs, \fBFilterOptions::options\fP filter_code)"
+.br
+.RI "This function sets the exposure data of a given exposure pulse number\&. "
+.ti -1c
+.RI "static bool \fBgetValidatedPulse\fP (unsigned char seq, \fBexposurePulse\fP^ % pulse, bool invalidate)"
+.br
+.RI "This function retrive the data of a given pulse\&. The Pulse is then invalidated (consumed) "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static array< \fBexposurePulse\fP^> ^ \fBpulses\fP = gcnew array<\fBexposurePulse\fP^>{gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP}"
+.br
+.RI "Stores the array of data pulses\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This register handle the Exposure pulse data info\&. 
+
+The Exposure data of the exposure sequence is stored into this register\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "static bool GantryStatusRegisters::ExposureDataRegister::getValidatedPulse (unsigned char seq, \fBexposurePulse\fP^ % pulse, bool invalidate)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function retrive the data of a given pulse\&. The Pulse is then invalidated (consumed) 
+.PP
+\fBParameters\fP
+.RS 4
+\fIseq\fP This is the pulse sequence number [0:3]
+.br
+\fIpulse\fP This is the reference of a pulse structure receiving the data
+.br
+\fIinvalidate\fP This is the action after the call\&. If true the pulse is consumed
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the data are not correct or the pulse is not validated yet
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ExposureDataRegister::setPulse (unsigned char seq, double kV, double mAs, \fBFilterOptions::options\fP filter_code)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function sets the exposure data of a given exposure pulse number\&. There are a maximum of 4 possible exposure pulses\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIseq\fP This is the pulse number, [0:3] 
+.br
+\fIfilter_code\fP This is the code of the filter used in the next exposure pulse
+.br
+\fIkV\fP kV value of the next exposure pulse [20:640] 
+.br
+\fImAs\fP mAs value of the next exposure pulse [0:640] 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if data are accepted
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ExposureDataRegister::setPulse (unsigned char seq, double kV, double mAs, String^ filter_tag)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function sets the exposure data of a given exposure pulse number\&. There are a maximum of 4 possible exposure pulses\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIseq\fP This is the pulse number, [0:3] 
+.br
+\fIfilter_tag\fP This is the tag of the filter used in the next exposure pulse
+.br
+\fIkV\fP kV value of the next exposure pulse [20:640] 
+.br
+\fImAs\fP mAs value of the next exposure pulse [0:640] 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if data are accepted
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "array<\fBexposurePulse\fP^> ^ GantryStatusRegisters::ExposureDataRegister::pulses = gcnew array<\fBexposurePulse\fP^>{gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP}\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Stores the array of data pulses\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

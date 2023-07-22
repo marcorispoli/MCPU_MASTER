@@ -1,0 +1,368 @@
+\doxysection{Gantry\+Status\+Registers\+::Arm\+Status\+Register Class Reference}
+\label{class_gantry_status_registers_1_1_arm_status_register}\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+
+
+This is the status register of the Arm motorization.  
+
+
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ exposure\+\_\+mode\+\_\+options} \{ \textbf{ ARM\+\_\+\+ENA}
+, \textbf{ ARM\+\_\+\+DIS}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\begin{DoxyCompactList}\small\item\em This is the enumeration option code for the Arm Mode option The Arm Mode Option enables or disables the check of the angle during the exposure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+target\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{target\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_arm_status_register_ab79058894f065ed1419df5a5f24a8724};. \end{DoxyCompactList}\item 
+delegate void \textbf{ delegate\+\_\+validate\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{validate\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_arm_status_register_aeb372ca2392e32e9d1ed4f6c3d759ca0};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static bool \textbf{ set\+Mode} (\textbf{ exposure\+\_\+mode\+\_\+options} val)
+\begin{DoxyCompactList}\small\item\em This function set the Arm Exposure mode option (and related tag). \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Mode} (String$^\wedge$ val)
+\begin{DoxyCompactList}\small\item\em This function set the Arm Exposure mode option tag (and related code). \end{DoxyCompactList}\item 
+static void \textbf{ validate} (bool stat)
+\begin{DoxyCompactList}\small\item\em This method validates or invalidates the Arm parameters. \end{DoxyCompactList}\item 
+static bool \textbf{ is\+Busy} (void)
+\begin{DoxyCompactList}\small\item\em This funtion returns the Arm activation status. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Target} (int pos, int low, int high, int id)
+\begin{DoxyCompactList}\small\item\em This function set the new target for the Arm position. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ exposure\+\_\+mode\+\_\+tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}ARM\+\_\+\+ENA\"{}, \"{}ARM\+\_\+\+DIS\"{}, \"{}UNDEF\"{}\}
+\begin{DoxyCompactList}\small\item\em This is the option-\/tags static array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+target\+\_\+change}$^\wedge$ \textbf{ target\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the arm target is changed. \end{DoxyCompactList}\item 
+static \textbf{ delegate\+\_\+validate\+\_\+change}$^\wedge$ \textbf{ validate\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the arm target parameters are validated. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ exposure\+\_\+mode\+\_\+options} \textbf{ exposure\+\_\+mode} = \textbf{ exposure\+\_\+mode\+\_\+options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the current selected Arm Exposure Mode option code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ exposure\+\_\+mode\+\_\+tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the current selected Arm Exposure Mode option tag. \end{DoxyCompactList}\item 
+static bool \textbf{ position\+\_\+validated} = false
+\begin{DoxyCompactList}\small\item\em Validation status. \end{DoxyCompactList}\item 
+static int \textbf{ position\+\_\+target} = 0
+\begin{DoxyCompactList}\small\item\em Validated target position. \end{DoxyCompactList}\item 
+static int \textbf{ position}
+\begin{DoxyCompactList}\small\item\em Current Arm position. \end{DoxyCompactList}\item 
+static int \textbf{ allowed\+\_\+low} = 0
+\begin{DoxyCompactList}\small\item\em Lower acceptable angle (°) \end{DoxyCompactList}\item 
+static int \textbf{ allowed\+\_\+high} = 0
+\begin{DoxyCompactList}\small\item\em Higher acceptable angle (°) \end{DoxyCompactList}\item 
+static bool \textbf{ executing} = false
+\begin{DoxyCompactList}\small\item\em Command is in execution. \end{DoxyCompactList}\item 
+static unsigned short \textbf{ executing\+\_\+id} = 0
+\begin{DoxyCompactList}\small\item\em AWS command Id. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This is the status register of the Arm motorization. 
+
+There are several features that this register allow to handle\+:
+\begin{DoxyItemize}
+\item Arm Angle verification option\+: enables or disables the test on the angle validity during exposure;
+\item Arm target angle and projection setting\+: allow to handles the arm positioning 
+\end{DoxyItemize}
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1_arm_status_register_adb86322e76d92984b1c2a7883968cd93} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!exposure\_mode\_options@{exposure\_mode\_options}}
+\index{exposure\_mode\_options@{exposure\_mode\_options}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{exposure\_mode\_options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::exposure\+\_\+mode\+\_\+options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+This is the enumeration option code for the Arm Mode option The Arm Mode Option enables or disables the check of the angle during the exposure. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ARM\_ENA@{ARM\_ENA}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!ARM\_ENA@{ARM\_ENA}}}\label{class_gantry_status_registers_1_1_arm_status_register_adb86322e76d92984b1c2a7883968cd93a3631b981cf9d9f7abdb4b05083385920} 
+ARM\+\_\+\+ENA&Enables the Angle range check during exposure;. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ARM\_DIS@{ARM\_DIS}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!ARM\_DIS@{ARM\_DIS}}}\label{class_gantry_status_registers_1_1_arm_status_register_adb86322e76d92984b1c2a7883968cd93ac83b71bef032519711e2596974ea24cf} 
+ARM\+\_\+\+DIS&Disables the Angle range check during the exposure; ~\newline
+ \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1_arm_status_register_adb86322e76d92984b1c2a7883968cd93a6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1_arm_status_register_adb86322e76d92984b1c2a7883968cd93ab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1_arm_status_register_ad85d90ad328d19f2fe2b0524e52a4510} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!delegate\_target\_change@{delegate\_target\_change}}
+\index{delegate\_target\_change@{delegate\_target\_change}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{delegate\_target\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::delegate\+\_\+target\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{target\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_arm_status_register_ab79058894f065ed1419df5a5f24a8724};. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_a60dd4950ea35adbe631448307e4caf0b} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!delegate\_validate\_change@{delegate\_validate\_change}}
+\index{delegate\_validate\_change@{delegate\_validate\_change}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{delegate\_validate\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::delegate\+\_\+validate\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{validate\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_arm_status_register_aeb372ca2392e32e9d1ed4f6c3d759ca0};. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_ad97d582853f6bf8559baeeda7952feb1} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!isBusy@{isBusy}}
+\index{isBusy@{isBusy}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{isBusy()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::is\+Busy (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This funtion returns the Arm activation status. 
+
+\begin{DoxyReturn}{Returns}
+true if the Arm is executing a command
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_arm_status_register_af23fd78c0e50c41e9489dddbedf92d69} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!setMode@{setMode}}
+\index{setMode@{setMode}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{setMode()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::set\+Mode (\begin{DoxyParamCaption}\item[{\textbf{ exposure\+\_\+mode\+\_\+options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the Arm Exposure mode option (and related tag). 
+
+No change value event is generated
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the option-\/code to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_arm_status_register_a673066d3dfcf5c4c4d0d2d2d52f6818a} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!setMode@{setMode}}
+\index{setMode@{setMode}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{setMode()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::set\+Mode (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the Arm Exposure mode option tag (and related code). 
+
+No change value event is generated
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_arm_status_register_a7825c9208667c604534fa7782e987b9b} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!setTarget@{setTarget}}
+\index{setTarget@{setTarget}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{setTarget()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::set\+Target (\begin{DoxyParamCaption}\item[{int}]{pos,  }\item[{int}]{low,  }\item[{int}]{high,  }\item[{int}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the new target for the Arm position. 
+
+If the target should change the event \doxyref{validate\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_arm_status_register_aeb372ca2392e32e9d1ed4f6c3d759ca0} and the event \doxyref{target\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_arm_status_register_ab79058894f065ed1419df5a5f24a8724} are generated.
+
+The target is automatically validated!
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & target position in (°)\\
+\hline
+{\em low} & lower acceptable range (°)\\
+\hline
+{\em high} & higher acceptable range (°)\\
+\hline
+{\em id} & identifier of the AWS command\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the target is validated
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_arm_status_register_ad5409a8c08cbf91cdcd8dc6929bc2254} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!validate@{validate}}
+\index{validate@{validate}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{validate()}
+{\footnotesize\ttfamily static void Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::validate (\begin{DoxyParamCaption}\item[{bool}]{stat }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This method validates or invalidates the Arm parameters. 
+
+In case the data are validated, the exposure process evaluate the correct position of the ARM. In case the data are invalidated the exposure cannot start.
+
+When the validation status changes, the \doxyref{validate\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_arm_status_register_aeb372ca2392e32e9d1ed4f6c3d759ca0} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em stat} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1_arm_status_register_a4b5347cc4d03df2c268ed929b4991370} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!allowed\_high@{allowed\_high}}
+\index{allowed\_high@{allowed\_high}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{allowed\_high}
+{\footnotesize\ttfamily int Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::allowed\+\_\+high = 0\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Higher acceptable angle (°) 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_a261794e6dad88d47d59004ccb6984bd9} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!allowed\_low@{allowed\_low}}
+\index{allowed\_low@{allowed\_low}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{allowed\_low}
+{\footnotesize\ttfamily int Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::allowed\+\_\+low = 0\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Lower acceptable angle (°) 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_a808ed6ed35af6cba8f0efdd402a84237} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!executing@{executing}}
+\index{executing@{executing}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{executing}
+{\footnotesize\ttfamily bool Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::executing = false\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Command is in execution. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_aac289c6bce067f71f03b95678fc9cb6e} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!executing\_id@{executing\_id}}
+\index{executing\_id@{executing\_id}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{executing\_id}
+{\footnotesize\ttfamily unsigned short Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::executing\+\_\+id = 0\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+AWS command Id. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_a495db11bc22cce7707877870839e6f30} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!exposure\_mode@{exposure\_mode}}
+\index{exposure\_mode@{exposure\_mode}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{exposure\_mode}
+{\footnotesize\ttfamily \textbf{ exposure\+\_\+mode\+\_\+options} Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::exposure\+\_\+mode = \textbf{ exposure\+\_\+mode\+\_\+options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the current selected Arm Exposure Mode option code. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_ae3851ab19b088ff7805a5766b5a2b5bb} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!exposure\_mode\_tag@{exposure\_mode\_tag}}
+\index{exposure\_mode\_tag@{exposure\_mode\_tag}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{exposure\_mode\_tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::exposure\+\_\+mode\+\_\+tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the current selected Arm Exposure Mode option tag. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_a0814a86192384cdee84febac3839a71d} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!exposure\_mode\_tags@{exposure\_mode\_tags}}
+\index{exposure\_mode\_tags@{exposure\_mode\_tags}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{exposure\_mode\_tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::exposure\+\_\+mode\+\_\+tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}ARM\+\_\+\+ENA\"{}, \"{}ARM\+\_\+\+DIS\"{}, \"{}UNDEF\"{}\}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This is the option-\/tags static array. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_ad05ad47ddd40b5652c9f80d28cdef882} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!position@{position}}
+\index{position@{position}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{position}
+{\footnotesize\ttfamily int Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::position\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Current Arm position. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_a148b7b05bbd56cd47617eedf2b4c7db6} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!position\_target@{position\_target}}
+\index{position\_target@{position\_target}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{position\_target}
+{\footnotesize\ttfamily int Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::position\+\_\+target = 0\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Validated target position. 
+
+\label{class_gantry_status_registers_1_1_arm_status_register_a81310c959a5b5d33aca2b32daa400991} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!position\_validated@{position\_validated}}
+\index{position\_validated@{position\_validated}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{position\_validated}
+{\footnotesize\ttfamily bool Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::position\+\_\+validated = false\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Validation status. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1_arm_status_register_ab79058894f065ed1419df5a5f24a8724} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!target\_change\_event@{target\_change\_event}}
+\index{target\_change\_event@{target\_change\_event}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{target\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+target\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::target\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the arm target is changed. 
+
+Usage\+: \doxyref{Arm\+Status\+Register\+::target\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1_arm_status_register_ab79058894f065ed1419df5a5f24a8724} += gcnew delegate\+\_\+target\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) \label{class_gantry_status_registers_1_1_arm_status_register_aeb372ca2392e32e9d1ed4f6c3d759ca0} 
+\index{GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}!validate\_change\_event@{validate\_change\_event}}
+\index{validate\_change\_event@{validate\_change\_event}!GantryStatusRegisters::ArmStatusRegister@{GantryStatusRegisters::ArmStatusRegister}}
+\doxysubsubsection{validate\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+validate\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::\+Arm\+Status\+Register\+::validate\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the arm target parameters are validated. 
+
+Usage\+: \doxyref{Arm\+Status\+Register\+::validate\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1_arm_status_register_aeb372ca2392e32e9d1ed4f6c3d759ca0} += gcnew delegate\+\_\+validate\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

@@ -1,0 +1,187 @@
+\doxysection{Gantry\+Status\+Registers\+::paddle\+Options Class Reference}
+\label{class_gantry_status_registers_1_1paddle_options}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ PAD\+\_\+24x30} = 0
+, \textbf{ PAD\+\_\+18x24\+\_\+C}
+, \textbf{ PAD\+\_\+18x24\+\_\+L}
+, \textbf{ PAD\+\_\+18x24\+\_\+R}
+, \newline
+\textbf{ PAD\+\_\+9x21}
+, \textbf{ PAD\+\_\+10x24}
+, \textbf{ PAD\+\_\+\+D75}
+, \textbf{ PAD\+\_\+\+BIOP2D}
+, \newline
+\textbf{ PAD\+\_\+\+BIOP3D}
+, \textbf{ PAD\+\_\+\+TOMO}
+, \textbf{ PAD\+\_\+9x9}
+, \textbf{ PAD\+\_\+\+UNDETECTED}
+, \newline
+\textbf{ PAD\+\_\+\+UNLOCKED}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+status\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1paddle_options_aed323690636513ce6d6a44adcb2746f3};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}PAD\+\_\+24x30\"{}, \"{}PAD\+\_\+18x24\+\_\+\+C\"{}, \"{}PAD\+\_\+18x24\+\_\+\+L\"{}, \"{}PAD\+\_\+18x24\+\_\+\+R\"{}, \"{}PADCOLLI\+\_\+9x21\"{}, \"{}PAD\+\_\+10x24\"{}, \"{}PAD\+\_\+\+D75\"{}, \"{}PAD\+\_\+\+BIOP2\+D\"{}, \"{}PAD\+\_\+\+BIOP3\+D\"{}, \"{}PAD\+\_\+\+TOMO\"{}, \"{}PAD\+\_\+9x9\"{}, \"{}PAD\+\_\+\+UNDETECTED\"{}, \"{}PAD\+\_\+\+UNLOCKED\"{}, \"{}UNDEF\"{} \}
+\begin{DoxyCompactList}\small\item\em This is the option-\/tags static array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the register option-\/code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the register tag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04} 
+\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::paddle\+Options\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_24x30@{PAD\_24x30}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_24x30@{PAD\_24x30}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04abc21baa1880ee1c12703a7c4d02c3c27} 
+PAD\+\_\+24x30&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_18x24\_C@{PAD\_18x24\_C}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_18x24\_C@{PAD\_18x24\_C}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04aae26a2b6acb8c5843450fbcbc33f7854} 
+PAD\+\_\+18x24\+\_\+C&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_18x24\_L@{PAD\_18x24\_L}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_18x24\_L@{PAD\_18x24\_L}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04ad01fefe05be627628edb756a038cede9} 
+PAD\+\_\+18x24\+\_\+L&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_18x24\_R@{PAD\_18x24\_R}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_18x24\_R@{PAD\_18x24\_R}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04a24f21144488d72715691dcae3da4834b} 
+PAD\+\_\+18x24\+\_\+R&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_9x21@{PAD\_9x21}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_9x21@{PAD\_9x21}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04a60e6ed7cbd24ddc900e504ae44a12b84} 
+PAD\+\_\+9x21&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_10x24@{PAD\_10x24}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_10x24@{PAD\_10x24}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04ab17a87f884cac5cf525045b235d0c29e} 
+PAD\+\_\+10x24&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_D75@{PAD\_D75}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_D75@{PAD\_D75}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04aeaacb2acb31d29239b32fb0df12a2cf7} 
+PAD\+\_\+\+D75&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_BIOP2D@{PAD\_BIOP2D}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_BIOP2D@{PAD\_BIOP2D}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04abcdbb59a380d3bba262e3ed49bafab57} 
+PAD\+\_\+\+BIOP2D&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_BIOP3D@{PAD\_BIOP3D}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_BIOP3D@{PAD\_BIOP3D}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04ad9eeb1bef6d4ed391773137ff8b81b2e} 
+PAD\+\_\+\+BIOP3D&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_TOMO@{PAD\_TOMO}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_TOMO@{PAD\_TOMO}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04a6e625fbc28ab9102e8906389f0f6c9a6} 
+PAD\+\_\+\+TOMO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_9x9@{PAD\_9x9}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_9x9@{PAD\_9x9}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04a0f5a5c97412910afd48f5162245803b0} 
+PAD\+\_\+9x9&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_UNDETECTED@{PAD\_UNDETECTED}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_UNDETECTED@{PAD\_UNDETECTED}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04a2696aa22ce60b88e12666881a6fd5920} 
+PAD\+\_\+\+UNDETECTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAD\_UNLOCKED@{PAD\_UNLOCKED}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!PAD\_UNLOCKED@{PAD\_UNLOCKED}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04abdab2ccc6e33842f75e7890b14fbec9d} 
+PAD\+\_\+\+UNLOCKED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04a6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1paddle_options_a527951e3d30ebb8ce522b97001568d04ab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1paddle_options_a037bbd78f0ca81c26c230457c52362a3} 
+\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!delegate\_status\_change@{delegate\_status\_change}}
+\index{delegate\_status\_change@{delegate\_status\_change}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}
+\doxysubsubsection{delegate\_status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::paddle\+Options\+::delegate\+\_\+status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1paddle_options_aed323690636513ce6d6a44adcb2746f3};. 
+
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1paddle_options_a4127319fb1e683859b92e81cdcff760e} 
+\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!code@{code}}
+\index{code@{code}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::paddle\+Options\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register option-\/code. 
+
+\label{class_gantry_status_registers_1_1paddle_options_ae1225dc72cfd4867f39623d67f31b2f7} 
+\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!tag@{tag}}
+\index{tag@{tag}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::paddle\+Options\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register tag. 
+
+\label{class_gantry_status_registers_1_1paddle_options_a2a1f1fcae132ac9854b29168bbea493e} 
+\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::paddle\+Options\+::tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}PAD\+\_\+24x30\"{}, \"{}PAD\+\_\+18x24\+\_\+\+C\"{}, \"{}PAD\+\_\+18x24\+\_\+\+L\"{}, \"{}PAD\+\_\+18x24\+\_\+\+R\"{}, \"{}PADCOLLI\+\_\+9x21\"{}, \"{}PAD\+\_\+10x24\"{}, \"{}PAD\+\_\+\+D75\"{}, \"{}PAD\+\_\+\+BIOP2\+D\"{}, \"{}PAD\+\_\+\+BIOP3\+D\"{}, \"{}PAD\+\_\+\+TOMO\"{}, \"{}PAD\+\_\+9x9\"{}, \"{}PAD\+\_\+\+UNDETECTED\"{}, \"{}PAD\+\_\+\+UNLOCKED\"{}, \"{}UNDEF\"{} \}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This is the option-\/tags static array. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1paddle_options_aed323690636513ce6d6a44adcb2746f3} 
+\index{GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatusRegisters::paddleOptions@{GantryStatusRegisters::paddleOptions}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::paddle\+Options\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: \doxyref{xray\+Completed\+Options\+::status\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab} += gcnew delegate\+\_\+status\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

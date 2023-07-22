@@ -1,0 +1,157 @@
+.TH "awsProtoCommands" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsProtoCommands \- AWS Protocol Command set
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_OpenStudy\fP (void)"
+.br
+.RI "This function Open the study\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_CloseStudy\fP (void)"
+.br
+.RI "This command executes the Close Study command\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_ProjectionList\fP (void)"
+.br
+.RI "This command populate the available projection list\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_ArmPosition\fP (void)"
+.br
+.RI "This function activate the ARM to a target position;\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_AbortProjection\fP (void)"
+.br
+.RI "This command invalidate any selected projection\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_TrxPosition\fP (void)"
+.br
+.RI "This command executes the TRX activation\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_TomoConfig\fP (void)"
+.br
+.RI "This command select the current Tomo sequence from the Tomo Configuration file\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_ExposureMode\fP (void)"
+.br
+.RI "This command select the Exposure Mode for the incoming Exposure sequence\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_ExposureData\fP (void)"
+.br
+.RI "This command assignes the exposure parameters for the next Exposure pulse\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_EnableXrayPush\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::GET_ReadyForExposure\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_StartXraySequence\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::GET_Compressor\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::GET_Components\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::GET_Trx\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::GET_Arm\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::GET_TubeTemperature\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::SET_Language\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_PowerOff\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::AWS_NotRecognizedCommand\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.br
+ 
+.SH "Function Documentation"
+.PP 
+.SS "void awsProtocol::AWS_NotRecognizedCommand (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::EXEC_AbortProjection (void)\fC [private]\fP"
+
+.PP
+This command invalidate any selected projection\&. The ARM is not activated with this command!
+.PP
+The ArmStatus::validate_change_event() is generated\&.
+.SS "void awsProtocol::EXEC_ArmPosition (void)\fC [private]\fP"
+
+.PP
+This function activate the ARM to a target position;\&. The target data in the ArmStatus are updated;
+.PP
+if the target angle is different of more than 1° then the ArmStatus::target_change_event() is generated and the ARM activation initiates\&.
+.SS "void awsProtocol::EXEC_CloseStudy (void)\fC [private]\fP"
+
+.PP
+This command executes the Close Study command\&. The study is closed, and the gantryOperatingStatusOptions::status_change_event() is generated\&.
+.SS "void awsProtocol::EXEC_OpenStudy (void)\fC [private]\fP"
+
+.PP
+This function Open the study\&. The patient name is assigned and the global gantryOperatingStatusOptions is changed\&.
+.PP
+The gantryOperatingStatusOptions::status_change_event() is generated
+.SS "void awsProtocol::EXEC_PowerOff (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::EXEC_StartXraySequence (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::EXEC_TrxPosition (void)\fC [private]\fP"
+
+.PP
+This command executes the TRX activation\&. If the TRX target is changed, the TrxStatus::target_change_event() is generated,
+.SS "void awsProtocol::GET_Arm (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::GET_Components (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::GET_Compressor (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::GET_ReadyForExposure (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::GET_Trx (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::GET_TubeTemperature (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::SET_EnableXrayPush (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::SET_ExposureData (void)\fC [private]\fP"
+
+.PP
+This command assignes the exposure parameters for the next Exposure pulse\&. 
+.SS "void awsProtocol::SET_ExposureMode (void)\fC [private]\fP"
+
+.PP
+This command select the Exposure Mode for the incoming Exposure sequence\&. 
+.SS "void awsProtocol::SET_Language (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void awsProtocol::SET_ProjectionList (void)\fC [private]\fP"
+
+.PP
+This command populate the available projection list\&. The projectionOptions::list is updated;
+.PP
+The projectionOptions::lista_change_event() is generated;
+.SS "void awsProtocol::SET_TomoConfig (void)\fC [private]\fP"
+
+.PP
+This command select the current Tomo sequence from the Tomo Configuration file\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

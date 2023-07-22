@@ -1,0 +1,203 @@
+.TH "GantryStatusRegisters::TrxStatus" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::TrxStatus \- This class handles the Trx motorization\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBTRX_SCOUT\fP = 0, \fBTRX_BP_R\fP, \fBTRX_BP_L\fP, \fBTRX_TOMO_H\fP, \fBTRX_TOMO_E\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration of the possible Trx target positions\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_target_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBtarget_change_event()\fP;\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisBusy\fP (void)"
+.br
+.RI "This funtion returns the Trx activation status\&. "
+.ti -1c
+.RI "static bool \fBsetTarget\fP (\fBoptions\fP tg, int id)"
+.br
+.RI "This function sets a new target for the Trx\&. "
+.ti -1c
+.RI "static bool \fBsetTarget\fP (String^ tag, int id)"
+.br
+.RI "This is the same as the \fBsetTarget(options tg, int id)\fP but with the tag as parameter\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E'}"
+.br
+.RI "This is the tags array\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_target_change\fP^ \fBtarget_change_event\fP"
+.br
+.RI "This event is generated whenver the trx target is changed\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBposition_target\fP = \fBoptions::UNDEF\fP"
+.br
+.RI "This is the Trx target position\&. "
+.ti -1c
+.RI "static \fBoptions\fP \fBcurrent_position\fP = \fBoptions::UNDEF\fP"
+.br
+.RI "This is the current Trx position 
+.br
+ "
+.ti -1c
+.RI "static bool \fBexecuting\fP = false"
+.br
+.RI "Command is in execution\&. "
+.ti -1c
+.RI "static unsigned short \fBexecuting_id\fP = 0"
+.br
+.RI "AWS command Id\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class handles the Trx motorization\&. 
+
+The Trx can be activate only in discrete positions 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::TrxStatus::options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the possible Trx target positions\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fITRX_SCOUT \fP\fP
+TRX in scout position\&. 
+.TP
+\fB\fITRX_BP_R \fP\fP
+TRX in Biopsy Right position\&. 
+.TP
+\fB\fITRX_BP_L \fP\fP
+TRX in Biopsy Left position\&. 
+.TP
+\fB\fITRX_TOMO_H \fP\fP
+TRX in Tomo Home position\&. 
+.TP
+\fB\fITRX_TOMO_E \fP\fP
+TRX in Tomo End position 
+.br
+ 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void GantryStatusRegisters::TrxStatus::delegate_target_change (void)"
+
+.PP
+This is the delegate of the \fBtarget_change_event()\fP;\&. 
+.SS "static bool GantryStatusRegisters::TrxStatus::isBusy (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This funtion returns the Trx activation status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if the Trx is executing a command
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::TrxStatus::setTarget (\fBoptions\fP tg, int id)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function sets a new target for the Trx\&. If the target is changed, the \fBtarget_change_event()\fP is generated
+.PP
+\fBParameters\fP
+.RS 4
+\fItg\fP this is the target option code
+.br
+\fIid\fP this is the aws command identifier
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the target is successfully set
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::TrxStatus::setTarget (String^ tag, int id)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This is the same as the \fBsetTarget(options tg, int id)\fP but with the tag as parameter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItag\fP Trx Target Tag
+.br
+\fIid\fP this is the aws command identifier
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the target is successfully set
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBoptions\fP GantryStatusRegisters::TrxStatus::current_position = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current Trx position 
+.br
+ 
+.SS "bool GantryStatusRegisters::TrxStatus::executing = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Command is in execution\&. 
+.SS "unsigned short GantryStatusRegisters::TrxStatus::executing_id = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+AWS command Id\&. 
+.SS "\fBoptions\fP GantryStatusRegisters::TrxStatus::position_target = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the Trx target position\&. 
+.SS "const array<String^> ^ GantryStatusRegisters::TrxStatus::tags = gcnew array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E'}\fC [static]\fP"
+
+.PP
+This is the tags array\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_target_change\fP^ GantryStatusRegisters::TrxStatus::target_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the trx target is changed\&. Usage: \fBTrxStatus::target_change_event\fP += gcnew delegate_target_change(&some_class, some_class::func) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

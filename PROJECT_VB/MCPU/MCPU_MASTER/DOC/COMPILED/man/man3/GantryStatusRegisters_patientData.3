@@ -1,0 +1,70 @@
+.TH "GantryStatusRegisters::patientData" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::patientData \- This is the class handling the patient name\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetName\fP (String^ val)"
+.br
+.RI "This function sets the current patient name\&. "
+.ti -1c
+.RI "static String ^ \fBgetName\fP ()"
+.br
+.RI "This function returns the current patient name\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static String ^ \fBpatient_name\fP = ''"
+.br
+.RI "Patient name register\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the class handling the patient name\&. 
+
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static String ^ GantryStatusRegisters::patientData::getName ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the current patient name\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current assigned patient name
+.RE
+.PP
+
+.SS "static void GantryStatusRegisters::patientData::setName (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function sets the current patient name\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP The name assigned
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "String ^ GantryStatusRegisters::patientData::patient_name = ''\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Patient name register\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

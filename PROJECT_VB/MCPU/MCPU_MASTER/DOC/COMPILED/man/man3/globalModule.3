@@ -1,0 +1,128 @@
+.TH "globalModule" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+globalModule \- Gantry Global Status Registers
+.PP
+ \- This is the module implementing the Gantry Global Status registers\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBGantryStatusRegisters\fP"
+.br
+.RI "This is the class implementing the AWS Interface Module\&. "
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBGantryStatusRegisters::xrayCompletedOptions\fP"
+.br
+.RI "This class implements the XRAY completed status register\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::TomoConfigRegister\fP"
+.br
+.RI "This class implements the Tomo configuration selection options\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::OperatingStatusRegister\fP"
+.br
+.RI "This is the Gantry operating status register definition\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ProjectionRegister\fP"
+.br
+.RI "This is the projection handling option class\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ComponentRegister\fP"
+.br
+.RI "This register handle the Component that can be used during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::CollimatorComponentRegister\fP"
+.br
+.RI "This register handles the component applicable to the collimator\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PaddleRegister\fP"
+.br
+.RI "This register handles the Paddles identifiable by the compressor device\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ErrorRegister\fP"
+.br
+.RI "This is the Error handling register\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureModeRegister\fP"
+.br
+.RI "This class handles the exposure type status\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::DetectorTypeRegister\fP"
+.br
+.RI "This class handles the Detector model selection\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::CompressionModeRegister\fP"
+.br
+.RI "This class handles the Compression behavior during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::CollimationModeRegister\fP"
+.br
+.RI "This class handles the Collimation behavior during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PatientProtectionRegister\fP"
+.br
+.RI "This class handles the Usage of the patient protection during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ArmStatusRegister\fP"
+.br
+.RI "This is the status register of the Arm motorization\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PatientDataRegister\fP"
+.br
+.RI "This is the class handling the patient name\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
+.br
+.RI "This class handles the Trx motorization\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::FilterOptions\fP"
+.br
+.RI "This class implements the Filter selection interface\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the module implementing the Gantry Global Status registers\&. 
+
+The Gantry internal status is defined by several data that represent the current status of some device item or system setting\&.
+.PP
+Every register status is implemented with a dedicated static class with the following commmon characteristics:
+.IP "\(bu" 2
+It is define an enumeration code;
+.IP "\(bu" 2
+It is defined an array of strings rapresenting the tags of every code;
+.IP "\(bu" 2
+It is defined a set of functions to access the internal data;
+.IP "\(bu" 2
+It is defined one or more event associated to the internal data changing\&.
+.PP
+.PP
+The class is commonly defined with:
+.IP "\(bu" 2
+some_class::options::<enumeration_value>
+.IP "\(bu" 2
+some_class::tags[] ={'tag0',\&.\&.,'tagn'}
+.IP "\(bu" 2
+some_class::getCode(String^ tag)
+.IP "\(bu" 2
+some_class::getTag(some_class::options::<enum value>)
+.IP "\(bu" 2
+some_class::setCode(String^ tag)
+.IP "\(bu" 2
+some_class::setTag(some_class::options::<enum value>)
+.IP "\(bu" 2
+some_class::isValid(String^ tag) 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

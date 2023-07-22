@@ -1,0 +1,1100 @@
+\doxysection{C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/gantry\+\_\+global\+\_\+status.h}
+\label{gantry__global__status_8h_source}\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{namespace\ }GantryStatusRegisters\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{using\ namespace\ }System;}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{using\ namespace\ }System::Collections::Generic;}
+\DoxyCodeLine{00039\ \ \ \ \ }
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{ref\ class}\ xrayCompletedOptions\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ XRAY\_COMPLETED\_OK\ =\ 0,\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ XRAY\_COMPLETED\_PARTIAL\_DOSE\ =\ 1,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ XRAY\_COMPLETED\_NO\_DOSE\ =\ 2,}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF=LEN}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \{\textcolor{stringliteral}{"{}OK"{}},\ \textcolor{stringliteral}{"{}PARTIAL"{}},\ \textcolor{stringliteral}{"{}NOK"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)\ i;}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{00139\ \ \ \ \ \};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{ref\ class}\ filterOptionsRegister\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ FILTER\_Ag,\ }
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ FILTER\_Al,\ }
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ FILTER\_Mo,\ }
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ FILTER\_Rh,\ }
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ FILTER\_Cu,\ }
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}Ag"{}},\ \textcolor{stringliteral}{"{}Al"{}},\ \textcolor{stringliteral}{"{}Mo"{}},\ \textcolor{stringliteral}{"{}Rh"{}},\ \textcolor{stringliteral}{"{}Cu"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\ \};\ }
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{00243\ \ \ \ \ \};}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00259\ \ \ \ \ \textcolor{keyword}{ref\ class}\ TomoConfigRegister\ \{}
+\DoxyCodeLine{00260\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\_conf\ \{}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ TOMO\_1F,\ }
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \ \ \ \ TOMO\_2F,\ }
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ TOMO\_3F,\ }
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ TOMO\_4F,\ }
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ TOMO\_5F,\ }
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\_conf\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}TOMO\_1F"{}},\ \textcolor{stringliteral}{"{}TOMO\_2F"{}},\ \textcolor{stringliteral}{"{}TOMO\_3F"{}},\ \textcolor{stringliteral}{"{}TOMO\_4F"{}},\ \textcolor{stringliteral}{"{}TOMO\_5F"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\ \};\ }
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\_seq\ \{}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ NARROW,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \ \ \ \ INTERMEDIATE,\ \ \ }
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \ \ \ \ WIDE,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \ \ \ \ SUPERWIDE,\ \ \ \ \ \ }
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\_seq\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}N"{}},\ \textcolor{stringliteral}{"{}I"{}},\ \textcolor{stringliteral}{"{}W"{}},\ \textcolor{stringliteral}{"{}SW"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\ \};\ }
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_selection\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_selection\_change\string^\ selection\_change\_event;}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ select(String\string^\ conftag,\ String\string^\ seqtag)\ \{}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i;}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ options\_conf\ curconf\ =\ confid;}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ options\_seq\ curseq\ =\ seqid;}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (i\ =\ 0;\ i\ <\ (int)options\_conf::LEN;\ i++)\ \{}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (conftag\ ==\ tags\_conf[i])\ \{\ }
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ confid\ =\ (options\_conf)\ i;}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ ==\ (\textcolor{keywordtype}{int})options\_conf::LEN)\ \{}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ confid\ =\ options\_conf::UNDEF;}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ seqid\ =\ options\_seq::UNDEF;}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (i\ =\ 0;\ i\ <\ (int)options\_seq::LEN;\ i++)\ \{}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (seqtag\ ==\ tags\_seq[i])\ \{}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ seqid\ =\ (options\_seq)i;}
+\DoxyCodeLine{00330\ }
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ In\ case\ of\ change,\ calls\ the\ delegate}}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(\ (confid\ !=\ curconf)\ ||\ (seqid\ !=\ curseq))}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ selection\_change\_event();}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00338\ }
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ \ \ \ \ confid\ =\ options\_conf::UNDEF;}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ \ \ \ \ seqid\ =\ options\_seq::UNDEF;}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00342\ }
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\_conf\ confid\ =\ options\_conf::UNDEF;\ }
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\_seq\ seqid\ =\ options\_seq::UNDEF;\ }
+\DoxyCodeLine{00349\ \ \ \ \ \};}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00355\ \ \ \ \ \textcolor{keyword}{ref\ class}\ OperatingStatusRegister\ \{}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \ \ \ \ GANTRY\_STARTUP\ =\ 0,\ }
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \ \ \ \ GANTRY\_IDLE,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \ \ \ \ GANTRY\_OPEN\_STUDY,\ \ }
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \ \ \ \ GANTRY\_SERVICE,\ \ \ \ \ }
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \ \{\ \textcolor{stringliteral}{"{}GANTRY\_STARTUP"{}},\ \textcolor{stringliteral}{"{}GANTRY\_IDLE"{}},\ \textcolor{stringliteral}{"{}GANTRY\_OPEN\_STUDY"{}},\ \textcolor{stringliteral}{"{}GANTRY\_SERVICE"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\ \};}
+\DoxyCodeLine{00370\ }
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00372\ }
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00394\ }
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00420\ }
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00437\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00444\ }
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00446\ }
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isIDLE(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ (code\ ==\ options::GANTRY\_IDLE);\ \}}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isOPEN(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ (code\ ==\ options::GANTRY\_OPEN\_STUDY);\ \}}
+\DoxyCodeLine{00449\ \ \ }
+\DoxyCodeLine{00450\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{00453\ }
+\DoxyCodeLine{00454\ }
+\DoxyCodeLine{00455\ \ \ \ \ \};}
+\DoxyCodeLine{00456\ }
+\DoxyCodeLine{00464\ \ \ \ \ \textcolor{keyword}{ref\ class}\ ProjectionRegister\ \{}
+\DoxyCodeLine{00465\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00466\ }
+\DoxyCodeLine{00471\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ \ \ \ \ LCC\ =\ 0,}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ \ \ LFB,}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \ \ \ \ LISO,}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \ \ \ \ LLM,}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ \ \ \ \ LLMO,}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ \ \ \ \ LML,}
+\DoxyCodeLine{00478\ \ \ \ \ \ \ \ \ \ \ \ \ LMLO,}
+\DoxyCodeLine{00479\ \ \ \ \ \ \ \ \ \ \ \ \ LSIO,}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ \ \ \ \ RCC,}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ \ \ \ \ RFB,}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \ \ \ \ RISO,}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ \ \ \ \ RLM,}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ \ \ \ \ RLMO,}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ \ \ \ \ RML,}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ \ \ \ \ \ \ RMLO,}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ \ \ \ \ RSIO,}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \{\ \textcolor{stringliteral}{"{}LCC"{}},\ \textcolor{stringliteral}{"{}LFB"{}},\ \textcolor{stringliteral}{"{}LISO"{}},\ \textcolor{stringliteral}{"{}LLM"{}},\ \textcolor{stringliteral}{"{}LLMO"{}},\ \textcolor{stringliteral}{"{}LML"{}},\ \textcolor{stringliteral}{"{}LMLO"{}},\ \textcolor{stringliteral}{"{}LSIO"{}},\ \textcolor{stringliteral}{"{}RCC"{}},\ \textcolor{stringliteral}{"{}RFB"{}},\ \textcolor{stringliteral}{"{}RISO"{}},\ \textcolor{stringliteral}{"{}RLM"{}},\ \textcolor{stringliteral}{"{}RLMO"{}},\ \textcolor{stringliteral}{"{}RML"{}},\ \textcolor{stringliteral}{"{}RMLO"{}},\ \textcolor{stringliteral}{"{}RSIO"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_lista\_change(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00494\ }
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_lista\_change\string^\ lista\_change\_event;}
+\DoxyCodeLine{00501\ }
+\DoxyCodeLine{00502\ }
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00504\ }
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00511\ }
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00519\ }
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00526\ }
+\DoxyCodeLine{00527\ }
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00538\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00539\ }
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00545\ }
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00547\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00553\ }
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00569\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00571\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00577\ }
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00579\ }
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setList(List<int>\string^\ lista)\ \{}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (lista-\/>Count\ >=\ (\textcolor{keywordtype}{int})options::LEN)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ lista-\/>Count;\ i++)\ \{}
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (lista[i]\ >=\ (\textcolor{keywordtype}{int})options::LEN)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00592\ }
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \ \ \ \ list\ =\ lista;}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \ \ \ \ lista\_change\_event();}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00597\ }
+\DoxyCodeLine{00598\ }
+\DoxyCodeLine{00599\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ List<int>\string^\ list\ =\ gcnew\ List<int>\ \{\};\ }
+\DoxyCodeLine{00603\ }
+\DoxyCodeLine{00604\ \ \ \ \ \};}
+\DoxyCodeLine{00605\ }
+\DoxyCodeLine{00606\ \ \ \ \ \textcolor{keyword}{ref\ class}\ ComponentRegister\ \{}
+\DoxyCodeLine{00607\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00608\ }
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00610\ \ \ \ \ \ \ \ \ \ \ \ \ COMPONENT\_UNDETECTED\ =\ 0,}
+\DoxyCodeLine{00611\ \ \ \ \ \ \ \ \ \ \ \ \ COMPONENT\_PROTECTION\_3D,}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ \ \ \ \ COMPONENT\_MAG15,}
+\DoxyCodeLine{00613\ \ \ \ \ \ \ \ \ \ \ \ \ COMPONENT\_MAG18,}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ \ \ \ \ COMPONENT\_MAG20,}
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ \ \ \ \ COMPONENT\_BIOPSY,}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00618\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00619\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \{\ \textcolor{stringliteral}{"{}COMPONENT\_UNDETECTED"{}},\ \textcolor{stringliteral}{"{}PROTECTION\_3D"{}},\ \textcolor{stringliteral}{"{}MAG\_15"{}},\ \textcolor{stringliteral}{"{}MAG\_18"{}},\ \textcolor{stringliteral}{"{}MAG\_20"{}},\ \textcolor{stringliteral}{"{}BIOPSY"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};}
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00621\ }
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00628\ }
+\DoxyCodeLine{00634\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00635\ }
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00642\ }
+\DoxyCodeLine{00643\ }
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00655\ }
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00661\ }
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00669\ }
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00686\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00687\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00688\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00689\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00690\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00693\ }
+\DoxyCodeLine{00694\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00695\ }
+\DoxyCodeLine{00696\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00697\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{00699\ \ \ \ \ \};}
+\DoxyCodeLine{00700\ }
+\DoxyCodeLine{00701\ \ \ \ \ \textcolor{keyword}{ref\ class}\ CollimatorComponentRegister\ \{}
+\DoxyCodeLine{00702\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00703\ }
+\DoxyCodeLine{00704\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00705\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_COMPONENT\_UNDETECTED\ =\ 0,}
+\DoxyCodeLine{00706\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_COMPONENT\_PROTECTION\_2D,}
+\DoxyCodeLine{00707\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_COMPONENT\_PROTECTION\_SHIFTED,}
+\DoxyCodeLine{00708\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_COMPONENT\_LEAD\_SCREEN,}
+\DoxyCodeLine{00709\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_COMPONENT\_SPECIMEN,}
+\DoxyCodeLine{00710\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00711\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \{\ \textcolor{stringliteral}{"{}COLLI\_COMPONENT\_UNDETECTED"{}},\ \textcolor{stringliteral}{"{}PROTECTION\_2D"{}},\ \textcolor{stringliteral}{"{}SHIFTED\_PROTECTION"{}},\ \textcolor{stringliteral}{"{}LEAD\_SCREEN"{}},\ \textcolor{stringliteral}{"{}SPECIMEN"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\ \};}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00715\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00716\ }
+\DoxyCodeLine{00722\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00723\ }
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00730\ }
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00737\ }
+\DoxyCodeLine{00738\ }
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00750\ }
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00752\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00753\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00754\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00756\ }
+\DoxyCodeLine{00757\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00764\ }
+\DoxyCodeLine{00773\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{00776\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00788\ }
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00790\ }
+\DoxyCodeLine{00791\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00792\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{00793\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{00794\ \ \ \ \ \};}
+\DoxyCodeLine{00795\ }
+\DoxyCodeLine{00796\ \ \ \ \ \textcolor{keyword}{ref\ class}\ PaddleRegister\ \{}
+\DoxyCodeLine{00797\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00798\ }
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_24x30\ =\ 0,}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_18x24\_C,}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_18x24\_L,}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_18x24\_R,}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_9x21,}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_10x24,}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_D75,}
+\DoxyCodeLine{00807\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_BIOP2D,}
+\DoxyCodeLine{00808\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_BIOP3D,}
+\DoxyCodeLine{00809\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_TOMO,}
+\DoxyCodeLine{00810\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_9x9,}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_UNDETECTED,}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ \ \ \ \ PAD\_UNLOCKED,}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \{\ \textcolor{stringliteral}{"{}PAD\_24x30"{}},\ \textcolor{stringliteral}{"{}PAD\_18x24\_C"{}},\ \textcolor{stringliteral}{"{}PAD\_18x24\_L"{}},\ \textcolor{stringliteral}{"{}PAD\_18x24\_R"{}},\ \textcolor{stringliteral}{"{}PADCOLLI\_9x21"{}},\ \textcolor{stringliteral}{"{}PAD\_10x24"{}},\ \textcolor{stringliteral}{"{}PAD\_D75"{}},\ \textcolor{stringliteral}{"{}PAD\_BIOP2D"{}},\ \textcolor{stringliteral}{"{}PAD\_BIOP3D"{}},\ \textcolor{stringliteral}{"{}PAD\_TOMO"{}},\ \textcolor{stringliteral}{"{}PAD\_9x9"{}},\ \textcolor{stringliteral}{"{}PAD\_UNDETECTED"{}},\ \textcolor{stringliteral}{"{}PAD\_UNLOCKED"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\ \};}
+\DoxyCodeLine{00817\ }
+\DoxyCodeLine{00818\ }
+\DoxyCodeLine{00819\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00820\ }
+\DoxyCodeLine{00826\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00827\ }
+\DoxyCodeLine{00833\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00834\ }
+\DoxyCodeLine{00840\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00841\ }
+\DoxyCodeLine{00842\ }
+\DoxyCodeLine{00852\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00853\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00854\ }
+\DoxyCodeLine{00855\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00856\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00857\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00858\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00859\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00860\ }
+\DoxyCodeLine{00861\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00862\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00863\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00865\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00866\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00868\ }
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{00878\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{00879\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{00880\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{00881\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{00882\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{00883\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00884\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00885\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00886\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00889\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00890\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00891\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00892\ }
+\DoxyCodeLine{00893\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00894\ }
+\DoxyCodeLine{00895\ \ }
+\DoxyCodeLine{00896\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{00899\ \ \ \ \ \};}
+\DoxyCodeLine{00900\ }
+\DoxyCodeLine{00906\ \ \ \ \ \textcolor{keyword}{ref\ class}\ ErrorRegister\ \{}
+\DoxyCodeLine{00907\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00908\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isError(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ error\_status;\ \}}
+\DoxyCodeLine{00909\ }
+\DoxyCodeLine{00910\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ error\_status\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ array<int>\string^\ error\_code\_list\ =\ gcnew\ array<int>\ \{\};}
+\DoxyCodeLine{00913\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ array<String\string^>\string^\ error\_string\_list\ =\ gcnew\ array<String\string^>\ \{\textcolor{stringliteral}{"{}"{}}\};}
+\DoxyCodeLine{00914\ \ \ \ \ \};}
+\DoxyCodeLine{00915\ }
+\DoxyCodeLine{00916\ }
+\DoxyCodeLine{00924\ \ \ \ \ \textcolor{keyword}{ref\ class}\ ExposureModeRegister\ \{}
+\DoxyCodeLine{00925\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00926\ }
+\DoxyCodeLine{00930\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{00931\ \ \ \ \ \ \ \ \ \ \ \ \ MAN\_2D,\ }
+\DoxyCodeLine{00932\ \ \ \ \ \ \ \ \ \ \ \ \ AEC\_2D,\ }
+\DoxyCodeLine{00933\ \ \ \ \ \ \ \ \ \ \ \ \ MAN\_3D,\ }
+\DoxyCodeLine{00934\ \ \ \ \ \ \ \ \ \ \ \ \ AEC\_3D,\ }
+\DoxyCodeLine{00935\ \ \ \ \ \ \ \ \ \ \ \ \ MAN\_COMBO,\ }
+\DoxyCodeLine{00936\ \ \ \ \ \ \ \ \ \ \ \ \ AEC\_COMBO,\ }
+\DoxyCodeLine{00937\ \ \ \ \ \ \ \ \ \ \ \ \ MAN\_AE,\ }
+\DoxyCodeLine{00938\ \ \ \ \ \ \ \ \ \ \ \ \ AEC\_AE,\ }
+\DoxyCodeLine{00939\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{00940\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{00941\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00942\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}MAN\_2D"{}},\ \textcolor{stringliteral}{"{}AEC\_2D"{}},\ \textcolor{stringliteral}{"{}MAN\_3D"{}},\ \textcolor{stringliteral}{"{}AEC\_3D"{}},\ \textcolor{stringliteral}{"{}MAN\_COMBO"{}},\ \textcolor{stringliteral}{"{}AEC\_COMBO"{}}\ ,\ \textcolor{stringliteral}{"{}MAN\_AE"{}},\ \textcolor{stringliteral}{"{}AEC\_AE"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};\ }
+\DoxyCodeLine{00943\ }
+\DoxyCodeLine{00944\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{00945\ }
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{00952\ }
+\DoxyCodeLine{00953\ }
+\DoxyCodeLine{00959\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{00960\ }
+\DoxyCodeLine{00966\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{00967\ }
+\DoxyCodeLine{00968\ }
+\DoxyCodeLine{00978\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{00979\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{00980\ }
+\DoxyCodeLine{00981\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{00983\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00984\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00985\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00986\ }
+\DoxyCodeLine{00987\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{00988\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{00991\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00992\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00993\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00994\ }
+\DoxyCodeLine{01003\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{01004\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{01005\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{01006\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{01007\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{01008\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{01009\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01010\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01011\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01012\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01013\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01014\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01015\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01016\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01017\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01018\ }
+\DoxyCodeLine{01019\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01020\ }
+\DoxyCodeLine{01021\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01022\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{01023\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{01024\ \ \ \ \ \};}
+\DoxyCodeLine{01025\ }
+\DoxyCodeLine{01033\ \ \ \ \ \textcolor{keyword}{ref\ class}\ DetectorTypeRegister\ \{}
+\DoxyCodeLine{01034\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01035\ }
+\DoxyCodeLine{01039\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{01040\ \ \ \ \ \ \ \ \ \ \ \ \ LMAM2V2,\ }
+\DoxyCodeLine{01041\ \ \ \ \ \ \ \ \ \ \ \ \ LMAM2FDIV2,\ \ }
+\DoxyCodeLine{01042\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{01043\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{01044\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01045\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}LMAM2V2"{}},\ \textcolor{stringliteral}{"{}LMAM2FDIV2"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};\ }
+\DoxyCodeLine{01046\ }
+\DoxyCodeLine{01047\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{01048\ }
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{01055\ }
+\DoxyCodeLine{01056\ }
+\DoxyCodeLine{01062\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{01063\ }
+\DoxyCodeLine{01069\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{01070\ }
+\DoxyCodeLine{01071\ }
+\DoxyCodeLine{01081\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{01082\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{01083\ }
+\DoxyCodeLine{01084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01088\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01089\ }
+\DoxyCodeLine{01090\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{01091\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{01092\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{01093\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01094\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01096\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01097\ }
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{01108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{01109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{01110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{01111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{01112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01115\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01116\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01117\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01118\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01120\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01121\ }
+\DoxyCodeLine{01122\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01123\ }
+\DoxyCodeLine{01124\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01125\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{01126\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{01127\ \ \ \ \ \};}
+\DoxyCodeLine{01128\ }
+\DoxyCodeLine{01134\ \ \ \ \ \textcolor{keyword}{ref\ class}\ CompressionModeRegister\ \{}
+\DoxyCodeLine{01135\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01136\ }
+\DoxyCodeLine{01140\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{01141\ \ \ \ \ \ \ \ \ \ \ \ \ CMP\_KEEP,\ }
+\DoxyCodeLine{01142\ \ \ \ \ \ \ \ \ \ \ \ \ CMP\_RELEASE,\ \ }
+\DoxyCodeLine{01143\ \ \ \ \ \ \ \ \ \ \ \ \ CMP\_DISABLE,\ }
+\DoxyCodeLine{01144\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{01145\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{01146\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}CMP\_KEEP"{}},\ \textcolor{stringliteral}{"{}CMP\_RELEASE"{}},\ \textcolor{stringliteral}{"{}CMP\_DISABLE"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};\ }
+\DoxyCodeLine{01148\ }
+\DoxyCodeLine{01149\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{01150\ }
+\DoxyCodeLine{01156\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{01157\ }
+\DoxyCodeLine{01158\ }
+\DoxyCodeLine{01164\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{01165\ }
+\DoxyCodeLine{01171\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{01172\ }
+\DoxyCodeLine{01173\ }
+\DoxyCodeLine{01183\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{01184\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{01185\ }
+\DoxyCodeLine{01186\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01187\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01188\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01189\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01190\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01191\ }
+\DoxyCodeLine{01192\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{01193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{01194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{01195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01196\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01197\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01198\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01199\ }
+\DoxyCodeLine{01208\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{01209\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{01210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{01211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{01212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{01213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{01214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01215\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01216\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01217\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01218\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01219\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01220\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01221\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01222\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01223\ }
+\DoxyCodeLine{01224\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01225\ }
+\DoxyCodeLine{01226\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01227\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{01228\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{01229\ \ \ \ \ \};}
+\DoxyCodeLine{01230\ }
+\DoxyCodeLine{01231\ }
+\DoxyCodeLine{01245\ \ \ \ \ \textcolor{keyword}{ref\ class}\ CollimationModeRegister\ \{}
+\DoxyCodeLine{01246\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01247\ }
+\DoxyCodeLine{01251\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{01252\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_AUTO,\ }
+\DoxyCodeLine{01253\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_24x30,\ }
+\DoxyCodeLine{01254\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_18x24\_C,\ }
+\DoxyCodeLine{01255\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_18x24\_L,\ }
+\DoxyCodeLine{01256\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_18x24\_R,\ }
+\DoxyCodeLine{01257\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_9x21,\ }
+\DoxyCodeLine{01258\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_10x24,\ }
+\DoxyCodeLine{01259\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_PROSTHESIS,\ }
+\DoxyCodeLine{01260\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_D75,\ }
+\DoxyCodeLine{01261\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_BIOP2D,\ }
+\DoxyCodeLine{01262\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_BIOP3D,\ }
+\DoxyCodeLine{01263\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_TOMO,\ }
+\DoxyCodeLine{01264\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_9x9,\ }
+\DoxyCodeLine{01265\ \ \ \ \ \ \ \ \ \ \ \ \ COLLI\_CUSTOM,\ }
+\DoxyCodeLine{01266\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{01267\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{01268\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01269\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}COLLI\_AUTO"{}},\ \textcolor{stringliteral}{"{}COLLI\_24x30"{}},\ \textcolor{stringliteral}{"{}COLLI\_18x24\_C"{}},\ \textcolor{stringliteral}{"{}COLLI\_18x24\_L"{}},\ \(\backslash\)}
+\DoxyCodeLine{01270\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}COLLI\_18x24\_R"{}},\ \textcolor{stringliteral}{"{}COLLI\_9x21"{}},\ \textcolor{stringliteral}{"{}COLLI\_10x24"{}},\ \textcolor{stringliteral}{"{}COLLI\_PROSTHESIS"{}},\ \(\backslash\)}
+\DoxyCodeLine{01271\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}COLLI\_D75"{}},\ \textcolor{stringliteral}{"{}COLLI\_BIOP2D"{}},\ \textcolor{stringliteral}{"{}COLLI\_BIOP3D"{}},\ \textcolor{stringliteral}{"{}COLLI\_TOMO"{}},\ \(\backslash\)}
+\DoxyCodeLine{01272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}COLLI\_9x9"{}},\ \textcolor{stringliteral}{"{}COLLI\_CUSTOM"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};\ }
+\DoxyCodeLine{01273\ }
+\DoxyCodeLine{01274\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{01275\ }
+\DoxyCodeLine{01281\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{01282\ }
+\DoxyCodeLine{01283\ }
+\DoxyCodeLine{01289\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{01290\ }
+\DoxyCodeLine{01296\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{01297\ }
+\DoxyCodeLine{01298\ }
+\DoxyCodeLine{01308\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{01309\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{01310\ }
+\DoxyCodeLine{01311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01312\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01313\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01314\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01315\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01316\ }
+\DoxyCodeLine{01317\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{01318\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{01319\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{01320\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01321\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01322\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01323\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01324\ }
+\DoxyCodeLine{01333\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{01334\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{01335\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{01336\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{01337\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{01338\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{01339\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01340\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01341\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01342\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01343\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01344\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01345\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01346\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01347\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01348\ }
+\DoxyCodeLine{01349\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01350\ }
+\DoxyCodeLine{01351\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01352\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{01353\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{01354\ \ \ \ \ \};}
+\DoxyCodeLine{01355\ }
+\DoxyCodeLine{01361\ \ \ \ \ \textcolor{keyword}{ref\ class}\ PatientProtectionRegister\ \{}
+\DoxyCodeLine{01362\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01363\ }
+\DoxyCodeLine{01367\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{01368\ \ \ \ \ \ \ \ \ \ \ \ \ PROTECTION\_ENA,\ }
+\DoxyCodeLine{01369\ \ \ \ \ \ \ \ \ \ \ \ \ PROTECTION\_DIS,\ }
+\DoxyCodeLine{01370\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{01371\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{01372\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01373\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}PROTECTION\_ENA"{}},\ \textcolor{stringliteral}{"{}PROTECTION\_DIS"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};\ }
+\DoxyCodeLine{01374\ }
+\DoxyCodeLine{01375\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_status\_change(\textcolor{keywordtype}{void});\ }
+\DoxyCodeLine{01376\ }
+\DoxyCodeLine{01382\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_status\_change\string^\ status\_change\_event;}
+\DoxyCodeLine{01383\ }
+\DoxyCodeLine{01384\ }
+\DoxyCodeLine{01390\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ getCode(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ code;\ \}}
+\DoxyCodeLine{01391\ }
+\DoxyCodeLine{01397\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getTag(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ tag;\ \}}
+\DoxyCodeLine{01398\ }
+\DoxyCodeLine{01399\ }
+\DoxyCodeLine{01409\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(options\ val)\ \{}
+\DoxyCodeLine{01410\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ options::LEN)\ \{}
+\DoxyCodeLine{01411\ }
+\DoxyCodeLine{01412\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01413\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01414\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01415\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01416\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01417\ }
+\DoxyCodeLine{01418\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ code)\ \{}
+\DoxyCodeLine{01419\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ val;}
+\DoxyCodeLine{01420\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ tags[(int)val];}
+\DoxyCodeLine{01421\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01422\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01423\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01424\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01425\ }
+\DoxyCodeLine{01434\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setCode(String\string^\ val)\ \{}
+\DoxyCodeLine{01435\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)options::LEN;\ i++)\ \{}
+\DoxyCodeLine{01436\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ tags[i])\ \{}
+\DoxyCodeLine{01437\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tag\ !=\ val)\ \{}
+\DoxyCodeLine{01438\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ val;}
+\DoxyCodeLine{01439\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ (options)i;}
+\DoxyCodeLine{01440\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01441\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01442\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01443\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01444\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01445\ \ \ \ \ \ \ \ \ \ \ \ \ code\ =\ options::UNDEF;}
+\DoxyCodeLine{01446\ \ \ \ \ \ \ \ \ \ \ \ \ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01447\ \ \ \ \ \ \ \ \ \ \ \ \ status\_change\_event();}
+\DoxyCodeLine{01448\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01449\ }
+\DoxyCodeLine{01450\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01451\ }
+\DoxyCodeLine{01452\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01453\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ code\ =\ options::UNDEF;\ }
+\DoxyCodeLine{01454\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};\ }
+\DoxyCodeLine{01455\ \ \ \ \ \};}
+\DoxyCodeLine{01456\ }
+\DoxyCodeLine{01457\ }
+\DoxyCodeLine{01458\ }
+\DoxyCodeLine{01459\ }
+\DoxyCodeLine{01469\ \ \ \ \ \textcolor{keyword}{ref\ class}\ ArmStatusRegister\ \{}
+\DoxyCodeLine{01470\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01471\ }
+\DoxyCodeLine{01477\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ exposure\_mode\_options\ \{}
+\DoxyCodeLine{01478\ \ \ \ \ \ \ \ \ \ \ \ \ ARM\_ENA,\ }
+\DoxyCodeLine{01479\ \ \ \ \ \ \ \ \ \ \ \ \ ARM\_DIS,\ }
+\DoxyCodeLine{01480\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{01481\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{01482\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01483\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ exposure\_mode\_tags\ =\ gcnew\ array<String\string^>\ \ \{\ \textcolor{stringliteral}{"{}ARM\_ENA"{}},\ \textcolor{stringliteral}{"{}ARM\_DIS"{}},\ \textcolor{stringliteral}{"{}UNDEF"{}}\};\ }
+\DoxyCodeLine{01484\ }
+\DoxyCodeLine{01492\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setMode(exposure\_mode\_options\ val)\ \{}
+\DoxyCodeLine{01493\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ >=\ exposure\_mode\_options::LEN)\ \{}
+\DoxyCodeLine{01494\ }
+\DoxyCodeLine{01495\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\ =\ exposure\_mode\_options::UNDEF;}
+\DoxyCodeLine{01496\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\_tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01497\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01498\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01499\ }
+\DoxyCodeLine{01500\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ exposure\_mode)\ \{}
+\DoxyCodeLine{01501\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\ =\ val;}
+\DoxyCodeLine{01502\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\_tag\ =\ exposure\_mode\_tags[(int)val];}
+\DoxyCodeLine{01503\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01504\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01505\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01506\ }
+\DoxyCodeLine{01514\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setMode(String\string^\ val)\ \{}
+\DoxyCodeLine{01515\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)exposure\_mode\_options::LEN;\ i++)\ \{}
+\DoxyCodeLine{01516\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ exposure\_mode\_tags[i])\ \{}
+\DoxyCodeLine{01517\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (exposure\_mode\_tag\ !=\ val)\ \{}
+\DoxyCodeLine{01518\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\_tag\ =\ val;}
+\DoxyCodeLine{01519\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\ =\ (exposure\_mode\_options)i;}
+\DoxyCodeLine{01520\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01521\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01522\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01523\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01524\ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\ =\ exposure\_mode\_options::UNDEF;}
+\DoxyCodeLine{01525\ \ \ \ \ \ \ \ \ \ \ \ \ exposure\_mode\_tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01526\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01527\ }
+\DoxyCodeLine{01528\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01529\ }
+\DoxyCodeLine{01530\ }
+\DoxyCodeLine{01531\ }
+\DoxyCodeLine{01532\ }
+\DoxyCodeLine{01533\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_target\_change(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01534\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01540\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_target\_change\string^\ target\_change\_event;}
+\DoxyCodeLine{01541\ }
+\DoxyCodeLine{01542\ }
+\DoxyCodeLine{01543\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01544\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_validate\_change(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01545\ }
+\DoxyCodeLine{01551\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_validate\_change\string^\ validate\_change\_event;}
+\DoxyCodeLine{01552\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01562\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ validate(\textcolor{keywordtype}{bool}\ stat)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01563\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (position\_validated\ !=\ stat)\ \{}
+\DoxyCodeLine{01564\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ position\_validated\ =\ stat;}
+\DoxyCodeLine{01565\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ validate\_change\_event();}
+\DoxyCodeLine{01566\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01567\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01568\ }
+\DoxyCodeLine{01575\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isBusy(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ executing;\ \}\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01576\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01591\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setTarget(\textcolor{keywordtype}{int}\ pos,\ \textcolor{keywordtype}{int}\ low,\ \textcolor{keywordtype}{int}\ high,\ \textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id})\ \{}
+\DoxyCodeLine{01592\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (executing)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01593\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (pos\ >\ 180)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01594\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (pos\ <\ -\/180)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01595\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((pos\ >\ high)\ ||\ (pos\ <\ low))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01596\ }
+\DoxyCodeLine{01597\ \ \ \ \ \ \ \ \ \ \ \ \ position\_validated\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01598\ \ \ \ \ \ \ \ \ \ \ \ \ position\_target\ =\ pos;}
+\DoxyCodeLine{01599\ \ \ \ \ \ \ \ \ \ \ \ \ allowed\_low\ =\ low;}
+\DoxyCodeLine{01600\ \ \ \ \ \ \ \ \ \ \ \ \ allowed\_high\ =\ high;}
+\DoxyCodeLine{01601\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01602\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((position\ <\ pos\ +\ 1)\ ||\ (position\ >\ pos\ -\/\ 1))\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01603\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ executing\_id\ =\ 0;}
+\DoxyCodeLine{01604\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01605\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01606\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01607\ \ \ \ \ \ \ \ \ \ \ \ \ executing\_id\ =\ id;}
+\DoxyCodeLine{01608\ \ \ \ \ \ \ \ \ \ \ \ \ executing\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01609\ }
+\DoxyCodeLine{01610\ \ \ \ \ \ \ \ \ \ \ \ \ validate\_change\_event();}
+\DoxyCodeLine{01611\ \ \ \ \ \ \ \ \ \ \ \ \ target\_change\_event();}
+\DoxyCodeLine{01612\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01613\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01614\ }
+\DoxyCodeLine{01615\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01616\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ exposure\_mode\_options\ exposure\_mode\ =\ exposure\_mode\_options::UNDEF;\ }
+\DoxyCodeLine{01617\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ exposure\_mode\_tag\ =\ \textcolor{stringliteral}{"{}UNDEF"{}};}
+\DoxyCodeLine{01618\ }
+\DoxyCodeLine{01619\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ position\_validated\ =\ \textcolor{keyword}{false};\ }
+\DoxyCodeLine{01620\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ position\_target\ =\ 0;\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01621\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ position;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01622\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ allowed\_low\ =\ 0;\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01623\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ allowed\_high\ =\ 0;\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01624\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ executing\ =\ \textcolor{keyword}{false};\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01625\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}\ \ executing\_id\ =\ 0;\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01626\ \ \ \ \ \};}
+\DoxyCodeLine{01627\ }
+\DoxyCodeLine{01632\ \ \ \ \ \textcolor{keyword}{ref\ class}\ PatientDataRegister\ \{}
+\DoxyCodeLine{01633\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01638\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setName(String\string^\ val)\ \{\ patient\_name\ =\ val;\ \}}
+\DoxyCodeLine{01639\ }
+\DoxyCodeLine{01644\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ getName()\ \{\ \textcolor{keywordflow}{return}\ patient\_name;\ \}}
+\DoxyCodeLine{01645\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:\ }
+\DoxyCodeLine{01646\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ String\string^\ patient\_name\ =\ \ \textcolor{stringliteral}{"{}"{}};\ }
+\DoxyCodeLine{01647\ \ \ \ \ \};}
+\DoxyCodeLine{01648\ \ \ \ \ }
+\DoxyCodeLine{01654\ \ \ \ \ \textcolor{keyword}{ref\ class}\ TrxStatusRegister\ \{}
+\DoxyCodeLine{01655\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01656\ }
+\DoxyCodeLine{01660\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ options\ \{}
+\DoxyCodeLine{01661\ \ \ \ \ \ \ \ \ \ \ \ \ TRX\_SCOUT\ =\ 0,\ }
+\DoxyCodeLine{01662\ \ \ \ \ \ \ \ \ \ \ \ \ TRX\_BP\_R,\ \ \ \ \ \ \ }
+\DoxyCodeLine{01663\ \ \ \ \ \ \ \ \ \ \ \ \ TRX\_BP\_L,\ \ \ \ \ \ \ }
+\DoxyCodeLine{01664\ \ \ \ \ \ \ \ \ \ \ \ \ TRX\_TOMO\_H,\ \ \ \ \ }
+\DoxyCodeLine{01665\ \ \ \ \ \ \ \ \ \ \ \ \ TRX\_TOMO\_E,\ \ \ \ \ }
+\DoxyCodeLine{01666\ \ \ \ \ \ \ \ \ \ \ \ \ LEN,}
+\DoxyCodeLine{01667\ \ \ \ \ \ \ \ \ \ \ \ \ UNDEF\ =\ LEN}
+\DoxyCodeLine{01668\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01669\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ array<String\string^>\string^\ tags\ =\ gcnew\ array<String\string^>\ \{\ \textcolor{stringliteral}{"{}SCOUT"{}},\ \textcolor{stringliteral}{"{}BP\_R"{}},\ \textcolor{stringliteral}{"{}BP\_L"{}},\ \textcolor{stringliteral}{"{}TOMO\_H"{}},\ \textcolor{stringliteral}{"{}TOMO\_E"{}}\};\ }
+\DoxyCodeLine{01670\ }
+\DoxyCodeLine{01671\ \ \ \ \ \ }
+\DoxyCodeLine{01672\ }
+\DoxyCodeLine{01673\ \ \ \ \ \ \ \ \ delegate\ \textcolor{keywordtype}{void}\ delegate\_target\_change(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01674\ }
+\DoxyCodeLine{01680\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{event}\ delegate\_target\_change\string^\ target\_change\_event;}
+\DoxyCodeLine{01681\ }
+\DoxyCodeLine{01688\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isBusy(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ executing;\ \}}
+\DoxyCodeLine{01689\ }
+\DoxyCodeLine{01698\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setTarget(options\ tg,\ \textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id})\ \{}
+\DoxyCodeLine{01699\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (executing)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01700\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tg\ >=\ \ options::LEN)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01701\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01702\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tg\ !=\ position\_target)\ \{}
+\DoxyCodeLine{01703\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ position\_target\ =\ tg;}
+\DoxyCodeLine{01704\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ executing\_id\ =\ id;}
+\DoxyCodeLine{01705\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ executing\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01706\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ target\_change\_event();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01707\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01708\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01709\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01710\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01711\ }
+\DoxyCodeLine{01720\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ setTarget(String\string^\ tag,\ \textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id})\ \{}
+\DoxyCodeLine{01721\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (executing)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01722\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ (int)\ options::LEN;\ i++)\ \{}
+\DoxyCodeLine{01723\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tags[i]\ ==\ tag)\ \{}
+\DoxyCodeLine{01724\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((i\ !=\ (\textcolor{keywordtype}{int})\ position\_target)\ ||(current\_position\ !=\ position\_target))\ \{}
+\DoxyCodeLine{01725\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ position\_target\ =\ (options)\ i;}
+\DoxyCodeLine{01726\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ executing\_id\ =\ id;}
+\DoxyCodeLine{01727\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ executing\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01728\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ target\_change\_event();}
+\DoxyCodeLine{01729\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01730\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01731\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01732\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01733\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01734\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01735\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01736\ }
+\DoxyCodeLine{01737\ }
+\DoxyCodeLine{01738\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01739\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01740\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ \ \ \ \ \ position\_target\ =\ options::UNDEF;\ }
+\DoxyCodeLine{01741\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ options\ \ \ \ \ \ current\_position\ =\ options::UNDEF;}
+\DoxyCodeLine{01742\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ executing\ =\ \textcolor{keyword}{false};\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01743\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}\ \ executing\_id\ =\ 0;\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01744\ \ \ \ \ \};}
+\DoxyCodeLine{01745\ }
+\DoxyCodeLine{01746\ }
+\DoxyCodeLine{01747\ }
+\DoxyCodeLine{01748\ }
+\DoxyCodeLine{01749\ }
+\DoxyCodeLine{01750\ }
+\DoxyCodeLine{01751\ }
+\DoxyCodeLine{01752\ \}}
+\DoxyCodeLine{01753\ }
+\DoxyCodeLine{01754\ }
+\DoxyCodeLine{01755\ }
+\DoxyCodeLine{01756\ }
+\DoxyCodeLine{01757\ }
+\DoxyCodeLine{01758\ \ \ \ \ }
+\DoxyCodeLine{01759\ \ \ \ }
+
+\end{DoxyCode}

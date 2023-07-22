@@ -1,0 +1,234 @@
+\doxysection{Gantry\+Status\+Registers\+::filter\+Options\+Register Class Reference}
+\label{class_gantry_status_registers_1_1filter_options_register}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+
+
+This class implements the Filter selection options.  
+
+
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ FILTER\+\_\+\+Ag}
+, \textbf{ FILTER\+\_\+\+Al}
+, \textbf{ FILTER\+\_\+\+Mo}
+, \textbf{ FILTER\+\_\+\+Rh}
+, \newline
+\textbf{ FILTER\+\_\+\+Cu}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\begin{DoxyCompactList}\small\item\em This is the enumeration option code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+status\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1filter_options_register_a67431b917d2ba9141dca3418eed94bb9};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ get\+Code} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option code of the register. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ get\+Tag} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option tag of the register. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (\textbf{ options} val)
+\begin{DoxyCompactList}\small\item\em This function set the register with the option code (and related tag). \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (String$^\wedge$ val)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}Ag\"{}, \"{}Al\"{}, \"{}Mo\"{}, \"{}Rh\"{}, \"{}Cu\"{}, \"{}UNDEF\"{} \}
+\begin{DoxyCompactList}\small\item\em This is the option-\/tags static array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the register option-\/code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the register tag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class implements the Filter selection options. 
+
+
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::filter\+Options\+Register\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+This is the enumeration option code. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Ag@{FILTER\_Ag}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!FILTER\_Ag@{FILTER\_Ag}}}\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2a6e4a58c5f70769dea6a75e648c0509f8} 
+FILTER\+\_\+\+Ag&Ag filter seletion option. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Al@{FILTER\_Al}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!FILTER\_Al@{FILTER\_Al}}}\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2a14d7bce70531a80b568bb8c4caea4eee} 
+FILTER\+\_\+\+Al&Al filter seletion option. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Mo@{FILTER\_Mo}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!FILTER\_Mo@{FILTER\_Mo}}}\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2a483670671221d48c8f5a53ee360c8497} 
+FILTER\+\_\+\+Mo&Mo filter seletion option. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Rh@{FILTER\_Rh}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!FILTER\_Rh@{FILTER\_Rh}}}\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2ac2ed32ecbae438a03aec5dac12f2d69b} 
+FILTER\+\_\+\+Rh&Rh filter seletion option. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_Cu@{FILTER\_Cu}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!FILTER\_Cu@{FILTER\_Cu}}}\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2ad164ab47e9baf57be14fae23d30057cc} 
+FILTER\+\_\+\+Cu&Cu filter seletion option. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2a6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1filter_options_register_a322a04bad5e668f9c92ca0384310b3f2ab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1filter_options_register_a4eb43821449a639663f24d08460d44ac} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!delegate\_status\_change@{delegate\_status\_change}}
+\index{delegate\_status\_change@{delegate\_status\_change}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{delegate\_status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::filter\+Options\+Register\+::delegate\+\_\+status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1filter_options_register_a67431b917d2ba9141dca3418eed94bb9};. 
+
+\label{class_gantry_status_registers_1_1filter_options_register_af3c9e2b877dee86606c2fa5f79fe3c13} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!getCode@{getCode}}
+\index{getCode@{getCode}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{getCode()}
+{\footnotesize\ttfamily static \textbf{ options} Gantry\+Status\+Registers\+::filter\+Options\+Register\+::get\+Code (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option code of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the option code 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1filter_options_register_ad7bb26296b48724badc0359ce23c82f2} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!getTag@{getTag}}
+\index{getTag@{getTag}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{getTag()}
+{\footnotesize\ttfamily static String $^\wedge$ Gantry\+Status\+Registers\+::filter\+Options\+Register\+::get\+Tag (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option tag of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the Tag 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1filter_options_register_a8fe78b3e1dab099b3861eff45ced0760} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::filter\+Options\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the register with the option code (and related tag). 
+
+The register is updated with the option code and related tag and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1filter_options_register_a67431b917d2ba9141dca3418eed94bb9} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the option-\/code to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1filter_options_register_a178f13d7a85d33d6212e92c1fb7c449d} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::filter\+Options\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+This function set the register with the option tag (and related code).
+
+The register is updated with the tag and the related option code and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1filter_options_register_a67431b917d2ba9141dca3418eed94bb9} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the tag to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1filter_options_register_a729e4c6836c9c83e4976249a7db1ca77} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!code@{code}}
+\index{code@{code}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::filter\+Options\+Register\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register option-\/code. 
+
+\label{class_gantry_status_registers_1_1filter_options_register_ac76c4b825c6522f5a778282ba9adbe2b} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!tag@{tag}}
+\index{tag@{tag}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::filter\+Options\+Register\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register tag. 
+
+\label{class_gantry_status_registers_1_1filter_options_register_ad6ffcc3beb8559ccc4b56c2a78dd66ea} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::filter\+Options\+Register\+::tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}Ag\"{}, \"{}Al\"{}, \"{}Mo\"{}, \"{}Rh\"{}, \"{}Cu\"{}, \"{}UNDEF\"{} \}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This is the option-\/tags static array. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1filter_options_register_a67431b917d2ba9141dca3418eed94bb9} 
+\index{GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatusRegisters::filterOptionsRegister@{GantryStatusRegisters::filterOptionsRegister}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::filter\+Options\+Register\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: \doxyref{filter\+Options\+Register\+::status\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1filter_options_register_a67431b917d2ba9141dca3418eed94bb9} += gcnew delegate\+\_\+status\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

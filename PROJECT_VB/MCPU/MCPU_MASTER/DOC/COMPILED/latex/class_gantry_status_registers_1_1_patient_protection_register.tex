@@ -1,0 +1,218 @@
+\doxysection{Gantry\+Status\+Registers\+::Patient\+Protection\+Register Class Reference}
+\label{class_gantry_status_registers_1_1_patient_protection_register}\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+
+
+This class handles the Usage of the patient protection during the exposure.  
+
+
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \textbf{ PROTECTION\+\_\+\+ENA}
+, \textbf{ PROTECTION\+\_\+\+DIS}
+, \textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\begin{DoxyCompactList}\small\item\em This is the enumeration option code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+status\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_patient_protection_register_ac5413535c71ad13bd2aa2a600faa14e2};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ get\+Code} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option code of the register. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ get\+Tag} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option tag of the register. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (\textbf{ options} val)
+\begin{DoxyCompactList}\small\item\em This function set the register with the option code (and related tag). \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (String$^\wedge$ val)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}PROTECTION\+\_\+\+ENA\"{}, \"{}PROTECTION\+\_\+\+DIS\"{}, \"{}UNDEF\"{}\}
+\begin{DoxyCompactList}\small\item\em This is the option-\/tags static array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the register option-\/code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the register tag. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class handles the Usage of the patient protection during the exposure. 
+
+
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1_patient_protection_register_ac590651ea8bf938798051e4431a8d46f} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+This is the enumeration option code. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PROTECTION\_ENA@{PROTECTION\_ENA}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!PROTECTION\_ENA@{PROTECTION\_ENA}}}\label{class_gantry_status_registers_1_1_patient_protection_register_ac590651ea8bf938798051e4431a8d46fae36e9a65b87d3ac5737356fbf5e83667} 
+PROTECTION\+\_\+\+ENA&Enables the Patient protection check;. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PROTECTION\_DIS@{PROTECTION\_DIS}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!PROTECTION\_DIS@{PROTECTION\_DIS}}}\label{class_gantry_status_registers_1_1_patient_protection_register_ac590651ea8bf938798051e4431a8d46fa709cfdd521828b12c5fef515048662f2} 
+PROTECTION\+\_\+\+DIS&Disables the Patient protection check; ~\newline
+ \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1_patient_protection_register_ac590651ea8bf938798051e4431a8d46fa6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1_patient_protection_register_ac590651ea8bf938798051e4431a8d46fab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1_patient_protection_register_afe9bcc5af4c0a9cb3501ac6974375eea} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!delegate\_status\_change@{delegate\_status\_change}}
+\index{delegate\_status\_change@{delegate\_status\_change}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{delegate\_status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::delegate\+\_\+status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_patient_protection_register_ac5413535c71ad13bd2aa2a600faa14e2};. 
+
+\label{class_gantry_status_registers_1_1_patient_protection_register_a630ccda8a18bcfd51aa25b096fec4a84} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!getCode@{getCode}}
+\index{getCode@{getCode}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{getCode()}
+{\footnotesize\ttfamily static \textbf{ options} Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::get\+Code (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option code of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the option code 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_patient_protection_register_a2ac92aab209def84aeefd208239df6d1} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!getTag@{getTag}}
+\index{getTag@{getTag}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{getTag()}
+{\footnotesize\ttfamily static String $^\wedge$ Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::get\+Tag (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option tag of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the Tag 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_patient_protection_register_ae74f9436d8c5072c162f558519f17d7f} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the register with the option code (and related tag). 
+
+The register is updated with the option code and related tag and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_patient_protection_register_ac5413535c71ad13bd2aa2a600faa14e2} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the option-\/code to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1_patient_protection_register_a6eb41259fd447414d088a30b5d5b6521} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{setCode()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::set\+Code (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+This function set the register with the option tag (and related code).
+
+The register is updated with the tag and the related option code and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1_patient_protection_register_ac5413535c71ad13bd2aa2a600faa14e2} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the tag to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1_patient_protection_register_a67e92387d6f1525b9486192aa48f03cd} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!code@{code}}
+\index{code@{code}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register option-\/code. 
+
+\label{class_gantry_status_registers_1_1_patient_protection_register_ac53f0d7615e6c01d8968b86ae836b72e} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!tag@{tag}}
+\index{tag@{tag}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register tag. 
+
+\label{class_gantry_status_registers_1_1_patient_protection_register_a6efdf13fdb88bea8ecc23bf0daa11a92} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}PROTECTION\+\_\+\+ENA\"{}, \"{}PROTECTION\+\_\+\+DIS\"{}, \"{}UNDEF\"{}\}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This is the option-\/tags static array. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1_patient_protection_register_ac5413535c71ad13bd2aa2a600faa14e2} 
+\index{GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatusRegisters::PatientProtectionRegister@{GantryStatusRegisters::PatientProtectionRegister}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::\+Patient\+Protection\+Register\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: \doxyref{Patient\+Protection\+Register\+::status\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1_patient_protection_register_ac5413535c71ad13bd2aa2a600faa14e2} += gcnew delegate\+\_\+status\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

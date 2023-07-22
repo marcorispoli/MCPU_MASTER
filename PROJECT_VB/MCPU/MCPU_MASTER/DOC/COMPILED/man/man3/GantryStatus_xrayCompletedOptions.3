@@ -1,0 +1,133 @@
+.TH "GantryStatus::xrayCompletedOptions" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatus::xrayCompletedOptions \- This class implements the XRAY completed status register\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBXRAY_COMPLETED_OK\fP = 0, \fBXRAY_COMPLETED_PARTIAL_DOSE\fP = 1, \fBXRAY_COMPLETED_NO_DOSE\fP = 2, \fBLEN\fP, \fBUNDEF\fP =LEN }"
+.br
+.RI "Definition of the register enumeration codes 
+.br
+ "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBstatus_change\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisValid\fP (String^ val)"
+.br
+.ti -1c
+.RI "static int \fBgetCode\fP (String^ val)"
+.br
+.ti -1c
+.RI "static String ^ \fBgetTag\fP (\fBoptions\fP val)"
+.br
+.ti -1c
+.RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
+.br
+.ti -1c
+.RI "static bool \fBsetTag\fP (String^ val)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> {'OK', 'PARTIAL', 'NOK', 'UNDEF'}"
+.br
+.RI "Definition of the register tags\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBstatus_change\fP^ \fBstatus_change_event\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
+.br
+.ti -1c
+.RI "static String ^ \fBtag\fP = 'UNDEF'"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class implements the XRAY completed status register\&. 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatus::xrayCompletedOptions::options\fP\fC [strong]\fP"
+
+.PP
+Definition of the register enumeration codes 
+.br
+ 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIXRAY_COMPLETED_OK \fP\fP
+XRAY sequence successfully completed\&. 
+.TP
+\fB\fIXRAY_COMPLETED_PARTIAL_DOSE \fP\fP
+XRAY sequence partially completed\&. 
+.TP
+\fB\fIXRAY_COMPLETED_NO_DOSE \fP\fP
+XRAY sequence aborted without dose\&. 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "static int GantryStatus::xrayCompletedOptions::getCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static String ^ GantryStatus::xrayCompletedOptions::getTag (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatus::xrayCompletedOptions::isValid (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatus::xrayCompletedOptions::setCode (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatus::xrayCompletedOptions::setTag (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "delegate void GantryStatus::xrayCompletedOptions::status_change (void)"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBoptions\fP GantryStatus::xrayCompletedOptions::code = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "String ^ GantryStatus::xrayCompletedOptions::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
+
+.SS "const array<String^> ^ GantryStatus::xrayCompletedOptions::tags = gcnew array<String^> {'OK', 'PARTIAL', 'NOK', 'UNDEF'}\fC [static]\fP"
+
+.PP
+Definition of the register tags\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBstatus_change\fP^ GantryStatus::xrayCompletedOptions::status_change_event\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

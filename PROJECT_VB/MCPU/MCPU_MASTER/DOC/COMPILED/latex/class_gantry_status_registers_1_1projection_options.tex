@@ -1,0 +1,350 @@
+\doxysection{Gantry\+Status\+Registers\+::projection\+Options Class Reference}
+\label{class_gantry_status_registers_1_1projection_options}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+
+
+This is the projection handling option class.  
+
+
+
+
+{\ttfamily \#include $<$gantry\+\_\+global\+\_\+status.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \textbf{ options} \{ \newline
+\textbf{ LCC} = 0
+, \textbf{ LFB}
+, \textbf{ LISO}
+, \textbf{ LLM}
+, \newline
+\textbf{ LLMO}
+, \textbf{ LML}
+, \textbf{ LMLO}
+, \textbf{ LSIO}
+, \newline
+\textbf{ RCC}
+, \textbf{ RFB}
+, \textbf{ RISO}
+, \textbf{ RLM}
+, \newline
+\textbf{ RLMO}
+, \textbf{ RML}
+, \textbf{ RMLO}
+, \textbf{ RSIO}
+, \newline
+\textbf{ LEN}
+, \textbf{ UNDEF} = LEN
+ \}
+\begin{DoxyCompactList}\small\item\em This is the enumeration option code of the selectable projections. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+delegate void \textbf{ delegate\+\_\+lista\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{lista\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1projection_options_a9325ee77cf9158bdc2d144f453eb9935};. \end{DoxyCompactList}\item 
+delegate void \textbf{ delegate\+\_\+status\+\_\+change} (void)
+\begin{DoxyCompactList}\small\item\em This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1projection_options_a1229c0b060e0055949191bebf3fd7232};. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ get\+Code} (void)
+\item 
+static String $^\wedge$ \textbf{ get\+Tag} (void)
+\begin{DoxyCompactList}\small\item\em Returns the option tag of the register. \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Code} (\textbf{ options} val)
+\begin{DoxyCompactList}\small\item\em This function set the register with the option code (and related tag). \end{DoxyCompactList}\item 
+static bool \textbf{ set\+Tag} (String$^\wedge$ val)
+\item 
+static bool \textbf{ set\+List} (List$<$ int $>$$^\wedge$ lista)
+\begin{DoxyCompactList}\small\item\em This function set the list of available projections. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const array$<$ String$^\wedge$$>$ $^\wedge$ \textbf{ tags} = gcnew array$<$String$^\wedge$$>$ \{ \"{}LCC\"{}, \"{}LFB\"{}, \"{}LISO\"{}, \"{}LLM\"{}, \"{}LLMO\"{}, \"{}LML\"{}, \"{}LMLO\"{}, \"{}LSIO\"{}, \"{}RCC\"{}, \"{}RFB\"{}, \"{}RISO\"{}, \"{}RLM\"{}, \"{}RLMO\"{}, \"{}RML\"{}, \"{}RMLO\"{}, \"{}RSIO\"{}, \"{}UNDEF\"{}\}
+\begin{DoxyCompactList}\small\item\em This is the option-\/tags static array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ delegate\+\_\+lista\+\_\+change}$^\wedge$ \textbf{ lista\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\item 
+static \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ \textbf{ status\+\_\+change\+\_\+event}
+\begin{DoxyCompactList}\small\item\em This event is generated whenver the status of the register is changed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ options} \textbf{ code} = \textbf{ options\+::\+UNDEF}
+\begin{DoxyCompactList}\small\item\em This is the register option-\/code. \end{DoxyCompactList}\item 
+static String $^\wedge$ \textbf{ tag} = \"{}UNDEF\"{}
+\begin{DoxyCompactList}\small\item\em This is the register tag ~\newline
+ \end{DoxyCompactList}\item 
+static List$<$ int $>$ $^\wedge$ \textbf{ list} = gcnew List$<$int$>$ \{\}
+\begin{DoxyCompactList}\small\item\em This is the list of the projections. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This is the projection handling option class. 
+
+This class defines the availabl projection options, store the current selected projection and the projection selectable list. 
+
+\doxysubsection{Member Enumeration Documentation}
+\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8e} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!options@{options}}
+\index{options@{options}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{options}
+{\footnotesize\ttfamily enum class \textbf{ Gantry\+Status\+Registers\+::projection\+Options\+::options}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+This is the enumeration option code of the selectable projections. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LCC@{LCC}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LCC@{LCC}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eae560708f060f5f7e4d25ede185b33bdb} 
+LCC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LFB@{LFB}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LFB@{LFB}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea0efe2ed7784c3fc873c1fe60f1b49c3f} 
+LFB&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LISO@{LISO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LISO@{LISO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea1f2d61e4528ed3f6c58922d31209250e} 
+LISO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LLM@{LLM}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LLM@{LLM}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eab8cc08c142bcf05a92faec2d6ed58b05} 
+LLM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LLMO@{LLMO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LLMO@{LLMO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea8e311e2dbea090c591569f398507d6a4} 
+LLMO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LML@{LML}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LML@{LML}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea1769121f0981547ddf5ed1c9707ae01c} 
+LML&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LMLO@{LMLO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LMLO@{LMLO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eaec88d39961f13f6218fda85f55744f85} 
+LMLO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LSIO@{LSIO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LSIO@{LSIO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eaaad6c2f6b5d88a7c3a2bec3a3aa145be} 
+LSIO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RCC@{RCC}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RCC@{RCC}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea2a15e4627710532a35362ef4731d9dad} 
+RCC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RFB@{RFB}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RFB@{RFB}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eac4dd756dac5bfea0e579f135a5e0ae23} 
+RFB&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RISO@{RISO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RISO@{RISO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eab099e0e5ab0f75ec7496a55cd981a8cb} 
+RISO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RLM@{RLM}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RLM@{RLM}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eabd42e3982b747146b805cc98fd6b4730} 
+RLM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RLMO@{RLMO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RLMO@{RLMO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea05e75e033866f5b8990ce2907bef5da1} 
+RLMO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RML@{RML}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RML@{RML}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eabc9a4903da4ac968bd54ef3fc1dee13e} 
+RML&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RMLO@{RMLO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RMLO@{RMLO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea07487ceb8ebbbabaac88e19397dd1c23} 
+RMLO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RSIO@{RSIO}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!RSIO@{RSIO}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea5f2f991fdf5b61e1a93013d95e2341b7} 
+RSIO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LEN@{LEN}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!LEN@{LEN}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8ea6dd2477cccabf8da7a1e050374b1be17} 
+LEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNDEF@{UNDEF}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!UNDEF@{UNDEF}}}\label{class_gantry_status_registers_1_1projection_options_a4b5e5476434e644bf905ea1af37c2b8eab3f7791472924b0d1530bb9112409c01} 
+UNDEF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Member Function Documentation}
+\label{class_gantry_status_registers_1_1projection_options_a5f23a99b7d80ee1c228558e584d9e11b} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!delegate\_lista\_change@{delegate\_lista\_change}}
+\index{delegate\_lista\_change@{delegate\_lista\_change}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{delegate\_lista\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::projection\+Options\+::delegate\+\_\+lista\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{lista\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1projection_options_a9325ee77cf9158bdc2d144f453eb9935};. 
+
+\label{class_gantry_status_registers_1_1projection_options_a0c1ae1c670076064a57fc09c0b939c84} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!delegate\_status\_change@{delegate\_status\_change}}
+\index{delegate\_status\_change@{delegate\_status\_change}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{delegate\_status\_change()}
+{\footnotesize\ttfamily delegate void Gantry\+Status\+Registers\+::projection\+Options\+::delegate\+\_\+status\+\_\+change (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This is the delegate of the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1projection_options_a1229c0b060e0055949191bebf3fd7232};. 
+
+\label{class_gantry_status_registers_1_1projection_options_acf8774f9469cc0885b5f2d0bd600fcea} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!getCode@{getCode}}
+\index{getCode@{getCode}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{getCode()}
+{\footnotesize\ttfamily static \textbf{ options} Gantry\+Status\+Registers\+::projection\+Options\+::get\+Code (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns the option code of the register
+
+\begin{DoxyReturn}{Returns}
+the value of the option code 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1projection_options_aaf99a03f0433c484ce007a818501f174} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!getTag@{getTag}}
+\index{getTag@{getTag}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{getTag()}
+{\footnotesize\ttfamily static String $^\wedge$ Gantry\+Status\+Registers\+::projection\+Options\+::get\+Tag (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Returns the option tag of the register. 
+
+\begin{DoxyReturn}{Returns}
+the value of the Tag 
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1projection_options_a29fe234b1a23fcbe099132b982a3a4a7} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!setCode@{setCode}}
+\index{setCode@{setCode}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{setCode()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::projection\+Options\+::set\+Code (\begin{DoxyParamCaption}\item[{\textbf{ options}}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the register with the option code (and related tag). 
+
+The register is updated with the option code and related tag and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1projection_options_a1229c0b060e0055949191bebf3fd7232} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the option-\/code to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1projection_options_a0335f8a501c5282d3fc34716ecf6e261} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!setList@{setList}}
+\index{setList@{setList}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{setList()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::projection\+Options\+::set\+List (\begin{DoxyParamCaption}\item[{List$<$ int $>$$^\wedge$}]{lista }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+This function set the list of available projections. 
+
+In case of list change, the list\+\_\+change\+\_\+event() is generated
+
+
+\begin{DoxyParams}{Parameters}
+{\em lista} & This is the list\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the list is a valid list
+\end{DoxyReturn}
+\label{class_gantry_status_registers_1_1projection_options_a8a00bdd8ea6bcfb9204c5df1a421dadb} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!setTag@{setTag}}
+\index{setTag@{setTag}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{setTag()}
+{\footnotesize\ttfamily static bool Gantry\+Status\+Registers\+::projection\+Options\+::set\+Tag (\begin{DoxyParamCaption}\item[{String$^\wedge$}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+This function set the register with the option tag (and related code).
+
+The register is updated with the tag and the related option code and, in case of value change, the \doxyref{status\+\_\+change\+\_\+event()}{p.}{class_gantry_status_registers_1_1projection_options_a1229c0b060e0055949191bebf3fd7232} is generated.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & this is the tag to be set\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success or false if the code doesn\textquotesingle{}t exist
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\label{class_gantry_status_registers_1_1projection_options_a33658b1c2080aa9b916d4581105b896c} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!code@{code}}
+\index{code@{code}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{code}
+{\footnotesize\ttfamily \textbf{ options} Gantry\+Status\+Registers\+::projection\+Options\+::code = \textbf{ options\+::\+UNDEF}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register option-\/code. 
+
+\label{class_gantry_status_registers_1_1projection_options_a727905226b73ab9e4ccf1d9fbebd22da} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!list@{list}}
+\index{list@{list}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{list}
+{\footnotesize\ttfamily List$<$int$>$ $^\wedge$ Gantry\+Status\+Registers\+::projection\+Options\+::list = gcnew List$<$int$>$ \{\}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the list of the projections. 
+
+\label{class_gantry_status_registers_1_1projection_options_a59a7869407e76ac87e6a8892e5aa09c7} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!tag@{tag}}
+\index{tag@{tag}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{tag}
+{\footnotesize\ttfamily String $^\wedge$ Gantry\+Status\+Registers\+::projection\+Options\+::tag = \"{}UNDEF\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+This is the register tag ~\newline
+ 
+
+\label{class_gantry_status_registers_1_1projection_options_ab87708ec2cbd7eb1e3fc5ef6357c08e1} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!tags@{tags}}
+\index{tags@{tags}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{tags}
+{\footnotesize\ttfamily const array$<$String$^\wedge$$>$ $^\wedge$ Gantry\+Status\+Registers\+::projection\+Options\+::tags = gcnew array$<$String$^\wedge$$>$ \{ \"{}LCC\"{}, \"{}LFB\"{}, \"{}LISO\"{}, \"{}LLM\"{}, \"{}LLMO\"{}, \"{}LML\"{}, \"{}LMLO\"{}, \"{}LSIO\"{}, \"{}RCC\"{}, \"{}RFB\"{}, \"{}RISO\"{}, \"{}RLM\"{}, \"{}RLMO\"{}, \"{}RML\"{}, \"{}RMLO\"{}, \"{}RSIO\"{}, \"{}UNDEF\"{}\}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This is the option-\/tags static array. 
+
+
+
+\doxysubsection{Event Documentation}
+\label{class_gantry_status_registers_1_1projection_options_a9325ee77cf9158bdc2d144f453eb9935} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!lista\_change\_event@{lista\_change\_event}}
+\index{lista\_change\_event@{lista\_change\_event}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{lista\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+lista\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::projection\+Options\+::lista\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: xray\+Completed\+Options\+::lista\+\_\+change\+\_\+event += gcnew delegate\+\_\+lista\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) \label{class_gantry_status_registers_1_1projection_options_a1229c0b060e0055949191bebf3fd7232} 
+\index{GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}!status\_change\_event@{status\_change\_event}}
+\index{status\_change\_event@{status\_change\_event}!GantryStatusRegisters::projectionOptions@{GantryStatusRegisters::projectionOptions}}
+\doxysubsubsection{status\_change\_event}
+{\footnotesize\ttfamily \textbf{ delegate\+\_\+status\+\_\+change}$^\wedge$ Gantry\+Status\+Registers\+::projection\+Options\+::status\+\_\+change\+\_\+event\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This event is generated whenver the status of the register is changed. 
+
+Usage\+: \doxyref{xray\+Completed\+Options\+::status\+\_\+change\+\_\+event}{p.}{class_gantry_status_registers_1_1xray_completed_options_a259f399776d018bf47bdb48a477e05ab} += gcnew delegate\+\_\+status\+\_\+change(\&some\+\_\+class, some\+\_\+class\+::func) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/marco/\+One\+Drive/\+Documenti/\+Visual Studio 2022/\+Projects/\+MCPU/\+MCPU\+\_\+\+MASTER/\textbf{ gantry\+\_\+global\+\_\+status.\+h}\end{DoxyCompactItemize}

@@ -235,6 +235,72 @@ namespace GantryStatusRegisters {
         static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
+    /// <summary>
+    /// This class register handles the REady for exposure conditions.
+    /// 
+    /// 
+    /// 
+    /// \ingroup globalModule 
+    /// </summary>
+    ref class ReadyForExposureRegister {
+    public:
+
+        ///  Definition of the not-ready conditions
+        enum class options {
+            READY_FOR_EXPOSURE = 0, //!< The Gantry is ready to activate an exposure
+            SYSTEM_ERROR = 0x1,         //!< The Gantry is in error condition
+            MISSING_COMPRESSION = 0x2,  //!< The compression force is not detected
+            MISSING_PATIENT_PROTECTION = 0x4,  //!< The Patient protection is missing
+            WRONG_ARM_POSITION =0x8, //!< The Arm position is out of the expected range
+            WRONG_PADDLE_DETECTED = 0x10, //!< The Paddle is not the expected for the exposure mode
+            MISSING_VALID_EXPOSURE_MODE = 0x20, //!< The Exposure mode is not selected
+            MISSING_VALID_EXPOSURE_DATA = 0x40, //!< The Exposure data are not present
+            XRAY_PUSHBUTTON_DISABLED = 0x80, //!< The Xray push button is not enabled
+            STUDY_CLOSED = 0x100, //!< The study is closed
+            NOT_READY_FOR_EXPOSURE = 0x8000 //!< Used to initialize the status  to a non ready condition
+        };
+        
+        delegate void delegate_ready_change(void); //!< This is the delegate of the ready_change_event();
+
+        /// <summary>
+        /// This event is generated whenver the ready for exposure changes its status
+        /// 
+        /// Usage: ReadyForExposureRegister::ready_change_event += gcnew delegate_ready_change(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_ready_change^ ready_change_event;
+
+
+        /// <summary>
+        /// Returns the not ready for exposure bit-wise variable.
+        /// 
+        /// If the variable is 0 it means that the Gantry is Ready!
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>the value of the not ready condition (bit-wise) </returns>
+        static unsigned short getNotReadyCode(void) { return (unsigned short) code; }
+
+        /// <summary>
+        /// This function shall be called by every action to the 
+        /// system variables that affect the current ready condition
+        /// 
+        /// Whwnever the ready status changes, the ready_change_event() is generated 
+        /// </summary>
+        /// <param name=""></param>
+        static void evaluateReadyForExposure(void) {
+            bool initial_status = ((unsigned short) code == 0);
+
+            code = options::NOT_READY_FOR_EXPOSURE;
+
+            if (((unsigned short)code == 0) != initial_status) ready_change_event();
+
+        }
+
+    private:
+        static options code = options::NOT_READY_FOR_EXPOSURE; //!< This is the register option-code 
+        
+    };
+
    
     /// <summary>
     /// This class handles the Xray Push Button activation 

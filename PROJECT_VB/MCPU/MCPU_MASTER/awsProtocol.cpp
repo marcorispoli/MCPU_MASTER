@@ -612,5 +612,37 @@ void   awsProtocol::SET_EnableXrayPush(void) {
     return;
 }
 
+/// <summary>
+/// This command request for the current status of the ready for exposure
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_ReadyForExposure(void) {
+    Debug::WriteLine("GET_ReadyForExposure COMMAND MANAGEMENT");
+    
+    pDecodedFrame->errcode = ReadyForExposureRegister::getNotReadyCode();
+    if (pDecodedFrame->errcode) {  pDecodedFrame->errstr = "GANTRY_NOT_READY"; ackNok(); return; }
+
+    // Ready for exposure
+    ackOk();
+    return;
+}
+
+/// <summary>
+/// This command requests for the exposure start 
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::EXEC_StartXraySequence(void) {
+    Debug::WriteLine("EXEC_StartXraySequence COMMAND MANAGEMENT");
+
+    pDecodedFrame->errcode = ReadyForExposureRegister::getNotReadyCode();
+    if (pDecodedFrame->errcode) { pDecodedFrame->errstr = "GANTRY_NOT_READY"; ackNok(); return; }
+
+    // Ready for exposure
+    ackOk();
+    return;
+}
+
 
 

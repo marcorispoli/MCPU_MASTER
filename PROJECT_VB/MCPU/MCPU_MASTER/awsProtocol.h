@@ -108,8 +108,8 @@ private:
 	void SET_ExposureMode(void);
 	void SET_ExposureData(void);
 	void SET_EnableXrayPush(void);
-	void GET_ReadyForExposure(void) { ackNa(); };
-	void EXEC_StartXraySequence(void) { ackNa(); };
+	void GET_ReadyForExposure(void);
+	void EXEC_StartXraySequence(void);
 
 	void GET_Compressor(void) { ackNa(); };
 	void GET_Components(void) { ackNa(); };

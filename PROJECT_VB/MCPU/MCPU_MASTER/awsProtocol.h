@@ -38,6 +38,9 @@ public:
 	/// This function returns the event server TcpIpServerCLI class handler
 	TcpIpServerCLI^ getEventHandler(void) { return event_server; };
 	
+	/// This function shall be connected to the Arm Activation completed event
+	void armActivationCompletedCallback(unsigned short id, int error);
+
 	/// @}
 	
    
@@ -86,10 +89,10 @@ private:
 	void ackOk(List<String^>^ params);//!< This is the immediate command executed OK with parameters
 	void ackNok(void);	//!< This is the immediate command NOK
 	void ackExecuting(void);//!< This is the immediate command EXECUTING
-	void eventExecutedOk(void);//!< This is the Command Executed OK event
-	void eventExecutedOk(List<String^>^ params);//!< This is the Command Executed OK event with parameters
-	void eventExecutedNok(unsigned short errcode);//!< This is the Command Executed NOK event  with an error code
-	void eventExecutedNok(unsigned short errcode, String^ errorstr);//!< This is the Command Executed NOK event  with an error code and error string
+	void eventExecutedOk(unsigned short id);//!< This is the Command Executed OK event
+	void eventExecutedOk(unsigned short id, List<String^>^ params);//!< This is the Command Executed OK event with parameters
+	void eventExecutedNok(unsigned short id, unsigned short errcode);//!< This is the Command Executed NOK event  with an error code
+	void eventExecutedNok(unsigned short id, unsigned short errcode, String^ errorstr);//!< This is the Command Executed NOK event  with an error code and error string
 
 
 	/// \defgroup awsProtoCommands AWS Protocol Command set

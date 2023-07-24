@@ -2,6 +2,15 @@
 
 #include <math.h>
 
+
+
+ref class GlobalObjects
+{
+public:
+    static Object^ pAws;
+
+};
+
 /// <summary>
 /// This is the module implementing the Gantry Global Status registers.
 /// 
@@ -613,7 +622,7 @@ namespace GantryStatusRegisters {
         static bool isOPEN(void) { return (code == options::GANTRY_OPEN_STUDY); }
   
 private:
-        static options code = options::UNDEF; //!< This is the register option-code 
+        static options code = options::GANTRY_IDLE; //!< This is the register option-code 
 
     };
 
@@ -1791,7 +1800,7 @@ private:
             allowed_low = low;
             allowed_high = high;
             
-            if ((current_angle < pos + 1) || (current_angle > pos - 1)) {                
+            if ((pos <= current_angle + 1) && (pos >= current_angle - 1)) {
                 executing_id = 0;
                 return true;
             }
@@ -1807,7 +1816,7 @@ private:
         delegate void delegate_position_change(void);//!< This is the delegate of the position_change_event();
 
         /// <summary>
-        /// This event is generated whenver the trx position is updated.
+        /// This event is generated whenver the arm position is updated.
         /// This is not the activation completion event!
         /// 
         /// Usage: ArmStatusRegister::position_change_event += gcnew delegate_position_change(&some_class, some_class::func)
@@ -1828,6 +1837,34 @@ private:
             }
         }
 
+        delegate void delegate_activation_completed(unsigned short id, int error);//!< This is the delegate of the activation_completed_event();
+
+        /// <summary>
+        /// This event is generated whenver the arm completes an activation!
+        /// 
+        /// Usage: ArmStatusRegister::activation_completed_event += gcnew delegate_activation_completed(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_activation_completed^ activation_completed_event;
+
+        /// <summary>
+        /// This function shall be called when the activation termines
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="angle">THis is the final angle</param>
+        /// <param name="error">This is an error code</param>
+        static void  activationCompleted(int angle, int error) {
+            if (!executing) return;
+            executing = false;
+
+            unsigned short  id = executing_id;
+            executing_id = 0;
+
+            updateCurrentPosition( angle );
+            activation_completed_event(id, error);
+
+        }
+
 
         /// <summary>
         /// This function returns the current ARM angle, even if the command is not yet terminated.
@@ -1837,6 +1874,36 @@ private:
         /// <returns>The current angle (°) units</returns>
         static int getAngle(void) {
             return current_angle;
+        }
+
+        /// <summary>
+        /// This function returns the current ARM target
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current target (°) units</returns>
+        static int getTarget(void) {
+            return position_target;
+        }
+
+        /// <summary>
+        /// This function returns the current ARM low target
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current low target (°) units</returns>
+        static int getLow(void) {
+            return allowed_low;
+        }
+
+        /// <summary>
+       /// This function returns the current ARM high target
+       /// 
+       /// </summary>
+       /// <param name=""></param>
+       /// <returns>The current high target (°) units</returns>
+        static int getHigh(void) {
+            return allowed_high;
         }
 
 

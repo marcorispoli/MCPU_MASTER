@@ -76,9 +76,11 @@ awsProtoCommands \- AWS Protocol Command set
 .ti -1c
 .RI "void \fBawsProtocol::GET_TubeTemperature\fP (void)"
 .br
+.RI "This command returns the Tube cumeulated energy for the Anode and the internal Filament and Stator device\&. "
 .ti -1c
 .RI "void \fBawsProtocol::SET_Language\fP (void)"
 .br
+.RI "This command sets the GUI language\&. "
 .ti -1c
 .RI "void \fBawsProtocol::EXEC_PowerOff\fP (void)"
 .br
@@ -159,8 +161,10 @@ The Symbolic position;
 The actual angle position;
 .PP
 
-.SS "void awsProtocol::GET_TubeTemperature (void)\fC [inline]\fP, \fC [private]\fP"
+.SS "void awsProtocol::GET_TubeTemperature (void)\fC [private]\fP"
 
+.PP
+This command returns the Tube cumeulated energy for the Anode and the internal Filament and Stator device\&. 
 .SS "void awsProtocol::SET_EnableXrayPush (void)\fC [private]\fP"
 
 .PP
@@ -173,8 +177,10 @@ This command assignes the exposure parameters for the next Exposure pulse
 
 .PP
 This command select the Exposure Mode for the incoming Exposure sequence 
-.SS "void awsProtocol::SET_Language (void)\fC [inline]\fP, \fC [private]\fP"
+.SS "void awsProtocol::SET_Language (void)\fC [private]\fP"
 
+.PP
+This command sets the GUI language\&. 
 .SS "void awsProtocol::SET_ProjectionList (void)\fC [private]\fP"
 
 .PP

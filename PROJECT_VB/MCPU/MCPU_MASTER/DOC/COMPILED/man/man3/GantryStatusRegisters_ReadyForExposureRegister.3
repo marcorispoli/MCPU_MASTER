@@ -1,0 +1,170 @@
+.TH "GantryStatusRegisters::ReadyForExposureRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::ReadyForExposureRegister \- This class register handles the REady for exposure conditions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBREADY_FOR_EXPOSURE\fP = 0, \fBSYSTEM_ERROR\fP = 0x1, \fBMISSING_COMPRESSION\fP = 0x2, \fBMISSING_PATIENT_PROTECTION\fP = 0x4, \fBWRONG_ARM_POSITION\fP =0x8, \fBWRONG_PADDLE_DETECTED\fP = 0x10, \fBMISSING_VALID_EXPOSURE_MODE\fP = 0x20, \fBMISSING_VALID_EXPOSURE_DATA\fP = 0x40, \fBXRAY_PUSHBUTTON_DISABLED\fP = 0x80, \fBSTUDY_CLOSED\fP = 0x100, \fBNOT_READY_FOR_EXPOSURE\fP = 0x8000 }"
+.br
+.RI "Definition of the not-ready conditions\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_ready_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBready_change_event()\fP;\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_start_exposure\fP (void)"
+.br
+.RI "This is the delegate of the \fBstart_exposure_event()\fP;\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBrequestStartExposure\fP (void)"
+.br
+.RI "This function requests for the start exposure\&. If the system is in ready for exposure, the event \fBstart_exposure_event()\fP is generated\&. "
+.ti -1c
+.RI "static unsigned short \fBgetNotReadyCode\fP (void)"
+.br
+.RI "Returns the not ready for exposure bit-wise variable\&. "
+.ti -1c
+.RI "static void \fBevaluateReadyForExposure\fP (void)"
+.br
+.RI "This function shall be called by every action to the system variables that affect the current ready condition "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_ready_change\fP^ \fBready_change_event\fP"
+.br
+.RI "This event is generated whenver the ready for exposure changes its status "
+.ti -1c
+.RI "static \fBdelegate_start_exposure\fP^ \fBstart_exposure_event\fP"
+.br
+.RI "This event is generated whenver the ready for exposure changes its status "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBcode\fP = \fBoptions::NOT_READY_FOR_EXPOSURE\fP"
+.br
+.RI "This is the register option-code\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class register handles the REady for exposure conditions\&. 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::ReadyForExposureRegister::options\fP\fC [strong]\fP"
+
+.PP
+Definition of the not-ready conditions\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIREADY_FOR_EXPOSURE \fP\fP
+The Gantry is ready to activate an exposure\&. 
+.TP
+\fB\fISYSTEM_ERROR \fP\fP
+The Gantry is in error condition\&. 
+.TP
+\fB\fIMISSING_COMPRESSION \fP\fP
+The compression force is not detected\&. 
+.TP
+\fB\fIMISSING_PATIENT_PROTECTION \fP\fP
+The Patient protection is missing\&. 
+.TP
+\fB\fIWRONG_ARM_POSITION \fP\fP
+The Arm position is out of the expected range\&. 
+.TP
+\fB\fIWRONG_PADDLE_DETECTED \fP\fP
+The Paddle is not the expected for the exposure mode\&. 
+.TP
+\fB\fIMISSING_VALID_EXPOSURE_MODE \fP\fP
+The Exposure mode is not selected\&. 
+.TP
+\fB\fIMISSING_VALID_EXPOSURE_DATA \fP\fP
+The Exposure data are not present\&. 
+.TP
+\fB\fIXRAY_PUSHBUTTON_DISABLED \fP\fP
+The Xray push button is not enabled\&. 
+.TP
+\fB\fISTUDY_CLOSED \fP\fP
+The study is closed\&. 
+.TP
+\fB\fINOT_READY_FOR_EXPOSURE \fP\fP
+Used to initialize the status to a non ready condition\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void GantryStatusRegisters::ReadyForExposureRegister::delegate_ready_change (void)"
+
+.PP
+This is the delegate of the \fBready_change_event()\fP;\&. 
+.SS "delegate void GantryStatusRegisters::ReadyForExposureRegister::delegate_start_exposure (void)"
+
+.PP
+This is the delegate of the \fBstart_exposure_event()\fP;\&. 
+.SS "static void GantryStatusRegisters::ReadyForExposureRegister::evaluateReadyForExposure (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function shall be called by every action to the system variables that affect the current ready condition Whwnever the ready status changes, the \fBready_change_event()\fP is generated 
+.SS "static unsigned short GantryStatusRegisters::ReadyForExposureRegister::getNotReadyCode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Returns the not ready for exposure bit-wise variable\&. If the variable is 0 it means that the Gantry is Ready!
+.PP
+\fBReturns\fP
+.RS 4
+the value of the not ready condition (bit-wise) 
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ReadyForExposureRegister::requestStartExposure (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function requests for the start exposure\&. If the system is in ready for exposure, the event \fBstart_exposure_event()\fP is generated\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if the system is in ready for exposure
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBoptions\fP GantryStatusRegisters::ReadyForExposureRegister::code = \fBoptions::NOT_READY_FOR_EXPOSURE\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the register option-code\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_ready_change\fP^ GantryStatusRegisters::ReadyForExposureRegister::ready_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the ready for exposure changes its status Usage: \fBReadyForExposureRegister::ready_change_event\fP += gcnew delegate_ready_change(&some_class, some_class::func) 
+.SS "\fBdelegate_start_exposure\fP^ GantryStatusRegisters::ReadyForExposureRegister::start_exposure_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the ready for exposure changes its status Usage: \fBReadyForExposureRegister::start_exposure_event\fP += gcnew delegate_start_exposure(&some_class, some_class::func) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

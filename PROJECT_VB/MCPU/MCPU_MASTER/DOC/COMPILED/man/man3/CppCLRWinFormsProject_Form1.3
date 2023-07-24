@@ -33,10 +33,28 @@ Inherits System::Windows::Forms::Form\&.
 .RI "void \fBInitializeComponent\fP (void)"
 .br
 .RI "Required method for Designer support - do not modify the contents of this method with the code editor\&. "
+.ti -1c
+.RI "System::Void \fBtextForce_KeyPress\fP (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBtextThickness_KeyPress\fP (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)"
+.br
 .in -1c
 .SS "Private Attributes"
 
 .in +1c
+.ti -1c
+.RI "System::Windows::Forms::TextBox ^ \fBtextForce\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelCmpForce\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::TextBox ^ \fBtextThickness\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlableCmpThick\fP"
+.br
 .ti -1c
 .RI "System::ComponentModel::Container ^ \fBcomponents\fP"
 .br
@@ -59,12 +77,24 @@ Clean up any resources being used\&.
 
 .PP
 Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "System::Void CppCLRWinFormsProject::Form1::textForce_KeyPress (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::textThickness_KeyPress (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
 .SH "Member Data Documentation"
 .PP 
 .SS "System::ComponentModel::Container ^ CppCLRWinFormsProject::Form1::components\fC [private]\fP"
 
 .PP
 Required designer variable\&. 
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelCmpForce\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::lableCmpThick\fC [private]\fP"
+
+.SS "System::Windows::Forms::TextBox ^ CppCLRWinFormsProject::Form1::textForce\fC [private]\fP"
+
+.SS "System::Windows::Forms::TextBox ^ CppCLRWinFormsProject::Form1::textThickness\fC [private]\fP"
+
 
 .SH "Author"
 .PP 

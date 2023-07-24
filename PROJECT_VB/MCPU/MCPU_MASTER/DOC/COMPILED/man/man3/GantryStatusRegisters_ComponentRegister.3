@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::ComponentRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ComponentRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::ComponentRegister \- This register handle the Component that can be used during the exposure\&.  
+GantryStatusRegisters::ComponentRegister \- This register handle the Component that can be used during the exposure  
 
 .SH SYNOPSIS
 .br
@@ -13,7 +13,7 @@ GantryStatusRegisters::ComponentRegister \- This register handle the Component t
 
 .in +1c
 .ti -1c
-.RI "enum class \fBoptions\fP { \fBCOMPONENT_UNDETECTED\fP = 0, \fBCOMPONENT_PROTECTION_3D\fP, \fBCOMPONENT_MAG15\fP, \fBCOMPONENT_MAG18\fP, \fBCOMPONENT_MAG20\fP, \fBCOMPONENT_BIOPSY\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBoptions\fP { \fBCOMPONENT_PROTECTION_3D\fP = 0, \fBCOMPONENT_MAG15\fP, \fBCOMPONENT_MAG18\fP, \fBCOMPONENT_MAG20\fP, \fBCOMPONENT_BIOPSY\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -33,7 +33,7 @@ GantryStatusRegisters::ComponentRegister \- This register handle the Component t
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -46,7 +46,7 @@ GantryStatusRegisters::ComponentRegister \- This register handle the Component t
 
 .in +1c
 .ti -1c
-.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'COMPONENT_UNDETECTED', 'PROTECTION_3D', 'MAG_15', 'MAG_18', 'MAG_20', 'BIOPSY', 'UNDEF'}"
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'PROTECTION_3D', 'MAG_15', 'MAG_18', 'MAG_20', 'BIOPSY', 'COMPONENT_UNDETECTED'}"
 .br
 .RI "This is the option-tags static array\&. "
 .in -1c
@@ -65,14 +65,10 @@ GantryStatusRegisters::ComponentRegister \- This register handle the Component t
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
-This register handle the Component that can be used during the exposure\&. 
+This register handle the Component that can be used during the exposure 
 
 
 .SH "Member Enumeration Documentation"
@@ -82,8 +78,6 @@ This register handle the Component that can be used during the exposure\&.
 .PP
 \fBEnumerator\fP
 .in +1c
-.TP
-\fB\fICOMPONENT_UNDETECTED \fP\fP
 .TP
 \fB\fICOMPONENT_PROTECTION_3D \fP\fP
 .TP
@@ -105,7 +99,9 @@ This register handle the Component that can be used during the exposure\&.
 .PP
 This is the delegate of the \fBstatus_change_event()\fP;\&. 
 .SS "static \fBoptions\fP GantryStatusRegisters::ComponentRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
-Returns the option code of the register
+
+.PP
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -116,7 +112,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::ComponentRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -162,11 +158,7 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::ComponentRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::ComponentRegister::tags = gcnew array<String^> { 'COMPONENT_UNDETECTED', 'PROTECTION_3D', 'MAG_15', 'MAG_18', 'MAG_20', 'BIOPSY', 'UNDEF'}\fC [static]\fP"
+.SS "const array<String^> ^ GantryStatusRegisters::ComponentRegister::tags = gcnew array<String^> { 'PROTECTION_3D', 'MAG_15', 'MAG_18', 'MAG_20', 'BIOPSY', 'COMPONENT_UNDETECTED'}\fC [static]\fP"
 
 .PP
 This is the option-tags static array\&. 

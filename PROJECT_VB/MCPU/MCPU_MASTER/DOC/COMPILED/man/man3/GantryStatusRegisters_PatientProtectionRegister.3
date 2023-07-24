@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::PatientProtectionRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::PatientProtectionRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ GantryStatusRegisters::PatientProtectionRegister \- This class handles the Usage
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBPROTECTION_ENA\fP, \fBPROTECTION_DIS\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration option code\&. "
+.RI "This is the enumeration option code "
 .in -1c
 .SS "Public Member Functions"
 
@@ -31,11 +31,11 @@ GantryStatusRegisters::PatientProtectionRegister \- This class handles the Usage
 .ti -1c
 .RI "static \fBoptions\fP \fBgetCode\fP (void)"
 .br
-.RI "Returns the option code of the register\&. "
+.RI "Returns the option code of the register "
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -67,10 +67,6 @@ GantryStatusRegisters::PatientProtectionRegister \- This class handles the Usage
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -82,7 +78,7 @@ This class handles the Usage of the patient protection during the exposure\&.
 .SS "enum class \fBGantryStatusRegisters::PatientProtectionRegister::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration option code\&. 
+This is the enumeration option code 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -107,7 +103,7 @@ This is the delegate of the \fBstatus_change_event()\fP;\&.
 .SS "static \fBoptions\fP GantryStatusRegisters::PatientProtectionRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option code of the register\&. 
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -118,7 +114,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::PatientProtectionRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -164,10 +160,6 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::PatientProtectionRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
 .SS "const array<String^> ^ GantryStatusRegisters::PatientProtectionRegister::tags = gcnew array<String^> { 'PROTECTION_ENA', 'PROTECTION_DIS', 'UNDEF'}\fC [static]\fP"
 
 .PP

@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::ProjectionRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ProjectionRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -38,7 +38,7 @@ GantryStatusRegisters::ProjectionRegister \- This is the projection handling opt
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -79,12 +79,6 @@ GantryStatusRegisters::ProjectionRegister \- This is the projection handling opt
 .br
 .RI "This is the register option-code\&. "
 .ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag 
-.br
- "
-.ti -1c
 .RI "static List< int > ^ \fBlist\fP = gcnew List<int> {}"
 .br
 .RI "This is the list of the projections\&. "
@@ -93,7 +87,7 @@ GantryStatusRegisters::ProjectionRegister \- This is the projection handling opt
 .PP 
 This is the projection handling option class\&. 
 
-This class defines the availabl projection options, store the current selected projection and the projection selectable list\&. 
+This class defines the availabl projection options, store the current selected projection and the projection selectable list\&.
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::ProjectionRegister::options\fP\fC [strong]\fP"
@@ -150,7 +144,9 @@ This is the delegate of the \fBlista_change_event()\fP;\&.
 .PP
 This is the delegate of the \fBstatus_change_event()\fP;\&. 
 .SS "static \fBoptions\fP GantryStatusRegisters::ProjectionRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
-Returns the option code of the register
+
+.PP
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -161,7 +157,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::ProjectionRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -204,7 +200,7 @@ true if success or false if the code doesn't exist
 .SS "static bool GantryStatusRegisters::ProjectionRegister::setList (List< int >^ lista)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function set the list of available projections\&. In case of list change, the list_change_event() is generated
+This function set the list of available projections\&. In case of list change, the list_change_event() is generated 
 .PP
 \fBParameters\fP
 .RS 4
@@ -227,12 +223,6 @@ This is the register option-code\&.
 
 .PP
 This is the list of the projections\&. 
-.SS "String ^ GantryStatusRegisters::ProjectionRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag 
-.br
- 
 .SS "const array<String^> ^ GantryStatusRegisters::ProjectionRegister::tags = gcnew array<String^> { 'LCC', 'LFB', 'LISO', 'LLM', 'LLMO', 'LML', 'LMLO', 'LSIO', 'RCC', 'RFB', 'RISO', 'RLM', 'RLMO', 'RML', 'RMLO', 'RSIO', 'UNDEF'}\fC [static]\fP"
 
 .PP

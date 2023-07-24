@@ -1,5 +1,7 @@
 #pragma once
 
+#include <math.h>
+
 /// <summary>
 /// This is the module implementing the Gantry Global Status registers.
 /// 
@@ -73,7 +75,7 @@ namespace GantryStatusRegisters {
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        String^ getTag(void) { return tag; }
+        String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -89,14 +91,9 @@ namespace GantryStatusRegisters {
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 return false;
             }
-
-            if (val != code) {
-                code = val;
-                tag = tags[(int)val];
-            }
+            code = val;
             return true;
         }
 
@@ -111,34 +108,29 @@ namespace GantryStatusRegisters {
         bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
-                        code = (options)i;
-                    }
+                    code = (options)i;
                     return true;
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             return false;
 
         }
 
         FilterOptions() {
             code = options::UNDEF;
-            tag = "UNDEF";
         }
 
     private:
-        options code; //!< This is the register option-code 
-        String^ tag; //!< This is the register tag
+        options code; //!< This is the register option-code         
     };
 
     /// <summary>
     /// This class implements the XRAY completed status register.
+    /// 
     /// \ingroup globalModule 
     /// </summary>
-    ref class XrayCompletedOptions {
+    ref class XrayCompletedRegister {
     public:
 
         
@@ -175,7 +167,7 @@ namespace GantryStatusRegisters {
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -191,14 +183,12 @@ namespace GantryStatusRegisters {
             if (val >= options::LEN) {
                 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -215,8 +205,7 @@ namespace GantryStatusRegisters {
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options) i;
                         status_change_event();
                     }
@@ -224,15 +213,13 @@ namespace GantryStatusRegisters {
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
             
         }
 
     private:
-        static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
+        static options code = options::UNDEF; //!< This is the register option-code         
     };
 
     /// <summary>
@@ -269,6 +256,27 @@ namespace GantryStatusRegisters {
         /// </summary>
         static event delegate_ready_change^ ready_change_event;
 
+        delegate void delegate_start_exposure(void); //!< This is the delegate of the start_exposure_event();
+
+        /// <summary>
+        /// This event is generated whenver the ready for exposure changes its status
+        /// 
+        /// Usage: ReadyForExposureRegister::start_exposure_event += gcnew delegate_start_exposure(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_start_exposure^ start_exposure_event;
+
+        /// <summary>
+        /// This function requests for the start exposure.
+        /// If the system is in ready for exposure, the event start_exposure_event() is generated.
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>true if the system is in ready for exposure</returns>
+        static bool requestStartExposure(void) {
+            if (code != options::READY_FOR_EXPOSURE) return false;
+            start_exposure_event();
+            return true;
+        }
 
         /// <summary>
         /// Returns the not ready for exposure bit-wise variable.
@@ -344,7 +352,7 @@ namespace GantryStatusRegisters {
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getEnableTag(void) { return tag_ena; }
+        static String^ getEnableTag(void) { return tags_ena[(int) code_ena]; }
 
 
         /// <summary>
@@ -360,14 +368,12 @@ namespace GantryStatusRegisters {
             if (val >= options_ena::LEN) {
 
                 code_ena = options_ena::UNDEF;
-                tag_ena = "UNDEF";
                 status_ena_change_event();
                 return false;
             }
 
             if (val != code_ena) {
                 code_ena = val;
-                tag_ena = tags_ena[(int)val];
                 status_ena_change_event();
             }
             return true;
@@ -384,8 +390,7 @@ namespace GantryStatusRegisters {
         static bool setEnableCode(String^ val) {
             for (int i = 0; i < (int)options_ena::LEN; i++) {
                 if (val == tags_ena[i]) {
-                    if (tag_ena != val) {
-                        tag_ena = val;
+                    if (i != (int) code_ena) {
                         code_ena = (options_ena)i;
                         status_ena_change_event();
                     }
@@ -393,7 +398,6 @@ namespace GantryStatusRegisters {
                 }
             }
             code_ena = options_ena::UNDEF;
-            tag_ena = "UNDEF";
             status_ena_change_event();
             return false;
 
@@ -401,7 +405,6 @@ namespace GantryStatusRegisters {
 
     private:
         static options_ena code_ena = options_ena::UNDEF; //!< This is the register option-code 
-        static String^ tag_ena = "UNDEF"; //!< This is the register tag
     };
 
 
@@ -418,6 +421,7 @@ namespace GantryStatusRegisters {
     /// The configuration file identifier is named confid;
     /// The sequnce descriptor is named seqid;
     /// The selection is achieved with the confid + seqid codes.
+    /// 
     /// \ingroup globalModule 
     /// </summary>
     ref class TomoConfigRegister {
@@ -513,7 +517,8 @@ namespace GantryStatusRegisters {
     };
 
     /// <summary>
-    /// This is the Gantry operating status register definition
+    /// This is the Gantry operating status register definition.
+    /// 
     /// \ingroup globalModule 
     /// </summary>
     ref class OperatingStatusRegister {
@@ -553,7 +558,7 @@ namespace GantryStatusRegisters {
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -569,14 +574,12 @@ namespace GantryStatusRegisters {
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -593,8 +596,7 @@ namespace GantryStatusRegisters {
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -602,7 +604,6 @@ namespace GantryStatusRegisters {
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -613,8 +614,6 @@ namespace GantryStatusRegisters {
   
 private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
-
 
     };
 
@@ -686,7 +685,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -702,14 +701,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -726,8 +723,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -735,7 +731,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -762,7 +757,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag     
         static List<int>^ list = gcnew List<int> {}; //!< This is the list of the projections
 
     };
@@ -776,8 +770,7 @@ private:
     public:
 
         enum class options {
-            COMPONENT_UNDETECTED = 0,
-            COMPONENT_PROTECTION_3D,
+            COMPONENT_PROTECTION_3D = 0,
             COMPONENT_MAG15,
             COMPONENT_MAG18,
             COMPONENT_MAG20,
@@ -785,7 +778,7 @@ private:
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "COMPONENT_UNDETECTED", "PROTECTION_3D", "MAG_15", "MAG_18", "MAG_20", "BIOPSY", "UNDEF"};//!< This is the option-tags static array
+        static const array<String^>^ tags = gcnew array<String^> { "PROTECTION_3D", "MAG_15", "MAG_18", "MAG_20", "BIOPSY", "COMPONENT_UNDETECTED"};//!< This is the option-tags static array
         delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
 
         /// <summary>
@@ -807,7 +800,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -823,14 +816,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -847,8 +838,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -856,7 +846,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -864,7 +853,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
     /// <summary>
@@ -876,15 +864,14 @@ private:
     public:
 
         enum class options {
-            COLLI_COMPONENT_UNDETECTED = 0,
-            COLLI_COMPONENT_PROTECTION_2D,
+            COLLI_COMPONENT_PROTECTION_2D = 0,
             COLLI_COMPONENT_PROTECTION_SHIFTED,
             COLLI_COMPONENT_LEAD_SCREEN,
             COLLI_COMPONENT_SPECIMEN,
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "COLLI_COMPONENT_UNDETECTED", "PROTECTION_2D", "SHIFTED_PROTECTION", "LEAD_SCREEN", "SPECIMEN", "UNDEF" };//!< This is the option-tags static array
+        static const array<String^>^ tags = gcnew array<String^> { "PROTECTION_2D", "SHIFTED_PROTECTION", "LEAD_SCREEN", "SPECIMEN", "COLLI_COMPONENT_UNDETECTED" };//!< This is the option-tags static array
 
         delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
 
@@ -907,7 +894,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -923,14 +910,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -947,8 +932,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -956,7 +940,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -964,7 +947,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
     /// <summary>
@@ -992,7 +974,7 @@ private:
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "PAD_24x30", "PAD_18x24_C", "PAD_18x24_L", "PAD_18x24_R", "PADCOLLI_9x21", "PAD_10x24", "PAD_D75", "PAD_BIOP2D", "PAD_BIOP3D", "PAD_TOMO", "PAD_9x9", "PAD_UNDETECTED", "PAD_UNLOCKED", "UNDEF" };//!< This is the option-tags static array
+        static const array<String^>^ tags = gcnew array<String^> { "PAD_24x30", "PAD_18x24_C", "PAD_18x24_L", "PAD_18x24_R", "PADCOLLI_9x21", "PAD_10x24", "PAD_D75", "PAD_BIOP2D", "PAD_BIOP3D", "PAD_TOMO", "PAD_9x9", "PAD_UNDETECTED", "PAD_UNLOCKED", "PAD_UNDETECTED" };//!< This is the option-tags static array
 
 
         delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
@@ -1016,7 +998,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -1032,14 +1014,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -1056,8 +1036,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -1065,7 +1044,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -1074,8 +1052,77 @@ private:
  
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
+
+    /// <summary>
+    /// This is the register handling the compression force and thickness.
+    /// 
+    /// \ingroup globalModule 
+    /// </summary>
+    ref class CompressorRegister {
+    public:
+        delegate void delegate_compressor_change(void); //!< This is the delegate of the compressor_change_event();
+
+        /// <summary>
+        /// This event is generated whenver the status of the compressor data changes.
+        /// 
+        /// Usage: CompressorRegister::compressor_change_event += gcnew delegate_compressor_change(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_compressor_change^ compressor_change_event;
+
+        /// <summary>
+        /// This function returns the current breast compression Force
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The breast compression force in Newtons</returns>
+        static unsigned short getForce(void) {
+            return compression_force;
+        }
+
+        /// <summary>
+        /// This function returns the breast compression Thickness.
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The compressed breast thickness in mm</returns>
+        static unsigned short getThickness(void) {
+            if (compression_force) return breast_thickness;
+            else return 0;
+        }
+
+        /// <summary>
+        /// This function updates the current compression Force.
+        /// 
+        /// If the force is changed then the compressor_change_event() is generated.
+        /// </summary>
+        /// <param name="force"></param>
+        static void setForce(unsigned short force) {
+            if (compression_force != force) {
+                compression_force = force;
+                compressor_change_event();
+            }
+            return;
+        }
+
+        /// <summary>
+        /// This function updates the current compression Thickness.
+        /// 
+        /// If the Thickness is changed then the compressor_change_event() is generated.
+        /// </summary>
+        /// <param name="thick"></param>
+        static void setThickness(unsigned short thick) {
+            if (breast_thickness != thick) {
+                breast_thickness = thick;
+                compressor_change_event();
+            }
+            return;
+        }
+    private:
+        static unsigned short breast_thickness;  //!< Compressed breast thickness in mm
+        static unsigned short compression_force; //!< Compression force in N
+
+    };
+
 
     /// <summary>
     /// This is the Error handling register
@@ -1143,7 +1190,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -1159,14 +1206,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -1183,8 +1228,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -1192,7 +1236,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -1200,7 +1243,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
     /// <summary>
@@ -1246,7 +1288,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -1262,14 +1304,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -1286,8 +1326,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -1295,7 +1334,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -1303,7 +1341,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
     /// <summary>
@@ -1348,7 +1385,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -1364,14 +1401,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -1388,8 +1423,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -1397,7 +1431,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -1405,7 +1438,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
 
@@ -1473,7 +1505,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -1489,14 +1521,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -1513,8 +1543,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -1522,7 +1551,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -1530,7 +1558,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
     /// <summary>
@@ -1574,7 +1601,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tag; }
+        static String^ getTag(void) { return tags[(int) code]; }
 
 
         /// <summary>
@@ -1590,14 +1617,12 @@ private:
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                tag = "UNDEF";
                 status_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                tag = tags[(int)val];
                 status_change_event();
             }
             return true;
@@ -1614,8 +1639,7 @@ private:
         static bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
-                    if (tag != val) {
-                        tag = val;
+                    if (i != (int) code) {
                         code = (options)i;
                         status_change_event();
                     }
@@ -1623,7 +1647,6 @@ private:
                 }
             }
             code = options::UNDEF;
-            tag = "UNDEF";
             status_change_event();
             return false;
 
@@ -1631,7 +1654,6 @@ private:
 
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
-        static String^ tag = "UNDEF"; //!< This is the register tag
     };
 
 
@@ -1671,16 +1693,10 @@ private:
         /// <returns>true if success or false if the code doesn't exist</returns>
         static bool setMode(exposure_mode_options val) {
             if (val >= exposure_mode_options::LEN) {
-
                 exposure_mode = exposure_mode_options::UNDEF;
-                exposure_mode_tag = "UNDEF";
                 return false;
             }
-
-            if (val != exposure_mode) {
-                exposure_mode = val;
-                exposure_mode_tag = exposure_mode_tags[(int)val];
-            }
+            exposure_mode = val;
             return true;
         }
 
@@ -1694,17 +1710,13 @@ private:
         static bool setMode(String^ val) {
             for (int i = 0; i < (int)exposure_mode_options::LEN; i++) {
                 if (val == exposure_mode_tags[i]) {
-                    if (exposure_mode_tag != val) {
-                        exposure_mode_tag = val;
-                        exposure_mode = (exposure_mode_options)i;
-                    }
-                    return true;
+                   exposure_mode = (exposure_mode_options)i;
+                   return true;
                 }
             }
-            exposure_mode = exposure_mode_options::UNDEF;
-            exposure_mode_tag = "UNDEF";
-            return false;
 
+            exposure_mode = exposure_mode_options::UNDEF;
+            return false;
         }
 
 
@@ -1779,7 +1791,7 @@ private:
             allowed_low = low;
             allowed_high = high;
             
-            if ((position < pos + 1) || (position > pos - 1)) {                
+            if ((current_angle < pos + 1) || (current_angle > pos - 1)) {                
                 executing_id = 0;
                 return true;
             }
@@ -1792,13 +1804,49 @@ private:
             return true;
         }
 
+        delegate void delegate_position_change(void);//!< This is the delegate of the position_change_event();
+
+        /// <summary>
+        /// This event is generated whenver the trx position is updated.
+        /// This is not the activation completion event!
+        /// 
+        /// Usage: ArmStatusRegister::position_change_event += gcnew delegate_position_change(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_position_change^ position_change_event;
+
+        /// <summary>
+        /// This function updates the current angle value.
+        /// 
+        /// If the angle changes, the position_change_event() is generated.
+        /// 
+        /// </summary>
+        /// <param name="angle">This is the new angle in (°)</param>
+        static void  updateCurrentPosition(int angle) {
+            if (current_angle != angle) {
+                current_angle = angle;
+                position_change_event();
+            }
+        }
+
+
+        /// <summary>
+        /// This function returns the current ARM angle, even if the command is not yet terminated.
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current angle (°) units</returns>
+        static int getAngle(void) {
+            return current_angle;
+        }
+
+
     private:
-        static exposure_mode_options exposure_mode = exposure_mode_options::UNDEF; //!< This is the current selected Arm Exposure Mode option code
-        static String^ exposure_mode_tag = "UNDEF";//!< This is the current selected Arm Exposure Mode option tag
+        static exposure_mode_options exposure_mode = exposure_mode_options::UNDEF; //!< This is the current selected Arm Exposure Mode option code        
 
         static bool         position_validated = false; //!< Validation status
         static int          position_target = 0;        //!< Validated target position
-        static int          position;                   //!< Current Arm position
+        static int          current_angle;              //!< Current Arm position
+
         static int          allowed_low = 0;            //!< Lower acceptable angle (°)
         static int          allowed_high = 0;           //!< Higher acceptable angle (°)
         static bool         executing = false;          //!< Command is in execution
@@ -1847,7 +1895,7 @@ private:
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E"}; //!< This is the tags array
+        static const array<String^>^ tags = gcnew array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEX"}; //!< This is the tags array
 
      
 
@@ -1859,6 +1907,8 @@ private:
         /// Usage: TrxStatusRegister::target_change_event += gcnew delegate_target_change(&some_class, some_class::func)
         /// </summary>
         static event delegate_target_change^ target_change_event;
+
+        
 
         /// <summary>
         /// This funtion returns the Trx activation status.
@@ -1915,13 +1965,76 @@ private:
             return false;
         }
 
+        delegate void delegate_position_change(void);//!< This is the delegate of the position_change_event();
+
+        /// <summary>
+        /// This event is generated whenver the trx position is updated.
+        /// This is not the activation completion event!
+        /// 
+        /// Usage: TrxStatusRegister::position_change_event += gcnew delegate_position_change(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_position_change^ position_change_event;
+
+        /// <summary>
+        /// This function updates the current angle value.
+        /// 
+        /// If the variation of the angle with respect the last value updated with position_change_event() is greater than sensitivity,
+        /// than a new position_change_event() is generated.
+        /// 
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="sensitivity"></param>
+        static void  updateCurrentPosition(double angle, double sensitivity) {
+            static double last_val_signaled = 0;
+            current_angle = angle;
+            if (fabs(last_val_signaled - angle) > sensitivity) {
+                last_val_signaled = angle;
+                position_change_event();                
+            }
+        }
+
+        /// <summary>
+        /// This function returns the current position code in term of target symbols not angle.
+        /// 
+        /// If the TRX command is executing the returned value is options::UNDEF
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current position (only if the command is completed)</returns>
+        static options getPositionCode(void) {
+            if (executing) return options::UNDEF;
+            return current_position;
+        }
+
+        /// <summary>
+        /// This function returns the current position tag in term of target symbols not angle.
+        /// 
+        /// If the TRX command is executing the returned value is "TRX_UNDEX"
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current position (only if the command is completed)</returns>
+        static String^ getPositionTag(void) {
+            return tags[(int) getPositionCode()];
+        }
+
+        /// <summary>
+        /// This function returns the current TRX angle, even if the command is not yet terminated.
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current angle in 0.01° units</returns>
+        static double getAngle(void) {
+            return current_angle;
+        }
 
     private:
         
         static options      position_target = options::UNDEF; //!< This is the Trx target position
-        static options      current_position = options::UNDEF;//!< This is the current Trx position        
-        static bool         executing = false;          //!< Command is in execution
-        static unsigned short  executing_id = 0;        //!< AWS command Id
+        static options      current_position = options::UNDEF;//!< This is the current Trx position       
+        static double       current_angle;                    //! The Trx angle in 0.01°
+        static bool         executing = false;                //!< Command is in execution
+        static unsigned short  executing_id = 0;              //!< AWS command Id
     };
 
     
@@ -1930,7 +2043,7 @@ private:
     /// This register handle the Exposure pulse data info.
     /// 
     /// The Exposure data of the exposure sequence is stored into this register.
-    /// 
+    /// \ingroup globalModule  
     /// </summary>
     ref class ExposureDataRegister {
     public:
@@ -2039,8 +2152,152 @@ private:
         
     };
 
+    /// <summary>
+    /// This class handles the Xray Tybe data and setting.
+    /// 
+    /// \ingroup globalModule  
+    /// </summary>
+    ref class TubeDataRegister {
+    public:
+
+        /// <summary>
+        /// This function returns the cumulated anode Hu
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Anode Hu in % respect the maximum</returns>
+        static unsigned char getAnode(void){ return anodeHu;}
+
+        /// <summary>
+        /// This function returns the cumulated bulb's heat
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Bulb's heat in % respect the maximum</returns>
+        static unsigned char getBulb(void) { return bulbHeat; }
+
+        /// <summary>
+        /// This function returns the cumulated stator's heat
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Stator's heat in % respect the maximum</returns>
+        static unsigned char getStator(void) { return statorHeat; }
+
+        /// <summary>
+        /// This function returns the available number of exposure 
+        /// that it ishould be possible before to stop for temperature issues
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Number of available exposures</returns>
+        static unsigned short getExposures(void) { return availableExposure; }
+
+    private:
+        static unsigned char  anodeHu = 0;     //!< Cumulated Anode HU %
+        static unsigned char  bulbHeat = 0;    //!< Cumulated Bulb Heat %
+        static unsigned char  statorHeat = 0;  //!< Cumulated Stator Heat %
+        static unsigned short availableExposure = 0xFFFF; //!< Estimated number of available exposure 
+    };
 
    
+    /// <summary>
+    /// This class handles the Interface language
+    /// 
+    /// \ingroup globalModule 
+    /// </summary>
+    ref class LanguageRegister {
+    public:
+
+        /// <summary>
+        /// This is the enumeration option code 
+        /// </summary>
+        enum class options {
+            LNG_ITA,        //!< Italian Language
+            LNG_FRA,        //!< French Language
+            LNG_ENG,        //!< English Language
+            LNG_PRT,        //!< Portuguese 
+            LNG_RUS,        //!< Russian Language
+            LNG_ESP,        //!< Espanol Language
+            LNG_LTU,        //!< Lituanian Language
+            LEN,
+            UNDEF = LEN
+        };
+        static const array<String^>^ tags = gcnew array<String^>  { "ITA", "FRA", "ENG", "PRT","RUS","ESP","LTU","UNDEF"}; //!< This is the option-tags static array
+
+        delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
+
+        /// <summary>
+        /// This event is generated whenever the status of the register is changed.
+        /// 
+        /// Usage: LanguageRegister::status_change_event += gcnew delegate_status_change(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_status_change^ status_change_event;
+
+
+        /// <summary>
+        /// Returns the option code of the register
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>the value of the option code </returns>
+        static options getCode(void) { return code; }
+
+        /// <summary>
+        /// Returns the option tag of the register
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>the value of the Tag </returns>
+        static String^ getTag(void) { return tags[(int)code]; }
+
+
+        /// <summary>
+        /// This function set the register with the option code (and related tag).
+        /// 
+        /// The register is updated with the option code and related tag and, in case of value change,
+        /// the status_change_event() is generated.
+        /// 
+        /// </summary>
+        /// <param name="val">this is the option-code to be set</param>
+        /// <returns>true if success or false if the code doesn't exist</returns>
+        static bool setCode(options val) {
+            if (val >= options::LEN) {
+
+                code = options::UNDEF;
+                status_change_event();
+                return false;
+            }
+
+            if (val != code) {
+                code = val;
+                status_change_event();
+            }
+            return true;
+        }
+
+        /// This function set the register with the option tag (and related code).
+        /// 
+        /// The register is updated with the tag and the related option code and, in case of value change,
+        /// the status_change_event() is generated.
+        /// 
+        /// </summary>
+        /// <param name="val">this is the tag to be set</param>
+        /// <returns>true if success or false if the code doesn't exist</returns>
+        static bool setCode(String^ val) {
+            for (int i = 0; i < (int)options::LEN; i++) {
+                if (val == tags[i]) {
+                    if (i != (int)code) {
+                        code = (options)i;
+                        status_change_event();
+                    }
+                    return true;
+                }
+            }
+            code = options::UNDEF;
+            status_change_event();
+            return false;
+
+        }
+
+    private:
+        static options code = options::UNDEF; //!< This is the register option-code 
+    };
 
 
 }

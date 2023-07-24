@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::xrayCompletedOptions" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::XrayCompletedOptions" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::xrayCompletedOptions \- This class implements the XRAY completed status register\&.  
+GantryStatusRegisters::XrayCompletedOptions \- This class implements the XRAY completed status register\&. 
 
 .SH SYNOPSIS
 .br
@@ -33,11 +33,11 @@ GantryStatusRegisters::xrayCompletedOptions \- This class implements the XRAY co
 .ti -1c
 .RI "static \fBoptions\fP \fBgetCode\fP (void)"
 .br
-.RI "Returns the option code of the register\&. "
+.RI "Returns the option code of the register "
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -76,10 +76,10 @@ GantryStatusRegisters::xrayCompletedOptions \- This class implements the XRAY co
 .in -1c
 .SH "Detailed Description"
 .PP 
-This class implements the XRAY completed status register\&. 
+This class implements the XRAY completed status register\&.
 .SH "Member Enumeration Documentation"
 .PP 
-.SS "enum class \fBGantryStatusRegisters::xrayCompletedOptions::options\fP\fC [strong]\fP"
+.SS "enum class \fBGantryStatusRegisters::XrayCompletedOptions::options\fP\fC [strong]\fP"
 
 .PP
 Definition of the register enumeration codes 
@@ -103,14 +103,14 @@ XRAY sequence aborted without dose\&.
 \fB\fIUNDEF \fP\fP
 .SH "Member Function Documentation"
 .PP 
-.SS "delegate void GantryStatusRegisters::xrayCompletedOptions::delegate_status_change (void)"
+.SS "delegate void GantryStatusRegisters::XrayCompletedOptions::delegate_status_change (void)"
 
 .PP
 This is the delegate of the \fBstatus_change_event()\fP;\&. 
-.SS "static \fBoptions\fP GantryStatusRegisters::xrayCompletedOptions::getCode (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "static \fBoptions\fP GantryStatusRegisters::XrayCompletedOptions::getCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option code of the register\&. 
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -118,10 +118,10 @@ the value of the option code
 .RE
 .PP
 
-.SS "static String ^ GantryStatusRegisters::xrayCompletedOptions::getTag (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "static String ^ GantryStatusRegisters::XrayCompletedOptions::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -129,7 +129,7 @@ the value of the Tag
 .RE
 .PP
 
-.SS "static bool GantryStatusRegisters::xrayCompletedOptions::setCode (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
+.SS "static bool GantryStatusRegisters::XrayCompletedOptions::setCode (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
 This function set the register with the option code (and related tag)\&. The register is updated with the option code and related tag and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
@@ -145,7 +145,7 @@ true if success or false if the code doesn't exist
 .RE
 .PP
 
-.SS "static bool GantryStatusRegisters::xrayCompletedOptions::setCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
+.SS "static bool GantryStatusRegisters::XrayCompletedOptions::setCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
 This function set the register with the option tag (and related code)\&.
 .PP
 The register is updated with the tag and the related option code and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
@@ -163,24 +163,24 @@ true if success or false if the code doesn't exist
 
 .SH "Member Data Documentation"
 .PP 
-.SS "\fBoptions\fP GantryStatusRegisters::xrayCompletedOptions::code = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+.SS "\fBoptions\fP GantryStatusRegisters::XrayCompletedOptions::code = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::xrayCompletedOptions::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
+.SS "String ^ GantryStatusRegisters::XrayCompletedOptions::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
 
 .PP
 This is the register tag\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::xrayCompletedOptions::tags = gcnew array<String^> {'OK', 'PARTIAL', 'NOK', 'UNDEF'}\fC [static]\fP"
+.SS "const array<String^> ^ GantryStatusRegisters::XrayCompletedOptions::tags = gcnew array<String^> {'OK', 'PARTIAL', 'NOK', 'UNDEF'}\fC [static]\fP"
 
 .PP
 Definition of the register tags\&. 
 .SH "Event Documentation"
 .PP 
-.SS "\fBdelegate_status_change\fP^ GantryStatusRegisters::xrayCompletedOptions::status_change_event\fC [static]\fP"
+.SS "\fBdelegate_status_change\fP^ GantryStatusRegisters::XrayCompletedOptions::status_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the status of the register is changed\&. Usage: \fBxrayCompletedOptions::status_change_event\fP += gcnew delegate_status_change(&some_class, some_class::func) 
+This event is generated whenver the status of the register is changed\&. Usage: xrayCompletedOptions::status_change_event += gcnew delegate_status_change(&some_class, some_class::func) 
 
 .SH "Author"
 .PP 

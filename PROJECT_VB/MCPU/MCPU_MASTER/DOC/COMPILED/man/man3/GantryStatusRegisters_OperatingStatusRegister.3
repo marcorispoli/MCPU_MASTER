@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::OperatingStatusRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::OperatingStatusRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::OperatingStatusRegister \- This is the Gantry operating status register definition\&.  
+GantryStatusRegisters::OperatingStatusRegister \- This is the Gantry operating status register definition 
 
 .SH SYNOPSIS
 .br
@@ -15,7 +15,7 @@ GantryStatusRegisters::OperatingStatusRegister \- This is the Gantry operating s
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBGANTRY_STARTUP\fP = 0, \fBGANTRY_IDLE\fP, \fBGANTRY_OPEN_STUDY\fP, \fBGANTRY_SERVICE\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration option code\&. "
+.RI "This is the enumeration option code "
 .in -1c
 .SS "Public Member Functions"
 
@@ -31,11 +31,11 @@ GantryStatusRegisters::OperatingStatusRegister \- This is the Gantry operating s
 .ti -1c
 .RI "static \fBoptions\fP \fBgetCode\fP (void)"
 .br
-.RI "Returns the option code of the register\&. "
+.RI "Returns the option code of the register "
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -73,20 +73,16 @@ GantryStatusRegisters::OperatingStatusRegister \- This is the Gantry operating s
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
-This is the Gantry operating status register definition\&. 
+This is the Gantry operating status register definition
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::OperatingStatusRegister::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration option code\&. 
+This is the enumeration option code 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -115,7 +111,7 @@ This is the delegate of the \fBstatus_change_event()\fP;\&.
 .SS "static \fBoptions\fP GantryStatusRegisters::OperatingStatusRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option code of the register\&. 
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -126,7 +122,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::OperatingStatusRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -176,10 +172,6 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::OperatingStatusRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
 .SS "const array<String^> ^ GantryStatusRegisters::OperatingStatusRegister::tags = gcnew array<String^> { 'GANTRY_STARTUP', 'GANTRY_IDLE', 'GANTRY_OPEN_STUDY', 'GANTRY_SERVICE', 'UNDEF' }\fC [static]\fP"
 
 .PP

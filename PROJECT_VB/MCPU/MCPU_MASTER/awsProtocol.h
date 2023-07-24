@@ -111,13 +111,13 @@ private:
 	void GET_ReadyForExposure(void);
 	void EXEC_StartXraySequence(void);
 
-	void GET_Compressor(void) { ackNa(); };
-	void GET_Components(void) { ackNa(); };
-	void GET_Trx(void) { ackNa(); };
-	void GET_Arm(void) { ackNa(); };
-	void GET_TubeTemperature(void) { ackNa(); };
+	void GET_Compressor(void);
+	void GET_Components(void);
+	void GET_Trx(void);
+	void GET_Arm(void);
+	void GET_TubeTemperature(void);
 
-	void SET_Language(void) { ackNa(); };
+	void SET_Language(void) ;
 	void EXEC_PowerOff(void) { ackNa(); };
 	void AWS_NotRecognizedCommand(void) { ackNa(); };
 	/// @}

@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::FilterOptions" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::FilterOptions" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ GantryStatusRegisters::FilterOptions \- This class implements the Filter selecti
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBFILTER_Ag\fP, \fBFILTER_Al\fP, \fBFILTER_Mo\fP, \fBFILTER_Rh\fP, \fBFILTER_Cu\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration option code\&. "
+.RI "This is the enumeration option code "
 .in -1c
 .SS "Public Member Functions"
 
@@ -23,11 +23,11 @@ GantryStatusRegisters::FilterOptions \- This class implements the Filter selecti
 .ti -1c
 .RI "\fBoptions\fP \fBgetCode\fP (void)"
 .br
-.RI "Returns the option code of the register\&. "
+.RI "Returns the option code of the register "
 .ti -1c
 .RI "String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -43,7 +43,7 @@ GantryStatusRegisters::FilterOptions \- This class implements the Filter selecti
 
 .in +1c
 .ti -1c
-.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'FILTER_Ag', 'FILTER_Al', 'FILTER_Mo', 'FILTER_Rh', 'FILTER_Cu', 'UNDEF'}"
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'Ag', 'Al', 'Mo', 'Rh', 'Cu', 'UNDEF'}"
 .br
 .RI "This is the tags array\&. "
 .in -1c
@@ -53,23 +53,21 @@ GantryStatusRegisters::FilterOptions \- This class implements the Filter selecti
 .ti -1c
 .RI "\fBoptions\fP \fBcode\fP"
 .br
-.RI "This is the register option-code\&. "
-.ti -1c
-.RI "String ^ \fBtag\fP"
+.RI "This is the register option-code 
 .br
-.RI "This is the register tag\&. "
+ "
 .in -1c
 .SH "Detailed Description"
 .PP 
 This class implements the Filter selection interface\&. 
 
-The class is declared by registers that need to store a filter status info\&. 
+The class is declared by registers that need to store a filter status info\&.
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::FilterOptions::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration option code\&. 
+This is the enumeration option code 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -101,7 +99,7 @@ Cu filter seletion option\&.
 .SS "\fBoptions\fP GantryStatusRegisters::FilterOptions::getCode (void)\fC [inline]\fP"
 
 .PP
-Returns the option code of the register\&. 
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -112,7 +110,7 @@ the value of the option code
 .SS "String ^ GantryStatusRegisters::FilterOptions::getTag (void)\fC [inline]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -157,12 +155,10 @@ true if success or false if the code doesn't exist
 .SS "\fBoptions\fP GantryStatusRegisters::FilterOptions::code\fC [private]\fP"
 
 .PP
-This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::FilterOptions::tag\fC [private]\fP"
-
-.PP
-This is the register tag\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::FilterOptions::tags = gcnew array<String^> { 'FILTER_Ag', 'FILTER_Al', 'FILTER_Mo', 'FILTER_Rh', 'FILTER_Cu', 'UNDEF'}\fC [static]\fP"
+This is the register option-code 
+.br
+ 
+.SS "const array<String^> ^ GantryStatusRegisters::FilterOptions::tags = gcnew array<String^> { 'Ag', 'Al', 'Mo', 'Rh', 'Cu', 'UNDEF'}\fC [static]\fP"
 
 .PP
 This is the tags array\&. 

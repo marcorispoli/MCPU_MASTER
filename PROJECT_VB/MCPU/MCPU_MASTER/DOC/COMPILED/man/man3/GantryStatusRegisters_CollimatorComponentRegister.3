@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::CollimatorComponentRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::CollimatorComponentRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::CollimatorComponentRegister \- This register handles the component applicable to the collimator\&.  
+GantryStatusRegisters::CollimatorComponentRegister \- This register handles the component applicable to the collimator  
 
 .SH SYNOPSIS
 .br
@@ -13,7 +13,7 @@ GantryStatusRegisters::CollimatorComponentRegister \- This register handles the 
 
 .in +1c
 .ti -1c
-.RI "enum class \fBoptions\fP { \fBCOLLI_COMPONENT_UNDETECTED\fP = 0, \fBCOLLI_COMPONENT_PROTECTION_2D\fP, \fBCOLLI_COMPONENT_PROTECTION_SHIFTED\fP, \fBCOLLI_COMPONENT_LEAD_SCREEN\fP, \fBCOLLI_COMPONENT_SPECIMEN\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBoptions\fP { \fBCOLLI_COMPONENT_PROTECTION_2D\fP = 0, \fBCOLLI_COMPONENT_PROTECTION_SHIFTED\fP, \fBCOLLI_COMPONENT_LEAD_SCREEN\fP, \fBCOLLI_COMPONENT_SPECIMEN\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -33,7 +33,7 @@ GantryStatusRegisters::CollimatorComponentRegister \- This register handles the 
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -46,7 +46,7 @@ GantryStatusRegisters::CollimatorComponentRegister \- This register handles the 
 
 .in +1c
 .ti -1c
-.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'COLLI_COMPONENT_UNDETECTED', 'PROTECTION_2D', 'SHIFTED_PROTECTION', 'LEAD_SCREEN', 'SPECIMEN', 'UNDEF' }"
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'PROTECTION_2D', 'SHIFTED_PROTECTION', 'LEAD_SCREEN', 'SPECIMEN', 'COLLI_COMPONENT_UNDETECTED' }"
 .br
 .RI "This is the option-tags static array\&. "
 .in -1c
@@ -65,14 +65,10 @@ GantryStatusRegisters::CollimatorComponentRegister \- This register handles the 
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
-This register handles the component applicable to the collimator\&. 
+This register handles the component applicable to the collimator 
 
 
 .SH "Member Enumeration Documentation"
@@ -82,8 +78,6 @@ This register handles the component applicable to the collimator\&.
 .PP
 \fBEnumerator\fP
 .in +1c
-.TP
-\fB\fICOLLI_COMPONENT_UNDETECTED \fP\fP
 .TP
 \fB\fICOLLI_COMPONENT_PROTECTION_2D \fP\fP
 .TP
@@ -103,7 +97,9 @@ This register handles the component applicable to the collimator\&.
 .PP
 This is the delegate of the \fBstatus_change_event()\fP;\&. 
 .SS "static \fBoptions\fP GantryStatusRegisters::CollimatorComponentRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
-Returns the option code of the register
+
+.PP
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -114,7 +110,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::CollimatorComponentRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -160,11 +156,7 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::CollimatorComponentRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::CollimatorComponentRegister::tags = gcnew array<String^> { 'COLLI_COMPONENT_UNDETECTED', 'PROTECTION_2D', 'SHIFTED_PROTECTION', 'LEAD_SCREEN', 'SPECIMEN', 'UNDEF' }\fC [static]\fP"
+.SS "const array<String^> ^ GantryStatusRegisters::CollimatorComponentRegister::tags = gcnew array<String^> { 'PROTECTION_2D', 'SHIFTED_PROTECTION', 'LEAD_SCREEN', 'SPECIMEN', 'COLLI_COMPONENT_UNDETECTED' }\fC [static]\fP"
 
 .PP
 This is the option-tags static array\&. 

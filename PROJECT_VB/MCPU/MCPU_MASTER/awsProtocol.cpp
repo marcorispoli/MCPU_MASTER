@@ -636,13 +636,131 @@ void   awsProtocol::GET_ReadyForExposure(void) {
 void   awsProtocol::EXEC_StartXraySequence(void) {
     Debug::WriteLine("EXEC_StartXraySequence COMMAND MANAGEMENT");
 
-    pDecodedFrame->errcode = ReadyForExposureRegister::getNotReadyCode();
-    if (pDecodedFrame->errcode) { pDecodedFrame->errstr = "GANTRY_NOT_READY"; ackNok(); return; }
-
+    if (!ReadyForExposureRegister::requestStartExposure()) {
+        pDecodedFrame->errcode = ReadyForExposureRegister::getNotReadyCode();
+        pDecodedFrame->errstr = "GANTRY_NOT_READY"; 
+        ackNok(); 
+        return;
+    }
+    
     // Ready for exposure
     ackOk();
     return;
 }
 
+
+/// <summary>
+/// This command requests the Compressor data:
+/// 
+/// + Compressor Thickness;
+/// + Compressore Force;
+///  
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_Compressor(void) {
+    Debug::WriteLine("GET_Compressor COMMAND MANAGEMENT");
+
+    // Create the list of the results
+    List<String^>^ lista = gcnew List<String^>;
+    lista->Add(CompressorRegister::getThickness().ToString());
+    lista->Add(CompressorRegister::getForce().ToString());
+ 
+    ackOk(lista);
+    return;
+}
+
+/// <summary>
+/// This command requests the component identified by the system.
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_Components(void) {
+    Debug::WriteLine("GET_Components COMMAND MANAGEMENT");
+
+    // Create the list of the results
+    List<String^>^ lista = gcnew List<String^>;
+    lista->Add(ComponentRegister::getTag());
+    lista->Add(PaddleRegister::getTag());
+    lista->Add(CollimatorComponentRegister::getTag());
+
+
+    ackOk(lista);
+    return;
+}
+
+/// <summary>
+/// This command provides the current TRX position:
+/// + The Symbolic position;
+/// + The actual angle position;
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_Trx(void) {
+    Debug::WriteLine("GET_Trx COMMAND MANAGEMENT");
+
+    // Create the list of the results
+    List<String^>^ lista = gcnew List<String^>;
+    lista->Add(TrxStatusRegister::getPositionTag());
+    lista->Add(TrxStatusRegister::getAngle().ToString());
+
+
+    ackOk(lista);
+    return;
+}
+
+/// <summary>
+/// This command provides the current ARM position
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_Arm(void) {
+    Debug::WriteLine("GET_Arm COMMAND MANAGEMENT");
+
+    // Create the list of the results
+    List<String^>^ lista = gcnew List<String^>;
+    lista->Add(ProjectionRegister::getTag());
+    lista->Add(ArmStatusRegister::getAngle().ToString());
+
+
+    ackOk(lista);
+    return;
+}
+
+
+/// <summary>
+/// This command returns the Tube cumeulated energy 
+/// for the Anode and the internal Filament and Stator device.
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_TubeTemperature(void) {
+    Debug::WriteLine("GET_TubeTemperature COMMAND MANAGEMENT");
+
+    // Create the list of the results
+    List<String^>^ lista = gcnew List<String^>;
+    lista->Add(TubeDataRegister::getAnode().ToString());
+    lista->Add(TubeDataRegister::getBulb().ToString());
+    lista->Add(TubeDataRegister::getStator().ToString());
+    lista->Add(TubeDataRegister::getExposures().ToString());
+
+    ackOk(lista);
+    return;
+}
+
+/// <summary>
+/// This command sets the GUI language.
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::SET_Language(void) {
+    Debug::WriteLine("SET_Language COMMAND MANAGEMENT");
+
+    if (OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    if (!LanguageRegister::setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "INVALID_LANGUAGE"; ackNok(); return; }
+
+    ackOk();
+    return;
+}
 
 

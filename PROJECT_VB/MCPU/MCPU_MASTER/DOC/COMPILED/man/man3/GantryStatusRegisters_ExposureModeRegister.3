@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::ExposureModeRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ExposureModeRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ GantryStatusRegisters::ExposureModeRegister \- This class handles the exposure t
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBMAN_2D\fP, \fBAEC_2D\fP, \fBMAN_3D\fP, \fBAEC_3D\fP, \fBMAN_COMBO\fP, \fBAEC_COMBO\fP, \fBMAN_AE\fP, \fBAEC_AE\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration option code\&. "
+.RI "This is the enumeration option code "
 .in -1c
 .SS "Public Member Functions"
 
@@ -31,11 +31,11 @@ GantryStatusRegisters::ExposureModeRegister \- This class handles the exposure t
 .ti -1c
 .RI "static \fBoptions\fP \fBgetCode\fP (void)"
 .br
-.RI "Returns the option code of the register\&. "
+.RI "Returns the option code of the register "
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -67,22 +67,18 @@ GantryStatusRegisters::ExposureModeRegister \- This class handles the exposure t
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
 This class handles the exposure type status\&. 
 
-The Exposure type status determines what kind of exposure will take place\&. 
+The Exposure type status determines what kind of exposure will take place\&.
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::ExposureModeRegister::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration option code\&. 
+This is the enumeration option code 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -123,7 +119,7 @@ This is the delegate of the \fBstatus_change_event()\fP;\&.
 .SS "static \fBoptions\fP GantryStatusRegisters::ExposureModeRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option code of the register\&. 
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -134,7 +130,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::ExposureModeRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -180,10 +176,6 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::ExposureModeRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
 .SS "const array<String^> ^ GantryStatusRegisters::ExposureModeRegister::tags = gcnew array<String^> { 'MAN_2D', 'AEC_2D', 'MAN_3D', 'AEC_3D', 'MAN_COMBO', 'AEC_COMBO' , 'MAN_AE', 'AEC_AE', 'UNDEF'}\fC [static]\fP"
 
 .PP

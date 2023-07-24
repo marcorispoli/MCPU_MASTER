@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::CollimationModeRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::CollimationModeRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ GantryStatusRegisters::CollimationModeRegister \- This class handles the Collima
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBCOLLI_AUTO\fP, \fBCOLLI_24x30\fP, \fBCOLLI_18x24_C\fP, \fBCOLLI_18x24_L\fP, \fBCOLLI_18x24_R\fP, \fBCOLLI_9x21\fP, \fBCOLLI_10x24\fP, \fBCOLLI_PROSTHESIS\fP, \fBCOLLI_D75\fP, \fBCOLLI_BIOP2D\fP, \fBCOLLI_BIOP3D\fP, \fBCOLLI_TOMO\fP, \fBCOLLI_9x9\fP, \fBCOLLI_CUSTOM\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration option code\&. "
+.RI "This is the enumeration option code "
 .in -1c
 .SS "Public Member Functions"
 
@@ -31,11 +31,11 @@ GantryStatusRegisters::CollimationModeRegister \- This class handles the Collima
 .ti -1c
 .RI "static \fBoptions\fP \fBgetCode\fP (void)"
 .br
-.RI "Returns the option code of the register\&. "
+.RI "Returns the option code of the register "
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -67,10 +67,6 @@ GantryStatusRegisters::CollimationModeRegister \- This class handles the Collima
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -80,13 +76,13 @@ There are several collimation patterns predefined in the system\&.
 .PP
 This class allows to select the current collimation mode from the available list\&.
 .PP
-This class allows to handle the collimation codes and tag for other purpose (visualization)\&. 
+This class allows to handle the collimation codes and tag for other purpose (visualization)\&.
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::CollimationModeRegister::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration option code\&. 
+This is the enumeration option code 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -145,7 +141,7 @@ This is the delegate of the \fBstatus_change_event()\fP;\&.
 .SS "static \fBoptions\fP GantryStatusRegisters::CollimationModeRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option code of the register\&. 
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -156,7 +152,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::CollimationModeRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -202,19 +198,15 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::CollimationModeRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
 .SS "const array<String^> ^ GantryStatusRegisters::CollimationModeRegister::tags\fC [static]\fP"
-\fBInitial value:\fP.PP
+\fBInitial value:\fP
+.PP
 .nf
 = gcnew array<String^>  { "COLLI_AUTO", "COLLI_24x30", "COLLI_18x24_C", "COLLI_18x24_L", 
                                                                     "COLLI_18x24_R", "COLLI_9x21", "COLLI_10x24", "COLLI_PROSTHESIS", 
                                                                     "COLLI_D75", "COLLI_BIOP2D", "COLLI_BIOP3D", "COLLI_TOMO", 
                                                                     "COLLI_9x9", "COLLI_CUSTOM", "UNDEF"}
 .fi
-
 .PP
 This is the option-tags static array\&. 
 .SH "Event Documentation"

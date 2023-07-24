@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::DetectorTypeRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::DetectorTypeRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ GantryStatusRegisters::DetectorTypeRegister \- This class handles the Detector m
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBLMAM2V2\fP, \fBLMAM2FDIV2\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration option code\&. "
+.RI "This is the enumeration option code "
 .in -1c
 .SS "Public Member Functions"
 
@@ -31,11 +31,11 @@ GantryStatusRegisters::DetectorTypeRegister \- This class handles the Detector m
 .ti -1c
 .RI "static \fBoptions\fP \fBgetCode\fP (void)"
 .br
-.RI "Returns the option code of the register\&. "
+.RI "Returns the option code of the register "
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -67,22 +67,18 @@ GantryStatusRegisters::DetectorTypeRegister \- This class handles the Detector m
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
 This class handles the Detector model selection\&. 
 
-The Detector model influences the behavior of the exposure sequence due to possibly differences in the synch signals and or timing\&. 
+The Detector model influences the behavior of the exposure sequence due to possibly differences in the synch signals and or timing\&.
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::DetectorTypeRegister::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration option code\&. 
+This is the enumeration option code 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -107,7 +103,7 @@ This is the delegate of the \fBstatus_change_event()\fP;\&.
 .SS "static \fBoptions\fP GantryStatusRegisters::DetectorTypeRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option code of the register\&. 
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -118,7 +114,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::DetectorTypeRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -164,10 +160,6 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::DetectorTypeRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
 .SS "const array<String^> ^ GantryStatusRegisters::DetectorTypeRegister::tags = gcnew array<String^> { 'LMAM2V2', 'LMAM2FDIV2', 'UNDEF'}\fC [static]\fP"
 
 .PP

@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::PaddleRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::PaddleRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::PaddleRegister \- This register handles the Paddles identifiable by the compressor device\&.  
+GantryStatusRegisters::PaddleRegister \- This register handles the Paddles identifiable by the compressor device  
 
 .SH SYNOPSIS
 .br
@@ -33,7 +33,7 @@ GantryStatusRegisters::PaddleRegister \- This register handles the Paddles ident
 .ti -1c
 .RI "static String ^ \fBgetTag\fP (void)"
 .br
-.RI "Returns the option tag of the register\&. "
+.RI "Returns the option tag of the register "
 .ti -1c
 .RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
 .br
@@ -46,7 +46,7 @@ GantryStatusRegisters::PaddleRegister \- This register handles the Paddles ident
 
 .in +1c
 .ti -1c
-.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'PAD_24x30', 'PAD_18x24_C', 'PAD_18x24_L', 'PAD_18x24_R', 'PADCOLLI_9x21', 'PAD_10x24', 'PAD_D75', 'PAD_BIOP2D', 'PAD_BIOP3D', 'PAD_TOMO', 'PAD_9x9', 'PAD_UNDETECTED', 'PAD_UNLOCKED', 'UNDEF' }"
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'PAD_24x30', 'PAD_18x24_C', 'PAD_18x24_L', 'PAD_18x24_R', 'PADCOLLI_9x21', 'PAD_10x24', 'PAD_D75', 'PAD_BIOP2D', 'PAD_BIOP3D', 'PAD_TOMO', 'PAD_9x9', 'PAD_UNDETECTED', 'PAD_UNLOCKED', 'PAD_UNDETECTED' }"
 .br
 .RI "This is the option-tags static array\&. "
 .in -1c
@@ -65,14 +65,10 @@ GantryStatusRegisters::PaddleRegister \- This register handles the Paddles ident
 .RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
 .br
 .RI "This is the register option-code\&. "
-.ti -1c
-.RI "static String ^ \fBtag\fP = 'UNDEF'"
-.br
-.RI "This is the register tag\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
-This register handles the Paddles identifiable by the compressor device\&. 
+This register handles the Paddles identifiable by the compressor device 
 
 
 .SH "Member Enumeration Documentation"
@@ -119,7 +115,9 @@ This register handles the Paddles identifiable by the compressor device\&.
 .PP
 This is the delegate of the \fBstatus_change_event()\fP;\&. 
 .SS "static \fBoptions\fP GantryStatusRegisters::PaddleRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
-Returns the option code of the register
+
+.PP
+Returns the option code of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -130,7 +128,7 @@ the value of the option code
 .SS "static String ^ GantryStatusRegisters::PaddleRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the option tag of the register\&. 
+Returns the option tag of the register 
 .PP
 \fBReturns\fP
 .RS 4
@@ -176,11 +174,7 @@ true if success or false if the code doesn't exist
 
 .PP
 This is the register option-code\&. 
-.SS "String ^ GantryStatusRegisters::PaddleRegister::tag = 'UNDEF'\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register tag\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::PaddleRegister::tags = gcnew array<String^> { 'PAD_24x30', 'PAD_18x24_C', 'PAD_18x24_L', 'PAD_18x24_R', 'PADCOLLI_9x21', 'PAD_10x24', 'PAD_D75', 'PAD_BIOP2D', 'PAD_BIOP3D', 'PAD_TOMO', 'PAD_9x9', 'PAD_UNDETECTED', 'PAD_UNLOCKED', 'UNDEF' }\fC [static]\fP"
+.SS "const array<String^> ^ GantryStatusRegisters::PaddleRegister::tags = gcnew array<String^> { 'PAD_24x30', 'PAD_18x24_C', 'PAD_18x24_L', 'PAD_18x24_R', 'PADCOLLI_9x21', 'PAD_10x24', 'PAD_D75', 'PAD_BIOP2D', 'PAD_BIOP3D', 'PAD_TOMO', 'PAD_9x9', 'PAD_UNDETECTED', 'PAD_UNLOCKED', 'PAD_UNDETECTED' }\fC [static]\fP"
 
 .PP
 This is the option-tags static array\&. 

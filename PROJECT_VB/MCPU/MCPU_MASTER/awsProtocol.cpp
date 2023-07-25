@@ -309,9 +309,9 @@ void awsProtocol::ackExecuting(void) {
 /// 
 /// </summary>
 /// <param name=""></param>
-void awsProtocol::eventExecutedOk(void) {
+void awsProtocol::eventExecutedOk(unsigned short id) {
     event_counter++;
-    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + pDecodedFrame->ID.ToString() + " OK %>";
+    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " OK %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
 }
 
@@ -320,14 +320,14 @@ void awsProtocol::eventExecutedOk(void) {
 /// 
 /// </summary>
 /// <param name="params">This is a list of optionals parameters</param>
-void awsProtocol::eventExecutedOk(List<String^>^ params) {
+void awsProtocol::eventExecutedOk(unsigned short id, List<String^>^ params) {
     event_counter++;
     if (params == nullptr) {
-        eventExecutedOk();
+        eventExecutedOk(id);
         return;
     }
 
-    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + pDecodedFrame->ID.ToString() + " OK ";
+    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " OK ";
 
     for (int i = 0; i < params->Count; i++) {
         answer += params[i] + " ";
@@ -344,9 +344,9 @@ void awsProtocol::eventExecutedOk(List<String^>^ params) {
 /// The function send an error code to the AWS as a parameter
 /// </summary>
 /// <param name="errcode">This is the error code notified to the AWS</param>
-void awsProtocol::eventExecutedNok(unsigned short errcode) {
+void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode) {
     event_counter++;
-    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + pDecodedFrame->ID.ToString() + " NOK " + pDecodedFrame->errcode.ToString()  + " %>";
+    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " NOK " + errcode.ToString()  + " %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
 }
 
@@ -357,9 +357,9 @@ void awsProtocol::eventExecutedNok(unsigned short errcode) {
 /// </summary>
 /// <param name="errcode">This is the error code notified to the AWS</param>
 /// <param name="errorstr">This is an error string describing the error event</param>
-void awsProtocol::eventExecutedNok(unsigned short errcode, String^ errorstr) {
+void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode, String^ errorstr) {
     event_counter++;
-    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + pDecodedFrame->ID.ToString() + " NOK " + pDecodedFrame->errcode.ToString() + " "  + pDecodedFrame->errstr + " %>";
+    String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " NOK " + errcode.ToString() + " "  + errorstr + " %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
 }
 
@@ -377,7 +377,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     Debug::WriteLine("EXEC_OpenStudy COMMAND MANAGEMENT");
  
     if (!OperatingStatusRegister::isIDLE()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
-    if (!ErrorRegister::isError()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "SYSTEM_IN_ERROR_CONDITION"; ackNok(); return; }
+    if (ErrorRegister::isError()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "SYSTEM_IN_ERROR_CONDITION"; ackNok(); return; }
     if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
 
     // Sets the patient name: set it before to set the gantry status !!!
@@ -470,6 +470,15 @@ void awsProtocol::EXEC_ArmPosition(void) {
     return;
 
 }
+
+
+void awsProtocol::armActivationCompletedCallback(unsigned short id, int error) {
+    if (error) eventExecutedNok(id, error);
+    else eventExecutedOk(id);
+}
+
+
+
 
 /// <summary>
 /// This command invalidate any selected projection.

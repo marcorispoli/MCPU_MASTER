@@ -27,23 +27,63 @@ public:
 	/// \defgroup awsProtoApi AWS Protocol Api 
 	/// \ingroup awsModule
 	/// @{ 
-	
-	
+
+
 	/// This is the class constructor
-	awsProtocol(String^ ip, int command_port, int event_port); 
-	
+	awsProtocol(String^ ip, int command_port, int event_port);
+
 	/// This function returns the command server TcpIpServerCLI class handler
 	TcpIpServerCLI^ getCommmandHandler(void) { return command_server; };
-	
+
 	/// This function returns the event server TcpIpServerCLI class handler
 	TcpIpServerCLI^ getEventHandler(void) { return event_server; };
-	
-	/// This function shall be connected to the Arm Activation completed event
-	void armActivationCompletedCallback(unsigned short id, int error);
+
+
 
 	/// @}
-	
-   
+
+	/// \defgroup awsProtoCallback AWS Protocol Callbacks
+	/// 
+	/// This section describes the callbacks that allows the module
+	/// to cooperate with other modules
+	/// 
+	/// \ingroup awsModule
+	/// @{ 
+	/// 
+
+	/// This function shall be connected to command completes events
+	void activationCompletedCallback(unsigned short id, int error);
+
+	/// This function shall be connected to the Compressor data change events
+	void compressorDataChangeCallback(void) {};
+
+	/// This function shall be connected to the system component's change events
+	void componentDataChangeCallback(void) {};
+
+	/// This function shall be connected to the operating status change event
+	void operatingStatusChangeCallback(void) {};
+
+	/// This function shall be connected to the abort projection event
+	void selectProjectionCallback(void) {};
+
+	/// This function shall be connected to the abort projection event
+	void abortProjectionCallback(void) {};
+
+	/// This function shall be connected to the push button status change event
+	void xrayPushbuttonChangeCallback(void) {};
+
+	/// This function shall be connected to the ready for exposure change event
+	void exposureReadyChangeCallback(void) {};
+
+	/// This function shall be connected to the xray completed event
+	void exposureSequenceCompletedCallback(void) {};
+
+	/// This function shall be connected to the xray pulse completed event
+	void exposurePulseCompletedCallback(unsigned char npulse) {};
+
+
+	/// @}
+
 private:
 
 

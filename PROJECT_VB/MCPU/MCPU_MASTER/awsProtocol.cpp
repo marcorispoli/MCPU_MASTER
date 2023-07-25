@@ -472,7 +472,7 @@ void awsProtocol::EXEC_ArmPosition(void) {
 }
 
 
-void awsProtocol::armActivationCompletedCallback(unsigned short id, int error) {
+void awsProtocol::activationCompletedCallback(unsigned short id, int error) {
     if (error) eventExecutedNok(id, error);
     else eventExecutedOk(id);
 }
@@ -510,7 +510,7 @@ void awsProtocol::EXEC_TrxPosition(void) {
 
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 4; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (ArmStatusRegister::isBusy()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "TRX_BUSY"; ackNok(); return; }
+    if (TrxStatusRegister::isBusy()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "TRX_BUSY"; ackNok(); return; }
     
     // Parameter 0: Target TRX 
     if (!TrxStatusRegister::setTarget(pDecodedFrame->parameters[0], pDecodedFrame->ID)) { pDecodedFrame->errcode = 3; pDecodedFrame->errstr = "INVALID_TARGET"; ackNok(); return; }
@@ -710,8 +710,8 @@ void   awsProtocol::GET_Trx(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(TrxStatusRegister::getPositionTag());
-    lista->Add(TrxStatusRegister::getAngle().ToString());
+    lista->Add(TrxStatusRegister::getCurrentTag());
+    lista->Add(TrxStatusRegister::getCurrentAngle().ToString());
 
 
     ackOk(lista);

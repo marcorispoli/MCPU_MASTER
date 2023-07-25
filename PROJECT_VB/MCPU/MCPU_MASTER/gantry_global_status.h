@@ -1963,7 +1963,7 @@ private:
             UNDEF = LEN
         };
         static const array<String^>^ tags = gcnew array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEX"}; //!< This is the tags array
-
+        static array<int>^ targets = gcnew array<int> {0, 1500, -1500, 2700, -2700, 0 }; //!< This is the current value of the target angles
      
 
         delegate void delegate_target_change(void);//!< This is the delegate of the target_change_event();
@@ -1988,7 +1988,8 @@ private:
         /// <summary>
         /// This function sets a new target for the Trx.
         /// 
-        /// If the target is changed, the target_change_event() is generated
+        /// If the target_angle-current_angle exceeds sensitivity, the target_change_event() is generated.
+        /// 
         /// </summary>
         /// <param name="tg">this is the target option code</param>
         /// <param name="id">this is the aws command identifier</param>
@@ -1996,9 +1997,9 @@ private:
         static bool setTarget(options tg, int id) {
             if (executing) return false;
             if (tg >=  options::LEN) return false;
+            target_angle = targets[(int)tg];
             
-            if (tg != position_target) {
-                position_target = tg;
+            if (abs(current_angle-target_angle) >= sensitivity) {
                 executing_id = id;
                 executing = true;
                 target_change_event();                
@@ -2008,8 +2009,10 @@ private:
         }
 
         /// <summary>
-        /// This is the same as the setTarget(options tg, int id)
-        /// but with the tag as parameter.
+        /// This function sets a new target for the Trx.
+        /// 
+        /// If the target_angle-current_angle exceeds sensitivity, the target_change_event() is generated.
+        /// 
         /// 
         /// </summary>
         /// <param name="tag">Trx Target Tag</param>
@@ -2017,16 +2020,10 @@ private:
         /// <returns>true if the target is successfully set</returns>
         static bool setTarget(String^ tag, int id) {
             if (executing) return false;
+
             for (int i = 0; i < (int) options::LEN; i++) {
                 if (tags[i] == tag) {
-                    if ((i != (int) position_target) ||(current_position != position_target)) {
-                        position_target = (options) i;
-                        executing_id = id;
-                        executing = true;
-                        target_change_event();
-                        return true;
-                    }
-                    
+                    return setTarget((options)i, id);
                 }
             }
             return false;
@@ -2051,57 +2048,126 @@ private:
         /// </summary>
         /// <param name="angle"></param>
         /// <param name="sensitivity"></param>
-        static void  updateCurrentPosition(double angle, double sensitivity) {
-            static double last_val_signaled = 0;
+        static void  updateCurrentPosition(int angle) {
+            static int last_val_signaled = 0;
             current_angle = angle;
-            if (fabs(last_val_signaled - angle) > sensitivity) {
+            if (abs(last_val_signaled - angle) >= sensitivity) {
                 last_val_signaled = angle;
                 position_change_event();                
             }
         }
 
         /// <summary>
-        /// This function returns the current position code in term of target symbols not angle.
-        /// 
-        /// If the TRX command is executing the returned value is options::UNDEF
+        /// This function returns the target TRX angle
         /// 
         /// </summary>
         /// <param name=""></param>
-        /// <returns>The current position (only if the command is completed)</returns>
-        static options getPositionCode(void) {
-            if (executing) return options::UNDEF;
-            return current_position;
+        /// <returns>The current angle in 0.01° units</returns>
+        static int getTargetAngle(void) {
+            return target_angle;
+        }
+
+         /// <summary>
+         /// This function returns the code related to the angle 
+         /// based on the targets currently set.
+         /// 
+         /// </summary>
+         /// <param name="angle">This is the requested angle</param>
+         /// <returns>The target option corresponding to the target angle angle</returns>
+        static options getTargetCode(void) {
+
+            for (int i = 0; i < (int)options::LEN; i++) {
+                if (abs(target_angle - targets[i]) < sensitivity) {
+                    return (options)i;
+                }
+            }
+            return options::UNDEF;
+        }
+
+        /// <summary>
+        /// This function returns the current target tag in term of target symbols not angle.
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The target Tag </returns>
+        static String^ getTargetTag(void) {
+            return tags[(int)getTargetCode()];
+        }
+
+        /// <summary>
+        /// This function returns the current TRX angle
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current angle in 0.01° units</returns>
+        static int getCurrentAngle(void) {
+            return current_angle;
+        }
+
+        /// <summary>
+         /// This function returns the code related to the angle 
+         /// based on the targets currently set.
+         /// 
+         /// </summary>
+         /// <param name="angle">This is the requested angle</param>
+         /// <returns>The target corresponding to the angle</returns>
+        static options getCurrentCode(void) {
+
+            for (int i = 0; i < (int)options::LEN; i++) {
+                if (abs(current_angle - targets[i]) < sensitivity) {
+                    return (options)i;
+                }
+            }
+            return options::UNDEF;
         }
 
         /// <summary>
         /// This function returns the current position tag in term of target symbols not angle.
         /// 
-        /// If the TRX command is executing the returned value is "TRX_UNDEX"
         /// 
         /// </summary>
         /// <param name=""></param>
-        /// <returns>The current position (only if the command is completed)</returns>
-        static String^ getPositionTag(void) {
-            return tags[(int) getPositionCode()];
+        /// <returns>The current position </returns>
+        static String^ getCurrentTag(void) {
+            return tags[(int)getCurrentCode()];
         }
+
+        
+
+        delegate void delegate_activation_completed(unsigned short id, int error);//!< This is the delegate of the activation_completed_event();
 
         /// <summary>
-        /// This function returns the current TRX angle, even if the command is not yet terminated.
+        /// This event is generated whenver the trx completes an activation!
+        /// 
+        /// Usage: TrxStatusRegister::activation_completed_event += gcnew delegate_activation_completed(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_activation_completed^ activation_completed_event;
+
+        /// <summary>
+        /// This function shall be called when the activation termines
+        /// 
         /// 
         /// </summary>
-        /// <param name=""></param>
-        /// <returns>The current angle in 0.01° units</returns>
-        static double getAngle(void) {
-            return current_angle;
-        }
+        /// <param name="angle">THis is the final angle</param>
+        /// <param name="error">This is an error code</param>
+        static void  activationCompleted(int angle, int error) {
+            if (!executing) return;
+            executing = false;
 
-    private:
-        
-        static options      position_target = options::UNDEF; //!< This is the Trx target position
-        static options      current_position = options::UNDEF;//!< This is the current Trx position       
-        static double       current_angle;                    //! The Trx angle in 0.01°
-        static bool         executing = false;                //!< Command is in execution
+            unsigned short  id = executing_id;
+            executing_id = 0;
+
+            current_angle = angle;
+            position_change_event();
+            activation_completed_event(id, error);
+
+        }
+    private:        
+        static int      target_angle = 0;    //!< This is the Trx target position in 0.01° units          
+        static int      current_angle = 0 ;  //! The Trx angle in 0.01° units
+        static bool     executing = false;                //!< Command is in execution
         static unsigned short  executing_id = 0;              //!< AWS command Id
+        static int sensitivity = 50; //!< Sets the maximum difference from current_ange and position_target 
     };
 
     

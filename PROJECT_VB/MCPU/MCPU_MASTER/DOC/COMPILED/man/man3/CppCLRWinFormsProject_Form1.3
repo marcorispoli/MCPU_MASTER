@@ -1,8 +1,8 @@
-.TH "CppCLRWinFormsProject::Form1" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CppCLRWinFormsProject::Form1" 3MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-CppCLRWinFormsProject::Form1 \- Summary for \fBForm1\fP  
+CppCLRWinFormsProject::Form1 \- Summary for \fBForm1\fP\&.  
 
 .SH SYNOPSIS
 .br
@@ -18,6 +18,13 @@ Inherits System::Windows::Forms::Form\&.
 .RI "\fBForm1\fP (void)"
 .br
 .in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.in -1c
 .SS "Protected Member Functions"
 
 .in +1c
@@ -25,6 +32,9 @@ Inherits System::Windows::Forms::Form\&.
 .RI "\fB~Form1\fP ()"
 .br
 .RI "Clean up any resources being used\&. "
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
 .in -1c
 .SS "Private Member Functions"
 
@@ -38,6 +48,21 @@ Inherits System::Windows::Forms::Form\&.
 .br
 .ti -1c
 .RI "System::Void \fBtextThickness_KeyPress\fP (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBlistPaddle_SelectedIndexChanged\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcomboComponents_SelectedIndexChanged\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcomboColliComponent_SelectedIndexChanged\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBArmUpdateData\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBonArmTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
 .br
 .in -1c
 .SS "Private Attributes"
@@ -56,13 +81,67 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Windows::Forms::Label ^ \fBlableCmpThick\fP"
 .br
 .ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel1\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBcomboPaddle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBcomboComponents\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBcomboColliComponent\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel3\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelArmAngle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox1\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel9\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelArmProjection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel7\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelArmHigh\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel4\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelArmLow\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel6\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelArmTarget\fP"
+.br
+.ti -1c
 .RI "System::ComponentModel::Container ^ \fBcomponents\fP"
 .br
 .RI "Required designer variable\&. "
+.ti -1c
+.RI "System::Timers::Timer ^ \fBaTimer\fP"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
-Summary for \fBForm1\fP 
+Summary for \fBForm1\fP\&. 
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "CppCLRWinFormsProject::Form1::Form1 (void)\fC [inline]\fP"
@@ -73,20 +152,68 @@ Summary for \fBForm1\fP
 Clean up any resources being used\&. 
 .SH "Member Function Documentation"
 .PP 
+.SS "System::Void CppCLRWinFormsProject::Form1::ArmUpdateData (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::comboColliComponent_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::comboComponents_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
 .SS "void CppCLRWinFormsProject::Form1::InitializeComponent (void)\fC [inline]\fP, \fC [private]\fP"
 
 .PP
 Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "System::Void CppCLRWinFormsProject::Form1::listPaddle_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::onArmTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
 .SS "System::Void CppCLRWinFormsProject::Form1::textForce_KeyPress (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::Form1::textThickness_KeyPress (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
+.SS "virtual void CppCLRWinFormsProject::Form1::WndProc (System::Windows::Forms::Message% m)\fC [inline]\fP, \fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
 .SH "Member Data Documentation"
 .PP 
+.SS "System::Timers::Timer ^ CppCLRWinFormsProject::Form1::aTimer\fC [private]\fP"
+
+.SS "System::Windows::Forms::ComboBox ^ CppCLRWinFormsProject::Form1::comboColliComponent\fC [private]\fP"
+
+.SS "System::Windows::Forms::ComboBox ^ CppCLRWinFormsProject::Form1::comboComponents\fC [private]\fP"
+
+.SS "System::Windows::Forms::ComboBox ^ CppCLRWinFormsProject::Form1::comboPaddle\fC [private]\fP"
+
 .SS "System::ComponentModel::Container ^ CppCLRWinFormsProject::Form1::components\fC [private]\fP"
 
 .PP
 Required designer variable\&. 
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox1\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label1\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label2\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label3\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label4\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label5\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label6\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label7\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label9\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelArmAngle\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelArmHigh\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelArmLow\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelArmProjection\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelArmTarget\fC [private]\fP"
+
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelCmpForce\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::lableCmpThick\fC [private]\fP"
@@ -94,6 +221,8 @@ Required designer variable\&.
 .SS "System::Windows::Forms::TextBox ^ CppCLRWinFormsProject::Form1::textForce\fC [private]\fP"
 
 .SS "System::Windows::Forms::TextBox ^ CppCLRWinFormsProject::Form1::textThickness\fC [private]\fP"
+
+.SS "HWND CppCLRWinFormsProject::Form1::window"
 
 
 .SH "Author"

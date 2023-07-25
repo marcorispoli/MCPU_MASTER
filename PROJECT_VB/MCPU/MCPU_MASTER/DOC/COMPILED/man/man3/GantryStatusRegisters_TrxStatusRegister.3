@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::TrxStatusRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::TrxStatusRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorization  
+GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorization\&.  
 
 .SH SYNOPSIS
 .br
@@ -15,7 +15,7 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBTRX_SCOUT\fP = 0, \fBTRX_BP_R\fP, \fBTRX_BP_L\fP, \fBTRX_TOMO_H\fP, \fBTRX_TOMO_E\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration of the possible Trx target positions "
+.RI "This is the enumeration of the possible Trx target positions\&. "
 .in -1c
 .SS "Public Member Functions"
 
@@ -108,15 +108,15 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .in -1c
 .SH "Detailed Description"
 .PP 
-This class handles the Trx motorization 
+This class handles the Trx motorization\&. 
 
-The Trx can be activate only in discrete positions
+The Trx can be activate only in discrete positions 
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::TrxStatusRegister::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration of the possible Trx target positions 
+This is the enumeration of the possible Trx target positions\&. 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -198,7 +198,7 @@ true if the Trx is executing a command
 .SS "static bool GantryStatusRegisters::TrxStatusRegister::setTarget (\fBoptions\fP tg, int id)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function sets a new target for the Trx\&. If the target is changed, the \fBtarget_change_event()\fP is generated 
+This function sets a new target for the Trx\&. If the target is changed, the \fBtarget_change_event()\fP is generated
 .PP
 \fBParameters\fP
 .RS 4

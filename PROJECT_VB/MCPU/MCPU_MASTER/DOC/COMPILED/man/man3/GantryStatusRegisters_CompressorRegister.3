@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::CompressorRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::CompressorRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,7 +23,7 @@ GantryStatusRegisters::CompressorRegister \- This is the register handling the c
 .ti -1c
 .RI "static unsigned short \fBgetForce\fP (void)"
 .br
-.RI "This function returns the current breast compression Force "
+.RI "This function returns the current breast compression Force\&. "
 .ti -1c
 .RI "static unsigned short \fBgetThickness\fP (void)"
 .br
@@ -71,7 +71,7 @@ This is the delegate of the \fBcompressor_change_event()\fP;\&.
 .SS "static unsigned short GantryStatusRegisters::CompressorRegister::getForce (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current breast compression Force 
+This function returns the current breast compression Force\&. 
 .PP
 \fBReturns\fP
 .RS 4
@@ -93,7 +93,7 @@ The compressed breast thickness in mm
 .SS "static void GantryStatusRegisters::CompressorRegister::setForce (unsigned short force)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function updates the current compression Force\&. If the force is changed then the \fBcompressor_change_event()\fP is generated\&. 
+This function updates the current compression Force\&. If the force is changed then the \fBcompressor_change_event()\fP is generated\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -104,7 +104,7 @@ This function updates the current compression Force\&. If the force is changed t
 .SS "static void GantryStatusRegisters::CompressorRegister::setThickness (unsigned short thick)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function updates the current compression Thickness\&. If the Thickness is changed then the \fBcompressor_change_event()\fP is generated\&. 
+This function updates the current compression Thickness\&. If the Thickness is changed then the \fBcompressor_change_event()\fP is generated\&.
 .PP
 \fBParameters\fP
 .RS 4

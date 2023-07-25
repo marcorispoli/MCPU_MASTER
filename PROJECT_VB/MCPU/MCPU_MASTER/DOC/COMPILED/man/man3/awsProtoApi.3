@@ -1,4 +1,4 @@
-.TH "awsProtoApi" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtoApi" 3MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,6 +21,10 @@ awsProtoApi \- AWS Protocol Api
 .RI "\fBTcpIpServerCLI\fP ^ \fBawsProtocol::getEventHandler\fP (void)"
 .br
 .RI "This function returns the event server \fBTcpIpServerCLI\fP class handler\&. "
+.ti -1c
+.RI "void \fBawsProtocol::armActivationCompletedCallback\fP (unsigned short id, int error)"
+.br
+.RI "This function shall be connected to the Arm Activation completed event\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -29,12 +33,14 @@ awsProtoApi \- AWS Protocol Api
  
 .SH "Function Documentation"
 .PP 
+.SS "void awsProtocol::armActivationCompletedCallback (unsigned short id, int error)"
+
+.PP
+This function shall be connected to the Arm Activation completed event\&. 
 .SS "awsProtocol::awsProtocol (String^ ip, int command_port, int event_port)"
 
 .PP
-This is the class constructor\&. This is the class constructor\&.
-.PP
-This function initializes the module\&.
+This is the class constructor\&. This function initializes the module\&.
 .PP
 \fBParameters\fP
 .RS 4

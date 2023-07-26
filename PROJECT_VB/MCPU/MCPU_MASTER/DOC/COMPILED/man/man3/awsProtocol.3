@@ -33,9 +33,45 @@ awsProtocol \- This is the class implementing the AWS Interface Module\&.
 .br
 .RI "This function returns the event server \fBTcpIpServerCLI\fP class handler\&. "
 .ti -1c
-.RI "void \fBarmActivationCompletedCallback\fP (unsigned short id, int error)"
+.RI "void \fBactivationCompletedCallback\fP (unsigned short id, int error)"
 .br
-.RI "This function shall be connected to the Arm Activation completed event\&. "
+.RI "This function shall be connected to command completes events\&. "
+.ti -1c
+.RI "void \fBselectProjectionCallback\fP (String^ proj)"
+.br
+.RI "This function shall be connected to the user select projection event\&. "
+.ti -1c
+.RI "void \fBabortProjectionCallback\fP (void)"
+.br
+.RI "This function shall be connected to the abort projection event\&. "
+.ti -1c
+.RI "void \fBcompressorDataChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the Compressor data change events\&. "
+.ti -1c
+.RI "void \fBcomponentDataChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the system component's change events\&. "
+.ti -1c
+.RI "void \fBoperatingStatusChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the operating status change event\&. "
+.ti -1c
+.RI "void \fBxrayPushbuttonChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the push button status change event\&. "
+.ti -1c
+.RI "void \fBexposureReadyChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the ready for exposure change event\&. "
+.ti -1c
+.RI "void \fBexposureSequenceCompletedCallback\fP (void)"
+.br
+.RI "This function shall be connected to the xray completed event\&. "
+.ti -1c
+.RI "void \fBexposurePulseCompletedCallback\fP (unsigned char npulse)"
+.br
+.RI "This function shall be connected to the xray pulse completed event\&. "
 .in -1c
 .SS "Private Member Functions"
 
@@ -173,6 +209,13 @@ awsProtocol \- This is the class implementing the AWS Interface Module\&.
 .br
 .ti -1c
 .RI "void \fBAWS_NotRecognizedCommand\fP (void)"
+.br
+.ti -1c
+.RI "void \fBEVENT_SelectProjection\fP (String^ projname)"
+.br
+.RI "This is the EVENT requesting the selection of a given projection\&. "
+.ti -1c
+.RI "void \fBEVENT_AbortProjection\fP (void)"
 .br
 .in -1c
 .SS "Private Attributes"

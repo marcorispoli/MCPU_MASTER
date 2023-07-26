@@ -1,0 +1,100 @@
+.TH "awsProtoCallback" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsProtoCallback \- AWS Protocol Callbacks
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBawsProtocol::activationCompletedCallback\fP (unsigned short id, int error)"
+.br
+.RI "This function shall be connected to command completes events\&. "
+.ti -1c
+.RI "void \fBawsProtocol::selectProjectionCallback\fP (String^ proj)"
+.br
+.RI "This function shall be connected to the user select projection event\&. "
+.ti -1c
+.RI "void \fBawsProtocol::abortProjectionCallback\fP (void)"
+.br
+.RI "This function shall be connected to the abort projection event\&. "
+.ti -1c
+.RI "void \fBawsProtocol::compressorDataChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the Compressor data change events\&. "
+.ti -1c
+.RI "void \fBawsProtocol::componentDataChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the system component's change events\&. "
+.ti -1c
+.RI "void \fBawsProtocol::operatingStatusChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the operating status change event\&. "
+.ti -1c
+.RI "void \fBawsProtocol::xrayPushbuttonChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the push button status change event\&. "
+.ti -1c
+.RI "void \fBawsProtocol::exposureReadyChangeCallback\fP (void)"
+.br
+.RI "This function shall be connected to the ready for exposure change event\&. "
+.ti -1c
+.RI "void \fBawsProtocol::exposureSequenceCompletedCallback\fP (void)"
+.br
+.RI "This function shall be connected to the xray completed event\&. "
+.ti -1c
+.RI "void \fBawsProtocol::exposurePulseCompletedCallback\fP (unsigned char npulse)"
+.br
+.RI "This function shall be connected to the xray pulse completed event\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This section describes the callbacks that allows the module to cooperate with other modules 
+.SH "Function Documentation"
+.PP 
+.SS "void awsProtocol::abortProjectionCallback (void)"
+
+.PP
+This function shall be connected to the abort projection event\&. 
+.SS "void awsProtocol::activationCompletedCallback (unsigned short id, int error)"
+
+.PP
+This function shall be connected to command completes events\&. 
+.SS "void awsProtocol::componentDataChangeCallback (void)\fC [inline]\fP"
+
+.PP
+This function shall be connected to the system component's change events\&. 
+.SS "void awsProtocol::compressorDataChangeCallback (void)\fC [inline]\fP"
+
+.PP
+This function shall be connected to the Compressor data change events\&. 
+.SS "void awsProtocol::exposurePulseCompletedCallback (unsigned char npulse)\fC [inline]\fP"
+
+.PP
+This function shall be connected to the xray pulse completed event\&. 
+.SS "void awsProtocol::exposureReadyChangeCallback (void)\fC [inline]\fP"
+
+.PP
+This function shall be connected to the ready for exposure change event\&. 
+.SS "void awsProtocol::exposureSequenceCompletedCallback (void)\fC [inline]\fP"
+
+.PP
+This function shall be connected to the xray completed event\&. 
+.SS "void awsProtocol::operatingStatusChangeCallback (void)\fC [inline]\fP"
+
+.PP
+This function shall be connected to the operating status change event\&. 
+.SS "void awsProtocol::selectProjectionCallback (String^ proj)"
+
+.PP
+This function shall be connected to the user select projection event\&. 
+.SS "void awsProtocol::xrayPushbuttonChangeCallback (void)\fC [inline]\fP"
+
+.PP
+This function shall be connected to the push button status change event\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

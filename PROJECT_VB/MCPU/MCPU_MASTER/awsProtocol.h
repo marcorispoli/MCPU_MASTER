@@ -54,6 +54,12 @@ public:
 	/// This function shall be connected to command completes events
 	void activationCompletedCallback(unsigned short id, int error);
 
+	/// This function shall be connected to the user select projection event
+	void selectProjectionCallback(String^ proj);
+
+	/// This function shall be connected to the abort projection event
+	void abortProjectionCallback(void);
+
 	/// This function shall be connected to the Compressor data change events
 	void compressorDataChangeCallback(void) {};
 
@@ -63,11 +69,8 @@ public:
 	/// This function shall be connected to the operating status change event
 	void operatingStatusChangeCallback(void) {};
 
-	/// This function shall be connected to the abort projection event
-	void selectProjectionCallback(void) {};
 
-	/// This function shall be connected to the abort projection event
-	void abortProjectionCallback(void) {};
+	
 
 	/// This function shall be connected to the push button status change event
 	void xrayPushbuttonChangeCallback(void) {};
@@ -163,6 +166,15 @@ private:
 	void SET_Language(void) ;
 	void EXEC_PowerOff(void) { ackNa(); };
 	void AWS_NotRecognizedCommand(void) { ackNa(); };
+	/// @}
+
+	/// \defgroup awsProtoEvents AWS Protocol Events
+	/// \ingroup awsModule
+	/// @{ 
+	/// 
+	void EVENT_SelectProjection(String^ projname) ;
+	void EVENT_AbortProjection(void);
+
 	/// @}
 
 	/*

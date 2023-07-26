@@ -59,10 +59,28 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Void \fBcomboColliComponent_SelectedIndexChanged\fP (System::Object^ sender, System::EventArgs^ e)"
 .br
 .ti -1c
+.RI "System::Void \fBcomboProjections_SelectedIndexChanged\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBProjectionUpdateList\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBProjectionChange\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBbuttonAbortProjection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
 .RI "System::Void \fBArmUpdateData\fP (void)"
 .br
 .ti -1c
+.RI "System::Void \fBTrxUpdateData\fP (void)"
+.br
+.ti -1c
 .RI "System::Void \fBonArmTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBonTrxTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
 .br
 .in -1c
 .SS "Private Attributes"
@@ -136,7 +154,121 @@ Inherits System::Windows::Forms::Form\&.
 .br
 .RI "Required designer variable\&. "
 .ti -1c
-.RI "System::Timers::Timer ^ \fBaTimer\fP"
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel8\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTrxTarget\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel17\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTrxAngle\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBarmTimer\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel10\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBcomboProjections\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBbuttonAbortProjection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox3\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox4\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox6\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPatientName\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelGantryStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel11\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel12\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox7\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel14\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel13\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel15\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::NumericUpDown ^ \fBnumericAnode\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::NumericUpDown ^ \fBnumericStator\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::NumericUpDown ^ \fBnumericBulb\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::CheckBox ^ \fBcheckBoxArmValid\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox8\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::CheckBox ^ \fBcheckBoxPushButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBbuttonPushButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel19\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTomoConfId\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelCompressionMode\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel16\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::CheckBox ^ \fBcheckBoxUseProtection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::CheckBox ^ \fBcheckBoxUseArm\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel18\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelExposureType\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel20\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTomoSeq\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBtrxTimer\fP"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -154,9 +286,13 @@ Clean up any resources being used\&.
 .PP 
 .SS "System::Void CppCLRWinFormsProject::Form1::ArmUpdateData (void)\fC [inline]\fP, \fC [private]\fP"
 
+.SS "System::Void CppCLRWinFormsProject::Form1::buttonAbortProjection_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
 .SS "System::Void CppCLRWinFormsProject::Form1::comboColliComponent_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::Form1::comboComponents_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::comboProjections_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "void CppCLRWinFormsProject::Form1::InitializeComponent (void)\fC [inline]\fP, \fC [private]\fP"
 
@@ -166,15 +302,35 @@ Required method for Designer support - do not modify the contents of this method
 
 .SS "System::Void CppCLRWinFormsProject::Form1::onArmTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
+.SS "System::Void CppCLRWinFormsProject::Form1::onTrxTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::ProjectionChange (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::ProjectionUpdateList (void)\fC [inline]\fP, \fC [private]\fP"
+
 .SS "System::Void CppCLRWinFormsProject::Form1::textForce_KeyPress (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::Form1::textThickness_KeyPress (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::TrxUpdateData (void)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "virtual void CppCLRWinFormsProject::Form1::WndProc (System::Windows::Forms::Message% m)\fC [inline]\fP, \fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .SH "Member Data Documentation"
 .PP 
-.SS "System::Timers::Timer ^ CppCLRWinFormsProject::Form1::aTimer\fC [private]\fP"
+.SS "System::Timers::Timer ^ CppCLRWinFormsProject::Form1::armTimer\fC [private]\fP"
+
+.SS "System::Windows::Forms::Button ^ CppCLRWinFormsProject::Form1::buttonAbortProjection\fC [private]\fP"
+
+.SS "System::Windows::Forms::Button ^ CppCLRWinFormsProject::Form1::buttonPushButton\fC [private]\fP"
+
+.SS "System::Windows::Forms::CheckBox ^ CppCLRWinFormsProject::Form1::checkBoxArmValid\fC [private]\fP"
+
+.SS "System::Windows::Forms::CheckBox ^ CppCLRWinFormsProject::Form1::checkBoxPushButton\fC [private]\fP"
+
+.SS "System::Windows::Forms::CheckBox ^ CppCLRWinFormsProject::Form1::checkBoxUseArm\fC [private]\fP"
+
+.SS "System::Windows::Forms::CheckBox ^ CppCLRWinFormsProject::Form1::checkBoxUseProtection\fC [private]\fP"
 
 .SS "System::Windows::Forms::ComboBox ^ CppCLRWinFormsProject::Form1::comboColliComponent\fC [private]\fP"
 
@@ -182,15 +338,53 @@ Required method for Designer support - do not modify the contents of this method
 
 .SS "System::Windows::Forms::ComboBox ^ CppCLRWinFormsProject::Form1::comboPaddle\fC [private]\fP"
 
+.SS "System::Windows::Forms::ComboBox ^ CppCLRWinFormsProject::Form1::comboProjections\fC [private]\fP"
+
 .SS "System::ComponentModel::Container ^ CppCLRWinFormsProject::Form1::components\fC [private]\fP"
 
 .PP
 Required designer variable\&. 
 .SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox1\fC [private]\fP"
 
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox2\fC [private]\fP"
+
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox3\fC [private]\fP"
+
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox4\fC [private]\fP"
+
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox5\fC [private]\fP"
+
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox6\fC [private]\fP"
+
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox7\fC [private]\fP"
+
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox8\fC [private]\fP"
+
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label1\fC [private]\fP"
 
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label10\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label11\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label12\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label13\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label14\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label15\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label16\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label17\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label18\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label19\fC [private]\fP"
+
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label2\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label20\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label3\fC [private]\fP"
 
@@ -201,6 +395,8 @@ Required designer variable\&.
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label6\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label7\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label8\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label9\fC [private]\fP"
 
@@ -216,11 +412,35 @@ Required designer variable\&.
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelCmpForce\fC [private]\fP"
 
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelCompressionMode\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelExposureType\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelGantryStatus\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelPatientName\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelTomoConfId\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelTomoSeq\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelTrxAngle\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelTrxTarget\fC [private]\fP"
+
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::lableCmpThick\fC [private]\fP"
+
+.SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericAnode\fC [private]\fP"
+
+.SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericBulb\fC [private]\fP"
+
+.SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericStator\fC [private]\fP"
 
 .SS "System::Windows::Forms::TextBox ^ CppCLRWinFormsProject::Form1::textForce\fC [private]\fP"
 
 .SS "System::Windows::Forms::TextBox ^ CppCLRWinFormsProject::Form1::textThickness\fC [private]\fP"
+
+.SS "System::Timers::Timer ^ CppCLRWinFormsProject::Form1::trxTimer\fC [private]\fP"
 
 .SS "HWND CppCLRWinFormsProject::Form1::window"
 

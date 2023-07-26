@@ -1,0 +1,40 @@
+.TH "awsProtoEvents" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsProtoEvents \- AWS Protocol Events
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBawsProtocol::EVENT_SelectProjection\fP (String^ projname)"
+.br
+.RI "This is the EVENT requesting the selection of a given projection\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EVENT_AbortProjection\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void awsProtocol::EVENT_AbortProjection (void)\fC [private]\fP"
+
+.SS "void awsProtocol::EVENT_SelectProjection (String^ projname)\fC [private]\fP"
+
+.PP
+This is the EVENT requesting the selection of a given projection\&. The projection shall belong to the projections list set by the AWS through the command SET_ProjectionList\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIprojname\fP This is the Tag of the requested projection
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

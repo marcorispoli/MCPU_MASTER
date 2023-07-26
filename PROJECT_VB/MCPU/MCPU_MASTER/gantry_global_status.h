@@ -62,7 +62,7 @@ namespace GantryStatusRegisters {
         /// This is the enumeration option code 
         /// </summary>
         enum class options {
-            FILTER_Ag, //!< Ag filter seletion option
+            FILTER_Ag = 0, //!< Ag filter seletion option
             FILTER_Al, //!< Al filter seletion option
             FILTER_Mo, //!< Mo filter seletion option
             FILTER_Rh, //!< Rh filter seletion option
@@ -133,6 +133,109 @@ namespace GantryStatusRegisters {
     private:
         options code; //!< This is the register option-code         
     };
+
+    /// <summary>
+    /// This class handles the Compression behavior during the exposure.
+    /// 
+    /// \ingroup globalModule 
+    /// </summary>
+    ref class CompressionModeOption {
+    public:
+
+        /// <summary>
+        /// This is the enumeration option code 
+        /// </summary>
+        enum class options {
+            CMP_KEEP = 0, //!< Keeps the compression after exposure;
+            CMP_RELEASE,  //!< Releases the compression after exposure;
+            CMP_DISABLE, //!< Disables the Compression check (for exposures without the compression);
+            LEN,
+            UNDEF = LEN
+        };
+        static const array<String^>^ tags = gcnew array<String^>  { "CMP_KEEP", "CMP_RELEASE", "CMP_DISABLE", "UNDEF"}; //!< This is the option-tags static array
+
+        delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
+
+        /// <summary>
+        /// This event is generated whenver the status of the register is changed.
+        /// 
+        /// Usage: CompressionModeRegister::status_change_event += gcnew delegate_status_change(&some_class, some_class::func)
+        /// </summary>
+        event delegate_status_change^ status_change_event;
+
+
+        /// <summary>
+        /// Returns the option code of the register
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>the value of the option code </returns>
+        options getCode(void) { return code; }
+
+        /// <summary>
+        /// Returns the option tag of the register
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>the value of the Tag </returns>
+        String^ getTag(void) { return tags[(int)code]; }
+
+
+        /// <summary>
+        /// This function set the register with the option code (and related tag).
+        /// 
+        /// The register is updated with the option code and related tag and, in case of value change,
+        /// the status_change_event() is generated.
+        /// 
+        /// </summary>
+        /// <param name="val">this is the option-code to be set</param>
+        /// <returns>true if success or false if the code doesn't exist</returns>
+        bool setCode(options val) {
+            if (val >= options::LEN) {
+
+                code = options::UNDEF;
+                status_change_event();
+                return false;
+            }
+
+            if (val != code) {
+                code = val;
+                status_change_event();
+            }
+            return true;
+        }
+
+        /// This function set the register with the option tag (and related code).
+        /// 
+        /// The register is updated with the tag and the related option code and, in case of value change,
+        /// the status_change_event() is generated.
+        /// 
+        /// </summary>
+        /// <param name="val">this is the tag to be set</param>
+        /// <returns>true if success or false if the code doesn't exist</returns>
+        bool setCode(String^ val) {
+            for (int i = 0; i < (int)options::LEN; i++) {
+                if (val == tags[i]) {
+                    if (i != (int)code) {
+                        code = (options)i;
+                        status_change_event();
+                    }
+                    return true;
+                }
+            }
+            code = options::UNDEF;
+            status_change_event();
+            return false;
+
+        }
+
+        CompressionModeOption() {
+            code = options::UNDEF;
+        }
+
+    private:
+        options code; //!< This is the register option-code 
+    };
+
+
 
     /// <summary>
     /// This class implements the XRAY completed status register.
@@ -440,7 +543,7 @@ namespace GantryStatusRegisters {
         /// This is the enumeration option code for file configuration 
         /// </summary>
         enum class options_conf {
-            TOMO_1F, //!< Tomo configuration file 1F
+            TOMO_1F = 0, //!< Tomo configuration file 1F
             TOMO_2F, //!< Tomo configuration file 2F
             TOMO_3F, //!< Tomo configuration file 3F
             TOMO_4F, //!< Tomo configuration file 4F
@@ -454,7 +557,7 @@ namespace GantryStatusRegisters {
         /// This is the enumeration option code for the particolar sequence in the configuration file  
         /// </summary>
         enum class options_seq {
-            NARROW,         //!< Narrow sequence
+            NARROW = 0,         //!< Narrow sequence
             INTERMEDIATE,   //!< Intermediate sequence
             WIDE,           //!< Wide seqeunce
             SUPERWIDE,      //!< Super-wide sequence
@@ -519,10 +622,94 @@ namespace GantryStatusRegisters {
 
         }
        
+        /// <summary>
+        /// This function returns the Tomo Configuration file name
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Tomo Configuration file name</returns>
+        static inline String^ getConfig(void) { return tags_conf[(int)confid]; }
+
+        /// <summary>
+        /// This function returns the Tomo Sequence name
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Tomo Sequence name</returns>
+        static inline String^ getSequence(void) { return tags_seq[(int)seqid]; }
+
+        /// <summary>
+        /// This function returns true if the Tomo configuration has been selected
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>true if a valid configuration is selected</returns>
+        static inline bool isValid(void) { return ( (confid != options_conf::UNDEF) && (seqid != options_seq::UNDEF) ); }
+
+        /// <summary>
+        /// This function returns the Home position of a selected configuration
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Tomo home position in 0.01°</returns>
+        static inline int getTomoHome(void) { return tomo_home; }
+
+        /// <summary>
+       /// This function returns the End position of a selected configuration
+       /// 
+       /// </summary>
+       /// <param name=""></param>
+       /// <returns>Tomo End position in 0.01°</returns>
+        static inline int getTomoEnd(void) { return tomo_end; }
+
+        /// <summary>
+       /// This function returns the Acceleration of a selected Tomo configuration
+       /// 
+       /// </summary>
+       /// <param name=""></param>
+       /// <returns>Acceleration in 0.01°/ss </returns>
+        static inline int getTomoAcc(void) { return tomo_acc; }
+
+        /// <summary>
+      /// This function returns the Deceleration of a selected Tomo configuration
+      /// 
+      /// </summary>
+      /// <param name=""></param>
+      /// <returns>Deceleration in 0.01°/ss </returns>
+        static inline int getTomoDec(void) { return tomo_dec; }
+
+        /// <summary>
+      /// This function returns the Speed of a selected Tomo configuration
+      /// 
+      /// </summary>
+      /// <param name=""></param>
+      /// <returns>Speed in 0.01°/s </returns>
+        static inline int getTomoRun(void) { return tomo_run; }
+
+        /// <summary>
+        /// This function returns the number of valid sample of a selected Tomo configuration
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Number of sequence samples </returns>
+        static inline int getTomoSmp(void) { return tomo_smp; }
+
+        /// <summary>
+        /// This function returns the number of initial skips of a selected Tomo configuration
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>Number of initial skips </returns>
+        static inline int getTomoSkp(void) { return tomo_skp; }
+
 
     private:
         static options_conf confid = options_conf::UNDEF; //!< This is the register conf_id 
         static options_seq seqid = options_seq::UNDEF; //!< This is the register sequence_id 
+        static int tomo_home;//!< This is the Home position in 0.01°
+        static int tomo_end;//!< This is the Tomo End position in 0.01°
+        static int tomo_acc;//!< This is the acceleration in 0.01°/ss
+        static int tomo_dec;//!< This is the deceleration in 0.01°/ss
+        static int tomo_run;//!< This is the speed in 0.01°/s
+        static int tomo_smp;//!<  This is the number of valid samples
+        static int tomo_skp;//!<  This is the number of initial skip pulses
     };
 
     /// <summary>
@@ -546,94 +733,71 @@ namespace GantryStatusRegisters {
         };
         static const array<String^>^ tags = gcnew array<String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
 
-        delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
+        delegate void delegate_operating_status_change(void); //!< This is the delegate of the operating_status_change_event();
 
         /// <summary>
         /// This event is generated whenver the status of the register is changed.
         /// 
-        /// Usage: OperatingStatusRegister::status_change_event += gcnew delegate_status_change(&some_class, some_class::func)
+        /// Usage: OperatingStatusRegister::operating_status_change_event += gcnew delegate_operating_status_change(&some_class, some_class::func)
         /// </summary>
-        static event delegate_status_change^ status_change_event;
+        static event delegate_operating_status_change^ operating_status_change_event;
 
-        /// <summary>
-        /// Returns the option code of the register
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>the value of the option code </returns>
-        static options getCode(void) { return code; }
+        
+        static String^ getPatientName(void) { return patientName; }
 
-        /// <summary>
-        /// Returns the option tag of the register
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tags[(int) code]; }
-
-
-        /// <summary>
-        /// This function set the register with the option code (and related tag).
-        /// 
-        /// The register is updated with the option code and related tag and, in case of value change,
-        /// the status_change_event() is generated.
-        /// 
-        /// </summary>
-        /// <param name="val">this is the option-code to be set</param>
-        /// <returns>true if success or false if the code doesn't exist</returns>
-        static bool setCode(options val) {
-            if (val >= options::LEN) {
-
-                code = options::UNDEF;
-                status_change_event();
-                return false;
-            }
-
-            if (val != code) {
-                code = val;
-                status_change_event();
-            }
+        static bool setOpenStudy(String^ patient_name) {
+            if (operating_status != options::GANTRY_IDLE) return false;
+            operating_status = options::GANTRY_OPEN_STUDY;
+            patientName = patient_name;
+            operating_status_change_event();
+            return true;
+        }
+        
+        static bool setCloseStudy(void) {
+            if (operating_status != options::GANTRY_OPEN_STUDY) return false;
+            operating_status = options::GANTRY_IDLE;
+            patientName = "";
+            operating_status_change_event();
             return true;
         }
 
-        /// This function set the register with the option tag (and related code).
-        /// 
-        /// The register is updated with the tag and the related option code and, in case of value change,
-        /// the status_change_event() is generated.
-        /// 
-        /// </summary>
-        /// <param name="val">this is the tag to be set</param>
-        /// <returns>true if success or false if the code doesn't exist</returns>
-        static bool setCode(String^ val) {
-            for (int i = 0; i < (int)options::LEN; i++) {
-                if (val == tags[i]) {
-                    if (i != (int) code) {
-                        code = (options)i;
-                        status_change_event();
-                    }
-                    return true;
-                }
-            }
-            code = options::UNDEF;
-            status_change_event();
-            return false;
-
+        static bool setService(void) {
+            if (operating_status != options::GANTRY_IDLE) return false;
+            operating_status = options::GANTRY_SERVICE;
+            operating_status_change_event();
+            return true;
         }
 
-        static bool isIDLE(void) { return (code == options::GANTRY_IDLE); }
-        static bool isOPEN(void) { return (code == options::GANTRY_OPEN_STUDY); }
+        static bool setIdle(void) {
+            if (operating_status != options::GANTRY_SERVICE) return false;
+            operating_status = options::GANTRY_IDLE;
+            operating_status_change_event();
+            return true;
+        }
+
+
+        static String^ getStatus(void) { return tags[(int) operating_status]; }
+        static bool isSERVICE(void) { return (operating_status == options::GANTRY_SERVICE); }
+        static bool isIDLE(void) { return (operating_status == options::GANTRY_IDLE); }
+        static bool isOPEN(void) { return (operating_status == options::GANTRY_OPEN_STUDY); }
+        static bool isCLOSE(void) { return isIDLE(); }
   
 private:
-        static options code = options::GANTRY_IDLE; //!< This is the register option-code 
-
+        static options operating_status = options::GANTRY_IDLE; //!< This is the register option-code 
+        static String^ patientName = "";
     };
 
     /// <summary>
-    /// This is the projection handling option class.
+    /// This is the projection handling  class.
     /// 
-    /// This class defines the availabl projection options,
+    /// This class defines the availabe projection options,
     /// store the current selected projection and the projection selectable list.
+    /// 
+    /// The class provides events related to the data change 
+    /// 
     /// \ingroup globalModule 
     /// </summary>
-    ref class ProjectionRegister {
+    ref class ProjectionOptions {
     public:
 
         /// <summary>
@@ -669,54 +833,63 @@ private:
         /// 
         /// Usage: ProjectionRegister::lista_change_event += gcnew delegate_lista_change(&some_class, some_class::func)
         /// </summary>
-        static event delegate_lista_change^ lista_change_event;
+        event delegate_lista_change^ lista_change_event;
 
 
-        delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
+        delegate void delegate_projection_change(void); //!< This is the delegate of the projection_change_event();
 
         /// <summary>
         /// This event is generated whenver the status of the register is changed.
         /// 
-        /// Usage: ProjectionRegister::status_change_event += gcnew delegate_status_change(&some_class, some_class::func)
+        /// Usage: ProjectionRegister::projection_change_event += gcnew delegate_projection_change(&some_class, some_class::func)
         /// </summary>
-        static event delegate_status_change^ status_change_event;
+        event delegate_projection_change^ projection_change_event;
 
-       
+
         /// <summary>
-       /// Returns the option code of the register
-       /// </summary>
-       /// <param name=""></param>
-       /// <returns>the value of the option code </returns>
-        static options getCode(void) { return code; }
+        /// Returns the option code of the register
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>the value of the option code </returns>
+        options getCode(void) { return code; }
 
         /// <summary>
         /// Returns the option tag of the register
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tags[(int) code]; }
+        String^ getTag(void) { return tags[(int) code]; }
 
+        /// <summary>
+        /// This function clear a current selected projection
+        /// </summary>
+        /// <param name=""></param>
+        void clearProjection(void) {
+            if (code == options::UNDEF) return;
+            code = options::UNDEF;
+            projection_change_event();
+        }
 
         /// <summary>
         /// This function set the register with the option code (and related tag).
         /// 
         /// The register is updated with the option code and related tag and, in case of value change,
-        /// the status_change_event() is generated.
+        /// the projection_change_event() is generated.
         /// 
         /// </summary>
         /// <param name="val">this is the option-code to be set</param>
         /// <returns>true if success or false if the code doesn't exist</returns>
-        static bool setCode(options val) {
+        bool setCode(options val) {
             if (val >= options::LEN) {
 
                 code = options::UNDEF;
-                status_change_event();
+                projection_change_event();
                 return false;
             }
 
             if (val != code) {
                 code = val;
-                status_change_event();
+                projection_change_event();
             }
             return true;
         }
@@ -729,21 +902,36 @@ private:
         /// </summary>
         /// <param name="val">this is the tag to be set</param>
         /// <returns>true if success or false if the code doesn't exist</returns>
-        static bool setCode(String^ val) {
+        bool setCode(String^ val) {
             for (int i = 0; i < (int)options::LEN; i++) {
                 if (val == tags[i]) {
                     if (i != (int) code) {
                         code = (options)i;
-                        status_change_event();
+                        projection_change_event();
                     }
                     return true;
                 }
             }
             code = options::UNDEF;
-            status_change_event();
+            projection_change_event();
             return false;
 
         }
+
+        static bool isCorrectTag(String^ s) {            
+            for (int i = 0; i < (int) options::LEN; i++) {
+                if (s == tags[i]) return true;
+            }
+            return false;
+        }
+
+        bool isPresent(String^ s) {
+            for (int i = 0; i < (int)list->Count; i++) {
+                if (tags[(int) list[i]] == s) return true;
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// This function set the list of available projections.
@@ -752,21 +940,49 @@ private:
         /// </summary>
         /// <param name="lista">This is the list</param>
         /// <returns>true if the list is a valid list</returns>
-        static bool setList(List<int>^ lista) {
-            if (lista->Count >= (int)options::LEN) return false;
-            for (int i = 0; i < lista->Count; i++) {
-                if (lista[i] >= (int)options::LEN) return false;
+        bool setList(List<String^>^ l) {
+            if (l->Count >= (int)options::LEN) return false;
+
+            // Checks the items in the list
+            for (int i = 0; i < l->Count; i++) {
+                if (!isCorrectTag(l[i])) return false;
+                if (isPresent(l[i])) return true;
             }
 
-            list = lista;
+            // Updates the list
+            list->Clear();            
+            for (int i = 0; i < l->Count; i++) {
+                list->Add(getItemCode(l[i]));                
+            }
+            
             lista_change_event();
             return true;
         }
 
+        int listCount(void) {
+            return list->Count;
+        }
+        
+        String^ getItemList(unsigned char i) {
+            if (i >= list->Count) return "";
+            return tags[(int) list[i]];
+        }
+
+        options getItemCode(String^ s) {
+            for (int i = 0; i < (int)options::LEN; i++) {
+                if (tags[(int)i] == s) return (options) i;
+            }
+            return options::UNDEF;
+        }
+
+        ProjectionOptions(void) {
+            code = options::UNDEF; //!< This is the register option-code 
+            list = gcnew List<options> {}; //!< This is the list of the projections
+        }
 
     private:
-        static options code = options::UNDEF; //!< This is the register option-code 
-        static List<int>^ list = gcnew List<int> {}; //!< This is the list of the projections
+        options code; //!< This is the register option-code 
+        List<options>^ list; //!< This is the list of the projections
 
     };
 
@@ -1126,10 +1342,15 @@ private:
             }
             return;
         }
-    private:
-        static unsigned short breast_thickness;  //!< Compressed breast thickness in mm
-        static unsigned short compression_force; //!< Compression force in N
 
+        
+        static inline CompressionModeOption^ getCompressionMode() { return compression_mode; }
+
+    private:
+        static unsigned short breast_thickness = 0;  //!< Compressed breast thickness in mm
+        static unsigned short compression_force = 0; //!< Compression force in N
+        static CompressionModeOption^ compression_mode = gcnew CompressionModeOption;
+        
     };
 
 
@@ -1164,7 +1385,7 @@ private:
         /// This is the enumeration option code 
         /// </summary>
         enum class options {
-            MAN_2D, //!< The next exposure is a 2D manual mode
+            MAN_2D = 0, //!< The next exposure is a 2D manual mode
             AEC_2D, //!< The next exposure is a 2D with AEC
             MAN_3D, //!< The next exposure is a Tomo 3D in manual mode
             AEC_3D, //!< The next exposure is a Tomo 3D with AEC
@@ -1176,6 +1397,8 @@ private:
             UNDEF = LEN
         };
         static const array<String^>^ tags = gcnew array<String^>  { "MAN_2D", "AEC_2D", "MAN_3D", "AEC_3D", "MAN_COMBO", "AEC_COMBO" , "MAN_AE", "AEC_AE", "UNDEF"}; //!< This is the option-tags static array
+
+       
 
         delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
 
@@ -1268,7 +1491,7 @@ private:
         /// This is the enumeration option code 
         /// </summary>
         enum class options {
-            LMAM2V2, //!< Analogic LMAM2 V2
+            LMAM2V2 = 0, //!< Analogic LMAM2 V2
             LMAM2FDIV2,  //!< Analogic LMAM2 FDI-V2            
             LEN,
             UNDEF = LEN
@@ -1352,103 +1575,7 @@ private:
         static options code = options::UNDEF; //!< This is the register option-code 
     };
 
-    /// <summary>
-    /// This class handles the Compression behavior during the exposure.
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class CompressionModeRegister {
-    public:
-
-        /// <summary>
-        /// This is the enumeration option code 
-        /// </summary>
-        enum class options {
-            CMP_KEEP, //!< Keeps the compression after exposure;
-            CMP_RELEASE,  //!< Releases the compression after exposure;
-            CMP_DISABLE, //!< Disables the Compression check (for exposures without the compression);
-            LEN,
-            UNDEF = LEN
-        };
-        static const array<String^>^ tags = gcnew array<String^>  { "CMP_KEEP", "CMP_RELEASE", "CMP_DISABLE", "UNDEF"}; //!< This is the option-tags static array
-
-        delegate void delegate_status_change(void); //!< This is the delegate of the status_change_event();
-
-        /// <summary>
-        /// This event is generated whenver the status of the register is changed.
-        /// 
-        /// Usage: CompressionModeRegister::status_change_event += gcnew delegate_status_change(&some_class, some_class::func)
-        /// </summary>
-        static event delegate_status_change^ status_change_event;
-
-
-        /// <summary>
-        /// Returns the option code of the register
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>the value of the option code </returns>
-        static options getCode(void) { return code; }
-
-        /// <summary>
-        /// Returns the option tag of the register
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>the value of the Tag </returns>
-        static String^ getTag(void) { return tags[(int) code]; }
-
-
-        /// <summary>
-        /// This function set the register with the option code (and related tag).
-        /// 
-        /// The register is updated with the option code and related tag and, in case of value change,
-        /// the status_change_event() is generated.
-        /// 
-        /// </summary>
-        /// <param name="val">this is the option-code to be set</param>
-        /// <returns>true if success or false if the code doesn't exist</returns>
-        static bool setCode(options val) {
-            if (val >= options::LEN) {
-
-                code = options::UNDEF;
-                status_change_event();
-                return false;
-            }
-
-            if (val != code) {
-                code = val;
-                status_change_event();
-            }
-            return true;
-        }
-
-        /// This function set the register with the option tag (and related code).
-        /// 
-        /// The register is updated with the tag and the related option code and, in case of value change,
-        /// the status_change_event() is generated.
-        /// 
-        /// </summary>
-        /// <param name="val">this is the tag to be set</param>
-        /// <returns>true if success or false if the code doesn't exist</returns>
-        static bool setCode(String^ val) {
-            for (int i = 0; i < (int)options::LEN; i++) {
-                if (val == tags[i]) {
-                    if (i != (int) code) {
-                        code = (options)i;
-                        status_change_event();
-                    }
-                    return true;
-                }
-            }
-            code = options::UNDEF;
-            status_change_event();
-            return false;
-
-        }
-
-    private:
-        static options code = options::UNDEF; //!< This is the register option-code 
-    };
-
+    
 
     /// <summary>
     /// This class handles the Collimation behavior during the exposure.
@@ -1470,7 +1597,7 @@ private:
         /// This is the enumeration option code 
         /// </summary>
         enum class options {
-            COLLI_AUTO, //!< The Exposure uses the Automatic collimation set by the current detected Paddle
+            COLLI_AUTO = 0, //!< The Exposure uses the Automatic collimation set by the current detected Paddle
             COLLI_24x30, //!< Force the 24x30 format
             COLLI_18x24_C, //!< Force the 18x24 CENTER format
             COLLI_18x24_L, //!< Force the 18x24 LEFT format
@@ -1581,7 +1708,7 @@ private:
         /// This is the enumeration option code 
         /// </summary>
         enum class options {
-            PROTECTION_ENA, //!< Enables the Patient protection check;
+            PROTECTION_ENA = 0, //!< Enables the Patient protection check;
             PROTECTION_DIS, //!< Disables the Patient protection check;            
             LEN,
             UNDEF = LEN
@@ -1661,6 +1788,13 @@ private:
 
         }
 
+        /// <summary>
+        /// This function returns true if the patient protection is enabled
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        static inline bool useProtection(void) { return code == options::PROTECTION_ENA; }
     private:
         static options code = options::UNDEF; //!< This is the register option-code 
     };
@@ -1680,18 +1814,76 @@ private:
     ref class ArmStatusRegister {
     public:
 
+
+        delegate void delegate_projection_request(String^ projection); //!< This is the delegate of the projection_request_event();
+
+        /// <summary>
+        /// This event is generated whenever a projection request command is called.
+        /// 
+        /// Usage: ArmStatusRegister::projection_request_event += gcnew delegate_projection_request(&some_class, some_class::func)
+        /// </summary>        
+        static event delegate_projection_request^ projection_request_event;
+
+        /// <summary>
+        /// This function generate the projection_request_event() event
+        /// </summary>
+        /// <param name="projection">Tag of the requested projection</param>
+        static void projectionRequest(String^ projection) {
+
+            // Checks if the projection actually is in the available list
+            if (!projections->isPresent(projection)) return;
+            projection_request_event(projection);
+        }
+
+        delegate void delegate_abort_projection_request(void); //!< This is the delegate of the abort_projection_request_event();
+
+        /// <summary>
+        /// This event is generated whenever a projection request command is called.
+        /// 
+        /// Usage: ProjectionRegister::abort_projection_request_event += gcnew delegate_abort_projection_request(&some_class, some_class::func)
+        /// </summary>        
+        static event delegate_abort_projection_request^ abort_projection_request_event;
+
+        /// <summary>
+        /// This function generate the projection_request_event() event
+        /// </summary>
+        /// <param name="projection">Tag of the requested projection</param>
+
+        /// <summary>
+        /// This function generates the abort_projection_request_event() if a projection 
+        /// is currently valid
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        static void abortProjectionRequest(void) {
+
+            // Checks if the Arm data are valid or not. Only for valid data is alowed to request an abort projection
+            if (!isValid()) return;
+            abort_projection_request_event();
+        }
+
+
         /// <summary>
         /// This is the enumeration option code for the Arm Mode option
         /// The Arm Mode Option enables or disables the check of the angle during the exposure.
         /// 
         /// </summary>
         enum class exposure_mode_options {
-            ARM_ENA, //!< Enables the Angle range check during exposure;
+            ARM_ENA = 0, //!< Enables the Angle range check during exposure;
             ARM_DIS, //!< Disables the Angle range check during the exposure;            
             LEN,
             UNDEF = LEN
         };
         static const array<String^>^ exposure_mode_tags = gcnew array<String^>  { "ARM_ENA", "ARM_DIS", "UNDEF"}; //!< This is the option-tags static array
+
+        delegate void delegate_use_arm_change(void);//!< This is the delegate of the use_arm_change_event();
+
+        /// <summary>
+        /// This event is generated when the exposure_mode is changed.
+        /// 
+        /// Usage: ArmStatusRegister::use_arm_change_event += gcnew delegate_use_arm_change(&some_class, some_class::func)
+        /// </summary>
+        static event delegate_use_arm_change^ use_arm_change_event;
 
         /// <summary>
         /// This function set the Arm Exposure mode option (and related tag).
@@ -1703,9 +1895,15 @@ private:
         static bool setMode(exposure_mode_options val) {
             if (val >= exposure_mode_options::LEN) {
                 exposure_mode = exposure_mode_options::UNDEF;
+                use_arm_change_event();
                 return false;
             }
-            exposure_mode = val;
+
+            if (exposure_mode != val) {
+                exposure_mode = val;
+                use_arm_change_event();
+            }
+            
             return true;
         }
 
@@ -1720,14 +1918,22 @@ private:
             for (int i = 0; i < (int)exposure_mode_options::LEN; i++) {
                 if (val == exposure_mode_tags[i]) {
                    exposure_mode = (exposure_mode_options)i;
+                   use_arm_change_event();
                    return true;
                 }
             }
 
             exposure_mode = exposure_mode_options::UNDEF;
+            use_arm_change_event();
             return false;
         }
 
+        /// <summary>
+        /// This function returns true if the Arm check is performed during the Exposure
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>tru if the Arm check is performed</returns>
+        static inline bool useArm(void) { return  exposure_mode == exposure_mode_options::ARM_ENA; }
 
 
 
@@ -1754,17 +1960,20 @@ private:
         /// <summary>
         /// This method validates or invalidates the Arm parameters.
         /// 
-        /// In case the data are validated, the exposure process evaluate the correct position of the ARM. 
-        /// In case the data are invalidated the exposure cannot start. 
         /// 
         /// When the validation status changes, the validate_change_event() is generated.
+        /// 
+        /// 
         /// </summary>
         /// <param name="stat"></param>
         static void validate(bool stat) {             
+            
             if (position_validated != stat) {
                 position_validated = stat;
                 validate_change_event();
             }
+
+            projections->clearProjection();
         }
 
         /// <summary>
@@ -1773,7 +1982,15 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>true if the Arm is executing a command</returns>
-        static bool isBusy(void) { return executing; }        
+        static bool isBusy(void) { return executing; }       
+
+        /// <summary>
+        /// This funtion returns the current data valid flag.
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>true if the Arm data are valid</returns>
+        static bool isValid(void) { return position_validated; }
         
         /// <summary>
         /// This function set the new target for the Arm position.
@@ -1788,23 +2005,31 @@ private:
         /// <param name="low">lower acceptable range (°)</param>
         /// <param name="high">higher acceptable range (°)</param>
         /// <param name="id">identifier of the AWS command</param>
+        /// <param name="proj"> This is the projection name assigned to the target</param>
         /// <returns>true if the target is validated</returns>
-        static bool setTarget(int pos, int low, int high, int id) {
+        static bool setTarget(int pos, int low, int high, String^ proj, int id) {
             if (executing) return false;
             if (pos > 180) return false;
             if (pos < -180) return false;
             if ((pos > high) || (pos < low)) return false;
+            if (!ProjectionOptions::isCorrectTag(proj)) return false;
 
+            // Assignes the projection
+            projections->setCode(proj);
+
+            // Assignes the target data
             position_validated = true;
             position_target = pos;
             allowed_low = low;
             allowed_high = high;
             
-            if ((pos <= current_angle + 1) && (pos >= current_angle - 1)) {
+            // Verifies if the target is changed
+            if (pos == current_angle) {
                 executing_id = 0;
                 return true;
             }
             
+            // If the target is changed, a Arm activation command should be invoked
             executing_id = id;
             executing = true;
 
@@ -1897,15 +2122,27 @@ private:
         }
 
         /// <summary>
-       /// This function returns the current ARM high target
-       /// 
-       /// </summary>
-       /// <param name=""></param>
-       /// <returns>The current high target (°) units</returns>
+        /// This function returns the current ARM high target
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns>The current high target (°) units</returns>
         static int getHigh(void) {
             return allowed_high;
         }
 
+        /// <summary>
+        /// Returns the current selected projection
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        static String^ getProjection(void) {
+            return projections->getTag();
+        }
+
+    
+        static inline ProjectionOptions^ getProjections() { return projections; }
 
     private:
         static exposure_mode_options exposure_mode = exposure_mode_options::UNDEF; //!< This is the current selected Arm Exposure Mode option code        
@@ -1918,28 +2155,11 @@ private:
         static int          allowed_high = 0;           //!< Higher acceptable angle (°)
         static bool         executing = false;          //!< Command is in execution
         static unsigned short  executing_id = 0;        //!< AWS command Id
+        static ProjectionOptions^ projections = gcnew ProjectionOptions;  //!< This is the current selected projection
+        
+       
     };
 
-    /// <summary>
-    /// This is the class handling the patient name 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class PatientDataRegister {
-        public:
-            /// <summary>
-            /// This function sets the current patient name
-            /// </summary>
-            /// <param name="val">The name assigned</param>
-            static void setName(String^ val) { patient_name = val; }
-
-            /// <summary>
-            /// This function returns the current patient name
-            /// </summary>
-            /// <returns>The current assigned patient name</returns>
-            static String^ getName() { return patient_name; }
-        private: 
-            static String^ patient_name =  ""; //!< Patient name register
-    };
     
     /// <summary>
     /// This class handles the Trx motorization
@@ -1997,7 +2217,27 @@ private:
         static bool setTarget(options tg, int id) {
             if (executing) return false;
             if (tg >=  options::LEN) return false;
-            target_angle = targets[(int)tg];
+
+            switch (tg) {
+            case options::TRX_SCOUT:
+                target_angle = 0;
+                break;
+            case options::TRX_BP_R:
+                target_angle = 1500;
+                break;
+            case options::TRX_BP_L:
+                target_angle = -1500;
+                break;
+            case options::TRX_TOMO_H:
+                if (!TomoConfigRegister::isValid()) return false;
+                target_angle = TomoConfigRegister::getTomoHome();
+                break;
+            case options::TRX_TOMO_E:
+                if (!TomoConfigRegister::isValid()) return false;
+                target_angle = TomoConfigRegister::getTomoEnd();
+                break;
+
+            }
             
             if (abs(current_angle-target_angle) >= sensitivity) {
                 executing_id = id;
@@ -2343,7 +2583,7 @@ private:
         /// This is the enumeration option code 
         /// </summary>
         enum class options {
-            LNG_ITA,        //!< Italian Language
+            LNG_ITA = 0,        //!< Italian Language
             LNG_FRA,        //!< French Language
             LNG_ENG,        //!< English Language
             LNG_PRT,        //!< Portuguese 

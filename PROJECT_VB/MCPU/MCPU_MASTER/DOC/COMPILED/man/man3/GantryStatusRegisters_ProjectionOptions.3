@@ -1,0 +1,288 @@
+.TH "GantryStatusRegisters::ProjectionOptions" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::ProjectionOptions \- This is the projection handling class\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBLCC\fP = 0, \fBLFB\fP, \fBLISO\fP, \fBLLM\fP, \fBLLMO\fP, \fBLML\fP, \fBLMLO\fP, \fBLSIO\fP, \fBRCC\fP, \fBRFB\fP, \fBRISO\fP, \fBRLM\fP, \fBRLMO\fP, \fBRML\fP, \fBRMLO\fP, \fBRSIO\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration option code of the selectable projections\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_lista_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBlista_change_event()\fP;\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_projection_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBprojection_change_event()\fP;\&. "
+.ti -1c
+.RI "\fBoptions\fP \fBgetCode\fP (void)"
+.br
+.RI "Returns the option code of the register\&. "
+.ti -1c
+.RI "String ^ \fBgetTag\fP (void)"
+.br
+.RI "Returns the option tag of the register\&. "
+.ti -1c
+.RI "void \fBclearProjection\fP (void)"
+.br
+.RI "This function clear a current selected projection\&. "
+.ti -1c
+.RI "bool \fBsetCode\fP (\fBoptions\fP val)"
+.br
+.RI "This function set the register with the option code (and related tag)\&. "
+.ti -1c
+.RI "bool \fBsetCode\fP (String^ val)"
+.br
+.ti -1c
+.RI "bool \fBisPresent\fP (String^ s)"
+.br
+.ti -1c
+.RI "bool \fBsetList\fP (List< String^>^ l)"
+.br
+.RI "This function set the list of available projections\&. "
+.ti -1c
+.RI "int \fBlistCount\fP (void)"
+.br
+.ti -1c
+.RI "String ^ \fBgetItemList\fP (unsigned char i)"
+.br
+.ti -1c
+.RI "\fBoptions\fP \fBgetItemCode\fP (String^ s)"
+.br
+.ti -1c
+.RI "\fBProjectionOptions\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisCorrectTag\fP (String^ s)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'LCC', 'LFB', 'LISO', 'LLM', 'LLMO', 'LML', 'LMLO', 'LSIO', 'RCC', 'RFB', 'RISO', 'RLM', 'RLMO', 'RML', 'RMLO', 'RSIO', 'UNDEF'}"
+.br
+.RI "This is the option-tags static array\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "\fBdelegate_lista_change\fP^ \fBlista_change_event\fP"
+.br
+.RI "This event is generated whenver the status of the register is changed\&. "
+.ti -1c
+.RI "\fBdelegate_projection_change\fP^ \fBprojection_change_event\fP"
+.br
+.RI "This event is generated whenver the status of the register is changed\&. "
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBoptions\fP \fBcode\fP"
+.br
+.RI "This is the register option-code\&. "
+.ti -1c
+.RI "List< \fBoptions\fP > ^ \fBlist\fP"
+.br
+.RI "This is the list of the projections\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the projection handling class\&. 
+
+This class defines the availabe projection options, store the current selected projection and the projection selectable list\&.
+.PP
+The class provides events related to the data change 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::ProjectionOptions::options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration option code of the selectable projections\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILCC \fP\fP
+.TP
+\fB\fILFB \fP\fP
+.TP
+\fB\fILISO \fP\fP
+.TP
+\fB\fILLM \fP\fP
+.TP
+\fB\fILLMO \fP\fP
+.TP
+\fB\fILML \fP\fP
+.TP
+\fB\fILMLO \fP\fP
+.TP
+\fB\fILSIO \fP\fP
+.TP
+\fB\fIRCC \fP\fP
+.TP
+\fB\fIRFB \fP\fP
+.TP
+\fB\fIRISO \fP\fP
+.TP
+\fB\fIRLM \fP\fP
+.TP
+\fB\fIRLMO \fP\fP
+.TP
+\fB\fIRML \fP\fP
+.TP
+\fB\fIRMLO \fP\fP
+.TP
+\fB\fIRSIO \fP\fP
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "GantryStatusRegisters::ProjectionOptions::ProjectionOptions (void)\fC [inline]\fP"
+< This is the register option-code
+.PP
+< This is the list of the projections
+.SH "Member Function Documentation"
+.PP 
+.SS "void GantryStatusRegisters::ProjectionOptions::clearProjection (void)\fC [inline]\fP"
+
+.PP
+This function clear a current selected projection\&. 
+.SS "delegate void GantryStatusRegisters::ProjectionOptions::delegate_lista_change (void)"
+
+.PP
+This is the delegate of the \fBlista_change_event()\fP;\&. 
+.SS "delegate void GantryStatusRegisters::ProjectionOptions::delegate_projection_change (void)"
+
+.PP
+This is the delegate of the \fBprojection_change_event()\fP;\&. 
+.SS "\fBoptions\fP GantryStatusRegisters::ProjectionOptions::getCode (void)\fC [inline]\fP"
+
+.PP
+Returns the option code of the register\&. 
+.PP
+\fBReturns\fP
+.RS 4
+the value of the option code 
+.RE
+.PP
+
+.SS "\fBoptions\fP GantryStatusRegisters::ProjectionOptions::getItemCode (String^ s)\fC [inline]\fP"
+
+.SS "String ^ GantryStatusRegisters::ProjectionOptions::getItemList (unsigned char i)\fC [inline]\fP"
+
+.SS "String ^ GantryStatusRegisters::ProjectionOptions::getTag (void)\fC [inline]\fP"
+
+.PP
+Returns the option tag of the register\&. 
+.PP
+\fBReturns\fP
+.RS 4
+the value of the Tag 
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ProjectionOptions::isCorrectTag (String^ s)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "bool GantryStatusRegisters::ProjectionOptions::isPresent (String^ s)\fC [inline]\fP"
+
+.SS "int GantryStatusRegisters::ProjectionOptions::listCount (void)\fC [inline]\fP"
+
+.SS "bool GantryStatusRegisters::ProjectionOptions::setCode (\fBoptions\fP val)\fC [inline]\fP"
+
+.PP
+This function set the register with the option code (and related tag)\&. The register is updated with the option code and related tag and, in case of value change, the \fBprojection_change_event()\fP is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the option-code to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SS "bool GantryStatusRegisters::ProjectionOptions::setCode (String^ val)\fC [inline]\fP"
+This function set the register with the option tag (and related code)\&.
+.PP
+The register is updated with the tag and the related option code and, in case of value change, the status_change_event() is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the tag to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SS "bool GantryStatusRegisters::ProjectionOptions::setList (List< String^>^ l)\fC [inline]\fP"
+
+.PP
+This function set the list of available projections\&. In case of list change, the list_change_event() is generated
+.PP
+\fBParameters\fP
+.RS 4
+\fIlista\fP This is the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the list is a valid list
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBoptions\fP GantryStatusRegisters::ProjectionOptions::code\fC [private]\fP"
+
+.PP
+This is the register option-code\&. 
+.SS "List<\fBoptions\fP> ^ GantryStatusRegisters::ProjectionOptions::list\fC [private]\fP"
+
+.PP
+This is the list of the projections\&. 
+.SS "const array<String^> ^ GantryStatusRegisters::ProjectionOptions::tags = gcnew array<String^> { 'LCC', 'LFB', 'LISO', 'LLM', 'LLMO', 'LML', 'LMLO', 'LSIO', 'RCC', 'RFB', 'RISO', 'RLM', 'RLMO', 'RML', 'RMLO', 'RSIO', 'UNDEF'}\fC [static]\fP"
+
+.PP
+This is the option-tags static array\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_lista_change\fP^ GantryStatusRegisters::ProjectionOptions::lista_change_event"
+
+.PP
+This event is generated whenver the status of the register is changed\&. Usage: ProjectionRegister::lista_change_event += gcnew delegate_lista_change(&some_class, some_class::func) 
+.SS "\fBdelegate_projection_change\fP^ GantryStatusRegisters::ProjectionOptions::projection_change_event"
+
+.PP
+This event is generated whenver the status of the register is changed\&. Usage: ProjectionRegister::projection_change_event += gcnew delegate_projection_change(&some_class, some_class::func) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

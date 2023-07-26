@@ -18,6 +18,11 @@ namespace CppCLRWinFormsProject {
 
 	public:
 		HWND window;
+		void InitSimulatorRegisters(void);
+		void InitFormItems(void);
+		void closeStudyRegisters(void);
+		void openStudyRegisters(void);
+
 		Form1(void)
 		{
 			InitializeComponent();
@@ -26,46 +31,10 @@ namespace CppCLRWinFormsProject {
 			//
 			//TODO: Add the constructor code here
 			//
-			comboPaddle->SelectedIndex = 11;
-			comboComponents->SelectedIndex = 5;
-			comboColliComponent->SelectedIndex = 4;
-			comboProjections->SelectedIndex = 0;
-			textForce->Text = "0";
-			textThickness->Text = "0";
-			labelArmAngle->Text = "-";
-			labelArmTarget->Text = "-";
-			labelArmLow->Text = "-";
-			labelArmHigh->Text = "-";
-			checkBoxArmValid->Checked = false;			
-			labelArmProjection->Text= "-";
-
-			ArmStatusRegister::target_change_event += gcnew ArmStatusRegister::delegate_target_change(this, &Form1::ArmUpdateData);
-			armTimer = gcnew System::Timers::Timer(3000);
-			armTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &Form1::onArmTimeout);
-			armTimer->Stop();
-
-			labelTrxTarget->Text = "SCOUT";
-			TrxStatusRegister::target_change_event += gcnew TrxStatusRegister::delegate_target_change(this, &Form1::TrxUpdateData);
-			trxTimer = gcnew System::Timers::Timer(3000);
-			trxTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &Form1::onTrxTimeout);
-			trxTimer->Stop();
-
-			OperatingStatusRegister::operating_status_change_event += gcnew OperatingStatusRegister::delegate_operating_status_change(this, &Form1::openStudyChange);
-			ArmStatusRegister::activation_completed_event += gcnew ArmStatusRegister::delegate_activation_completed((awsProtocol^) GlobalObjects::pAws, &awsProtocol::activationCompletedCallback);
-			TrxStatusRegister::activation_completed_event += gcnew TrxStatusRegister::delegate_activation_completed((awsProtocol^)GlobalObjects::pAws, &awsProtocol::activationCompletedCallback);
-			TrxStatusRegister::position_change_event += gcnew TrxStatusRegister::delegate_position_change(this, &Form1::updateTrxPosition);
-
-			ArmStatusRegister::getProjections()->projection_change_event += gcnew ProjectionOptions::delegate_projection_change(this, &Form1::ProjectionChange);
-			ArmStatusRegister::getProjections()->lista_change_event += gcnew ProjectionOptions::delegate_lista_change(this, &Form1::ProjectionUpdateList);
-			ArmStatusRegister::projection_request_event += gcnew ArmStatusRegister::delegate_projection_request((awsProtocol^)GlobalObjects::pAws, &awsProtocol::selectProjectionCallback);
-			ArmStatusRegister::abort_projection_request_event += gcnew ArmStatusRegister::delegate_abort_projection_request((awsProtocol^)GlobalObjects::pAws, &awsProtocol::abortProjectionCallback);
-			ArmStatusRegister::validate_change_event += gcnew ArmStatusRegister::delegate_validate_change(this, &Form1::ArmValidateChg);
-			ArmStatusRegister::position_change_event += gcnew ArmStatusRegister::delegate_position_change(this, &Form1::updateArmPosition);
-			CompressorRegister::getCompressionMode()->status_change_event += gcnew CompressionModeOption::delegate_status_change(this, &Form1::updateCompressionMode);
-			ExposureModeRegister::status_change_event += gcnew ExposureModeRegister::delegate_status_change(this, &Form1::updateExposureType);
-			PatientProtectionRegister::status_change_event += gcnew PatientProtectionRegister::delegate_status_change(this, &Form1::updateProtectionMode);
-			ArmStatusRegister::use_arm_change_event += gcnew ArmStatusRegister::delegate_use_arm_change(this, &Form1::updateArmMode);
-			TomoConfigRegister::selection_change_event += gcnew TomoConfigRegister::delegate_selection_change(this, &Form1::updateTomoConfig);
+			
+			InitSimulatorRegisters();
+			InitFormItems();
+			closeStudyRegisters();
 
 			
 		}
@@ -175,21 +144,74 @@ private: System::Windows::Forms::GroupBox^ groupBox9;
 
 private: System::Windows::Forms::Label^ label22;
 private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
+private: System::Windows::Forms::GroupBox^ groupBoxReady;
+
+private: System::Windows::Forms::CheckBox^ checkBox_0x2;
+private: System::Windows::Forms::CheckBox^ checkBox_0x1;
 
 
 
+private: System::Windows::Forms::CheckBox^ checkBox_0x80;
 
-
-
-
-
-
-
+private: System::Windows::Forms::CheckBox^ checkBox_0x40;
+private: System::Windows::Forms::CheckBox^ checkBox_0x20;
+private: System::Windows::Forms::CheckBox^ checkBox_0x10;
+private: System::Windows::Forms::CheckBox^ checkBox_0x8;
+private: System::Windows::Forms::CheckBox^ checkBox_0x4;
 
 
 
 
 		   System::Timers::Timer^ trxTimer;
+private: System::Windows::Forms::GroupBox^ groupBoxPulse0;
+
+private: System::Windows::Forms::Label^ label16;
+private: System::Windows::Forms::Label^ label_kV0;
+
+private: System::Windows::Forms::Label^ label24;
+private: System::Windows::Forms::Label^ label_mAs0;
+
+private: System::Windows::Forms::Label^ label27;
+private: System::Windows::Forms::Label^ label_filter0;
+private: System::Windows::Forms::CheckBox^ checkBox_valid0;
+private: System::Windows::Forms::GroupBox^ groupBox10;
+private: System::Windows::Forms::CheckBox^ checkBox_valid1;
+
+private: System::Windows::Forms::Label^ label23;
+private: System::Windows::Forms::Label^ label_filter1;
+
+private: System::Windows::Forms::Label^ label26;
+private: System::Windows::Forms::Label^ label_kV1;
+private: System::Windows::Forms::Label^ label29;
+private: System::Windows::Forms::Label^ label_mAs1;
+
+private: System::Windows::Forms::GroupBox^ groupBox11;
+private: System::Windows::Forms::CheckBox^ checkBox_valid2;
+
+
+private: System::Windows::Forms::Label^ label31;
+private: System::Windows::Forms::Label^ label_fiter2;
+
+private: System::Windows::Forms::Label^ label33;
+private: System::Windows::Forms::Label^ label_kV2;
+
+private: System::Windows::Forms::Label^ label35;
+private: System::Windows::Forms::Label^ label_mAs2;
+
+private: System::Windows::Forms::GroupBox^ groupBox12;
+private: System::Windows::Forms::CheckBox^ checkBox_valid3;
+
+private: System::Windows::Forms::Label^ label37;
+private: System::Windows::Forms::Label^ label_filter3;
+
+private: System::Windows::Forms::Label^ label39;
+private: System::Windows::Forms::Label^ label_kV3;
+
+private: System::Windows::Forms::Label^ label41;
+private: System::Windows::Forms::Label^ label_mAs3;
+
+
+	   System::Timers::Timer^ readyTimer;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -261,6 +283,47 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 			this->groupBox9 = (gcnew System::Windows::Forms::GroupBox());
 			this->numericManualTrx = (gcnew System::Windows::Forms::NumericUpDown());
 			this->label22 = (gcnew System::Windows::Forms::Label());
+			this->groupBoxReady = (gcnew System::Windows::Forms::GroupBox());
+			this->checkBox_0x80 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_0x40 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_0x20 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_0x10 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_0x8 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_0x4 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_0x2 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_0x1 = (gcnew System::Windows::Forms::CheckBox());
+			this->groupBoxPulse0 = (gcnew System::Windows::Forms::GroupBox());
+			this->label16 = (gcnew System::Windows::Forms::Label());
+			this->label_kV0 = (gcnew System::Windows::Forms::Label());
+			this->label24 = (gcnew System::Windows::Forms::Label());
+			this->label_mAs0 = (gcnew System::Windows::Forms::Label());
+			this->label_filter0 = (gcnew System::Windows::Forms::Label());
+			this->label27 = (gcnew System::Windows::Forms::Label());
+			this->checkBox_valid0 = (gcnew System::Windows::Forms::CheckBox());
+			this->groupBox10 = (gcnew System::Windows::Forms::GroupBox());
+			this->checkBox_valid1 = (gcnew System::Windows::Forms::CheckBox());
+			this->label23 = (gcnew System::Windows::Forms::Label());
+			this->label_filter1 = (gcnew System::Windows::Forms::Label());
+			this->label26 = (gcnew System::Windows::Forms::Label());
+			this->label_kV1 = (gcnew System::Windows::Forms::Label());
+			this->label29 = (gcnew System::Windows::Forms::Label());
+			this->label_mAs1 = (gcnew System::Windows::Forms::Label());
+			this->groupBox11 = (gcnew System::Windows::Forms::GroupBox());
+			this->checkBox_valid2 = (gcnew System::Windows::Forms::CheckBox());
+			this->label31 = (gcnew System::Windows::Forms::Label());
+			this->label_fiter2 = (gcnew System::Windows::Forms::Label());
+			this->label33 = (gcnew System::Windows::Forms::Label());
+			this->label_kV2 = (gcnew System::Windows::Forms::Label());
+			this->label35 = (gcnew System::Windows::Forms::Label());
+			this->label_mAs2 = (gcnew System::Windows::Forms::Label());
+			this->groupBox12 = (gcnew System::Windows::Forms::GroupBox());
+			this->checkBox_valid3 = (gcnew System::Windows::Forms::CheckBox());
+			this->label37 = (gcnew System::Windows::Forms::Label());
+			this->label_filter3 = (gcnew System::Windows::Forms::Label());
+			this->label39 = (gcnew System::Windows::Forms::Label());
+			this->label_kV3 = (gcnew System::Windows::Forms::Label());
+			this->label41 = (gcnew System::Windows::Forms::Label());
+			this->label_mAs3 = (gcnew System::Windows::Forms::Label());
 			this->groupBox1->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox3->SuspendLayout();
@@ -275,6 +338,11 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericManualArm))->BeginInit();
 			this->groupBox9->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericManualTrx))->BeginInit();
+			this->groupBoxReady->SuspendLayout();
+			this->groupBoxPulse0->SuspendLayout();
+			this->groupBox10->SuspendLayout();
+			this->groupBox11->SuspendLayout();
+			this->groupBox12->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// textForce
@@ -887,7 +955,7 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 			// 
 			this->buttonPushButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->buttonPushButton->Location = System::Drawing::Point(565, 424);
+			this->buttonPushButton->Location = System::Drawing::Point(122, 680);
 			this->buttonPushButton->Name = L"buttonPushButton";
 			this->buttonPushButton->Size = System::Drawing::Size(188, 39);
 			this->buttonPushButton->TabIndex = 25;
@@ -952,11 +1020,445 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 			this->label22->TabIndex = 30;
 			this->label22->Text = L"Manual Trx Activation";
 			// 
+			// groupBoxReady
+			// 
+			this->groupBoxReady->Controls->Add(this->checkBox_0x80);
+			this->groupBoxReady->Controls->Add(this->checkBox_0x40);
+			this->groupBoxReady->Controls->Add(this->checkBox_0x20);
+			this->groupBoxReady->Controls->Add(this->checkBox_0x10);
+			this->groupBoxReady->Controls->Add(this->checkBox_0x8);
+			this->groupBoxReady->Controls->Add(this->checkBox_0x4);
+			this->groupBoxReady->Controls->Add(this->checkBox_0x2);
+			this->groupBoxReady->Controls->Add(this->checkBox_0x1);
+			this->groupBoxReady->Location = System::Drawing::Point(49, 501);
+			this->groupBoxReady->Name = L"groupBoxReady";
+			this->groupBoxReady->Size = System::Drawing::Size(397, 133);
+			this->groupBoxReady->TabIndex = 28;
+			this->groupBoxReady->TabStop = false;
+			this->groupBoxReady->Text = L"READY FOR EXPOSURE";
+			// 
+			// checkBox_0x80
+			// 
+			this->checkBox_0x80->AutoSize = true;
+			this->checkBox_0x80->Location = System::Drawing::Point(217, 95);
+			this->checkBox_0x80->Name = L"checkBox_0x80";
+			this->checkBox_0x80->Size = System::Drawing::Size(160, 17);
+			this->checkBox_0x80->TabIndex = 32;
+			this->checkBox_0x80->Text = L"PUSH BUTTON DISABLED";
+			this->checkBox_0x80->UseVisualStyleBackColor = true;
+			// 
+			// checkBox_0x40
+			// 
+			this->checkBox_0x40->AutoSize = true;
+			this->checkBox_0x40->Location = System::Drawing::Point(217, 72);
+			this->checkBox_0x40->Name = L"checkBox_0x40";
+			this->checkBox_0x40->Size = System::Drawing::Size(165, 17);
+			this->checkBox_0x40->TabIndex = 31;
+			this->checkBox_0x40->Text = L"MISSING EXPOSURE DATA";
+			this->checkBox_0x40->UseVisualStyleBackColor = true;
+			// 
+			// checkBox_0x20
+			// 
+			this->checkBox_0x20->AutoSize = true;
+			this->checkBox_0x20->Location = System::Drawing::Point(217, 45);
+			this->checkBox_0x20->Name = L"checkBox_0x20";
+			this->checkBox_0x20->Size = System::Drawing::Size(168, 17);
+			this->checkBox_0x20->TabIndex = 30;
+			this->checkBox_0x20->Text = L"MISSING EXPOSURE MODE";
+			this->checkBox_0x20->UseVisualStyleBackColor = true;
+			// 
+			// checkBox_0x10
+			// 
+			this->checkBox_0x10->AutoSize = true;
+			this->checkBox_0x10->Location = System::Drawing::Point(217, 19);
+			this->checkBox_0x10->Name = L"checkBox_0x10";
+			this->checkBox_0x10->Size = System::Drawing::Size(115, 17);
+			this->checkBox_0x10->TabIndex = 29;
+			this->checkBox_0x10->Text = L"WRONG PADDLE";
+			this->checkBox_0x10->UseVisualStyleBackColor = true;
+			// 
+			// checkBox_0x8
+			// 
+			this->checkBox_0x8->AutoSize = true;
+			this->checkBox_0x8->Location = System::Drawing::Point(6, 95);
+			this->checkBox_0x8->Name = L"checkBox_0x8";
+			this->checkBox_0x8->Size = System::Drawing::Size(150, 17);
+			this->checkBox_0x8->TabIndex = 28;
+			this->checkBox_0x8->Text = L"WRONG ARM POSITION";
+			this->checkBox_0x8->UseVisualStyleBackColor = true;
+			// 
+			// checkBox_0x4
+			// 
+			this->checkBox_0x4->AutoSize = true;
+			this->checkBox_0x4->Location = System::Drawing::Point(6, 72);
+			this->checkBox_0x4->Name = L"checkBox_0x4";
+			this->checkBox_0x4->Size = System::Drawing::Size(193, 17);
+			this->checkBox_0x4->TabIndex = 27;
+			this->checkBox_0x4->Text = L"MISSING PATIENT PROTECTION";
+			this->checkBox_0x4->UseVisualStyleBackColor = true;
+			// 
+			// checkBox_0x2
+			// 
+			this->checkBox_0x2->AutoSize = true;
+			this->checkBox_0x2->Location = System::Drawing::Point(6, 46);
+			this->checkBox_0x2->Name = L"checkBox_0x2";
+			this->checkBox_0x2->Size = System::Drawing::Size(153, 17);
+			this->checkBox_0x2->TabIndex = 26;
+			this->checkBox_0x2->Text = L"MISSING COMPRESSION";
+			this->checkBox_0x2->UseVisualStyleBackColor = true;
+			// 
+			// checkBox_0x1
+			// 
+			this->checkBox_0x1->AutoSize = true;
+			this->checkBox_0x1->Location = System::Drawing::Point(6, 23);
+			this->checkBox_0x1->Name = L"checkBox_0x1";
+			this->checkBox_0x1->Size = System::Drawing::Size(128, 17);
+			this->checkBox_0x1->TabIndex = 25;
+			this->checkBox_0x1->Text = L"ERROR CONDITION";
+			this->checkBox_0x1->UseVisualStyleBackColor = true;
+			// 
+			// groupBoxPulse0
+			// 
+			this->groupBoxPulse0->Controls->Add(this->checkBox_valid0);
+			this->groupBoxPulse0->Controls->Add(this->label27);
+			this->groupBoxPulse0->Controls->Add(this->label_filter0);
+			this->groupBoxPulse0->Controls->Add(this->label16);
+			this->groupBoxPulse0->Controls->Add(this->label_kV0);
+			this->groupBoxPulse0->Controls->Add(this->label24);
+			this->groupBoxPulse0->Controls->Add(this->label_mAs0);
+			this->groupBoxPulse0->Location = System::Drawing::Point(549, 402);
+			this->groupBoxPulse0->Name = L"groupBoxPulse0";
+			this->groupBoxPulse0->Size = System::Drawing::Size(293, 82);
+			this->groupBoxPulse0->TabIndex = 22;
+			this->groupBoxPulse0->TabStop = false;
+			this->groupBoxPulse0->Text = L"PULSE-0";
+			// 
+			// label16
+			// 
+			this->label16->AutoSize = true;
+			this->label16->Location = System::Drawing::Point(19, 28);
+			this->label16->Name = L"label16";
+			this->label16->Size = System::Drawing::Size(20, 13);
+			this->label16->TabIndex = 20;
+			this->label16->Text = L"kV";
+			// 
+			// label_kV0
+			// 
+			this->label_kV0->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_kV0->Location = System::Drawing::Point(6, 41);
+			this->label_kV0->Name = L"label_kV0";
+			this->label_kV0->Size = System::Drawing::Size(69, 23);
+			this->label_kV0->TabIndex = 19;
+			this->label_kV0->Text = L"-";
+			this->label_kV0->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label24
+			// 
+			this->label24->AutoSize = true;
+			this->label24->Location = System::Drawing::Point(91, 28);
+			this->label24->Name = L"label24";
+			this->label24->Size = System::Drawing::Size(27, 13);
+			this->label24->TabIndex = 12;
+			this->label24->Text = L"mAs";
+			// 
+			// label_mAs0
+			// 
+			this->label_mAs0->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_mAs0->Location = System::Drawing::Point(81, 41);
+			this->label_mAs0->Name = L"label_mAs0";
+			this->label_mAs0->Size = System::Drawing::Size(69, 23);
+			this->label_mAs0->TabIndex = 11;
+			this->label_mAs0->Text = L"-";
+			this->label_mAs0->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label_filter0
+			// 
+			this->label_filter0->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_filter0->Location = System::Drawing::Point(156, 41);
+			this->label_filter0->Name = L"label_filter0";
+			this->label_filter0->Size = System::Drawing::Size(69, 23);
+			this->label_filter0->TabIndex = 21;
+			this->label_filter0->Text = L"0 ";
+			this->label_filter0->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label27
+			// 
+			this->label27->AutoSize = true;
+			this->label27->Location = System::Drawing::Point(166, 28);
+			this->label27->Name = L"label27";
+			this->label27->Size = System::Drawing::Size(26, 13);
+			this->label27->TabIndex = 22;
+			this->label27->Text = L"filter";
+			// 
+			// checkBox_valid0
+			// 
+			this->checkBox_valid0->AutoSize = true;
+			this->checkBox_valid0->Location = System::Drawing::Point(231, 45);
+			this->checkBox_valid0->Name = L"checkBox_valid0";
+			this->checkBox_valid0->Size = System::Drawing::Size(49, 17);
+			this->checkBox_valid0->TabIndex = 23;
+			this->checkBox_valid0->Text = L"Valid";
+			this->checkBox_valid0->UseVisualStyleBackColor = true;
+			// 
+			// groupBox10
+			// 
+			this->groupBox10->Controls->Add(this->checkBox_valid1);
+			this->groupBox10->Controls->Add(this->label23);
+			this->groupBox10->Controls->Add(this->label_filter1);
+			this->groupBox10->Controls->Add(this->label26);
+			this->groupBox10->Controls->Add(this->label_kV1);
+			this->groupBox10->Controls->Add(this->label29);
+			this->groupBox10->Controls->Add(this->label_mAs1);
+			this->groupBox10->Location = System::Drawing::Point(549, 490);
+			this->groupBox10->Name = L"groupBox10";
+			this->groupBox10->Size = System::Drawing::Size(293, 82);
+			this->groupBox10->TabIndex = 30;
+			this->groupBox10->TabStop = false;
+			this->groupBox10->Text = L"PULSE-1";
+			// 
+			// checkBox_valid1
+			// 
+			this->checkBox_valid1->AutoSize = true;
+			this->checkBox_valid1->Location = System::Drawing::Point(231, 45);
+			this->checkBox_valid1->Name = L"checkBox_valid1";
+			this->checkBox_valid1->Size = System::Drawing::Size(49, 17);
+			this->checkBox_valid1->TabIndex = 23;
+			this->checkBox_valid1->Text = L"Valid";
+			this->checkBox_valid1->UseVisualStyleBackColor = true;
+			// 
+			// label23
+			// 
+			this->label23->AutoSize = true;
+			this->label23->Location = System::Drawing::Point(166, 28);
+			this->label23->Name = L"label23";
+			this->label23->Size = System::Drawing::Size(26, 13);
+			this->label23->TabIndex = 22;
+			this->label23->Text = L"filter";
+			// 
+			// label_filter1
+			// 
+			this->label_filter1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_filter1->Location = System::Drawing::Point(156, 41);
+			this->label_filter1->Name = L"label_filter1";
+			this->label_filter1->Size = System::Drawing::Size(69, 23);
+			this->label_filter1->TabIndex = 21;
+			this->label_filter1->Text = L"0 ";
+			this->label_filter1->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label26
+			// 
+			this->label26->AutoSize = true;
+			this->label26->Location = System::Drawing::Point(19, 28);
+			this->label26->Name = L"label26";
+			this->label26->Size = System::Drawing::Size(20, 13);
+			this->label26->TabIndex = 20;
+			this->label26->Text = L"kV";
+			// 
+			// label_kV1
+			// 
+			this->label_kV1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_kV1->Location = System::Drawing::Point(6, 41);
+			this->label_kV1->Name = L"label_kV1";
+			this->label_kV1->Size = System::Drawing::Size(69, 23);
+			this->label_kV1->TabIndex = 19;
+			this->label_kV1->Text = L"-";
+			this->label_kV1->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label29
+			// 
+			this->label29->AutoSize = true;
+			this->label29->Location = System::Drawing::Point(91, 28);
+			this->label29->Name = L"label29";
+			this->label29->Size = System::Drawing::Size(27, 13);
+			this->label29->TabIndex = 12;
+			this->label29->Text = L"mAs";
+			// 
+			// label_mAs1
+			// 
+			this->label_mAs1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_mAs1->Location = System::Drawing::Point(81, 41);
+			this->label_mAs1->Name = L"label_mAs1";
+			this->label_mAs1->Size = System::Drawing::Size(69, 23);
+			this->label_mAs1->TabIndex = 11;
+			this->label_mAs1->Text = L"-";
+			this->label_mAs1->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// groupBox11
+			// 
+			this->groupBox11->Controls->Add(this->checkBox_valid2);
+			this->groupBox11->Controls->Add(this->label31);
+			this->groupBox11->Controls->Add(this->label_fiter2);
+			this->groupBox11->Controls->Add(this->label33);
+			this->groupBox11->Controls->Add(this->label_kV2);
+			this->groupBox11->Controls->Add(this->label35);
+			this->groupBox11->Controls->Add(this->label_mAs2);
+			this->groupBox11->Location = System::Drawing::Point(549, 578);
+			this->groupBox11->Name = L"groupBox11";
+			this->groupBox11->Size = System::Drawing::Size(293, 82);
+			this->groupBox11->TabIndex = 31;
+			this->groupBox11->TabStop = false;
+			this->groupBox11->Text = L"PULSE-2";
+			// 
+			// checkBox_valid2
+			// 
+			this->checkBox_valid2->AutoSize = true;
+			this->checkBox_valid2->Location = System::Drawing::Point(231, 45);
+			this->checkBox_valid2->Name = L"checkBox_valid2";
+			this->checkBox_valid2->Size = System::Drawing::Size(49, 17);
+			this->checkBox_valid2->TabIndex = 23;
+			this->checkBox_valid2->Text = L"Valid";
+			this->checkBox_valid2->UseVisualStyleBackColor = true;
+			// 
+			// label31
+			// 
+			this->label31->AutoSize = true;
+			this->label31->Location = System::Drawing::Point(166, 28);
+			this->label31->Name = L"label31";
+			this->label31->Size = System::Drawing::Size(26, 13);
+			this->label31->TabIndex = 22;
+			this->label31->Text = L"filter";
+			// 
+			// label_fiter2
+			// 
+			this->label_fiter2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_fiter2->Location = System::Drawing::Point(156, 41);
+			this->label_fiter2->Name = L"label_fiter2";
+			this->label_fiter2->Size = System::Drawing::Size(69, 23);
+			this->label_fiter2->TabIndex = 21;
+			this->label_fiter2->Text = L"0 ";
+			this->label_fiter2->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label33
+			// 
+			this->label33->AutoSize = true;
+			this->label33->Location = System::Drawing::Point(19, 28);
+			this->label33->Name = L"label33";
+			this->label33->Size = System::Drawing::Size(20, 13);
+			this->label33->TabIndex = 20;
+			this->label33->Text = L"kV";
+			// 
+			// label_kV2
+			// 
+			this->label_kV2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_kV2->Location = System::Drawing::Point(6, 41);
+			this->label_kV2->Name = L"label_kV2";
+			this->label_kV2->Size = System::Drawing::Size(69, 23);
+			this->label_kV2->TabIndex = 19;
+			this->label_kV2->Text = L"-";
+			this->label_kV2->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label35
+			// 
+			this->label35->AutoSize = true;
+			this->label35->Location = System::Drawing::Point(91, 28);
+			this->label35->Name = L"label35";
+			this->label35->Size = System::Drawing::Size(27, 13);
+			this->label35->TabIndex = 12;
+			this->label35->Text = L"mAs";
+			// 
+			// label_mAs2
+			// 
+			this->label_mAs2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_mAs2->Location = System::Drawing::Point(81, 41);
+			this->label_mAs2->Name = L"label_mAs2";
+			this->label_mAs2->Size = System::Drawing::Size(69, 23);
+			this->label_mAs2->TabIndex = 11;
+			this->label_mAs2->Text = L"-";
+			this->label_mAs2->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// groupBox12
+			// 
+			this->groupBox12->Controls->Add(this->checkBox_valid3);
+			this->groupBox12->Controls->Add(this->label37);
+			this->groupBox12->Controls->Add(this->label_filter3);
+			this->groupBox12->Controls->Add(this->label39);
+			this->groupBox12->Controls->Add(this->label_kV3);
+			this->groupBox12->Controls->Add(this->label41);
+			this->groupBox12->Controls->Add(this->label_mAs3);
+			this->groupBox12->Location = System::Drawing::Point(549, 666);
+			this->groupBox12->Name = L"groupBox12";
+			this->groupBox12->Size = System::Drawing::Size(293, 82);
+			this->groupBox12->TabIndex = 32;
+			this->groupBox12->TabStop = false;
+			this->groupBox12->Text = L"PULSE-3";
+			// 
+			// checkBox_valid3
+			// 
+			this->checkBox_valid3->AutoSize = true;
+			this->checkBox_valid3->Location = System::Drawing::Point(231, 45);
+			this->checkBox_valid3->Name = L"checkBox_valid3";
+			this->checkBox_valid3->Size = System::Drawing::Size(49, 17);
+			this->checkBox_valid3->TabIndex = 23;
+			this->checkBox_valid3->Text = L"Valid";
+			this->checkBox_valid3->UseVisualStyleBackColor = true;
+			// 
+			// label37
+			// 
+			this->label37->AutoSize = true;
+			this->label37->Location = System::Drawing::Point(166, 28);
+			this->label37->Name = L"label37";
+			this->label37->Size = System::Drawing::Size(26, 13);
+			this->label37->TabIndex = 22;
+			this->label37->Text = L"filter";
+			// 
+			// label_filter3
+			// 
+			this->label_filter3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_filter3->Location = System::Drawing::Point(156, 41);
+			this->label_filter3->Name = L"label_filter3";
+			this->label_filter3->Size = System::Drawing::Size(69, 23);
+			this->label_filter3->TabIndex = 21;
+			this->label_filter3->Text = L"0 ";
+			this->label_filter3->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label39
+			// 
+			this->label39->AutoSize = true;
+			this->label39->Location = System::Drawing::Point(19, 28);
+			this->label39->Name = L"label39";
+			this->label39->Size = System::Drawing::Size(20, 13);
+			this->label39->TabIndex = 20;
+			this->label39->Text = L"kV";
+			// 
+			// label_kV3
+			// 
+			this->label_kV3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_kV3->Location = System::Drawing::Point(6, 41);
+			this->label_kV3->Name = L"label_kV3";
+			this->label_kV3->Size = System::Drawing::Size(69, 23);
+			this->label_kV3->TabIndex = 19;
+			this->label_kV3->Text = L"-";
+			this->label_kV3->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
+			// label41
+			// 
+			this->label41->AutoSize = true;
+			this->label41->Location = System::Drawing::Point(91, 28);
+			this->label41->Name = L"label41";
+			this->label41->Size = System::Drawing::Size(27, 13);
+			this->label41->TabIndex = 12;
+			this->label41->Text = L"mAs";
+			// 
+			// label_mAs3
+			// 
+			this->label_mAs3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label_mAs3->Location = System::Drawing::Point(81, 41);
+			this->label_mAs3->Name = L"label_mAs3";
+			this->label_mAs3->Size = System::Drawing::Size(69, 23);
+			this->label_mAs3->TabIndex = 11;
+			this->label_mAs3->Text = L"-";
+			this->label_mAs3->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(883, 620);
+			this->ClientSize = System::Drawing::Size(875, 767);
+			this->Controls->Add(this->groupBox12);
+			this->Controls->Add(this->groupBox11);
+			this->Controls->Add(this->groupBox10);
+			this->Controls->Add(this->groupBoxPulse0);
+			this->Controls->Add(this->groupBoxReady);
 			this->Controls->Add(this->groupBox9);
 			this->Controls->Add(this->buttonPushButton);
 			this->Controls->Add(this->groupBox8);
@@ -992,6 +1494,16 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 			this->groupBox9->ResumeLayout(false);
 			this->groupBox9->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericManualTrx))->EndInit();
+			this->groupBoxReady->ResumeLayout(false);
+			this->groupBoxReady->PerformLayout();
+			this->groupBoxPulse0->ResumeLayout(false);
+			this->groupBoxPulse0->PerformLayout();
+			this->groupBox10->ResumeLayout(false);
+			this->groupBox10->PerformLayout();
+			this->groupBox11->ResumeLayout(false);
+			this->groupBox11->PerformLayout();
+			this->groupBox12->ResumeLayout(false);
+			this->groupBox12->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -1050,7 +1562,7 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 	}
 	
 	private: System::Void listPaddle_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-		GantryStatusRegisters::PaddleRegister::setCode((GantryStatusRegisters::PaddleRegister::options)comboPaddle->SelectedIndex);
+		CompressorRegister::getPaddle()->Value->setCode((PaddleOption::options) comboPaddle->SelectedIndex);
 
 		int force = Convert::ToInt16(textForce->Text);
 		int thick = Convert::ToInt16(textThickness->Text);
@@ -1074,23 +1586,27 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 		if (OperatingStatusRegister::isOPEN()) {
 			labelPatientName->Text = OperatingStatusRegister::getPatientName();
 			labelGantryStatus->Text = "OPEN STUDY";
+			openStudyRegisters();
 		}
 		else if (OperatingStatusRegister::isCLOSE()) {
 			labelPatientName->Text = "";
 			labelGantryStatus->Text = "CLOSE STUDY";
+			closeStudyRegisters();
 		}
 		else if (OperatingStatusRegister::isSERVICE()) {
 			labelPatientName->Text = "";
 			labelGantryStatus->Text = "SERVICE";
+			closeStudyRegisters();
+
 		}
 	}
 
 	private: System::Void comboComponents_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-		GantryStatusRegisters::ComponentRegister::setCode((GantryStatusRegisters::ComponentRegister::options) comboPaddle->SelectedIndex);
+		ComponentRegister::Value->setCode((GantryStatusRegisters::ComponentRegister::options)comboComponents->SelectedIndex);
 	}
 
 	private: System::Void comboColliComponent_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-		GantryStatusRegisters::CollimatorComponentRegister::setCode((GantryStatusRegisters::CollimatorComponentRegister::options) comboPaddle->SelectedIndex);
+		CollimatorComponentRegister::Value->setCode((GantryStatusRegisters::CollimatorComponentRegister::options) comboColliComponent->SelectedIndex);
 	}
 
 	private: System::Void comboProjections_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -1110,18 +1626,18 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 	private: System::Void   ProjectionUpdateList(void) {
 		comboProjections->Items->Clear();
 		
-		int count = ArmStatusRegister::getProjections()->listCount();
+		int count = ArmStatusRegister::getProjections()->Value->Count();
 		if (count == 0) return;
 
 		for (int i = 0; i < count; i++) {
-			comboProjections->Items->Add(ArmStatusRegister::getProjections()->getItemList(i));
+			comboProjections->Items->Add(ArmStatusRegister::getProjections()->Value->getItem(i));
 		}
 		comboProjections->Items->Add("SELECT PROJECTION");
 		comboProjections->SelectedIndex = count;
 	}
 
 	private: System::Void   ProjectionChange(void) {
-		labelArmProjection->Text = ArmStatusRegister::getProjections()->getTag();
+		labelArmProjection->Text = ArmStatusRegister::getProjections()->Value->getTag();
 	}
 
 	private: System::Void buttonAbortProjection_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1175,22 +1691,27 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 	}
 
 	private: System::Void updateExposureType(void) {
-		labelExposureType->Text = ExposureModeRegister::getTag();
+		labelExposureType->Text = ExposureModeRegister::exposureType->Value->getTag();
 	}
 
 	private: System::Void updateProtectionMode(void) {
-		checkBoxUseProtection->Checked = PatientProtectionRegister::useProtection();
+		checkBoxUseProtection->Checked = ExposureModeRegister::protectionMode->useProtection();
 		
 	}
 
 	private: System::Void updateArmMode(void) {
-		checkBoxUseArm->Checked = ArmStatusRegister::useArm();
+		checkBoxUseArm->Checked = (ExposureModeRegister::armMode->Value->getCode() == ArmModeOption::options::ARM_ENA);
+
+	}
+
+	private: System::Void updateXrayPushEna(void) {
+		checkBoxPushButton->Checked = (XrayPushButtonRegister::isEnabled());
 
 	}
 
 
 	private: System::Void updateCompressionMode(void) {
-		labelCompressionMode->Text = CompressorRegister::getCompressionMode()->getTag();
+		labelCompressionMode->Text = ExposureModeRegister::compressorMode->Value->getTag();
 	}
 
 	private: System::Void updateTomoConfig(void) {
@@ -1210,6 +1731,33 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 		SendNotifyMessageA(window, WM_USER + 2, 0, 0);
 	}
 
+	private: System::Void onReadyTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
+	{
+		trxTimer->Stop();
+		SendNotifyMessageA(window, WM_USER + 3, 0, 0);
+	}
+
+	private: System::Void verifyReady(void)
+	{
+		unsigned short notready = ReadyForExposureRegister::evaluateReadyForExposure();
+
+		checkBox_0x1->Checked = (notready & 0x1);
+		checkBox_0x2->Checked = (notready & 0x2);
+		checkBox_0x4->Checked = (notready & 0x4);
+		checkBox_0x8->Checked = (notready & 0x8);
+		checkBox_0x10->Checked = (notready & 0x10);
+		checkBox_0x20->Checked = (notready & 0x20);
+		checkBox_0x40->Checked = (notready & 0x40);
+		checkBox_0x80->Checked = (notready & 0x80);
+
+		if (notready) groupBoxReady->Text = "NOT READY FOR EXPOSURE";
+		else groupBoxReady->Text = "READY FOR EXPOSURE";
+
+		
+	}
+
+		   
+
 	protected:  virtual void WndProc(System::Windows::Forms::Message% m) override
 	{
 		switch (m.Msg) {
@@ -1225,6 +1773,9 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 			numericManualTrx->Value = TrxStatusRegister::getTargetAngle();
 			TrxStatusRegister::activationCompleted(Convert::ToInt16(labelArmAngle->Text), (int)0);
 			break;
+		case (WM_USER + 3): // Ready Timer
+			verifyReady();
+			break;
 		}
 
 		Form::WndProc(m);
@@ -1235,6 +1786,7 @@ private: System::Windows::Forms::NumericUpDown^ numericManualTrx;
 	
 private: System::Void buttonPushButton_Click(System::Object^ sender, System::EventArgs^ e) {
 }
+
 
 
 };

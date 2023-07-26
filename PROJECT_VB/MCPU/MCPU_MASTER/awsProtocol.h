@@ -60,11 +60,14 @@ public:
 	/// This function shall be connected to the abort projection event
 	void abortProjectionCallback(void);
 
+	/// This function shall be connected to the Gantry status change
+	void gantryStatusChangeCallback(void);
+
 	/// This function shall be connected to the Compressor data change events
-	void compressorDataChangeCallback(void) {};
+	void compressorDataChangeCallback(void) ;
 
 	/// This function shall be connected to the system component's change events
-	void componentDataChangeCallback(void) {};
+	void componentDataChangeCallback(void);
 
 	/// This function shall be connected to the operating status change event
 	void operatingStatusChangeCallback(void) {};
@@ -76,13 +79,15 @@ public:
 	void xrayPushbuttonChangeCallback(void) {};
 
 	/// This function shall be connected to the ready for exposure change event
-	void exposureReadyChangeCallback(void) {};
+	void exposureReadyChangeCallback(void);
 
 	/// This function shall be connected to the xray completed event
 	void exposureSequenceCompletedCallback(void) {};
 
 	/// This function shall be connected to the xray pulse completed event
 	void exposurePulseCompletedCallback(unsigned char npulse) {};
+
+	
 
 
 	/// @}
@@ -174,6 +179,10 @@ private:
 	/// 
 	void EVENT_SelectProjection(String^ projname) ;
 	void EVENT_AbortProjection(void);
+	void EVENT_GantryStatus(String^ status);
+	void EVENT_Compressor(unsigned short thick, unsigned short force);
+	void EVENT_Components(String^ component, String^ paddle, String^ colli_component);
+	void EVENT_ReadyForExposure(bool ready, unsigned short code);
 
 	/// @}
 
@@ -186,11 +195,9 @@ private:
 		float kv2 = 0, float mAs2 = 0, _filter_table_e flt2 = FILTER_NA,
 		float kv3 = 0, float mAs3 = 0, _filter_table_e flt3 = FILTER_NA,
 		float kv4 = 0, float mAs4 = 0, _filter_table_e flt4 = FILTER_NA) {};
-	virtual void EVENT_GantryStatus(_gantry_operating_status_e status) {};
-	virtual void EVENT_SelectProjection(_projection_list_e projname) {};
-	virtual void EVENT_AbortProjection(void) {};
-	virtual void EVENT_Compressor(unsigned short thick, unsigned short force) {};
-	virtual void EVENT_Components(_components_options_e component, _compressor_paddles_e paddle, _colli_components_options_e colli_component) {};
+
+
+	
 	*/
 	/// @}
 };

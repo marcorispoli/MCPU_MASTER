@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::XrayPushButtonRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::XrayPushButtonRegister" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::XrayPushButtonRegister \- This class handles the Xray Push Button activation status and activities\&.  
+GantryStatusRegisters::XrayPushButtonRegister \- This class handles the Xray Push Button activation status and activities  
 
 .SH SYNOPSIS
 .br
@@ -13,69 +13,45 @@ GantryStatusRegisters::XrayPushButtonRegister \- This class handles the Xray Pus
 
 .in +1c
 .ti -1c
-.RI "enum class \fBoptions_ena\fP { \fBXRAYPUSH_DISABLED\fP = 0, \fBXRAYPUSH_ENABLED\fP = 1, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBoptions\fP { \fBXRAYPUSH_DISABLED\fP = 0, \fBXRAYPUSH_ENABLED\fP = 1, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
 .RI "Definition of the xray push button enable status\&. "
-.in -1c
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBdelegate_status_ena_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBstatus_ena_change_event()\fP;\&. "
 .in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "static \fBoptions_ena\fP \fBgetEnableCode\fP (void)"
+.RI "static bool \fBisEnabled\fP (void)"
 .br
-.RI "Returns the pushbutton enable option code\&. "
 .ti -1c
-.RI "static String ^ \fBgetEnableTag\fP (void)"
+.RI "static bool \fBisDisabled\fP (void)"
 .br
-.RI "Returns the pushbutton enable option tag\&. "
 .ti -1c
-.RI "static bool \fBsetEnableCode\fP (\fBoptions_ena\fP val)"
+.RI "static bool \fBsetEnable\fP (void)"
 .br
-.RI "This function set the value of the pushbutton enable code (and related tag)\&. "
 .ti -1c
-.RI "static bool \fBsetEnableCode\fP (String^ val)"
+.RI "static bool \fBsetDisable\fP ()"
 .br
 .in -1c
 .SS "Static Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "static const array< String^> ^ \fBtags_ena\fP = gcnew array<String^> {'OFF', 'ON', 'UNDEF'}"
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> {'OFF', 'ON', 'UNDEF'}"
 .br
 .RI "Definition of the register tags\&. "
-.in -1c
-.SS "Events"
-
-.in +1c
 .ti -1c
-.RI "static \fBdelegate_status_ena_change\fP^ \fBstatus_ena_change_event\fP"
+.RI "static \fBenumType\fP< \fBoptions\fP > ^ \fBValue\fP = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)"
 .br
-.RI "This event is generated whenver the pushbutton enable status is changed\&. "
-.in -1c
-.SS "Static Private Attributes"
-
-.in +1c
-.ti -1c
-.RI "static \fBoptions_ena\fP \fBcode_ena\fP = \fBoptions_ena::UNDEF\fP"
-.br
-.RI "This is the register option-code\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
-This class handles the Xray Push Button activation status and activities\&. 
+This class handles the Xray Push Button activation status and activities 
 
 
 .SH "Member Enumeration Documentation"
 .PP 
-.SS "enum class \fBGantryStatusRegisters::XrayPushButtonRegister::options_ena\fP\fC [strong]\fP"
+.SS "enum class \fBGantryStatusRegisters::XrayPushButtonRegister::options\fP\fC [strong]\fP"
 
 .PP
 Definition of the xray push button enable status\&. 
@@ -94,80 +70,22 @@ XRAY Push Button is disabled\&.
 \fB\fIUNDEF \fP\fP
 .SH "Member Function Documentation"
 .PP 
-.SS "delegate void GantryStatusRegisters::XrayPushButtonRegister::delegate_status_ena_change (void)"
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::isDisabled (void)\fC [inline]\fP, \fC [static]\fP"
 
-.PP
-This is the delegate of the \fBstatus_ena_change_event()\fP;\&. 
-.SS "static \fBoptions_ena\fP GantryStatusRegisters::XrayPushButtonRegister::getEnableCode (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::isEnabled (void)\fC [inline]\fP, \fC [static]\fP"
 
-.PP
-Returns the pushbutton enable option code\&. 
-.PP
-\fBReturns\fP
-.RS 4
-the value of the option code 
-.RE
-.PP
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::setDisable ()\fC [inline]\fP, \fC [static]\fP"
 
-.SS "static String ^ GantryStatusRegisters::XrayPushButtonRegister::getEnableTag (void)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-Returns the pushbutton enable option tag\&. 
-.PP
-\fBReturns\fP
-.RS 4
-the value of the Tag 
-.RE
-.PP
-
-.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::setEnableCode (\fBoptions_ena\fP val)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-This function set the value of the pushbutton enable code (and related tag)\&. The register is updated with the option code and related tag and, in case of value change, the \fBstatus_ena_change_event()\fP is generated\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIval\fP this is the option-code to be set
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if success or false if the code doesn't exist
-.RE
-.PP
-
-.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::setEnableCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
-This function set the register with the option tag (and related code)\&.
-.PP
-The register is updated with the tag and the related option code and, in case of value change, the status_change_event() is generated\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIval\fP this is the tag to be set
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if success or false if the code doesn't exist
-.RE
-.PP
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::setEnable (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SH "Member Data Documentation"
 .PP 
-.SS "\fBoptions_ena\fP GantryStatusRegisters::XrayPushButtonRegister::code_ena = \fBoptions_ena::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the register option-code\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::XrayPushButtonRegister::tags_ena = gcnew array<String^> {'OFF', 'ON', 'UNDEF'}\fC [static]\fP"
+.SS "const array<String^> ^ GantryStatusRegisters::XrayPushButtonRegister::tags = gcnew array<String^> {'OFF', 'ON', 'UNDEF'}\fC [static]\fP"
 
 .PP
 Definition of the register tags\&. 
-.SH "Event Documentation"
-.PP 
-.SS "\fBdelegate_status_ena_change\fP^ GantryStatusRegisters::XrayPushButtonRegister::status_ena_change_event\fC [static]\fP"
+.SS "\fBenumType\fP<\fBoptions\fP> ^ GantryStatusRegisters::XrayPushButtonRegister::Value = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)\fC [static]\fP"
 
-.PP
-This event is generated whenver the pushbutton enable status is changed\&. Usage: \fBXrayPushButtonRegister::status_ena_change_event\fP += gcnew delegate_status_ena_change(&some_class, some_class::func) 
 
 .SH "Author"
 .PP 

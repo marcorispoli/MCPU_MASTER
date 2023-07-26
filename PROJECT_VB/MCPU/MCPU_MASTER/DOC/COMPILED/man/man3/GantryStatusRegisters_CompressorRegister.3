@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::CompressorRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::CompressorRegister" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,21 +9,13 @@ GantryStatusRegisters::CompressorRegister \- This is the register handling the c
 .PP
 .PP
 \fC#include <gantry_global_status\&.h>\fP
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBdelegate_compressor_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBcompressor_change_event()\fP;\&. "
-.in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "static unsigned short \fBgetForce\fP (void)"
 .br
-.RI "This function returns the current breast compression Force\&. "
+.RI "This function returns the current breast compression Force "
 .ti -1c
 .RI "static unsigned short \fBgetThickness\fP (void)"
 .br
@@ -36,12 +28,15 @@ GantryStatusRegisters::CompressorRegister \- This is the register handling the c
 .RI "static void \fBsetThickness\fP (unsigned short thick)"
 .br
 .RI "This function updates the current compression Thickness\&. "
+.ti -1c
+.RI "static \fBPaddleOption\fP ^ \fBgetPaddle\fP (void)"
+.br
 .in -1c
 .SS "Events"
 
 .in +1c
 .ti -1c
-.RI "static \fBdelegate_compressor_change\fP^ \fBcompressor_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBcompressor_change_event\fP"
 .br
 .RI "This event is generated whenver the status of the compressor data changes\&. "
 .in -1c
@@ -49,13 +44,16 @@ GantryStatusRegisters::CompressorRegister \- This is the register handling the c
 
 .in +1c
 .ti -1c
-.RI "static unsigned short \fBbreast_thickness\fP"
+.RI "static unsigned short \fBbreast_thickness\fP = 0"
 .br
 .RI "Compressed breast thickness in mm\&. "
 .ti -1c
-.RI "static unsigned short \fBcompression_force\fP"
+.RI "static unsigned short \fBcompression_force\fP = 0"
 .br
 .RI "Compression force in N\&. "
+.ti -1c
+.RI "static \fBPaddleOption\fP ^ \fBpaddle\fP = gcnew \fBPaddleOption\fP"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -64,20 +62,18 @@ This is the register handling the compression force and thickness\&.
 
 .SH "Member Function Documentation"
 .PP 
-.SS "delegate void GantryStatusRegisters::CompressorRegister::delegate_compressor_change (void)"
-
-.PP
-This is the delegate of the \fBcompressor_change_event()\fP;\&. 
 .SS "static unsigned short GantryStatusRegisters::CompressorRegister::getForce (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current breast compression Force\&. 
+This function returns the current breast compression Force 
 .PP
 \fBReturns\fP
 .RS 4
 The breast compression force in Newtons
 .RE
 .PP
+
+.SS "static \fBPaddleOption\fP ^ GantryStatusRegisters::CompressorRegister::getPaddle (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static unsigned short GantryStatusRegisters::CompressorRegister::getThickness (void)\fC [inline]\fP, \fC [static]\fP"
 
@@ -93,7 +89,7 @@ The compressed breast thickness in mm
 .SS "static void GantryStatusRegisters::CompressorRegister::setForce (unsigned short force)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function updates the current compression Force\&. If the force is changed then the \fBcompressor_change_event()\fP is generated\&.
+This function updates the current compression Force\&. If the force is changed then the \fBcompressor_change_event()\fP is generated\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -104,7 +100,7 @@ This function updates the current compression Force\&. If the force is changed t
 .SS "static void GantryStatusRegisters::CompressorRegister::setThickness (unsigned short thick)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function updates the current compression Thickness\&. If the Thickness is changed then the \fBcompressor_change_event()\fP is generated\&.
+This function updates the current compression Thickness\&. If the Thickness is changed then the \fBcompressor_change_event()\fP is generated\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -114,20 +110,22 @@ This function updates the current compression Thickness\&. If the Thickness is c
 
 .SH "Member Data Documentation"
 .PP 
-.SS "unsigned short GantryStatusRegisters::CompressorRegister::breast_thickness\fC [static]\fP, \fC [private]\fP"
+.SS "unsigned short GantryStatusRegisters::CompressorRegister::breast_thickness = 0\fC [static]\fP, \fC [private]\fP"
 
 .PP
 Compressed breast thickness in mm\&. 
-.SS "unsigned short GantryStatusRegisters::CompressorRegister::compression_force\fC [static]\fP, \fC [private]\fP"
+.SS "unsigned short GantryStatusRegisters::CompressorRegister::compression_force = 0\fC [static]\fP, \fC [private]\fP"
 
 .PP
 Compression force in N\&. 
+.SS "\fBPaddleOption\fP ^ GantryStatusRegisters::CompressorRegister::paddle = gcnew \fBPaddleOption\fP\fC [static]\fP, \fC [private]\fP"
+
 .SH "Event Documentation"
 .PP 
-.SS "\fBdelegate_compressor_change\fP^ GantryStatusRegisters::CompressorRegister::compressor_change_event\fC [static]\fP"
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::CompressorRegister::compressor_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the status of the compressor data changes\&. Usage: \fBCompressorRegister::compressor_change_event\fP += gcnew delegate_compressor_change(&some_class, some_class::func) 
+This event is generated whenver the status of the compressor data changes\&. Usage: \fBCompressorRegister::compressor_change_event\fP += gcnew delegate_void_callback(&some_class, some_class::func) 
 
 .SH "Author"
 .PP 

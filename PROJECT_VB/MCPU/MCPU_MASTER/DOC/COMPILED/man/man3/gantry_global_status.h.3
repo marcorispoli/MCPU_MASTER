@@ -1,8 +1,8 @@
-.TH "C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h
+C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h
 .SH SYNOPSIS
 .br
 .PP
@@ -16,13 +16,43 @@ C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER
 .RI "class \fBGlobalObjects\fP"
 .br
 .ti -1c
+.RI "class \fBGantryStatusRegisters::enumType< T >\fP"
+.br
+.ti -1c
 .RI "class \fBGantryStatusRegisters::FilterOptions\fP"
 .br
 .RI "This class implements the Filter selection interface\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::XrayCompletedRegister\fP"
+.RI "class \fBGantryStatusRegisters::CollimationModeOption\fP"
 .br
-.RI "This class implements the XRAY completed status register\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::CompressionModeOption\fP"
+.br
+.RI "This class handles the Compression behavior during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureTypeOption\fP"
+.br
+.RI "This class handles the exposure type status\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::DetectorTypeOption\fP"
+.br
+.RI "This class handles the Detector model selection\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ArmModeOption\fP"
+.br
+.RI "This class provides the Arm Mode options handling\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PatientProtectionMode\fP"
+.br
+.RI "This class handles the Usage of the patient protection during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ProjectionOptions\fP"
+.br
+.RI "This is the projection handling class\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PaddleOption\fP"
+.br
+.RI "This register handles the Paddles identifiable by the compressor device "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ReadyForExposureRegister\fP"
 .br
@@ -30,7 +60,7 @@ C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER
 .ti -1c
 .RI "class \fBGantryStatusRegisters::XrayPushButtonRegister\fP"
 .br
-.RI "This class handles the Xray Push Button activation status and activities\&. "
+.RI "This class handles the Xray Push Button activation status and activities "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::TomoConfigRegister\fP"
 .br
@@ -40,21 +70,13 @@ C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER
 .br
 .RI "This is the Gantry operating status register definition\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ProjectionOptions\fP"
-.br
-.RI "This is the projection handling class\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::ComponentRegister\fP"
 .br
-.RI "This register handle the Component that can be used during the exposure\&. "
+.RI "This register handle the Component that can be used during the exposure "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::CollimatorComponentRegister\fP"
 .br
-.RI "This register handles the component applicable to the collimator\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PaddleRegister\fP"
-.br
-.RI "This register handles the Paddles identifiable by the compressor device\&. "
+.RI "This register handles the component applicable to the collimator "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::CompressorRegister\fP"
 .br
@@ -62,47 +84,31 @@ C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ErrorRegister\fP"
 .br
-.RI "This is the Error handling register\&. "
+.RI "This is the Error handling register "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ExposureModeRegister\fP"
 .br
 .RI "This class handles the exposure type status\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::DetectorTypeRegister\fP"
-.br
-.RI "This class handles the Detector model selection\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CompressionModeRegister\fP"
-.br
-.RI "This class handles the Compression behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CollimationModeRegister\fP"
-.br
-.RI "This class handles the Collimation behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientProtectionRegister\fP"
-.br
-.RI "This class handles the Usage of the patient protection during the exposure\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::ArmStatusRegister\fP"
 .br
 .RI "This is the status register of the Arm motorization\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::PatientDataRegister\fP"
-.br
-.RI "This is the class handling the patient name\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
 .br
-.RI "This class handles the Trx motorization\&. "
+.RI "This class handles the Trx motorization "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureCompletedOptions\fP"
+.br
+.RI "This class implements the XRAY completed status register\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::exposurePulse\fP"
+.br
+.RI "Internal class uses to group the exposure data pulses "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ExposureDataRegister\fP"
 .br
 .RI "This register handle the Exposure pulse data info\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureDataRegister::exposurePulse\fP"
-.br
-.RI "Internal class uses to group the exposure data pulses\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::TubeDataRegister\fP"
 .br
@@ -110,7 +116,7 @@ C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER
 .ti -1c
 .RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
 .br
-.RI "This class handles the Interface language\&. "
+.RI "This class handles the Interface language "
 .in -1c
 .SS "Namespaces"
 
@@ -118,7 +124,23 @@ C:/Users/marco/OneDrive/Documenti/Github/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER
 .ti -1c
 .RI "namespace \fBGantryStatusRegisters\fP"
 .br
-.RI "This is the class implementing the AWS Interface Module\&. "
+.RI "This is the class implementing the AWS Interface Module "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBGantryStatusRegisters::delegate_void_callback\fP (void)"
+.br
+.RI "This is the delegate of the function with a void as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBGantryStatusRegisters::delegate_string_callback\fP (String^ str)"
+.br
+.RI "This is the delegate of the function with a string as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBGantryStatusRegisters::delegate_activation_completed\fP (unsigned short id, int error)"
+.br
+.RI "This is the delegate of the activation_completed_event();\&. "
 .in -1c
 .SH "Author"
 .PP 

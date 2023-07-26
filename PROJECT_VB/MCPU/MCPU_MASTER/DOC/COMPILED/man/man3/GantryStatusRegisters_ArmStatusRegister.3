@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::ArmStatusRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ArmStatusRegister" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,61 +9,17 @@ GantryStatusRegisters::ArmStatusRegister \- This is the status register of the A
 .PP
 .PP
 \fC#include <gantry_global_status\&.h>\fP
-.SS "Public Types"
-
-.in +1c
-.ti -1c
-.RI "enum class \fBexposure_mode_options\fP { \fBARM_ENA\fP, \fBARM_DIS\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
-.br
-.RI "This is the enumeration option code for the Arm Mode option The Arm Mode Option enables or disables the check of the angle during the exposure\&. "
-.in -1c
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBdelegate_projection_request\fP (String^ projection)"
-.br
-.RI "This is the delegate of the \fBprojection_request_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_abort_projection_request\fP (void)"
-.br
-.RI "This is the delegate of the \fBabort_projection_request_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_target_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBtarget_change_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_validate_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBvalidate_change_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_position_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBposition_change_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_activation_completed\fP (unsigned short id, int error)"
-.br
-.RI "This is the delegate of the \fBactivation_completed_event()\fP;\&. "
-.in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "static void \fBprojectionRequest\fP (String^ projection)"
 .br
-.RI "This function generate the \fBprojection_request_event()\fP event\&. "
+.RI "This function generate the \fBprojection_request_event()\fP event "
 .ti -1c
 .RI "static void \fBabortProjectionRequest\fP (void)"
 .br
-.RI "This function generate the \fBprojection_request_event()\fP event\&. "
-.ti -1c
-.RI "static bool \fBsetMode\fP (\fBexposure_mode_options\fP val)"
-.br
-.RI "This function set the Arm Exposure mode option (and related tag)\&. "
-.ti -1c
-.RI "static bool \fBsetMode\fP (String^ val)"
-.br
-.RI "This function set the Arm Exposure mode option tag (and related code)\&. "
+.RI "This function generate the \fBprojection_request_event()\fP event "
 .ti -1c
 .RI "static void \fBvalidate\fP (bool stat)"
 .br
@@ -87,7 +43,7 @@ GantryStatusRegisters::ArmStatusRegister \- This is the status register of the A
 .ti -1c
 .RI "static void \fBactivationCompleted\fP (int angle, int error)"
 .br
-.RI "This function shall be called when the activation termines\&. "
+.RI "This function shall be called when the activation termines "
 .ti -1c
 .RI "static int \fBgetAngle\fP (void)"
 .br
@@ -95,52 +51,44 @@ GantryStatusRegisters::ArmStatusRegister \- This is the status register of the A
 .ti -1c
 .RI "static int \fBgetTarget\fP (void)"
 .br
-.RI "This function returns the current ARM target\&. "
+.RI "This function returns the current ARM target "
 .ti -1c
 .RI "static int \fBgetLow\fP (void)"
 .br
-.RI "This function returns the current ARM low target\&. "
+.RI "This function returns the current ARM low target "
 .ti -1c
 .RI "static int \fBgetHigh\fP (void)"
 .br
-.RI "This function returns the current ARM high target\&. "
+.RI "This function returns the current ARM high target "
 .ti -1c
 .RI "static String ^ \fBgetProjection\fP (void)"
 .br
-.RI "Returns the current selected projection\&. "
+.RI "Returns the current selected projection "
 .ti -1c
 .RI "static \fBProjectionOptions\fP ^ \fBgetProjections\fP ()"
 .br
-.in -1c
-.SS "Static Public Attributes"
-
-.in +1c
-.ti -1c
-.RI "static const array< String^> ^ \fBexposure_mode_tags\fP = gcnew array<String^> { 'ARM_ENA', 'ARM_DIS', 'UNDEF'}"
-.br
-.RI "This is the option-tags static array\&. "
 .in -1c
 .SS "Events"
 
 .in +1c
 .ti -1c
-.RI "static \fBdelegate_projection_request\fP^ \fBprojection_request_event\fP"
+.RI "static \fBdelegate_string_callback\fP^ \fBprojection_request_event\fP"
 .br
 .RI "This event is generated whenever a projection request command is called\&. "
 .ti -1c
-.RI "static \fBdelegate_abort_projection_request\fP^ \fBabort_projection_request_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBabort_projection_request_event\fP"
 .br
 .RI "This event is generated whenever a projection request command is called\&. "
 .ti -1c
-.RI "static \fBdelegate_target_change\fP^ \fBtarget_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBtarget_change_event\fP"
 .br
 .RI "This event is generated whenver the arm target is changed\&. "
 .ti -1c
-.RI "static \fBdelegate_validate_change\fP^ \fBvalidate_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBvalidate_change_event\fP"
 .br
 .RI "This event is generated whenver the arm target parameters are validated\&. "
 .ti -1c
-.RI "static \fBdelegate_position_change\fP^ \fBposition_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBposition_change_event\fP"
 .br
 .RI "This event is generated whenver the arm position is updated\&. This is not the activation completion event! "
 .ti -1c
@@ -151,12 +99,6 @@ GantryStatusRegisters::ArmStatusRegister \- This is the status register of the A
 .SS "Static Private Attributes"
 
 .in +1c
-.ti -1c
-.RI "static \fBexposure_mode_options\fP \fBexposure_mode\fP = \fBexposure_mode_options::UNDEF\fP"
-.br
-.RI "This is the current selected Arm Exposure Mode option code 
-.br
- "
 .ti -1c
 .RI "static bool \fBposition_validated\fP = false"
 .br
@@ -198,36 +140,15 @@ There are several features that this register allow to handle:
 .IP "\(bu" 2
 Arm Angle verification option: enables or disables the test on the angle validity during exposure;
 .IP "\(bu" 2
-Arm target angle and projection setting: allow to handles the arm positioning 
+Arm target angle and projection setting: allow to handles the arm positioning
 .PP
 
-.SH "Member Enumeration Documentation"
-.PP 
-.SS "enum class \fBGantryStatusRegisters::ArmStatusRegister::exposure_mode_options\fP\fC [strong]\fP"
-
-.PP
-This is the enumeration option code for the Arm Mode option The Arm Mode Option enables or disables the check of the angle during the exposure\&. 
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fIARM_ENA \fP\fP
-Enables the Angle range check during exposure;\&. 
-.TP
-\fB\fIARM_DIS \fP\fP
-Disables the Angle range check during the exposure; 
-.br
- 
-.TP
-\fB\fILEN \fP\fP
-.TP
-\fB\fIUNDEF \fP\fP
 .SH "Member Function Documentation"
 .PP 
 .SS "static void GantryStatusRegisters::ArmStatusRegister::abortProjectionRequest (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function generate the \fBprojection_request_event()\fP event\&. 
+This function generate the \fBprojection_request_event()\fP event 
 .PP
 \fBParameters\fP
 .RS 4
@@ -239,7 +160,7 @@ This function generates the \fBabort_projection_request_event()\fP if a projecti
 .SS "static void GantryStatusRegisters::ArmStatusRegister::activationCompleted (int angle, int error)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function shall be called when the activation termines\&. 
+This function shall be called when the activation termines 
 .PP
 \fBParameters\fP
 .RS 4
@@ -249,30 +170,6 @@ This function shall be called when the activation termines\&.
 .RE
 .PP
 
-.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_abort_projection_request (void)"
-
-.PP
-This is the delegate of the \fBabort_projection_request_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_activation_completed (unsigned short id, int error)"
-
-.PP
-This is the delegate of the \fBactivation_completed_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_position_change (void)"
-
-.PP
-This is the delegate of the \fBposition_change_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_projection_request (String^ projection)"
-
-.PP
-This is the delegate of the \fBprojection_request_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_target_change (void)"
-
-.PP
-This is the delegate of the \fBtarget_change_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_validate_change (void)"
-
-.PP
-This is the delegate of the \fBvalidate_change_event()\fP;\&. 
 .SS "static int GantryStatusRegisters::ArmStatusRegister::getAngle (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
@@ -287,7 +184,7 @@ The current angle (°) units
 .SS "static int GantryStatusRegisters::ArmStatusRegister::getHigh (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current ARM high target\&. 
+This function returns the current ARM high target 
 .PP
 \fBReturns\fP
 .RS 4
@@ -298,7 +195,7 @@ The current high target (°) units
 .SS "static int GantryStatusRegisters::ArmStatusRegister::getLow (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current ARM low target\&. 
+This function returns the current ARM low target 
 .PP
 \fBReturns\fP
 .RS 4
@@ -309,7 +206,7 @@ The current low target (°) units
 .SS "static String ^ GantryStatusRegisters::ArmStatusRegister::getProjection (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-Returns the current selected projection\&. 
+Returns the current selected projection 
 .PP
 \fBReturns\fP
 .RS 4
@@ -322,7 +219,7 @@ Returns the current selected projection\&.
 .SS "static int GantryStatusRegisters::ArmStatusRegister::getTarget (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current ARM target\&. 
+This function returns the current ARM target 
 .PP
 \fBReturns\fP
 .RS 4
@@ -355,42 +252,11 @@ true if the Arm data are valid
 .SS "static void GantryStatusRegisters::ArmStatusRegister::projectionRequest (String^ projection)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function generate the \fBprojection_request_event()\fP event\&. 
+This function generate the \fBprojection_request_event()\fP event 
 .PP
 \fBParameters\fP
 .RS 4
 \fIprojection\fP Tag of the requested projection
-.RE
-.PP
-
-.SS "static bool GantryStatusRegisters::ArmStatusRegister::setMode (\fBexposure_mode_options\fP val)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-This function set the Arm Exposure mode option (and related tag)\&. No change value event is generated
-.PP
-\fBParameters\fP
-.RS 4
-\fIval\fP this is the option-code to be set
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if success or false if the code doesn't exist
-.RE
-.PP
-
-.SS "static bool GantryStatusRegisters::ArmStatusRegister::setMode (String^ val)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-This function set the Arm Exposure mode option tag (and related code)\&. No change value event is generated
-.PP
-\fBParameters\fP
-.RS 4
-\fIval\fP 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
 .RE
 .PP
 
@@ -464,16 +330,6 @@ Command is in execution\&.
 
 .PP
 AWS command Id\&. 
-.SS "\fBexposure_mode_options\fP GantryStatusRegisters::ArmStatusRegister::exposure_mode = \fBexposure_mode_options::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the current selected Arm Exposure Mode option code 
-.br
- 
-.SS "const array<String^> ^ GantryStatusRegisters::ArmStatusRegister::exposure_mode_tags = gcnew array<String^> { 'ARM_ENA', 'ARM_DIS', 'UNDEF'}\fC [static]\fP"
-
-.PP
-This is the option-tags static array\&. 
 .SS "int GantryStatusRegisters::ArmStatusRegister::position_target = 0\fC [static]\fP, \fC [private]\fP"
 
 .PP
@@ -488,34 +344,38 @@ Validation status\&.
 This is the current selected projection\&. 
 .SH "Event Documentation"
 .PP 
-.SS "\fBdelegate_abort_projection_request\fP^ GantryStatusRegisters::ArmStatusRegister::abort_projection_request_event\fC [static]\fP"
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::ArmStatusRegister::abort_projection_request_event\fC [static]\fP"
 
 .PP
-This event is generated whenever a projection request command is called\&. Usage: ProjectionRegister::abort_projection_request_event += gcnew delegate_abort_projection_request(&some_class, some_class::func) 
+This event is generated whenever a projection request command is called\&. Usage: ProjectionRegister::abort_projection_request_event += gcnew delegate_void_callback(&some_class, some_class::func) 
+.PP
+
 .br
  
 .SS "\fBdelegate_activation_completed\fP^ GantryStatusRegisters::ArmStatusRegister::activation_completed_event\fC [static]\fP"
 
 .PP
 This event is generated whenver the arm completes an activation! Usage: \fBArmStatusRegister::activation_completed_event\fP += gcnew delegate_activation_completed(&some_class, some_class::func) 
-.SS "\fBdelegate_position_change\fP^ GantryStatusRegisters::ArmStatusRegister::position_change_event\fC [static]\fP"
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::ArmStatusRegister::position_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the arm position is updated\&. This is not the activation completion event! Usage: \fBArmStatusRegister::position_change_event\fP += gcnew delegate_position_change(&some_class, some_class::func) 
-.SS "\fBdelegate_projection_request\fP^ GantryStatusRegisters::ArmStatusRegister::projection_request_event\fC [static]\fP"
+This event is generated whenver the arm position is updated\&. This is not the activation completion event! Usage: \fBArmStatusRegister::position_change_event\fP += gcnew delegate_void_callback(&some_class, some_class::func) 
+.SS "\fBdelegate_string_callback\fP^ GantryStatusRegisters::ArmStatusRegister::projection_request_event\fC [static]\fP"
 
 .PP
-This event is generated whenever a projection request command is called\&. Usage: \fBArmStatusRegister::projection_request_event\fP += gcnew delegate_projection_request(&some_class, some_class::func) 
+This event is generated whenever a projection request command is called\&. Usage: \fBArmStatusRegister::projection_request_event\fP += gcnew delegate_string_callback(&some_class, some_class::func) 
+.PP
+
 .br
  
-.SS "\fBdelegate_target_change\fP^ GantryStatusRegisters::ArmStatusRegister::target_change_event\fC [static]\fP"
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::ArmStatusRegister::target_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the arm target is changed\&. Usage: \fBArmStatusRegister::target_change_event\fP += gcnew delegate_target_change(&some_class, some_class::func) 
-.SS "\fBdelegate_validate_change\fP^ GantryStatusRegisters::ArmStatusRegister::validate_change_event\fC [static]\fP"
+This event is generated whenver the arm target is changed\&. Usage: \fBArmStatusRegister::target_change_event\fP += gcnew delegate_void_callback(&some_class, some_class::func) 
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::ArmStatusRegister::validate_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the arm target parameters are validated\&. Usage: \fBArmStatusRegister::validate_change_event\fP += gcnew delegate_validate_change(&some_class, some_class::func) 
+This event is generated whenver the arm target parameters are validated\&. Usage: \fBArmStatusRegister::validate_change_event\fP += gcnew delegate_void_callback(&some_class, some_class::func) 
 
 .SH "Author"
 .PP 

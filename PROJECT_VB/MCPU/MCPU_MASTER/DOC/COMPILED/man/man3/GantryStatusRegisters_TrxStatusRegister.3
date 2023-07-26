@@ -1,8 +1,8 @@
-.TH "GantryStatusRegisters::TrxStatusRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::TrxStatusRegister" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorization\&.  
+GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorization  
 
 .SH SYNOPSIS
 .br
@@ -15,23 +15,7 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .ti -1c
 .RI "enum class \fBoptions\fP { \fBTRX_SCOUT\fP = 0, \fBTRX_BP_R\fP, \fBTRX_BP_L\fP, \fBTRX_TOMO_H\fP, \fBTRX_TOMO_E\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration of the possible Trx target positions\&. "
-.in -1c
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBdelegate_target_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBtarget_change_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_position_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBposition_change_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_activation_completed\fP (unsigned short id, int error)"
-.br
-.RI "This is the delegate of the \fBactivation_completed_event()\fP;\&. "
+.RI "This is the enumeration of the possible Trx target positions "
 .in -1c
 .SS "Static Public Member Functions"
 
@@ -55,7 +39,7 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .ti -1c
 .RI "static int \fBgetTargetAngle\fP (void)"
 .br
-.RI "This function returns the target TRX angle\&. "
+.RI "This function returns the target TRX angle "
 .ti -1c
 .RI "static \fBoptions\fP \fBgetTargetCode\fP (void)"
 .br
@@ -67,7 +51,7 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .ti -1c
 .RI "static int \fBgetCurrentAngle\fP (void)"
 .br
-.RI "This function returns the current TRX angle\&. "
+.RI "This function returns the current TRX angle "
 .ti -1c
 .RI "static \fBoptions\fP \fBgetCurrentCode\fP (void)"
 .br
@@ -78,7 +62,7 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .ti -1c
 .RI "static void \fBactivationCompleted\fP (int angle, int error)"
 .br
-.RI "This function shall be called when the activation termines\&. "
+.RI "This function shall be called when the activation termines "
 .in -1c
 .SS "Static Public Attributes"
 
@@ -96,11 +80,11 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 
 .in +1c
 .ti -1c
-.RI "static \fBdelegate_target_change\fP^ \fBtarget_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBtarget_change_event\fP"
 .br
 .RI "This event is generated whenver the trx target is changed\&. "
 .ti -1c
-.RI "static \fBdelegate_position_change\fP^ \fBposition_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBposition_change_event\fP"
 .br
 .RI "This event is generated whenver the trx position is updated\&. This is not the activation completion event! "
 .ti -1c
@@ -135,15 +119,15 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .in -1c
 .SH "Detailed Description"
 .PP 
-This class handles the Trx motorization\&. 
+This class handles the Trx motorization 
 
-The Trx can be activate only in discrete positions 
+The Trx can be activate only in discrete positions
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBGantryStatusRegisters::TrxStatusRegister::options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration of the possible Trx target positions\&. 
+This is the enumeration of the possible Trx target positions 
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -173,7 +157,7 @@ TRX in Tomo End position
 .SS "static void GantryStatusRegisters::TrxStatusRegister::activationCompleted (int angle, int error)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function shall be called when the activation termines\&. 
+This function shall be called when the activation termines 
 .PP
 \fBParameters\fP
 .RS 4
@@ -183,22 +167,10 @@ This function shall be called when the activation termines\&.
 .RE
 .PP
 
-.SS "delegate void GantryStatusRegisters::TrxStatusRegister::delegate_activation_completed (unsigned short id, int error)"
-
-.PP
-This is the delegate of the \fBactivation_completed_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::TrxStatusRegister::delegate_position_change (void)"
-
-.PP
-This is the delegate of the \fBposition_change_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::TrxStatusRegister::delegate_target_change (void)"
-
-.PP
-This is the delegate of the \fBtarget_change_event()\fP;\&. 
 .SS "static int GantryStatusRegisters::TrxStatusRegister::getCurrentAngle (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current TRX angle\&. 
+This function returns the current TRX angle 
 .PP
 \fBReturns\fP
 .RS 4
@@ -207,6 +179,8 @@ The current angle in 0\&.01° units
 .PP
 
 .SS "static \fBoptions\fP GantryStatusRegisters::TrxStatusRegister::getCurrentCode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
 This function returns the code related to the angle based on the targets currently set\&.
 .PP
 \fBParameters\fP
@@ -234,7 +208,7 @@ The current position
 .SS "static int GantryStatusRegisters::TrxStatusRegister::getTargetAngle (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the target TRX angle\&. 
+This function returns the target TRX angle 
 .PP
 \fBReturns\fP
 .RS 4
@@ -365,14 +339,14 @@ This is the current value of the target angles\&.
 
 .PP
 This event is generated whenver the trx completes an activation! Usage: \fBTrxStatusRegister::activation_completed_event\fP += gcnew delegate_activation_completed(&some_class, some_class::func) 
-.SS "\fBdelegate_position_change\fP^ GantryStatusRegisters::TrxStatusRegister::position_change_event\fC [static]\fP"
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::TrxStatusRegister::position_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the trx position is updated\&. This is not the activation completion event! Usage: \fBTrxStatusRegister::position_change_event\fP += gcnew delegate_position_change(&some_class, some_class::func) 
-.SS "\fBdelegate_target_change\fP^ GantryStatusRegisters::TrxStatusRegister::target_change_event\fC [static]\fP"
+This event is generated whenver the trx position is updated\&. This is not the activation completion event! Usage: \fBTrxStatusRegister::position_change_event\fP += gcnew delegate_void_callback(&some_class, some_class::func) 
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::TrxStatusRegister::target_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the trx target is changed\&. Usage: \fBTrxStatusRegister::target_change_event\fP += gcnew delegate_target_change(&some_class, some_class::func) 
+This event is generated whenver the trx target is changed\&. Usage: \fBTrxStatusRegister::target_change_event\fP += gcnew delegate void delegate_void_callback(unsigned short id, int error);//!< This is the delegate of the \fBactivation_completed_event()\fP;(&some_class, some_class::func) 
 
 .SH "Author"
 .PP 

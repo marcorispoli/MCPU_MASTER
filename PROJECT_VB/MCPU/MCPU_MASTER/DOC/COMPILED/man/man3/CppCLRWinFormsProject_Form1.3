@@ -1,8 +1,8 @@
-.TH "CppCLRWinFormsProject::Form1" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CppCLRWinFormsProject::Form1" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-CppCLRWinFormsProject::Form1 \- Summary for \fBForm1\fP\&.  
+CppCLRWinFormsProject::Form1 \- Summary for \fBForm1\fP  
 
 .SH SYNOPSIS
 .br
@@ -53,6 +53,9 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Void \fBlistPaddle_SelectedIndexChanged\fP (System::Object^ sender, System::EventArgs^ e)"
 .br
 .ti -1c
+.RI "System::Void \fBopenStudyChange\fP (void)"
+.br
+.ti -1c
 .RI "System::Void \fBcomboComponents_SelectedIndexChanged\fP (System::Object^ sender, System::EventArgs^ e)"
 .br
 .ti -1c
@@ -71,16 +74,49 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Void \fBbuttonAbortProjection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
 .br
 .ti -1c
+.RI "System::Void \fBArmValidateChg\fP (void)"
+.br
+.ti -1c
 .RI "System::Void \fBArmUpdateData\fP (void)"
 .br
 .ti -1c
 .RI "System::Void \fBTrxUpdateData\fP (void)"
 .br
 .ti -1c
+.RI "System::Void \fBnumericManualArm_ValueChanged\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBnumericManualTrx_ValueChanged\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBupdateArmPosition\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBupdateTrxPosition\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBupdateExposureType\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBupdateProtectionMode\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBupdateArmMode\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBupdateCompressionMode\fP (void)"
+.br
+.ti -1c
+.RI "System::Void \fBupdateTomoConfig\fP (void)"
+.br
+.ti -1c
 .RI "System::Void \fBonArmTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
 .br
 .ti -1c
 .RI "System::Void \fBonTrxTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBbuttonPushButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
 .br
 .in -1c
 .SS "Private Attributes"
@@ -244,10 +280,10 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Windows::Forms::Label ^ \fBlabelTomoConfId\fP"
 .br
 .ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelCompressionMode\fP"
+.RI "System::Windows::Forms::Label ^ \fBlabelCmpMode\fP"
 .br
 .ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabel16\fP"
+.RI "System::Windows::Forms::Label ^ \fBlabelCompressionMode\fP"
 .br
 .ti -1c
 .RI "System::Windows::Forms::CheckBox ^ \fBcheckBoxUseProtection\fP"
@@ -268,12 +304,27 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Windows::Forms::Label ^ \fBlabelTomoSeq\fP"
 .br
 .ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel21\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::NumericUpDown ^ \fBnumericManualArm\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox9\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel22\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::NumericUpDown ^ \fBnumericManualTrx\fP"
+.br
+.ti -1c
 .RI "System::Timers::Timer ^ \fBtrxTimer\fP"
 .br
 .in -1c
 .SH "Detailed Description"
 .PP 
-Summary for \fBForm1\fP\&. 
+Summary for \fBForm1\fP 
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "CppCLRWinFormsProject::Form1::Form1 (void)\fC [inline]\fP"
@@ -286,7 +337,11 @@ Clean up any resources being used\&.
 .PP 
 .SS "System::Void CppCLRWinFormsProject::Form1::ArmUpdateData (void)\fC [inline]\fP, \fC [private]\fP"
 
+.SS "System::Void CppCLRWinFormsProject::Form1::ArmValidateChg (void)\fC [inline]\fP, \fC [private]\fP"
+
 .SS "System::Void CppCLRWinFormsProject::Form1::buttonAbortProjection_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::buttonPushButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::Form1::comboColliComponent_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
@@ -300,9 +355,15 @@ Clean up any resources being used\&.
 Required method for Designer support - do not modify the contents of this method with the code editor\&. 
 .SS "System::Void CppCLRWinFormsProject::Form1::listPaddle_SelectedIndexChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
+.SS "System::Void CppCLRWinFormsProject::Form1::numericManualArm_ValueChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::numericManualTrx_ValueChanged (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
 .SS "System::Void CppCLRWinFormsProject::Form1::onArmTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::Form1::onTrxTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::openStudyChange (void)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::Form1::ProjectionChange (void)\fC [inline]\fP, \fC [private]\fP"
 
@@ -313,6 +374,20 @@ Required method for Designer support - do not modify the contents of this method
 .SS "System::Void CppCLRWinFormsProject::Form1::textThickness_KeyPress (System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::Form1::TrxUpdateData (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::updateArmMode (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::updateArmPosition (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::updateCompressionMode (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::updateExposureType (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::updateProtectionMode (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::updateTomoConfig (void)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::Form1::updateTrxPosition (void)\fC [inline]\fP, \fC [private]\fP"
 
 .SS "virtual void CppCLRWinFormsProject::Form1::WndProc (System::Windows::Forms::Message% m)\fC [inline]\fP, \fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
@@ -360,6 +435,8 @@ Required designer variable\&.
 
 .SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox8\fC [private]\fP"
 
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::Form1::groupBox9\fC [private]\fP"
+
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label1\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label10\fC [private]\fP"
@@ -374,8 +451,6 @@ Required designer variable\&.
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label15\fC [private]\fP"
 
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label16\fC [private]\fP"
-
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label17\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label18\fC [private]\fP"
@@ -385,6 +460,10 @@ Required designer variable\&.
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label2\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label20\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label21\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label22\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::label3\fC [private]\fP"
 
@@ -412,6 +491,8 @@ Required designer variable\&.
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelCmpForce\fC [private]\fP"
 
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelCmpMode\fC [private]\fP"
+
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelCompressionMode\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::Form1::labelExposureType\fC [private]\fP"
@@ -433,6 +514,10 @@ Required designer variable\&.
 .SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericAnode\fC [private]\fP"
 
 .SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericBulb\fC [private]\fP"
+
+.SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericManualArm\fC [private]\fP"
+
+.SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericManualTrx\fC [private]\fP"
 
 .SS "System::Windows::Forms::NumericUpDown ^ CppCLRWinFormsProject::Form1::numericStator\fC [private]\fP"
 

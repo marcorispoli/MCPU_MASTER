@@ -1,4 +1,4 @@
-.TH "awsProtoCommands" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtoCommands" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,7 +24,7 @@ awsProtoCommands \- AWS Protocol Command set
 .ti -1c
 .RI "void \fBawsProtocol::EXEC_ArmPosition\fP (void)"
 .br
-.RI "This function activate the ARM to a target position;\&. "
+.RI "This function activate the ARM to a target position; "
 .ti -1c
 .RI "void \fBawsProtocol::EXEC_AbortProjection\fP (void)"
 .br
@@ -40,23 +40,23 @@ awsProtoCommands \- AWS Protocol Command set
 .ti -1c
 .RI "void \fBawsProtocol::SET_ExposureMode\fP (void)"
 .br
-.RI "This command select the Exposure Mode for the incoming Exposure sequence\&. "
+.RI "This command select the Exposure Mode for the incoming Exposure sequence "
 .ti -1c
 .RI "void \fBawsProtocol::SET_ExposureData\fP (void)"
 .br
-.RI "This command assignes the exposure parameters for the next Exposure pulse\&. "
+.RI "This command assignes the exposure parameters for the next Exposure pulse "
 .ti -1c
 .RI "void \fBawsProtocol::SET_EnableXrayPush\fP (void)"
 .br
-.RI "This command assignes the exposure parameters for the next Exposure pulse\&. "
+.RI "This command assignes the exposure parameters for the next Exposure pulse "
 .ti -1c
 .RI "void \fBawsProtocol::GET_ReadyForExposure\fP (void)"
 .br
-.RI "This command request for the current status of the ready for exposure\&. "
+.RI "This command request for the current status of the ready for exposure "
 .ti -1c
 .RI "void \fBawsProtocol::EXEC_StartXraySequence\fP (void)"
 .br
-.RI "This command requests for the exposure start\&. "
+.RI "This command requests for the exposure start "
 .ti -1c
 .RI "void \fBawsProtocol::GET_Compressor\fP (void)"
 .br
@@ -72,7 +72,7 @@ awsProtoCommands \- AWS Protocol Command set
 .ti -1c
 .RI "void \fBawsProtocol::GET_Arm\fP (void)"
 .br
-.RI "This command provides the current ARM position\&. "
+.RI "This command provides the current ARM position "
 .ti -1c
 .RI "void \fBawsProtocol::GET_TubeTemperature\fP (void)"
 .br
@@ -106,7 +106,7 @@ The ArmStatus::validate_change_event() is generated\&.
 .SS "void awsProtocol::EXEC_ArmPosition (void)\fC [private]\fP"
 
 .PP
-This function activate the ARM to a target position;\&. The target data in the ArmStatus are updated;
+This function activate the ARM to a target position; The target data in the ArmStatus are updated;
 .PP
 if the target angle is different of more than 1° then the ArmStatus::target_change_event() is generated and the ARM activation initiates\&.
 .SS "void awsProtocol::EXEC_CloseStudy (void)\fC [private]\fP"
@@ -124,7 +124,7 @@ The gantryOperatingStatusOptions::status_change_event() is generated
 .SS "void awsProtocol::EXEC_StartXraySequence (void)\fC [private]\fP"
 
 .PP
-This command requests for the exposure start\&. 
+This command requests for the exposure start 
 .SS "void awsProtocol::EXEC_TrxPosition (void)\fC [private]\fP"
 
 .PP
@@ -132,7 +132,7 @@ This command executes the TRX activation\&. If the TRX target is changed, the Tr
 .SS "void awsProtocol::GET_Arm (void)\fC [private]\fP"
 
 .PP
-This command provides the current ARM position\&. 
+This command provides the current ARM position 
 .SS "void awsProtocol::GET_Components (void)\fC [private]\fP"
 
 .PP
@@ -150,7 +150,7 @@ Compressore Force;
 .SS "void awsProtocol::GET_ReadyForExposure (void)\fC [private]\fP"
 
 .PP
-This command request for the current status of the ready for exposure\&. 
+This command request for the current status of the ready for exposure 
 .SS "void awsProtocol::GET_Trx (void)\fC [private]\fP"
 
 .PP
@@ -168,15 +168,15 @@ This command returns the Tube cumeulated energy for the Anode and the internal F
 .SS "void awsProtocol::SET_EnableXrayPush (void)\fC [private]\fP"
 
 .PP
-This command assignes the exposure parameters for the next Exposure pulse\&. 
+This command assignes the exposure parameters for the next Exposure pulse 
 .SS "void awsProtocol::SET_ExposureData (void)\fC [private]\fP"
 
 .PP
-This command assignes the exposure parameters for the next Exposure pulse\&. 
+This command assignes the exposure parameters for the next Exposure pulse 
 .SS "void awsProtocol::SET_ExposureMode (void)\fC [private]\fP"
 
 .PP
-This command select the Exposure Mode for the incoming Exposure sequence\&. 
+This command select the Exposure Mode for the incoming Exposure sequence 
 .SS "void awsProtocol::SET_Language (void)\fC [private]\fP"
 
 .PP

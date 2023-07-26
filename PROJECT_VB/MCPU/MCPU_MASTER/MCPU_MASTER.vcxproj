@@ -163,8 +163,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DOC\aws_interface_protocol_implementation.html" />
-    <None Include="DOC\aws_interface_protocol_implementation.md" />
     <None Include="DOC\COMPILED\html\index.html" />
     <None Include="DOC\mcpu_master_doxy" />
   </ItemGroup>

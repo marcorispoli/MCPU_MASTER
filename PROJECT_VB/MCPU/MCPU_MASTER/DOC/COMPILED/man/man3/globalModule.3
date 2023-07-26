@@ -1,4 +1,4 @@
-.TH "globalModule" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "globalModule" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ globalModule \- Gantry Global Status Registers
 .ti -1c
 .RI "namespace \fBGantryStatusRegisters\fP"
 .br
-.RI "This is the class implementing the AWS Interface Module\&. "
+.RI "This is the class implementing the AWS Interface Module "
 .in -1c
 .SS "Classes"
 
@@ -25,9 +25,32 @@ globalModule \- Gantry Global Status Registers
 .br
 .RI "This class implements the Filter selection interface\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::XrayCompletedRegister\fP"
+.RI "class \fBGantryStatusRegisters::CollimationModeOption\fP"
 .br
-.RI "This class implements the XRAY completed status register\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::CompressionModeOption\fP"
+.br
+.RI "This class handles the Compression behavior during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureTypeOption\fP"
+.br
+.RI "This class handles the exposure type status\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::DetectorTypeOption\fP"
+.br
+.RI "This class handles the Detector model selection\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PatientProtectionMode\fP"
+.br
+.RI "This class handles the Usage of the patient protection during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ProjectionOptions\fP"
+.br
+.RI "This is the projection handling class\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PaddleOption\fP"
+.br
+.RI "This register handles the Paddles identifiable by the compressor device "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ReadyForExposureRegister\fP"
 .br
@@ -35,7 +58,7 @@ globalModule \- Gantry Global Status Registers
 .ti -1c
 .RI "class \fBGantryStatusRegisters::XrayPushButtonRegister\fP"
 .br
-.RI "This class handles the Xray Push Button activation status and activities\&. "
+.RI "This class handles the Xray Push Button activation status and activities "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::TomoConfigRegister\fP"
 .br
@@ -45,21 +68,13 @@ globalModule \- Gantry Global Status Registers
 .br
 .RI "This is the Gantry operating status register definition\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ProjectionOptions\fP"
-.br
-.RI "This is the projection handling class\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::ComponentRegister\fP"
 .br
-.RI "This register handle the Component that can be used during the exposure\&. "
+.RI "This register handle the Component that can be used during the exposure "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::CollimatorComponentRegister\fP"
 .br
-.RI "This register handles the component applicable to the collimator\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PaddleRegister\fP"
-.br
-.RI "This register handles the Paddles identifiable by the compressor device\&. "
+.RI "This register handles the component applicable to the collimator "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::CompressorRegister\fP"
 .br
@@ -67,39 +82,23 @@ globalModule \- Gantry Global Status Registers
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ErrorRegister\fP"
 .br
-.RI "This is the Error handling register\&. "
+.RI "This is the Error handling register "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ExposureModeRegister\fP"
 .br
 .RI "This class handles the exposure type status\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::DetectorTypeRegister\fP"
-.br
-.RI "This class handles the Detector model selection\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CompressionModeRegister\fP"
-.br
-.RI "This class handles the Compression behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CollimationModeRegister\fP"
-.br
-.RI "This class handles the Collimation behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientProtectionRegister\fP"
-.br
-.RI "This class handles the Usage of the patient protection during the exposure\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::ArmStatusRegister\fP"
 .br
 .RI "This is the status register of the Arm motorization\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::PatientDataRegister\fP"
-.br
-.RI "This is the class handling the patient name\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
 .br
-.RI "This class handles the Trx motorization\&. "
+.RI "This class handles the Trx motorization "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureCompletedOptions\fP"
+.br
+.RI "This class implements the XRAY completed status register\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ExposureDataRegister\fP"
 .br
@@ -111,7 +110,7 @@ globalModule \- Gantry Global Status Registers
 .ti -1c
 .RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
 .br
-.RI "This class handles the Interface language\&. "
+.RI "This class handles the Interface language "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -144,7 +143,7 @@ some_class::setCode(String^ tag)
 .IP "\(bu" 2
 some_class::setTag(some_class::options::<enum value>)
 .IP "\(bu" 2
-some_class::isValid(String^ tag) 
+some_class::isValid(String^ tag)
 .PP
 
 .SH "Author"

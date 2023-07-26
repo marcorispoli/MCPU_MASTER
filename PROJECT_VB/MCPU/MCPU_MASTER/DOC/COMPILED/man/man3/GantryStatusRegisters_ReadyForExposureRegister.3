@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::ReadyForExposureRegister" 3MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ReadyForExposureRegister" 3 "Wed Jul 26 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,18 +17,6 @@ GantryStatusRegisters::ReadyForExposureRegister \- This class register handles t
 .br
 .RI "Definition of the not-ready conditions\&. "
 .in -1c
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBdelegate_ready_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBready_change_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_start_exposure\fP (void)"
-.br
-.RI "This is the delegate of the \fBstart_exposure_event()\fP;\&. "
-.in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
@@ -43,19 +31,18 @@ GantryStatusRegisters::ReadyForExposureRegister \- This class register handles t
 .ti -1c
 .RI "static void \fBevaluateReadyForExposure\fP (void)"
 .br
-.RI "This function shall be called by every action to the system variables that affect the current ready condition\&. "
+.RI "This function shall be called by every action to the system variables that affect the current ready condition "
 .in -1c
 .SS "Events"
 
 .in +1c
 .ti -1c
-.RI "static \fBdelegate_ready_change\fP^ \fBready_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBready_change_event\fP"
 .br
-.RI "This event is generated whenver the ready for exposure changes its status\&. "
+.RI "This event is generated whenver the ready for exposure changes its status "
 .ti -1c
-.RI "static \fBdelegate_start_exposure\fP^ \fBstart_exposure_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBstart_exposure_event\fP"
 .br
-.RI "This event is generated whenver the ready for exposure changes its status\&. "
 .in -1c
 .SS "Static Private Attributes"
 
@@ -114,18 +101,10 @@ The study is closed\&.
 Used to initialize the status to a non ready condition\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "delegate void GantryStatusRegisters::ReadyForExposureRegister::delegate_ready_change (void)"
-
-.PP
-This is the delegate of the \fBready_change_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::ReadyForExposureRegister::delegate_start_exposure (void)"
-
-.PP
-This is the delegate of the \fBstart_exposure_event()\fP;\&. 
 .SS "static void GantryStatusRegisters::ReadyForExposureRegister::evaluateReadyForExposure (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function shall be called by every action to the system variables that affect the current ready condition\&. Whwnever the ready status changes, the \fBready_change_event()\fP is generated
+This function shall be called by every action to the system variables that affect the current ready condition Whwnever the ready status changes, the \fBready_change_event()\fP is generated 
 .SS "static unsigned short GantryStatusRegisters::ReadyForExposureRegister::getNotReadyCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
@@ -156,14 +135,16 @@ true if the system is in ready for exposure
 This is the register option-code\&. 
 .SH "Event Documentation"
 .PP 
-.SS "\fBdelegate_ready_change\fP^ GantryStatusRegisters::ReadyForExposureRegister::ready_change_event\fC [static]\fP"
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::ReadyForExposureRegister::ready_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the ready for exposure changes its status\&. Usage: \fBReadyForExposureRegister::ready_change_event\fP += gcnew delegate_ready_change(&some_class, some_class::func) 
-.SS "\fBdelegate_start_exposure\fP^ GantryStatusRegisters::ReadyForExposureRegister::start_exposure_event\fC [static]\fP"
+This event is generated whenver the ready for exposure changes its status Usage: \fBReadyForExposureRegister::ready_change_event\fP += gcnew delegate_void_callback(&some_class, some_class::func) 
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::ReadyForExposureRegister::start_exposure_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the ready for exposure changes its status\&. Usage: \fBReadyForExposureRegister::start_exposure_event\fP += gcnew delegate_start_exposure(&some_class, some_class::func) 
+This event is generated whenver the ready for exposure changes its status
+.PP
+Usage: \fBReadyForExposureRegister::start_exposure_event\fP += gcnew delegate_void_callback(&some_class, some_class::func) 
 
 .SH "Author"
 .PP 

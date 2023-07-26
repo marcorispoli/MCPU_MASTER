@@ -375,16 +375,13 @@ void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode, St
 /// <param name=""></param>
 void  awsProtocol::EXEC_OpenStudy(void) {
     Debug::WriteLine("EXEC_OpenStudy COMMAND MANAGEMENT");
- 
-    if (!OperatingStatusRegister::isIDLE()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+     
     if (ErrorRegister::isError()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "SYSTEM_IN_ERROR_CONDITION"; ackNok(); return; }
     if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
 
-    // Sets the patient name: set it before to set the gantry status !!!
-    PatientDataRegister::setName(pDecodedFrame->parameters[0]);
+    // Open the study and assignes the patient name !!!
+    if(!OperatingStatusRegister::setOpenStudy(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
 
-    // Open study initialization
-    OperatingStatusRegister::setCode(OperatingStatusRegister::options::GANTRY_OPEN_STUDY);
 
     ackOk();
 }
@@ -398,10 +395,8 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 /// <param name=""></param>
 void  awsProtocol::EXEC_CloseStudy(void) {
     Debug::WriteLine("EXEC_CloseStudy COMMAND MANAGEMENT");
-
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!OperatingStatusRegister::setCloseStudy()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     
-    OperatingStatusRegister::setCode(OperatingStatusRegister::options::GANTRY_IDLE);
     ackOk();
 
 }
@@ -419,13 +414,8 @@ void awsProtocol::SET_ProjectionList(void) {
     Debug::WriteLine("SET_ProjectionList COMMAND MANAGEMENT");
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     
-    // Create the projection list
-    List<int>^ lista = gcnew List<int>;
 
-    for (int i = 0; i < pDecodedFrame->parameters->Count; i++) {
-        lista->Add(Convert::ToInt16(pDecodedFrame->parameters[i]));
-    }
-    if(!ProjectionRegister::setList(lista)) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PROJECTION_IN_THE_LIST"; ackNok(); return; }
+    if(!ArmStatusRegister::getProjections()->Value->setList(pDecodedFrame->parameters)) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PROJECTION_IN_THE_LIST"; ackNok(); return; }
 
     ackOk();
     return;
@@ -449,10 +439,9 @@ void awsProtocol::EXEC_ArmPosition(void) {
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 5; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (ArmStatusRegister::isBusy()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "ARM_BUSY"; ackNok(); return; }
+    if (ArmStatusRegister::getProjections()->Value->indexOf(pDecodedFrame->parameters[0]) < 0 ) { pDecodedFrame->errcode = 4; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
 
-    // Parameter 0: Projection code 
-    if (!ProjectionRegister::setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 4; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
-
+    // Parameter 0: Projection code  
     // This function causes the ARM activation. See the ArmStatus::setTarget definition 
     // Parameter 1: target Angle
     // Parameter 2: Low Angle
@@ -460,7 +449,8 @@ void awsProtocol::EXEC_ArmPosition(void) {
     if(!ArmStatusRegister::setTarget(
         Convert::ToInt16(pDecodedFrame->parameters[1]), 
         Convert::ToInt16(pDecodedFrame->parameters[2]), 
-        Convert::ToInt16(pDecodedFrame->parameters[3]), 
+        Convert::ToInt16(pDecodedFrame->parameters[3]),
+        pDecodedFrame->parameters[0], // Projection code
         pDecodedFrame->ID)) { pDecodedFrame->errcode = 3; pDecodedFrame->errstr = "WRONG_DATA"; ackNok(); return;
     }
 
@@ -470,14 +460,6 @@ void awsProtocol::EXEC_ArmPosition(void) {
     return;
 
 }
-
-
-void awsProtocol::armActivationCompletedCallback(unsigned short id, int error) {
-    if (error) eventExecutedNok(id, error);
-    else eventExecutedOk(id);
-}
-
-
 
 
 /// <summary>
@@ -494,6 +476,7 @@ void awsProtocol::EXEC_AbortProjection(void) {
 
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     ArmStatusRegister::validate(false);
+   
     ackOk();
 
 }
@@ -510,7 +493,7 @@ void awsProtocol::EXEC_TrxPosition(void) {
 
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 4; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (ArmStatusRegister::isBusy()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "TRX_BUSY"; ackNok(); return; }
+    if (TrxStatusRegister::isBusy()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "TRX_BUSY"; ackNok(); return; }
     
     // Parameter 0: Target TRX 
     if (!TrxStatusRegister::setTarget(pDecodedFrame->parameters[0], pDecodedFrame->ID)) { pDecodedFrame->errcode = 3; pDecodedFrame->errstr = "INVALID_TARGET"; ackNok(); return; }
@@ -553,22 +536,22 @@ void   awsProtocol::SET_ExposureMode(void) {
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     
     // Parameter 0: Exposure type
-    if (!ExposureModeRegister::setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_EXPOSURE_TYPE"; ackNok(); return; }
+    if (!ExposureModeRegister::exposureType->Value->setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_EXPOSURE_TYPE"; ackNok(); return; }
     
     // Parameter 1: Detector type
-    if (!DetectorTypeRegister::setCode(pDecodedFrame->parameters[1])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_DETECTOR_TYPE"; ackNok(); return; }
+    if (!ExposureModeRegister::detector->Value->setCode(pDecodedFrame->parameters[1])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_DETECTOR_TYPE"; ackNok(); return; }
 
     // Parameter 2: Compression Mode
-    if (!CompressionModeRegister::setCode(pDecodedFrame->parameters[2])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_COMPRESSION_MODE"; ackNok(); return; }
+    if (!ExposureModeRegister::compressorMode->Value->setCode(pDecodedFrame->parameters[2])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_COMPRESSION_MODE"; ackNok(); return; }
 
     // Parameter 3: Collimation Mode
-    if (!CollimationModeRegister::setCode(pDecodedFrame->parameters[3])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_COLLIMATION_MODE"; ackNok(); return; }
+    if (!ExposureModeRegister::collimationMode->Value->setCode(pDecodedFrame->parameters[3])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_COLLIMATION_MODE"; ackNok(); return; }
 
     // Parameter 4: Protection Mode
-    if (!PatientProtectionRegister::setCode(pDecodedFrame->parameters[4])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PATIENT_PROTECTION_MODE"; ackNok(); return; }
+    if (!ExposureModeRegister::protectionMode->Value->setCode(pDecodedFrame->parameters[4])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PATIENT_PROTECTION_MODE"; ackNok(); return; }
 
     // Parameter 5: Arm Mode
-    if (!ArmStatusRegister::setMode(pDecodedFrame->parameters[4])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PATIENT_PROTECTION_MODE"; ackNok(); return; }
+    if (!ExposureModeRegister::armMode->Value->setCode(pDecodedFrame->parameters[5])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_ARM_MODE"; ackNok(); return; }
 
     ackOk();
 
@@ -584,17 +567,20 @@ void   awsProtocol::SET_ExposureData(void) {
 
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
-
+    
     // Parameter 0: Pulse sequence (unsigned char)
     // Parameter 1: kV value (double)
     // Parameter 2: mAs value (double)
     // Parameter 3: filter value (FilterOption)
     unsigned char seq = Convert::ToByte(pDecodedFrame->parameters[0]);
+    if (ExposureDataRegister::getPulse(seq) == nullptr) { pDecodedFrame->errcode = 3; pDecodedFrame->errstr = "PULSE_SEQ_OUT_OF_RANGE"; ackNok(); return; }
+
     double kV = Convert::ToDouble(pDecodedFrame->parameters[1]);
     double mAs = Convert::ToDouble(pDecodedFrame->parameters[2]);
     String^ filter = pDecodedFrame->parameters[3];
 
-    if (!ExposureDataRegister::setPulse(seq, kV, mAs, filter)) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return; }
+    
+    if (!ExposureDataRegister::getPulse(seq)->set(kV, mAs, filter)) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return; }
 
     ackOk();
 
@@ -611,10 +597,8 @@ void   awsProtocol::SET_EnableXrayPush(void) {
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
-    // Parameter 0: Xray Push enable status
-    String^ xray_pushena_stat = pDecodedFrame->parameters[0];
-
-    if (!XrayPushButtonRegister::setEnableCode(xray_pushena_stat)) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return; }
+    
+    if (!XrayPushButtonRegister::Value->setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return; }
 
     ackOk();
 
@@ -689,9 +673,9 @@ void   awsProtocol::GET_Components(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(ComponentRegister::getTag());
-    lista->Add(PaddleRegister::getTag());
-    lista->Add(CollimatorComponentRegister::getTag());
+    lista->Add(ComponentRegister::Value->getTag());
+    lista->Add(CompressorRegister::getPaddle()->Value->getTag());
+    lista->Add(CollimatorComponentRegister::Value->getTag());
 
 
     ackOk(lista);
@@ -710,8 +694,8 @@ void   awsProtocol::GET_Trx(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(TrxStatusRegister::getPositionTag());
-    lista->Add(TrxStatusRegister::getAngle().ToString());
+    lista->Add(TrxStatusRegister::getCurrentTag());
+    lista->Add(TrxStatusRegister::getCurrentAngle().ToString());
 
 
     ackOk(lista);
@@ -727,7 +711,7 @@ void   awsProtocol::GET_Arm(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(ProjectionRegister::getTag());
+    lista->Add(ArmStatusRegister::getProjection());
     lista->Add(ArmStatusRegister::getAngle().ToString());
 
 
@@ -766,10 +750,91 @@ void   awsProtocol::SET_Language(void) {
 
     if (OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!LanguageRegister::setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "INVALID_LANGUAGE"; ackNok(); return; }
+    if (!LanguageRegister::Value->setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "INVALID_LANGUAGE"; ackNok(); return; }
 
     ackOk();
     return;
 }
 
+/// <summary>
+/// This is the EVENT requesting the selection of a given projection.
+/// 
+/// The projection shall belong to the projections list set by the AWS through 
+/// the command SET_ProjectionList.
+/// 
+/// </summary>
+/// <param name="projname">This is the Tag of the requested projection</param>
+void awsProtocol::EVENT_SelectProjection(String^ projname) {
+    event_counter++;
+    String^ answer = "<" + event_counter.ToString() + " %EVENT_SelectProjection  " + projname + " %>";
+    event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+
+void awsProtocol::EVENT_AbortProjection(void) {
+    event_counter++;
+    String^ answer = "<" + event_counter.ToString() + " %EVENT_AbortProjection %>";
+    event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+
+void awsProtocol::EVENT_GantryStatus(String^ status) {
+    event_counter++;
+    String^ answer = "<" + event_counter.ToString() + " %EVENT_GantryStatus  " + status + " %>";
+    event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+
+void awsProtocol::EVENT_Compressor(unsigned short thick, unsigned short force) {
+    event_counter++;
+    String^ answer = "<" + event_counter.ToString() + " %EVENT_Compressor  " + thick.ToString() + "  " + force.ToString() + " %>";
+    event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+
+void awsProtocol::EVENT_Components(String^ component, String^ paddle, String^ colli_component) {
+    event_counter++;
+    String^ answer = "<" + event_counter.ToString() + " %EVENT_Components  " + component + " " + paddle + " " + colli_component + " %>";
+    event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+void awsProtocol::EVENT_ReadyForExposure(bool ready, unsigned short code) {
+    event_counter++;
+    String^ answer;
+    if (ready) {
+        answer = "<" + event_counter.ToString() + " %EVENT_ReadyForExposure OK 0 %>";
+    }
+    else {
+        answer = "<" + event_counter.ToString() + " %EVENT_ReadyForExposure NOK " + code.ToString() + " %>";
+    }
+    
+    event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+
+
+void awsProtocol::activationCompletedCallback(unsigned short id, int error) {
+    if (error) eventExecutedNok(id, error);
+    else eventExecutedOk(id);
+}
+
+void awsProtocol::selectProjectionCallback(String^ proj) {
+    EVENT_SelectProjection(proj);
+};
+
+void awsProtocol::abortProjectionCallback(void) {
+    EVENT_AbortProjection();
+};
+
+void awsProtocol::gantryStatusChangeCallback(void) {
+    EVENT_GantryStatus(OperatingStatusRegister::getStatus());
+}
+
+void awsProtocol::compressorDataChangeCallback(void) {
+    EVENT_Compressor(CompressorRegister::getThickness(), CompressorRegister::getForce());
+}
+
+void awsProtocol::componentDataChangeCallback(void) {
+    EVENT_Components(ComponentRegister::Value->getTag(), CompressorRegister::getPaddle()->Value->getTag(), CollimatorComponentRegister::Value->getTag());
+}
+
+void awsProtocol::exposureReadyChangeCallback(void) {
+
+    unsigned short code = ReadyForExposureRegister::getNotReadyCode();
+    EVENT_ReadyForExposure((!code) , code);
+}
 

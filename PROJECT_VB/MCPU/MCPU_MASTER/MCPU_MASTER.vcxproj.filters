@@ -38,6 +38,12 @@
     <ClInclude Include="TcpIpServerCLI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CanDriver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CanOpenMotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -56,6 +62,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TcpIpServerCLI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CanDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CanOpenMotor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -80,11 +80,13 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
+      <AdditionalLibraryDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -119,11 +121,13 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
+      <AdditionalLibraryDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -131,6 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="awsProtocol.h" />
+    <ClInclude Include="CanDriver.h" />
+    <ClInclude Include="CanOpenMotor.h" />
     <ClInclude Include="Form1.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -142,6 +148,8 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="awsProtocol.cpp" />
+    <ClCompile Include="CanDriver.cpp" />
+    <ClCompile Include="CanOpenMotor.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
     <ClCompile Include="Form1.cpp" />
     <ClCompile Include="pch.cpp">

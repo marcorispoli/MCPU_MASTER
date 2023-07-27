@@ -13,6 +13,7 @@
 #include "TcpIpServerCLI.h"
 #include "awsProtocol.h"
 #include "Form1.h"
+#include "CanDriver.h"
 
 
 

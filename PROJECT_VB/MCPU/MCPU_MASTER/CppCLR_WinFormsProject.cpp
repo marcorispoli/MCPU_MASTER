@@ -8,6 +8,8 @@ using namespace System;
 // }
 
 #include "Form1.h"
+#include "CanDriver.h"
+#include "CanOpenMotor.h"
 
 using namespace System::Windows::Forms;
 
@@ -17,6 +19,10 @@ int main()
   Application::EnableVisualStyles();
   Application::SetCompatibleTextRenderingDefault(false);
   awsProtocol^ paws = gcnew awsProtocol("127.0.0.1", 10000, 10001);
+  CanDriver^   pcan = gcnew CanDriver();
+  CanOpenMotor^ pmot = gcnew CanOpenMotor();
+
+
   //globalObjects::pProtocol = paws; // Assignes the class pointer to the global pointer for the application usage
 
   Application::Run(gcnew CppCLRWinFormsProject::Form1());

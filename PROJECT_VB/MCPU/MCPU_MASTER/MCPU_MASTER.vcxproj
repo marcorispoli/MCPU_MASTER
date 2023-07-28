@@ -142,6 +142,7 @@
     </ClInclude>
     <ClInclude Include="gantry_global_status.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="pd4_od.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="TcpIpServerCLI.h" />
   </ItemGroup>

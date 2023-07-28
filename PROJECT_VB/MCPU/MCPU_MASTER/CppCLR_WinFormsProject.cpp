@@ -12,6 +12,7 @@ using namespace System;
 #include "CanOpenMotor.h"
 
 using namespace System::Windows::Forms;
+using namespace CANOPEN;
 
 [STAThread]
 int main()
@@ -20,7 +21,7 @@ int main()
   Application::SetCompatibleTextRenderingDefault(false);
   awsProtocol^ paws = gcnew awsProtocol("127.0.0.1", 10000, 10001);
   CanDriver^   pcan = gcnew CanDriver();
-  CanOpenMotor^ pmot = gcnew CanOpenMotor();
+  CanOpenMotor^ pMot = gcnew CanOpenMotor(0x7, 453.2);
 
 
   //globalObjects::pProtocol = paws; // Assignes the class pointer to the global pointer for the application usage

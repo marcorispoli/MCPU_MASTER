@@ -163,62 +163,66 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, double gear) {
     object_dictionary = gcnew List<Register^> {};
     createWorkingDictionary();
     createObjectDictionary();
- 
-    rxEvent = CreateEvent(
+    
+    // creates the event of a received frame
+    rxSDOEvent = CreateEvent(
         NULL,               // default security attributes
-        TRUE,               // manual-reset event
+        FALSE,              // Automatic reset after signaling
         FALSE,              // initial state is nonsignaled
         TEXT("RxEvent")  // object name
     );
-    rxRegister = gcnew Register();
 
-    // Start the reception thread
+    // Creates the receiving register
+    rxSdoRegister = gcnew Register();
+    sdo_rx_pending = false;
+    
+
+    // Creates the Startup thread
     startup_thread = gcnew Thread(gcnew ThreadStart(this, &CanOpenMotor::startupThread));
     startup_thread->Name = "Motor Startup";
     startup_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
     startup_thread->Start();
 
+    // Add the callback handling the SDO reception
     CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
 }
 
 
 void CanOpenMotor::thread_canopen_rx_sdo_callback(unsigned short canid, unsigned char* data, unsigned char len) {
-    // Be careful!! This call is runing ino the program thread pull, out of the class thread.
+    // Be careful!! This call is runing into the program thread pull, out of the class thread.
     
-    if (canid != device_id + 0x580) return; // Belongs to other devices
-    if (len < 8) return; // Invalid message length
+    // No data is expected
+    if (!sdo_rx_pending) return;
 
-    rxRegister->update(data, len);
-    if (rxRegister->index != wait_index) return;
-    if (rxRegister->subindex != wait_subindex) return;
-    rxRegister->valid = true;
+    // Only 8-byte frame is accepted
+    if(len < 8) return; // Invalid message length
 
-    SetEvent(rxEvent);
-    wait_index = 0;
-    wait_subindex = 0;
-
+    // Checks the canId address
+    if (canid != device_id + 0x580) return; // This frame is not a SDO or is not addressed to this device!
+   
+    // Checks that the received Object registers matches with the expected
+    sdo_rx_pending = false;
+    if(rxSdoRegister->validateSdo(data)) SetEvent(rxSDOEvent);    
+    
 }
 
 bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, unsigned char dim, int val) {
     unsigned char buffer[8];
     DWORD dwWaitResult;
 
-    buffer[0] = Register::WRCMD | dim;
-    buffer[1] = (unsigned char) index & 0xFF;
-    buffer[2] = (unsigned char)( index >> 8) & 0xFF;
-    buffer[3] = sub;
+    
+    // Create the register to be received
+    rxSdoRegister = gcnew Register(index, sub, dim,val);
+    rxSdoRegister->getWriteBuffer(buffer);
 
-    unsigned int dval = (unsigned int) val;
-    buffer[4] = (unsigned char)(dval & 0xFF); dval = dval >> 8;
-    buffer[5] = (unsigned char)(dval & 0xFF); dval = dval >> 8;
-    buffer[6] = (unsigned char)(dval & 0xFF); dval = dval >> 8;
-    buffer[7] = (unsigned char)(dval & 0xFF); 
-
-    wait_index = index;
-    wait_subindex = sub;  
-    rxRegister->valid = false;
+    // Activates the transmission
     CanDriver::multithread_send(0x600 + device_id, buffer, 8);
-    dwWaitResult = WaitForSingleObject( rxEvent, 100);  
+    sdo_rx_pending = true;
+
+    // Waits to be signalled: waits for 50ms
+    dwWaitResult = WaitForSingleObject(rxSDOEvent, 50);
+
+    // Checks if the Event has been signalled or it is a timeout event.
     if (dwWaitResult == WAIT_OBJECT_0) return true;
     return false;
    
@@ -228,21 +232,18 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, unsi
     unsigned char buffer[8];
     DWORD dwWaitResult;
 
-    buffer[0] = Register::RDCMD ;
-    buffer[1] = (unsigned char)index & 0xFF;
-    buffer[2] = (unsigned char)(index >> 8) & 0xFF;
-    buffer[3] = sub;
+    // Create the register to be received
+    rxSdoRegister = gcnew Register(index, sub, dim);
+    rxSdoRegister->getReadBuffer(buffer);
 
-    buffer[4] = 0;
-    buffer[5] = 0;
-    buffer[6] = 0;
-    buffer[7] = 0;
-
-    wait_index = index;
-    wait_subindex = sub;
-    rxRegister->valid = false;
+    // Activates the transmission
     CanDriver::multithread_send(0x600 + device_id, buffer, 8);
-    dwWaitResult = WaitForSingleObject(rxEvent, 5000);
+    sdo_rx_pending = true;
+
+    // Waits to be signalled: waits for 50ms
+    dwWaitResult = WaitForSingleObject(rxSDOEvent, 50);
+
+    // Checks if the Event has been signalled or it is a timeout event.
     if (dwWaitResult == WAIT_OBJECT_0) return true;
     return false;
 }

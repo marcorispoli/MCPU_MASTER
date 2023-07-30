@@ -47,25 +47,41 @@ namespace CANOPEN {
 			default = false;
 		}
 
-		void update(unsigned char* frame, unsigned char len) {
-			if (len < 8) {
-				index = 0;
-				data = 0;
-				valid = false;
-				default = false;
-				return;
-			}
+		bool getReadBuffer(unsigned char* buffer) {
+			if (buffer == nullptr) return false;
 
-			cmd = frame[0] & 0xF0;
-			data_dim = frame[0] & 0x0F;
-			index = frame[1] + 256 * frame[2];
-			subindex = frame[3];
-			data = getVal(frame);
-			valid = false;
-			default = false;
+			buffer[0] = Register::RDCMD;
+			buffer[1] = (unsigned char) index & 0xFF;
+			buffer[2] = (unsigned char) (index >> 8) & 0xFF;
+			buffer[3] = subindex;
+
+			buffer[4] = 0;
+			buffer[5] = 0;
+			buffer[6] = 0;
+			buffer[7] = 0;
+			return true;
+
 		}
 
+		bool getWriteBuffer(unsigned char* buffer) {
+			if (buffer == nullptr) return false;
+			
+			buffer[0] = Register::WRCMD | data_dim;
+			buffer[1] = (unsigned char)index & 0xFF;
+			buffer[2] = (unsigned char)(index >> 8) & 0xFF;
+			buffer[3] = subindex;
 
+			int val = data;
+			buffer[4] = (unsigned char)(val & 0xFF); val = val >> 8;
+			buffer[5] = (unsigned char)(val & 0xFF); val = val >> 8;
+			buffer[6] = (unsigned char)(val & 0xFF); val = val >> 8;
+			buffer[7] = (unsigned char)(val & 0xFF);
+			return true;
+
+		}
+
+		static inline unsigned char  getCmd(unsigned char* frame) { return frame[0] & 0xF0; }
+		static inline unsigned char  getDataDim(unsigned char* frame) { return frame[0] & 0x0F;}
 		static inline unsigned short getIdx(unsigned char* frame) { return frame[1] + 256 * frame[2]; }
 		static inline unsigned char  getSub(unsigned char* frame) { return frame[3] ; }
 		static inline			int  getVal(unsigned char* frame) { 
@@ -79,9 +95,20 @@ namespace CANOPEN {
 			return 0;
 		}
 
-
-
 		
+		bool validateSdo(unsigned char* frame) {
+			if (frame == nullptr) return false;
+			if (Register::getIdx(frame) != index) return false;
+			if (Register::getSub(frame) != subindex) return false;
+			if (Register::getCmd(frame) != cmd) return false;
+			if (Register::getDataDim(frame) != data_dim) return false;
+
+			// The data is valid: fills the read SDO content into the register			
+			data = Register::getVal(frame);
+			valid = true;
+			return true;
+		}
+
 
 		static const unsigned char WRCMD = 0x20;
 		static const unsigned char RDCMD = 0x40;
@@ -101,6 +128,7 @@ namespace CANOPEN {
 		int  default_data;	//!< 4 Bytes data
 		bool valid;
 		bool default;
+
 	};
 
 
@@ -211,13 +239,14 @@ namespace CANOPEN {
 		unsigned short device_id;
 		Thread^ startup_thread;
 
-		double gear_ratio;
+		double gear_ratio; //!< This is the ratio from the motor axe and the load axe
+
 		List<Register^>^ object_dictionary;
-		HANDLE rxEvent;
+		HANDLE rxSDOEvent; //!< Event object signaled by the SDO receiving callback
 		
-		unsigned short wait_index;
-		unsigned char wait_subindex;
-		Register^ rxRegister;
+		
+		bool sdo_rx_pending; //!< A SDO reception fdata is pending 
+		Register^ rxSdoRegister; //!< SDO receiving data
 
 	};
 

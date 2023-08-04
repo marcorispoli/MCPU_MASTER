@@ -159,6 +159,10 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, double gear) {
     device_id = devid;
     gear_ratio = gear;
 
+    error_condition = false;
+    error_class = 0;
+    error_code = 0;
+
     // Creates the Object dictionaries
     object_dictionary = gcnew List<Register^> {};
     createWorkingDictionary();
@@ -175,16 +179,21 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, double gear) {
     // Creates the receiving register
     rxSdoRegister = gcnew Register();
     sdo_rx_pending = false;
-    
-
-    // Creates the Startup thread
-    startup_thread = gcnew Thread(gcnew ThreadStart(this, &CanOpenMotor::startupThread));
-    startup_thread->Name = "Motor Startup";
-    startup_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
-    startup_thread->Start();
 
     // Add the callback handling the SDO reception
     CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
+
+    // Assignes the initial Cia status to undefined
+    CiA_current_status = _CiA402Status::CiA402_Undefined;
+
+   
+
+    // Creates the Startup thread
+    main_thread = gcnew Thread(gcnew ThreadStart(this, &CanOpenMotor::mainWorker));
+    main_thread->Name = "Motor Worker" + Convert::ToString(device_id);
+    main_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
+    main_thread->Start();
+
 }
 
 
@@ -213,6 +222,7 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, uns
     
     // Create the register to be received
     rxSdoRegister = gcnew Register(index, sub, dim,val);
+    rxSdoRegister->cmd = Register::WRCMD;
     rxSdoRegister->getWriteBuffer(buffer);
 
     // Activates the transmission
@@ -220,11 +230,16 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, uns
     sdo_rx_pending = true;
 
     // Waits to be signalled: waits for 50ms
-    dwWaitResult = WaitForSingleObject(rxSDOEvent, 50);
+    dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+    sdo_rx_pending = false;
 
     // Checks if the Event has been signalled or it is a timeout event.
-    if (dwWaitResult == WAIT_OBJECT_0) return true;
-    return false;
+    if (dwWaitResult != WAIT_OBJECT_0)
+        return false;
+    if (!rxSdoRegister->valid)
+        return false;
+
+    return true;
    
 }
 
@@ -234,6 +249,7 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, unsi
 
     // Create the register to be received
     rxSdoRegister = gcnew Register(index, sub, dim);
+    rxSdoRegister->cmd = Register::RDCMD;
     rxSdoRegister->getReadBuffer(buffer);
 
     // Activates the transmission
@@ -241,29 +257,277 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, unsi
     sdo_rx_pending = true;
 
     // Waits to be signalled: waits for 50ms
-    dwWaitResult = WaitForSingleObject(rxSDOEvent, 50);
+    dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+    sdo_rx_pending = false;
 
     // Checks if the Event has been signalled or it is a timeout event.
-    if (dwWaitResult == WAIT_OBJECT_0) return true;
-    return false;
+    if (dwWaitResult != WAIT_OBJECT_0) 
+        return false;
+    if (!rxSdoRegister->valid)
+        return false;
+    
+    return true;
 }
 
-void CanOpenMotor::startupThread(void) {
-    unsigned char status = 0;
+
+void CanOpenMotor::mainWorker(void) {
+    
+
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: MAIN THREAD STARTED");
 
     while (1) {
-        switch (status) {
-        case 0: 
-            Debug::WriteLine("Motor device: startup initilize!\n");
-            // Read The Status word
-            if(blocking_readOD(OD_6041_00)) Debug::WriteLine("Received Status Word!\n");
-            else Debug::WriteLine("TMO!\n");
-            std::this_thread::sleep_for(std::chrono::microseconds(1000000));
+
+        // Wait for the CAN DRIVER connection
+        while (!CanDriver::isConnected()) {
+            // Pause waiting for the connection
+            std::this_thread::sleep_for(std::chrono::microseconds(500000));
         }
+
+        // Read the status word
+        if (!blocking_readOD(OD_6041_00)) continue;
+
+        // Identifies what is the current ciA status of the motor 
+        switch (getCiAStatus(rxSdoRegister->data)) {
         
-        
+        case _CiA402Status::CiA402_Undefined: break;
+        case _CiA402Status::CiA402_NotReadyToSwitchOn:break; // Do nothing ... The motor handles internally this status
+        case _CiA402Status::CiA402_FaultReactionActive: break; // Do nothing ... The motor handles internally this status
+
+        case _CiA402Status::CiA402_QuickStopActive:CiA402_QuickStopActiveCallback(); break;
+
+        case _CiA402Status::CiA402_SwitchOnDisabled: CiA402_SwitchOnDisabledCallback();  break;
+
+        case _CiA402Status::CiA402_ReadyToSwitchOn: CiA402_ReadyToSwitchOnCallback();  break;
+
+        case _CiA402Status::CiA402_SwitchedOn:  CiA402_SwitchedOnCallback();  break;
+                
+        case _CiA402Status::CiA402_OperationEnabled: break;
+       
+        case _CiA402Status::CiA402_Fault: break;
+
+        }
     }
+                
+}
+
+
+void CanOpenMotor::CiA402_SwitchOnDisabledCallback(void) {
+    unsigned int ctrlw;
+
+    if (CiA_current_status != _CiA402Status::CiA402_SwitchOnDisabled) {
+        CiA_current_status = _CiA402Status::CiA402_SwitchOnDisabled;
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: SWITCH-ON DISABLED STATUS");
+    }
+
+    // Read the Control Word
+    while (!blocking_readOD(OD_6040_00)) ;
+    
+    // Set the shutdown value to run the status to Ready to Swithc On
+    ctrlw = (unsigned int) rxSdoRegister->data;
+    ctrlw &= ~OD_6040_00_SHUTDOWN_MASK;
+    ctrlw |= OD_6040_00_SHUTDOWN_VAL;
+
+    // Sets the Ready To Switch On status
+    while (!blocking_writeOD(OD_6040_00, ctrlw));    
+    return;
+}
+
+void CanOpenMotor::CiA402_QuickStopActiveCallback(void) {
+    unsigned int ctrlw;
+
+    if (CiA_current_status != _CiA402Status::CiA402_QuickStopActive) {
+        CiA_current_status = _CiA402Status::CiA402_QuickStopActive;
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: QUICK STOP ACTIVE STATUS");
+    }
+
+    // Read the Control Word
+    while (!blocking_readOD(OD_6040_00));
+
+    // Set the shutdown value to run the status to Ready to Swithc On
+    ctrlw = (unsigned int)rxSdoRegister->data;
+    ctrlw &= ~OD_6040_00_SHUTDOWN_MASK;
+    ctrlw |= OD_6040_00_SHUTDOWN_VAL;
+
+    // Sets the Ready To Switch On status
+    while (!blocking_writeOD(OD_6040_00, ctrlw));
+    return;
+}
+
+
+void CanOpenMotor::CiA402_ReadyToSwitchOnCallback(void) {
+    unsigned int ctrlw;
+
+    if (CiA_current_status != _CiA402Status::CiA402_ReadyToSwitchOn) {
+        CiA_current_status = _CiA402Status::CiA402_ReadyToSwitchOn;
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: READY TO SWITCH-ON STATUS");
+    }
+
+    // Read the Control Word
+    while (!blocking_readOD(OD_6040_00));
+
+    // Set the shutdown value to run the status to Switched-On
+    ctrlw = (unsigned int)rxSdoRegister->data;
+    ctrlw &= ~OD_6040_00_SWITCHON_MASK;
+    ctrlw |= OD_6040_00_SWITCHON_VAL;
+
+    // Sets the Switched-On status
+    while (!blocking_writeOD(OD_6040_00, ctrlw));
+    return;
 }
 
 
 
+void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
+
+    if (CiA_current_status != _CiA402Status::CiA402_SwitchedOn) {
+        CiA_current_status = _CiA402Status::CiA402_SwitchedOn;
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: SWITCHED-ON STATUS");
+    }
+
+    
+    return;
+}
+
+void CanOpenMotor::CiA402_OperationEnabledCallback(void) {
+
+    if (CiA_current_status != _CiA402Status::CiA402_OperationEnabled) {
+        CiA_current_status = _CiA402Status::CiA402_OperationEnabled;
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: OPERATION ENABLED STATUS");
+    }
+
+
+    return;
+}
+
+String^ CanOpenMotor::getErrorClass1001(unsigned int val) {
+    unsigned char  cval = (unsigned char) val;
+    String^ errstr = "";
+
+    if (cval & OD_1001_00_GENERAL_ERROR) errstr += "[GENERAL]";
+    if (cval & OD_1001_00_I_ERROR) errstr += "[I]";
+    if (cval & OD_1001_00_VOLTAGE_ERROR) errstr += "[VOLTAGE]";
+    if (cval & OD_1001_00_TEMP_ERROR) errstr += "[TEMP]";
+    if (cval & OD_1001_00_COM_ERROR) errstr += "[COM]";
+    if (cval & OD_1001_00_PROFILE_ERROR) errstr += "[PROFILE]";
+    if (cval & OD_1001_00_RESERVED_ERROR) errstr += "[RESERVED]";
+    if (cval & OD_1001_00_MANUFACT_ERROR) errstr += "[MANUFACTURER]";
+    return errstr;
+
+}
+
+String^ CanOpenMotor::getErrorClass1003(unsigned int val) {
+    return getErrorClass1001(val >> 16);
+}
+
+String^ CanOpenMotor::getErrorCode1003(unsigned int val) {
+    unsigned short sval = (unsigned short ) (val & 0xFFFF);
+
+    switch (sval) {
+    case 0x1000: return "General error";
+    case 0x2300: return "Current at the controller output too large";
+    case 0x3100: return "Overvoltage/undervoltage at controller input";
+    case 0x4200: return "Temperature error within the controller";
+    case 0x6010: return "Software reset (watchdog)";
+    case 0x6100: return "Internal software error, generic";
+    case 0x6320: return "Rated current must be set (203Bh:01h)";
+    case 0x7121: return "Motor blocked";
+    case 0x7305: return "Incremental encoder or Hall sensor faulty";
+    case 0x7600: return "Nonvolatile memory full or corrupt; restart the controller for cleanup work";
+    case 0x8000: return "Error during fieldbus monitoring";
+    case 0x8130: return "CANopen only: Life Guard error or Heartbeat error";
+    case 0x8200: return "CANopen only: Slave took too long to send PDO messages.";
+    case 0x8210: return "CANopen only: PDO was not processed due to a length error";
+    case 0x8220: return "CANopen only: PDO length exceeded";
+    case 0x8611: return "Position monitoring error: Following error too large";
+    case 0x8612: return "Position monitoring error: Limit switch and tolerance zone exceeded";
+    case 0x9000: return "EtherCAT: Motor running while EtherCAT changes from OP -> SafeOp, PreOP, etc.";
+    }
+
+    return "No Code identified";
+}
+
+
+void CanOpenMotor::CiA402_FaultCallback(void) {
+    bool data_changed = false;
+    unsigned int ctrlw;
+
+    if (CiA_current_status != _CiA402Status::CiA402_Fault) {
+        CiA_current_status = _CiA402Status::CiA402_Fault;
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: FAULT STATUS");
+    }
+
+    // Read the error class register
+    while (!blocking_readOD(OD_1001_00)) ;
+    if (error_class != rxSdoRegister->data) data_changed = true;
+    error_class = rxSdoRegister->data;
+
+    // Read the error code register
+    while (!blocking_readOD(OD_1003_01));
+    if (error_code != rxSdoRegister->data) data_changed = true;
+    error_code = rxSdoRegister->data;
+
+    if (error_class) {
+        if(!error_condition) data_changed = true;
+        error_condition = true;
+
+        if(data_changed){
+            Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: ERROR CLASS = " + getErrorClass1001(error_class));
+            Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: ERROR CODE = " + getErrorCode1003(error_code));
+        }
+        
+        return;
+    }
+
+    // Tries to reset the error condition
+    while (!blocking_readOD(OD_6040_00));
+    ctrlw = rxSdoRegister->data;
+    ctrlw |= 0x80;
+    while (!blocking_writeOD(OD_6040_00, ctrlw));
+    ctrlw &= ~0x80;
+    while (!blocking_writeOD(OD_6040_00, ctrlw));
+
+
+    return;
+}
+
+
+
+
+void CanOpenMotor::initializeState(void) {
+    unsigned char status = 0;
+
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: INITIALIZATION");
+
+    // Read The Status word            
+    while (!blocking_readOD(OD_6041_00));
+
+
+}
+
+
+
+CanOpenMotor::_CiA402Status CanOpenMotor::getCiAStatus(int regval) {
+    unsigned char val = (unsigned char)(regval & 0xFF);
+    if ((val & 0x4F) == 0) return  _CiA402Status::CiA402_NotReadyToSwitchOn;
+    else if ((val & 0x4F) == 0x40) return  _CiA402Status::CiA402_SwitchOnDisabled;
+    else if ((val & 0x6F) == 0x21) return  _CiA402Status::CiA402_ReadyToSwitchOn;
+    else if ((val & 0x6F) == 0x23) return  _CiA402Status::CiA402_SwitchedOn;
+    else if ((val & 0x6F) == 0x27) return  _CiA402Status::CiA402_OperationEnabled;
+    else if ((val & 0x6F) == 0x7) return  _CiA402Status::CiA402_QuickStopActive;
+    else if ((val & 0x4F) == 0xF) return  _CiA402Status::CiA402_FaultReactionActive;
+    else if ((val & 0x4F) == 0x8) return  _CiA402Status::CiA402_Fault;
+    return _CiA402Status::CiA402_NotReadyToSwitchOn;
+}
+
+String^ CanOpenMotor::getCiAStatusString(_CiA402Status status) {
+    switch (status) {
+    case _CiA402Status::CiA402_NotReadyToSwitchOn: return "CiA402_NotReadyToSwitchOn";
+    case _CiA402Status::CiA402_SwitchOnDisabled: return "CiA402_SwitchOnDisabled";
+    case _CiA402Status::CiA402_ReadyToSwitchOn: return "CiA402_ReadyToSwitchOn";
+    case _CiA402Status::CiA402_SwitchedOn: return "CiA402_SwitchedOn";
+    case _CiA402Status::CiA402_OperationEnabled: return "CiA402_OperationEnabled";
+    case _CiA402Status::CiA402_QuickStopActive: return "CiA402_QuickStopActive";
+    case _CiA402Status::CiA402_FaultReactionActive: return "CiA402_FaultReactionActive";
+    case _CiA402Status::CiA402_Fault: return "CiA402_Fault";
+    }
+}

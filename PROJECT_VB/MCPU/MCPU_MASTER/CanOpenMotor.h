@@ -9,6 +9,8 @@ namespace CANOPEN {
 
 		Register() {
 			index = 0;
+			subindex = 0;
+			data_dim = 0;
 			data = 0;
 			valid = false;
 			default = false;
@@ -25,8 +27,10 @@ namespace CANOPEN {
 		/// <param name="subidx">sub index of the register</param>
 		/// <param name="dim">dimension of the data</param>
 		/// <param name="dt">default value</param>
-		Register(unsigned short idx, unsigned char subidx, unsigned char dim, int dt) {
+		Register(unsigned short idx, unsigned char sub, unsigned char dim, int dt) {
 			index = idx;
+			subindex = sub;
+			data_dim = dim;
 			data = dt;
 			valid = false;
 			default = true;
@@ -41,8 +45,10 @@ namespace CANOPEN {
 		/// <param name="index">index of the register</param>
 		/// <param name="subidx">sub index of the register</param>
 		/// <param name="dim">dimension of the data</param>
-		Register(unsigned short idx, unsigned char subidx, unsigned char dim) {
+		Register(unsigned short idx, unsigned char sub, unsigned char dim) {
 			index = idx;
+			subindex = sub;
+			data_dim = dim;
 			valid = false;
 			default = false;
 		}
@@ -97,11 +103,24 @@ namespace CANOPEN {
 
 		
 		bool validateSdo(unsigned char* frame) {
+
 			if (frame == nullptr) return false;
-			if (Register::getIdx(frame) != index) return false;
-			if (Register::getSub(frame) != subindex) return false;
-			if (Register::getCmd(frame) != cmd) return false;
-			if (Register::getDataDim(frame) != data_dim) return false;
+		
+			if (Register::getIdx(frame) != index) {
+				return false;
+			}
+			if (Register::getSub(frame) != subindex) {
+				return false;
+			}
+
+			if (cmd == RDCMD)  {
+				if (getCmd(frame) != RDANSW) return false;
+				if (Register::getDataDim(frame) != data_dim) return false;
+				
+			}
+			else {
+				if (getCmd(frame) != WRANSW) return false;
+			}
 
 			// The data is valid: fills the read SDO content into the register			
 			data = Register::getVal(frame);
@@ -111,7 +130,9 @@ namespace CANOPEN {
 
 
 		static const unsigned char WRCMD = 0x20;
+		static const unsigned char WRANSW = 0x60;
 		static const unsigned char RDCMD = 0x40;
+		static const unsigned char RDANSW = 0x40;
 		static const unsigned char ERRACK = 0x80;
 
 		static const unsigned char R1B = 0x0F;
@@ -232,15 +253,43 @@ namespace CANOPEN {
 
 		bool blocking_writeOD(unsigned short index, unsigned char sub, unsigned char dim, int val);
 		bool blocking_readOD(unsigned short index, unsigned char sub, unsigned char dim);
+		
+		enum class _CiA402Status {
+			CiA402_NotReadyToSwitchOn = 0,
+			CiA402_SwitchOnDisabled,
+			CiA402_ReadyToSwitchOn,
+			CiA402_SwitchedOn,
+			CiA402_OperationEnabled,
+			CiA402_QuickStopActive,
+			CiA402_FaultReactionActive,
+			CiA402_Fault,
+			CiA402_Undefined,
+		};
 
-	private:
-		void startupThread(void);
+		_CiA402Status CiA_current_status;     //!< CiA current detected status
+		String^ getErrorClass1001(unsigned int val);
+		String^ getErrorClass1003(unsigned int val);
+		String^ getErrorCode1003(unsigned int val);
+
+		_CiA402Status getCiAStatus(int regval);
+		String^ getCiAStatusString(_CiA402Status status);
+		void CiA402_QuickStopActiveCallback(void);
+		void CiA402_SwitchOnDisabledCallback(void);
+		void CiA402_ReadyToSwitchOnCallback(void);
+		void CiA402_SwitchedOnCallback(void);
+		void CiA402_OperationEnabledCallback(void);
+		void CiA402_FaultCallback(void);
+
+		Thread^ main_thread;
+		void mainWorker(void);
+
+		void initializeState(void);
+
 		HWND hwnd;
 		unsigned short device_id;
-		Thread^ startup_thread;
+		
 
-		double gear_ratio; //!< This is the ratio from the motor axe and the load axe
-
+		
 		List<Register^>^ object_dictionary;
 		HANDLE rxSDOEvent; //!< Event object signaled by the SDO receiving callback
 		
@@ -248,6 +297,11 @@ namespace CANOPEN {
 		bool sdo_rx_pending; //!< A SDO reception fdata is pending 
 		Register^ rxSdoRegister; //!< SDO receiving data
 
+
+		double gear_ratio; //!< This is the ratio from the motor axe and the load axe
+		bool error_condition;
+		unsigned int error_class;
+		unsigned int error_code;
 	};
 
 };

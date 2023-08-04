@@ -25,17 +25,15 @@ public:
     static event delegate_can_rx_frame^ canrx_device_event;
 
     static bool multithread_send(unsigned short canId, unsigned char* data, unsigned char len);
-
+    static inline bool isConnected(void) { return can_connected; }
     protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;//!< This is the function handling the Window's messages
 
 private:
     Thread^ running_thread;
     void threadWork(void);
     HWND can_hwnd;
-    bool can_connected;
+    static bool can_connected;
 
-    // For debug purpose
-    System::Timers::Timer^ TestTimer;
-    void testTimerTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e);
+    
 };
 

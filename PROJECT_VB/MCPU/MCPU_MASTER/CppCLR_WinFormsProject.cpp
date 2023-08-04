@@ -21,7 +21,12 @@ int main()
   Application::SetCompatibleTextRenderingDefault(false);
   awsProtocol^ paws = gcnew awsProtocol("127.0.0.1", 10000, 10001);
   CanDriver^   pcan = gcnew CanDriver();
-  CanOpenMotor^ pMot = gcnew CanOpenMotor(0x7, 453.2);
+  CanOpenMotor^ pMot7 = gcnew CanOpenMotor(0x7, 453.2);
+
+  //CanOpenMotor^ pMot6 = gcnew CanOpenMotor(0x6, 453.2);
+  //CanOpenMotor^ pMot5 = gcnew CanOpenMotor(0x5, 453.2);
+  //CanOpenMotor^ pMot4 = gcnew CanOpenMotor(0x4, 453.2);
+  //CanOpenMotor^ pMot3 = gcnew CanOpenMotor(0x3, 453.2);
 
 
   //globalObjects::pProtocol = paws; // Assignes the class pointer to the global pointer for the application usage

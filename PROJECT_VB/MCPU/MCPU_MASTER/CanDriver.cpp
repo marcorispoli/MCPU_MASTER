@@ -6,15 +6,17 @@
 #include <mutex>
 #include "vs_can_api.h"
 
+
 using namespace std;
+using namespace std::chrono;
 
 static VSCAN_HANDLE handle = 0;     //!< Handle of the driver
 static mutex send_mutex;
-
-void CanDriver::testTimerTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
-{
-   
-}
+static clock_t measure_time_stop;
+static steady_clock::time_point start;
+static steady_clock::time_point stop;
+ std::chrono::duration<double> tempo;
+ double dtempo;
 
 CanDriver::CanDriver() {
     can_hwnd = static_cast<HWND>(Handle.ToPointer());
@@ -26,10 +28,7 @@ CanDriver::CanDriver() {
     running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
     running_thread->Start();
 
-    TestTimer = gcnew System::Timers::Timer(3000);
-    TestTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &CanDriver::testTimerTimeout);
-   // TestTimer->Start();
-
+   
 }
 
 /*
@@ -41,6 +40,7 @@ bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsi
     
     // Lock the mutex to prevemt multi thread race access to the send function.
     const std::lock_guard<std::mutex> lock(send_mutex);
+    if (!can_connected) return false;
 
     VSCAN_MSG msg;
     DWORD written;
@@ -60,6 +60,7 @@ bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsi
     // Prova ad inviare il dati
     if (VSCAN_Write(handle, &msg, 1, &written) != VSCAN_ERR_OK) return false;
     VSCAN_Flush(handle);
+    
 
     return true;
 }
@@ -94,7 +95,7 @@ void CanDriver::WndProc(System::Windows::Forms::Message% m)
 
 
     case CANOPEN_SDO_DISPATCH_MESSAGE:
-        Debug::WriteLine("CANOPEN SDO Dispatch Message!\n");
+        //Debug::WriteLine("CANOPEN SDO Dispatch Message!\n");
         break;
 
     case CANOPEN_BOOTUP_DISPATCH_MESSAGE:
@@ -131,21 +132,10 @@ void CanDriver::threadWork(void) {
     bool loopback = false;
     unsigned char BR = _CAN_1000K;
 
-    status = VSCAN_Ioctl(NULL, VSCAN_IOCTL_SET_DEBUG, VSCAN_DEBUG_LOW);
-
-    // Open the device
-    unsigned char modo = VSCAN_MODE_NORMAL;
-    if (loopback) {
-        modo = VSCAN_MODE_SELF_RECEPTION;
-        Debug::WriteLine("CAN DRIVER: SELF RECEPTION MODE");
-    }
-    else {
-        Debug::WriteLine("CAN DRIVER: NORMAL MODE");
-    }
-
+    status = VSCAN_Ioctl(NULL, VSCAN_IOCTL_SET_DEBUG, VSCAN_DEBUG_NONE);
     for (int i = 0; i < 5; i++) {
         Debug::WriteLine("CAN OPEN ATTEMPT: " + Convert::ToString(i));
-        handle = VSCAN_Open(VSCAN_FIRST_FOUND, modo);
+        handle = VSCAN_Open(VSCAN_FIRST_FOUND, VSCAN_MODE_NORMAL);
         if (handle > 0) break;
     }
 
@@ -211,8 +201,6 @@ void CanDriver::threadWork(void) {
     }
 
 
-    Debug::WriteLine("SET BAUDRATE TO: " + Convert::ToString(brstring.data()));
-
     // Set the Filter to accept all frames
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_SET_FILTER_MODE, VSCAN_FILTER_MODE_DUAL);
     if (status != VSCAN_ERR_OK) {
@@ -242,70 +230,69 @@ void CanDriver::threadWork(void) {
         Debug::WriteLine("VSCAN_IOCTL_SET_FILTER Command: " + Convert::ToString(cstring));
         return ;
     }
-
-    //VSCAN_Ioctl(NULL, VSCAN_IOCTL_SET_DEBUG_MODE, VSCAN_DEBUG_MODE_CONSOLE);
-    //VSCAN_Ioctl(NULL, VSCAN_IOCTL_SET_DEBUG, VSCAN_DEBUG_HIGH);
-
+    
+    VSCAN_Ioctl(handle, VSCAN_IOCTL_SET_BLOCKING_READ, VSCAN_IOCTL_ON);
+    
     Debug::WriteLine("VSCAN DRIVER READY");
     can_connected = true;
 
-
     while (1) {
-        //std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
-        VSCAN_Read(handle, rxmsgs, VSCAN_NUM_MESSAGES, &rxmsg);
+        
 
-        if (rxmsg) {
+       //std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
+        
+        // Blocking Read command
+        VSCAN_Read(handle, rxmsgs, VSCAN_NUM_MESSAGES, &rxmsg); 
+        if (!rxmsg) continue;
+           
 
-            for (int i = 0; i < (int)rxmsg; i++) {
-                rxCanId = rxmsgs[i].Id;                
-                for (int j = 0; j < rxmsgs[i].Size; j++) rxCanData[j] = rxmsgs[i].Data[j];
+        for (int i = 0; i < (int)rxmsg; i++) {
+            rxCanId = rxmsgs[i].Id;    
+               
+            for (int j = 0; j < rxmsgs[i].Size; j++) rxCanData[j] = rxmsgs[i].Data[j];
 
-                if ((rxCanId >= 0x100) && (rxCanId <= 0x13F)) {
-                    // Notifies the disconnection status
-                    canrx_device_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                    SendNotifyMessageA(can_hwnd, DEVICE_PROTOCOL_DISPATCH_MESSAGE, 0, 0);
-                    continue;
-                }
-                if ((rxCanId >= 0x580) && (rxCanId <= 0x5FF)) {
-                    // Notifies the disconnection status
-                    canrx_canopen_sdo_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                    SendNotifyMessageA(can_hwnd, CANOPEN_SDO_DISPATCH_MESSAGE, 0, 0);
-                    continue;
-                }
-                if ((rxCanId >= 0) && (rxCanId <= 0x7F)) {
-                    // Notifies the disconnection status
-                    canrx_canopen_nmt_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                    SendNotifyMessageA(can_hwnd, CANOPEN_NMT_DISPATCH_MESSAGE, 0, 0);
-                    continue;
-                }
-                if ((rxCanId >= 0x700) && (rxCanId <= 0x707)) {
-                    // Notifies the disconnection status
-                    canrx_canopen_bootup_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                    SendNotifyMessageA(can_hwnd, CANOPEN_BOOTUP_DISPATCH_MESSAGE, 0, 0);
-                    continue;
-                }
-                if (rxCanId == 0x80) {
-                    // Notifies the disconnection status
-                    canrx_canopen_sync_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                    SendNotifyMessageA(can_hwnd, CANOPEN_SYNC_DISPATCH_MESSAGE, 0, 0);
-                    continue;
-                }                
-                if ((rxCanId >= 0x81) && (rxCanId <= 0xFF)) {
-                    // Notifies the disconnection status
-                    canrx_canopen_emrg_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                    SendNotifyMessageA(can_hwnd, CANOPEN_EMERGENCY_DISPATCH_MESSAGE, 0, 0);
-                    continue;
-                }
-                if ((rxCanId >= 0x180) && (rxCanId <= 0x57F)) {
-                    // Notifies the disconnection status
-                    canrx_canopen_pdo_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                    SendNotifyMessageA(can_hwnd, CANOPEN_PDO_DISPATCH_MESSAGE, 0, 0);
-                    continue;
-                }
-
-
+            if ((rxCanId >= 0x100) && (rxCanId <= 0x13F)) {                
+                canrx_device_event(rxCanId, rxCanData, rxmsgs[i].Size);
+                SendNotifyMessageA(can_hwnd, DEVICE_PROTOCOL_DISPATCH_MESSAGE, 0, 0);
+                continue;
             }
+            if ((rxCanId >= 0x580) && (rxCanId <= 0x5FF)) {
+                stop = std::chrono::steady_clock::now();
+                dtempo = (stop - start).count();
+                start = std::chrono::steady_clock::now();
+                canrx_canopen_sdo_event(rxCanId, rxCanData, rxmsgs[i].Size);
+                SendNotifyMessageA(can_hwnd, CANOPEN_SDO_DISPATCH_MESSAGE, 0, 0);
+                continue;
+            }
+            if ((rxCanId >= 0) && (rxCanId <= 0x7F)) {
+                canrx_canopen_nmt_event(rxCanId, rxCanData, rxmsgs[i].Size);
+                SendNotifyMessageA(can_hwnd, CANOPEN_NMT_DISPATCH_MESSAGE, 0, 0);
+                continue;
+            }
+            if ((rxCanId >= 0x700) && (rxCanId <= 0x707)) {
+                canrx_canopen_bootup_event(rxCanId, rxCanData, rxmsgs[i].Size);
+                SendNotifyMessageA(can_hwnd, CANOPEN_BOOTUP_DISPATCH_MESSAGE, 0, 0);
+                continue;
+            }
+            if (rxCanId == 0x80) {                
+                canrx_canopen_sync_event(rxCanId, rxCanData, rxmsgs[i].Size);
+                SendNotifyMessageA(can_hwnd, CANOPEN_SYNC_DISPATCH_MESSAGE, 0, 0);
+                continue;
+            }                
+            if ((rxCanId >= 0x81) && (rxCanId <= 0xFF)) {
+                canrx_canopen_emrg_event(rxCanId, rxCanData, rxmsgs[i].Size);
+                SendNotifyMessageA(can_hwnd, CANOPEN_EMERGENCY_DISPATCH_MESSAGE, 0, 0);
+                continue;
+            }
+            if ((rxCanId >= 0x180) && (rxCanId <= 0x57F)) {
+                canrx_canopen_pdo_event(rxCanId, rxCanData, rxmsgs[i].Size);
+                SendNotifyMessageA(can_hwnd, CANOPEN_PDO_DISPATCH_MESSAGE, 0, 0);
+                continue;
+            }
+
+
         }
+        
 
 
     }

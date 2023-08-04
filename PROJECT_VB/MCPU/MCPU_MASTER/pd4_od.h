@@ -163,9 +163,13 @@ using namespace CANOPEN;
 
 // CiA Control Word & Status change flags
 #define OD_6040_00 0x6040, 0x00, Register::R2B
-#define OD_6040_00_SHUTDOWN                    0x0087, 0x0006
+#define OD_6040_00_SHUTDOWN_MASK                    0x0087
+#define OD_6040_00_SHUTDOWN_VAL                     0x0006
+#define OD_6040_00_SWITCHON_MASK                    0x008F
+#define OD_6040_00_SWITCHON_VAL                     0x0007
+
+
 #define OD_6040_00_QUICKSTOP                   0x0087, 0x0002
-#define OD_6040_00_SWITCHON                    0x008F, 0x0007
 #define OD_6040_00_DISVOLTAGE                  0x0082, 0x0000
 #define OD_6040_00_ENABLEOP                    0x008F, 0x000F
 #define OD_6040_00_DISABLEOP                   0x008F, 0x0007

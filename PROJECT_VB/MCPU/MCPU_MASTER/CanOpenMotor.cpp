@@ -4,117 +4,14 @@
 #include "pd4_od.h"
 #include <thread>
 
+
 using namespace CANOPEN;
 
 // Those defines SHALL be defined here!!!
 #define MOTOR_GEAR 452.8
 
 
-void CanOpenMotor::createObjectDictionary(void) {
-   DECLARE_INIT_REGISTER(OD_4013_01,1); // Hardware configuration : 1 = EXTERNAL VCC LOGIC ON
-    
-   // NMT Behavior in case of fault
-   DECLARE_INIT_REGISTER(OD_1029_01, 0);
-   DECLARE_INIT_REGISTER(OD_1029_02,1 );
-   DECLARE_INIT_REGISTER(OD_2031_00,5000 ); // Peak current
-   DECLARE_INIT_REGISTER(OD_2032_00, 5000); // Maximum Speed
-   DECLARE_INIT_REGISTER(OD_2033_00,0 );	// Plunger Block
-   DECLARE_INIT_REGISTER(OD_2034_00,51500 );// Upper Voltage Warning Level
-   DECLARE_INIT_REGISTER(OD_2035_00,21000 );// ****************************************Lower Voltage Warning Level
-   DECLARE_INIT_REGISTER(OD_2036_00,2000 ); 	// Open Loop Current Reduction Idle Time
-   DECLARE_INIT_REGISTER(OD_2037_00,(-50) );	// Open Loop Current Reduction Value/factor
-
-   // I2t Parameters
-   DECLARE_INIT_REGISTER(OD_203B_01,5000 );	// Nominal Current
-   DECLARE_INIT_REGISTER(OD_203B_02,1000 );	// Maximum Duration Of Peak Current
-   DECLARE_INIT_REGISTER(OD_203B_03,0 );	// Threshold
-   DECLARE_INIT_REGISTER(OD_203B_04,0 );	// CalcValue
-   DECLARE_INIT_REGISTER(OD_203B_05,5000 ); 	// LimitedCurrent
-   DECLARE_INIT_REGISTER(OD_2056_00,500 );	// Limit Switch Tolerance Band
-
-   // user units
-   DECLARE_INIT_REGISTER(OD_2061_00,1 );	// Velocity Numerator
-   DECLARE_INIT_REGISTER(OD_2062_00,SPEED_DENOMINATOR );  // Velocity Denominator        ***********************
-   DECLARE_INIT_REGISTER(OD_2063_00,1 );	// Acceleration Numerator
-   DECLARE_INIT_REGISTER(OD_2064_00,SPEED_DENOMINATOR ); 	// Acceleration Denominator    ***********************
-   DECLARE_INIT_REGISTER(OD_2065_00,1 );	// Jerk Numerator
-   DECLARE_INIT_REGISTER(OD_2066_00,60 );	// Jerk Denominator
-   DECLARE_INIT_REGISTER(OD_3202_00,9 ); 	// Motor Drive Submode Select: 6:BLDC 3:CurRed 2:Brake 1:VoS 0:CLOOP/OLOOP
-
-   // Motor Drive Sensor Display Closed Loop
-   DECLARE_INIT_REGISTER(OD_320B_01,0 );  // Commutation
-   DECLARE_INIT_REGISTER(OD_320B_02,0 );	// Torque
-   DECLARE_INIT_REGISTER(OD_320B_03,1 );	// Velocity
-   DECLARE_INIT_REGISTER(OD_320B_04,1 ); 	// Position
-
-   // Motor Drive Parameter Set
-   DECLARE_INIT_REGISTER(OD_3210_01,50000 ); // Position Loop, Proportional Gain (closed Loop)
-   DECLARE_INIT_REGISTER(OD_3210_02,10 );	 // Position Loop, Integral Gain (closed Loop)
-
-   // Analogue Inputs Control
-   DECLARE_INIT_REGISTER(OD_3221_00,0 );     // 0 , Voltage, 1, Current
-
-   // Digital Input Capture
-   DECLARE_INIT_REGISTER(OD_3241_01,0 );    // Control (0:off, 1:RE, 2:FE, 3:RE+FE)
-
-   // Following Error Option Code
-   DECLARE_INIT_REGISTER(OD_3700_00,(-1) ); // -1 No reaction;0 Immediate stop; 1 Braking with "slow down ramp"; 2 Braking with "quick stop ramp"
-        
-
-    // Quick Stop Option Code
-   DECLARE_INIT_REGISTER(OD_605A_00,2 );   // 0 Immediate stop  // 1 Braking with "slow down ramp"  // 2 Braking with "quick stop ramp"
-
-    // Shutdown Option Code
-   DECLARE_INIT_REGISTER(OD_605B_00,0 );   // 0 Immediate stop  // 1 Braking with "slow down ramp"
-
-    // Disable Option Code
-   DECLARE_INIT_REGISTER(OD_605C_00,0 );   // 0 Immediate stop  // 1 Braking with "slow down ramp"
-
-    // Halt Option Code
-   DECLARE_INIT_REGISTER(OD_605D_00,0 );  // 0 Immediate stop  // 1 Braking with "slow down ramp"  // 2 Braking with "quick stop ramp"
-
-    // Fault Option Code
-   DECLARE_INIT_REGISTER(OD_605E_00,0 );  // 0 Immediate stop  // 1 Braking with "slow down ramp"   // 2 Braking with "quick stop ramp"
-
-    // Following Error Window and time
-   DECLARE_INIT_REGISTER(OD_6065_00,256 ); 	// Window
-   DECLARE_INIT_REGISTER(OD_6066_00,100 );	// Time (ms)
-
-   // Position Window + time
-   DECLARE_INIT_REGISTER(OD_6067_00,10 );	// Window
-   DECLARE_INIT_REGISTER(OD_6068_00,100 );	// Time
-
-
-   // Position Range Limit
-   DECLARE_INIT_REGISTER(OD_607B_01,0 ); 	// Min Position Range Limit
-   DECLARE_INIT_REGISTER(OD_607B_02,0 );	// Max Position Range Limit
-
-   // Software Position Limit
-   DECLARE_INIT_REGISTER(OD_607D_01, convert_cGRAD_TO_EncoderUnit(-2700));	// Min Position Limit
-   DECLARE_INIT_REGISTER(OD_607D_02, convert_cGRAD_TO_EncoderUnit(2700) );	// Max Position Limit
-
-   // Polarity
-   DECLARE_INIT_REGISTER(OD_607E_00,0 );	// b7:1-> inverse rotaion
-
-
-   // Position Encoder Resolution: EncInc/MotRev
-   DECLARE_INIT_REGISTER(OD_608F_01,2000 );	// Encoder Increments
-   DECLARE_INIT_REGISTER(OD_608F_02,1 ); 	// Motor Revolutions
-   DECLARE_INIT_REGISTER(OD_60F2_00,0x0002 ); // Absolute positionning
-
-   // Gear Ratio
-   DECLARE_INIT_REGISTER(OD_6091_01,1 ); 	// Motor Revolutions
-   DECLARE_INIT_REGISTER(OD_6091_02,1 );	// Shaft Revolutions
-
-   // Max Absolute Acceleration and Deceleration
-   DECLARE_INIT_REGISTER(OD_60C5_00,5000 );// Max Acceleration
-   DECLARE_INIT_REGISTER(OD_60C6_00,5000 );// Max Deceleration
-
-   // Homing registers
-   DECLARE_INIT_REGISTER(OD_6098_00,21 );  // Homing method 21
-   DECLARE_INIT_REGISTER(OD_607C_00, 0);
-}
-
+/*
 void CanOpenMotor::createWorkingDictionary(void) {
     DECLARE_NOINIT_REGISTER(OD_6041_00); // CiA 402 status word
     DECLARE_NOINIT_REGISTER(OD_6040_00); // CiA Control Word & Status change flags
@@ -129,16 +26,7 @@ void CanOpenMotor::createWorkingDictionary(void) {
     DECLARE_NOINIT_REGISTER(OD_2700_04); // USER #2 - RESERVED FOR RESET SENSING
     
 }
-
-int CanOpenMotor::findOd(unsigned short index, unsigned short sub) {
-    if (object_dictionary->Count == 0) return -1;
-
-    for (int i = 0; i < object_dictionary->Count; i++) {
-        if ((object_dictionary[i]->index == index) && (object_dictionary[i]->subindex == sub)) return i;
-    }
-    return -1;
-
-}
+*/
 
 int CanOpenMotor::convert_cGRADsec_TO_ROT_min(int x) {
     return (int)((double) x * gear_ratio * (double) SPEED_DENOMINATOR / (double) 36000.);
@@ -152,7 +40,9 @@ int CanOpenMotor::convert_EncoderUnit_TO_cGRAD(int x) {
     return (int)((double) x * (double) 180.0 / (gear_ratio * (double) 10.));
 }
 
-CanOpenMotor::CanOpenMotor(unsigned char devid, double gear) {
+CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear) {
+    
+    debug = false;
 
     // Gets the handler of the class instance to be used for the Post/Send message functions.
     hwnd = static_cast<HWND>(Handle.ToPointer());    
@@ -163,18 +53,15 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, double gear) {
     error_class = 0;
     error_code = 0;
 
-    // Creates the Object dictionaries
-    object_dictionary = gcnew List<Register^> {};
-    createWorkingDictionary();
-    createObjectDictionary();
-    
-    // creates the event of a received frame
     rxSDOEvent = CreateEvent(
         NULL,               // default security attributes
         FALSE,              // Automatic reset after signaling
         FALSE,              // initial state is nonsignaled
-        TEXT("RxEvent")  // object name
+        motorname           // object name
     );
+
+    // The OD shall be initialized
+    od_initialized = false;
 
     // Creates the receiving register
     rxSdoRegister = gcnew Register();
@@ -183,11 +70,16 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, double gear) {
     // Add the callback handling the SDO reception
     CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
 
+    // Add the bootup handler
+    CanDriver::canrx_canopen_bootup_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_bootup_callback);
+
+
+    
+
     // Assignes the initial Cia status to undefined
     CiA_current_status = _CiA402Status::CiA402_Undefined;
 
-   
-
+  
     // Creates the Startup thread
     main_thread = gcnew Thread(gcnew ThreadStart(this, &CanOpenMotor::mainWorker));
     main_thread->Name = "Motor Worker" + Convert::ToString(device_id);
@@ -209,64 +101,91 @@ void CanOpenMotor::thread_canopen_rx_sdo_callback(unsigned short canid, unsigned
     // Checks the canId address
     if (canid != device_id + 0x580) return; // This frame is not a SDO or is not addressed to this device!
    
-    // Checks that the received Object registers matches with the expected
+    // Checks that the received Object registers matches with the expected    
     sdo_rx_pending = false;
     if(rxSdoRegister->validateSdo(data)) SetEvent(rxSDOEvent);    
     
+}
+
+void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned char* data, unsigned char len) {
+    // Be careful!! This call is runing into the program thread pull, out of the class thread.
+
+    // Checks the canId address
+    if (canid != device_id + 0x700) return; // This frame is not a SDO or is not addressed to this device!
+
+    od_initialized = false;
 }
 
 bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, unsigned char dim, int val) {
     unsigned char buffer[8];
     DWORD dwWaitResult;
 
-    
-    // Create the register to be received
-    rxSdoRegister = gcnew Register(index, sub, dim,val);
-    rxSdoRegister->cmd = Register::WRCMD;
-    rxSdoRegister->getWriteBuffer(buffer);
+    // Repeats five times before fail
+    for (int i = 0; i < 5; i++) {
 
-    // Activates the transmission
-    CanDriver::multithread_send(0x600 + device_id, buffer, 8);
-    sdo_rx_pending = true;
+        // Create the register to be received
+        rxSdoRegister = gcnew Register(index, sub, dim, val);
+        rxSdoRegister->cmd = Register::WRCMD;
+        rxSdoRegister->getWriteBuffer(buffer);
 
-    // Waits to be signalled: waits for 50ms
-    dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
-    sdo_rx_pending = false;
+        // Activates the transmission
+        CanDriver::multithread_send(0x600 + device_id, buffer, 8);
 
-    // Checks if the Event has been signalled or it is a timeout event.
-    if (dwWaitResult != WAIT_OBJECT_0)
-        return false;
-    if (!rxSdoRegister->valid)
-        return false;
+        sdo_rx_pending = true;
 
-    return true;
-   
+        // Waits to be signalled: waits for 50ms
+        dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+        sdo_rx_pending = false;
+
+
+        // Checks if the Event has been signalled or it is a timeout event.
+        if (dwWaitResult != WAIT_OBJECT_0)
+            continue;
+        if (!rxSdoRegister->valid)
+            continue;
+
+        return true;
+    }
+
+    return false;
 }
 
 bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, unsigned char dim) {
     unsigned char buffer[8];
     DWORD dwWaitResult;
 
-    // Create the register to be received
-    rxSdoRegister = gcnew Register(index, sub, dim);
-    rxSdoRegister->cmd = Register::RDCMD;
-    rxSdoRegister->getReadBuffer(buffer);
+    // Repeats five times before fail
+    for (int i = 0; i < 5; i++) {
 
-    // Activates the transmission
-    CanDriver::multithread_send(0x600 + device_id, buffer, 8);
-    sdo_rx_pending = true;
+        // Create the register to be received
+        rxSdoRegister = gcnew Register(index, sub, dim);
+        rxSdoRegister->cmd = Register::RDCMD;
+        rxSdoRegister->getReadBuffer(buffer);
 
-    // Waits to be signalled: waits for 50ms
-    dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
-    sdo_rx_pending = false;
+        // Activates the transmission
+        CanDriver::multithread_send(0x600 + device_id, buffer, 8);
+        sdo_rx_pending = true;
 
-    // Checks if the Event has been signalled or it is a timeout event.
-    if (dwWaitResult != WAIT_OBJECT_0) 
-        return false;
-    if (!rxSdoRegister->valid)
-        return false;
+        // Waits to be signalled: waits for 50ms
+        dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+        sdo_rx_pending = false;
+
+        // Checks if the Event has been signalled or it is a timeout event.
+        if (dwWaitResult != WAIT_OBJECT_0) {
+            Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: TMO");
+            continue;
+        }
+
+        if (!rxSdoRegister->valid) {
+            Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: INVALID");
+            continue;
+        }
+
+        return true;
+
+    }
     
-    return true;
+    return false;
 }
 
 
@@ -303,7 +222,7 @@ void CanOpenMotor::mainWorker(void) {
                 
         case _CiA402Status::CiA402_OperationEnabled: break;
        
-        case _CiA402Status::CiA402_Fault: break;
+        case _CiA402Status::CiA402_Fault: CiA402_FaultCallback();  break;
 
         }
     }
@@ -320,7 +239,7 @@ void CanOpenMotor::CiA402_SwitchOnDisabledCallback(void) {
     }
 
     // Read the Control Word
-    while (!blocking_readOD(OD_6040_00)) ;
+    if (!blocking_readOD(OD_6040_00)) return;
     
     // Set the shutdown value to run the status to Ready to Swithc On
     ctrlw = (unsigned int) rxSdoRegister->data;
@@ -328,8 +247,7 @@ void CanOpenMotor::CiA402_SwitchOnDisabledCallback(void) {
     ctrlw |= OD_6040_00_SHUTDOWN_VAL;
 
     // Sets the Ready To Switch On status
-    while (!blocking_writeOD(OD_6040_00, ctrlw));    
-    return;
+    blocking_writeOD(OD_6040_00, ctrlw);
 }
 
 void CanOpenMotor::CiA402_QuickStopActiveCallback(void) {
@@ -341,7 +259,7 @@ void CanOpenMotor::CiA402_QuickStopActiveCallback(void) {
     }
 
     // Read the Control Word
-    while (!blocking_readOD(OD_6040_00));
+    if (!blocking_readOD(OD_6040_00)) return;
 
     // Set the shutdown value to run the status to Ready to Swithc On
     ctrlw = (unsigned int)rxSdoRegister->data;
@@ -349,7 +267,7 @@ void CanOpenMotor::CiA402_QuickStopActiveCallback(void) {
     ctrlw |= OD_6040_00_SHUTDOWN_VAL;
 
     // Sets the Ready To Switch On status
-    while (!blocking_writeOD(OD_6040_00, ctrlw));
+    blocking_writeOD(OD_6040_00, ctrlw);
     return;
 }
 
@@ -363,7 +281,7 @@ void CanOpenMotor::CiA402_ReadyToSwitchOnCallback(void) {
     }
 
     // Read the Control Word
-    while (!blocking_readOD(OD_6040_00));
+    if (!blocking_readOD(OD_6040_00)) return;
 
     // Set the shutdown value to run the status to Switched-On
     ctrlw = (unsigned int)rxSdoRegister->data;
@@ -371,7 +289,7 @@ void CanOpenMotor::CiA402_ReadyToSwitchOnCallback(void) {
     ctrlw |= OD_6040_00_SWITCHON_VAL;
 
     // Sets the Switched-On status
-    while (!blocking_writeOD(OD_6040_00, ctrlw));
+    blocking_writeOD(OD_6040_00, ctrlw);
     return;
 }
 
@@ -382,9 +300,10 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
     if (CiA_current_status != _CiA402Status::CiA402_SwitchedOn) {
         CiA_current_status = _CiA402Status::CiA402_SwitchedOn;
         Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: SWITCHED-ON STATUS");
+
+        if (!od_initialized) od_initialized = initializeObjectDictionary();
     }
 
-    
     return;
 }
 
@@ -457,12 +376,12 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
     }
 
     // Read the error class register
-    while (!blocking_readOD(OD_1001_00)) ;
+    if (!blocking_readOD(OD_1001_00)) return;
     if (error_class != rxSdoRegister->data) data_changed = true;
     error_class = rxSdoRegister->data;
 
     // Read the error code register
-    while (!blocking_readOD(OD_1003_01));
+    if (!blocking_readOD(OD_1003_01)) return;
     if (error_code != rxSdoRegister->data) data_changed = true;
     error_code = rxSdoRegister->data;
 
@@ -479,13 +398,12 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
     }
 
     // Tries to reset the error condition
-    while (!blocking_readOD(OD_6040_00));
+    if (!blocking_readOD(OD_6040_00)) return;
     ctrlw = rxSdoRegister->data;
     ctrlw |= 0x80;
-    while (!blocking_writeOD(OD_6040_00, ctrlw));
+    if (!blocking_writeOD(OD_6040_00, ctrlw)) return;
     ctrlw &= ~0x80;
-    while (!blocking_writeOD(OD_6040_00, ctrlw));
-
+    if (!blocking_writeOD(OD_6040_00, ctrlw)) return;
 
     return;
 }
@@ -493,15 +411,115 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
 
 
 
-void CanOpenMotor::initializeState(void) {
-    unsigned char status = 0;
-
+bool CanOpenMotor::initializeObjectDictionary(void) {
     Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: INITIALIZATION");
 
-    // Read The Status word            
-    while (!blocking_readOD(OD_6041_00));
+    if(!blocking_writeOD(OD_4013_01,1)) return false; // Hardware configuration : 1 = EXTERNAL VCC LOGIC ON
+
+    // NMT Behavior in case of fault
+    if (!blocking_writeOD(OD_1029_01, 0)) return false;
+    if (!blocking_writeOD(OD_1029_02, 1)) return false;
+    if (!blocking_writeOD(OD_2031_00, 5000)) return false; // Peak current
+    if (!blocking_writeOD(OD_2032_00, 5000)) return false; // Maximum Speed
+    if (!blocking_writeOD(OD_2033_00, 0)) return false;	// Plunger Block
+    if (!blocking_writeOD(OD_2034_00, 51500)) return false;// Upper Voltage Warning Level
+    if (!blocking_writeOD(OD_2035_00, 21000)) return false;// ****************************************Lower Voltage Warning Level
+    if (!blocking_writeOD(OD_2036_00, 2000)) return false; 	// Open Loop Current Reduction Idle Time
+    if (!blocking_writeOD(OD_2037_00, -50)) return false;	// Open Loop Current Reduction Value/factor
+
+    // I2t Parameters
+    if (!blocking_writeOD(OD_203B_01, 5000)) return false;	// Nominal Current
+    if (!blocking_writeOD(OD_203B_02, 1000)) return false;	// Maximum Duration Of Peak Current
+    if (!blocking_writeOD(OD_203B_03, 0)) return false;	// Threshold
+    if (!blocking_writeOD(OD_203B_04, 0)) return false;	// CalcValue
+    if (!blocking_writeOD(OD_203B_05, 5000)) return false; 	// LimitedCurrent
+    if (!blocking_writeOD(OD_2056_00, 500)) return false;	// Limit Switch Tolerance Band
+
+    // user units
+    if (!blocking_writeOD(OD_2061_00, 1)) return false;	// Velocity Numerator
+    if (!blocking_writeOD(OD_2062_00, SPEED_DENOMINATOR)) return false;  // Velocity Denominator        ***********************
+    if (!blocking_writeOD(OD_2063_00, 1)) return false;	// Acceleration Numerator
+    if (!blocking_writeOD(OD_2064_00, SPEED_DENOMINATOR)) return false; 	// Acceleration Denominator    ***********************
+    if (!blocking_writeOD(OD_2065_00, 1)) return false;	// Jerk Numerator
+    if (!blocking_writeOD(OD_2066_00, 60)) return false;	// Jerk Denominator
+    if (!blocking_writeOD(OD_3202_00, 9)) return false; 	// Motor Drive Submode Select: 6:BLDC 3:CurRed 2:Brake 1:VoS 0:CLOOP/OLOOP
+
+    // Motor Drive Sensor Display Closed Loop
+    if (!blocking_writeOD(OD_320B_01, 0)) return false;  // Commutation
+    if (!blocking_writeOD(OD_320B_02, 0)) return false;	// Torque
+    if (!blocking_writeOD(OD_320B_03, 1)) return false;	// Velocity
+    if (!blocking_writeOD(OD_320B_04, 1)) return false; 	// Position
+
+    // Motor Drive Parameter Set
+    if (!blocking_writeOD(OD_3210_01, 50000)) return false; // Position Loop, Proportional Gain (closed Loop)
+    if (!blocking_writeOD(OD_3210_02, 10)) return false;	 // Position Loop, Integral Gain (closed Loop)
+
+    // Analogue Inputs Control
+    if (!blocking_writeOD(OD_3221_00, 0)) return false;     // 0 , Voltage, 1, Current
+
+    // Digital Input Capture
+    //while(!blocking_writeOD(OD_3241_01,0 ) return false;    // Control (0:off, 1:RE, 2:FE, 3:RE+FE)
 
 
+    // Following Error Option Code
+    if (!blocking_writeOD(OD_3700_00, (unsigned short)-1)) return false; // -1 No reaction;0 Immediate stop; 1 Braking with "slow down ramp"; 2 Braking with "quick stop ramp"
+
+
+    // Quick Stop Option Code
+    if (!blocking_writeOD(OD_605A_00, 2)) return false;   // 0 Immediate stop  // 1 Braking with "slow down ramp"  // 2 Braking with "quick stop ramp"
+
+    // Shutdown Option Code
+    if (!blocking_writeOD(OD_605B_00, 0)) return false;   // 0 Immediate stop  // 1 Braking with "slow down ramp"
+
+    // Disable Option Code
+    if (!blocking_writeOD(OD_605C_00, 0)) return false;   // 0 Immediate stop  // 1 Braking with "slow down ramp"
+
+    // Halt Option Code
+    if (!blocking_writeOD(OD_605D_00, 0)) return false;  // 0 Immediate stop  // 1 Braking with "slow down ramp"  // 2 Braking with "quick stop ramp"
+
+    // Fault Option Code
+    if (!blocking_writeOD(OD_605E_00, 0)) return false;  // 0 Immediate stop  // 1 Braking with "slow down ramp"   // 2 Braking with "quick stop ramp"
+
+    // Following Error Window and time
+    if (!blocking_writeOD(OD_6065_00, 256)) return false; 	// Window
+    if (!blocking_writeOD(OD_6066_00, 100)) return false;	// Time (ms)
+
+    // Position Window + time
+    if (!blocking_writeOD(OD_6067_00, 10)) return false;	// Window
+    if (!blocking_writeOD(OD_6068_00, 100)) return false;	// Time
+
+
+    // Position Range Limit
+    if (!blocking_writeOD(OD_607B_01, 0)) return false; 	// Min Position Range Limit
+    if (!blocking_writeOD(OD_607B_02, 0)) return false;	// Max Position Range Limit
+
+    // Software Position Limit
+    if (!blocking_writeOD(OD_607D_01, convert_cGRAD_TO_EncoderUnit(-2700))) return false;	// Min Position Limit
+    if (!blocking_writeOD(OD_607D_02, convert_cGRAD_TO_EncoderUnit(2700))) return false;	// Max Position Limit
+
+    // Polarity
+    if (!blocking_writeOD(OD_607E_00, 0)) return false;	// b7:1-> inverse rotaion
+
+
+    // Position Encoder Resolution: EncInc/MotRev
+    if (!blocking_writeOD(OD_608F_01, 2000)) return false;	// Encoder Increments
+    if (!blocking_writeOD(OD_608F_02, 1)) return false; 	// Motor Revolutions
+    if (!blocking_writeOD(OD_60F2_00, 0x0002)) return false;// Absolute positionning
+
+    // Gear Ratio
+    if (!blocking_writeOD(OD_6091_01, 1)) return false; 	// Motor Revolutions
+    if (!blocking_writeOD(OD_6091_02, 1)) return false;	// Shaft Revolutions
+
+    // Max Absolute Acceleration and Deceleration
+    if (!blocking_writeOD(OD_60C5_00, 5000)) return false;// Max Acceleration
+    if (!blocking_writeOD(OD_60C6_00, 5000)) return false;// Max Deceleration
+
+    // Homing registers
+    if (!blocking_writeOD(OD_6098_00, 21)) return false;  // Homing method 21
+    if (!blocking_writeOD(OD_607C_00, 0)) return false;
+    
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: INITIALIZED");
+    return true;
 }
 
 

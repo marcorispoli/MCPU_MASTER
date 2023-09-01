@@ -81,6 +81,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>

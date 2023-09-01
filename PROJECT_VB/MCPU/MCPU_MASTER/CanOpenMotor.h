@@ -12,8 +12,7 @@ namespace CANOPEN {
 			subindex = 0;
 			data_dim = 0;
 			data = 0;
-			valid = false;
-			default = false;
+			valid = false;			
 		}
 
 		/// <summary>
@@ -27,13 +26,12 @@ namespace CANOPEN {
 		/// <param name="subidx">sub index of the register</param>
 		/// <param name="dim">dimension of the data</param>
 		/// <param name="dt">default value</param>
-		Register(unsigned short idx, unsigned char sub, unsigned char dim, int dt) {
+		Register(unsigned short idx, unsigned char sub, unsigned char dim, unsigned int dt) {
 			index = idx;
 			subindex = sub;
 			data_dim = dim;
 			data = dt;
 			valid = false;
-			default = true;
 		}
 
 		/// <summary>
@@ -50,7 +48,6 @@ namespace CANOPEN {
 			subindex = sub;
 			data_dim = dim;
 			valid = false;
-			default = false;
 		}
 
 		bool getReadBuffer(unsigned char* buffer) {
@@ -77,26 +74,31 @@ namespace CANOPEN {
 			buffer[2] = (unsigned char)(index >> 8) & 0xFF;
 			buffer[3] = subindex;
 
-			int val = data;
-			buffer[4] = (unsigned char)(val & 0xFF); val = val >> 8;
-			buffer[5] = (unsigned char)(val & 0xFF); val = val >> 8;
-			buffer[6] = (unsigned char)(val & 0xFF); val = val >> 8;
-			buffer[7] = (unsigned char)(val & 0xFF);
+			unsigned int ival = data;
+			buffer[4] = (unsigned char)(ival & 0xFF); ival = ival >> 8;
+			buffer[5] = (unsigned char)(ival & 0xFF); ival = ival >> 8;
+			buffer[6] = (unsigned char)(ival & 0xFF); ival = ival >> 8;
+			buffer[7] = (unsigned char)(ival & 0xFF);
+
 			return true;
 
 		}
 
-		static inline unsigned char  getCmd(unsigned char* frame) { return frame[0] & 0xF0; }
-		static inline unsigned char  getDataDim(unsigned char* frame) { return frame[0] & 0x0F;}
-		static inline unsigned short getIdx(unsigned char* frame) { return frame[1] + 256 * frame[2]; }
-		static inline unsigned char  getSub(unsigned char* frame) { return frame[3] ; }
-		static inline			int  getVal(unsigned char* frame) { 
+		inline unsigned char  getCmd(unsigned char* frame) { return frame[0] & 0xF0; }
+	    inline unsigned char  getDataDim(unsigned char* frame) { return frame[0] & 0x0F;}
+		inline unsigned short getIdx(unsigned char* frame) { return frame[1] + 256 * frame[2]; }
+		inline unsigned char  getSub(unsigned char* frame) { return frame[3] ; }
+		inline unsigned int  getVal(unsigned char* frame) { 
+
 			switch (frame[0] & 0x0F) {
-			case R1B: return (int) frame[4];
-			case R2B: return (int) frame[4] + 256 * (int) frame[5];
-			case R3B: return (int)frame[4] + 0xFF * (int) frame[5] + 0xFFFF * (int) frame[6];
+			case R1B: 
+				return (unsigned int) frame[4];
+			case R2B: 
+				return ((unsigned int) frame[4] + 0x100 * (unsigned int) frame[5]);
+			case R3B: 				
+				return (unsigned int) frame[4] + 0x100 * (unsigned int) frame[5] + 0x10000 * (unsigned int) frame[6];
 			case R4B: 
-			case 0:return (int)frame[4] + 0xFF * (int)frame[5] + 0xFFFF * (int)frame[6] + +0xFFFFFF * (int)frame[7];
+				return (unsigned int)frame[4] + 0x100 * (unsigned int)frame[5] + 0x10000 * (unsigned int) frame[6] + 0x1000000 * (unsigned int) frame[7];
 			}
 			return 0;
 		}
@@ -104,22 +106,39 @@ namespace CANOPEN {
 		
 		bool validateSdo(unsigned char* frame) {
 
-			if (frame == nullptr) return false;
+			if (frame == nullptr) {
+				Debug::WriteLine("NULL");
+				return false;
+			}
 		
 			if (Register::getIdx(frame) != index) {
+				Debug::WriteLine("INVALID INDEX");
 				return false;
 			}
 			if (Register::getSub(frame) != subindex) {
+				Debug::WriteLine("INVALID SUB-INDEX");
 				return false;
 			}
 
 			if (cmd == RDCMD)  {
-				if (getCmd(frame) != RDANSW) return false;
-				if (Register::getDataDim(frame) != data_dim) return false;
+				if (getCmd(frame) != RDANSW) {	
+
+					String^ stringa = " ";
+					for (int i = 0; i < 8; i++) stringa += Convert::ToString(frame[i]) + " ";
+					Debug::WriteLine(stringa);
+					return false;
+				}
+				if (Register::getDataDim(frame) != data_dim) {
+					Debug::WriteLine("INVALID DATADIM");
+					return false;
+				}
 				
 			}
 			else {
-				if (getCmd(frame) != WRANSW) return false;
+				if (getCmd(frame) != WRANSW) {
+					Debug::WriteLine("WRANSW");
+					return false;
+				}
 			}
 
 			// The data is valid: fills the read SDO content into the register			
@@ -145,18 +164,18 @@ namespace CANOPEN {
 		unsigned char data_dim;
 		unsigned short index;
 		unsigned char subindex;
-		int  data;			//!< 4 Bytes data
-		int  default_data;	//!< 4 Bytes data
+		unsigned int  data;			//!< 4 Bytes data		
 		bool valid;
-		bool default;
-
+		
 	};
-
+	
 
 	ref class CanOpenMotor : public System::Windows::Forms::Form
 	{
 	public:
-		CanOpenMotor(unsigned char devid, double gear);
+		
+
+		CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
 
 		/// <summary>
 		/// This is the callback to be connected to the CANOPEN SDO reception event.
@@ -169,6 +188,9 @@ namespace CANOPEN {
 		/// <param name="data">Thi is the pointer to the received data frame (8 bytes max) </param>
 		/// <param name="len">This is the lenght of the buffer</param>
 		void thread_canopen_rx_sdo_callback(unsigned short canid, unsigned char* data, unsigned char len);
+		
+		void thread_canopen_bootup_callback(unsigned short canid, unsigned char* data, unsigned char len);
+
 		
 		/// <summary>
 		/// This function converts a speed from c_grad/s  to rotation/min,
@@ -199,58 +221,11 @@ namespace CANOPEN {
 
 
 	protected: 
-		
-		/// <summary>
-		/// This is the callback to be connected to the CANOPEN SDO reception event.
-		/// </summary>
-		/// <param name=""></param>
-		virtual void createObjectDictionary(void) ;
-		
-		/// <summary>
-		/// This add a register in the object dictionary that shall be initialized
-		/// at the startup.
-		/// 
-		/// </summary>
-		/// <param name="idx">register index</param>
-		/// <param name="sub">register sub-index</param>
-		/// <param name="dim">register register data dimension </param>
-		/// <param name="val">initialization value</param>
-		void DECLARE_INIT_REGISTER(unsigned short idx, unsigned char sub, unsigned char dim, int val) { object_dictionary->Add(gcnew Register(idx, sub, dim, val)); }
-		
-
-		/// <summary>
-		/// This add a register in the object dictionary that shall not be initialized
-		/// at the startup.
-		/// 
-		/// </summary>
-		/// <param name="idx">register index</param>
-		/// <param name="sub">register sub-index</param>
-		/// <param name="dim">register register data dimension </param>
-		void DECLARE_NOINIT_REGISTER(unsigned short idx, unsigned char sub, unsigned char dim) { object_dictionary->Add(gcnew Register(idx, sub, dim)); }
+		virtual bool initializeObjectDictionary(void);
+		bool od_initialized;
 
 	private:
-		/// <summary>
-		/// This function creates the list of working object dictionaries
-		/// that shall not initialized and shall be used to control the 
-		/// motor activation.
-		/// 
-		/// </summary>
-		/// <param name=""></param>
-		void createWorkingDictionary(void);
-
-		 
-		/// <summary>
-		/// This function returns the index of the register with the index and sub-index 
-		/// passed as arguments.
-		/// 
-		/// </summary>
-		/// <param name="index">Register Index Address</param>
-		/// <param name="sub">Register Sub-Index </param>
-		/// <returns>
-		/// + The index of register in the Object Dictionary array
-		/// + -1 in case of register not present </returns>
-		int findOd(unsigned short index, unsigned short sub);
-
+		
 		bool blocking_writeOD(unsigned short index, unsigned char sub, unsigned char dim, int val);
 		bool blocking_readOD(unsigned short index, unsigned char sub, unsigned char dim);
 		
@@ -282,18 +257,13 @@ namespace CANOPEN {
 
 		Thread^ main_thread;
 		void mainWorker(void);
-
-		void initializeState(void);
+		
 
 		HWND hwnd;
 		unsigned short device_id;
 		
 
-		
-		List<Register^>^ object_dictionary;
 		HANDLE rxSDOEvent; //!< Event object signaled by the SDO receiving callback
-		
-		
 		bool sdo_rx_pending; //!< A SDO reception fdata is pending 
 		Register^ rxSdoRegister; //!< SDO receiving data
 
@@ -302,6 +272,8 @@ namespace CANOPEN {
 		bool error_condition;
 		unsigned int error_class;
 		unsigned int error_code;
+
+		bool debug;
 	};
 
 };

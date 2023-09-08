@@ -22,6 +22,12 @@ CanDriver::CanDriver() {
     can_hwnd = static_cast<HWND>(Handle.ToPointer());
     can_connected = false;
 
+    error = false;
+    ErrorString ="";
+
+    warning = false;
+    WarningString = "";
+
     // Start the reception thread
     running_thread = gcnew Thread(gcnew ThreadStart(this, &CanDriver::threadWork));
     running_thread->Name = "Can Driver Thread";
@@ -140,7 +146,10 @@ void CanDriver::threadWork(void) {
     }
 
     if (handle <= 0) {
+        error = true;
+        ErrorString = "Can Driver Error: unable to open the driver.\n";
         VSCAN_GetErrorString((VSCAN_STATUS)handle, cstring, 32);
+        ErrorString += "Driver error: "+ gcnew String(cstring) + "\n";
         Debug::WriteLine("CAN DRIVER: NORMAL MODE: " + Convert::ToString(cstring));
         return ;
     }
@@ -151,7 +160,10 @@ void CanDriver::threadWork(void) {
     // Get the APi release code
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_GET_API_VERSION, &version);
     if (status != VSCAN_ERR_OK) {
+        error = true;
+        ErrorString = "Can Driver Error: unable to get the API revision.\n";
         VSCAN_GetErrorString(status, cstring, 32);
+        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
         Debug::WriteLine("Get Api Version Command: " + Convert::ToString(cstring));
         return ;
     }
@@ -162,19 +174,26 @@ void CanDriver::threadWork(void) {
     // Get Hardware release code
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_GET_HWPARAM, &hwparam);
     if (status != VSCAN_ERR_OK) {
+        error = true;
+        ErrorString = "Can Driver Error: unable to get the HW revision.\n";
         VSCAN_GetErrorString(status, cstring, 32);
+        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
         Debug::WriteLine("Get Hw Param Command: " + Convert::ToString(cstring));
         return ;
     }
 
-    unsigned char hwmaj = hwparam.HwVersion >> 4;
-    unsigned char hwmin = hwparam.HwVersion & 0x0F;
-    unsigned char swmaj = hwparam.SwVersion >> 4;
-    unsigned char swmin = hwparam.SwVersion & 0x0F;
+    apirev_maj = version.Major;
+    apirev_min = version.Minor;
+    apirev_sub = version.SubMinor;
+    hwrev_maj = hwparam.HwVersion >> 4;
+    hwrev_min = hwparam.HwVersion & 0x0F;
+    swrev_maj = hwparam.SwVersion >> 4;
+    swrev_min = hwparam.SwVersion & 0x0F;
 
+   
     Debug::WriteLine("VSCAN HARDWARE:  SN=" + Convert::ToString(hwparam.SerialNr) +
-        " HwREV=" + Convert::ToString(hwmaj) + "." + Convert::ToString(hwmin) +
-        " SwREV=" + Convert::ToString(swmaj) + "." + Convert::ToString(swmin) +
+        " HwREV=" + Convert::ToString(hwrev_maj) + "." + Convert::ToString(hwrev_min) +
+        " SwREV=" + Convert::ToString(swrev_maj) + "." + Convert::ToString(swrev_min) +
         " TYPE=" + Convert::ToString(hwparam.HwType));
 
     // Set Baudrate
@@ -195,7 +214,10 @@ void CanDriver::threadWork(void) {
     // Set Baudrate
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_SET_SPEED, br);
     if (status != VSCAN_ERR_OK) {
+        error = true;
+        ErrorString = "Can Driver Error: unable to set the Baud Rate.\n";
         VSCAN_GetErrorString(status, cstring, 32);
+        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
         Debug::WriteLine("Set Baudrate Command: " + Convert::ToString(cstring));
         return ;
     }
@@ -204,7 +226,10 @@ void CanDriver::threadWork(void) {
     // Set the Filter to accept all frames
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_SET_FILTER_MODE, VSCAN_FILTER_MODE_DUAL);
     if (status != VSCAN_ERR_OK) {
+        error = true;
+        ErrorString = "Can Driver Error: unable to set the Fiter mode.\n";
         VSCAN_GetErrorString(status, cstring, 32);
+        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
         Debug::WriteLine("VSCAN_IOCTL_SET_FILTER_MODE Command: " + Convert::ToString(cstring));
         return ;
     }
@@ -216,7 +241,10 @@ void CanDriver::threadWork(void) {
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_SET_ACC_CODE_MASK, &codeMask);
 
     if (status != VSCAN_ERR_OK) {
+        error = true;
+        ErrorString = "Can Driver Error: unable to set the Acceptance filter Mask.\n";
         VSCAN_GetErrorString(status, cstring, 32);
+        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
         Debug::WriteLine("Set Code And Mask Command: " + Convert::ToString(cstring));
         return ;
     }
@@ -226,7 +254,10 @@ void CanDriver::threadWork(void) {
     filter.Size = 0;
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_SET_FILTER, &filter);
     if (status != VSCAN_ERR_OK) {
+        error = true;
+        ErrorString = "Can Driver Error: unable to set the Acceptance filter Code.\n";
         VSCAN_GetErrorString(status, cstring, 32);
+        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
         Debug::WriteLine("VSCAN_IOCTL_SET_FILTER Command: " + Convert::ToString(cstring));
         return ;
     }

@@ -43,6 +43,7 @@ int CanOpenMotor::convert_EncoderUnit_TO_cGRAD(int x) {
 CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear) {
     
     debug = false;
+    internal_status = status_options::MOTOR_NOT_CONNECTED;
 
     // Gets the handler of the class instance to be used for the Post/Send message functions.
     hwnd = static_cast<HWND>(Handle.ToPointer());    
@@ -203,26 +204,31 @@ void CanOpenMotor::mainWorker(void) {
         }
 
         // Read the status word
-        if (!blocking_readOD(OD_6041_00)) continue;
+        if (!blocking_readOD(OD_6041_00)) {
+            internal_status = status_options::MOTOR_NOT_CONNECTED;
+            continue;
+        }
+
+        
 
         // Identifies what is the current ciA status of the motor 
         switch (getCiAStatus(rxSdoRegister->data)) {
         
-        case _CiA402Status::CiA402_Undefined: break;
-        case _CiA402Status::CiA402_NotReadyToSwitchOn:break; // Do nothing ... The motor handles internally this status
-        case _CiA402Status::CiA402_FaultReactionActive: break; // Do nothing ... The motor handles internally this status
+        case _CiA402Status::CiA402_Undefined: internal_status = status_options::MOTOR_NOT_CONNECTED;  break;
+        case _CiA402Status::CiA402_NotReadyToSwitchOn: internal_status = status_options::MOTOR_BUSY;  break; // Do nothing ... The motor handles internally this status
+        case _CiA402Status::CiA402_FaultReactionActive: internal_status = status_options::MOTOR_FAULT; break; // Do nothing ... The motor handles internally this status
+        
+        case _CiA402Status::CiA402_QuickStopActive:internal_status = status_options::MOTOR_BUSY; CiA402_QuickStopActiveCallback(); break;
 
-        case _CiA402Status::CiA402_QuickStopActive:CiA402_QuickStopActiveCallback(); break;
+        case _CiA402Status::CiA402_SwitchOnDisabled: internal_status = status_options::MOTOR_BUSY; CiA402_SwitchOnDisabledCallback();  break;
 
-        case _CiA402Status::CiA402_SwitchOnDisabled: CiA402_SwitchOnDisabledCallback();  break;
+        case _CiA402Status::CiA402_ReadyToSwitchOn: internal_status = status_options::MOTOR_BUSY; CiA402_ReadyToSwitchOnCallback();  break;
 
-        case _CiA402Status::CiA402_ReadyToSwitchOn: CiA402_ReadyToSwitchOnCallback();  break;
-
-        case _CiA402Status::CiA402_SwitchedOn:  CiA402_SwitchedOnCallback();  break;
+        case _CiA402Status::CiA402_SwitchedOn:  internal_status = status_options::MOTOR_READY; CiA402_SwitchedOnCallback();  break;
                 
-        case _CiA402Status::CiA402_OperationEnabled: break;
+        case _CiA402Status::CiA402_OperationEnabled: internal_status = status_options::MOTOR_BUSY; break;
        
-        case _CiA402Status::CiA402_Fault: CiA402_FaultCallback();  break;
+        case _CiA402Status::CiA402_Fault: CiA402_FaultCallback(); internal_status = status_options::MOTOR_FAULT; break;
 
         }
     }

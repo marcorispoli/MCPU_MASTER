@@ -64,30 +64,28 @@ public:
 	void gantryStatusChangeCallback(void);
 
 	/// This function shall be connected to the Compressor data change events
-	void compressorDataChangeCallback(void) ;
+	void compressorDataChangeCallback(void);
 
 	/// This function shall be connected to the system component's change events
 	void componentDataChangeCallback(void);
 
-	/// This function shall be connected to the operating status change event
-	void operatingStatusChangeCallback(void) {};
 
-
-	
 
 	/// This function shall be connected to the push button status change event
-	void xrayPushbuttonChangeCallback(void) {};
+	void xrayPushbuttonStatusChangeCallback(void);
 
 	/// This function shall be connected to the ready for exposure change event
 	void exposureReadyChangeCallback(void);
 
 	/// This function shall be connected to the xray completed event
-	void exposureSequenceCompletedCallback(void) {};
+	void exposureSequenceCompletedCallback(void);
 
 	/// This function shall be connected to the xray pulse completed event
 	void exposurePulseCompletedCallback(unsigned char npulse) {};
 
-	
+	/// This function shall be connected to the operating status change event
+	void operatingStatusChangeCallback(void) {};
+
 
 
 	/// @}
@@ -119,19 +117,19 @@ private:
 
 	TcpIpServerCLI^ event_server; //!< This is the event-server handler of the tcp/ip server implementation class
 	TcpIpServerCLI^ command_server;//!< This is the command-server handler of the tcp/ip server implementation class
-	
+
 	void command_rx_handler(array<Byte>^ buffer, int rc);//!< This is the command-server reception handler
 	void event_rx_handler(array<Byte>^ buffer, int rc);//!< This is the event-server reception handler
 
-	bool findNextParam(int* i, String^ sFrame, String^ %result, bool* completed);//!< This function finds the next item in a command frame
-	int decodeFrame(array<Byte>^ buffer, int size, aws_decoded_frame_t^ %pDecoded);//!< This function decodes an incoming buffer from the tcp/ip channel
+	bool findNextParam(int* i, String^ sFrame, String^% result, bool* completed);//!< This function finds the next item in a command frame
+	int decodeFrame(array<Byte>^ buffer, int size, aws_decoded_frame_t^% pDecoded);//!< This function decodes an incoming buffer from the tcp/ip channel
 	aws_decoded_frame_t^ pDecodedFrame;//!< This is the decoded command
 	unsigned short event_counter;//!< This is the sequence counter of the events
 
 	delegate void command_callback(void); //!< This is the delegate of the function pointer for the command execution functions
 	Dictionary<String^, command_callback^>^ commandExec; //!< This is the dictionary of the command that are implemented
-	
-	
+
+
 	void ackNa(void);//!< This is the Not Implemented command acknowledge function
 	void ackOk(void);	//!< This is the immediate command executed OK
 	void ackOk(List<String^>^ params);//!< This is the immediate command executed OK with parameters
@@ -146,15 +144,15 @@ private:
 	/// \defgroup awsProtoCommands AWS Protocol Command set
 	/// \ingroup awsModule
 	/// @{ 
-	
+
 	void EXEC_OpenStudy(void);
 	void EXEC_CloseStudy(void);
 
-	
+
 	void SET_ProjectionList(void);
-	void EXEC_ArmPosition(void) ;
-	void EXEC_AbortProjection(void) ;
-	void EXEC_TrxPosition(void) ;
+	void EXEC_ArmPosition(void);
+	void EXEC_AbortProjection(void);
+	void EXEC_TrxPosition(void);
 	void SET_TomoConfig(void);
 	void SET_ExposureMode(void);
 	void SET_ExposureData(void);
@@ -168,7 +166,7 @@ private:
 	void GET_Arm(void);
 	void GET_TubeTemperature(void);
 
-	void SET_Language(void) ;
+	void SET_Language(void);
 	void EXEC_PowerOff(void) { ackNa(); };
 	void AWS_NotRecognizedCommand(void) { ackNa(); };
 	/// @}
@@ -177,28 +175,28 @@ private:
 	/// \ingroup awsModule
 	/// @{ 
 	/// 
-	void EVENT_SelectProjection(String^ projname) ;
+	void EVENT_SelectProjection(String^ projname);
 	void EVENT_AbortProjection(void);
 	void EVENT_GantryStatus(String^ status);
 	void EVENT_Compressor(unsigned short thick, unsigned short force);
 	void EVENT_Components(String^ component, String^ paddle, String^ colli_component);
 	void EVENT_ReadyForExposure(bool ready, unsigned short code);
+	void EVENT_XrayPushButton(String^ status);
+	void EVENT_XraySequenceCompleted(String^ result,
+		double kv0, double mas0, String^ filter0,
+		double kv1, double mas1, String^ filter1,
+		double kv2, double mas2, String^ filter2,
+		double kv3, double mas3, String^ filter3);
 
 	/// @}
 
 	/*
-	virtual void EVENT_XrayPushButton(bool status) {};
-	virtual void EVENT_ReadyForExposure(bool ready, unsigned short code) {};
+
+
 	virtual void EVENT_XrayPulseCompleted(unsigned char pulse) {};
-	virtual void EVENT_XraySequenceCompleted(_xray_completed_status_e result, float kv0, float mAs0, _filter_table_e flt0,
-		float kv1 = 0, float mAs1 = 0, _filter_table_e flt1 = FILTER_NA,
-		float kv2 = 0, float mAs2 = 0, _filter_table_e flt2 = FILTER_NA,
-		float kv3 = 0, float mAs3 = 0, _filter_table_e flt3 = FILTER_NA,
-		float kv4 = 0, float mAs4 = 0, _filter_table_e flt4 = FILTER_NA) {};
 
-
-	
 	*/
 	/// @}
 };
+
 

@@ -1,14 +1,48 @@
 #pragma once
 
 #include <math.h>
+#include "ConfigFile.h"
 
-
+using namespace System;
+using namespace System::Collections::Generic;
 
 ref class GlobalObjects
 {
 public:
-    static Object^ pAws;
 
+    #define pCAN ((CanDriver^) GlobalObjects::pCan)
+    #define pFW301 ((CanDeviceProtocol^) GlobalObjects::pFw301)
+    #define pFW302 ((CanDeviceProtocol^) GlobalObjects::pFw302)
+    #define pFW303 ((CanDeviceProtocol^) GlobalObjects::pFw303)
+    #define pFW304 ((CanDeviceProtocol^) GlobalObjects::pFw304)
+    #define pFW315 ((CanDeviceProtocol^) GlobalObjects::pFw315)
+    #define pMBODY ((CanOpenMotor^) GlobalObjects::pMotBody)
+    #define pMTILT ((CanOpenMotor^) GlobalObjects::pMotTilt)
+    #define pMARM  ((CanOpenMotor^) GlobalObjects::pMotArm)
+    #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
+    #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
+
+    static Object^ pAws; //!< Pointer to the AWS interface
+    static Object^ pCan; //!< Pointer to the Can Driver
+
+    // Motor pointers
+    static Object^ pMotTilt; //!< Pointer to the Tilt Motor
+    static Object^ pMotArm;  //!< Pointer to the Arm Motor
+    static Object^ pMotBody; //!< Pointer to the Body Motor
+    static Object^ pMotShift; //!< Pointer to the Shift Motor
+    static Object^ pMotVert;//!< Pointer to the Up/Down Motor
+
+    static Object^ pFw301; //!< Pointer to the FW301 board
+    static Object^ pFw302; //!< Pointer to the FW302 board
+    static Object^ pFw303; //!< Pointer to the FW303 board
+    static Object^ pFw304; //!< Pointer to the FW304 board
+    static Object^ pFw315; //!< Pointer to the FW315 board
+
+    // Monitor coordinates
+    static int monitor_X0;//!< Pointer to the Monitor X0 position
+    static int monitor_Y0;//!< Pointer to the Monitor Y0 position
+    
+    
 };
 
 /// <summary>
@@ -50,6 +84,7 @@ namespace GantryStatusRegisters {
 
     delegate void delegate_void_callback(void); //!< This is the delegate of the function with a void as parameter();
     delegate void delegate_string_callback(String^ str); //!< This is the delegate of the function with a string as parameter();
+    delegate void delegate_int_callback(int i); //!< This is the delegate of the function with an integer as parameter();
     delegate void delegate_activation_completed(unsigned short id, int error);//!< This is the delegate of the activation_completed_event();
 
     template <class T>
@@ -67,7 +102,7 @@ namespace GantryStatusRegisters {
         /// 
         /// </summary>
         /// <param name="tagsvar"></param>
-        enumType(const array<String^>^ %tagsvar) {
+        enumType(const array<String^>^% tagsvar) {
             array_tags = tagsvar;
             enum_code = T::UNDEF;
             list_code = gcnew List<T> {};
@@ -86,7 +121,7 @@ namespace GantryStatusRegisters {
         event delegate_void_callback^ lista_change_event;
 
         /// <summary>
-        /// Retusrns the String tag from the enum code
+        /// Returns the String tag from the enum code
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -107,7 +142,7 @@ namespace GantryStatusRegisters {
         /// </summary>
         /// <param name=""></param>
         /// <returns>the value of the Tag </returns>
-        String^ getTag(void) { return array_tags[(int) enum_code]; }
+        String^ getTag(void) { return array_tags[(int)enum_code]; }
 
         /// <summary>
         /// This function verifies if  a string is part of the enumearation tags
@@ -140,16 +175,16 @@ namespace GantryStatusRegisters {
                 if (enum_code != T::UNDEF) {
                     enum_code = T::UNDEF;
                     value_change_event();
-                }                
+                }
                 return false;
             }
 
             // Rises an event in case of changes
-            if(val != enum_code){
+            if (val != enum_code) {
                 enum_code = val;
                 value_change_event();
             }
-            
+
             return true;
         }
 
@@ -181,7 +216,7 @@ namespace GantryStatusRegisters {
         bool clearCode(void) {
             return setCode(T::UNDEF);
         }
-        
+
         /// <summary>
         /// This function verifies if the string is part of the list of items T
         /// 
@@ -190,11 +225,11 @@ namespace GantryStatusRegisters {
         /// <returns>true if the string is in the internal list</returns>
         bool isPresent(String^ s) {
             for (int i = 0; i < (int)list_code->Count; i++) {
-                if (array_tags[(int) list_code[i]] == s) return true;
+                if (array_tags[(int)list_code[i]] == s) return true;
             }
             return false;
         }
-        
+
         /// <summary>
         /// This function return the Tag string of an item  in the list
         /// </summary>
@@ -204,7 +239,7 @@ namespace GantryStatusRegisters {
             if (i >= list_code->Count) return "";
             return array_tags[(int)list_code[i]];
         }
-        
+
         /// <summary>
         /// This function returns the count elements of the internal list
         /// </summary>
@@ -212,7 +247,7 @@ namespace GantryStatusRegisters {
         /// <returns></returns>
         int Count(void) { return list_code->Count; }
 
-        
+
         /// <summary>
         /// This function set the list of the enumerations.
         /// 
@@ -226,13 +261,13 @@ namespace GantryStatusRegisters {
 
             // Checks the items in the list
             for (int i = 0; i < l->Count; i++) {
-                if (indexOf(l[i]) <0 ) return false;                
+                if (indexOf(l[i]) < 0) return false;
             }
 
             // Updates the list
             list_code->Clear();
             for (int i = 0; i < l->Count; i++) {
-                list_code->Add((T) indexOf(l[i]));
+                list_code->Add((T)indexOf(l[i]));
             }
 
             lista_change_event();
@@ -240,7 +275,7 @@ namespace GantryStatusRegisters {
         }
 
         void inline clearList(void) { list_code->Clear(); }
-       
+
     private:
         T enum_code;
         List<T>^ list_code;
@@ -340,7 +375,7 @@ namespace GantryStatusRegisters {
         enumType<options>^ Value = gcnew enumType<options>(tags);
 
     };
-    
+
     /// <summary>
     /// This class handles the exposure type status.
     ///     
@@ -515,11 +550,11 @@ namespace GantryStatusRegisters {
     };
 
 
-    
 
-    
 
-   
+
+
+
     /// <summary>
     /// This class handles the Xray Push Button activation 
     /// status and activities
@@ -531,20 +566,32 @@ namespace GantryStatusRegisters {
 
 
         ///  Definition of the xray push button enable status
-        enum class options {
+        enum class enable_options {
             XRAYPUSH_DISABLED = 0, //!< XRAY Push Button is enabled
             XRAYPUSH_ENABLED = 1,//!< XRAY Push Button is disabled
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  {"OFF", "ON",  "UNDEF"}; //!< Definition of the register tags
 
-        static inline bool isEnabled(void) { return Value->getCode() == options::XRAYPUSH_ENABLED; }
-        static inline bool isDisabled(void) { return Value->getCode() != options::XRAYPUSH_ENABLED; }
-        static inline bool setEnable(void) { return Value->setCode(options::XRAYPUSH_ENABLED) ; }
-        static inline bool setDisable() { return Value->setCode(options::XRAYPUSH_DISABLED); }
+        ///  Definition of the xray push button current status
+        enum class activation_options {
+            XRAYPUSH_RELEASED = 0,//!< XRAY Push Button is released
+            XRAYPUSH_PRESSED = 1, //!< XRAY Push Button is pressed
+            LEN,
+            UNDEF = LEN
+        };
 
-        static enumType<options>^ Value = gcnew enumType<options>(tags);
+        static const array<String^>^ tags = gcnew array<String^>  {"OFF", "ON", "UNDEF"}; //!< Definition of the register tags
+
+        static inline bool isEnabled(void) { return enableStatus->getCode() == enable_options::XRAYPUSH_ENABLED; }
+        static inline bool isDisabled(void) { return enableStatus->getCode() != enable_options::XRAYPUSH_ENABLED; }
+        static inline bool setEnable(void) { return enableStatus->setCode(enable_options::XRAYPUSH_ENABLED); }
+        static inline bool setDisable(void) { return enableStatus->setCode(enable_options::XRAYPUSH_DISABLED); }
+        static inline void setPressed(void) { activationStatus->setCode(activation_options::XRAYPUSH_PRESSED); }
+        static inline void setReleased(void) { activationStatus->setCode(activation_options::XRAYPUSH_RELEASED); }
+
+        static enumType<enable_options>^ enableStatus = gcnew enumType<enable_options>(tags);
+        static enumType<activation_options>^ activationStatus = gcnew enumType<activation_options>(tags);
 
     };
 
@@ -595,7 +642,7 @@ namespace GantryStatusRegisters {
         };
         static const array<String^>^ tags_seq = gcnew array<String^>  { "N", "I", "W", "SW", "UNDEF" }; //!< This is the sequence option-tags static array
 
-       
+
 
         /// <summary>
         /// This event is generated whenver the status of the register is changed.
@@ -616,13 +663,13 @@ namespace GantryStatusRegisters {
         /// <returns> tue if the confid + seqid exists</returns>
         static bool select(String^ conftag, String^ seqtag) {
             int i;
-            
+
             options_conf curconf = confid;
             options_seq curseq = seqid;
 
             for (i = 0; i < (int)options_conf::LEN; i++) {
-                if (conftag == tags_conf[i]) { 
-                    confid = (options_conf) i;
+                if (conftag == tags_conf[i]) {
+                    confid = (options_conf)i;
                     break;
                 }
             }
@@ -637,9 +684,9 @@ namespace GantryStatusRegisters {
                     seqid = (options_seq)i;
 
                     // In case of change, calls the delegate
-                    if( (confid != curconf) || (seqid != curseq))
+                    if ((confid != curconf) || (seqid != curseq))
                         selection_change_event();
-                    
+
                     return true;
                 }
             }
@@ -649,7 +696,7 @@ namespace GantryStatusRegisters {
             return false;
 
         }
-       
+
         /// <summary>
         /// This function returns the Tomo Configuration file name
         /// </summary>
@@ -669,7 +716,7 @@ namespace GantryStatusRegisters {
         /// </summary>
         /// <param name=""></param>
         /// <returns>true if a valid configuration is selected</returns>
-        static inline bool isValid(void) { return ( (confid != options_conf::UNDEF) && (seqid != options_seq::UNDEF) ); }
+        static inline bool isValid(void) { return ((confid != options_conf::UNDEF) && (seqid != options_seq::UNDEF)); }
 
         /// <summary>
         /// This function returns the Home position of a selected configuration
@@ -747,7 +794,7 @@ namespace GantryStatusRegisters {
     /// </summary>
     ref class OperatingStatusRegister {
     public:
-       
+
         /// <summary>
         /// This is the enumeration option code 
         /// </summary>
@@ -761,7 +808,7 @@ namespace GantryStatusRegisters {
         };
         static const array<String^>^ tags = gcnew array<String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
 
-        
+
         /// <summary>
         /// This event is generated whenver the status of the register is changed.
         /// 
@@ -769,7 +816,7 @@ namespace GantryStatusRegisters {
         /// </summary>
         static event delegate_void_callback^ operating_status_change_event;
 
-        
+
         static String^ getPatientName(void) { return patientName; }
 
         static bool setOpenStudy(String^ patient_name) {
@@ -779,7 +826,7 @@ namespace GantryStatusRegisters {
             operating_status_change_event();
             return true;
         }
-        
+
         static bool setCloseStudy(void) {
             if (operating_status != options::GANTRY_OPEN_STUDY) return false;
             operating_status = options::GANTRY_IDLE;
@@ -803,18 +850,18 @@ namespace GantryStatusRegisters {
         }
 
 
-        static String^ getStatus(void) { return tags[(int) operating_status]; }
+        static String^ getStatus(void) { return tags[(int)operating_status]; }
         static bool isSERVICE(void) { return (operating_status == options::GANTRY_SERVICE); }
         static bool isIDLE(void) { return (operating_status == options::GANTRY_IDLE); }
         static bool isOPEN(void) { return (operating_status == options::GANTRY_OPEN_STUDY); }
         static bool isCLOSE(void) { return isIDLE(); }
-  
-private:
+
+    private:
         static options operating_status = options::GANTRY_IDLE; //!< This is the register option-code 
         static String^ patientName = "";
     };
 
-    
+
 
     /// <summary>
     /// This register handle the Component that can be used during the exposure
@@ -855,10 +902,10 @@ private:
         };
         static const array<String^>^ tags = gcnew array<String^> { "PROTECTION_2D", "SHIFTED_PROTECTION", "LEAD_SCREEN", "SPECIMEN", "COLLI_COMPONENT_UNDETECTED" };//!< This is the option-tags static array
         static enumType<options>^ Value = gcnew enumType<options>(tags);
-      
+
     };
 
-    
+
 
     /// <summary>
     /// This is the register handling the compression force and thickness.
@@ -867,7 +914,7 @@ private:
     /// </summary>
     ref class CompressorRegister {
     public:
-       
+
 
         /// <summary>
         /// This event is generated when the force changes
@@ -935,7 +982,7 @@ private:
         static unsigned short breast_thickness = 0;  //!< Compressed breast thickness in mm
         static unsigned short compression_force = 0; //!< Compression force in N
         static PaddleOption^ paddle = gcnew PaddleOption;
-        
+
     };
 
 
@@ -956,8 +1003,8 @@ private:
     };
 
 
-    
-   
+
+
 
     /// <summary>
     /// This class handles the exposure type status.
@@ -1006,13 +1053,13 @@ private:
         /// </summary>
         /// <param name="projection">Tag of the requested projection</param>
         static void projectionRequest(String^ projection) {
-            
+
             // Checks if the projection actually is in the available list
             if (!projections->Value->isPresent(projection)) return;
             projection_request_event(projection);
         }
 
-        
+
 
         /// <summary>
         /// This event is generated whenever a projection request command is called.
@@ -1039,7 +1086,7 @@ private:
             abort_projection_request_event();
         }
 
-        
+
         /// <summary>
         /// This event is generated whenver the arm target is changed.
         /// 
@@ -1054,7 +1101,7 @@ private:
         /// Usage: ArmStatusRegister::validate_change_event += gcnew delegate_void_callback(&some_class, some_class::func)
         /// </summary>
         static event delegate_void_callback^ validate_change_event;
-        
+
         /// <summary>
         /// This method validates or invalidates the Arm parameters.
         /// 
@@ -1064,8 +1111,8 @@ private:
         /// 
         /// </summary>
         /// <param name="stat"></param>
-        static void validate(bool stat) {             
-            
+        static void validate(bool stat) {
+
             if (position_validated != stat) {
                 position_validated = stat;
                 validate_change_event();
@@ -1080,7 +1127,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>true if the Arm is executing a command</returns>
-        static bool isBusy(void) { return executing; }       
+        static bool isBusy(void) { return executing; }
 
         /// <summary>
         /// This funtion returns the current data valid flag.
@@ -1089,7 +1136,7 @@ private:
         /// <param name=""></param>
         /// <returns>true if the Arm data are valid</returns>
         static bool isValid(void) { return position_validated; }
-        
+
         /// <summary>
         /// This function set the new target for the Arm position.
         /// 
@@ -1110,7 +1157,7 @@ private:
             if (pos > 180) return false;
             if (pos < -180) return false;
             if ((pos > high) || (pos < low)) return false;
-            if (projections->Value->indexOf(proj) <0 ) return false;
+            if (projections->Value->indexOf(proj) < 0) return false;
 
             // Assignes the projection
             projections->Value->setCode(proj);
@@ -1120,13 +1167,13 @@ private:
             position_target = pos;
             allowed_low = low;
             allowed_high = high;
-            
+
             // Verifies if the target is changed
             if (pos == current_angle) {
                 executing_id = 0;
                 return true;
             }
-            
+
             // If the target is changed, a Arm activation command should be invoked
             executing_id = id;
             executing = true;
@@ -1135,7 +1182,7 @@ private:
             target_change_event();
             return true;
         }
-        
+
 
         /// <summary>
         /// This event is generated whenver the arm position is updated.
@@ -1180,7 +1227,7 @@ private:
             unsigned short  id = executing_id;
             executing_id = 0;
 
-            updateCurrentPosition( angle );
+            updateCurrentPosition(angle);
             activation_completed_event(id, error);
 
         }
@@ -1253,7 +1300,7 @@ private:
         static inline ProjectionOptions^ getProjections() { return projections; }
 
     private:
-        
+
 
         static bool         position_validated = false; //!< Validation status
         static int          position_target = 0;        //!< Validated target position
@@ -1264,11 +1311,11 @@ private:
         static bool         executing = false;          //!< Command is in execution
         static unsigned short  executing_id = 0;        //!< AWS command Id
         static ProjectionOptions^ projections = gcnew ProjectionOptions;  //!< This is the current selected projection
-        
-       
+
+
     };
 
-    
+
     /// <summary>
     /// This class handles the Trx motorization
     /// 
@@ -1281,7 +1328,7 @@ private:
         /// <summary>
         /// This is the enumeration of the possible Trx target positions
         /// </summary>
-        enum class options {
+        enum class target_options {
             TRX_SCOUT = 0, //!< TRX in scout position
             TRX_BP_R,       //!< TRX in Biopsy Right position
             TRX_BP_L,       //!< TRX in Biopsy Left position
@@ -1290,9 +1337,9 @@ private:
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEX"}; //!< This is the tags array
+        static const array<String^>^ tags = gcnew array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEF"}; //!< This is the tags array
         static array<int>^ targets = gcnew array<int> {0, 1500, -1500, 2700, -2700, 0 }; //!< This is the current value of the target angles
-     
+
 
         /// <summary>
         /// This event is generated whenver the trx target is changed.
@@ -1318,37 +1365,37 @@ private:
         /// <param name="tg">this is the target option code</param>
         /// <param name="id">this is the aws command identifier</param>
         /// <returns>true if the target is successfully set</returns>
-        static bool setTarget(options tg, int id) {
+        static bool setTarget(target_options tg, int id) {
             if (executing) return false;
-            if (tg >=  options::LEN) return false;
+            if (tg >= target_options::LEN) return false;
 
             switch (tg) {
-            case options::TRX_SCOUT:
+            case target_options::TRX_SCOUT:
                 target_angle = 0;
                 break;
-            case options::TRX_BP_R:
+            case target_options::TRX_BP_R:
                 target_angle = 1500;
                 break;
-            case options::TRX_BP_L:
+            case target_options::TRX_BP_L:
                 target_angle = -1500;
                 break;
-            case options::TRX_TOMO_H:
+            case target_options::TRX_TOMO_H:
                 if (!TomoConfigRegister::isValid()) return false;
                 target_angle = TomoConfigRegister::getTomoHome();
                 break;
-            case options::TRX_TOMO_E:
+            case target_options::TRX_TOMO_E:
                 if (!TomoConfigRegister::isValid()) return false;
                 target_angle = TomoConfigRegister::getTomoEnd();
                 break;
 
             }
-            
-            if (abs(current_angle-target_angle) >= sensitivity) {
+
+            if (abs(current_angle - target_angle) >= sensitivity) {
                 executing_id = id;
                 executing = true;
-                target_change_event();                
+                target_change_event();
             }
-            
+
             return true;
         }
 
@@ -1365,15 +1412,15 @@ private:
         static bool setTarget(String^ tag, int id) {
             if (executing) return false;
 
-            for (int i = 0; i < (int) options::LEN; i++) {
+            for (int i = 0; i < (int)target_options::LEN; i++) {
                 if (tags[i] == tag) {
-                    return setTarget((options)i, id);
+                    return setTarget((target_options)i, id);
                 }
             }
             return false;
         }
 
-        
+
 
         /// <summary>
         /// This event is generated whenver the trx position is updated.
@@ -1397,7 +1444,7 @@ private:
             current_angle = angle;
             if (abs(last_val_signaled - angle) >= sensitivity) {
                 last_val_signaled = angle;
-                position_change_event();                
+                position_change_event();
             }
         }
 
@@ -1411,21 +1458,21 @@ private:
             return target_angle;
         }
 
-         /// <summary>
-         /// This function returns the code related to the angle 
-         /// based on the targets currently set.
-         /// 
-         /// </summary>
-         /// <param name="angle">This is the requested angle</param>
-         /// <returns>The target option corresponding to the target angle angle</returns>
-        static options getTargetCode(void) {
+        /// <summary>
+        /// This function returns the code related to the angle 
+        /// based on the targets currently set.
+        /// 
+        /// </summary>
+        /// <param name="angle">This is the requested angle</param>
+        /// <returns>The target option corresponding to the target angle angle</returns>
+        static target_options getTargetCode(void) {
 
-            for (int i = 0; i < (int)options::LEN; i++) {
+            for (int i = 0; i < (int)target_options::LEN; i++) {
                 if (abs(target_angle - targets[i]) < sensitivity) {
-                    return (options)i;
+                    return (target_options)i;
                 }
             }
-            return options::UNDEF;
+            return target_options::UNDEF;
         }
 
         /// <summary>
@@ -1455,14 +1502,14 @@ private:
          /// </summary>
          /// <param name="angle">This is the requested angle</param>
          /// <returns>The target corresponding to the angle</returns>
-        static options getCurrentCode(void) {
+        static target_options getCurrentCode(void) {
 
-            for (int i = 0; i < (int)options::LEN; i++) {
+            for (int i = 0; i < (int)target_options::LEN; i++) {
                 if (abs(current_angle - targets[i]) < sensitivity) {
-                    return (options)i;
+                    return (target_options)i;
                 }
             }
-            return options::UNDEF;
+            return target_options::UNDEF;
         }
 
         /// <summary>
@@ -1476,7 +1523,7 @@ private:
             return tags[(int)getCurrentCode()];
         }
 
-               
+
 
         /// <summary>
         /// This event is generated whenver the trx completes an activation!
@@ -1504,35 +1551,15 @@ private:
             activation_completed_event(id, error);
 
         }
-    private:        
+    private:
         static int      target_angle = 0;    //!< This is the Trx target position in 0.01° units          
-        static int      current_angle = 0 ;  //! The Trx angle in 0.01° units
+        static int      current_angle = 0;  //! The Trx angle in 0.01° units
         static bool     executing = false;                //!< Command is in execution
         static unsigned short  executing_id = 0;              //!< AWS command Id
         static int sensitivity = 50; //!< Sets the maximum difference from current_ange and position_target 
     };
 
-    
-    /// <summary>
-    /// This class implements the XRAY completed status register.
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class ExposureCompletedOptions {
-    public:
 
-
-        ///  Definition of the register enumeration codes        
-        enum class options {
-            XRAY_COMPLETED_OK = 0, //!< XRAY sequence successfully completed
-            XRAY_COMPLETED_PARTIAL_DOSE = 1,//!< XRAY sequence partially completed
-            XRAY_COMPLETED_NO_DOSE = 2,//!< XRAY sequence aborted without dose
-            LEN,
-            UNDEF = LEN
-        };
-        static const array<String^>^ tags = gcnew array<String^>  {"OK", "PARTIAL", "NOK", "UNDEF"}; //!< Definition of the register tags        
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-    };
 
     /// <summary>
     /// Internal class uses to group the exposure data pulses
@@ -1540,6 +1567,7 @@ private:
     /// </summary>
     ref class exposurePulse {
     public:
+
 
         /// <summary>
         /// This function sets the pulse exposure data content
@@ -1550,18 +1578,18 @@ private:
         /// <param name="kV">kV value of the next exposure pulse [20:640] </param>
         /// <param name="mAs">mAs value of the next exposure pulse [0:640] </param>
         /// <returns>true if data are accepted</returns>
-        bool set(double kV, double mAs, String^ filter_tag) {
-            if ((kV > 49.0) || (kV < 20.0)) return false;
-            if ((mAs > 640) || (mAs < 0)) return false;
+        bool set(double kv, double mas, String^ filter_tag) {
+            if ((kv > 49.0) || (kv < 20.0)) return false;
+            if ((mas > 640) || (mas < 0)) return false;
 
             // The pulse shall be consumed before to reuse it.
             if (validated) return false;
 
             // Assignes the filter
             if (!filter->Value->setCode(filter_tag)) return false;
-            
-            kV = kV;// Assignes the kV
-            mAs = mAs;// Assignes the mAs
+
+            kV = kv;// Assignes the kV
+            mAs = mas;// Assignes the mAs
             validated = true;
             return true;
         }
@@ -1577,7 +1605,7 @@ private:
         /// <param name="mAs">mAs value of the next exposure pulse [0:640] </param>
         /// <returns>true if data are accepted</returns>
         bool set(double kV, double mAs, FilterOptions::options filter_code) {
-            return set(kV, mAs, filter->Value->ToTag((int) filter_code));            
+            return set(kV, mAs, filter->Value->ToTag((int)filter_code));
         }
 
         /// <summary>
@@ -1592,6 +1620,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         exposurePulse(void) {
+
 
             // The handle of the filter selection is created
             filter = gcnew FilterOptions;
@@ -1632,6 +1661,28 @@ private:
         bool   validated; //!< This is the flag that validate the use of thhis pulse in a sequence
     };
 
+    /// <summary>
+    /// This class implements the XRAY completed status register.
+    /// 
+    /// \ingroup globalModule 
+    /// </summary>
+    ref class ExposureCompletedOptions {
+    public:
+
+
+        ///  Definition of the register enumeration codes        
+        enum class options {
+            XRAY_COMPLETED_OK = 0, //!< XRAY sequence successfully completed
+            XRAY_COMPLETED_PARTIAL_DOSE = 1,//!< XRAY sequence partially completed
+            XRAY_COMPLETED_NO_DOSE = 2,//!< XRAY sequence aborted without dose
+            LEN,
+            UNDEF = LEN
+        };
+        static const array<String^>^ tags = gcnew array<String^>  {"OK", "PARTIAL", "NOK", "UNDEF"}; //!< Definition of the register tags        
+        enumType<options>^ Value = gcnew enumType<options>(tags);
+
+        static array<exposurePulse^>^ exposed_pulses = nullptr;
+    };
 
     /// <summary>
     /// This register handle the Exposure pulse data info.
@@ -1642,11 +1693,47 @@ private:
     ref class ExposureDataRegister {
     public:
 
+        /// <summary>
+        /// This event is generated when the value changes
+        ///        
+        /// </summary>
+        static event delegate_void_callback^ exposure_completed_event;
+
         static inline ExposureCompletedOptions^ getExposureComplete(void) { return exposure_complete; }
         static inline exposurePulse^ getPulse(int i) { if (i < pulses->Length) return pulses[i]; else return nullptr; }
+        static inline void setExposurePartial(ExposureCompletedOptions::options, double kV, double mAs, FilterOptions::options filter_code) {
+            exposure_complete->exposed_pulses = pulses;
+            for (int i = 0; i < 4; i++) {
+                if (exposure_complete->exposed_pulses[3 - i]->isValid()) {
+                    exposure_complete->exposed_pulses[3 - i]->set(kV, mAs, filter_code);
+                    break;
+                }
+            }
+            clear();
+            exposure_complete->Value->setCode(ExposureCompletedOptions::options::XRAY_COMPLETED_PARTIAL_DOSE);
+            exposure_completed_event();
+        }
+        static inline void setExposureCompleted(void) {
+            exposure_complete->exposed_pulses = pulses;
+            clear();
+            exposure_complete->Value->setCode(ExposureCompletedOptions::options::XRAY_COMPLETED_OK);
+            exposure_completed_event();
+
+        }
+        static inline void setExposureNoDose(void) {
+            exposure_complete->exposed_pulses = nullptr;
+            clear();
+            exposure_complete->Value->setCode(ExposureCompletedOptions::options::XRAY_COMPLETED_NO_DOSE);
+            exposure_completed_event();
+        }
+
+
+        static inline void clear(void) {
+            pulses = gcnew array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};
+        }
 
     private:
-        static array<exposurePulse^>^ pulses = gcnew array<exposurePulse^>{gcnew exposurePulse, gcnew exposurePulse, gcnew exposurePulse, gcnew exposurePulse};//!< Stores the array of data pulses
+        static array<exposurePulse^>^ pulses = gcnew array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};//!< Stores the array of data pulses
         static ExposureCompletedOptions^ exposure_complete = gcnew ExposureCompletedOptions;
     };
 
@@ -1663,7 +1750,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         /// <returns>Anode Hu in % respect the maximum</returns>
-        static unsigned char getAnode(void){ return anodeHu;}
+        static unsigned char getAnode(void) { return anodeHu; }
 
         /// <summary>
         /// This function returns the cumulated bulb's heat
@@ -1688,14 +1775,14 @@ private:
         /// <returns>Number of available exposures</returns>
         static unsigned short getExposures(void) { return availableExposure; }
 
-    private:
+
         static unsigned char  anodeHu = 0;     //!< Cumulated Anode HU %
         static unsigned char  bulbHeat = 0;    //!< Cumulated Bulb Heat %
         static unsigned char  statorHeat = 0;  //!< Cumulated Stator Heat %
         static unsigned short availableExposure = 0xFFFF; //!< Estimated number of available exposure 
     };
 
-   
+
     /// <summary>
     /// This class handles the Interface language
     /// 
@@ -1718,7 +1805,7 @@ private:
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "ITA", "FRA", "ENG", "PRT","RUS","ESP","LTU","UNDEF"}; //!< This is the option-tags static array
+        static const array<String^>^ tags = gcnew array<String^>  { "ITA", "FRA", "ENG", "PRT", "RUS", "ESP", "LTU", "UNDEF"}; //!< This is the option-tags static array
         static enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
@@ -1793,7 +1880,7 @@ private:
         /// </summary>
         /// <param name=""></param>
         static unsigned short evaluateReadyForExposure(void) {
-            bool initial_status = ((unsigned short)code == 0);
+            options initial_status = code;
 
             unsigned short notready = 0;
             if (ErrorRegister::isError()) notready |= (unsigned short)options::SYSTEM_ERROR;
@@ -1826,10 +1913,10 @@ private:
             if (!ExposureDataRegister::getPulse(0)->isValid()) notready |= (unsigned short)options::MISSING_VALID_EXPOSURE_DATA;
 
             if (XrayPushButtonRegister::isDisabled()) notready |= (unsigned short)options::XRAY_PUSHBUTTON_DISABLED;
-            
-            code = (options) notready;
 
-            if (((unsigned short)code == 0) != initial_status) ready_change_event();
+            code = (options)notready;
+
+            if (code != initial_status) ready_change_event();
 
             return (unsigned short)code;
         }
@@ -1844,5 +1931,4 @@ private:
 
 
 
-    
-   
+

@@ -26,7 +26,22 @@ public:
 
     static bool multithread_send(unsigned short canId, unsigned char* data, unsigned char len);
     static inline bool isConnected(void) { return can_connected; }
-    protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;//!< This is the function handling the Window's messages
+
+    inline bool isError(void) { return error; }
+    inline bool isWarning(void) { return warning; }
+    inline String^ getErrorString(void) { return ErrorString; }
+    inline String^ getWarningString(void) { return WarningString; }
+
+protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;//!< This is the function handling the Window's messages
+
+public :
+    int apirev_maj;
+    int apirev_min;
+    int apirev_sub;
+    int hwrev_maj;
+    int hwrev_min;
+    int swrev_maj;
+    int swrev_min;
 
 private:
     Thread^ running_thread;
@@ -34,6 +49,13 @@ private:
     HWND can_hwnd;
     static bool can_connected;
 
+    bool error;
+    String^ ErrorString;
+
+    bool warning;
+    String^ WarningString;
     
+    
+
 };
 

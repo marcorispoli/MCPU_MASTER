@@ -12,7 +12,7 @@
 #include "gantry_global_status.h"
 #include "TcpIpServerCLI.h"
 #include "awsProtocol.h"
-#include "Form1.h"
+#include "MainForm.h"
 #include "CanDriver.h"
 
 

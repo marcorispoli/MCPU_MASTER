@@ -174,7 +174,20 @@ namespace CANOPEN {
 	{
 	public:
 		
+		enum class  status_options {
+			MOTOR_NOT_CONNECTED = 0,
+			MOTOR_CONFIGURATION,
+			MOTOR_READY,
+			MOTOR_BUSY,
+			MOTOR_FAULT
+		};
+		static const array<String^>^ status_tags = gcnew array<String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
+		private:status_options internal_status;
+	public: inline String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
+	public: inline status_options getInternalStatus(void) { return internal_status; }
 
+
+	public:
 		CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
 
 		/// <summary>
@@ -269,6 +282,7 @@ namespace CANOPEN {
 
 
 		double gear_ratio; //!< This is the ratio from the motor axe and the load axe
+		
 		bool error_condition;
 		unsigned int error_class;
 		unsigned int error_code;
@@ -276,4 +290,4 @@ namespace CANOPEN {
 		bool debug;
 	};
 
-};
+}; 

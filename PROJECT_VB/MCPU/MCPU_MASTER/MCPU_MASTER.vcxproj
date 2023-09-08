@@ -136,24 +136,29 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="awsProtocol.h" />
+    <ClInclude Include="CanDeviceProtocol.h" />
     <ClInclude Include="CanDriver.h" />
     <ClInclude Include="CanOpenMotor.h" />
-    <ClInclude Include="Form1.h">
+    <ClInclude Include="ConfigFile.h" />
+    <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="gantry_global_status.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pd4_od.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SystemConfig.h" />
     <ClInclude Include="TcpIpServerCLI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="awsProtocol.cpp" />
+    <ClCompile Include="CanDeviceProtocol.cpp" />
     <ClCompile Include="CanDriver.cpp" />
     <ClCompile Include="CanOpenMotor.cpp" />
+    <ClCompile Include="ConfigFile.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
-    <ClCompile Include="Form1.cpp" />
+    <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -179,8 +184,8 @@
     <None Include="DOC\mcpu_master_doxy" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.h</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

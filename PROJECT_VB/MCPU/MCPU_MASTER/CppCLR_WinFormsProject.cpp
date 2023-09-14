@@ -33,7 +33,7 @@ int main()
 	  H = Screen::AllScreens[i]->Bounds.Height;
 	  W = Screen::AllScreens[i]->Bounds.Width;
 	  
-	  if (W == 1400) {
+	  if (W == 600) {
 		  GlobalObjects::monitor_X0 = Screen::AllScreens[i]->Bounds.Left;
 		  GlobalObjects::monitor_Y0 = Screen::AllScreens[i]->Bounds.Top;
 		  Debug::WriteLine("SELECTED MONITOR: X0 = " + GlobalObjects::monitor_X0.ToString() + ", Y0 = " + GlobalObjects::monitor_Y0.ToString());

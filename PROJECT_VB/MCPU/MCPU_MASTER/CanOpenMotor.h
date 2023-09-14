@@ -4,6 +4,12 @@ namespace CANOPEN {
 
 	#define SPEED_DENOMINATOR       120
 
+	static const unsigned char TILT_ID = 0x3;
+	static const unsigned char ARM_ID = 0x4;
+	static const unsigned char SLIDE_ID = 0x5;
+	static const unsigned char BODY_ID = 0x6;
+	static const unsigned char VERTICAL_ID = 0x7;
+
 	ref class Register {
 	public:
 
@@ -105,6 +111,7 @@ namespace CANOPEN {
 
 		
 		bool validateSdo(unsigned char* frame) {
+			valid = false;
 
 			if (frame == nullptr) {
 				Debug::WriteLine("NULL");
@@ -183,9 +190,13 @@ namespace CANOPEN {
 		};
 		static const array<String^>^ status_tags = gcnew array<String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
 		private:status_options internal_status;
-	public: inline String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
-	public: inline status_options getInternalStatus(void) { return internal_status; }
-
+		public: inline String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
+		public: inline status_options getInternalStatus(void) { return internal_status; }
+		
+		public: bool activateConfiguration(void);
+		public: inline bool isConfigurating(void) { return configuration_command; }
+		public: inline bool isODConfigured(void) { return od_initialized; }
+		public: inline bool isNanojConfigured(void) { return nanoj_initialized; }
 
 	public:
 		CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
@@ -236,12 +247,19 @@ namespace CANOPEN {
 	protected: 
 		virtual bool initializeObjectDictionary(void);
 		bool od_initialized;
+		void setNanoJPtr(const unsigned char* ptr, int size) { pNanoj = ptr; nanojSize = size; }
+		bool nanoj_initialized;
 
 	private:
 		
+		// CanOpen protocol commands
 		bool blocking_writeOD(unsigned short index, unsigned char sub, unsigned char dim, int val);
-		bool blocking_readOD(unsigned short index, unsigned char sub, unsigned char dim);
+		void write_resetNode(void);
+		bool blocking_readOD(unsigned short index, unsigned char sub, unsigned char dim);		
 		
+		bool initNanojDataRegister(void);
+		bool nanojWrite1024Block(int index, int size);
+
 		enum class _CiA402Status {
 			CiA402_NotReadyToSwitchOn = 0,
 			CiA402_SwitchOnDisabled,
@@ -273,13 +291,16 @@ namespace CANOPEN {
 		
 
 		HWND hwnd;
-		unsigned short device_id;
-		
+		unsigned char device_id;
+		bool configuration_command;
 
 		HANDLE rxSDOEvent; //!< Event object signaled by the SDO receiving callback
 		bool sdo_rx_pending; //!< A SDO reception fdata is pending 
+		bool nanoj_rx_pending; //!< A SDO reception fdata is pending 
 		Register^ rxSdoRegister; //!< SDO receiving data
-
+		
+		unsigned char rxNanojAck;
+		bool rxNanojAckValid;
 
 		double gear_ratio; //!< This is the ratio from the motor axe and the load axe
 		
@@ -287,7 +308,9 @@ namespace CANOPEN {
 		unsigned int error_class;
 		unsigned int error_code;
 
-		bool debug;
+		const unsigned char* pNanoj;
+		int nanojSize; 
+		bool uploadNanojProgram(void);
 	};
 
 }; 

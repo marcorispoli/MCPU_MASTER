@@ -149,6 +149,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SystemConfig.h" />
     <ClInclude Include="TcpIpServerCLI.h" />
+    <ClInclude Include="TiltMotor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -166,6 +167,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TcpIpServerCLI.cpp" />
+    <ClCompile Include="TiltMotor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />

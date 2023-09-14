@@ -74,7 +74,7 @@ using namespace CANOPEN;
 #define VMM_WRITE 0x12
 
 #define OD_1F50_02  0x1F50, 0x02 ,Register::R4B   // VMM FLASH DATA CONTENT:
-//#define OD_1F50_02_INIT  0x1F50, 0x02 ,canOpenDictionary::INIT_BLOCK_TRANSFER   // VMM FLASH DATA CONTENT:
+#define OD_1F50_02_INIT 0x20     // VMM FLASH DATA CONTENT:
 
 #define OD_1F57_02  0x1F57, 0x02 ,Register::R4B  // VMM FLASH STATUS:
 #define OD_1029_01  0x1029, 0x01 ,Register::R1B // NMT Behavior in case of fault

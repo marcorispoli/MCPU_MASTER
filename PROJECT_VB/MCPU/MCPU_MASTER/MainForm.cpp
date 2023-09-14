@@ -2,6 +2,7 @@
 #include "MainForm.h"
 #include "SystemConfig.h"
 #include "CanOpenMotor.h"
+#include "TiltMotor.h"
 #include "CanDeviceProtocol.h"
 
 using namespace CppCLRWinFormsProject;
@@ -57,6 +58,10 @@ void MainForm::MainFormInitialize(void) {
 	startupCompleted = false;
 	startupError = false;
 
+	// Init of the Global operating status
+	GantryStatusRegisters::OperatingStatusRegister::setStartup();
+
+	// Start the startup session
 	startupTimer = gcnew System::Timers::Timer(100);
 	startupTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &MainForm::onStartupTimeout);
 	startupTimer->Start();
@@ -277,27 +282,199 @@ bool MainForm::Startup_MotorBody(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorBodyActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Body initialization ..\n";
-		GlobalObjects::pMotBody = gcnew CanOpenMotor(0x6, L"MOTOR_BODY", 453.2);
+		GlobalObjects::pMotBody = gcnew CanOpenMotor(CANOPEN::BODY_ID, L"MOTOR_BODY", 453.2);
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (pFW315->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
-			labelPcb315Activity->Text = "CONFIGURATION ..";
-			StartupLogMessages->Text += "> pcb315 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + pFW315->getBootStatus() + ", REV:" + pFW315->getBootRevision();
-			StartupLogMessages->Text += " APP:" + pFW315->getAppRevision();
-			StartupLogMessages->Text += "\n";
-			startupSubFase++;
-		}
+		if (!pMBODY->activateConfiguration()) break;
+
+		labelMotorBodyActivity->Text = "CONFIGURATION ..";
+		StartupLogMessages->Text += "> motor body status:" + pMBODY->getInternalStatusStr();
+		StartupLogMessages->Text += "\n";
+		startupSubFase++;
 		break;
 
-	case 2: // Wait the connection and configuration		
-		if (pFW315->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb315Activity->Text = "CONNECTED AND RUNNING";
-			labelPcb315Activity->ForeColor = Color::LightGreen;
+	case 2: // Wait the connection and configuration
+		if (pMBODY->isConfigurating()) break;
+		if ((!pMBODY->isODConfigured()) || (!pMBODY->isNanojConfigured())) {
+			startupError = true;
+			labelMotorBodyActivity->Text = "CONFIGURATION ERROR";
+			labelMotorBodyActivity->ForeColor = Color::Red;
+
+			if (!pMBODY->isODConfigured()) StartupErrorMessages->Text += "> Motor Body Object Dictionary initialization Failed\n";
+			if (!pMBODY->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Body Nanoj initialization Failed\n";
 			return true;
 		}
+		
+		labelMotorBodyActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorBodyActivity->ForeColor = Color::LightGreen;
+		return true;
+		
+		break;
+
+	}
+	return false;
+}
+
+bool MainForm::Startup_MotorTilt(void) {
+	switch (startupSubFase) {
+
+	case 0: // Creates the Body Motor controller process
+		labelMotorTiltActivity->Text = "CONNECTION ..";
+		StartupLogMessages->Text += "> Motor Tilt initialization ..\n";
+		GlobalObjects::pMotTilt = gcnew TiltMotor(CANOPEN::TILT_ID);
+		startupSubFase++;
+		break;
+
+	case 1: // Wait the connection and configuration
+		if (!pMTILT->activateConfiguration()) break;
+
+		labelMotorTiltActivity->Text = "CONFIGURATION ..";
+		StartupLogMessages->Text += "> Motor Tilt status:" + pMTILT->getInternalStatusStr();
+		StartupLogMessages->Text += "\n";
+		startupSubFase++;
+		break;
+
+	case 2: // Wait the connection and configuration
+		if (pMTILT->isConfigurating()) break;
+		if ( (!pMTILT->isODConfigured()) || (!pMTILT->isNanojConfigured())) {
+			startupError = true;
+			labelMotorTiltActivity->Text = "CONFIGURATION ERROR";
+			labelMotorTiltActivity->ForeColor = Color::Red;
+
+			if(!pMTILT->isODConfigured()) StartupErrorMessages->Text += "> Motor Tilt Object Dictionary initialization Failed\n";
+			if (!pMTILT->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Tilt Nanoj initialization Failed\n";
+			return true;
+		}
+
+		labelMotorTiltActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorTiltActivity->ForeColor = Color::LightGreen;
+		return true;
+
+		break;
+
+	}
+	return false;
+}
+
+
+bool MainForm::Startup_MotorArm(void) {
+	switch (startupSubFase) {
+
+	case 0: // Creates the Body Motor controller process
+		labelMotorArmActivity->Text = "CONNECTION ..";
+		StartupLogMessages->Text += "> Motor Arm initialization ..\n";
+		GlobalObjects::pMotArm = gcnew CanOpenMotor(CANOPEN::ARM_ID, L"MOTOR_ARM", 453.2);
+		startupSubFase++;
+		break;
+
+	case 1: // Wait the connection and configuration
+		if (!pMARM->activateConfiguration()) break;
+
+		labelMotorArmActivity->Text = "CONFIGURATION ..";
+		StartupLogMessages->Text += "> Motor Arm status:" + pMARM->getInternalStatusStr();
+		StartupLogMessages->Text += "\n";
+		startupSubFase++;
+		break;
+
+	case 2: // Wait the connection and configuration
+		if (pMARM->isConfigurating()) break;
+		if ((!pMARM->isODConfigured()) || (!pMARM->isNanojConfigured())) {
+			startupError = true;
+			labelMotorArmActivity->Text = "CONFIGURATION ERROR";
+			labelMotorArmActivity->ForeColor = Color::Red;
+
+			if (!pMARM->isODConfigured()) StartupErrorMessages->Text += "> Motor Arm Object Dictionary initialization Failed\n";
+			if (!pMARM->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Arm Nanoj initialization Failed\n";
+			return true;
+		}
+
+		labelMotorArmActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorArmActivity->ForeColor = Color::LightGreen;
+		return true;
+
+		break;
+
+	}
+	return false;
+}
+
+bool MainForm::Startup_MotorShift(void) {
+	switch (startupSubFase) {
+
+	case 0: // Creates the Body Motor controller process
+		labelMotorShiftActivity->Text = "CONNECTION ..";
+		StartupLogMessages->Text += "> Motor Shift initialization ..\n";
+		GlobalObjects::pMotShift = gcnew CanOpenMotor(0x5, L"MOTOR_SHIFT", 453.2);
+		startupSubFase++;
+		break;
+
+	case 1: // Wait the connection and configuration
+		if (!pMSHIFT->activateConfiguration()) break;
+
+		labelMotorShiftActivity->Text = "CONFIGURATION ..";
+		StartupLogMessages->Text += "> Motor Shift status:" + pMSHIFT->getInternalStatusStr();
+		StartupLogMessages->Text += "\n";
+		startupSubFase++;
+		break;
+
+	case 2: // Wait the connection and configuration
+		if (pMSHIFT->isConfigurating()) break;
+		if ((!pMSHIFT->isODConfigured()) || (!pMSHIFT->isNanojConfigured())) {
+			startupError = true;
+			labelMotorShiftActivity->Text = "CONFIGURATION ERROR";
+			labelMotorShiftActivity->ForeColor = Color::Red;
+
+			if (!pMSHIFT->isODConfigured()) StartupErrorMessages->Text += "> Motor Shift Object Dictionary initialization Failed\n";
+			if (!pMSHIFT->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Shift Nanoj initialization Failed\n";
+			return true;
+		}
+
+		labelMotorShiftActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorShiftActivity->ForeColor = Color::LightGreen;
+		return true;
+
+		break;
+
+	}
+	return false;
+}
+
+bool MainForm::Startup_MotorVertical(void) {
+	switch (startupSubFase) {
+
+	case 0: // Creates the Body Motor controller process
+		labelMotorUpDownActivity->Text = "CONNECTION ..";
+		StartupLogMessages->Text += "> Motor Up/Down initialization ..\n";
+		GlobalObjects::pMotVert = gcnew CanOpenMotor(0x7, L"MOTOR_VERTICAL", 453.2);
+		startupSubFase++;
+		break;
+
+	case 1: // Wait the connection and configuration
+		if (!pMVERT->activateConfiguration()) break;
+
+		labelMotorUpDownActivity->Text = "CONFIGURATION ..";
+		StartupLogMessages->Text += "> Motor Up/Down status:" + pMVERT->getInternalStatusStr();
+		StartupLogMessages->Text += "\n";
+		startupSubFase++;
+		break;
+
+	case 2: // Wait the connection and configuration
+		if (pMVERT->isConfigurating()) break;
+		if ((!pMVERT->isODConfigured()) || (!pMVERT->isNanojConfigured())) {
+			startupError = true;
+			labelMotorUpDownActivity->Text = "CONFIGURATION ERROR";
+			labelMotorUpDownActivity->ForeColor = Color::Red;
+
+			if (!pMVERT->isODConfigured()) StartupErrorMessages->Text += "> Motor UpDown Object Dictionary initialization Failed\n";
+			if (!pMVERT->isNanojConfigured()) StartupErrorMessages->Text += "> Motor UpDown Nanoj initialization Failed\n";
+			return true;
+		}
+
+		labelMotorUpDownActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorUpDownActivity->ForeColor = Color::LightGreen;
+		return true;
 
 		break;
 
@@ -324,6 +501,11 @@ void MainForm::StartupProcedure(void) {
 	case 3: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
 	case 4: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
 	case 5: if (Startup_PCB315()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
+	case 6: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 7: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 8: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 9: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 10: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 
 
 	}

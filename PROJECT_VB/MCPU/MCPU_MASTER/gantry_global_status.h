@@ -17,7 +17,7 @@ public:
     #define pFW304 ((CanDeviceProtocol^) GlobalObjects::pFw304)
     #define pFW315 ((CanDeviceProtocol^) GlobalObjects::pFw315)
     #define pMBODY ((CanOpenMotor^) GlobalObjects::pMotBody)
-    #define pMTILT ((CanOpenMotor^) GlobalObjects::pMotTilt)
+    #define pMTILT ((TiltMotor^) GlobalObjects::pMotTilt)
     #define pMARM  ((CanOpenMotor^) GlobalObjects::pMotArm)
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
     #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
@@ -849,6 +849,13 @@ namespace GantryStatusRegisters {
             return true;
         }
 
+        static bool setStartup(void) {
+            if (operating_status != options::GANTRY_STARTUP) return false;
+            operating_status = options::GANTRY_STARTUP;
+            operating_status_change_event();
+            return true;
+        }
+
 
         static String^ getStatus(void) { return tags[(int)operating_status]; }
         static bool isSERVICE(void) { return (operating_status == options::GANTRY_SERVICE); }
@@ -857,7 +864,7 @@ namespace GantryStatusRegisters {
         static bool isCLOSE(void) { return isIDLE(); }
 
     private:
-        static options operating_status = options::GANTRY_IDLE; //!< This is the register option-code 
+        static options operating_status = options::GANTRY_STARTUP; //!< This is the register option-code 
         static String^ patientName = "";
     };
 

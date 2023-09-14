@@ -1,6 +1,4 @@
 #include "pch.h"
-#include "CanOpenMotor.h"
-#include "CanDriver.h"
 #include "pd4_od.h"
 #include <thread>
 
@@ -9,6 +7,11 @@ using namespace CANOPEN;
 
 // Those defines SHALL be defined here!!!
 #define MOTOR_GEAR 452.8
+
+#define VMM_CTRL_OD OD_1F51_02
+#define VMM_DATA_OD OD_1F50_02
+#define VMM_STATUS_OD OD_1F57_02
+
 
 
 /*
@@ -42,8 +45,10 @@ int CanOpenMotor::convert_EncoderUnit_TO_cGRAD(int x) {
 
 CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear) {
     
-    debug = false;
     internal_status = status_options::MOTOR_NOT_CONNECTED;
+    configuration_command = false;
+    pNanoj = nullptr;
+    nanojSize = 0;
 
     // Gets the handler of the class instance to be used for the Post/Send message functions.
     hwnd = static_cast<HWND>(Handle.ToPointer());    
@@ -63,10 +68,13 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear) 
 
     // The OD shall be initialized
     od_initialized = false;
+    nanoj_initialized = false;
 
     // Creates the receiving register
     rxSdoRegister = gcnew Register();
     sdo_rx_pending = false;
+    nanoj_rx_pending = false;
+    
 
     // Add the callback handling the SDO reception
     CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
@@ -94,7 +102,7 @@ void CanOpenMotor::thread_canopen_rx_sdo_callback(unsigned short canid, unsigned
     // Be careful!! This call is runing into the program thread pull, out of the class thread.
     
     // No data is expected
-    if (!sdo_rx_pending) return;
+    if ((!sdo_rx_pending) && (!nanoj_rx_pending)) return;
 
     // Only 8-byte frame is accepted
     if(len < 8) return; // Invalid message length
@@ -102,9 +110,17 @@ void CanOpenMotor::thread_canopen_rx_sdo_callback(unsigned short canid, unsigned
     // Checks the canId address
     if (canid != device_id + 0x580) return; // This frame is not a SDO or is not addressed to this device!
    
-    // Checks that the received Object registers matches with the expected    
-    sdo_rx_pending = false;
-    if(rxSdoRegister->validateSdo(data)) SetEvent(rxSDOEvent);    
+    if (sdo_rx_pending) {
+        sdo_rx_pending = false;
+        rxSdoRegister->validateSdo(data);    
+    }
+    else {
+        nanoj_rx_pending = false;
+        if (rxNanojAck == data[0]) rxNanojAckValid = true;
+        else rxNanojAckValid = false;
+    }
+    SetEvent(rxSDOEvent);
+    
     
 }
 
@@ -120,6 +136,8 @@ void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned
 bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, unsigned char dim, int val) {
     unsigned char buffer[8];
     DWORD dwWaitResult;
+
+    nanoj_rx_pending = false;
 
     // Repeats five times before fail
     for (int i = 0; i < 5; i++) {
@@ -151,9 +169,24 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, uns
     return false;
 }
 
+
+
+void CanOpenMotor::write_resetNode(void) {
+    unsigned char buffer[8];
+
+    memset(buffer, 0, 8);
+    buffer[0] = 0x81;
+    buffer[1] = device_id;
+
+    // Activates the transmission
+    CanDriver::multithread_send(0, buffer, 2);
+}
+
 bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, unsigned char dim) {
     unsigned char buffer[8];
     DWORD dwWaitResult;
+
+    nanoj_rx_pending = false;
 
     // Repeats five times before fail
     for (int i = 0; i < 5; i++) {
@@ -189,6 +222,16 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, unsi
     return false;
 }
 
+bool CanOpenMotor::activateConfiguration(void) {
+    // Executes the configuration but only in two status
+    if ((internal_status == status_options::MOTOR_READY) || (internal_status == status_options::MOTOR_FAULT))
+    {
+        configuration_command = true;
+        return true;
+    }
+
+    return false;
+}
 
 void CanOpenMotor::mainWorker(void) {
     
@@ -200,7 +243,9 @@ void CanOpenMotor::mainWorker(void) {
         // Wait for the CAN DRIVER connection
         while (!CanDriver::isConnected()) {
             // Pause waiting for the connection
+            internal_status = status_options::MOTOR_NOT_CONNECTED;
             std::this_thread::sleep_for(std::chrono::microseconds(500000));
+            continue;
         }
 
         // Read the status word
@@ -209,7 +254,19 @@ void CanOpenMotor::mainWorker(void) {
             continue;
         }
 
+        // Activate  the configuration: both object dictionary registers and nanoj program (if present) shall be uploaded
+        if (configuration_command) {            
+            internal_status = status_options::MOTOR_CONFIGURATION;
+
+            // If the nanoj program is not present (pNanoj = nullptr)  the nanoj_initialized flag  shall be set to true !
+            if (pNanoj) nanoj_initialized = uploadNanojProgram();
+            else nanoj_initialized = true;
+
+            od_initialized = initializeObjectDictionary();
+            configuration_command = false;
+        }
         
+
 
         // Identifies what is the current ciA status of the motor 
         switch (getCiAStatus(rxSdoRegister->data)) {
@@ -306,10 +363,10 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
     if (CiA_current_status != _CiA402Status::CiA402_SwitchedOn) {
         CiA_current_status = _CiA402Status::CiA402_SwitchedOn;
         Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: SWITCHED-ON STATUS");
-
-        if (!od_initialized) od_initialized = initializeObjectDictionary();
+        
     }
 
+    
     return;
 }
 
@@ -380,7 +437,7 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
         CiA_current_status = _CiA402Status::CiA402_Fault;
         Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: FAULT STATUS");
     }
-
+    
     // Read the error class register
     if (!blocking_readOD(OD_1001_00)) return;
     if (error_class != rxSdoRegister->data) data_changed = true;
@@ -414,7 +471,185 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
     return;
 }
 
+bool CanOpenMotor::initNanojDataRegister(void) {
+    unsigned char buffer[8];
+    DWORD dwWaitResult;
 
+    nanoj_rx_pending = false;
+
+    // Special register with dimension set to 0
+    rxSdoRegister = gcnew Register(VMM_DATA_OD, 0);
+    rxSdoRegister->data_dim = 0;
+    rxSdoRegister->getWriteBuffer(buffer);
+
+    // Activates the transmission
+    CanDriver::multithread_send(0x600 + device_id, buffer, 8);
+    sdo_rx_pending = true;
+    
+    // Waits to be signalled: waits for 50ms
+    dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+    sdo_rx_pending = false;
+
+
+    // Checks if the Event has been signalled or it is a timeout event.
+    if (dwWaitResult != WAIT_OBJECT_0) return false;
+    if (!rxSdoRegister->valid) return false;
+
+    return true;
+}
+
+
+bool CanOpenMotor::nanojWrite1024Block(int vectorIndex, int block_size) {
+    unsigned char buffer[8];
+    DWORD dwWaitResult;
+
+    // Initialize the  Data Ram
+    if (!initNanojDataRegister()) return false;
+
+   
+    int index = 0;
+    int n = 0;
+    bool t = false;
+
+    while (index < block_size) {
+
+        // buffer[0] is the data segment control byte
+        buffer[0] = 0;
+        if (t) buffer[0] |= 0x10;
+        rxNanojAck = buffer[0] | 0x20;
+
+        if (index + 7 >= block_size) buffer[0] |= 0x1; // End of block
+        n = 7 - (block_size - index);
+        if (n < 0) n = 0;
+        buffer[0] |= (n * 2); // Data to be ignored
+        
+        // Data segment preparation
+        for (int k = 0; k < 7; k++) {
+            if (index + k < block_size) buffer[1 + k] = pNanoj[vectorIndex + index + k];
+        }
+
+        // Data send to can bus
+        sdo_rx_pending = false;
+        rxNanojAckValid = false;
+
+        // Activates the transmission
+        CanDriver::multithread_send(0x600 + device_id, buffer, 8);
+        nanoj_rx_pending = true;
+
+        // Waits to be signalled: waits for 50ms
+        dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+        nanoj_rx_pending = false;
+
+        // Checks if the Event has been signalled or it is a timeout event.
+        if (dwWaitResult != WAIT_OBJECT_0) return false;
+        if (!rxNanojAckValid) return false;
+
+        index += 7;
+        t = !t;
+    }
+
+    return true;
+
+}
+
+bool CanOpenMotor::uploadNanojProgram(void) {
+
+    // Calculate the nanoj-program checksum
+    unsigned short vmmchk = 0;
+    for (int i = 0; i < nanojSize; i++) vmmchk += (unsigned short) pNanoj[i];
+
+    // Read the stored checksum to check if the program needs to be updated
+    if(!blocking_readOD(NANOJ_USER_PARAM)) return false; // Reads the user parameter containing the stored nanoj checksum
+    if (rxSdoRegister->data == vmmchk) {
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: NANOJ PROGRAM ALREADY PROGRAMMED");
+        return true;
+    }
+
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: NANOJ PROGRAMMING PROCESS");
+    
+    // WMM FLASH DELETE
+    if (!blocking_writeOD(VMM_CTRL_OD, VMM_DELETE)) return false;
+    
+    // Reset node to let the WMM be cleared by the Engine
+    write_resetNode();
+
+    // Wait for the reset completed
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    while (!blocking_readOD(VMM_STATUS_OD)) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: NODE RESET COMPLETED");
+    
+    // Read the VMM status  register
+    if (!blocking_readOD(VMM_STATUS_OD)) return false;
+    if (rxSdoRegister->data != 0) {
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: VMM FLASH IN ERROR CONDITION");
+        return false;
+    }
+
+    // WMM FLASH INITIALIZATION
+    if (!blocking_writeOD(VMM_CTRL_OD, VMM_INIT)) return false;
+    
+
+    int index = 0;
+    int block_size = 0;
+    int i;
+
+    while (1) {
+        block_size = nanojSize - (index * 1024);
+        if (block_size == 0) break;
+        if (block_size > 1024) block_size = 1024;
+
+        // Write a 1024 block
+        if (!nanojWrite1024Block(1024 * index, block_size)) {
+            Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: ERROR TRANSFERRING BLOCK ");
+            return false;
+        }
+
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: STORE BLOCK [" + index.ToString() + "]");
+       
+
+        // Store Data ram in Flash
+        if (!blocking_writeOD(VMM_CTRL_OD, VMM_WRITE)) return false;
+
+        // Read the control register waiting for store completion
+        for (i = 30; i > 0; i--) {
+            if (!blocking_readOD(VMM_CTRL_OD)) return false;
+            if (rxSdoRegister->data == 0) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        if (i == 0) return false;
+
+        // Read the VMM status  register
+        if (!blocking_readOD(VMM_STATUS_OD)) return false;
+        if (rxSdoRegister->data != 0) {
+            Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: VMM FLASH IN ERROR CONDITION");
+            return false;
+        }
+
+        if (block_size < 1024) break;
+        index++;
+
+    }
+
+    // Store the checksum
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: STORE CHECKSUM");
+    if (!blocking_writeOD(NANOJ_USER_PARAM, vmmchk)) return false;
+
+    if (!blocking_writeOD(SAVE_USER_PARAM, 1)) return false;
+
+    for (i = 30; i > 0; i--) {
+        if (!blocking_readOD(SAVE_USER_PARAM)) return false;
+        if (rxSdoRegister->data == 0) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    if (i == 0) return false;
+
+
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: NANOJ PROGRAM SUCCESSFULLY COMPLETED");
+    return true;
+
+}
 
 
 bool CanOpenMotor::initializeObjectDictionary(void) {
@@ -524,7 +759,31 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     if (!blocking_writeOD(OD_6098_00, 21)) return false;  // Homing method 21
     if (!blocking_writeOD(OD_607C_00, 0)) return false;
     
-    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: INITIALIZED");
+    // Read the Object dictionary flag initialization
+    if (!blocking_readOD(CONFIG_USER_PARAM)) return false; // Reads the user parameter containing the stored nanoj checksum
+    if (rxSdoRegister->data == 0x1A1B) {
+        Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: INITIALIZED");
+        return true;
+    }
+    
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: STORING DATA IN FLASH");
+    
+    // Save the Flag in the User Param register and store the User param space
+    if (!blocking_writeOD(CONFIG_USER_PARAM, 0x1A1B)) return false;
+    if (!blocking_writeOD(OD_2700_01, 1)) return false;
+
+    // Save the whole object dictionary
+    if (!blocking_writeOD(OD_1010_01, OD_SAVE_CODE)) return false;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    
+    int i;
+    for (i = 30; i > 0; i--) {
+        if (!blocking_readOD(OD_1010_01)) return false;
+        if (rxSdoRegister->data == 1) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    if (i == 0) return false;
+    Debug::WriteLine("Motor Device <" + Convert::ToString(device_id) + ">: OBJECT DICTIONARY STORED IN FLASH");
     return true;
 }
 
@@ -554,4 +813,6 @@ String^ CanOpenMotor::getCiAStatusString(_CiA402Status status) {
     case _CiA402Status::CiA402_FaultReactionActive: return "CiA402_FaultReactionActive";
     case _CiA402Status::CiA402_Fault: return "CiA402_Fault";
     }
+
+    return "";
 }

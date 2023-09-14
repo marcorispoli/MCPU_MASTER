@@ -36,6 +36,10 @@ namespace CppCLRWinFormsProject {
 	private: bool Startup_PCB304(void);
 	private: bool Startup_PCB315(void);
 	private: bool Startup_MotorBody(void);
+	private: bool Startup_MotorTilt(void);
+	private: bool Startup_MotorArm(void);
+	private: bool Startup_MotorShift(void);
+	private: bool Startup_MotorVertical(void);
 
 
 
@@ -419,9 +423,9 @@ namespace CppCLRWinFormsProject {
 			this->label15->AutoSize = true;
 			this->label15->Location = System::Drawing::Point(10, 130);
 			this->label15->Name = L"label15";
-			this->label15->Size = System::Drawing::Size(191, 18);
+			this->label15->Size = System::Drawing::Size(137, 18);
 			this->label15->TabIndex = 10;
-			this->label15->Text = L"Motor Up/Down (address 7)";
+			this->label15->Text = L"VERTICAL MOTOR";
 			// 
 			// labelMotorShiftActivity
 			// 
@@ -440,9 +444,9 @@ namespace CppCLRWinFormsProject {
 			this->label14->AutoSize = true;
 			this->label14->Location = System::Drawing::Point(10, 105);
 			this->label14->Name = L"label14";
-			this->label14->Size = System::Drawing::Size(164, 18);
+			this->label14->Size = System::Drawing::Size(108, 18);
 			this->label14->TabIndex = 8;
-			this->label14->Text = L"Motor Shift (address 6)";
+			this->label14->Text = L"SHIFT MOTOR";
 			// 
 			// labelMotorBodyActivity
 			// 
@@ -461,9 +465,9 @@ namespace CppCLRWinFormsProject {
 			this->label13->AutoSize = true;
 			this->label13->Location = System::Drawing::Point(10, 80);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(166, 18);
+			this->label13->Size = System::Drawing::Size(107, 18);
 			this->label13->TabIndex = 6;
-			this->label13->Text = L"Motor Body (address 5)";
+			this->label13->Text = L"BODY MOTOR";
 			// 
 			// labelMotorArmActivity
 			// 
@@ -482,9 +486,9 @@ namespace CppCLRWinFormsProject {
 			this->label12->AutoSize = true;
 			this->label12->Location = System::Drawing::Point(10, 55);
 			this->label12->Name = L"label12";
-			this->label12->Size = System::Drawing::Size(159, 18);
+			this->label12->Size = System::Drawing::Size(98, 18);
 			this->label12->TabIndex = 4;
-			this->label12->Text = L"Motor Arm (address 4)";
+			this->label12->Text = L"ARM MOTOR";
 			// 
 			// labelMotorTiltActivity
 			// 
@@ -503,9 +507,9 @@ namespace CppCLRWinFormsProject {
 			this->label11->AutoSize = true;
 			this->label11->Location = System::Drawing::Point(10, 30);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(154, 18);
+			this->label11->Size = System::Drawing::Size(96, 18);
 			this->label11->TabIndex = 2;
-			this->label11->Text = L"Motor Tilt (address 3)";
+			this->label11->Text = L"TILT MOTOR";
 			// 
 			// groupBoxPackage
 			// 

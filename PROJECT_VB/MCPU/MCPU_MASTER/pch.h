@@ -11,10 +11,12 @@
 // add headers that you want to pre-compile here
 #include "gantry_global_status.h"
 #include "TcpIpServerCLI.h"
+#include "CanDriver.h"
 #include "awsProtocol.h"
 #include "MainForm.h"
 #include "CanDriver.h"
-
+#include "CanOpenMotor.h"
+#include "TiltMotor.h"
 
 
 #endif //PCH_H

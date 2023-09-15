@@ -10,6 +10,8 @@ ref class GlobalObjects
 {
 public:
 
+    #define pIDLEFORM  ((IdleForm^) GlobalObjects::pIdleForm)
+
     #define pCAN ((CanDriver^) GlobalObjects::pCan)
     #define pFW301 ((CanDeviceProtocol^) GlobalObjects::pFw301)
     #define pFW302 ((CanDeviceProtocol^) GlobalObjects::pFw302)
@@ -42,6 +44,8 @@ public:
     static int monitor_X0;//!< Pointer to the Monitor X0 position
     static int monitor_Y0;//!< Pointer to the Monitor Y0 position
     
+    // Forms
+    static Object^ pIdleForm; //!< Pointer to the IdleForm 
     
 };
 

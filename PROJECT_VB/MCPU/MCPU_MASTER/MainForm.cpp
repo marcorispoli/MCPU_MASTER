@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "MainForm.h"
+#include "IdleForm.h"
+
 #include "SystemConfig.h"
 #include "CanOpenMotor.h"
 #include "TiltMotor.h"
@@ -13,6 +15,7 @@ void MainForm::MainFormInitialize(void) {
 	// Initialize the position of the form
 	this->Left = GlobalObjects::monitor_X0;
 	this->Top = GlobalObjects::monitor_Y0;
+	
 
 	// Clear the messages area
 	StartupLogMessages->Clear();
@@ -65,7 +68,8 @@ void MainForm::MainFormInitialize(void) {
 	startupTimer = gcnew System::Timers::Timer(100);
 	startupTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &MainForm::onStartupTimeout);
 	startupTimer->Start();
-
+	
+	
 	
 }
 
@@ -490,6 +494,9 @@ void MainForm::StartupProcedure(void) {
 	}
 	if (startupCompleted) {
 		startupTimer->Stop();
+		pIDLEFORM->Show();
+		this->Hide();
+
 		return;
 	}
 
@@ -506,7 +513,9 @@ void MainForm::StartupProcedure(void) {
 	case 8: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 9: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 10: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-
+	case 11:
+		startupCompleted = true;
+		break;
 
 	}
 }
@@ -515,7 +524,10 @@ void MainForm::WndProc(System::Windows::Forms::Message% m)
 	switch (m.Msg) {
 
 	case (WM_USER + 1): // onStartupTimeout
-		StartupProcedure();
+		pIDLEFORM->Show();
+		this->Hide();
+		startupTimer->Stop();
+		//StartupProcedure();
 		break;
 
 	case (WM_USER + 2): 

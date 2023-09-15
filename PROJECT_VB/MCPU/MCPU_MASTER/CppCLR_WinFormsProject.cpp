@@ -8,6 +8,7 @@ using namespace System;
 // }
 
 #include "MainForm.h"
+#include "IdleForm.h"
 #include "CanDriver.h"
 #include "CanOpenMotor.h"
 #include "SystemConfig.h"
@@ -64,6 +65,7 @@ int main()
 
 
   //globalObjects::pProtocol = paws; // Assignes the class pointer to the global pointer for the application usage
+  GlobalObjects::pIdleForm = gcnew IdleForm();
 
   Application::Run(gcnew CppCLRWinFormsProject::MainForm());
   return 0;

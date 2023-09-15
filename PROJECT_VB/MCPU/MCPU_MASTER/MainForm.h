@@ -66,7 +66,7 @@ namespace CppCLRWinFormsProject {
 	private: void MainFormInitialize(void);
 	private: void StartupProcedure(void);
 
-	private: System::Windows::Forms::Label^ label1;
+
 	private: System::Windows::Forms::GroupBox^ BoardInitialization;
 
 	private: System::Windows::Forms::Label^ labelBoardInitialization;
@@ -136,7 +136,6 @@ namespace CppCLRWinFormsProject {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->BoardInitialization = (gcnew System::Windows::Forms::GroupBox());
 			this->labelGeneratorActivity = (gcnew System::Windows::Forms::Label());
 			this->label10 = (gcnew System::Windows::Forms::Label());
@@ -181,14 +180,6 @@ namespace CppCLRWinFormsProject {
 			this->groupBoxPackage->SuspendLayout();
 			this->SuspendLayout();
 			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(40, 35);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(0, 13);
-			this->label1->TabIndex = 0;
-			// 
 			// BoardInitialization
 			// 
 			this->BoardInitialization->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)),
@@ -208,8 +199,7 @@ namespace CppCLRWinFormsProject {
 			this->BoardInitialization->Controls->Add(this->label5);
 			this->BoardInitialization->Controls->Add(this->labelPcb301Activity);
 			this->BoardInitialization->Controls->Add(this->labelBoardInitialization);
-			this->BoardInitialization->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->BoardInitialization->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Bold));
 			this->BoardInitialization->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)),
 				static_cast<System::Int32>(static_cast<System::Byte>(189)), static_cast<System::Int32>(static_cast<System::Byte>(190)));
 			this->BoardInitialization->Location = System::Drawing::Point(26, 203);
@@ -222,8 +212,7 @@ namespace CppCLRWinFormsProject {
 			// labelGeneratorActivity
 			// 
 			this->labelGeneratorActivity->AutoSize = true;
-			this->labelGeneratorActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelGeneratorActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelGeneratorActivity->ForeColor = System::Drawing::Color::White;
 			this->labelGeneratorActivity->Location = System::Drawing::Point(216, 180);
 			this->labelGeneratorActivity->Name = L"labelGeneratorActivity";
@@ -243,8 +232,7 @@ namespace CppCLRWinFormsProject {
 			// labelCanDriverActivity
 			// 
 			this->labelCanDriverActivity->AutoSize = true;
-			this->labelCanDriverActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelCanDriverActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelCanDriverActivity->ForeColor = System::Drawing::Color::White;
 			this->labelCanDriverActivity->Location = System::Drawing::Point(216, 155);
 			this->labelCanDriverActivity->Name = L"labelCanDriverActivity";
@@ -264,8 +252,7 @@ namespace CppCLRWinFormsProject {
 			// labelPcb315Activity
 			// 
 			this->labelPcb315Activity->AutoSize = true;
-			this->labelPcb315Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->labelPcb315Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelPcb315Activity->ForeColor = System::Drawing::Color::White;
 			this->labelPcb315Activity->Location = System::Drawing::Point(216, 130);
 			this->labelPcb315Activity->Name = L"labelPcb315Activity";
@@ -285,8 +272,7 @@ namespace CppCLRWinFormsProject {
 			// labelPcb304Activity
 			// 
 			this->labelPcb304Activity->AutoSize = true;
-			this->labelPcb304Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->labelPcb304Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelPcb304Activity->ForeColor = System::Drawing::Color::White;
 			this->labelPcb304Activity->Location = System::Drawing::Point(216, 105);
 			this->labelPcb304Activity->Name = L"labelPcb304Activity";
@@ -306,8 +292,7 @@ namespace CppCLRWinFormsProject {
 			// labelPcb303Activity
 			// 
 			this->labelPcb303Activity->AutoSize = true;
-			this->labelPcb303Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->labelPcb303Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelPcb303Activity->ForeColor = System::Drawing::Color::White;
 			this->labelPcb303Activity->Location = System::Drawing::Point(216, 80);
 			this->labelPcb303Activity->Name = L"labelPcb303Activity";
@@ -327,8 +312,7 @@ namespace CppCLRWinFormsProject {
 			// labelPcb302Activity
 			// 
 			this->labelPcb302Activity->AutoSize = true;
-			this->labelPcb302Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->labelPcb302Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelPcb302Activity->ForeColor = System::Drawing::Color::White;
 			this->labelPcb302Activity->Location = System::Drawing::Point(216, 55);
 			this->labelPcb302Activity->Name = L"labelPcb302Activity";
@@ -348,8 +332,7 @@ namespace CppCLRWinFormsProject {
 			// labelPcb301Activity
 			// 
 			this->labelPcb301Activity->AutoSize = true;
-			this->labelPcb301Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->labelPcb301Activity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelPcb301Activity->ForeColor = System::Drawing::Color::White;
 			this->labelPcb301Activity->Location = System::Drawing::Point(216, 30);
 			this->labelPcb301Activity->Name = L"labelPcb301Activity";
@@ -372,8 +355,7 @@ namespace CppCLRWinFormsProject {
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 20.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->label2->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 20.25F, System::Drawing::FontStyle::Bold));
 			this->label2->Location = System::Drawing::Point(178, 17);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(216, 36);
@@ -395,8 +377,7 @@ namespace CppCLRWinFormsProject {
 			this->groupBox1->Controls->Add(this->label12);
 			this->groupBox1->Controls->Add(this->labelMotorTiltActivity);
 			this->groupBox1->Controls->Add(this->label11);
-			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Bold));
 			this->groupBox1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
 			this->groupBox1->Location = System::Drawing::Point(26, 426);
@@ -409,8 +390,7 @@ namespace CppCLRWinFormsProject {
 			// labelMotorUpDownActivity
 			// 
 			this->labelMotorUpDownActivity->AutoSize = true;
-			this->labelMotorUpDownActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelMotorUpDownActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelMotorUpDownActivity->ForeColor = System::Drawing::Color::White;
 			this->labelMotorUpDownActivity->Location = System::Drawing::Point(216, 130);
 			this->labelMotorUpDownActivity->Name = L"labelMotorUpDownActivity";
@@ -430,8 +410,7 @@ namespace CppCLRWinFormsProject {
 			// labelMotorShiftActivity
 			// 
 			this->labelMotorShiftActivity->AutoSize = true;
-			this->labelMotorShiftActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelMotorShiftActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelMotorShiftActivity->ForeColor = System::Drawing::Color::White;
 			this->labelMotorShiftActivity->Location = System::Drawing::Point(216, 105);
 			this->labelMotorShiftActivity->Name = L"labelMotorShiftActivity";
@@ -451,8 +430,7 @@ namespace CppCLRWinFormsProject {
 			// labelMotorBodyActivity
 			// 
 			this->labelMotorBodyActivity->AutoSize = true;
-			this->labelMotorBodyActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelMotorBodyActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelMotorBodyActivity->ForeColor = System::Drawing::Color::White;
 			this->labelMotorBodyActivity->Location = System::Drawing::Point(216, 80);
 			this->labelMotorBodyActivity->Name = L"labelMotorBodyActivity";
@@ -472,8 +450,7 @@ namespace CppCLRWinFormsProject {
 			// labelMotorArmActivity
 			// 
 			this->labelMotorArmActivity->AutoSize = true;
-			this->labelMotorArmActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelMotorArmActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelMotorArmActivity->ForeColor = System::Drawing::Color::White;
 			this->labelMotorArmActivity->Location = System::Drawing::Point(216, 55);
 			this->labelMotorArmActivity->Name = L"labelMotorArmActivity";
@@ -493,8 +470,7 @@ namespace CppCLRWinFormsProject {
 			// labelMotorTiltActivity
 			// 
 			this->labelMotorTiltActivity->AutoSize = true;
-			this->labelMotorTiltActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelMotorTiltActivity->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Italic));
 			this->labelMotorTiltActivity->ForeColor = System::Drawing::Color::White;
 			this->labelMotorTiltActivity->Location = System::Drawing::Point(216, 30);
 			this->labelMotorTiltActivity->Name = L"labelMotorTiltActivity";
@@ -523,8 +499,7 @@ namespace CppCLRWinFormsProject {
 			this->groupBoxPackage->Controls->Add(this->labelFW303);
 			this->groupBoxPackage->Controls->Add(this->labelFW302);
 			this->groupBoxPackage->Controls->Add(this->labelFW301);
-			this->groupBoxPackage->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->groupBoxPackage->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Bold));
 			this->groupBoxPackage->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
 			this->groupBoxPackage->Location = System::Drawing::Point(26, 65);
@@ -610,8 +585,7 @@ namespace CppCLRWinFormsProject {
 				static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)));
 			this->StartupErrorMessages->BulletIndent = 1;
 			this->StartupErrorMessages->Cursor = System::Windows::Forms::Cursors::Default;
-			this->StartupErrorMessages->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->StartupErrorMessages->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F));
 			this->StartupErrorMessages->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)),
 				static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->StartupErrorMessages->Location = System::Drawing::Point(26, 833);
@@ -640,8 +614,7 @@ namespace CppCLRWinFormsProject {
 				static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)));
 			this->StartupLogMessages->BulletIndent = 1;
 			this->StartupLogMessages->Cursor = System::Windows::Forms::Cursors::Default;
-			this->StartupLogMessages->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
+			this->StartupLogMessages->Font = (gcnew System::Drawing::Font(L"Arial Unicode MS", 9.75F));
 			this->StartupLogMessages->ForeColor = System::Drawing::Color::White;
 			this->StartupLogMessages->Location = System::Drawing::Point(26, 627);
 			this->StartupLogMessages->Name = L"StartupLogMessages";
@@ -669,6 +642,7 @@ namespace CppCLRWinFormsProject {
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
+			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
 			this->ClientSize = System::Drawing::Size(600, 1024);
 			this->ControlBox = false;
 			this->Controls->Add(this->label4);
@@ -679,7 +653,7 @@ namespace CppCLRWinFormsProject {
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->BoardInitialization);
-			this->Controls->Add(this->label1);
+			this->DoubleBuffered = true;
 			this->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;

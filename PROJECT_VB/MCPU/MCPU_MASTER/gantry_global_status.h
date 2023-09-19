@@ -6,14 +6,16 @@
 using namespace System;
 using namespace System::Collections::Generic;
 
+
 ref class GlobalObjects
 {
 public:
 
     #define pIDLEFORM  ((IdleForm^) GlobalObjects::pIdleForm)
-
+    #define pAWS ((awsProtocol^) GlobalObjects::pAws)
     #define pCAN ((CanDriver^) GlobalObjects::pCan)
-    #define pFW301 ((CanDeviceProtocol^) GlobalObjects::pFw301)
+    #define pFW301 ((PCB301^) GlobalObjects::pFw301)
+    
     #define pFW302 ((CanDeviceProtocol^) GlobalObjects::pFw302)
     #define pFW303 ((CanDeviceProtocol^) GlobalObjects::pFw303)
     #define pFW304 ((CanDeviceProtocol^) GlobalObjects::pFw304)
@@ -24,28 +26,28 @@ public:
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
     #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
 
-    static Object^ pAws; //!< Pointer to the AWS interface
-    static Object^ pCan; //!< Pointer to the Can Driver
+    static Object^ pAws = nullptr; //!< Pointer to the AWS interface
+    static Object^ pCan = nullptr; //!< Pointer to the Can Driver
 
     // Motor pointers
-    static Object^ pMotTilt; //!< Pointer to the Tilt Motor
-    static Object^ pMotArm;  //!< Pointer to the Arm Motor
-    static Object^ pMotBody; //!< Pointer to the Body Motor
-    static Object^ pMotShift; //!< Pointer to the Shift Motor
-    static Object^ pMotVert;//!< Pointer to the Up/Down Motor
+    static Object^ pMotTilt = nullptr; //!< Pointer to the Tilt Motor
+    static Object^ pMotArm = nullptr;  //!< Pointer to the Arm Motor
+    static Object^ pMotBody = nullptr; //!< Pointer to the Body Motor
+    static Object^ pMotShift = nullptr; //!< Pointer to the Shift Motor
+    static Object^ pMotVert = nullptr;//!< Pointer to the Up/Down Motor
 
-    static Object^ pFw301; //!< Pointer to the FW301 board
-    static Object^ pFw302; //!< Pointer to the FW302 board
-    static Object^ pFw303; //!< Pointer to the FW303 board
-    static Object^ pFw304; //!< Pointer to the FW304 board
-    static Object^ pFw315; //!< Pointer to the FW315 board
+    static Object^ pFw301 = nullptr; //!< Pointer to the FW301 board
+    static Object^ pFw302 = nullptr; //!< Pointer to the FW302 board
+    static Object^ pFw303 = nullptr; //!< Pointer to the FW303 board
+    static Object^ pFw304 = nullptr; //!< Pointer to the FW304 board
+    static Object^ pFw315 = nullptr; //!< Pointer to the FW315 board
 
     // Monitor coordinates
     static int monitor_X0;//!< Pointer to the Monitor X0 position
     static int monitor_Y0;//!< Pointer to the Monitor Y0 position
     
     // Forms
-    static Object^ pIdleForm; //!< Pointer to the IdleForm 
+    static Object^ pIdleForm = nullptr; //!< Pointer to the IdleForm 
     
 };
 
@@ -1936,6 +1938,42 @@ namespace GantryStatusRegisters {
         static options code = options::NOT_READY_FOR_EXPOSURE; //!< This is the register option-code 
 
     };
+
+    ref class PowerStatusRegister {
+    public:
+
+        static void setBatteryData(bool ena, bool batt1low, bool batt2low, unsigned char vbatt1, unsigned char vbatt2);
+        static void getBatteryData(bool* ena, bool* batt1low, bool* batt2low, unsigned char* vbatt1, unsigned char* vbatt2);
+        static void setPowerdown(bool stat);
+        static bool getPowerdown(void);
+
+    private:
+        
+        // Powerdown
+        static bool power_down = false;
+
+        // Battery management
+        static bool battery_enabled = false;//!< Battery enabled
+        static bool batt1_low = false;      //!< Low voltage of battery 1
+        static bool batt2_low = false;      //!< Low voltage of battery 2
+        static unsigned char voltage_batt1 = 0; //!< 10 * voltage level of battery 1
+        static unsigned char voltage_batt2 = 0; //!< 10 * voltage level of battery 2
+
+    };
+
+    ref class SafetyStatusRegister {
+    public:
+
+        static void setCloseDoor(bool stat);
+        static bool getCloseDoor(void);
+
+    private:
+
+        static bool closed_door = false;
+
+        
+    };
+
 }
 
 

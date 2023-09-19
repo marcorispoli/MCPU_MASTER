@@ -148,6 +148,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="gantry_global_status.h" />
+    <ClInclude Include="PCB301.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pd4_od.h" />
     <ClInclude Include="Resource.h" />
@@ -163,8 +164,10 @@
     <ClCompile Include="CanOpenMotor.cpp" />
     <ClCompile Include="ConfigFile.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
+    <ClCompile Include="gantry_global_status.cpp" />
     <ClCompile Include="IdleForm.cpp" />
     <ClCompile Include="MainForm.cpp" />
+    <ClCompile Include="PCB301.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

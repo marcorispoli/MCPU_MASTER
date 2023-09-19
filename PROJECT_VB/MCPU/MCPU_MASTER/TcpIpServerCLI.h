@@ -36,6 +36,13 @@ public:
 
 	void send(array<Byte>^ buffer);//!< This is function to send data in the BUS
 
+	/// <summary>
+	/// Returns the current connection sattus
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>true if the socket is connected </returns>
+	public: bool isConnected(void) { return connection_status; }
+
 	protected: void threadWork(void);//!< This is the worker thread for the connection management
 	protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;//!< This is the function handling the Window's messages
 

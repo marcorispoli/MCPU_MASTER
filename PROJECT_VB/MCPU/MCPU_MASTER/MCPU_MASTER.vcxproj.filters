@@ -62,6 +62,9 @@
     <ClInclude Include="IdleForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PCB301.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -98,6 +101,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IdleForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PCB301.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gantry_global_status.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -17,6 +17,7 @@
 #include "CanDriver.h"
 #include "CanOpenMotor.h"
 #include "TiltMotor.h"
+#include "PCB301.h"
 
 
 #endif //PCH_H

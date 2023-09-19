@@ -38,6 +38,9 @@ public:
 	/// This function returns the event server TcpIpServerCLI class handler
 	TcpIpServerCLI^ getEventHandler(void) { return event_server; };
 
+	inline bool isConnected(void) {
+		return (command_server->isConnected() && event_server->isConnected());
+	}
 
 
 	/// @}

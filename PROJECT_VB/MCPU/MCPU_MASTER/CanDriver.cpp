@@ -282,9 +282,9 @@ void CanDriver::threadWork(void) {
                
             for (int j = 0; j < rxmsgs[i].Size; j++) rxCanData[j] = rxmsgs[i].Data[j];
 
-            if ((rxCanId >= 0x100) && (rxCanId <= 0x13F)) {                
+            if ((rxCanId >= 0x100) && (rxCanId <= 0x17F)) {                
                 canrx_device_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                SendNotifyMessageA(can_hwnd, DEVICE_PROTOCOL_DISPATCH_MESSAGE, 0, 0);
+                //SendNotifyMessageA(can_hwnd, DEVICE_PROTOCOL_DISPATCH_MESSAGE, 0, 0);
                 continue;
             }
             if ((rxCanId >= 0x580) && (rxCanId <= 0x5FF)) {
@@ -292,7 +292,7 @@ void CanDriver::threadWork(void) {
                 dtempo = (stop - start).count();
                 start = std::chrono::steady_clock::now();
                 canrx_canopen_sdo_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                SendNotifyMessageA(can_hwnd, CANOPEN_SDO_DISPATCH_MESSAGE, 0, 0);
+                //SendNotifyMessageA(can_hwnd, CANOPEN_SDO_DISPATCH_MESSAGE, 0, 0);
                 continue;
             }
             if ((rxCanId >= 0) && (rxCanId <= 0x7F)) {

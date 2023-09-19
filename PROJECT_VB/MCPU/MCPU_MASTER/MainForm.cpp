@@ -6,6 +6,9 @@
 #include "CanOpenMotor.h"
 #include "TiltMotor.h"
 #include "CanDeviceProtocol.h"
+#include "PCB301.h"
+#include "awsProtocol.h"
+
 
 using namespace CppCLRWinFormsProject;
 using namespace CANOPEN;
@@ -116,7 +119,7 @@ bool MainForm::Startup_PCB301(void) {
 	case 0: // Creates the PCB301 process
 		labelPcb301Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb301 initialization ..\n";
-		GlobalObjects::pFw301 = gcnew CanDeviceProtocol(0x10, L"POWER_SERVICE");
+		GlobalObjects::pFw301 = gcnew PCB301();
 		startupSubFase++;
 		break;
 
@@ -493,10 +496,11 @@ void MainForm::StartupProcedure(void) {
 		return;
 	}
 	if (startupCompleted) {
+		GantryStatusRegisters::OperatingStatusRegister::setIdle();
 		startupTimer->Stop();
-		pIDLEFORM->Show();
 		this->Hide();
-
+		pIDLEFORM->initIdleStatus();
+		pIDLEFORM->Show();				
 		return;
 	}
 
@@ -514,6 +518,17 @@ void MainForm::StartupProcedure(void) {
 	case 9: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 10: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 11:
+
+		// Creates thw AWS
+		GlobalObjects::pAws = gcnew awsProtocol(
+			SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_IP],
+			Convert::ToInt32(SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_PORT_COMMAND]),
+			Convert::ToInt32(SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS])
+		);
+		startupFase++; startupSubFase = 0;
+		break;
+
+	case 12:
 		startupCompleted = true;
 		break;
 
@@ -524,10 +539,10 @@ void MainForm::WndProc(System::Windows::Forms::Message% m)
 	switch (m.Msg) {
 
 	case (WM_USER + 1): // onStartupTimeout
-		pIDLEFORM->Show();
-		this->Hide();
-		startupTimer->Stop();
-		//StartupProcedure();
+		//pIDLEFORM->Show();
+		//this->Hide();
+		//startupTimer->Stop();
+		StartupProcedure();
 		break;
 
 	case (WM_USER + 2): 

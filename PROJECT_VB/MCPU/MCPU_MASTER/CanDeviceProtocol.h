@@ -6,6 +6,8 @@ using namespace System::Collections::Generic;
 ref class CanDeviceProtocol : public System::Windows::Forms::Form
 {
 public:
+	
+	// Bootloader commands
 	#define GET_BOOTLOADER_INFO (Byte) 0x1, (Byte) 0,(Byte) 0, (Byte) 0,(Byte) 0,(Byte) 0, (Byte) 0,(Byte) 0,true
 
 
@@ -44,6 +46,10 @@ public:
 			data[5] = b5;
 			data[6] = b6;
 			data[7] = b7;
+			
+			crc = 0;
+			for (int i = 0; i < 7; i++) crc ^= data[i];
+
 		}
 
 		void set(unsigned char d0 , unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl) {
@@ -68,6 +74,7 @@ public:
 		unsigned char b5;
 		unsigned char b6;
 		unsigned char b7;
+		unsigned char crc;
 		bool bootloader;
 	};
 
@@ -103,14 +110,16 @@ public:
 	void thread_can_rx_callback(unsigned short canid, unsigned char* data, unsigned char len);
 
 	bool send(unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl);
+	inline bool isTmo(void) { return tmo; }
 
+	inline CanDeviceRegister^ getRxRegister(void) { return rx_register; }
 	inline status_options getStatus(void) { return internal_status; }
 	inline String^ getBootRevision(void) { return boot_maj.ToString() + "." + boot_min.ToString() + "." + boot_sub.ToString(); }
 	inline String^ getAppRevision(void) { return app_maj.ToString() + "." + app_min.ToString() + "." + app_sub.ToString(); }
 	inline String^ getBootStatus(void) { return bootloader_status_tags[ (int) bootloader_status]; }
 	
 protected:
-	
+	virtual void runningLoop(void) ;
 private:
 
 	//bool blocking_write(unsigned short index, unsigned char sub, unsigned char dim, int val);
@@ -140,5 +149,6 @@ private:
 	unsigned char app_sub;
 	unsigned char bootloader_status;
 
+	bool tmo;
 };
 

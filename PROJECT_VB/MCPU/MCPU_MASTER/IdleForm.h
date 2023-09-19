@@ -12,12 +12,17 @@ public ref class IdleForm :  public System::Windows::Forms::Form
 	
 
 public:
+	public:System::Timers::Timer^ idleTimer;
+	public:HWND window;
 
 	void formInitialization(void);
+	void initIdleStatus(void);
+	void idleStatusManagement(void);
 
 	IdleForm(void)
 	{
 		InitializeComponent();
+		window = static_cast<HWND>(Handle.ToPointer());
 		formInitialization();
 
 	}
@@ -151,6 +156,11 @@ private:
 	}
 #pragma endregion
 
+	protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;
 
+	private: System::Void onIdleTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
+	{
+		SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+	}
 };
 

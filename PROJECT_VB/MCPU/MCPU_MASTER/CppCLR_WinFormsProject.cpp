@@ -42,25 +42,10 @@ int main()
   }
 
   
-  CanDeviceProtocol^ p = gcnew CanDeviceProtocol(10, L"PIPPO");
   
-  /*
-  awsProtocol^ paws = gcnew awsProtocol("127.0.0.1", 10000, 10001);
-  GlobalObjects::pAws = paws; // Assignes the class pointer to the global pointer for the application usage
-
   
-  CanOpenMotor^ pMot7 = gcnew CanOpenMotor(0x7, L"MOT7", 453.2);
-  CanOpenMotor^ pMot6 = gcnew CanOpenMotor(0x6, L"MOT6", 453.2);
-  CanOpenMotor^ pMot5 = gcnew CanOpenMotor(0x5, L"MOT5", 453.2);
-  CanOpenMotor^ pMot4 = gcnew CanOpenMotor(0x4, L"MOT4", 453.2);
-  CanOpenMotor^ pMot3 = gcnew CanOpenMotor(0x3, L"MOT3", 453.2);
   
-  GlobalObjects::pMotTilt = pMot3;
-  GlobalObjects::pMotArm = pMot4;
-  GlobalObjects::pMotBody = pMot5;
-  GlobalObjects::pMotShift = pMot6;
-  GlobalObjects::pMotUpDown = pMot7;
-  */
+  
 
 
 

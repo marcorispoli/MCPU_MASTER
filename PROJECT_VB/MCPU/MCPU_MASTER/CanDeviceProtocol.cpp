@@ -12,6 +12,7 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     device_id = devid;
     rx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
+    tmo = true;
 
     // Creates the Reception event
     rxEvent = CreateEvent(
@@ -85,14 +86,17 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     if (bootl) {
         canid = device_id + 0x100;
         tx_register->set(d0, d1, d2, d3, d4, d5, d6, d7, bootl);
+        tx_register->format(buffer);
     }
     else {
         canid = device_id + 0x140;
         rx_sequence++;
         tx_register->set(rx_sequence, d1, d2, d3, d4, d5, d6, d7, bootl);
+        tx_register->format(buffer);
+        buffer[7] = tx_register->crc;
     }
             
-    tx_register->format(buffer);
+    
     
     // Repeats five times before fail
     for (int i = 0; i < 5; i++) {
@@ -102,7 +106,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         rx_pending = true;
 
         // Waits to be signalled: waits for 50ms
-        dwWaitResult = WaitForSingleObject(rxEvent, 1000);
+        dwWaitResult = WaitForSingleObject(rxEvent, 200);
         rx_pending = false;
 
 
@@ -110,9 +114,11 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         if (dwWaitResult != WAIT_OBJECT_0)
             continue;
         
+        tmo = false;
         return true;
     }
 
+    tmo = true;
     return false;
 }
 
@@ -161,10 +167,15 @@ void CanDeviceProtocol::mainWorker(void) {
             break;
 
         case status_options::DEVICE_RUNNING: // Device running
-            std::this_thread::sleep_for(std::chrono::microseconds(500000));
+            runningLoop();
             break;
 
         } // Switch internal_status
     }
 
+}
+
+void CanDeviceProtocol::runningLoop(void) {
+    std::this_thread::sleep_for(std::chrono::microseconds(500000));
+    return;
 }

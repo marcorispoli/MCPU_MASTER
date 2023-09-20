@@ -150,5 +150,8 @@ private:
 	unsigned char bootloader_status;
 
 	bool tmo;
+	bool rxOk;
+	int attempt;
+
 };
 

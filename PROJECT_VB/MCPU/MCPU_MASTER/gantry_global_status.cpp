@@ -5,6 +5,13 @@
 namespace GantryStatusRegisters {
     static mutex gantry_status_mutex;
 
+    void dataLock(void) {
+        gantry_status_mutex.lock();
+    }
+    void dataUnlock(void) {
+        gantry_status_mutex.unlock();
+    }
+
     void PowerStatusRegister::setBatteryData(bool ena, bool batt1low, bool batt2low, unsigned char vbatt1, unsigned char vbatt2) {
         const std::lock_guard<std::mutex> lock(gantry_status_mutex);
         battery_enabled = ena;
@@ -44,6 +51,14 @@ namespace GantryStatusRegisters {
         const std::lock_guard<std::mutex> lock(gantry_status_mutex);
         return  closed_door;
     }
+
+    void TubeDataRegister::setTubeTemp(unsigned char stator, unsigned char bulb) {
+        const std::lock_guard<std::mutex> lock(gantry_status_mutex);
+        bulbHeat = bulb;    
+        statorHeat = stator;
+        return;
+    }
+
 
 };
 

@@ -10,6 +10,7 @@
 #define PERIPHERALS_CONNECTED Image::FromFile("GUI\\IdleForm\\PeripheralsConnected.PNG")
 #define DOOR_CLOSED Image::FromFile("GUI\\IdleForm\\DoorClosed.PNG")
 #define TUBE_TEMP_OK Image::FromFile("GUI\\IdleForm\\TubeTempOk.PNG")
+#define INFO_TUBE_BACKGROUND Image::FromFile("GUI\\Windows\\infoWindow.PNG")
 
 namespace IDLESTATUS {
 	typedef struct {
@@ -23,8 +24,18 @@ namespace IDLESTATUS {
 
 	}batteryStatus;
 
+	typedef struct {
+
+		unsigned char anode;
+		unsigned char stator;
+		unsigned char bulb;
+
+	}tubeStatus;
+
 	static struct {
 		batteryStatus battery;
+		tubeStatus	tube;
+
 		bool powerdown;
 		bool closed_door;
 		bool aws_connected;
@@ -40,8 +51,21 @@ void IdleForm::formInitialization(void) {
 	this->Top = GlobalObjects::monitor_Y0;
 	this->BackgroundImage = BACKGROUND;
 	
+	
+	
+
 	this->xrayMode->BackgroundImage = XRAY_MODE;
 	this->xrayMode->Hide();
+
+	// Initialize the Installation name
+	labelInstallation->Text = SystemConfig::Configuration->getParam(SystemConfig::PARAM_INSTALLATION_NAME)[SystemConfig::PARAM_INSTALLATION_NAME_TOP];
+
+	DateTime date;
+	date = DateTime::Now;
+
+	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
+	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
+
 
 	// Handle the Powerdown
 	IDLESTATUS::Registers.powerdown = GantryStatusRegisters::PowerStatusRegister::getPowerdown();
@@ -75,9 +99,18 @@ void IdleForm::formInitialization(void) {
 	if(!IDLESTATUS::Registers.closed_door) this->doorClosed->Hide();
 	else this->doorClosed->Show();
 	
+	// Handles the Tube temperature 
+	infoTubeData->SetBounds(20, 337, 560, 370);
+	infoTubeData->BackgroundImage = INFO_TUBE_BACKGROUND;
+	infoTubeData->BackColor = Color::Transparent;
+	infoTubeData->Hide();
 
+	IDLESTATUS::Registers.tube.anode = 0;
+	IDLESTATUS::Registers.tube.stator = 0;
+	IDLESTATUS::Registers.tube.bulb = 0;
 	this->tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
-	this->tubeTempOk->Hide();
+	this->tubeTempOk->BackColor = Color::Transparent;
+	this->tubeTempOk->Show();
 
 
 }
@@ -92,6 +125,11 @@ void IdleForm::initIdleStatus(void) {
 }
 
 void IdleForm::idleStatusManagement(void) {
+
+	DateTime date;
+	date = DateTime::Now;
+	
+	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 	IDLESTATUS::batteryStatus battery;
 	bool powerdown;
@@ -161,7 +199,17 @@ void IdleForm::idleStatusManagement(void) {
 		if(IDLESTATUS::Registers.peripherals_connected) this->peripheralsConnected->Show();
 		else this->peripheralsConnected->Hide();
 	}
-	
+
+	if ((GantryStatusRegisters::TubeDataRegister::getBulb() != IDLESTATUS::Registers.tube.bulb) ||
+		(GantryStatusRegisters::TubeDataRegister::getStator() != IDLESTATUS::Registers.tube.stator)) {
+		IDLESTATUS::Registers.tube.bulb = GantryStatusRegisters::TubeDataRegister::getBulb();
+		IDLESTATUS::Registers.tube.stator = GantryStatusRegisters::TubeDataRegister::getStator();
+		
+		if ((IDLESTATUS::Registers.tube.bulb > 90) || (IDLESTATUS::Registers.tube.stator > 90)) tubeTempOk->BackgroundImage = nullptr;
+		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
+		
+	}
+
 }
 
 void IdleForm::WndProc(System::Windows::Forms::Message% m)
@@ -191,4 +239,15 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 
 
 	Form::WndProc(m);
+}
+
+void IdleForm::infoTubeData_Click(System::Object^ sender, System::EventArgs^ e) {
+	infoTubeData->Hide();
+}
+
+void IdleForm::tubeTempOk_Click(System::Object^ sender, System::EventArgs^ e) {
+	bulbTemperature->Text = IDLESTATUS::Registers.tube.bulb.ToString() + " %";
+	statorTemperature->Text = IDLESTATUS::Registers.tube.stator.ToString() + " %";
+	anodeHu->Text = IDLESTATUS::Registers.tube.anode.ToString() + " %";
+	infoTubeData->Show();
 }

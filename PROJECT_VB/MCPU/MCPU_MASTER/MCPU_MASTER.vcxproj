@@ -80,14 +80,14 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalLibraryDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\VSCAN;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -149,12 +149,17 @@
     </ClInclude>
     <ClInclude Include="gantry_global_status.h" />
     <ClInclude Include="PCB301.h" />
+    <ClInclude Include="PCB302.h" />
+    <ClInclude Include="PCB303.h" />
+    <ClInclude Include="PCB304.h" />
+    <ClInclude Include="PCB315.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pd4_od.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SystemConfig.h" />
     <ClInclude Include="TcpIpServerCLI.h" />
     <ClInclude Include="TiltMotor.h" />
+    <ClInclude Include="Translate.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -168,6 +173,10 @@
     <ClCompile Include="IdleForm.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="PCB301.cpp" />
+    <ClCompile Include="PCB302.cpp" />
+    <ClCompile Include="PCB303.cpp" />
+    <ClCompile Include="PCB304.cpp" />
+    <ClCompile Include="PCB315.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -176,6 +185,7 @@
     </ClCompile>
     <ClCompile Include="TcpIpServerCLI.cpp" />
     <ClCompile Include="TiltMotor.cpp" />
+    <ClCompile Include="Translate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
@@ -184,6 +194,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>

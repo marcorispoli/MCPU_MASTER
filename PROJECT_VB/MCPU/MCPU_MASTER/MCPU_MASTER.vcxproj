@@ -140,6 +140,7 @@
     <ClInclude Include="CanDriver.h" />
     <ClInclude Include="CanOpenMotor.h" />
     <ClInclude Include="ConfigFile.h" />
+    <ClInclude Include="Errors.h" />
     <ClInclude Include="IdleForm.h">
       <DeploymentContent>false</DeploymentContent>
       <FileType>CppForm</FileType>
@@ -169,6 +170,7 @@
     <ClCompile Include="CanOpenMotor.cpp" />
     <ClCompile Include="ConfigFile.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
+    <ClCompile Include="Errors.cpp" />
     <ClCompile Include="gantry_global_status.cpp" />
     <ClCompile Include="IdleForm.cpp" />
     <ClCompile Include="MainForm.cpp" />

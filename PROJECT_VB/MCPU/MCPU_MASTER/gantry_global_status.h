@@ -10,7 +10,8 @@ using namespace System::Collections::Generic;
 ref class GlobalObjects
 {
 public:
-
+    #define pTRANSLATE ((Translate^) GlobalObjects::pTranslate)
+    #define pERRORS ((Errors^) GlobalObjects::pErrors)
     #define pIDLEFORM  ((IdleForm^) GlobalObjects::pIdleForm)
     #define pAWS ((awsProtocol^) GlobalObjects::pAws)
     #define pCAN ((CanDriver^) GlobalObjects::pCan)
@@ -27,6 +28,8 @@ public:
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
     #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
 
+    static Object^ pTranslate = nullptr;
+    static Object^ pErrors = nullptr;
     static Object^ pAws = nullptr; //!< Pointer to the AWS interface
     static Object^ pCan = nullptr; //!< Pointer to the Can Driver
 

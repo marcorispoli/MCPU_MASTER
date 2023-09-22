@@ -16,15 +16,41 @@ public:
 private: System::Windows::Forms::Label^ labelDate;
 private: System::Windows::Forms::Label^ labelInstallation;
 private: System::Windows::Forms::Label^ labelTime;
-private: System::Windows::Forms::Label^ infoId;
+private: System::Windows::Forms::Label^ labelTubeData;
+private: System::Windows::Forms::Panel^ tubeTempOk;
+private: System::Windows::Forms::Panel^ errorPanel;
+private: System::Windows::Forms::Label^ errorId;
 
-private: System::Windows::Forms::Panel^ infoTubeData;
-private: System::Windows::Forms::Label^ statorLabel;
-private: System::Windows::Forms::Label^ statorTemperature;
-private: System::Windows::Forms::Label^ anodeHu;
-private: System::Windows::Forms::Label^ labelAnode;
-private: System::Windows::Forms::Label^ bulbTemperature;
-private: System::Windows::Forms::Label^ labelBulb;
+private: System::Windows::Forms::Label^ errorTitle;
+private: System::Windows::Forms::PictureBox^ errpanel_erricon;
+
+
+private: System::Windows::Forms::RichTextBox^ errorContent;
+
+
+
+
+
+
+
+private: System::Windows::Forms::Button^ buttonCanc;
+private: System::Windows::Forms::Panel^ errorButton;
+private: System::Windows::Forms::Panel^ mainPanel;
+private: System::Windows::Forms::Panel^ panel1;
+private: System::Windows::Forms::Panel^ panel2;
+private: System::Windows::Forms::Label^ errorPanelTitle;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -40,6 +66,7 @@ public:HWND window;
 	void formInitialization(void);
 	void initIdleStatus(void);
 	void idleStatusManagement(void);
+	void openErrorWindow(bool status);
 
 	IdleForm(void)
 	{
@@ -67,7 +94,8 @@ private: System::Windows::Forms::PictureBox^ batteryConnected;
 private: System::Windows::Forms::PictureBox^ awsConnected;
 private: System::Windows::Forms::PictureBox^ peripheralsConnected;
 private: System::Windows::Forms::PictureBox^ doorClosed;
-private: System::Windows::Forms::PictureBox^ tubeTempOk;
+
+
 
 
 protected:
@@ -89,25 +117,33 @@ private:
 		this->awsConnected = (gcnew System::Windows::Forms::PictureBox());
 		this->peripheralsConnected = (gcnew System::Windows::Forms::PictureBox());
 		this->doorClosed = (gcnew System::Windows::Forms::PictureBox());
-		this->tubeTempOk = (gcnew System::Windows::Forms::PictureBox());
 		this->labelDate = (gcnew System::Windows::Forms::Label());
 		this->labelInstallation = (gcnew System::Windows::Forms::Label());
 		this->labelTime = (gcnew System::Windows::Forms::Label());
-		this->infoId = (gcnew System::Windows::Forms::Label());
-		this->infoTubeData = (gcnew System::Windows::Forms::Panel());
-		this->anodeHu = (gcnew System::Windows::Forms::Label());
-		this->labelAnode = (gcnew System::Windows::Forms::Label());
-		this->bulbTemperature = (gcnew System::Windows::Forms::Label());
-		this->labelBulb = (gcnew System::Windows::Forms::Label());
-		this->statorTemperature = (gcnew System::Windows::Forms::Label());
-		this->statorLabel = (gcnew System::Windows::Forms::Label());
+		this->labelTubeData = (gcnew System::Windows::Forms::Label());
+		this->tubeTempOk = (gcnew System::Windows::Forms::Panel());
+		this->errorPanel = (gcnew System::Windows::Forms::Panel());
+		this->panel2 = (gcnew System::Windows::Forms::Panel());
+		this->errorPanelTitle = (gcnew System::Windows::Forms::Label());
+		this->panel1 = (gcnew System::Windows::Forms::Panel());
+		this->buttonCanc = (gcnew System::Windows::Forms::Button());
+		this->errorContent = (gcnew System::Windows::Forms::RichTextBox());
+		this->errpanel_erricon = (gcnew System::Windows::Forms::PictureBox());
+		this->errorTitle = (gcnew System::Windows::Forms::Label());
+		this->errorId = (gcnew System::Windows::Forms::Label());
+		this->errorButton = (gcnew System::Windows::Forms::Panel());
+		this->mainPanel = (gcnew System::Windows::Forms::Panel());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->xrayMode))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->batteryConnected))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->awsConnected))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->peripheralsConnected))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->doorClosed))->BeginInit();
-		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tubeTempOk))->BeginInit();
-		this->infoTubeData->SuspendLayout();
+		this->tubeTempOk->SuspendLayout();
+		this->errorPanel->SuspendLayout();
+		this->panel2->SuspendLayout();
+		this->panel1->SuspendLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errpanel_erricon))->BeginInit();
+		this->mainPanel->SuspendLayout();
 		this->SuspendLayout();
 		// 
 		// xrayMode
@@ -155,16 +191,6 @@ private:
 		this->doorClosed->TabIndex = 5;
 		this->doorClosed->TabStop = false;
 		// 
-		// tubeTempOk
-		// 
-		this->tubeTempOk->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->tubeTempOk->Location = System::Drawing::Point(410, 527);
-		this->tubeTempOk->Name = L"tubeTempOk";
-		this->tubeTempOk->Size = System::Drawing::Size(160, 160);
-		this->tubeTempOk->TabIndex = 6;
-		this->tubeTempOk->TabStop = false;
-		this->tubeTempOk->Click += gcnew System::EventHandler(this, &IdleForm::tubeTempOk_Click);
-		// 
 		// labelDate
 		// 
 		this->labelDate->AutoSize = true;
@@ -204,98 +230,155 @@ private:
 		this->labelTime->TabIndex = 9;
 		this->labelTime->Text = L"10:35 PM";
 		// 
-		// infoId
+		// labelTubeData
 		// 
-		this->infoId->AutoSize = true;
-		this->infoId->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->labelTubeData->AutoSize = true;
+		this->labelTubeData->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->infoId->Location = System::Drawing::Point(119, 37);
-		this->infoId->Name = L"infoId";
-		this->infoId->Size = System::Drawing::Size(70, 24);
-		this->infoId->TabIndex = 0;
-		this->infoId->Text = L"Info-ID";
+		this->labelTubeData->Location = System::Drawing::Point(87, 126);
+		this->labelTubeData->Name = L"labelTubeData";
+		this->labelTubeData->Size = System::Drawing::Size(70, 25);
+		this->labelTubeData->TabIndex = 10;
+		this->labelTubeData->Text = L"label1";
 		// 
-		// infoTubeData
+		// tubeTempOk
 		// 
-		this->infoTubeData->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->infoTubeData->Controls->Add(this->anodeHu);
-		this->infoTubeData->Controls->Add(this->labelAnode);
-		this->infoTubeData->Controls->Add(this->bulbTemperature);
-		this->infoTubeData->Controls->Add(this->labelBulb);
-		this->infoTubeData->Controls->Add(this->statorTemperature);
-		this->infoTubeData->Controls->Add(this->statorLabel);
-		this->infoTubeData->Controls->Add(this->infoId);
-		this->infoTubeData->Location = System::Drawing::Point(12, 317);
-		this->infoTubeData->Name = L"infoTubeData";
-		this->infoTubeData->Size = System::Drawing::Size(512, 204);
-		this->infoTubeData->TabIndex = 12;
-		this->infoTubeData->Click += gcnew System::EventHandler(this, &IdleForm::infoTubeData_Click);
+		this->tubeTempOk->Controls->Add(this->labelTubeData);
+		this->tubeTempOk->Location = System::Drawing::Point(410, 527);
+		this->tubeTempOk->Name = L"tubeTempOk";
+		this->tubeTempOk->Size = System::Drawing::Size(160, 160);
+		this->tubeTempOk->TabIndex = 11;
 		// 
-		// anodeHu
+		// errorPanel
 		// 
-		this->anodeHu->AutoSize = true;
-		this->anodeHu->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->errorPanel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(207)),
+			static_cast<System::Int32>(static_cast<System::Byte>(208)));
+		this->errorPanel->Controls->Add(this->panel2);
+		this->errorPanel->Controls->Add(this->panel1);
+		this->errorPanel->Controls->Add(this->errorContent);
+		this->errorPanel->Controls->Add(this->errpanel_erricon);
+		this->errorPanel->Controls->Add(this->errorTitle);
+		this->errorPanel->Controls->Add(this->errorId);
+		this->errorPanel->Location = System::Drawing::Point(0, 0);
+		this->errorPanel->Name = L"errorPanel";
+		this->errorPanel->Size = System::Drawing::Size(600, 1024);
+		this->errorPanel->TabIndex = 12;
+		// 
+		// panel2
+		// 
+		this->panel2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(174)),
+			static_cast<System::Int32>(static_cast<System::Byte>(191)));
+		this->panel2->Controls->Add(this->errorPanelTitle);
+		this->panel2->Location = System::Drawing::Point(0, 0);
+		this->panel2->Name = L"panel2";
+		this->panel2->Size = System::Drawing::Size(600, 90);
+		this->panel2->TabIndex = 17;
+		// 
+		// errorPanelTitle
+		// 
+		this->errorPanelTitle->AutoSize = true;
+		this->errorPanelTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 27.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->anodeHu->Location = System::Drawing::Point(374, 190);
-		this->anodeHu->Name = L"anodeHu";
-		this->anodeHu->Size = System::Drawing::Size(48, 24);
-		this->anodeHu->TabIndex = 6;
-		this->anodeHu->Text = L"20%";
+		this->errorPanelTitle->Location = System::Drawing::Point(36, 25);
+		this->errorPanelTitle->Name = L"errorPanelTitle";
+		this->errorPanelTitle->Size = System::Drawing::Size(275, 42);
+		this->errorPanelTitle->TabIndex = 16;
+		this->errorPanelTitle->Text = L"Error Windows";
 		// 
-		// labelAnode
+		// panel1
 		// 
-		this->labelAnode->AutoSize = true;
-		this->labelAnode->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->panel1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(174)),
+			static_cast<System::Int32>(static_cast<System::Byte>(191)));
+		this->panel1->Controls->Add(this->buttonCanc);
+		this->panel1->Location = System::Drawing::Point(0, 934);
+		this->panel1->Name = L"panel1";
+		this->panel1->Size = System::Drawing::Size(600, 90);
+		this->panel1->TabIndex = 16;
+		// 
+		// buttonCanc
+		// 
+		this->buttonCanc->BackColor = System::Drawing::Color::Transparent;
+		this->buttonCanc->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->buttonCanc->FlatAppearance->BorderColor = System::Drawing::Color::Black;
+		this->buttonCanc->FlatAppearance->BorderSize = 0;
+		this->buttonCanc->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+		this->buttonCanc->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelAnode->Location = System::Drawing::Point(57, 190);
-		this->labelAnode->Name = L"labelAnode";
-		this->labelAnode->Size = System::Drawing::Size(243, 24);
-		this->labelAnode->TabIndex = 5;
-		this->labelAnode->Text = L"ANODE TEMPERATURE";
+		this->buttonCanc->Location = System::Drawing::Point(518, 10);
+		this->buttonCanc->Name = L"buttonCanc";
+		this->buttonCanc->Size = System::Drawing::Size(70, 70);
+		this->buttonCanc->TabIndex = 15;
+		this->buttonCanc->UseVisualStyleBackColor = false;
+		this->buttonCanc->Click += gcnew System::EventHandler(this, &IdleForm::buttonCanc_Click);
 		// 
-		// bulbTemperature
+		// errorContent
 		// 
-		this->bulbTemperature->AutoSize = true;
-		this->bulbTemperature->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->errorContent->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(207)),
+			static_cast<System::Int32>(static_cast<System::Byte>(208)));
+		this->errorContent->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+		this->errorContent->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->bulbTemperature->Location = System::Drawing::Point(374, 160);
-		this->bulbTemperature->Name = L"bulbTemperature";
-		this->bulbTemperature->Size = System::Drawing::Size(48, 24);
-		this->bulbTemperature->TabIndex = 4;
-		this->bulbTemperature->Text = L"20%";
+		this->errorContent->Location = System::Drawing::Point(40, 337);
+		this->errorContent->Name = L"errorContent";
+		this->errorContent->Size = System::Drawing::Size(520, 550);
+		this->errorContent->TabIndex = 14;
+		this->errorContent->Text = L"";
 		// 
-		// labelBulb
+		// errpanel_erricon
 		// 
-		this->labelBulb->AutoSize = true;
-		this->labelBulb->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->errpanel_erricon->Location = System::Drawing::Point(40, 137);
+		this->errpanel_erricon->Name = L"errpanel_erricon";
+		this->errpanel_erricon->Size = System::Drawing::Size(160, 145);
+		this->errpanel_erricon->TabIndex = 13;
+		this->errpanel_erricon->TabStop = false;
+		// 
+		// errorTitle
+		// 
+		this->errorTitle->AutoSize = true;
+		this->errorTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelBulb->Location = System::Drawing::Point(57, 160);
-		this->labelBulb->Name = L"labelBulb";
-		this->labelBulb->Size = System::Drawing::Size(221, 24);
-		this->labelBulb->TabIndex = 3;
-		this->labelBulb->Text = L"BULB TEMPERATURE";
+		this->errorTitle->Location = System::Drawing::Point(249, 226);
+		this->errorTitle->Name = L"errorTitle";
+		this->errorTitle->Size = System::Drawing::Size(256, 29);
+		this->errorTitle->TabIndex = 10;
+		this->errorTitle->Text = L"Xray Push Button Error";
+		this->errorTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
-		// statorTemperature
+		// errorId
 		// 
-		this->statorTemperature->AutoSize = true;
-		this->statorTemperature->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->errorId->AutoSize = true;
+		this->errorId->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 27.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->statorTemperature->Location = System::Drawing::Point(374, 130);
-		this->statorTemperature->Name = L"statorTemperature";
-		this->statorTemperature->Size = System::Drawing::Size(48, 24);
-		this->statorTemperature->TabIndex = 2;
-		this->statorTemperature->Text = L"20%";
+		this->errorId->Location = System::Drawing::Point(247, 169);
+		this->errorId->Name = L"errorId";
+		this->errorId->Size = System::Drawing::Size(154, 42);
+		this->errorId->TabIndex = 12;
+		this->errorId->Text = L"E00001";
 		// 
-		// statorLabel
+		// errorButton
 		// 
-		this->statorLabel->AutoSize = true;
-		this->statorLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-			static_cast<System::Byte>(0)));
-		this->statorLabel->Location = System::Drawing::Point(57, 130);
-		this->statorLabel->Name = L"statorLabel";
-		this->statorLabel->Size = System::Drawing::Size(253, 24);
-		this->statorLabel->TabIndex = 1;
-		this->statorLabel->Text = L"STATOR TEMPERATURE";
+		this->errorButton->Location = System::Drawing::Point(30, 834);
+		this->errorButton->Name = L"errorButton";
+		this->errorButton->Size = System::Drawing::Size(160, 160);
+		this->errorButton->TabIndex = 13;
+		this->errorButton->Click += gcnew System::EventHandler(this, &IdleForm::errorButton_Click);
+		// 
+		// mainPanel
+		// 
+		this->mainPanel->Controls->Add(this->labelDate);
+		this->mainPanel->Controls->Add(this->errorButton);
+		this->mainPanel->Controls->Add(this->labelInstallation);
+		this->mainPanel->Controls->Add(this->labelTime);
+		this->mainPanel->Controls->Add(this->tubeTempOk);
+		this->mainPanel->Controls->Add(this->xrayMode);
+		this->mainPanel->Controls->Add(this->doorClosed);
+		this->mainPanel->Controls->Add(this->batteryConnected);
+		this->mainPanel->Controls->Add(this->peripheralsConnected);
+		this->mainPanel->Controls->Add(this->awsConnected);
+		this->mainPanel->Location = System::Drawing::Point(1000, 0);
+		this->mainPanel->Name = L"mainPanel";
+		this->mainPanel->Size = System::Drawing::Size(600, 1024);
+		this->mainPanel->TabIndex = 14;
 		// 
 		// IdleForm
 		// 
@@ -303,16 +386,8 @@ private:
 			static_cast<System::Int32>(static_cast<System::Byte>(60)));
 		this->ClientSize = System::Drawing::Size(600, 1024);
 		this->ControlBox = false;
-		this->Controls->Add(this->infoTubeData);
-		this->Controls->Add(this->labelTime);
-		this->Controls->Add(this->labelInstallation);
-		this->Controls->Add(this->labelDate);
-		this->Controls->Add(this->tubeTempOk);
-		this->Controls->Add(this->doorClosed);
-		this->Controls->Add(this->peripheralsConnected);
-		this->Controls->Add(this->awsConnected);
-		this->Controls->Add(this->batteryConnected);
-		this->Controls->Add(this->xrayMode);
+		this->Controls->Add(this->mainPanel);
+		this->Controls->Add(this->errorPanel);
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 		this->Name = L"IdleForm";
 		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
@@ -321,11 +396,17 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->awsConnected))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->peripheralsConnected))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->doorClosed))->EndInit();
-		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tubeTempOk))->EndInit();
-		this->infoTubeData->ResumeLayout(false);
-		this->infoTubeData->PerformLayout();
+		this->tubeTempOk->ResumeLayout(false);
+		this->tubeTempOk->PerformLayout();
+		this->errorPanel->ResumeLayout(false);
+		this->errorPanel->PerformLayout();
+		this->panel2->ResumeLayout(false);
+		this->panel2->PerformLayout();
+		this->panel1->ResumeLayout(false);
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errpanel_erricon))->EndInit();
+		this->mainPanel->ResumeLayout(false);
+		this->mainPanel->PerformLayout();
 		this->ResumeLayout(false);
-		this->PerformLayout();
 
 	}
 #pragma endregion
@@ -339,7 +420,8 @@ private:
 
 
 
-private: System::Void infoTubeData_Click(System::Object^ sender, System::EventArgs^ e);
-private: System::Void tubeTempOk_Click(System::Object^ sender, System::EventArgs^ e);
+private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
+private: System::Void buttonCanc_Click(System::Object^ sender, System::EventArgs^ e);
+
 };
 

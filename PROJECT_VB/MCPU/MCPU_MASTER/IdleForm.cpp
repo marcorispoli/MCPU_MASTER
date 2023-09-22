@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "IdleForm.h"
 
+#define MAIN_PANEL 1
+#define ERROR_PANEL 2
+
+
+// Main Panel Definition
 #define BACKGROUND Image::FromFile("GUI\\IdleForm\\IdleFormBackground.PNG")
 #define XRAY_MODE Image::FromFile("GUI\\IdleForm\\XrayMode.PNG")
 #define BATTERY_CONNECTED Image::FromFile("GUI\\IdleForm\\Battery\\BatteryConnected.PNG")
@@ -9,8 +14,15 @@
 #define AWS_CONNECTED Image::FromFile("GUI\\IdleForm\\AwsConnected.PNG")
 #define PERIPHERALS_CONNECTED Image::FromFile("GUI\\IdleForm\\PeripheralsConnected.PNG")
 #define DOOR_CLOSED Image::FromFile("GUI\\IdleForm\\DoorClosed.PNG")
-#define TUBE_TEMP_OK Image::FromFile("GUI\\IdleForm\\TubeTempOk.PNG")
-#define INFO_TUBE_BACKGROUND Image::FromFile("GUI\\Windows\\infoWindow.PNG")
+#define TUBE_TEMP_OK Image::FromFile("GUI\\IdleForm\\tubeTempOk.PNG")
+#define TUBE_TEMP_NOK Image::FromFile("GUI\\IdleForm\\tubeTempNok.PNG")
+#define ERRORPANEL_ERRORICON Image::FromFile("GUI\\Icons\\error_160x145.PNG")
+#define ERROR_BUTTON Image::FromFile("GUI\\IdleForm\\AlarmOn.PNG")
+
+// Error Panel Definition
+#define ERROR_PANEL_CANC_BUTTON Image::FromFile("GUI\\Icons\\close_65x65.PNG")
+#define ERROR_PANEL_NEXT_BUTTON Image::FromFile("GUI\\Icons\\arrow_80x80_r.PNG")
+
 
 namespace IDLESTATUS {
 	typedef struct {
@@ -29,6 +41,7 @@ namespace IDLESTATUS {
 		unsigned char anode;
 		unsigned char stator;
 		unsigned char bulb;
+		bool alarm;
 
 	}tubeStatus;
 
@@ -40,6 +53,7 @@ namespace IDLESTATUS {
 		bool closed_door;
 		bool aws_connected;
 		bool peripherals_connected;
+		unsigned char currentPanel;
 	}Registers;
 };
 
@@ -49,10 +63,13 @@ void IdleForm::formInitialization(void) {
 	// Initialize the position of the form
 	this->Left = GlobalObjects::monitor_X0;
 	this->Top = GlobalObjects::monitor_Y0;
-	this->BackgroundImage = BACKGROUND;
-	
-	
-	
+
+	IDLESTATUS::Registers.currentPanel = MAIN_PANEL;
+	mainPanel->Show();
+	errorPanel->Hide();
+
+	mainPanel->SetBounds(0, 0, 600, 1024);
+	mainPanel->BackgroundImage = BACKGROUND;
 
 	this->xrayMode->BackgroundImage = XRAY_MODE;
 	this->xrayMode->Hide();
@@ -99,20 +116,33 @@ void IdleForm::formInitialization(void) {
 	if(!IDLESTATUS::Registers.closed_door) this->doorClosed->Hide();
 	else this->doorClosed->Show();
 	
-	// Handles the Tube temperature 
-	infoTubeData->SetBounds(20, 337, 560, 370);
-	infoTubeData->BackgroundImage = INFO_TUBE_BACKGROUND;
-	infoTubeData->BackColor = Color::Transparent;
-	infoTubeData->Hide();
-
+	
 	IDLESTATUS::Registers.tube.anode = 0;
 	IDLESTATUS::Registers.tube.stator = 0;
 	IDLESTATUS::Registers.tube.bulb = 0;
+	IDLESTATUS::Registers.tube.alarm = false;
+
+	labelTubeData->Text = "0 %";
+	labelTubeData->BackColor = Color::Transparent;
+
 	this->tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
 	this->tubeTempOk->BackColor = Color::Transparent;
 	this->tubeTempOk->Show();
 
+	// Error Button
+	errorButton->BackgroundImage = ERROR_BUTTON;
+	errorButton->Hide();
 
+	// Build the Error Panel
+	errorPanelTitle->Text = pTRANSLATE->title("ERROR_WINDOW_PANEL");
+	errorPanel->SetBounds(0, 0, 600, 1024);
+	errpanel_erricon->BackgroundImage = ERRORPANEL_ERRORICON;
+	errpanel_erricon->SetBounds(40, 137, 160, 145);
+	errorId->Location =  Point(247, 169);
+	errorTitle->Location = Point(249, 226);
+	errorContent->SetBounds(40,337, 520, 550);
+	buttonCanc->SetBounds(518, 10, 70, 70);
+	buttonCanc->BackgroundImage = ERROR_PANEL_CANC_BUTTON;
 }
 
 void IdleForm::initIdleStatus(void) {
@@ -171,8 +201,13 @@ void IdleForm::idleStatusManagement(void) {
 	if (IDLESTATUS::Registers.closed_door != GantryStatusRegisters::SafetyStatusRegister::getCloseDoor())
 	{
 		IDLESTATUS::Registers.closed_door = GantryStatusRegisters::SafetyStatusRegister::getCloseDoor();
-		if (!IDLESTATUS::Registers.closed_door) this->doorClosed->Hide();
-		else this->doorClosed->Show();
+		if (!IDLESTATUS::Registers.closed_door) {
+			this->doorClosed->Hide();
+			pERRORS->activate("DOOR_STUDY_OPEN", false);
+		}
+		else {
+			this->doorClosed->Show();			
+		}
 	}
 
 	// Handles the AWS connection status
@@ -201,13 +236,37 @@ void IdleForm::idleStatusManagement(void) {
 	}
 
 	if ((GantryStatusRegisters::TubeDataRegister::getBulb() != IDLESTATUS::Registers.tube.bulb) ||
-		(GantryStatusRegisters::TubeDataRegister::getStator() != IDLESTATUS::Registers.tube.stator)) {
+		(GantryStatusRegisters::TubeDataRegister::getStator() != IDLESTATUS::Registers.tube.stator) ||
+		(GantryStatusRegisters::TubeDataRegister::getAnode() != IDLESTATUS::Registers.tube.anode)
+		) {
 		IDLESTATUS::Registers.tube.bulb = GantryStatusRegisters::TubeDataRegister::getBulb();
 		IDLESTATUS::Registers.tube.stator = GantryStatusRegisters::TubeDataRegister::getStator();
+		IDLESTATUS::Registers.tube.anode = GantryStatusRegisters::TubeDataRegister::getAnode();
+
 		
-		if ((IDLESTATUS::Registers.tube.bulb > 90) || (IDLESTATUS::Registers.tube.stator > 90)) tubeTempOk->BackgroundImage = nullptr;
-		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
-		
+		int max = IDLESTATUS::Registers.tube.bulb;
+		if (IDLESTATUS::Registers.tube.stator > max) max = IDLESTATUS::Registers.tube.stator;
+		if (IDLESTATUS::Registers.tube.anode > max) max = IDLESTATUS::Registers.tube.anode;
+		labelTubeData->Text = max.ToString() + " %";
+
+		if ((max > 90) && (!IDLESTATUS::Registers.tube.alarm)) {
+			IDLESTATUS::Registers.tube.alarm = true;
+			tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;
+			pERRORS->activate(ERROR_TUBE, false);
+		}else if ((max <= 90) && (IDLESTATUS::Registers.tube.alarm)) {
+			IDLESTATUS::Registers.tube.alarm = false;
+			tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
+			pERRORS->deactivate(ERROR_TUBE);
+		}
+
+	}
+
+	if (pERRORS->isError()) {
+		errorButton->Show();
+	}else errorButton->Hide();
+
+	if ((pERRORS->isNewError()) || (pERRORS->isUpdateError())) {
+		openErrorWindow(true);
 	}
 
 }
@@ -241,13 +300,73 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 	Form::WndProc(m);
 }
 
-void IdleForm::infoTubeData_Click(System::Object^ sender, System::EventArgs^ e) {
-	infoTubeData->Hide();
+void IdleForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	
+	openErrorWindow(true);
 }
 
-void IdleForm::tubeTempOk_Click(System::Object^ sender, System::EventArgs^ e) {
-	bulbTemperature->Text = IDLESTATUS::Registers.tube.bulb.ToString() + " %";
-	statorTemperature->Text = IDLESTATUS::Registers.tube.stator.ToString() + " %";
-	anodeHu->Text = IDLESTATUS::Registers.tube.anode.ToString() + " %";
-	infoTubeData->Show();
+void IdleForm::openErrorWindow(bool status) {
+	static bool local_status = false;
+	Translate::item^ msgit;
+
+	// Closing condition
+	if ((status == false) && (local_status)) {
+		local_status = false;
+		mainPanel->Show();
+		errorPanel->Hide();
+		return;
+	}
+
+
+	// Open Window section
+	
+	// Set the new error in evidence 
+	Errors::item^ newitem = pERRORS->getCurrent();
+	if ((!pERRORS->isUpdateError()) && (local_status)) return;  // The panel is already open and no update on the error queue
+	pERRORS->clrUpdate();
+
+	local_status = true;
+
+	// Clear the Error content box
+	errorContent->Text = "";
+
+	if (newitem) {
+		msgit = pTRANSLATE->getItem(newitem->errmsg);
+
+		errorTitle->Text = msgit->title;
+		errorId->Text = msgit->id;
+
+		// Populate the first box of the error content box
+		errorContent->Text += msgit->id + ": " + msgit->title + "\n";
+		errorContent->Text += msgit->content + "\n";
+		errorContent->Text += "----------------------------------------------------------------------\n";
+	}
+	else {
+		errorTitle->Text = "";
+		errorId->Text = "";
+	}
+	
+
+	// Populate the remaining boxes of the whole set of errors
+	for (int i = 0; i < pERRORS->list->Count; i++) {
+		if (i == pERRORS->current) continue;
+		msgit = pTRANSLATE->getItem(pERRORS->list[i]->errmsg);
+
+		errorContent->Text += msgit->id + ": " + msgit->title + "\n";
+		errorContent->Text += msgit->content + "\n";
+		errorContent->Text += "----------------------------------------------------------------------\n";
+	}
+
+	pERRORS->clrNewError();
+	pERRORS->clrOneShotErrors();
+
+	
+	mainPanel->Hide();
+	errorPanel->Show();
+
 }
+
+void IdleForm::buttonCanc_Click(System::Object^ sender, System::EventArgs^ e) {
+	openErrorWindow(false);
+}
+

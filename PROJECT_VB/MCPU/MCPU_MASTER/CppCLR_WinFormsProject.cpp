@@ -30,6 +30,10 @@ int main()
 
   Debug::WriteLine("DETECTED MONITORS:" + monitors.ToString());
 
+  GlobalObjects::pTranslate = gcnew Translate("ENG");
+  GlobalObjects::pErrors = gcnew Errors();
+
+
   for (int i = 0; i < monitors; i++) {
 	  H = Screen::AllScreens[i]->Bounds.Height;
 	  W = Screen::AllScreens[i]->Bounds.Width;

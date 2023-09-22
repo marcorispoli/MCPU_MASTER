@@ -23,5 +23,7 @@
 #include "PCB304.h"
 #include "PCB315.h"
 #include "SystemConfig.h"
+#include "Translate.h"
+#include "Errors.h"
 
 #endif //PCH_H

@@ -18,6 +18,12 @@
 #include "CanOpenMotor.h"
 #include "TiltMotor.h"
 #include "PCB301.h"
-
+#include "PCB302.h"
+#include "PCB303.h"
+#include "PCB304.h"
+#include "PCB315.h"
+#include "SystemConfig.h"
+#include "Translate.h"
+#include "Errors.h"
 
 #endif //PCH_H

@@ -13,6 +13,7 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     rx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tmo = true;
+    attempt = 0;
 
     // Creates the Reception event
     rxEvent = CreateEvent(
@@ -44,33 +45,41 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
     // Be careful!! This call is runing into the program thread pull, out of the class thread.
     bool bootloader = false;
 
-    // No data is expected
-    if (!rx_pending) return;
-
-    // Only 8-byte frame is accepted
-    if (len < 8) return; // Invalid message length
+    
+    if ( 
+        (!rx_pending) || // No data is expected 
+        (len < 8) // Only 8-byte frame is accepted
+        )
+    {        
+        return;
+    }
+    
 
     // Checks the canId address
     if (canid == device_id + 0x140) bootloader = false;
     else if (canid == device_id + 0x100) bootloader = true;
-    else return; // Not a device frame
+    else
+    {
+        return; // Not a target
+    }
 
-    // Wrong destination
-    if (bootloader != tx_register->bootloader) return;
-
-    // CRC error
-    if(!rx_register->decode(data, bootloader)) return;
-
-    // First byte equal for both protocols
-    if (rx_register->b0 != tx_register->b0)  return;
-
-    // The command equals only for non bootloader frames
-    if ((!bootloader) && (rx_register->b1 != tx_register->b1))  return;
-
+    
+    if (
+        (bootloader != tx_register->bootloader) ||  // Wrong destination
+        (!rx_register->decode(data, bootloader)) || // CRC error
+        (rx_register->b0 != tx_register->b0) ||     // First byte equal for both protocols
+        ((!bootloader) && (rx_register->b1 != tx_register->b1))// The command equals only for non bootloader frames
+        )
+    {
+        SetEvent(rxEvent);
+        return;
+    }
+    
 
     // Checks that the received Object registers matches with the expected    
-    rx_pending = false;
-    
+    rx_pending = false;    
+    rxOk = true;
+
     // Wake the waiting command
     SetEvent(rxEvent);
 
@@ -82,6 +91,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     unsigned char buffer[8];
     DWORD dwWaitResult;
     unsigned short canid;
+
 
     if (bootl) {
         canid = device_id + 0x100;
@@ -95,31 +105,32 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         tx_register->format(buffer);
         buffer[7] = tx_register->crc;
     }
-            
     
-    
-    // Repeats five times before fail
-    for (int i = 0; i < 5; i++) {
-
-        // Activates the transmission
-        CanDriver::multithread_send(canid, buffer, 8);
-        rx_pending = true;
-
-        // Waits to be signalled: waits for 50ms
-        dwWaitResult = WaitForSingleObject(rxEvent, 200);
-        rx_pending = false;
-
-
-        // Checks if the Event has been signalled or it is a timeout event.
-        if (dwWaitResult != WAIT_OBJECT_0)
-            continue;
-        
-        tmo = false;
-        return true;
+    if(!tmo)  attempt++;
+    if (attempt > 10) {
+        if(!tmo) Debug::WriteLine("Device Board <" + Convert::ToString(device_id) + ">: TMO");
+        tmo = true;
     }
 
-    tmo = true;
-    return false;
+    // Activates the transmission
+    rxOk = false;
+    if (!CanDriver::multithread_send(canid, buffer, 8))   return false;
+
+    rx_pending = true;
+
+    // Waits to be signalled: waits for 50ms
+    dwWaitResult = WaitForSingleObject(rxEvent, 20);
+    rx_pending = false;
+
+
+    // Checks if the Event has been signalled or it is a timeout event.
+    if (dwWaitResult != WAIT_OBJECT_0) return false;
+    if (!rxOk) return false;
+
+    attempt=0;
+    tmo = false;
+    return true;
+    
 }
 
 

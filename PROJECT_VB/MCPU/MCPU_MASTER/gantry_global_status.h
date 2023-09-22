@@ -10,22 +10,26 @@ using namespace System::Collections::Generic;
 ref class GlobalObjects
 {
 public:
-
+    #define pTRANSLATE ((Translate^) GlobalObjects::pTranslate)
+    #define pERRORS ((Errors^) GlobalObjects::pErrors)
     #define pIDLEFORM  ((IdleForm^) GlobalObjects::pIdleForm)
     #define pAWS ((awsProtocol^) GlobalObjects::pAws)
     #define pCAN ((CanDriver^) GlobalObjects::pCan)
+
     #define pFW301 ((PCB301^) GlobalObjects::pFw301)
-    
-    #define pFW302 ((CanDeviceProtocol^) GlobalObjects::pFw302)
-    #define pFW303 ((CanDeviceProtocol^) GlobalObjects::pFw303)
-    #define pFW304 ((CanDeviceProtocol^) GlobalObjects::pFw304)
-    #define pFW315 ((CanDeviceProtocol^) GlobalObjects::pFw315)
+    #define pFW302 ((PCB302^) GlobalObjects::pFw302)
+    #define pFW303 ((PCB303^) GlobalObjects::pFw303)
+    #define pFW304 ((PCB304^) GlobalObjects::pFw304)
+    #define pFW315 ((PCB315^) GlobalObjects::pFw315)
+
     #define pMBODY ((CanOpenMotor^) GlobalObjects::pMotBody)
     #define pMTILT ((TiltMotor^) GlobalObjects::pMotTilt)
     #define pMARM  ((CanOpenMotor^) GlobalObjects::pMotArm)
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
     #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
 
+    static Object^ pTranslate = nullptr;
+    static Object^ pErrors = nullptr;
     static Object^ pAws = nullptr; //!< Pointer to the AWS interface
     static Object^ pCan = nullptr; //!< Pointer to the Can Driver
 
@@ -92,6 +96,9 @@ namespace GantryStatusRegisters {
     delegate void delegate_string_callback(String^ str); //!< This is the delegate of the function with a string as parameter();
     delegate void delegate_int_callback(int i); //!< This is the delegate of the function with an integer as parameter();
     delegate void delegate_activation_completed(unsigned short id, int error);//!< This is the delegate of the activation_completed_event();
+
+    static void dataLock(void);
+    static void dataUnlock(void);
 
     template <class T>
     ref class enumType {
@@ -1788,7 +1795,9 @@ namespace GantryStatusRegisters {
         /// <returns>Number of available exposures</returns>
         static unsigned short getExposures(void) { return availableExposure; }
 
+        static void setTubeTemp(unsigned char stator, unsigned char bulb);
 
+    private:
         static unsigned char  anodeHu = 0;     //!< Cumulated Anode HU %
         static unsigned char  bulbHeat = 0;    //!< Cumulated Bulb Heat %
         static unsigned char  statorHeat = 0;  //!< Cumulated Stator Heat %

@@ -2,7 +2,7 @@
 #include "MainForm.h"
 #include "IdleForm.h"
 
-#include "SystemConfig.h"
+
 #include "CanOpenMotor.h"
 #include "TiltMotor.h"
 #include "CanDeviceProtocol.h"
@@ -153,7 +153,7 @@ bool MainForm::Startup_PCB302(void) {
 	case 0: // Creates the PCB302 process
 		labelPcb302Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb302 initialization ..\n";
-		GlobalObjects::pFw302 = gcnew CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE");
+		GlobalObjects::pFw302 = gcnew PCB302();
 		startupSubFase++;
 		break;
 
@@ -187,7 +187,7 @@ bool MainForm::Startup_PCB303(void) {
 	case 0: // Creates the PCB303 process
 		labelPcb303Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb303 initialization ..\n";
-		GlobalObjects::pFw303 = gcnew CanDeviceProtocol(0x12, L"COMPRESSOR_DEVICE");
+		GlobalObjects::pFw303 = gcnew PCB303();
 		startupSubFase++;
 		break;
 
@@ -221,7 +221,7 @@ bool MainForm::Startup_PCB304(void) {
 	case 0: // Creates the PCB304 process
 		labelPcb304Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb304 initialization ..\n";
-		GlobalObjects::pFw304 = gcnew CanDeviceProtocol(0x14, L"COMPRESSOR_DEVICE");
+		GlobalObjects::pFw304 = gcnew PCB304();
 		startupSubFase++;
 		break;
 
@@ -255,7 +255,7 @@ bool MainForm::Startup_PCB315(void) {
 	case 0: // Creates the PCB315 process
 		labelPcb315Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb315 initialization ..\n";
-		GlobalObjects::pFw315 = gcnew CanDeviceProtocol(0x13, L"COMPRESSOR_DEVICE");
+		GlobalObjects::pFw315 = gcnew PCB315();
 		startupSubFase++;
 		break;
 

@@ -7,6 +7,13 @@ public:
     static const String^ FILENAME = "SystemInit.cnf";
     static const int     FILE_REVISION = 1;
 
+    //___________________________________________________________________________________________________//
+    static const String^ PARAM_INSTALLATION_NAME = "INSTALL_NAME";
+    static const String^ PARAM_INSTALLATION_NAME_COMMENT = "Name of the installation";
+    static const int     PARAM_INSTALLATION_NAME_TOP = 0;
+    static const String^ PARAM_INSTALLATION_NAME_TOP_DEFAULT = "FACTORY INSTALLATION";
+
+    //___________________________________________________________________________________________________//
     static const String^    PARAM_PACKAGE = "PACKAGE";
     static const String^    PARAM_PACKAGE_COMMENT = "Package revision set";
     static const int        PARAM_PACKAGE_ID = 0;
@@ -26,6 +33,7 @@ public:
     static const String^    PARAM_PACKAGE_FWCAN_DEFAULT = "0.1";
     static const String^    PARAM_PACKAGE_FWGEN_DEFAULT = "0.1";
 
+    //___________________________________________________________________________________________________//
     static const String^    PARAM_AWS_CONNECTIONS = "CONNECTIONS";
     static const String^    PARAM_AWS_CONNECTIONS_COMMENT = "Addresses of the connections with the AWS";
     static const int        PARAM_AWS_CONNECTIONS_IP = 0;
@@ -40,6 +48,10 @@ public:
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
+            CONFIG_FILE_ITEM(PARAM_INSTALLATION_NAME, PARAM_INSTALLATION_NAME_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_INSTALLATION_NAME_TOP_DEFAULT,            
+            }),
+
             CONFIG_FILE_ITEM(PARAM_PACKAGE, PARAM_PACKAGE_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_PACKAGE_ID_DEFAULT,
             PARAM_PACKAGE_FW301_DEFAULT, 

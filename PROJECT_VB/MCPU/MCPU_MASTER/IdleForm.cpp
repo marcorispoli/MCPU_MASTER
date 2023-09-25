@@ -1,8 +1,11 @@
 #include "pch.h"
 #include "IdleForm.h"
 
-#define MAIN_PANEL 1
-#define ERROR_PANEL 2
+// Window Panels 
+#define MAIN_PANEL			1
+#define ERROR_PANEL			2
+
+
 
 
 // Main Panel Definition
@@ -23,6 +26,8 @@
 #define ERROR_PANEL_CANC_BUTTON Image::FromFile("GUI\\Icons\\close_65x65.PNG")
 #define ERROR_PANEL_NEXT_BUTTON Image::FromFile("GUI\\Icons\\arrow_80x80_r.PNG")
 
+// Error Window timeout
+#define ERROR_WINDOW_TMO	15000
 
 namespace IDLESTATUS {
 	typedef struct {
@@ -143,14 +148,21 @@ void IdleForm::formInitialization(void) {
 	errorContent->SetBounds(40,337, 520, 550);
 	buttonCanc->SetBounds(518, 10, 70, 70);
 	buttonCanc->BackgroundImage = ERROR_PANEL_CANC_BUTTON;
+
+	idleTimer = gcnew System::Timers::Timer(100);
+	idleTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onIdleTimeout);
+	idleTimer->Stop();
+
+	errorPanelTimer = gcnew System::Timers::Timer(2000);
+	errorPanelTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onErrorTimeout);
+	errorPanelTimer->Stop();
+
 }
 
 void IdleForm::initIdleStatus(void) {
 
-	// Start the startup session
-	idleTimer = gcnew System::Timers::Timer(100);
-	idleTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onIdleTimeout);
-	idleTimer->Start();
+	// Start the startup session	
+	idleTimer->Start();	
 
 }
 
@@ -280,8 +292,8 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 		idleStatusManagement();
 		break;
 
-	case (WM_USER + 2):
-
+	case (WM_USER + 2): // onErrorTimeout
+		openErrorWindow(false);
 		break;
 	case (WM_USER + 3):
 
@@ -308,17 +320,18 @@ void IdleForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
 void IdleForm::openErrorWindow(bool status) {
 	static bool local_status = false;
 	Translate::item^ msgit;
+	
+	// Stops the exit timer
+	errorPanelTimer->Stop();
 
 	// Closing condition
 	if ((status == false) && (local_status)) {
 		local_status = false;
 		mainPanel->Show();
-		errorPanel->Hide();
+		errorPanel->Hide();		
 		return;
 	}
 
-
-	// Open Window section
 	
 	// Set the new error in evidence 
 	Errors::item^ newitem = pERRORS->getCurrent();
@@ -326,9 +339,7 @@ void IdleForm::openErrorWindow(bool status) {
 	pERRORS->clrUpdate();
 
 	local_status = true;
-
-	// Clear the Error content box
-	errorContent->Text = "";
+	errorPanelTimer->Start();
 
 	if (newitem) {
 		msgit = pTRANSLATE->getItem(newitem->errmsg);
@@ -336,28 +347,22 @@ void IdleForm::openErrorWindow(bool status) {
 		errorTitle->Text = msgit->title;
 		errorId->Text = msgit->id;
 
-		// Populate the first box of the error content box
-		errorContent->Text += msgit->id + ": " + msgit->title + "\n";
-		errorContent->Text += msgit->content + "\n";
-		errorContent->Text += "----------------------------------------------------------------------\n";
 	}
 	else {
 		errorTitle->Text = "";
 		errorId->Text = "";
 	}
-	
 
-	// Populate the remaining boxes of the whole set of errors
-	for (int i = 0; i < pERRORS->list->Count; i++) {
-		if (i == pERRORS->current) continue;
-		msgit = pTRANSLATE->getItem(pERRORS->list[i]->errmsg);
+	// Clear the Error content box
+	errorContent->Text = "";
 
-		errorContent->Text += msgit->id + ": " + msgit->title + "\n";
-		errorContent->Text += msgit->content + "\n";
-		errorContent->Text += "----------------------------------------------------------------------\n";
-	}
+	// Set the Content space with the list of active errors
+	errorContent->Text = pERRORS->getListOfErrors();
 
+	// Clears the index of the last occurred error
 	pERRORS->clrNewError();
+
+	// Refresh the Error queue removing the one_shot flagged errors
 	pERRORS->clrOneShotErrors();
 
 	

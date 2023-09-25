@@ -43,7 +43,27 @@ public:
 	}
 
 	String^ getListOfErrors(void) {
+		String^ errlist = "";
+		Translate::item^ msgit;
+		
 
+		// Set the current error in the Top position of the string
+		if (current >= 0) {
+			msgit = pTRANSLATE->getItem(pERRORS->list[current]->errmsg);
+			errlist += msgit->id + ": " + msgit->title + "\n";
+			errlist += msgit->content + "\n\n";
+		}
+
+		// Sets the remaining list
+		for (int i = 0; i < pERRORS->list->Count; i++) {
+			if (i == pERRORS->current) continue;
+			msgit = pTRANSLATE->getItem(pERRORS->list[i]->errmsg);
+
+			errlist += msgit->id + ": " + msgit->title + "\n";
+			errlist += msgit->content + "\n\n";
+		}
+
+		return errlist;
 	}
 
 	item^ getCurrent(void) {

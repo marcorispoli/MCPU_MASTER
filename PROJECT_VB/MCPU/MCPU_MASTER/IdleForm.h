@@ -13,6 +13,7 @@ public ref class IdleForm :  public System::Windows::Forms::Form
 
 public:
 	public:System::Timers::Timer^ idleTimer;
+public:System::Timers::Timer^ errorPanelTimer;
 private: System::Windows::Forms::Label^ labelDate;
 private: System::Windows::Forms::Label^ labelInstallation;
 private: System::Windows::Forms::Label^ labelTime;
@@ -416,6 +417,11 @@ private:
 	private: System::Void onIdleTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{
 		SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+	}
+
+	private: System::Void onErrorTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
+	{
+		SendNotifyMessageA(window, WM_USER + 2, 0, 0);
 	}
 
 

@@ -1,0 +1,334 @@
+.TH "GantryStatusRegisters::ArmStatusRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::ArmStatusRegister \- This is the status register of the Arm motorization\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBexposure_mode_options\fP { \fBARM_ENA\fP, \fBARM_DIS\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration option code for the Arm Mode option The Arm Mode Option enables or disables the check of the angle during the exposure\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_target_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBtarget_change_event()\fP;\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_validate_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBvalidate_change_event()\fP;\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_position_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBposition_change_event()\fP;\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBsetMode\fP (\fBexposure_mode_options\fP val)"
+.br
+.RI "This function set the Arm Exposure mode option (and related tag)\&. "
+.ti -1c
+.RI "static bool \fBsetMode\fP (String^ val)"
+.br
+.RI "This function set the Arm Exposure mode option tag (and related code)\&. "
+.ti -1c
+.RI "static void \fBvalidate\fP (bool stat)"
+.br
+.RI "This method validates or invalidates the Arm parameters\&. "
+.ti -1c
+.RI "static bool \fBisBusy\fP (void)"
+.br
+.RI "This funtion returns the Arm activation status\&. "
+.ti -1c
+.RI "static bool \fBsetTarget\fP (int pos, int low, int high, int id)"
+.br
+.RI "This function set the new target for the Arm position\&. "
+.ti -1c
+.RI "static void \fBupdateCurrentPosition\fP (int angle)"
+.br
+.RI "This function updates the current angle value\&. "
+.ti -1c
+.RI "static int \fBgetAngle\fP (void)"
+.br
+.RI "This function returns the current ARM angle, even if the command is not yet terminated\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const array< String^> ^ \fBexposure_mode_tags\fP = gcnew array<String^> { 'ARM_ENA', 'ARM_DIS', 'UNDEF'}"
+.br
+.RI "This is the option-tags static array\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_target_change\fP^ \fBtarget_change_event\fP"
+.br
+.RI "This event is generated whenver the arm target is changed\&. "
+.ti -1c
+.RI "static \fBdelegate_validate_change\fP^ \fBvalidate_change_event\fP"
+.br
+.RI "This event is generated whenver the arm target parameters are validated\&. "
+.ti -1c
+.RI "static \fBdelegate_position_change\fP^ \fBposition_change_event\fP"
+.br
+.RI "This event is generated whenver the trx position is updated\&. This is not the activation completion event! "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBexposure_mode_options\fP \fBexposure_mode\fP = \fBexposure_mode_options::UNDEF\fP"
+.br
+.RI "This is the current selected Arm Exposure Mode option code 
+.br
+ "
+.ti -1c
+.RI "static bool \fBposition_validated\fP = false"
+.br
+.RI "Validation status\&. "
+.ti -1c
+.RI "static int \fBposition_target\fP = 0"
+.br
+.RI "Validated target position\&. "
+.ti -1c
+.RI "static int \fBcurrent_angle\fP"
+.br
+.RI "Current Arm position\&. "
+.ti -1c
+.RI "static int \fBallowed_low\fP = 0"
+.br
+.RI "Lower acceptable angle (°) "
+.ti -1c
+.RI "static int \fBallowed_high\fP = 0"
+.br
+.RI "Higher acceptable angle (°) "
+.ti -1c
+.RI "static bool \fBexecuting\fP = false"
+.br
+.RI "Command is in execution\&. "
+.ti -1c
+.RI "static unsigned short \fBexecuting_id\fP = 0"
+.br
+.RI "AWS command Id\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the status register of the Arm motorization\&. 
+
+There are several features that this register allow to handle:
+.IP "\(bu" 2
+Arm Angle verification option: enables or disables the test on the angle validity during exposure;
+.IP "\(bu" 2
+Arm target angle and projection setting: allow to handles the arm positioning
+.PP
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::ArmStatusRegister::exposure_mode_options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration option code for the Arm Mode option The Arm Mode Option enables or disables the check of the angle during the exposure\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIARM_ENA \fP\fP
+Enables the Angle range check during exposure;\&. 
+.TP
+\fB\fIARM_DIS \fP\fP
+Disables the Angle range check during the exposure; 
+.br
+ 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_position_change (void)"
+
+.PP
+This is the delegate of the \fBposition_change_event()\fP;\&. 
+.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_target_change (void)"
+
+.PP
+This is the delegate of the \fBtarget_change_event()\fP;\&. 
+.SS "delegate void GantryStatusRegisters::ArmStatusRegister::delegate_validate_change (void)"
+
+.PP
+This is the delegate of the \fBvalidate_change_event()\fP;\&. 
+.SS "static int GantryStatusRegisters::ArmStatusRegister::getAngle (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the current ARM angle, even if the command is not yet terminated\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current angle (°) units
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ArmStatusRegister::isBusy (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This funtion returns the Arm activation status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if the Arm is executing a command
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ArmStatusRegister::setMode (\fBexposure_mode_options\fP val)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function set the Arm Exposure mode option (and related tag)\&. No change value event is generated 
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the option-code to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ArmStatusRegister::setMode (String^ val)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function set the Arm Exposure mode option tag (and related code)\&. No change value event is generated 
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::ArmStatusRegister::setTarget (int pos, int low, int high, int id)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function set the new target for the Arm position\&. If the target should change the event \fBvalidate_change_event()\fP and the event \fBtarget_change_event()\fP are generated\&.
+.PP
+The target is automatically validated!
+.PP
+\fBParameters\fP
+.RS 4
+\fIpos\fP target position in (°)
+.br
+\fIlow\fP lower acceptable range (°)
+.br
+\fIhigh\fP higher acceptable range (°)
+.br
+\fIid\fP identifier of the AWS command
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the target is validated
+.RE
+.PP
+
+.SS "static void GantryStatusRegisters::ArmStatusRegister::updateCurrentPosition (int angle)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function updates the current angle value\&. If the angle changes, the \fBposition_change_event()\fP is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIangle\fP This is the new angle in (°)
+.RE
+.PP
+
+.SS "static void GantryStatusRegisters::ArmStatusRegister::validate (bool stat)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method validates or invalidates the Arm parameters\&. In case the data are validated, the exposure process evaluate the correct position of the ARM\&. In case the data are invalidated the exposure cannot start\&.
+.PP
+When the validation status changes, the \fBvalidate_change_event()\fP is generated\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstat\fP 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int GantryStatusRegisters::ArmStatusRegister::allowed_high = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Higher acceptable angle (°) 
+.SS "int GantryStatusRegisters::ArmStatusRegister::allowed_low = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Lower acceptable angle (°) 
+.SS "int GantryStatusRegisters::ArmStatusRegister::current_angle\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Current Arm position\&. 
+.SS "bool GantryStatusRegisters::ArmStatusRegister::executing = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Command is in execution\&. 
+.SS "unsigned short GantryStatusRegisters::ArmStatusRegister::executing_id = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+AWS command Id\&. 
+.SS "\fBexposure_mode_options\fP GantryStatusRegisters::ArmStatusRegister::exposure_mode = \fBexposure_mode_options::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current selected Arm Exposure Mode option code 
+.br
+ 
+.SS "const array<String^> ^ GantryStatusRegisters::ArmStatusRegister::exposure_mode_tags = gcnew array<String^> { 'ARM_ENA', 'ARM_DIS', 'UNDEF'}\fC [static]\fP"
+
+.PP
+This is the option-tags static array\&. 
+.SS "int GantryStatusRegisters::ArmStatusRegister::position_target = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Validated target position\&. 
+.SS "bool GantryStatusRegisters::ArmStatusRegister::position_validated = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Validation status\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_position_change\fP^ GantryStatusRegisters::ArmStatusRegister::position_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the trx position is updated\&. This is not the activation completion event! Usage: \fBArmStatusRegister::position_change_event\fP += gcnew delegate_position_change(&some_class, some_class::func) 
+.SS "\fBdelegate_target_change\fP^ GantryStatusRegisters::ArmStatusRegister::target_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the arm target is changed\&. Usage: \fBArmStatusRegister::target_change_event\fP += gcnew delegate_target_change(&some_class, some_class::func) 
+.SS "\fBdelegate_validate_change\fP^ GantryStatusRegisters::ArmStatusRegister::validate_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the arm target parameters are validated\&. Usage: \fBArmStatusRegister::validate_change_event\fP += gcnew delegate_validate_change(&some_class, some_class::func) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -2,6 +2,8 @@
 
 #include <math.h>
 #include "ConfigFile.h"
+#include "Errors.h"
+
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -10,9 +12,10 @@ using namespace System::Collections::Generic;
 ref class GlobalObjects
 {
 public:
-    #define pTRANSLATE ((Translate^) GlobalObjects::pTranslate)
-    #define pERRORS ((Errors^) GlobalObjects::pErrors)
+    
     #define pIDLEFORM  ((IdleForm^) GlobalObjects::pIdleForm)
+    #define pOPERFORM  ((OperatingForm^) GlobalObjects::pOperatingForm)
+
     #define pAWS ((awsProtocol^) GlobalObjects::pAws)
     #define pCAN ((CanDriver^) GlobalObjects::pCan)
 
@@ -28,8 +31,7 @@ public:
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
     #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
 
-    static Object^ pTranslate = nullptr;
-    static Object^ pErrors = nullptr;
+    
     static Object^ pAws = nullptr; //!< Pointer to the AWS interface
     static Object^ pCan = nullptr; //!< Pointer to the Can Driver
 
@@ -49,9 +51,10 @@ public:
     // Monitor coordinates
     static int monitor_X0;//!< Pointer to the Monitor X0 position
     static int monitor_Y0;//!< Pointer to the Monitor Y0 position
-    
+    static String^ applicationResourcePath; //!< This is the current application resource path
     // Forms
     static Object^ pIdleForm = nullptr; //!< Pointer to the IdleForm 
+    static Object^ pOperatingForm = nullptr; //!< Pointer to the OperatingForm 
     
 };
 
@@ -856,9 +859,10 @@ namespace GantryStatusRegisters {
         }
 
         static bool setIdle(void) {
-            if (operating_status != options::GANTRY_SERVICE) return false;
-            operating_status = options::GANTRY_IDLE;
-            operating_status_change_event();
+            if (operating_status != options::GANTRY_IDLE) {
+                operating_status = options::GANTRY_IDLE;
+                operating_status_change_event();
+            }            
             return true;
         }
 
@@ -1006,25 +1010,7 @@ namespace GantryStatusRegisters {
     };
 
 
-    /// <summary>
-    /// This is the Error handling register
-    /// \ingroup globalModule 
-    ///
-    /// Work in Progress .....
-    /// </summary>
-    ref class ErrorRegister {
-    public:
-        static bool isError(void) { return error_status; }
-
-    private:
-        static bool        error_status = false;
-        static array<int>^ error_code_list = gcnew array<int> {};
-        static array<String^>^ error_string_list = gcnew array<String^> {""};
-    };
-
-
-
-
+   
 
     /// <summary>
     /// This class handles the exposure type status.
@@ -1905,7 +1891,7 @@ namespace GantryStatusRegisters {
             options initial_status = code;
 
             unsigned short notready = 0;
-            if (ErrorRegister::isError()) notready |= (unsigned short)options::SYSTEM_ERROR;
+            if (Errors::isError()) notready |= (unsigned short)options::SYSTEM_ERROR;
 
 
             if ((ExposureModeRegister::compressorMode->Value->getCode() != CompressionModeOption::options::CMP_DISABLE)) {
@@ -1953,6 +1939,7 @@ namespace GantryStatusRegisters {
 
         static void setBatteryData(bool ena, bool batt1low, bool batt2low, unsigned char vbatt1, unsigned char vbatt2);
         static void getBatteryData(bool* ena, bool* batt1low, bool* batt2low, unsigned char* vbatt1, unsigned char* vbatt2);
+        
         static void setPowerdown(bool stat);
         static bool getPowerdown(void);
 

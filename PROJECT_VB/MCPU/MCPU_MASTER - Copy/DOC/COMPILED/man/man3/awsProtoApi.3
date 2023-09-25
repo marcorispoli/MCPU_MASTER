@@ -1,0 +1,59 @@
+.TH "awsProtoApi" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsProtoApi \- AWS Protocol Api
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBawsProtocol::awsProtocol\fP (String^ ip, int command_port, int event_port)"
+.br
+.RI "This is the class constructor\&. "
+.ti -1c
+.RI "\fBTcpIpServerCLI\fP ^ \fBawsProtocol::getCommmandHandler\fP (void)"
+.br
+.RI "This function returns the command server \fBTcpIpServerCLI\fP class handler\&. "
+.ti -1c
+.RI "\fBTcpIpServerCLI\fP ^ \fBawsProtocol::getEventHandler\fP (void)"
+.br
+.RI "This function returns the event server \fBTcpIpServerCLI\fP class handler\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.br
+ 
+.SH "Function Documentation"
+.PP 
+.SS "awsProtocol::awsProtocol (String^ ip, int command_port, int event_port)"
+
+.PP
+This is the class constructor\&. This is the class constructor\&.
+.PP
+This function initializes the module\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIip\fP IP4 Address (String format) for the servers
+.br
+\fIcommand_port\fP Command server port address
+.br
+\fIevent_port\fP Event server port address
+.RE
+.PP
+
+.SS "\fBTcpIpServerCLI\fP ^ awsProtocol::getCommmandHandler (void)\fC [inline]\fP"
+
+.PP
+This function returns the command server \fBTcpIpServerCLI\fP class handler\&. 
+.SS "\fBTcpIpServerCLI\fP ^ awsProtocol::getEventHandler (void)\fC [inline]\fP"
+
+.PP
+This function returns the event server \fBTcpIpServerCLI\fP class handler\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

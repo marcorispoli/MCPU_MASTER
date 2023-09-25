@@ -13,7 +13,6 @@
 #include "TcpIpServerCLI.h"
 #include "CanDriver.h"
 #include "awsProtocol.h"
-#include "MainForm.h"
 #include "CanDriver.h"
 #include "CanOpenMotor.h"
 #include "TiltMotor.h"
@@ -25,5 +24,9 @@
 #include "SystemConfig.h"
 #include "Translate.h"
 #include "Errors.h"
+#include "CanDeviceProtocol.h"
+#include "MainForm.h"
+#include "IdleForm.h"
+#include "OperatingForm.h"
 
 #endif //PCH_H

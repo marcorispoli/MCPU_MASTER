@@ -35,7 +35,10 @@ namespace GantryStatusRegisters {
     void PowerStatusRegister::setPowerdown(bool stat) {
         const std::lock_guard<std::mutex> lock(gantry_status_mutex);
         power_down = stat;
+        return;
     }
+
+    
 
     bool PowerStatusRegister::getPowerdown(void) {
         const std::lock_guard<std::mutex> lock(gantry_status_mutex);

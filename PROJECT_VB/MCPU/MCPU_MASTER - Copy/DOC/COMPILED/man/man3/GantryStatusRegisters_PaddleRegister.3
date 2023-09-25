@@ -1,0 +1,190 @@
+.TH "GantryStatusRegisters::PaddleRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::PaddleRegister \- This register handles the Paddles identifiable by the compressor device  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBPAD_24x30\fP = 0, \fBPAD_18x24_C\fP, \fBPAD_18x24_L\fP, \fBPAD_18x24_R\fP, \fBPAD_9x21\fP, \fBPAD_10x24\fP, \fBPAD_D75\fP, \fBPAD_BIOP2D\fP, \fBPAD_BIOP3D\fP, \fBPAD_TOMO\fP, \fBPAD_9x9\fP, \fBPAD_UNDETECTED\fP, \fBPAD_UNLOCKED\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_status_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBstatus_change_event()\fP;\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBgetCode\fP (void)"
+.br
+.ti -1c
+.RI "static String ^ \fBgetTag\fP (void)"
+.br
+.RI "Returns the option tag of the register "
+.ti -1c
+.RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
+.br
+.RI "This function set the register with the option code (and related tag)\&. "
+.ti -1c
+.RI "static bool \fBsetCode\fP (String^ val)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'PAD_24x30', 'PAD_18x24_C', 'PAD_18x24_L', 'PAD_18x24_R', 'PADCOLLI_9x21', 'PAD_10x24', 'PAD_D75', 'PAD_BIOP2D', 'PAD_BIOP3D', 'PAD_TOMO', 'PAD_9x9', 'PAD_UNDETECTED', 'PAD_UNLOCKED', 'PAD_UNDETECTED' }"
+.br
+.RI "This is the option-tags static array\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_status_change\fP^ \fBstatus_change_event\fP"
+.br
+.RI "This event is generated whenver the status of the register is changed\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
+.br
+.RI "This is the register option-code\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This register handles the Paddles identifiable by the compressor device 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::PaddleRegister::options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPAD_24x30 \fP\fP
+.TP
+\fB\fIPAD_18x24_C \fP\fP
+.TP
+\fB\fIPAD_18x24_L \fP\fP
+.TP
+\fB\fIPAD_18x24_R \fP\fP
+.TP
+\fB\fIPAD_9x21 \fP\fP
+.TP
+\fB\fIPAD_10x24 \fP\fP
+.TP
+\fB\fIPAD_D75 \fP\fP
+.TP
+\fB\fIPAD_BIOP2D \fP\fP
+.TP
+\fB\fIPAD_BIOP3D \fP\fP
+.TP
+\fB\fIPAD_TOMO \fP\fP
+.TP
+\fB\fIPAD_9x9 \fP\fP
+.TP
+\fB\fIPAD_UNDETECTED \fP\fP
+.TP
+\fB\fIPAD_UNLOCKED \fP\fP
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void GantryStatusRegisters::PaddleRegister::delegate_status_change (void)"
+
+.PP
+This is the delegate of the \fBstatus_change_event()\fP;\&. 
+.SS "static \fBoptions\fP GantryStatusRegisters::PaddleRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Returns the option code of the register 
+.PP
+\fBReturns\fP
+.RS 4
+the value of the option code 
+.RE
+.PP
+
+.SS "static String ^ GantryStatusRegisters::PaddleRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Returns the option tag of the register 
+.PP
+\fBReturns\fP
+.RS 4
+the value of the Tag 
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::PaddleRegister::setCode (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function set the register with the option code (and related tag)\&. The register is updated with the option code and related tag and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the option-code to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::PaddleRegister::setCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
+This function set the register with the option tag (and related code)\&.
+.PP
+The register is updated with the tag and the related option code and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the tag to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBoptions\fP GantryStatusRegisters::PaddleRegister::code = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the register option-code\&. 
+.SS "const array<String^> ^ GantryStatusRegisters::PaddleRegister::tags = gcnew array<String^> { 'PAD_24x30', 'PAD_18x24_C', 'PAD_18x24_L', 'PAD_18x24_R', 'PADCOLLI_9x21', 'PAD_10x24', 'PAD_D75', 'PAD_BIOP2D', 'PAD_BIOP3D', 'PAD_TOMO', 'PAD_9x9', 'PAD_UNDETECTED', 'PAD_UNLOCKED', 'PAD_UNDETECTED' }\fC [static]\fP"
+
+.PP
+This is the option-tags static array\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_status_change\fP^ GantryStatusRegisters::PaddleRegister::status_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the status of the register is changed\&. Usage: \fBPaddleRegister::status_change_event\fP += gcnew delegate_status_change(&some_class, some_class::func) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

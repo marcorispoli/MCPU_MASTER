@@ -80,14 +80,14 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalLibraryDirectories>$(ProjectDir)\VSCAN;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -122,72 +122,81 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalLibraryDirectories>C:\Users\marco\Documents\Data\Progetti-GIT\SW\PROGETTO_MAIN_CPU_Z190\MCPU_MASTER\PROJECT_VB\MCPU\MCPU_MASTER\VSCAN;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="awsProtocol.h" />
-    <ClInclude Include="CanDeviceProtocol.h" />
-    <ClInclude Include="CanDriver.h" />
-    <ClInclude Include="CanOpenMotor.h" />
-    <ClInclude Include="ConfigFile.h" />
-    <ClInclude Include="Errors.h" />
-    <ClInclude Include="IdleForm.h">
-      <DeploymentContent>false</DeploymentContent>
-      <FileType>CppForm</FileType>
-    </ClInclude>
-    <ClInclude Include="MainForm.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
+    <ClInclude Include="AWS\awsProtocol.h" />
+    <ClInclude Include="AWS\TcpIpServerCLI.h" />
+    <ClInclude Include="CONFIGURATION\ConfigFile.h" />
+    <ClInclude Include="CONFIGURATION\SystemConfig.h" />
+    <ClInclude Include="DEVICES\CanDeviceProtocol.h" />
+    <ClInclude Include="DEVICES\PCB301.h" />
+    <ClInclude Include="DEVICES\PCB302.h" />
+    <ClInclude Include="DEVICES\PCB303.h" />
+    <ClInclude Include="DEVICES\PCB304.h" />
+    <ClInclude Include="DEVICES\PCB315.h" />
+    <ClInclude Include="LANGUAGE\Translate.h" />
+    <ClInclude Include="LANGUAGE\translate_eng.h" />
+    <ClInclude Include="LANGUAGE\translate_esp.h" />
+    <ClInclude Include="LANGUAGE\translate_fra.h" />
+    <ClInclude Include="LANGUAGE\translate_ita.h" />
+    <ClInclude Include="LANGUAGE\translate_por.h" />
+    <ClInclude Include="LANGUAGE\translate_rus.h" />
     <ClInclude Include="gantry_global_status.h" />
-    <ClInclude Include="PCB301.h" />
-    <ClInclude Include="PCB302.h" />
-    <ClInclude Include="PCB303.h" />
-    <ClInclude Include="PCB304.h" />
-    <ClInclude Include="PCB315.h" />
+    <ClInclude Include="MESSAGES\Errors.h" />
+    <ClInclude Include="MOTORS\CanOpenMotor.h" />
+    <ClInclude Include="MOTORS\pd4_od.h" />
+    <ClInclude Include="MOTORS\TiltMotor.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="pd4_od.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SystemConfig.h" />
-    <ClInclude Include="TcpIpServerCLI.h" />
-    <ClInclude Include="TiltMotor.h" />
-    <ClInclude Include="Translate.h" />
+    <ClInclude Include="VSCAN\CanDriver.h" />
+    <ClInclude Include="WINDOWS\IdleForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\MainForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\OperatingForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="awsProtocol.cpp" />
-    <ClCompile Include="CanDeviceProtocol.cpp" />
-    <ClCompile Include="CanDriver.cpp" />
-    <ClCompile Include="CanOpenMotor.cpp" />
-    <ClCompile Include="ConfigFile.cpp" />
+    <ClCompile Include="AWS\awsProtocol.cpp" />
+    <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
+    <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
-    <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="DEVICES\CanDeviceProtocol.cpp" />
+    <ClCompile Include="DEVICES\PCB301.cpp" />
+    <ClCompile Include="DEVICES\PCB302.cpp" />
+    <ClCompile Include="DEVICES\PCB303.cpp" />
+    <ClCompile Include="DEVICES\PCB304.cpp" />
+    <ClCompile Include="DEVICES\PCB315.cpp" />
     <ClCompile Include="gantry_global_status.cpp" />
-    <ClCompile Include="IdleForm.cpp" />
-    <ClCompile Include="MainForm.cpp" />
-    <ClCompile Include="PCB301.cpp" />
-    <ClCompile Include="PCB302.cpp" />
-    <ClCompile Include="PCB303.cpp" />
-    <ClCompile Include="PCB304.cpp" />
-    <ClCompile Include="PCB315.cpp" />
+    <ClCompile Include="LANGUAGE\Translate.cpp" />
+    <ClCompile Include="MESSAGES\Errors.cpp" />
+    <ClCompile Include="MOTORS\CanOpenMotor.cpp" />
+    <ClCompile Include="MOTORS\TiltMotor.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TcpIpServerCLI.cpp" />
-    <ClCompile Include="TiltMotor.cpp" />
-    <ClCompile Include="Translate.cpp" />
+    <ClCompile Include="VSCAN\CanDriver.cpp" />
+    <ClCompile Include="WINDOWS\IdleForm.cpp" />
+    <ClCompile Include="WINDOWS\MainForm.cpp" />
+    <ClCompile Include="WINDOWS\OperatingForm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
@@ -207,17 +216,9 @@
     <None Include="DOC\mcpu_master_doxy" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="IdleForm.resx">
-      <DependentUpon>IdleForm.h</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.h</DependentUpon>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <DeploymentContent>true</DeploymentContent>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\IdleForm.resx" />
+    <EmbeddedResource Include="WINDOWS\MainForm.resx" />
+    <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

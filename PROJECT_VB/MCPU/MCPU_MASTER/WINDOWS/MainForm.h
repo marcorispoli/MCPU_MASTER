@@ -40,6 +40,8 @@ namespace CppCLRWinFormsProject {
 	private: bool Startup_MotorArm(void);
 	private: bool Startup_MotorShift(void);
 	private: bool Startup_MotorVertical(void);
+	private: bool Startup_Generator(void);
+		   
 
 
 

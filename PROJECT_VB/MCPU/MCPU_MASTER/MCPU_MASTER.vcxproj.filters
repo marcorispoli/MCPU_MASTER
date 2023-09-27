@@ -104,6 +104,63 @@
     <ClInclude Include="WINDOWS\OperatingForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GENERATOR\TcpIpClientCLI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\Generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\api_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\CaDataDic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\R2CP_Eth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\system_messages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\R2CP_Index.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicHdlInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicNetworkInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicPatientInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicR2CPInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRadInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRFInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicServiceInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicSystemInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicTestInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\metInterfaces\metDataDicRadInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -167,6 +224,39 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WINDOWS\OperatingForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\TcpIpClientCLI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\Generator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\api_log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\CaDataDic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\R2CP_Eth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_GenIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_PatientIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Service.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_SystemIndex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

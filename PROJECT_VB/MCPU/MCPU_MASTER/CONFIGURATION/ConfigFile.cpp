@@ -3,7 +3,7 @@
 
 using namespace System::IO;
 
-ConfigFile::ConfigFile(const String^ file, int rev, array<paramItemT^>^ descriptor)
+ConfigFile::ConfigFile(const String^ file, int rev, cli::array<paramItemT^>^ descriptor)
 {
     warning = false;
     warning_string = "";
@@ -154,7 +154,7 @@ void ConfigFile::createDefaultFile(void){
 
     // Reload the default values
     for (int i = 0; i < data->Length; i++) {
-        data[i]->values = gcnew array<String^>(data[i]->defaults->Length);
+        data[i]->values = gcnew cli::array<String^>(data[i]->defaults->Length);
         for (int j = 0; j < data[i]->defaults->Length; j++) data[i]->values[j] = (String^)data[i]->defaults[j];
     }
 

@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -145,6 +145,25 @@
     <ClInclude Include="DEVICES\PCB303.h" />
     <ClInclude Include="DEVICES\PCB304.h" />
     <ClInclude Include="DEVICES\PCB315.h" />
+    <ClInclude Include="GENERATOR\Generator.h" />
+    <ClInclude Include="GENERATOR\R2CP\api_log.h" />
+    <ClInclude Include="GENERATOR\R2CP\CaDataDic.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicHdlInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicNetworkInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicPatientInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicR2CPInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRadInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRFInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicServiceInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicSystemInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicTestInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\metInterfaces\metDataDicRadInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\R2CP_Index.h" />
+    <ClInclude Include="GENERATOR\R2CP\R2CP_Eth.h" />
+    <ClInclude Include="GENERATOR\R2CP\system_messages.h" />
+    <ClInclude Include="GENERATOR\TcpIpClientCLI.h" />
     <ClInclude Include="LANGUAGE\Translate.h" />
     <ClInclude Include="LANGUAGE\translate_eng.h" />
     <ClInclude Include="LANGUAGE\translate_esp.h" />
@@ -183,6 +202,17 @@
     <ClCompile Include="DEVICES\PCB304.cpp" />
     <ClCompile Include="DEVICES\PCB315.cpp" />
     <ClCompile Include="gantry_global_status.cpp" />
+    <ClCompile Include="GENERATOR\Generator.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\api_log.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\CaDataDic.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_GenIndex.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Network.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_PatientIndex.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Service.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_SystemIndex.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\R2CP_Eth.cpp" />
+    <ClCompile Include="GENERATOR\TcpIpClientCLI.cpp" />
     <ClCompile Include="LANGUAGE\Translate.cpp" />
     <ClCompile Include="MESSAGES\Errors.cpp" />
     <ClCompile Include="MOTORS\CanOpenMotor.cpp" />

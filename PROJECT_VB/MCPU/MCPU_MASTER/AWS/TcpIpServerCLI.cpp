@@ -38,8 +38,8 @@ TcpIpServerCLI::TcpIpServerCLI(String^ ip, int port)
 	IPEndPoint^ senderAddress = gcnew IPEndPoint(localAddress, 0);
 
 	clientSocket = nullptr;
-	dispatchBuffer = gcnew array<Byte>(TcpIpServerCLI_DISPATCH_BUFFER_SIZE);
-	rxBuffer = gcnew array<Byte>(TcpIpServerCLI_RX_BUFFER_SIZE);
+	dispatchBuffer = gcnew cli::array<Byte>(TcpIpServerCLI_DISPATCH_BUFFER_SIZE);
+	rxBuffer = gcnew cli::array<Byte>(TcpIpServerCLI_RX_BUFFER_SIZE);
 	
 
 	// Create the server socket
@@ -198,7 +198,7 @@ void TcpIpServerCLI::WndProc(System::Windows::Forms::Message% m)
 /// 
 /// </summary>
 /// <param name="buffer">This is the data buffer to be sent</param>
-void TcpIpServerCLI::send(array<Byte>^ buffer) {
+void TcpIpServerCLI::send(cli::array<Byte>^ buffer) {
 	if (!connection_status) return;
 	if (clientSocket == nullptr) return;
 

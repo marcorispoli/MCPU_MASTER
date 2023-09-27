@@ -188,7 +188,7 @@ namespace CANOPEN {
 			MOTOR_BUSY,
 			MOTOR_FAULT
 		};
-		static const array<String^>^ status_tags = gcnew array<String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
+		static const cli::array<String^>^ status_tags = gcnew cli::array<String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
 		private:status_options internal_status;
 		public: inline String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
 		public: inline status_options getInternalStatus(void) { return internal_status; }

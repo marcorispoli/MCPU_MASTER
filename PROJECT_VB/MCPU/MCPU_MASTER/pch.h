@@ -9,8 +9,11 @@
 
 // add headers that you want to pre-compile here
 // add headers that you want to pre-compile here
+
 #include "gantry_global_status.h"
+#include "TcpIpClientCLI.h"
 #include "TcpIpServerCLI.h"
+
 #include "CanDriver.h"
 #include "awsProtocol.h"
 #include "CanDriver.h"
@@ -28,5 +31,6 @@
 #include "MainForm.h"
 #include "IdleForm.h"
 #include "OperatingForm.h"
+#include "Generator.h"
 
 #endif //PCH_H

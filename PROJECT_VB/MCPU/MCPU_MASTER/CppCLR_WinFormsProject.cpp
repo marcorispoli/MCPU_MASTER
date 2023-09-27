@@ -6,6 +6,7 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace CANOPEN;
 
+
 [STAThread]
 int main()
 {
@@ -38,7 +39,7 @@ int main()
 	  }
   }
 
-  
+  GlobalObjects::pGenerator = gcnew Generator();
 
 
   //globalObjects::pProtocol = paws; // Assignes the class pointer to the global pointer for the application usage

@@ -93,7 +93,7 @@ public:
 		BOOTLOADER_PRESENT = 2,
 		BOOTLOADER_UNCKNOWN_STAT
 	};
-	static const array<String^>^ bootloader_status_tags = gcnew array<String^> { "NOT PRESENT", "RUNNING", "PRESENT", "UNCKNOWN"}; 
+	static const cli::array<String^>^ bootloader_status_tags = gcnew cli::array<String^> { "NOT PRESENT", "RUNNING", "PRESENT", "UNCKNOWN"}; 
 
 	CanDeviceProtocol(unsigned char devid, LPCWSTR devname);
 

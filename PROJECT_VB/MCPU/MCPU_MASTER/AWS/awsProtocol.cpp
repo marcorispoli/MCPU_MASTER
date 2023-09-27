@@ -120,7 +120,7 @@ bool awsProtocol::findNextParam(int* i, String^ sFrame, String^% result, bool* c
 /// <param name="size">This is the size of the received buffer</param>
 /// <param name="pDecoded">This is the handler of the decoded result</param>
 /// <returns>This is the error code if <0</returns>
-int awsProtocol::decodeFrame(array<Byte>^ buffer, int size, aws_decoded_frame_t^% pDecoded) {
+int awsProtocol::decodeFrame(cli::array<Byte>^ buffer, int size, aws_decoded_frame_t^% pDecoded) {
     bool frame_complete = false;
     int i;
     String^ param;
@@ -205,7 +205,7 @@ int awsProtocol::decodeFrame(array<Byte>^ buffer, int size, aws_decoded_frame_t^
 /// </summary>
 /// <param name="buffer">This is the received byte array</param>
 /// <param name="rc">This is the length of the received buffer</param>
-void awsProtocol::command_rx_handler(array<Byte>^ buffer, int rc) {
+void awsProtocol::command_rx_handler(cli::array<Byte>^ buffer, int rc) {
     Debug::WriteLine("Command channel: Buffer Received!\n");
 
     // Decodes the content of the received frame
@@ -231,7 +231,7 @@ void awsProtocol::command_rx_handler(array<Byte>^ buffer, int rc) {
 /// </summary>
 /// <param name="buffer">This is the received byte array</param>
 /// <param name="rc">This is the length of the received buffer</param>
-void awsProtocol::event_rx_handler(array<Byte>^ receivbufeBuffer, int rc) {
+void awsProtocol::event_rx_handler(cli::array<Byte>^ receivbufeBuffer, int rc) {
     Debug::WriteLine("Event channel: Buffer Received!\n");
 }
 

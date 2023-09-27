@@ -121,11 +121,11 @@ private:
 	TcpIpServerCLI^ event_server; //!< This is the event-server handler of the tcp/ip server implementation class
 	TcpIpServerCLI^ command_server;//!< This is the command-server handler of the tcp/ip server implementation class
 
-	void command_rx_handler(array<Byte>^ buffer, int rc);//!< This is the command-server reception handler
-	void event_rx_handler(array<Byte>^ buffer, int rc);//!< This is the event-server reception handler
+	void command_rx_handler(cli::array<Byte>^ buffer, int rc);//!< This is the command-server reception handler
+	void event_rx_handler(cli::array<Byte>^ buffer, int rc);//!< This is the event-server reception handler
 
 	bool findNextParam(int* i, String^ sFrame, String^% result, bool* completed);//!< This function finds the next item in a command frame
-	int decodeFrame(array<Byte>^ buffer, int size, aws_decoded_frame_t^% pDecoded);//!< This function decodes an incoming buffer from the tcp/ip channel
+	int decodeFrame(cli::array<Byte>^ buffer, int size, aws_decoded_frame_t^% pDecoded);//!< This function decodes an incoming buffer from the tcp/ip channel
 	aws_decoded_frame_t^ pDecodedFrame;//!< This is the decoded command
 	unsigned short event_counter;//!< This is the sequence counter of the events
 

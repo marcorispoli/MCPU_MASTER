@@ -34,7 +34,7 @@ public:
     static const String^    PARAM_PACKAGE_FWGEN_DEFAULT = "0.1";
 
     //___________________________________________________________________________________________________//
-    static const String^    PARAM_AWS_CONNECTIONS = "CONNECTIONS";
+    static const String^    PARAM_AWS_CONNECTIONS = "AWS_CONNECTION";
     static const String^    PARAM_AWS_CONNECTIONS_COMMENT = "Addresses of the connections with the AWS";
     static const int        PARAM_AWS_CONNECTIONS_IP = 0;
     static const int        PARAM_AWS_CONNECTIONS_PORT_COMMAND = 1;
@@ -43,7 +43,7 @@ public:
     static const String^    PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT = "10000";
     static const String^    PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = "10001";
 
-
+   
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
@@ -68,7 +68,8 @@ public:
             PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT,
             PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT,           
             }),
-        }
 
+            
+        }
     );
 };

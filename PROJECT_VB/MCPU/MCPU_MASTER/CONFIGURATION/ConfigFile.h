@@ -180,25 +180,25 @@ ref class ConfigFile
 public:
 
     
-    #define CONFIG_FILE_DESCRIPTOR  gcnew array<ConfigFile::paramItemT^>
+    #define CONFIG_FILE_DESCRIPTOR  gcnew cli::array<ConfigFile::paramItemT^>
     #define CONFIG_FILE_ITEM        gcnew ConfigFile::paramItemT
-    #define CONFIG_FILE_DEFAULT     gcnew array<const String^>
+    #define CONFIG_FILE_DEFAULT     gcnew cli::array<const String^>
     
     ref class paramItemT 
     {
         public:
 
-        paramItemT(const String^ tg, const String^ cmt, array<const String^>^ def) {
+        paramItemT(const String^ tg, const String^ cmt, cli::array<const String^>^ def) {
             tag = tg;
             defaults = def;
-            values = gcnew array<String^>(defaults->Length);
+            values = gcnew cli::array<String^>(defaults->Length);
             for (int i = 0; i < defaults->Length; i++) values[i] = (String^)defaults[i] ;            
             comment = cmt;
         }
         const String^ tag;        //!< Tag name of the parameter
-        array<const String^>^ defaults; //!< Default Value list of a parameter
+        cli::array<const String^>^ defaults; //!< Default Value list of a parameter
         const String^ comment;    //!< comment
-        array<String^>^ values;   //!< Value list of a parameter
+        cli::array<String^>^ values;   //!< Value list of a parameter
         
     };
    
@@ -210,11 +210,11 @@ public:
 
         String^ filename;   //!< Configuration filename
         int revision;       //!< Configuration revision code
-        array<paramItemT^>^ descriptor; //!< Parameter descriptor
+        cli::array<paramItemT^>^ descriptor; //!< Parameter descriptor
     };
 
 
-    ConfigFile(const String^ filename, int revision, array<paramItemT^>^ descriptor);
+    ConfigFile(const String^ filename, int revision, cli::array<paramItemT^>^ descriptor);
 
     //! Load the configuration file in memory
     bool loadFile(void);
@@ -228,7 +228,7 @@ public:
     inline bool isWarning(void) { return warning; }
     inline String^ getWarningString(void) { return warning_string; }
     
-    array<String^>^ getParam(const String^ tag){
+    cli::array<String^>^ getParam(const String^ tag){
         int i = getTagPosition((String^) tag);
         if(i < 0)    return nullptr;        
         return data[i]->values;
@@ -253,7 +253,7 @@ protected:
 
  private:
     
-    array<paramItemT^>^ data; //!< config file content in memory    
+    cli::array<paramItemT^>^ data; //!< config file content in memory    
     String^ filename;   //!< Configuration filename
     int revision;       //!< Configuration revision code    
     int loaded_revision;//!< Revision read from the config file

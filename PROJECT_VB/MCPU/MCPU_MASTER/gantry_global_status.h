@@ -31,7 +31,9 @@ public:
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
     #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
 
-    
+    #define pGENERATOR  ((Generator^) GlobalObjects::pGenerator)
+
+    static Object^ pGenerator = nullptr;
     static Object^ pAws = nullptr; //!< Pointer to the AWS interface
     static Object^ pCan = nullptr; //!< Pointer to the Can Driver
 
@@ -118,7 +120,7 @@ namespace GantryStatusRegisters {
         /// 
         /// </summary>
         /// <param name="tagsvar"></param>
-        enumType(const array<String^>^% tagsvar) {
+        enumType(const cli::array<String^>^% tagsvar) {
             array_tags = tagsvar;
             enum_code = T::UNDEF;
             list_code = gcnew List<T> {};
@@ -295,7 +297,7 @@ namespace GantryStatusRegisters {
     private:
         T enum_code;
         List<T>^ list_code;
-        array<String^>^ array_tags;
+        cli::array<String^>^ array_tags;
     };
 
 
@@ -324,7 +326,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "Ag", "Al", "Mo", "Rh", "Cu", "UNDEF"}; //!< This is the tags array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "Ag", "Al", "Mo", "Rh", "Cu", "UNDEF"}; //!< This is the tags array
 
         enumType<options>^ Value = gcnew enumType<options>(tags);
     };
@@ -360,7 +362,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "COLLI_AUTO", "COLLI_24x30", "COLLI_18x24_C", "COLLI_18x24_L", \
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "COLLI_AUTO", "COLLI_24x30", "COLLI_18x24_C", "COLLI_18x24_L", \
             "COLLI_18x24_R", "COLLI_9x21", "COLLI_10x24", "COLLI_PROSTHESIS", \
             "COLLI_D75", "COLLI_BIOP2D", "COLLI_BIOP3D", "COLLI_TOMO", \
             "COLLI_9x9", "COLLI_CUSTOM", "UNDEF"}; //!< This is the option-tags static array
@@ -387,7 +389,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "CMP_KEEP", "CMP_RELEASE", "CMP_DISABLE", "UNDEF"}; //!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "CMP_KEEP", "CMP_RELEASE", "CMP_DISABLE", "UNDEF"}; //!< This is the option-tags static array
         enumType<options>^ Value = gcnew enumType<options>(tags);
 
     };
@@ -415,7 +417,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "MAN_2D", "AEC_2D", "MAN_3D", "AEC_3D", "MAN_COMBO", "AEC_COMBO", "MAN_AE", "AEC_AE", "UNDEF"}; //!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "MAN_2D", "AEC_2D", "MAN_3D", "AEC_3D", "MAN_COMBO", "AEC_COMBO", "MAN_AE", "AEC_AE", "UNDEF"}; //!< This is the option-tags static array
         enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
@@ -438,7 +440,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "LMAM2V2", "LMAM2FDIV2", "UNDEF"}; //!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "LMAM2V2", "LMAM2FDIV2", "UNDEF"}; //!< This is the option-tags static array
         enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
@@ -461,7 +463,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "ARM_ENA", "ARM_DIS", "UNDEF"}; //!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "ARM_ENA", "ARM_DIS", "UNDEF"}; //!< This is the option-tags static array
         enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
@@ -482,7 +484,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "PROTECTION_ENA", "PROTECTION_DIS", "UNDEF"}; //!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "PROTECTION_ENA", "PROTECTION_DIS", "UNDEF"}; //!< This is the option-tags static array
 
         /// <summary>
         /// This function tests if the use of the Patient protection is enabled
@@ -531,7 +533,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "LCC", "LFB", "LISO", "LLM", "LLMO", "LML", "LMLO", "LSIO", "RCC", "RFB", "RISO", "RLM", "RLMO", "RML", "RMLO", "RSIO", "UNDEF"};//!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "LCC", "LFB", "LISO", "LLM", "LLMO", "LML", "LMLO", "LSIO", "RCC", "RFB", "RISO", "RLM", "RLMO", "RML", "RMLO", "RSIO", "UNDEF"};//!< This is the option-tags static array
         enumType<options>^ Value = gcnew enumType<options>(tags);
 
     };
@@ -561,7 +563,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "PAD_24x30", "PAD_18x24_C", "PAD_18x24_L", "PAD_18x24_R", "PADCOLLI_9x21", "PAD_10x24", "PAD_D75", "PAD_BIOP2D", "PAD_BIOP3D", "PAD_TOMO", "PAD_9x9", "PAD_UNDETECTED", "PAD_UNLOCKED", "PAD_UNDETECTED" };//!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "PAD_24x30", "PAD_18x24_C", "PAD_18x24_L", "PAD_18x24_R", "PADCOLLI_9x21", "PAD_10x24", "PAD_D75", "PAD_BIOP2D", "PAD_BIOP3D", "PAD_TOMO", "PAD_9x9", "PAD_UNDETECTED", "PAD_UNLOCKED", "PAD_UNDETECTED" };//!< This is the option-tags static array
         enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
@@ -597,7 +599,7 @@ namespace GantryStatusRegisters {
             UNDEF = LEN
         };
 
-        static const array<String^>^ tags = gcnew array<String^>  {"OFF", "ON", "UNDEF"}; //!< Definition of the register tags
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  {"OFF", "ON", "UNDEF"}; //!< Definition of the register tags
 
         static inline bool isEnabled(void) { return enableStatus->getCode() == enable_options::XRAYPUSH_ENABLED; }
         static inline bool isDisabled(void) { return enableStatus->getCode() != enable_options::XRAYPUSH_ENABLED; }
@@ -643,7 +645,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags_conf = gcnew array<String^>  { "TOMO_1F", "TOMO_2F", "TOMO_3F", "TOMO_4F", "TOMO_5F", "UNDEF" }; //!< This is the config id option-tags static array
+        static const cli::array<String^>^ tags_conf = gcnew cli::array<String^>  { "TOMO_1F", "TOMO_2F", "TOMO_3F", "TOMO_4F", "TOMO_5F", "UNDEF" }; //!< This is the config id option-tags static array
 
         /// <summary>
         /// This is the enumeration option code for the particolar sequence in the configuration file  
@@ -656,7 +658,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags_seq = gcnew array<String^>  { "N", "I", "W", "SW", "UNDEF" }; //!< This is the sequence option-tags static array
+        static const cli::array<String^>^ tags_seq = gcnew cli::array<String^>  { "N", "I", "W", "SW", "UNDEF" }; //!< This is the sequence option-tags static array
 
 
 
@@ -822,7 +824,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
 
 
         /// <summary>
@@ -904,7 +906,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "PROTECTION_3D", "MAG_15", "MAG_18", "MAG_20", "BIOPSY", "COMPONENT_UNDETECTED"};//!< This is the option-tags static array        
+        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "PROTECTION_3D", "MAG_15", "MAG_18", "MAG_20", "BIOPSY", "COMPONENT_UNDETECTED"};//!< This is the option-tags static array        
         static enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
@@ -924,7 +926,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "PROTECTION_2D", "SHIFTED_PROTECTION", "LEAD_SCREEN", "SPECIMEN", "COLLI_COMPONENT_UNDETECTED" };//!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "PROTECTION_2D", "SHIFTED_PROTECTION", "LEAD_SCREEN", "SPECIMEN", "COLLI_COMPONENT_UNDETECTED" };//!< This is the option-tags static array
         static enumType<options>^ Value = gcnew enumType<options>(tags);
 
     };
@@ -1343,8 +1345,8 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEF"}; //!< This is the tags array
-        static array<int>^ targets = gcnew array<int> {0, 1500, -1500, 2700, -2700, 0 }; //!< This is the current value of the target angles
+        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEF"}; //!< This is the tags array
+        static cli::array<int>^ targets = gcnew cli::array<int> {0, 1500, -1500, 2700, -2700, 0 }; //!< This is the current value of the target angles
 
 
         /// <summary>
@@ -1684,10 +1686,10 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  {"OK", "PARTIAL", "NOK", "UNDEF"}; //!< Definition of the register tags        
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  {"OK", "PARTIAL", "NOK", "UNDEF"}; //!< Definition of the register tags        
         enumType<options>^ Value = gcnew enumType<options>(tags);
 
-        static array<exposurePulse^>^ exposed_pulses = nullptr;
+        static cli::array<exposurePulse^>^ exposed_pulses = nullptr;
     };
 
     /// <summary>
@@ -1735,11 +1737,11 @@ namespace GantryStatusRegisters {
 
 
         static inline void clear(void) {
-            pulses = gcnew array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};
+            pulses = gcnew cli::array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};
         }
 
     private:
-        static array<exposurePulse^>^ pulses = gcnew array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};//!< Stores the array of data pulses
+        static cli::array<exposurePulse^>^ pulses = gcnew cli::array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};//!< Stores the array of data pulses
         static ExposureCompletedOptions^ exposure_complete = gcnew ExposureCompletedOptions;
     };
 
@@ -1813,7 +1815,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const array<String^>^ tags = gcnew array<String^>  { "ITA", "FRA", "ENG", "PRT", "RUS", "ESP", "LTU", "UNDEF"}; //!< This is the option-tags static array
+        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "ITA", "FRA", "ENG", "PRT", "RUS", "ESP", "LTU", "UNDEF"}; //!< This is the option-tags static array
         static enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 

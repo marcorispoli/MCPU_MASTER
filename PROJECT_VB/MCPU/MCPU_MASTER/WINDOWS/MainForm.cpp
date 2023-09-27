@@ -481,6 +481,45 @@ bool MainForm::Startup_MotorVertical(void) {
 	return false;
 }
 
+bool MainForm::Startup_Generator(void) {
+	switch (startupSubFase) {
+
+	case 0: // Smart Hub Connection
+		labelGeneratorActivity->Text = "WAIT SMART HUB CONNECTION..";
+		StartupLogMessages->Text += "> Generator: connection with SH ..\n";
+		startupSubFase++;
+		break;
+
+	case 1: // Wait Generator connection
+		if (!pGENERATOR->isSmartHubConnected()) break;
+		labelGeneratorActivity->Text = "WAIT GENERATOR CONNECTION..";
+		StartupLogMessages->Text += "> Generator: connection with generator ..\n";
+		startupSubFase++;
+		break;
+
+	case 2: // Wait Generator setup
+		if (!pGENERATOR->isGeneratorConnected()) break;
+		labelGeneratorActivity->Text = "WAIT GENERATOR SETUP..";
+		StartupLogMessages->Text += "> Generator: setup protocol ..\n";
+		startupSubFase++;
+		break;
+
+	case 3: // Wait Clear System Messages
+		if (!pGENERATOR->isGeneratorSetupCompleted()) break;
+		labelGeneratorActivity->Text = "WAIT GENERATOR IDLE..";
+		StartupLogMessages->Text += "> Generator: configuration ..\n";
+		startupSubFase++;
+		break;
+
+	case 4: // Wait Generator Idle
+		if (!pGENERATOR->isGeneratorIdle()) break;		
+		labelGeneratorActivity->Text = "CONNECTED AND CONFIGURED";
+		labelGeneratorActivity->ForeColor = Color::LightGreen;
+		return true;
+	}
+	return false;
+}
+
 void MainForm::StartupProcedure(void) {
 	
 	if (startupError) {
@@ -509,7 +548,8 @@ void MainForm::StartupProcedure(void) {
 	case 8: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 9: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 10: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 11:
+	case 11: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
+	case 12:
 
 		// Creates thw AWS
 		GlobalObjects::pAws = gcnew awsProtocol(
@@ -520,7 +560,7 @@ void MainForm::StartupProcedure(void) {
 		startupFase++; startupSubFase = 0;
 		break;
 
-	case 12:
+	case 13:
 		startupCompleted = true;
 		break;
 

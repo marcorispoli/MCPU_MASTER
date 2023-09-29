@@ -79,8 +79,13 @@ void Generator::threadWork(void) {
         generator_setup_completed = false;
         generator_idle = false;
 
+        Errors::activate("GENERATOR_ERROR_SH", false);
+        Errors::activate("GENERATOR_ERROR_GEN", false);
+        Errors::deactivate("GENERATOR_INIT_WARNING");
+
         // Waits for the server connection
         while (!isConnected()) std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        
 
         // Try to connect the Smart Hub
         Debug::WriteLine("Try to connect the Smart Hub!\n");
@@ -88,10 +93,12 @@ void Generator::threadWork(void) {
             R2CP::CaDataDicGen::GetInstance()->Network_ConnectionRequest_Event();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
+        Errors::deactivate("GENERATOR_ERROR_SH");
 
         Debug::WriteLine("Smart Hub Connected!\n");
         Debug::WriteLine("Wait Generator connection..\n");
 
+        
         // Waits for the generator
         while (!R2CP_Eth->generatorConnected) {
             if (!isConnected()) break;
@@ -103,8 +110,11 @@ void Generator::threadWork(void) {
         if (!isConnected()) continue;
         if (!R2CP_Eth->smartHubConnected) continue;
 
+        Errors::deactivate("GENERATOR_ERROR_GEN");
         Debug::WriteLine("Generator Connected!\n");
 
+        Errors::activate("GENERATOR_INIT_WARNING", false);
+        
         // Inits of the generator
         if(!generatorInitialization()) continue;
         Debug::WriteLine("Generator Initialized!\n");
@@ -125,6 +135,7 @@ void Generator::threadWork(void) {
 
         Debug::WriteLine("Generator In Idle\n");
         generator_idle = true;
+        Errors::deactivate("GENERATOR_INIT_WARNING");
 
         // Handles the Idle mode
         if (!generatorIdle()) continue;

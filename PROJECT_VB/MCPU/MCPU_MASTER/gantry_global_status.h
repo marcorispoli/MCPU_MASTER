@@ -1003,7 +1003,7 @@ namespace GantryStatusRegisters {
         }
 
         static inline PaddleOption^ getPaddle(void) { return paddle; }
-
+        static inline bool isPaddle(void) { return (paddle->Value->getCode() < PaddleOption::options::PAD_UNDETECTED); }
     private:
         static unsigned short breast_thickness = 0;  //!< Compressed breast thickness in mm
         static unsigned short compression_force = 0; //!< Compression force in N

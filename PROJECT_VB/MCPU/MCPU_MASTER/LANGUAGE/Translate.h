@@ -35,6 +35,7 @@ public:
 	static String^ Translate::content(String^ key);
 	static String^ Translate::id(String^ key);
 	static item^ Translate::getItem(String^ key);
+	inline static String^ Translate::label(String^ key) { return title(key); };
 
 private:
 

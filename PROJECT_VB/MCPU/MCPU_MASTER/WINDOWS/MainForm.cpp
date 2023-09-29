@@ -530,8 +530,12 @@ void MainForm::StartupProcedure(void) {
 		GantryStatusRegisters::OperatingStatusRegister::setIdle();
 		startupTimer->Stop();
 		this->Hide();
-		pIDLEFORM->initIdleStatus();
-		pIDLEFORM->Show();				
+
+
+		//pIDLEFORM->initIdleStatus();
+		//pIDLEFORM->Show();				
+		pOPERFORM->initOperatingStatus();
+		pOPERFORM->Show();
 		return;
 	}
 
@@ -547,7 +551,7 @@ void MainForm::StartupProcedure(void) {
 	case 7: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 8: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 9: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 10: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 10: if (Startup_MotorVertical()) { startupFase+=2; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 11: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
 	case 12:
 

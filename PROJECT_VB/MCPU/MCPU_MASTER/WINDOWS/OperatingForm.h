@@ -36,7 +36,8 @@ private: System::Windows::Forms::RichTextBox^ errorContent;
 
 
 private: System::Windows::Forms::Button^ buttonCanc;
-private: System::Windows::Forms::Panel^ errorButton;
+private: System::Windows::Forms::Panel^ magnifierStatus;
+
 private: System::Windows::Forms::Panel^ mainPanel;
 private: System::Windows::Forms::Panel^ panel1;
 private: System::Windows::Forms::Panel^ operTopFrame;
@@ -44,6 +45,36 @@ private: System::Windows::Forms::Panel^ operTopFrame;
 
 
 private: System::Windows::Forms::Label^ errorPanelTitle;
+private: System::Windows::Forms::Panel^ residualExposures;
+
+private: System::Windows::Forms::Panel^ decompressionStatus;
+
+private: System::Windows::Forms::Panel^ xrayStat;
+private: System::Windows::Forms::Panel^ alarmButton;
+private: System::Windows::Forms::Panel^ lampButton;
+
+
+
+
+private: System::Windows::Forms::Panel^ viewSelection;
+private: System::Windows::Forms::Panel^ forceStatus;
+
+
+
+
+
+private: System::Windows::Forms::Panel^ thicknessStatus;
+
+private: System::Windows::Forms::Panel^ paddleStatus;
+private: System::Windows::Forms::Panel^ doorStatus;
+
+
+private: System::Windows::Forms::Panel^ tubeStatus;
+
+private: System::Windows::Forms::Panel^ collimationStatus;
+private: System::Windows::Forms::Label^ labelXrayStatus;
+
+
 
 
 
@@ -129,13 +160,27 @@ private:
 		this->errpanel_erricon = (gcnew System::Windows::Forms::PictureBox());
 		this->errorTitle = (gcnew System::Windows::Forms::Label());
 		this->errorId = (gcnew System::Windows::Forms::Label());
-		this->errorButton = (gcnew System::Windows::Forms::Panel());
+		this->magnifierStatus = (gcnew System::Windows::Forms::Panel());
 		this->mainPanel = (gcnew System::Windows::Forms::Panel());
+		this->decompressionStatus = (gcnew System::Windows::Forms::Panel());
+		this->residualExposures = (gcnew System::Windows::Forms::Panel());
+		this->collimationStatus = (gcnew System::Windows::Forms::Panel());
+		this->tubeStatus = (gcnew System::Windows::Forms::Panel());
+		this->doorStatus = (gcnew System::Windows::Forms::Panel());
+		this->paddleStatus = (gcnew System::Windows::Forms::Panel());
+		this->thicknessStatus = (gcnew System::Windows::Forms::Panel());
+		this->forceStatus = (gcnew System::Windows::Forms::Panel());
+		this->viewSelection = (gcnew System::Windows::Forms::Panel());
+		this->lampButton = (gcnew System::Windows::Forms::Panel());
+		this->alarmButton = (gcnew System::Windows::Forms::Panel());
+		this->xrayStat = (gcnew System::Windows::Forms::Panel());
+		this->labelXrayStatus = (gcnew System::Windows::Forms::Label());
 		this->errorPanel->SuspendLayout();
 		this->operTopFrame->SuspendLayout();
 		this->panel1->SuspendLayout();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errpanel_erricon))->BeginInit();
 		this->mainPanel->SuspendLayout();
+		this->xrayStat->SuspendLayout();
 		this->SuspendLayout();
 		// 
 		// labelDate
@@ -283,24 +328,132 @@ private:
 		this->errorId->TabIndex = 12;
 		this->errorId->Text = L"E00001";
 		// 
-		// errorButton
+		// magnifierStatus
 		// 
-		this->errorButton->Location = System::Drawing::Point(30, 834);
-		this->errorButton->Name = L"errorButton";
-		this->errorButton->Size = System::Drawing::Size(160, 160);
-		this->errorButton->TabIndex = 13;
-		this->errorButton->Click += gcnew System::EventHandler(this, &OperatingForm::errorButton_Click);
+		this->magnifierStatus->Location = System::Drawing::Point(22, 834);
+		this->magnifierStatus->Name = L"magnifierStatus";
+		this->magnifierStatus->Size = System::Drawing::Size(170, 170);
+		this->magnifierStatus->TabIndex = 13;
+		this->magnifierStatus->Click += gcnew System::EventHandler(this, &OperatingForm::errorButton_Click);
 		// 
 		// mainPanel
 		// 
+		this->mainPanel->Controls->Add(this->xrayStat);
+		this->mainPanel->Controls->Add(this->alarmButton);
+		this->mainPanel->Controls->Add(this->lampButton);
+		this->mainPanel->Controls->Add(this->viewSelection);
+		this->mainPanel->Controls->Add(this->forceStatus);
+		this->mainPanel->Controls->Add(this->thicknessStatus);
+		this->mainPanel->Controls->Add(this->paddleStatus);
+		this->mainPanel->Controls->Add(this->doorStatus);
+		this->mainPanel->Controls->Add(this->tubeStatus);
+		this->mainPanel->Controls->Add(this->collimationStatus);
+		this->mainPanel->Controls->Add(this->residualExposures);
+		this->mainPanel->Controls->Add(this->decompressionStatus);
 		this->mainPanel->Controls->Add(this->labelDate);
-		this->mainPanel->Controls->Add(this->errorButton);
+		this->mainPanel->Controls->Add(this->magnifierStatus);
 		this->mainPanel->Controls->Add(this->labelPatientName);
 		this->mainPanel->Controls->Add(this->labelTime);
 		this->mainPanel->Location = System::Drawing::Point(0, 0);
 		this->mainPanel->Name = L"mainPanel";
 		this->mainPanel->Size = System::Drawing::Size(600, 1024);
 		this->mainPanel->TabIndex = 14;
+		// 
+		// decompressionStatus
+		// 
+		this->decompressionStatus->Location = System::Drawing::Point(214, 834);
+		this->decompressionStatus->Name = L"decompressionStatus";
+		this->decompressionStatus->Size = System::Drawing::Size(170, 170);
+		this->decompressionStatus->TabIndex = 14;
+		// 
+		// residualExposures
+		// 
+		this->residualExposures->Location = System::Drawing::Point(406, 834);
+		this->residualExposures->Name = L"residualExposures";
+		this->residualExposures->Size = System::Drawing::Size(170, 170);
+		this->residualExposures->TabIndex = 15;
+		// 
+		// collimationStatus
+		// 
+		this->collimationStatus->Location = System::Drawing::Point(22, 644);
+		this->collimationStatus->Name = L"collimationStatus";
+		this->collimationStatus->Size = System::Drawing::Size(170, 170);
+		this->collimationStatus->TabIndex = 14;
+		// 
+		// tubeStatus
+		// 
+		this->tubeStatus->Location = System::Drawing::Point(214, 644);
+		this->tubeStatus->Name = L"tubeStatus";
+		this->tubeStatus->Size = System::Drawing::Size(170, 170);
+		this->tubeStatus->TabIndex = 15;
+		// 
+		// doorStatus
+		// 
+		this->doorStatus->Location = System::Drawing::Point(406, 644);
+		this->doorStatus->Name = L"doorStatus";
+		this->doorStatus->Size = System::Drawing::Size(170, 170);
+		this->doorStatus->TabIndex = 16;
+		// 
+		// paddleStatus
+		// 
+		this->paddleStatus->Location = System::Drawing::Point(22, 454);
+		this->paddleStatus->Name = L"paddleStatus";
+		this->paddleStatus->Size = System::Drawing::Size(170, 170);
+		this->paddleStatus->TabIndex = 17;
+		// 
+		// thicknessStatus
+		// 
+		this->thicknessStatus->Location = System::Drawing::Point(214, 454);
+		this->thicknessStatus->Name = L"thicknessStatus";
+		this->thicknessStatus->Size = System::Drawing::Size(170, 170);
+		this->thicknessStatus->TabIndex = 18;
+		// 
+		// forceStatus
+		// 
+		this->forceStatus->Location = System::Drawing::Point(406, 454);
+		this->forceStatus->Name = L"forceStatus";
+		this->forceStatus->Size = System::Drawing::Size(170, 170);
+		this->forceStatus->TabIndex = 19;
+		// 
+		// viewSelection
+		// 
+		this->viewSelection->Location = System::Drawing::Point(22, 200);
+		this->viewSelection->Name = L"viewSelection";
+		this->viewSelection->Size = System::Drawing::Size(430, 234);
+		this->viewSelection->TabIndex = 20;
+		// 
+		// lampButton
+		// 
+		this->lampButton->Location = System::Drawing::Point(471, 200);
+		this->lampButton->Name = L"lampButton";
+		this->lampButton->Size = System::Drawing::Size(105, 105);
+		this->lampButton->TabIndex = 21;
+		// 
+		// alarmButton
+		// 
+		this->alarmButton->Location = System::Drawing::Point(471, 329);
+		this->alarmButton->Name = L"alarmButton";
+		this->alarmButton->Size = System::Drawing::Size(105, 105);
+		this->alarmButton->TabIndex = 22;
+		// 
+		// xrayStat
+		// 
+		this->xrayStat->Controls->Add(this->labelXrayStatus);
+		this->xrayStat->Location = System::Drawing::Point(22, 61);
+		this->xrayStat->Name = L"xrayStat";
+		this->xrayStat->Size = System::Drawing::Size(554, 120);
+		this->xrayStat->TabIndex = 23;
+		// 
+		// labelXrayStatus
+		// 
+		this->labelXrayStatus->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 26.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->labelXrayStatus->Location = System::Drawing::Point(19, 21);
+		this->labelXrayStatus->Name = L"labelXrayStatus";
+		this->labelXrayStatus->Size = System::Drawing::Size(514, 82);
+		this->labelXrayStatus->TabIndex = 0;
+		this->labelXrayStatus->Text = L"STAND-BY";
+		this->labelXrayStatus->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// OperatingForm
 		// 
@@ -321,6 +474,7 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errpanel_erricon))->EndInit();
 		this->mainPanel->ResumeLayout(false);
 		this->mainPanel->PerformLayout();
+		this->xrayStat->ResumeLayout(false);
 		this->ResumeLayout(false);
 
 	}

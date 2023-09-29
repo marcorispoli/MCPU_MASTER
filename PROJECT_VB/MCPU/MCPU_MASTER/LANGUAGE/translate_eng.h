@@ -11,11 +11,15 @@
 "ERROR", "E00008", "DOOR_STUDY_OPEN", "Exposure Preparation", "The Door Study is open!\nThe Exposure cannot proceed in this status",
 "ERROR", "E00009", "POWER_DOWN_ERROR", "System Power Monitoring", "Power down condition detected!",
 "ERROR", "E00010", "BATTERY_LOW_ERROR", "System Power Monitoring", "Battery voltage monitoring error!\nThe battery voltage level is too low.",
+"ERROR", "E00011", "GENERATOR_ERROR_SH", "Generator Status", "Smart Hub not connected",
+"ERROR", "E00012", "GENERATOR_ERROR_GEN", "Generator Status", "Generator device not connected",
+
 
 /* -------- WARNINGS ---------------------------*/
 
 "WARNING", "W00001", "BATTERY_DISABLED_WARNING", "System Power Monitoring", "The battery usage has been disabled!\nThe use of batteries is mandatory to activate an exposure sequence.",
 "WARNING", "W00002", "DOOR_STUDY_OPEN_WARNING", "Safety Monitoring", "The Study's door is detected Open!\nThe study's door shall be closed to activate an exposure sequence.",
+"WARNING", "W00003", "GENERATOR_INIT_WARNING", "Generator Status", "The Generator device is setting up.\nThe generator is not ready for exposures.",
 
 /* -------- LABELS ---------------------------*/
 
@@ -23,3 +27,6 @@
 "LABEL", "L00002", "ERROR", "ERR", "-",
 "LABEL", "L00003", "WARNING", "WRN", "-",
 "LABEL", "L00004", "INFO", "INFO", "-",
+"LABEL", "L00005", "NOT-READY-FOR-EXPOSURE", "STAND-BY", "-",
+"LABEL", "L00006", "READY-FOR-EXPOSURE", "READY", "-",
+"LABEL", "L00007", "X-RAY-ON", "X-RRAY ON", "-",

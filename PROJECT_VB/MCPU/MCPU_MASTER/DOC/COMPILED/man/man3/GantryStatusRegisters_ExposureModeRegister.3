@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::ExposureModeRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ExposureModeRegister" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,183 +9,47 @@ GantryStatusRegisters::ExposureModeRegister \- This class handles the exposure t
 .PP
 .PP
 \fC#include <gantry_global_status\&.h>\fP
-.SS "Public Types"
-
-.in +1c
-.ti -1c
-.RI "enum class \fBoptions\fP { \fBMAN_2D\fP, \fBAEC_2D\fP, \fBMAN_3D\fP, \fBAEC_3D\fP, \fBMAN_COMBO\fP, \fBAEC_COMBO\fP, \fBMAN_AE\fP, \fBAEC_AE\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
-.br
-.RI "This is the enumeration option code "
-.in -1c
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBdelegate_status_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBstatus_change_event()\fP;\&. "
-.in -1c
-.SS "Static Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "static \fBoptions\fP \fBgetCode\fP (void)"
-.br
-.RI "Returns the option code of the register "
-.ti -1c
-.RI "static String ^ \fBgetTag\fP (void)"
-.br
-.RI "Returns the option tag of the register "
-.ti -1c
-.RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
-.br
-.RI "This function set the register with the option code (and related tag)\&. "
-.ti -1c
-.RI "static bool \fBsetCode\fP (String^ val)"
-.br
-.in -1c
 .SS "Static Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'MAN_2D', 'AEC_2D', 'MAN_3D', 'AEC_3D', 'MAN_COMBO', 'AEC_COMBO' , 'MAN_AE', 'AEC_AE', 'UNDEF'}"
+.RI "static \fBExposureTypeOption\fP ^ \fBexposureType\fP = gcnew \fBExposureTypeOption\fP"
 .br
-.RI "This is the option-tags static array\&. "
-.in -1c
-.SS "Events"
-
-.in +1c
 .ti -1c
-.RI "static \fBdelegate_status_change\fP^ \fBstatus_change_event\fP"
+.RI "static \fBCollimationModeOption\fP ^ \fBcollimationMode\fP = gcnew \fBCollimationModeOption\fP"
 .br
-.RI "This event is generated whenver the status of the register is changed\&. "
-.in -1c
-.SS "Static Private Attributes"
-
-.in +1c
 .ti -1c
-.RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
+.RI "static \fBArmModeOption\fP ^ \fBarmMode\fP = gcnew \fBArmModeOption\fP"
 .br
-.RI "This is the register option-code\&. "
+.ti -1c
+.RI "static \fBCompressionModeOption\fP ^ \fBcompressorMode\fP = gcnew \fBCompressionModeOption\fP"
+.br
+.ti -1c
+.RI "static \fBPatientProtectionMode\fP ^ \fBprotectionMode\fP = gcnew \fBPatientProtectionMode\fP"
+.br
+.ti -1c
+.RI "static \fBDetectorTypeOption\fP ^ \fBdetector\fP = gcnew \fBDetectorTypeOption\fP"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
 This class handles the exposure type status\&. 
 
 The Exposure type status determines what kind of exposure will take place\&.
-.SH "Member Enumeration Documentation"
-.PP 
-.SS "enum class \fBGantryStatusRegisters::ExposureModeRegister::options\fP\fC [strong]\fP"
-
-.PP
-This is the enumeration option code 
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fIMAN_2D \fP\fP
-The next exposure is a 2D manual mode\&. 
-.TP
-\fB\fIAEC_2D \fP\fP
-The next exposure is a 2D with AEC\&. 
-.TP
-\fB\fIMAN_3D \fP\fP
-The next exposure is a Tomo 3D in manual mode\&. 
-.TP
-\fB\fIAEC_3D \fP\fP
-The next exposure is a Tomo 3D with AEC\&. 
-.TP
-\fB\fIMAN_COMBO \fP\fP
-The next exposure is a Manual Combo\&. 
-.TP
-\fB\fIAEC_COMBO \fP\fP
-The next exposure is a Combo with AEC\&. 
-.TP
-\fB\fIMAN_AE \fP\fP
-The next exposure is a Dual energy exposure in manual mode\&. 
-.TP
-\fB\fIAEC_AE \fP\fP
-The next exposure is a Dual energy with AEC\&. 
-.TP
-\fB\fILEN \fP\fP
-.TP
-\fB\fIUNDEF \fP\fP
-.SH "Member Function Documentation"
-.PP 
-.SS "delegate void GantryStatusRegisters::ExposureModeRegister::delegate_status_change (void)"
-
-.PP
-This is the delegate of the \fBstatus_change_event()\fP;\&. 
-.SS "static \fBoptions\fP GantryStatusRegisters::ExposureModeRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-Returns the option code of the register 
-.PP
-\fBReturns\fP
-.RS 4
-the value of the option code 
-.RE
-.PP
-
-.SS "static String ^ GantryStatusRegisters::ExposureModeRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-Returns the option tag of the register 
-.PP
-\fBReturns\fP
-.RS 4
-the value of the Tag 
-.RE
-.PP
-
-.SS "static bool GantryStatusRegisters::ExposureModeRegister::setCode (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-This function set the register with the option code (and related tag)\&. The register is updated with the option code and related tag and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIval\fP this is the option-code to be set
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if success or false if the code doesn't exist
-.RE
-.PP
-
-.SS "static bool GantryStatusRegisters::ExposureModeRegister::setCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
-This function set the register with the option tag (and related code)\&.
-.PP
-The register is updated with the tag and the related option code and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIval\fP this is the tag to be set
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if success or false if the code doesn't exist
-.RE
-.PP
-
 .SH "Member Data Documentation"
 .PP 
-.SS "\fBoptions\fP GantryStatusRegisters::ExposureModeRegister::code = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+.SS "\fBArmModeOption\fP ^ GantryStatusRegisters::ExposureModeRegister::armMode = gcnew \fBArmModeOption\fP\fC [static]\fP"
 
-.PP
-This is the register option-code\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::ExposureModeRegister::tags = gcnew array<String^> { 'MAN_2D', 'AEC_2D', 'MAN_3D', 'AEC_3D', 'MAN_COMBO', 'AEC_COMBO' , 'MAN_AE', 'AEC_AE', 'UNDEF'}\fC [static]\fP"
+.SS "\fBCollimationModeOption\fP ^ GantryStatusRegisters::ExposureModeRegister::collimationMode = gcnew \fBCollimationModeOption\fP\fC [static]\fP"
 
-.PP
-This is the option-tags static array\&. 
-.SH "Event Documentation"
-.PP 
-.SS "\fBdelegate_status_change\fP^ GantryStatusRegisters::ExposureModeRegister::status_change_event\fC [static]\fP"
+.SS "\fBCompressionModeOption\fP ^ GantryStatusRegisters::ExposureModeRegister::compressorMode = gcnew \fBCompressionModeOption\fP\fC [static]\fP"
 
-.PP
-This event is generated whenver the status of the register is changed\&. Usage: \fBExposureModeRegister::status_change_event\fP += gcnew delegate_status_change(&some_class, some_class::func) 
+.SS "\fBDetectorTypeOption\fP ^ GantryStatusRegisters::ExposureModeRegister::detector = gcnew \fBDetectorTypeOption\fP\fC [static]\fP"
+
+.SS "\fBExposureTypeOption\fP ^ GantryStatusRegisters::ExposureModeRegister::exposureType = gcnew \fBExposureTypeOption\fP\fC [static]\fP"
+
+.SS "\fBPatientProtectionMode\fP ^ GantryStatusRegisters::ExposureModeRegister::protectionMode = gcnew \fBPatientProtectionMode\fP\fC [static]\fP"
+
 
 .SH "Author"
 .PP 

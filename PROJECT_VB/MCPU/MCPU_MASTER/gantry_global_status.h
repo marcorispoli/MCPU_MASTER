@@ -5,9 +5,9 @@
 #include "Errors.h"
 
 
-using namespace System;
-using namespace System::Collections::Generic;
 
+using namespace System::Collections::Generic;
+using namespace System::Drawing;
 
 ref class GlobalObjects
 {
@@ -24,12 +24,13 @@ public:
     #define pFW303 ((PCB303^) GlobalObjects::pFw303)
     #define pFW304 ((PCB304^) GlobalObjects::pFw304)
     #define pFW315 ((PCB315^) GlobalObjects::pFw315)
+    #define pFW326 ((PCB326^) GlobalObjects::pFw326)
 
     #define pMBODY ((CanOpenMotor^) GlobalObjects::pMotBody)
     #define pMTILT ((TiltMotor^) GlobalObjects::pMotTilt)
-    #define pMARM  ((CanOpenMotor^) GlobalObjects::pMotArm)
+    #define pMARM  ((ArmMotor^) GlobalObjects::pMotArm)
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
-    #define pMVERT  ((CanOpenMotor^) GlobalObjects::pMotVert)
+    #define pMVERT  ((VerticalMotor^) GlobalObjects::pMotVert)
 
     #define pGENERATOR  ((Generator^) GlobalObjects::pGenerator)
 
@@ -49,11 +50,12 @@ public:
     static Object^ pFw303 = nullptr; //!< Pointer to the FW303 board
     static Object^ pFw304 = nullptr; //!< Pointer to the FW304 board
     static Object^ pFw315 = nullptr; //!< Pointer to the FW315 board
+    static Object^ pFw326 = nullptr; //!< Pointer to the FW326 board
 
     // Monitor coordinates
     static int monitor_X0;//!< Pointer to the Monitor X0 position
     static int monitor_Y0;//!< Pointer to the Monitor Y0 position
-    static String^ applicationResourcePath; //!< This is the current application resource path
+    static System::String^ applicationResourcePath; //!< This is the current application resource path
     // Forms
     static Object^ pIdleForm = nullptr; //!< Pointer to the IdleForm 
     static Object^ pOperatingForm = nullptr; //!< Pointer to the OperatingForm 
@@ -292,6 +294,10 @@ namespace GantryStatusRegisters {
             return true;
         }
 
+        void addToList(T item) {
+            if (list_code->Contains(item)) return;
+            list_code->Add(item);
+        }
         void inline clearList(void) { list_code->Clear(); }
 
     private:
@@ -496,48 +502,7 @@ namespace GantryStatusRegisters {
         enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
-    /// <summary>
-    /// This is the projection handling  class.
-    /// 
-    /// This class defines the availabe projection options,
-    /// store the current selected projection and the projection selectable list.
-    /// 
-    /// The class provides events related to the data change 
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class ProjectionOptions {
-    public:
-
-        /// <summary>
-        ///  This is the enumeration option code of the selectable projections.
-        /// 
-        /// </summary>
-        enum class options {
-            LCC = 0,
-            LFB,
-            LISO,
-            LLM,
-            LLMO,
-            LML,
-            LMLO,
-            LSIO,
-            RCC,
-            RFB,
-            RISO,
-            RLM,
-            RLMO,
-            RML,
-            RMLO,
-            RSIO,
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "LCC", "LFB", "LISO", "LLM", "LLMO", "LML", "LMLO", "LSIO", "RCC", "RFB", "RISO", "RLM", "RLMO", "RML", "RMLO", "RSIO", "UNDEF"};//!< This is the option-tags static array
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-
-    };
-
+    
     /// <summary>
     /// This register handles the Paddles identifiable by the compressor device
     /// 
@@ -566,10 +531,6 @@ namespace GantryStatusRegisters {
         static const cli::array<String^>^ tags = gcnew cli::array<String^> { "PAD_24x30", "PAD_18x24_C", "PAD_18x24_L", "PAD_18x24_R", "PADCOLLI_9x21", "PAD_10x24", "PAD_D75", "PAD_BIOP2D", "PAD_BIOP3D", "PAD_TOMO", "PAD_9x9", "PAD_UNDETECTED", "PAD_UNLOCKED", "PAD_UNDETECTED" };//!< This is the option-tags static array
         enumType<options>^ Value = gcnew enumType<options>(tags);
     };
-
-
-
-
 
 
 
@@ -906,6 +867,18 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
+
+        static bool isProtection3Dpresent(void) {
+            return (Value->getCode() == options::COMPONENT_PROTECTION_3D);
+        }
+
+        static unsigned char getMagFactor(void) {
+            if (Value->getCode() == options::COMPONENT_MAG15) return 15;
+            else if (Value->getCode() == options::COMPONENT_MAG18) return 18;
+            else if (Value->getCode() == options::COMPONENT_MAG20) return 20;
+            else return 10;
+        }
+
         static const cli::array<String^>^ tags = gcnew cli::array<String^> { "PROTECTION_3D", "MAG_15", "MAG_18", "MAG_20", "BIOPSY", "COMPONENT_UNDETECTED"};//!< This is the option-tags static array        
         static enumType<options>^ Value = gcnew enumType<options>(tags);
     };
@@ -1036,292 +1009,7 @@ namespace GantryStatusRegisters {
 
 
 
-    /// <summary>
-    /// This is the status register of the Arm motorization.
-    /// 
-    /// There are several features that this register allow to handle:
-    /// - Arm Angle verification option: enables or disables the test on the angle validity during exposure;
-    /// - Arm target angle and projection setting: allow to handles the arm positioning
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class ArmStatusRegister {
-    public:
-
-
-        /// <summary>
-        /// This event is generated whenever a projection request command is called.
-        /// 
-        /// Usage: ArmStatusRegister::projection_request_event += gcnew delegate_string_callback(&some_class, some_class::func)
-        /// </summary>        
-        static event delegate_string_callback^ projection_request_event;
-
-        /// <summary>
-        /// This function generate the projection_request_event() event
-        /// </summary>
-        /// <param name="projection">Tag of the requested projection</param>
-        static void projectionRequest(String^ projection) {
-
-            // Checks if the projection actually is in the available list
-            if (!projections->Value->isPresent(projection)) return;
-            projection_request_event(projection);
-        }
-
-
-
-        /// <summary>
-        /// This event is generated whenever a projection request command is called.
-        /// 
-        /// Usage: ProjectionRegister::abort_projection_request_event += gcnew delegate_void_callback(&some_class, some_class::func)
-        /// </summary>        
-        static event delegate_void_callback^ abort_projection_request_event;
-
-        /// <summary>
-        /// This function generate the projection_request_event() event
-        /// </summary>
-        /// <param name="projection">Tag of the requested projection</param>
-
-        /// <summary>
-        /// This function generates the abort_projection_request_event() if a projection 
-        /// is currently valid
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        static void abortProjectionRequest(void) {
-
-            // Checks if the Arm data are valid or not. Only for valid data is alowed to request an abort projection
-            if (!isValid()) return;
-            abort_projection_request_event();
-        }
-
-
-        /// <summary>
-        /// This event is generated whenver the arm target is changed.
-        /// 
-        /// Usage: ArmStatusRegister::target_change_event += gcnew delegate_void_callback(&some_class, some_class::func)
-        /// </summary>
-        static event delegate_void_callback^ target_change_event;
-
-
-        /// <summary>
-        /// This event is generated whenver the arm target parameters are validated.
-        /// 
-        /// Usage: ArmStatusRegister::validate_change_event += gcnew delegate_void_callback(&some_class, some_class::func)
-        /// </summary>
-        static event delegate_void_callback^ validate_change_event;
-
-        /// <summary>
-        /// This method validates or invalidates the Arm parameters.
-        /// 
-        /// 
-        /// When the validation status changes, the validate_change_event() is generated.
-        /// 
-        /// 
-        /// </summary>
-        /// <param name="stat"></param>
-        static void validate(bool stat) {
-
-            if (position_validated != stat) {
-                position_validated = stat;
-                validate_change_event();
-            }
-
-            projections->Value->clearCode();
-        }
-
-        /// <summary>
-        /// This funtion returns the Arm activation status.
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>true if the Arm is executing a command</returns>
-        static bool isBusy(void) { return executing; }
-
-        /// <summary>
-        /// This funtion returns the current data valid flag.
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>true if the Arm data are valid</returns>
-        static bool isValid(void) { return position_validated; }
-
-        /// <summary>
-        /// This function set the new target for the Arm position.
-        /// 
-        /// If the target should change the event validate_change_event()
-        /// and the event target_change_event()  are generated.
-        /// 
-        /// The target is automatically validated!
-        /// 
-        /// </summary>
-        /// <param name="pos">target position in (°)</param>
-        /// <param name="low">lower acceptable range (°)</param>
-        /// <param name="high">higher acceptable range (°)</param>
-        /// <param name="id">identifier of the AWS command</param>
-        /// <param name="proj"> This is the projection name assigned to the target</param>
-        /// <returns>true if the target is validated</returns>
-        static bool setTarget(int pos, int low, int high, String^ proj, int id) {
-            if (executing) return false;
-            if (pos > 180) return false;
-            if (pos < -180) return false;
-            if ((pos > high) || (pos < low)) return false;
-            if (projections->Value->indexOf(proj) < 0) return false;
-
-            // Assignes the projection
-            projections->Value->setCode(proj);
-
-            // Assignes the target data
-            position_validated = true;
-            position_target = pos;
-            allowed_low = low;
-            allowed_high = high;
-
-            // Verifies if the target is changed
-            if (pos == current_angle) {
-                executing_id = 0;
-                return true;
-            }
-
-            // If the target is changed, a Arm activation command should be invoked
-            executing_id = id;
-            executing = true;
-
-            validate_change_event();
-            target_change_event();
-            return true;
-        }
-
-
-        /// <summary>
-        /// This event is generated whenver the arm position is updated.
-        /// This is not the activation completion event!
-        /// 
-        /// Usage: ArmStatusRegister::position_change_event += gcnew delegate_void_callback(&some_class, some_class::func)
-        /// </summary>
-        static event delegate_void_callback^ position_change_event;
-
-        /// <summary>
-        /// This function updates the current angle value.
-        /// 
-        /// If the angle changes, the position_change_event() is generated.
-        /// 
-        /// </summary>
-        /// <param name="angle">This is the new angle in (°)</param>
-        static void  updateCurrentPosition(int angle) {
-            if (current_angle != angle) {
-                current_angle = angle;
-                position_change_event();
-            }
-        }
-
-        /// <summary>
-        /// This event is generated whenver the arm completes an activation!
-        /// 
-        /// Usage: ArmStatusRegister::activation_completed_event += gcnew delegate_activation_completed(&some_class, some_class::func)
-        /// </summary>
-        static event delegate_activation_completed^ activation_completed_event;
-
-        /// <summary>
-        /// This function shall be called when the activation termines
-        /// 
-        /// 
-        /// </summary>
-        /// <param name="angle">THis is the final angle</param>
-        /// <param name="error">This is an error code</param>
-        static void  activationCompleted(int angle, int error) {
-            if (!executing) return;
-            executing = false;
-
-            unsigned short  id = executing_id;
-            executing_id = 0;
-
-            updateCurrentPosition(angle);
-            activation_completed_event(id, error);
-
-        }
-
-
-        /// <summary>
-        /// This function returns the current ARM angle, even if the command is not yet terminated.
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>The current angle (°) units</returns>
-        static int getAngle(void) {
-            return current_angle;
-        }
-
-        /// <summary>
-        /// This function returns the current ARM target
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>The current target (°) units</returns>
-        static int getTarget(void) {
-            return position_target;
-        }
-
-        /// <summary>
-        /// This function returns the current ARM low target
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>The current low target (°) units</returns>
-        static int getLow(void) {
-            return allowed_low;
-        }
-
-        /// <summary>
-        /// This function returns the current ARM high target
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>The current high target (°) units</returns>
-        static int getHigh(void) {
-            return allowed_high;
-        }
-
-        /// <summary>
-        /// Returns the current selected projection
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns></returns>
-        static String^ getProjection(void) {
-            return projections->Value->getTag();
-        }
-
-        /// <summary>
-        /// This function verifies if the current angle is into the expected acceptable range
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>true if the angle is acceptable</returns>
-        static bool isValidAngle(void) {
-            if (!position_validated) return false;
-            if (current_angle > allowed_high) return false;
-            if (current_angle < allowed_low) return false;
-            if (executing) return false;
-
-            return true;
-        }
-        static inline ProjectionOptions^ getProjections() { return projections; }
-
-    private:
-
-
-        static bool         position_validated = false; //!< Validation status
-        static int          position_target = 0;        //!< Validated target position
-        static int          current_angle;              //!< Current Arm position
-
-        static int          allowed_low = 0;            //!< Lower acceptable angle (°)
-        static int          allowed_high = 0;           //!< Higher acceptable angle (°)
-        static bool         executing = false;          //!< Command is in execution
-        static unsigned short  executing_id = 0;        //!< AWS command Id
-        static ProjectionOptions^ projections = gcnew ProjectionOptions;  //!< This is the current selected projection
-
-
-    };
+    
 
 
     /// <summary>
@@ -1774,22 +1462,21 @@ namespace GantryStatusRegisters {
         /// <returns>Stator's heat in % respect the maximum</returns>
         static unsigned char getStator(void) { return statorHeat; }
 
-        /// <summary>
-        /// This function returns the available number of exposure 
-        /// that it ishould be possible before to stop for temperature issues
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>Number of available exposures</returns>
-        static unsigned short getExposures(void) { return availableExposure; }
+        static unsigned char getCumulated(void) { return cumulated; }
+        static bool isAlarm(void) { return alarm; }
+
 
         static void setTubeTemp(unsigned char stator, unsigned char bulb);
+        static void setAnodeHu(unsigned char ahu);
+       
 
     private:
         static unsigned char  anodeHu = 0;     //!< Cumulated Anode HU %
         static unsigned char  bulbHeat = 0;    //!< Cumulated Bulb Heat %
         static unsigned char  statorHeat = 0;  //!< Cumulated Stator Heat %
-        static unsigned short availableExposure = 0xFFFF; //!< Estimated number of available exposure 
+        static unsigned char  cumulated = 0;  //!< Cumulated Stator Heat %
+        static bool alarm = false;             //!< One of the data exceeds the acceptable range
+        
     };
 
 
@@ -1819,122 +1506,6 @@ namespace GantryStatusRegisters {
         static enumType<options>^ Value = gcnew enumType<options>(tags);
     };
 
-    /// <summary>
-    /// This class register handles the REady for exposure conditions.
-    /// 
-    /// 
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class ReadyForExposureRegister {
-    public:
-
-        ///  Definition of the not-ready conditions
-        enum class options {
-            READY_FOR_EXPOSURE = 0, //!< The Gantry is ready to activate an exposure
-            SYSTEM_ERROR = 0x1,         //!< The Gantry is in error condition
-            MISSING_COMPRESSION = 0x2,  //!< The compression force is not detected
-            MISSING_PATIENT_PROTECTION = 0x4,  //!< The Patient protection is missing
-            WRONG_ARM_POSITION = 0x8, //!< The Arm position is out of the expected range
-            WRONG_PADDLE_DETECTED = 0x10, //!< The Paddle is not the expected for the exposure mode
-            MISSING_VALID_EXPOSURE_MODE = 0x20, //!< The Exposure mode is not selected
-            MISSING_VALID_EXPOSURE_DATA = 0x40, //!< The Exposure data are not present
-            XRAY_PUSHBUTTON_DISABLED = 0x80, //!< The Xray push button is not enabled
-            STUDY_CLOSED = 0x100, //!< The study is closed
-            NOT_READY_FOR_EXPOSURE = 0x8000 //!< Used to initialize the status  to a non ready condition
-        };
-
-
-        /// <summary>
-        /// This event is generated whenver the ready for exposure changes its status
-        /// 
-        /// Usage: ReadyForExposureRegister::ready_change_event += gcnew delegate_void_callback(&some_class, some_class::func)
-        /// </summary>
-        static event delegate_void_callback^ ready_change_event;
-
-        /// <summary>
-   /// This event is generated whenver the ready for exposure changes its status
-   /// 
-   /// Usage: ReadyForExposureRegister::start_exposure_event += gcnew delegate_void_callback(&some_class, some_class::func)
-   /// </summary>
-        static event delegate_void_callback^ start_exposure_event;
-
-        /// <summary>
-        /// This function requests for the start exposure.
-        /// If the system is in ready for exposure, the event start_exposure_event() is generated.
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>true if the system is in ready for exposure</returns>
-        static bool requestStartExposure(void) {
-            if (code != options::READY_FOR_EXPOSURE) return false;
-            start_exposure_event();
-            return true;
-        }
-
-        /// <summary>
-        /// Returns the not ready for exposure bit-wise variable.
-        /// 
-        /// If the variable is 0 it means that the Gantry is Ready!
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>the value of the not ready condition (bit-wise) </returns>
-        static unsigned short getNotReadyCode(void) { return (unsigned short)code; }
-
-        /// <summary>
-        /// This function shall be called by every action to the 
-        /// system variables that affect the current ready condition
-        /// 
-        /// Whwnever the ready status changes, the ready_change_event() is generated 
-        /// </summary>
-        /// <param name=""></param>
-        static unsigned short evaluateReadyForExposure(void) {
-            options initial_status = code;
-
-            unsigned short notready = 0;
-            if (Errors::isError()) notready |= (unsigned short)options::SYSTEM_ERROR;
-
-
-            if ((ExposureModeRegister::compressorMode->Value->getCode() != CompressionModeOption::options::CMP_DISABLE)) {
-                if (CompressorRegister::getForce() == 0) notready |= (unsigned short)options::MISSING_COMPRESSION;
-            }
-
-
-            if ((ExposureModeRegister::protectionMode->Value->getCode() != PatientProtectionMode::options::PROTECTION_DIS)) {
-                if ((ComponentRegister::Value->getCode() != ComponentRegister::options::COMPONENT_PROTECTION_3D) &&
-                    (CollimatorComponentRegister::Value->getCode() != CollimatorComponentRegister::options::COLLI_COMPONENT_PROTECTION_2D))
-                    notready |= (unsigned short)options::MISSING_PATIENT_PROTECTION;
-            }
-
-            if ((ExposureModeRegister::armMode->Value->getCode() != ArmModeOption::options::ARM_DIS)) {
-                if (!ArmStatusRegister::isValidAngle()) notready |= (unsigned short)options::WRONG_ARM_POSITION;
-            }
-
-
-            if ((ExposureModeRegister::compressorMode->Value->getCode() != CompressionModeOption::options::CMP_DISABLE)) {
-                if ((CompressorRegister::getPaddle()->Value->getCode() == PaddleOption::options::PAD_UNDETECTED) ||
-                    (CompressorRegister::getPaddle()->Value->getCode() == PaddleOption::options::PAD_UNLOCKED) ||
-                    (CompressorRegister::getPaddle()->Value->getCode() == PaddleOption::options::UNDEF)) notready |= (unsigned short)options::WRONG_PADDLE_DETECTED;
-            }
-
-            if (ExposureModeRegister::exposureType->Value->getCode() == ExposureTypeOption::options::UNDEF) notready |= (unsigned short)options::MISSING_VALID_EXPOSURE_MODE;
-
-            if (!ExposureDataRegister::getPulse(0)->isValid()) notready |= (unsigned short)options::MISSING_VALID_EXPOSURE_DATA;
-
-            if (XrayPushButtonRegister::isDisabled()) notready |= (unsigned short)options::XRAY_PUSHBUTTON_DISABLED;
-
-            code = (options)notready;
-
-            if (code != initial_status) ready_change_event();
-
-            return (unsigned short)code;
-        }
-
-    private:
-        static options code = options::NOT_READY_FOR_EXPOSURE; //!< This is the register option-code 
-
-    };
 
     ref class PowerStatusRegister {
     public:

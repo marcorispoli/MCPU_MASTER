@@ -1,14 +1,14 @@
-#include "pch.h"
+#include <Windows.h>
 #include "ConfigFile.h"
 
 using namespace System::IO;
 
-ConfigFile::ConfigFile(const String^ file, int rev, cli::array<paramItemT^>^ descriptor)
+ConfigFile::ConfigFile(const System::String^ file, int rev, cli::array<paramItemT^>^ descriptor)
 {
     warning = false;
     warning_string = "";
 
-    filename = getConfigPath() + "/" + (String^) file;
+    filename = getConfigPath() + "/" + (System::String^) file;
     revision = rev;
     loaded_revision = revision;
 
@@ -32,20 +32,20 @@ ConfigFile::ConfigFile(const String^ file, int rev, cli::array<paramItemT^>^ des
 
 }
 
-String^ ConfigFile::getConfigPath(void) {
+System::String^ ConfigFile::getConfigPath(void) {
 
     // Path identification
     TCHAR buffer[MAX_PATH] = { 0 };
     GetModuleFileName(NULL, buffer, MAX_PATH);
-    String^ stringa = gcnew String(buffer);
+    System::String^ stringa = gcnew System::String(buffer);
     int pos = stringa->LastIndexOf(L"\\");
     return stringa->Substring(0, pos);
 }
 
-bool ConfigFile::decodeLine(String^ rline)
+bool ConfigFile::decodeLine(System::String^ rline)
 {
     
-    String^ sval;
+    System::String^ sval;
 
     // Exclude a non formatted line
     if (!rline->Contains("<")) return false;
@@ -59,11 +59,11 @@ bool ConfigFile::decodeLine(String^ rline)
     // Gets the Tag 
     int p = rline->IndexOf(",");
     if (p < 0) return false;
-    String^ tag = rline->Substring(0, p);
+    System::String^ tag = rline->Substring(0, p);
 
     if (tag == "REVISION") {
         rline = rline->Substring(p + 1);
-        loaded_revision = Convert::ToInt16(rline);
+        loaded_revision = System::Convert::ToInt16(rline);
         return true;
     }
 
@@ -85,10 +85,10 @@ bool ConfigFile::decodeLine(String^ rline)
     return false;
 }
 
-int ConfigFile::getTagPosition(String^ tag) {
-    String^ stringa;
+int ConfigFile::getTagPosition(System::String^ tag) {
+    System::String^ stringa;
     for (int i = 0; i < data->Length; i++) {
-        stringa = (String^)data[i]->tag;
+        stringa = (System::String^)data[i]->tag;
         if (stringa == tag)  return i;
     }
 
@@ -101,7 +101,7 @@ bool ConfigFile::loadFile(void){
 
     StreamReader^ din = File::OpenText(filename);
 
-    String^ str;
+    System::String^ str;
     int count = 0;
     while ((str = din->ReadLine()) != nullptr)
     {
@@ -121,8 +121,8 @@ bool ConfigFile::loadFile(void){
 }
 
 void ConfigFile::storeFile(void){
-    String^ comment;
-    String^ item;
+    System::String^ comment;
+    System::String^ item;
 
     StreamWriter^ sw = gcnew StreamWriter(filename);
 
@@ -133,10 +133,10 @@ void ConfigFile::storeFile(void){
     sw->WriteLine("");
 
     for (int i = 0; i < data->Length; i++) {
-        comment = (String^)data[i]->comment;
-        item = "<" + (String^)data[i]->tag;
+        comment = (System::String^)data[i]->comment;
+        item = "<" + (System::String^)data[i]->tag;
         for (int j = 0; j < data[i]->defaults->Length; j++) {
-            item += "," + (String^)data[i]->values[j];
+            item += "," + (System::String^)data[i]->values[j];
         }
         item += ">";
         sw->WriteLine(comment);
@@ -149,13 +149,13 @@ void ConfigFile::storeFile(void){
 }
 
 void ConfigFile::createDefaultFile(void){
-    String^ comment;
-    String^ item;
+    System::String^ comment;
+    System::String^ item;
 
     // Reload the default values
     for (int i = 0; i < data->Length; i++) {
-        data[i]->values = gcnew cli::array<String^>(data[i]->defaults->Length);
-        for (int j = 0; j < data[i]->defaults->Length; j++) data[i]->values[j] = (String^)data[i]->defaults[j];
+        data[i]->values = gcnew cli::array<System::String^>(data[i]->defaults->Length);
+        for (int j = 0; j < data[i]->defaults->Length; j++) data[i]->values[j] = (System::String^)data[i]->defaults[j];
     }
 
     StreamWriter^ sw = gcnew StreamWriter(filename);
@@ -167,10 +167,10 @@ void ConfigFile::createDefaultFile(void){
     sw->WriteLine("");
 
     for (int i = 0; i < data->Length; i++) {
-        comment =  (String^) data[i]->comment;
-        item = "<" + (String^)data[i]->tag;
+        comment =  (System::String^) data[i]->comment;
+        item = "<" + (System::String^)data[i]->tag;
         for (int j = 0; j < data[i]->defaults->Length; j++) {
-            item += "," + (String^)data[i]->defaults[j];
+            item += "," + (System::String^)data[i]->defaults[j];
         }
         item += ">";
         sw->WriteLine(comment);

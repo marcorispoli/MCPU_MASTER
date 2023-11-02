@@ -255,7 +255,7 @@ class CR2CP_Eth
     bool isCommandProcessed(){return commandProcessed;};
     unsigned char getAssignedSequence(){return assignedSequence;};
     unsigned char getCommandProcessedResult(){return commandProcessedResult;};
-    string getCommandProcessedString(void) {return commandProcessedString;};
+    std::string getCommandProcessedString(void) {return commandProcessedString;};
     void    evalCommadProcessedResult(void);
     void    evalSetGeneratorProcessedResult(void);
     void    evalSetPatientProcessedResult(void);
@@ -350,7 +350,7 @@ class CR2CP_Eth
     unsigned char commandProcessedResult;
     unsigned char commandProcessedIndex;
     unsigned char commandProcessedSubIndex;
-    string commandProcessedString;
+    std::string commandProcessedString;
 
 
 	/*!

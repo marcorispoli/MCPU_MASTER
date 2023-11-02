@@ -3,11 +3,10 @@
  * \author    Francisco Javier Sanchez Rabadán <francisco.sanchez@sedecal.com>.
  * \ingroup   R2CPModule
 */
-#include "pch.h" 
 #include "R2CP_Eth.h"
 #include "R2CP_Index.h"
 
-#include "string.h"
+#include <string>
 
 #define HB(x) (unsigned char) (x >> 8)
 #define LB(x) (unsigned char) (x & 0xFF)
@@ -648,7 +647,7 @@ void CR2CP_Eth::evalCommadProcessedResult(void){
 
 void CR2CP_Eth::evalSetGeneratorProcessedResult(void){
 
-    string stringa = "GENERATOR COMMAND PROCESS ERROR :";
+    std::string stringa = "GENERATOR COMMAND PROCESS ERROR :";
     switch(commandProcessedSubIndex){
 
     case GENERATOR_DATA_BANK_ASSIGN_EXPOSURE:
@@ -758,7 +757,7 @@ void CR2CP_Eth::evalSetGeneratorProcessedResult(void){
 
 void CR2CP_Eth::evalSetPatientProcessedResult(void){
 
-    string stringa = "PATIENT COMMAND PROCESS ERROR :";
+    std::string stringa = "PATIENT COMMAND PROCESS ERROR :";
     switch(commandProcessedSubIndex){
 
     case PATIENT_PROCEDURE_CLEAR_ALL:
@@ -826,7 +825,7 @@ void CR2CP_Eth::evalGetPatientProcessedResult(void){}
 
 
 void CR2CP_Eth::evalGetSystemProcessedResult(void){
-    string stringa = "SYSTEM COMMAND PROCESS ERROR :";
+	std::string stringa = "SYSTEM COMMAND PROCESS ERROR :";
     switch(commandProcessedSubIndex){
 
     case SYSTEM_ALL_SYSTEM_MESSAGES:

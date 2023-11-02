@@ -1,5 +1,10 @@
-#include "pch.h"
 #include "TcpIpServerCLI.h"
+
+using namespace System::Net::Sockets;
+using namespace System::Net;
+using namespace System::Threading;
+using namespace System::Diagnostics;
+
 
 /// <summary>
 /// This is the Class constructor 
@@ -14,7 +19,7 @@
 /// </summary>
 /// <param name="ip">This is a String for the IP address</param>
 /// <param name="port">This is an integer value for thr server port</param>
-TcpIpServerCLI::TcpIpServerCLI(String^ ip, int port) 
+TcpIpServerCLI::TcpIpServerCLI(System::String^ ip, int port) 
 {
 
 	// Gets the Handler of the Form parent class, to be used for the message exchange
@@ -38,8 +43,8 @@ TcpIpServerCLI::TcpIpServerCLI(String^ ip, int port)
 	IPEndPoint^ senderAddress = gcnew IPEndPoint(localAddress, 0);
 
 	clientSocket = nullptr;
-	dispatchBuffer = gcnew cli::array<Byte>(TcpIpServerCLI_DISPATCH_BUFFER_SIZE);
-	rxBuffer = gcnew cli::array<Byte>(TcpIpServerCLI_RX_BUFFER_SIZE);
+	dispatchBuffer = gcnew cli::array<System::Byte>(TcpIpServerCLI_DISPATCH_BUFFER_SIZE);
+	rxBuffer = gcnew cli::array<System::Byte>(TcpIpServerCLI_RX_BUFFER_SIZE);
 	
 
 	// Create the server socket
@@ -198,7 +203,7 @@ void TcpIpServerCLI::WndProc(System::Windows::Forms::Message% m)
 /// 
 /// </summary>
 /// <param name="buffer">This is the data buffer to be sent</param>
-void TcpIpServerCLI::send(cli::array<Byte>^ buffer) {
+void TcpIpServerCLI::send(cli::array<System::Byte>^ buffer) {
 	if (!connection_status) return;
 	if (clientSocket == nullptr) return;
 

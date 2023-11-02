@@ -1,4 +1,4 @@
-.TH "globalModule" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "globalModule" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,13 +25,28 @@ globalModule \- Gantry Global Status Registers
 .br
 .RI "This class implements the Filter selection interface\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::XrayCompletedRegister\fP"
+.RI "class \fBGantryStatusRegisters::CollimationModeOption\fP"
 .br
-.RI "This class implements the XRAY completed status register\&."
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ReadyForExposureRegister\fP"
+.RI "class \fBGantryStatusRegisters::CompressionModeOption\fP"
 .br
-.RI "This class register handles the REady for exposure conditions\&. "
+.RI "This class handles the Compression behavior during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureTypeOption\fP"
+.br
+.RI "This class handles the exposure type status\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::DetectorTypeOption\fP"
+.br
+.RI "This class handles the Detector model selection\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PatientProtectionMode\fP"
+.br
+.RI "This class handles the Usage of the patient protection during the exposure\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PaddleOption\fP"
+.br
+.RI "This register handles the Paddles identifiable by the compressor device "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::XrayPushButtonRegister\fP"
 .br
@@ -43,11 +58,7 @@ globalModule \- Gantry Global Status Registers
 .ti -1c
 .RI "class \fBGantryStatusRegisters::OperatingStatusRegister\fP"
 .br
-.RI "This is the Gantry operating status register definition"
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ProjectionRegister\fP"
-.br
-.RI "This is the projection handling option class\&. "
+.RI "This is the Gantry operating status register definition\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ComponentRegister\fP"
 .br
@@ -57,45 +68,36 @@ globalModule \- Gantry Global Status Registers
 .br
 .RI "This register handles the component applicable to the collimator "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::PaddleRegister\fP"
+.RI "class \fBGantryStatusRegisters::CompressorRegister\fP"
 .br
-.RI "This register handles the Paddles identifiable by the compressor device "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ErrorRegister\fP"
-.br
-.RI "This is the Error handling register "
+.RI "This is the register handling the compression force and thickness\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ExposureModeRegister\fP"
 .br
 .RI "This class handles the exposure type status\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::DetectorTypeRegister\fP"
-.br
-.RI "This class handles the Detector model selection\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CompressionModeRegister\fP"
-.br
-.RI "This class handles the Compression behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CollimationModeRegister\fP"
-.br
-.RI "This class handles the Collimation behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientProtectionRegister\fP"
-.br
-.RI "This class handles the Usage of the patient protection during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ArmStatusRegister\fP"
-.br
-.RI "This is the status register of the Arm motorization\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientDataRegister\fP"
-.br
-.RI "This is the class handling the patient name"
-.ti -1c
 .RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
 .br
 .RI "This class handles the Trx motorization "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureCompletedOptions\fP"
+.br
+.RI "This class implements the XRAY completed status register\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ExposureDataRegister\fP"
+.br
+.RI "This register handle the Exposure pulse data info\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::TubeDataRegister\fP"
+.br
+.RI "This class handles the Xray Tybe data and setting\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
+.br
+.RI "This class handles the Interface language "
+.ti -1c
+.RI "class \fBProjectionOptions\fP"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 

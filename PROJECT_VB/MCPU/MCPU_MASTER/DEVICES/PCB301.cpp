@@ -1,5 +1,7 @@
-#include "pch.h"
+#include "PCB301.h"
+#include "../gantry_global_status.h"
 #include <thread>
+
 
 void PCB301::runningLoop(void) {
     static bool powerdown = false;
@@ -10,6 +12,7 @@ void PCB301::runningLoop(void) {
     bool bval;
 
     std::this_thread::sleep_for(std::chrono::microseconds(10000));
+
     //__________________________________________________________________________________________________________________ REGISTER STATUS
     while (!send(GET_STATUS_SYSTEM_REGISTER)) ;
 
@@ -19,8 +22,8 @@ void PCB301::runningLoop(void) {
         powerdown = bval;
 
         // Sets the general error
-        if (powerdown) Errors::activate("POWER_DOWN_ERROR", false);
-        else Errors::deactivate("POWER_DOWN_ERROR");
+        if (powerdown) Notify::activate("POWER_DOWN_ERROR", false);
+        else Notify::deactivate("POWER_DOWN_ERROR");
     }
 
     // Monitor of the Battery Enable input
@@ -28,8 +31,8 @@ void PCB301::runningLoop(void) {
     if (bval != batt_ena) {
         batt_ena = bval;
         if (batt_ena == false) {
-            Errors::activate("BATTERY_DISABLED_WARNING", false);
-        }else Errors::deactivate("BATTERY_DISABLED_WARNING");
+            Notify::activate("BATTERY_DISABLED_INFO", false);
+        }else Notify::deactivate("BATTERY_DISABLED_INFO");
     }
     
     // Monitor of the Battery Low error condition
@@ -45,8 +48,8 @@ void PCB301::runningLoop(void) {
     }
     if ((batt1_low || batt2_low) != batt_low) {
         batt_low = (batt1_low || batt2_low);
-        if(batt_low) Errors::activate("BATTERY_LOW_ERROR", false);
-        else  Errors::deactivate("BATTERY_LOW_ERROR");
+        if(batt_low) Notify::activate("BATTERY_LOW_ERROR", false);
+        else  Notify::deactivate("BATTERY_LOW_ERROR");
     }
 
     // Monitor of the Study door input
@@ -54,8 +57,8 @@ void PCB301::runningLoop(void) {
     if (bval != study_door_closed) {
         study_door_closed = bval;
 
-        if(study_door_closed) Errors::deactivate("DOOR_STUDY_OPEN_WARNING");
-        else Errors::activate("DOOR_STUDY_OPEN_WARNING", false);
+        if(study_door_closed) Notify::deactivate("DOOR_STUDY_OPEN_WARNING");
+        else Notify::activate("DOOR_STUDY_OPEN_WARNING", false);
     }
     GantryStatusRegisters::SafetyStatusRegister::setCloseDoor(study_door_closed);
 
@@ -66,8 +69,6 @@ void PCB301::runningLoop(void) {
     unsigned char vbatt1 = GET_BATTERY_VBATT1(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
     unsigned char vbatt2 = GET_BATTERY_VBATT2(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);    
     GantryStatusRegisters::PowerStatusRegister::setBatteryData(batt_ena, batt1_low, batt2_low, vbatt1, vbatt2);
-    
-
     
 
     return;

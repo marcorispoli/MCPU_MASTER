@@ -1,4 +1,10 @@
-#include "pch.h"
+#include "CanOpenMotor.h"
+#include "Translate.h"
+#include "Generator.h"
+#include "IdleForm.h"
+#include "MainForm.h"
+#include "OperatingForm.h"
+#include "./gantry_global_status.h"
 
 using namespace System;
 

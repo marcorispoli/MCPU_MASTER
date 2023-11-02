@@ -1,0 +1,81 @@
+.TH "GantryStatusRegisters::LanguageRegister" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::LanguageRegister \- This class handles the Interface language  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBLNG_ITA\fP = 0, \fBLNG_FRA\fP, \fBLNG_ENG\fP, \fBLNG_PRT\fP, \fBLNG_RUS\fP, \fBLNG_ESP\fP, \fBLNG_LTU\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration option code  "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< String^> ^ \fBtags\fP = gcnew cli::array<String^> { 'ITA', 'FRA', 'ENG', 'PRT', 'RUS', 'ESP', 'LTU', 'UNDEF'}"
+.br
+.RI "This is the option-tags static array\&. "
+.ti -1c
+.RI "static \fBenumType\fP< \fBoptions\fP > ^ \fBValue\fP = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class handles the Interface language 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::LanguageRegister::options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration option code  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILNG_ITA \fP\fP
+Italian Language\&. 
+.TP
+\fB\fILNG_FRA \fP\fP
+French Language\&. 
+.TP
+\fB\fILNG_ENG \fP\fP
+English Language\&. 
+.TP
+\fB\fILNG_PRT \fP\fP
+Portuguese\&. 
+.TP
+\fB\fILNG_RUS \fP\fP
+Russian Language\&. 
+.TP
+\fB\fILNG_ESP \fP\fP
+Espanol Language\&. 
+.TP
+\fB\fILNG_LTU \fP\fP
+Lituanian Language\&. 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Data Documentation"
+.PP 
+.SS "const cli::array<String^> ^ GantryStatusRegisters::LanguageRegister::tags = gcnew cli::array<String^> { 'ITA', 'FRA', 'ENG', 'PRT', 'RUS', 'ESP', 'LTU', 'UNDEF'}\fC [static]\fP"
+
+.PP
+This is the option-tags static array\&. 
+.SS "\fBenumType\fP<\fBoptions\fP> ^ GantryStatusRegisters::LanguageRegister::Value = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

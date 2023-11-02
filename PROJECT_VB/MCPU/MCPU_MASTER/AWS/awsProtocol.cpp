@@ -1,7 +1,10 @@
-#include "pch.h"
+
+#include "../gantry_global_status.h"
 #include "awsProtocol.h"
+#include "ArmMotor.h"
 
 using namespace GantryStatusRegisters;
+using namespace System::Diagnostics;
 
 /// <summary>
 /// This is the class constructor.
@@ -45,11 +48,15 @@ awsProtocol::awsProtocol(String^ ip, int command_port, int event_port) {
     commandExec->Add("GET_TubeTemperature", gcnew command_callback(this, &awsProtocol::GET_TubeTemperature));
     commandExec->Add("SET_Language", gcnew command_callback(this, &awsProtocol::SET_Language));
     commandExec->Add("EXEC_PowerOff", gcnew command_callback(this, &awsProtocol::EXEC_PowerOff));
-
+    commandExec->Add("EXEC_TestCommand", gcnew command_callback(this, &awsProtocol::EXEC_TestCommand));
 
     // Connects the Global register callbacks to the local Events
     XrayPushButtonRegister::activationStatus->value_change_event += gcnew delegate_void_callback(this, &awsProtocol::xrayPushbuttonStatusChangeCallback);
     ExposureDataRegister::exposure_completed_event += gcnew delegate_void_callback(this, &awsProtocol::exposureSequenceCompletedCallback);
+    ArmMotor::command_completed_event += gcnew ArmMotor::delegate_command_completed_callback(this, &awsProtocol::activationCompletedCallback);
+    ArmMotor::projection_request_event += gcnew ArmMotor::delegate_projection_request_callback(this, &awsProtocol::selectProjectionCallback);
+    ArmMotor::abort_projection_request_event += gcnew ArmMotor::delegate_abort_projection_request_callback(this, &awsProtocol::abortProjectionCallback);
+
 }
 
 /// <summary>
@@ -379,7 +386,6 @@ void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode, St
 void  awsProtocol::EXEC_OpenStudy(void) {
     Debug::WriteLine("EXEC_OpenStudy COMMAND MANAGEMENT");
 
-    if (Errors::isError()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "SYSTEM_IN_ERROR_CONDITION"; ackNok(); return; }
     if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = 2; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
 
     // Open the study and assignes the patient name !!!
@@ -418,7 +424,7 @@ void awsProtocol::SET_ProjectionList(void) {
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
 
-    if (!ArmStatusRegister::getProjections()->Value->setList(pDecodedFrame->parameters)) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PROJECTION_IN_THE_LIST"; ackNok(); return; }
+    if (!ArmMotor::getProjectionsList()->Value->setList(pDecodedFrame->parameters)) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PROJECTION_IN_THE_LIST"; ackNok(); return; }
 
     ackOk();
     return;
@@ -441,26 +447,25 @@ void awsProtocol::EXEC_ArmPosition(void) {
 
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 5; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (ArmStatusRegister::isBusy()) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "ARM_BUSY"; ackNok(); return; }
-    if (ArmStatusRegister::getProjections()->Value->indexOf(pDecodedFrame->parameters[0]) < 0) { pDecodedFrame->errcode = 4; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
+    if ((!pMARM) || (!pMARM->isReady())) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "ARM_BUSY"; ackNok(); return; }
+    if (ArmMotor::getProjectionsList()->Value->indexOf(pDecodedFrame->parameters[0]) < 0) { pDecodedFrame->errcode = 4; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
 
     // Parameter 0: Projection code  
     // This function causes the ARM activation. See the ArmStatus::setTarget definition 
     // Parameter 1: target Angle
     // Parameter 2: Low Angle
     // Parameter 3: High Angle
-    if (!ArmStatusRegister::setTarget(
-        Convert::ToInt16(pDecodedFrame->parameters[1]),
-        Convert::ToInt16(pDecodedFrame->parameters[2]),
-        Convert::ToInt16(pDecodedFrame->parameters[3]),
+    if (!pMARM->setTarget(
+        Convert::ToInt16(pDecodedFrame->parameters[1]) ,
+        Convert::ToInt16(pDecodedFrame->parameters[2]) ,
+        Convert::ToInt16(pDecodedFrame->parameters[3]) ,
         pDecodedFrame->parameters[0], // Projection code
         pDecodedFrame->ID)) {
         pDecodedFrame->errcode = 3; pDecodedFrame->errstr = "WRONG_DATA"; ackNok(); return;
     }
 
-    if (ArmStatusRegister::isBusy()) ackExecuting();
-    else ackOk();
-
+    // Always deference the answer 
+    ackExecuting();    
     return;
 
 }
@@ -479,8 +484,7 @@ void awsProtocol::EXEC_AbortProjection(void) {
     Debug::WriteLine("EXEC_AbortProjection COMMAND MANAGEMENT");
 
     if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
-    ArmStatusRegister::validate(false);
-
+    ArmMotor::abortTarget();
     ackOk();
 
 }
@@ -617,7 +621,11 @@ void   awsProtocol::SET_EnableXrayPush(void) {
 void   awsProtocol::GET_ReadyForExposure(void) {
     Debug::WriteLine("GET_ReadyForExposure COMMAND MANAGEMENT");
 
-    pDecodedFrame->errcode = ReadyForExposureRegister::getNotReadyCode();
+    //pDecodedFrame->errcode = ReadyForExposureRegister::getNotReadyCode();
+    if(Notify::isError()) pDecodedFrame->errcode = 1;
+    else if (Notify::isWarning()) pDecodedFrame->errcode = 2;
+    else    pDecodedFrame->errcode = 0;
+
     if (pDecodedFrame->errcode) { pDecodedFrame->errstr = "GANTRY_NOT_READY"; ackNok(); return; }
 
     // Ready for exposure
@@ -633,8 +641,8 @@ void   awsProtocol::GET_ReadyForExposure(void) {
 void   awsProtocol::EXEC_StartXraySequence(void) {
     Debug::WriteLine("EXEC_StartXraySequence COMMAND MANAGEMENT");
 
-    if (!ReadyForExposureRegister::requestStartExposure()) {
-        pDecodedFrame->errcode = ReadyForExposureRegister::getNotReadyCode();
+    if ((Notify::isError()) || (Notify::isWarning())) {
+        pDecodedFrame->errcode = 1;
         pDecodedFrame->errstr = "GANTRY_NOT_READY";
         ackNok();
         return;
@@ -715,9 +723,9 @@ void   awsProtocol::GET_Arm(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(ArmStatusRegister::getProjection());
-    lista->Add(ArmStatusRegister::getAngle().ToString());
-
+    lista->Add(ArmMotor::getSelectedProjection());
+    if(pMARM)  lista->Add(pMARM->getCurrentPosition().ToString());
+    else lista->Add("-");
 
     ackOk(lista);
     return;
@@ -738,7 +746,6 @@ void   awsProtocol::GET_TubeTemperature(void) {
     lista->Add(TubeDataRegister::getAnode().ToString());
     lista->Add(TubeDataRegister::getBulb().ToString());
     lista->Add(TubeDataRegister::getStator().ToString());
-    lista->Add(TubeDataRegister::getExposures().ToString());
 
     ackOk(lista);
     return;
@@ -840,7 +847,7 @@ void awsProtocol::EVENT_XraySequenceCompleted(String^ result,
 
 
 
-void awsProtocol::activationCompletedCallback(unsigned short id, int error) {
+void awsProtocol::activationCompletedCallback(int id, int error) {
     if (error) eventExecutedNok(id, error);
     else eventExecutedOk(id);
 }
@@ -863,12 +870,6 @@ void awsProtocol::compressorDataChangeCallback(void) {
 
 void awsProtocol::componentDataChangeCallback(void) {
     EVENT_Components(ComponentRegister::Value->getTag(), CompressorRegister::getPaddle()->Value->getTag(), CollimatorComponentRegister::Value->getTag());
-}
-
-void awsProtocol::exposureReadyChangeCallback(void) {
-
-    unsigned short code = ReadyForExposureRegister::getNotReadyCode();
-    EVENT_ReadyForExposure((!code), code);
 }
 
 
@@ -900,3 +901,26 @@ void awsProtocol::exposureSequenceCompletedCallback(void) {
 
 }
 
+/// <summary>
+/// This command requests for the exposure start 
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::EXEC_TestCommand(void) {
+    Debug::WriteLine("EXEC_TestCommand: ARM ACTIVATION");
+
+    if (pDecodedFrame->parameters->Count == 4) {
+        // 1 parameter command
+        int ctarget = Convert::ToInt16(pDecodedFrame->parameters[0]);
+        int cspeed = Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int cacc = Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int cdec = Convert::ToInt16(pDecodedFrame->parameters[3]);
+
+        pMARM->activateAutomaticPositioning(10, ctarget, 1000, 200, 200,true);
+        ackOk();
+        return;
+    }
+
+    
+    return;
+}

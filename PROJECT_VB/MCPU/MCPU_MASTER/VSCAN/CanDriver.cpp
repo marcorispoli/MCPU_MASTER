@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "CanDriver.h"
 #include <string>
 #include <iostream>
@@ -9,6 +8,8 @@
 
 using namespace std;
 using namespace std::chrono;
+using namespace System::Threading;
+using namespace System::Diagnostics;
 
 static VSCAN_HANDLE handle = 0;     //!< Handle of the driver
 static mutex send_mutex;
@@ -140,7 +141,7 @@ void CanDriver::threadWork(void) {
 
     status = VSCAN_Ioctl(NULL, VSCAN_IOCTL_SET_DEBUG, VSCAN_DEBUG_NONE);
     for (int i = 0; i < 5; i++) {
-        Debug::WriteLine("CAN OPEN ATTEMPT: " + Convert::ToString(i));
+        Debug::WriteLine("CAN OPEN ATTEMPT: " + System::Convert::ToString(i));
         handle = VSCAN_Open(VSCAN_FIRST_FOUND, VSCAN_MODE_NORMAL);
         if (handle > 0) break;
     }
@@ -149,8 +150,8 @@ void CanDriver::threadWork(void) {
         error = true;
         ErrorString = "Can Driver Error: unable to open the driver.\n";
         VSCAN_GetErrorString((VSCAN_STATUS)handle, cstring, 32);
-        ErrorString += "Driver error: "+ gcnew String(cstring) + "\n";
-        Debug::WriteLine("CAN DRIVER: NORMAL MODE: " + Convert::ToString(cstring));
+        ErrorString += "Driver error: "+ gcnew System::String(cstring) + "\n";
+        Debug::WriteLine("CAN DRIVER: NORMAL MODE: " + System::Convert::ToString(cstring));
         return ;
     }
 
@@ -163,13 +164,13 @@ void CanDriver::threadWork(void) {
         error = true;
         ErrorString = "Can Driver Error: unable to get the API revision.\n";
         VSCAN_GetErrorString(status, cstring, 32);
-        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
-        Debug::WriteLine("Get Api Version Command: " + Convert::ToString(cstring));
+        ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
+        Debug::WriteLine("Get Api Version Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
     printf("VSCAN API:  - %d.%d.%d", version.Major, version.Minor, version.SubMinor);
-    Debug::WriteLine("VSCAN API: " + Convert::ToString(version.Major) + "." + Convert::ToString(version.Minor) + "." + Convert::ToString(version.SubMinor));
+    Debug::WriteLine("VSCAN API: " + System::Convert::ToString(version.Major) + "." + System::Convert::ToString(version.Minor) + "." + System::Convert::ToString(version.SubMinor));
 
     // Get Hardware release code
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_GET_HWPARAM, &hwparam);
@@ -177,8 +178,8 @@ void CanDriver::threadWork(void) {
         error = true;
         ErrorString = "Can Driver Error: unable to get the HW revision.\n";
         VSCAN_GetErrorString(status, cstring, 32);
-        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
-        Debug::WriteLine("Get Hw Param Command: " + Convert::ToString(cstring));
+        ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
+        Debug::WriteLine("Get Hw Param Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
@@ -191,10 +192,10 @@ void CanDriver::threadWork(void) {
     swrev_min = hwparam.SwVersion & 0x0F;
 
    
-    Debug::WriteLine("VSCAN HARDWARE:  SN=" + Convert::ToString(hwparam.SerialNr) +
-        " HwREV=" + Convert::ToString(hwrev_maj) + "." + Convert::ToString(hwrev_min) +
-        " SwREV=" + Convert::ToString(swrev_maj) + "." + Convert::ToString(swrev_min) +
-        " TYPE=" + Convert::ToString(hwparam.HwType));
+    Debug::WriteLine("VSCAN HARDWARE:  SN=" + System::Convert::ToString(hwparam.SerialNr) +
+        " HwREV=" + System::Convert::ToString(hwrev_maj) + "." + System::Convert::ToString(hwrev_min) +
+        " SwREV=" + System::Convert::ToString(swrev_maj) + "." + System::Convert::ToString(swrev_min) +
+        " TYPE=" + System::Convert::ToString(hwparam.HwType));
 
     // Set Baudrate
     void* br = VSCAN_SPEED_1M;
@@ -217,8 +218,8 @@ void CanDriver::threadWork(void) {
         error = true;
         ErrorString = "Can Driver Error: unable to set the Baud Rate.\n";
         VSCAN_GetErrorString(status, cstring, 32);
-        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
-        Debug::WriteLine("Set Baudrate Command: " + Convert::ToString(cstring));
+        ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
+        Debug::WriteLine("Set Baudrate Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
@@ -229,8 +230,8 @@ void CanDriver::threadWork(void) {
         error = true;
         ErrorString = "Can Driver Error: unable to set the Fiter mode.\n";
         VSCAN_GetErrorString(status, cstring, 32);
-        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
-        Debug::WriteLine("VSCAN_IOCTL_SET_FILTER_MODE Command: " + Convert::ToString(cstring));
+        ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
+        Debug::WriteLine("VSCAN_IOCTL_SET_FILTER_MODE Command: " + System::Convert::ToString(cstring));
         return ;
     }
     // receive all frames on the CAN bus (default)
@@ -244,8 +245,8 @@ void CanDriver::threadWork(void) {
         error = true;
         ErrorString = "Can Driver Error: unable to set the Acceptance filter Mask.\n";
         VSCAN_GetErrorString(status, cstring, 32);
-        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
-        Debug::WriteLine("Set Code And Mask Command: " + Convert::ToString(cstring));
+        ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
+        Debug::WriteLine("Set Code And Mask Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
@@ -257,8 +258,8 @@ void CanDriver::threadWork(void) {
         error = true;
         ErrorString = "Can Driver Error: unable to set the Acceptance filter Code.\n";
         VSCAN_GetErrorString(status, cstring, 32);
-        ErrorString += "Driver error: " + gcnew String(cstring) + "\n";
-        Debug::WriteLine("VSCAN_IOCTL_SET_FILTER Command: " + Convert::ToString(cstring));
+        ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
+        Debug::WriteLine("VSCAN_IOCTL_SET_FILTER Command: " + System::Convert::ToString(cstring));
         return ;
     }
     

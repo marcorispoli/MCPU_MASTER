@@ -1,10 +1,15 @@
-#include "pch.h"
-
-// Window Panels 
-#define MAIN_PANEL			1
-#define ERROR_PANEL			2
-
-
+#include "../AWS/awsProtocol.h"
+#include "idleForm.h"
+#include "ErrorForm.h"
+#include "operatingForm.h"
+#include "SystemConfig.h"
+#include "Translate.h"
+#include "PCB301.h"
+#include "PCB302.h"
+#include "PCB303.h"
+#include "PCB304.h"
+#include "PCB315.h"
+#include "../gantry_global_status.h"
 
 
 // Main Panel Definition
@@ -20,13 +25,6 @@
 #define TUBE_TEMP_NOK Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\tubeTempNok.PNG")
 #define ERRORPANEL_ERRORICON Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\error_160x145.PNG")
 #define ERROR_BUTTON Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\AlarmOn.PNG")
-
-// Error Panel Definition
-#define ERROR_PANEL_CANC_BUTTON Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\close_65x65.PNG")
-#define ERROR_PANEL_NEXT_BUTTON Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\arrow_80x80_r.PNG")
-
-// Error Window timeout
-#define ERROR_WINDOW_TMO	15000
 
 namespace IDLESTATUS {
 	typedef struct {
@@ -57,7 +55,7 @@ namespace IDLESTATUS {
 		bool closed_door;
 		bool aws_connected;
 		bool peripherals_connected;
-		unsigned char currentPanel;
+		
 	}Registers;
 };
 
@@ -71,6 +69,10 @@ void IdleForm::formInitialization(void) {
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	mainPanel->BackgroundImage = BACKGROUND;
 
+	// Error Panel Setup ____________________________________________________________
+	pError = gcnew ErrorForm(this);
+	//________________________________________________________________________________________
+
 	this->xrayMode->BackgroundImage = XRAY_MODE;
 	this->xrayMode->Hide();
 
@@ -82,34 +84,21 @@ void IdleForm::formInitialization(void) {
 	errorButton->BackgroundImage = ERROR_BUTTON;
 	errorButton->Hide();
 
-	// Build the Error Panel
-	errorPanelTitle->Text = Translate::title("ERROR_WINDOW_PANEL");
-	errorPanel->SetBounds(0, 0, 600, 1024);
-	errpanel_erricon->BackgroundImage = ERRORPANEL_ERRORICON;
-	errpanel_erricon->SetBounds(40, 137, 160, 145);
-	errorId->Location =  Point(247, 169);
-	errorTitle->Location = Point(249, 226);
-	errorContent->SetBounds(40,337, 520, 550);
-	buttonCanc->SetBounds(518, 10, 70, 70);
-	buttonCanc->BackgroundImage = ERROR_PANEL_CANC_BUTTON;
 
 	idleTimer = gcnew System::Timers::Timer(100);
 	idleTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onIdleTimeout);
 	idleTimer->Stop();
 
-	errorPanelTimer = gcnew System::Timers::Timer(ERROR_WINDOW_TMO);
-	errorPanelTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onErrorTimeout);
-	errorPanelTimer->Stop();
-
+	this->Hide();
+	open_status = false;
 }
 
 void IdleForm::initIdleStatus(void) {
-	DateTime date;
-	date = DateTime::Now;
+	System::DateTime date;
+	date = System::DateTime::Now;
 
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
-
 
 	// Handle the Powerdown
 	IDLESTATUS::Registers.powerdown = GantryStatusRegisters::PowerStatusRegister::getPowerdown();
@@ -157,26 +146,41 @@ void IdleForm::initIdleStatus(void) {
 	this->tubeTempOk->BackColor = Color::Transparent;
 	this->tubeTempOk->Show();
 	
-	
-	IDLESTATUS::Registers.currentPanel = MAIN_PANEL;
-	mainPanel->Show();
-	errorPanel->Hide();
-
 	// Start the startup session	
 	idleTimer->Start();	
 
+	
+
+
+}
+
+void IdleForm::open(void) {
+	if (open_status) return;
+	open_status = true;
+	initIdleStatus();
+
+	
+	this->Show();
+}
+
+void IdleForm::close(void) {
+	if (!open_status) return;
+	open_status = false;
+	idleTimer->Stop();
+
+	((ErrorForm^)pError)->close();
+	this->Hide();
 }
 
 void IdleForm::idleStatusManagement(void) {
 
-	DateTime date;
-	date = DateTime::Now;
+	System::DateTime date;
+	date = System::DateTime::Now;
 	
 	// Verifies if there is a StudyOpen condition
 	if (GantryStatusRegisters::OperatingStatusRegister::isOPEN()) {
-		idleTimer->Stop();
-		this->Hide();
-		pOPERFORM->initOperatingStatus();
+		this->close();
+		pOPERFORM->open();
 		return;
 	}
 
@@ -255,40 +259,18 @@ void IdleForm::idleStatusManagement(void) {
 		else this->peripheralsConnected->Hide();
 	}
 
-	if ((GantryStatusRegisters::TubeDataRegister::getBulb() != IDLESTATUS::Registers.tube.bulb) ||
-		(GantryStatusRegisters::TubeDataRegister::getStator() != IDLESTATUS::Registers.tube.stator) ||
-		(GantryStatusRegisters::TubeDataRegister::getAnode() != IDLESTATUS::Registers.tube.anode)
-		) {
-		IDLESTATUS::Registers.tube.bulb = GantryStatusRegisters::TubeDataRegister::getBulb();
-		IDLESTATUS::Registers.tube.stator = GantryStatusRegisters::TubeDataRegister::getStator();
-		IDLESTATUS::Registers.tube.anode = GantryStatusRegisters::TubeDataRegister::getAnode();
-
-		
-		int max = IDLESTATUS::Registers.tube.bulb;
-		if (IDLESTATUS::Registers.tube.stator > max) max = IDLESTATUS::Registers.tube.stator;
-		if (IDLESTATUS::Registers.tube.anode > max) max = IDLESTATUS::Registers.tube.anode;
-		labelTubeData->Text = max.ToString() + " %";
-
-		if ((max > 90) && (!IDLESTATUS::Registers.tube.alarm)) {
-			IDLESTATUS::Registers.tube.alarm = true;
-			tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;
-		}else if ((max <= 90) && (IDLESTATUS::Registers.tube.alarm)) {
-			IDLESTATUS::Registers.tube.alarm = false;
-			tubeTempOk->BackgroundImage = TUBE_TEMP_OK;			
-		}
-
+	labelTubeData->Text = GantryStatusRegisters::TubeDataRegister::getCumulated().ToString() + " %";
+	if (GantryStatusRegisters::TubeDataRegister::isAlarm() != IDLESTATUS::Registers.tube.alarm) {
+		IDLESTATUS::Registers.tube.alarm = GantryStatusRegisters::TubeDataRegister::isAlarm();
+		if (IDLESTATUS::Registers.tube.alarm) tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;
+		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
 	}
 
-	if (Errors::isError()) {
+	if ((Notify::isError()) || (Notify::isWarning())) {
 		errorButton->Show();
-	}else errorButton->Hide();
-
-	if( (IDLESTATUS::Registers.currentPanel != ERROR_PANEL) && (Errors::isNewError()) ||
-		(Errors::isUpdateError())
-		) {
-		openErrorWindow(true);
 	}
-	
+	else errorButton->Hide();
+
 }
 
 void IdleForm::WndProc(System::Windows::Forms::Message% m)
@@ -299,83 +281,11 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 		
 		idleStatusManagement();
 		break;
-
-	case (WM_USER + 2): // onErrorTimeout
-		openErrorWindow(false);
-		break;
-	case (WM_USER + 3):
-
-		break;
-
-	case (WM_USER + 4):
-
-		break;
-
-	case (WM_USER + 5):
-
-		break;
 	}
-
 
 	Form::WndProc(m);
 }
 
 void IdleForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	
-	openErrorWindow(true);
+	((ErrorForm^)pError)->open();
 }
-
-void IdleForm::openErrorWindow(bool status) {
-	
-	// Stops the exit timer
-	errorPanelTimer->Stop();
-
-	// Closing condition
-	if (status == false) {		
-		IDLESTATUS::Registers.currentPanel = MAIN_PANEL;
-		mainPanel->Show();
-		errorPanel->Hide();		
-		return;
-	}
-
-	Translate::item^ msgit;
-
-	// Set the new error in evidence 
-	Errors::item^ newitem = Errors::getCurrent();
-	Errors::clrUpdate();
-	errorPanelTimer->Start();
-
-	if (newitem) {
-		msgit = Translate::getItem(newitem->errmsg);
-
-		errorTitle->Text = msgit->title;
-		errorId->Text = msgit->id;
-
-	}
-	else {
-		errorTitle->Text = "";
-		errorId->Text = "";
-	}
-
-	// Clear the Error content box
-	errorContent->Text = "";
-
-	// Set the Content space with the list of active errors
-	errorContent->Text = Errors::getListOfErrors();
-
-	// Clears the index of the last occurred error
-	Errors::clrNewError();
-
-	// Refresh the Error queue removing the one_shot flagged errors
-	Errors::clrOneShotErrors();
-
-	IDLESTATUS::Registers.currentPanel = ERROR_PANEL;
-	mainPanel->Hide();
-	errorPanel->Show();
-
-}
-
-void IdleForm::buttonCanc_Click(System::Object^ sender, System::EventArgs^ e) {
-	openErrorWindow(false);
-}
-

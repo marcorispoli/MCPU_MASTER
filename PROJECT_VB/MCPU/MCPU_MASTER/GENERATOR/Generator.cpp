@@ -1,7 +1,8 @@
-#include "pch.h"
 #include "R2CP_Eth.h"
 #include "CaDataDicGen.h"
 #include "SystemConfig.h"
+#include "Generator.h"
+#include "gantry_global_status.h"
 #include <thread>
 
 
@@ -72,6 +73,7 @@ bool Generator::connectionTest(void) {
 
 }
 void Generator::threadWork(void) {
+   // while(true) std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     while (true) {
         R2CP_Eth->smartHubConnected = false;
@@ -79,9 +81,9 @@ void Generator::threadWork(void) {
         generator_setup_completed = false;
         generator_idle = false;
 
-        Errors::activate("GENERATOR_ERROR_SH", false);
-        Errors::activate("GENERATOR_ERROR_GEN", false);
-        Errors::deactivate("GENERATOR_INIT_WARNING");
+        Notify::activate("GENERATOR_ERROR_SH", false);
+        Notify::activate("GENERATOR_ERROR_GEN", false);
+        Notify::deactivate("GENERATOR_INIT_WARNING");
 
         // Waits for the server connection
         while (!isConnected()) std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -93,7 +95,7 @@ void Generator::threadWork(void) {
             R2CP::CaDataDicGen::GetInstance()->Network_ConnectionRequest_Event();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-        Errors::deactivate("GENERATOR_ERROR_SH");
+        Notify::deactivate("GENERATOR_ERROR_SH");
 
         Debug::WriteLine("Smart Hub Connected!\n");
         Debug::WriteLine("Wait Generator connection..\n");
@@ -110,10 +112,10 @@ void Generator::threadWork(void) {
         if (!isConnected()) continue;
         if (!R2CP_Eth->smartHubConnected) continue;
 
-        Errors::deactivate("GENERATOR_ERROR_GEN");
+        Notify::deactivate("GENERATOR_ERROR_GEN");
         Debug::WriteLine("Generator Connected!\n");
 
-        Errors::activate("GENERATOR_INIT_WARNING", false);
+        Notify::activate("GENERATOR_INIT_WARNING", false);
         
         // Inits of the generator
         if(!generatorInitialization()) continue;
@@ -135,7 +137,7 @@ void Generator::threadWork(void) {
 
         Debug::WriteLine("Generator In Idle\n");
         generator_idle = true;
-        Errors::deactivate("GENERATOR_INIT_WARNING");
+        Notify::deactivate("GENERATOR_INIT_WARNING");
 
         // Handles the Idle mode
         if (!generatorIdle()) continue;

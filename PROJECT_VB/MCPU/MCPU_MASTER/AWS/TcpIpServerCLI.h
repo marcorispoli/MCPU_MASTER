@@ -8,11 +8,6 @@
 
 #pragma comment (lib, "User32.lib")
 
-using namespace System;
-using namespace System::Threading;
-using namespace System::Diagnostics;
-using namespace System::Net;
-using namespace System::Net::Sockets;
 
 #define TcpIpServerCLI_DISPATCH_MESSAGE (WM_USER + 1)
 #define TcpIpServerCLI_DISCONNECTION_MESSAGE (WM_USER + 2)
@@ -26,15 +21,15 @@ ref class TcpIpServerCLI: public System::Windows::Forms::Form
 {
 public:
 
-	delegate void rxData_slot(cli::array<Byte>^ receiveBuffer, int rc);//!< This is the delegate of the reception handler
+	delegate void rxData_slot(cli::array<System::Byte>^ receiveBuffer, int rc);//!< This is the delegate of the reception handler
 	event rxData_slot^ rxData_event; //!< Reception event 
 
 	delegate void connection_slot(bool status); //!< This is the delegate of the connection handler
 	event connection_slot^ connection_event; //!< Connection event
 
-	TcpIpServerCLI(String^ ip, int port); //!< This is the class constructor
+	TcpIpServerCLI(System::String^ ip, int port); //!< This is the class constructor
 
-	void send(cli::array<Byte>^ buffer);//!< This is function to send data in the BUS
+	void send(cli::array<System::Byte>^ buffer);//!< This is function to send data in the BUS
 
 	/// <summary>
 	/// Returns the current connection sattus
@@ -49,18 +44,18 @@ public:
 private:
 
 	HWND window; //!< This is Form's class handler
-	Thread^ running_thread;//!< This is the worker thread handler
-	Socket^ serverSocket;//!< This is the server socket handler
-	Socket^ clientSocket;//!< This is the connected client socket handler
+	System::Threading::Thread^ running_thread;//!< This is the worker thread handler
+	System::Net::Sockets::Socket^ serverSocket;//!< This is the server socket handler
+	System::Net::Sockets::Socket^ clientSocket;//!< This is the connected client socket handler
 	HANDLE ghSemaphore;//!< This is the semaphore used to protect the received buffer during the buffer dispatching
 
 	bool connection_status;//!< This is the current connection status
 
 	int rx_rc;//!< This is the number of the received bytes
-	cli::array<Byte>^ rxBuffer;//!< This is the reception buffer
+	cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer
 
 	int dispatch_rc;//!< This is the number of the byte to be dispatched
-	cli::array<Byte>^ dispatchBuffer;//!< This is the buffer to be dispatched
+	cli::array<System::Byte>^ dispatchBuffer;//!< This is the buffer to be dispatched
 	
 	
 };

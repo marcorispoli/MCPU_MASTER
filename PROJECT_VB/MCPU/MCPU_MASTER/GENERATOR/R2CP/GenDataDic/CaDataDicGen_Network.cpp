@@ -6,7 +6,7 @@
  * \copyright SEDECAL S.A.
  * \ingroup   R2CPModule
 */
-#include "pch.h" 
+
 #include <stdio.h>
 #include "CaDataDicGen.h"
 #include "R2CP_Eth.h"

@@ -11,7 +11,6 @@
  * \copyright SEDECAL S.A.
  * \ingroup   R2CPModule
 */
-#include "pch.h" 
 #include "CaDataDicGen.h"
 
 
@@ -69,11 +68,11 @@ namespace R2CP
         float mAs = ms*mA/1000;
         //float mAs = ((float) pData[12] * 65536. + (float) pData[13] * 256. + (float) pData[14]) / 1000.;
 
-        string focus ;
+        std::string focus ;
         if(pData[15]) focus = "LARGE";
         else focus = "SMALL";
 
-        string result;
+        std::string result;
 
         switch(pData[19]){
         case 0: result = "EXPOSURE NOT-STARTED"; break;

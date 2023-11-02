@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::TrxStatusRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::TrxStatusRegister" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,21 +13,9 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 
 .in +1c
 .ti -1c
-.RI "enum class \fBoptions\fP { \fBTRX_SCOUT\fP = 0, \fBTRX_BP_R\fP, \fBTRX_BP_L\fP, \fBTRX_TOMO_H\fP, \fBTRX_TOMO_E\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBtarget_options\fP { \fBTRX_SCOUT\fP = 0, \fBTRX_BP_R\fP, \fBTRX_BP_L\fP, \fBTRX_TOMO_H\fP, \fBTRX_TOMO_E\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
-.RI "This is the enumeration of the possible Trx target positions "
-.in -1c
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBdelegate_target_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBtarget_change_event()\fP;\&. "
-.ti -1c
-.RI "delegate void \fBdelegate_position_change\fP (void)"
-.br
-.RI "This is the delegate of the \fBposition_change_event()\fP;\&. "
+.RI "This is the enumeration of the possible Trx target positions  "
 .in -1c
 .SS "Static Public Member Functions"
 
@@ -37,74 +25,97 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 .br
 .RI "This funtion returns the Trx activation status\&. "
 .ti -1c
-.RI "static bool \fBsetTarget\fP (\fBoptions\fP tg, int id)"
+.RI "static bool \fBsetTarget\fP (\fBtarget_options\fP tg, int id)"
 .br
 .RI "This function sets a new target for the Trx\&. "
 .ti -1c
 .RI "static bool \fBsetTarget\fP (String^ tag, int id)"
 .br
-.RI "This is the same as the \fBsetTarget(options tg, int id)\fP but with the tag as parameter\&. "
+.RI "This function sets a new target for the Trx\&. "
 .ti -1c
-.RI "static void \fBupdateCurrentPosition\fP (double angle, double sensitivity)"
+.RI "static void \fBupdateCurrentPosition\fP (int angle)"
 .br
 .RI "This function updates the current angle value\&. "
 .ti -1c
-.RI "static \fBoptions\fP \fBgetPositionCode\fP (void)"
+.RI "static int \fBgetTargetAngle\fP (void)"
 .br
-.RI "This function returns the current position code in term of target symbols not angle\&. "
+.RI "This function returns the target TRX angle "
 .ti -1c
-.RI "static String ^ \fBgetPositionTag\fP (void)"
+.RI "static \fBtarget_options\fP \fBgetTargetCode\fP (void)"
+.br
+.RI "This function returns the code related to the angle based on the targets currently set\&. "
+.ti -1c
+.RI "static String ^ \fBgetTargetTag\fP (void)"
+.br
+.RI "This function returns the current target tag in term of target symbols not angle\&. "
+.ti -1c
+.RI "static int \fBgetCurrentAngle\fP (void)"
+.br
+.RI "This function returns the current TRX angle "
+.ti -1c
+.RI "static \fBtarget_options\fP \fBgetCurrentCode\fP (void)"
+.br
+.ti -1c
+.RI "static String ^ \fBgetCurrentTag\fP (void)"
 .br
 .RI "This function returns the current position tag in term of target symbols not angle\&. "
 .ti -1c
-.RI "static double \fBgetAngle\fP (void)"
+.RI "static void \fBactivationCompleted\fP (int angle, int error)"
 .br
-.RI "This function returns the current TRX angle, even if the command is not yet terminated\&. "
+.RI "This function shall be called when the activation termines "
 .in -1c
 .SS "Static Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEX'}"
+.RI "static const cli::array< String^> ^ \fBtags\fP = gcnew cli::array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEF'}"
 .br
 .RI "This is the tags array\&. "
+.ti -1c
+.RI "static cli::array< int > ^ \fBtargets\fP = gcnew cli::array<int> {0, 1500, \-1500, 2700, \-2700, 0 }"
+.br
+.RI "This is the current value of the target angles\&. "
 .in -1c
 .SS "Events"
 
 .in +1c
 .ti -1c
-.RI "static \fBdelegate_target_change\fP^ \fBtarget_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBtarget_change_event\fP"
 .br
 .RI "This event is generated whenver the trx target is changed\&. "
 .ti -1c
-.RI "static \fBdelegate_position_change\fP^ \fBposition_change_event\fP"
+.RI "static \fBdelegate_void_callback\fP^ \fBposition_change_event\fP"
 .br
 .RI "This event is generated whenver the trx position is updated\&. This is not the activation completion event! "
+.ti -1c
+.RI "static \fBdelegate_activation_completed\fP^ \fBactivation_completed_event\fP"
+.br
+.RI "This event is generated whenver the trx completes an activation! "
 .in -1c
 .SS "Static Private Attributes"
 
 .in +1c
 .ti -1c
-.RI "static \fBoptions\fP \fBposition_target\fP = \fBoptions::UNDEF\fP"
+.RI "static int \fBtarget_angle\fP = 0"
 .br
-.RI "This is the Trx target position\&. "
-.ti -1c
-.RI "static \fBoptions\fP \fBcurrent_position\fP = \fBoptions::UNDEF\fP"
-.br
-.RI "This is the current Trx position 
+.RI "This is the Trx target position in 0\&.01° units 
 .br
  "
 .ti -1c
-.RI "static double \fBcurrent_angle\fP"
+.RI "static int \fBcurrent_angle\fP = 0"
 .br
 .ti -1c
 .RI "static bool \fBexecuting\fP = false"
 .br
-.RI "The Trx angle in 0\&.01° "
+.RI "The Trx angle in 0\&.01° units\&. "
 .ti -1c
 .RI "static unsigned short \fBexecuting_id\fP = 0"
 .br
 .RI "AWS command Id\&. "
+.ti -1c
+.RI "static int \fBsensitivity\fP = 50"
+.br
+.RI "Sets the maximum difference from current_ange and position_target\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -113,10 +124,10 @@ This class handles the Trx motorization
 The Trx can be activate only in discrete positions
 .SH "Member Enumeration Documentation"
 .PP 
-.SS "enum class \fBGantryStatusRegisters::TrxStatusRegister::options\fP\fC [strong]\fP"
+.SS "enum class \fBGantryStatusRegisters::TrxStatusRegister::target_options\fP\fC [strong]\fP"
 
 .PP
-This is the enumeration of the possible Trx target positions 
+This is the enumeration of the possible Trx target positions  
 .PP
 \fBEnumerator\fP
 .in +1c
@@ -143,18 +154,23 @@ TRX in Tomo End position
 \fB\fIUNDEF \fP\fP
 .SH "Member Function Documentation"
 .PP 
-.SS "delegate void GantryStatusRegisters::TrxStatusRegister::delegate_position_change (void)"
+.SS "static void GantryStatusRegisters::TrxStatusRegister::activationCompleted (int angle, int error)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This is the delegate of the \fBposition_change_event()\fP;\&. 
-.SS "delegate void GantryStatusRegisters::TrxStatusRegister::delegate_target_change (void)"
+This function shall be called when the activation termines 
+.PP
+\fBParameters\fP
+.RS 4
+\fIangle\fP THis is the final angle
+.br
+\fIerror\fP This is an error code
+.RE
+.PP
+
+.SS "static int GantryStatusRegisters::TrxStatusRegister::getCurrentAngle (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This is the delegate of the \fBtarget_change_event()\fP;\&. 
-.SS "static double GantryStatusRegisters::TrxStatusRegister::getAngle (void)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-This function returns the current TRX angle, even if the command is not yet terminated\&. 
+This function returns the current TRX angle 
 .PP
 \fBReturns\fP
 .RS 4
@@ -162,25 +178,68 @@ The current angle in 0\&.01° units
 .RE
 .PP
 
-.SS "static \fBoptions\fP GantryStatusRegisters::TrxStatusRegister::getPositionCode (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "static \fBtarget_options\fP GantryStatusRegisters::TrxStatusRegister::getCurrentCode (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current position code in term of target symbols not angle\&. If the TRX command is executing the returned value is \fBoptions::UNDEF\fP
+This function returns the code related to the angle based on the targets currently set\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIangle\fP This is the requested angle
+.RE
 .PP
 \fBReturns\fP
 .RS 4
-The current position (only if the command is completed)
+The target corresponding to the angle
 .RE
 .PP
 
-.SS "static String ^ GantryStatusRegisters::TrxStatusRegister::getPositionTag (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "static String ^ GantryStatusRegisters::TrxStatusRegister::getCurrentTag (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function returns the current position tag in term of target symbols not angle\&. If the TRX command is executing the returned value is 'TRX_UNDEX'
+This function returns the current position tag in term of target symbols not angle\&. 
 .PP
 \fBReturns\fP
 .RS 4
-The current position (only if the command is completed)
+The current position 
+.RE
+.PP
+
+.SS "static int GantryStatusRegisters::TrxStatusRegister::getTargetAngle (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the target TRX angle 
+.PP
+\fBReturns\fP
+.RS 4
+The current angle in 0\&.01° units
+.RE
+.PP
+
+.SS "static \fBtarget_options\fP GantryStatusRegisters::TrxStatusRegister::getTargetCode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the code related to the angle based on the targets currently set\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIangle\fP This is the requested angle
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The target option corresponding to the target angle angle
+.RE
+.PP
+
+.SS "static String ^ GantryStatusRegisters::TrxStatusRegister::getTargetTag (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the current target tag in term of target symbols not angle\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The target Tag 
 .RE
 .PP
 
@@ -195,28 +254,10 @@ true if the Trx is executing a command
 .RE
 .PP
 
-.SS "static bool GantryStatusRegisters::TrxStatusRegister::setTarget (\fBoptions\fP tg, int id)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-This function sets a new target for the Trx\&. If the target is changed, the \fBtarget_change_event()\fP is generated 
-.PP
-\fBParameters\fP
-.RS 4
-\fItg\fP this is the target option code
-.br
-\fIid\fP this is the aws command identifier
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if the target is successfully set
-.RE
-.PP
-
 .SS "static bool GantryStatusRegisters::TrxStatusRegister::setTarget (String^ tag, int id)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This is the same as the \fBsetTarget(options tg, int id)\fP but with the tag as parameter\&. 
+This function sets a new target for the Trx\&. If the target_angle-current_angle exceeds sensitivity, the \fBtarget_change_event()\fP is generated\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -231,7 +272,25 @@ true if the target is successfully set
 .RE
 .PP
 
-.SS "static void GantryStatusRegisters::TrxStatusRegister::updateCurrentPosition (double angle, double sensitivity)\fC [inline]\fP, \fC [static]\fP"
+.SS "static bool GantryStatusRegisters::TrxStatusRegister::setTarget (\fBtarget_options\fP tg, int id)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function sets a new target for the Trx\&. If the target_angle-current_angle exceeds sensitivity, the \fBtarget_change_event()\fP is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fItg\fP this is the target option code
+.br
+\fIid\fP this is the aws command identifier
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the target is successfully set
+.RE
+.PP
+
+.SS "static void GantryStatusRegisters::TrxStatusRegister::updateCurrentPosition (int angle)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
 This function updates the current angle value\&. If the variation of the angle with respect the last value updated with \fBposition_change_event()\fP is greater than sensitivity, than a new \fBposition_change_event()\fP is generated\&.
@@ -246,40 +305,48 @@ This function updates the current angle value\&. If the variation of the angle w
 
 .SH "Member Data Documentation"
 .PP 
-.SS "double GantryStatusRegisters::TrxStatusRegister::current_angle\fC [static]\fP, \fC [private]\fP"
+.SS "int GantryStatusRegisters::TrxStatusRegister::current_angle = 0\fC [static]\fP, \fC [private]\fP"
 
-.SS "\fBoptions\fP GantryStatusRegisters::TrxStatusRegister::current_position = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the current Trx position 
-.br
- 
 .SS "bool GantryStatusRegisters::TrxStatusRegister::executing = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
-The Trx angle in 0\&.01° Command is in execution 
+The Trx angle in 0\&.01° units\&. Command is in execution 
 .SS "unsigned short GantryStatusRegisters::TrxStatusRegister::executing_id = 0\fC [static]\fP, \fC [private]\fP"
 
 .PP
 AWS command Id\&. 
-.SS "\fBoptions\fP GantryStatusRegisters::TrxStatusRegister::position_target = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+.SS "int GantryStatusRegisters::TrxStatusRegister::sensitivity = 50\fC [static]\fP, \fC [private]\fP"
 
 .PP
-This is the Trx target position\&. 
-.SS "const array<String^> ^ GantryStatusRegisters::TrxStatusRegister::tags = gcnew array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEX'}\fC [static]\fP"
+Sets the maximum difference from current_ange and position_target\&. 
+.SS "const cli::array<String^> ^ GantryStatusRegisters::TrxStatusRegister::tags = gcnew cli::array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEF'}\fC [static]\fP"
 
 .PP
 This is the tags array\&. 
+.SS "int GantryStatusRegisters::TrxStatusRegister::target_angle = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the Trx target position in 0\&.01° units 
+.br
+ 
+.SS "cli::array<int> ^ GantryStatusRegisters::TrxStatusRegister::targets = gcnew cli::array<int> {0, 1500, \-1500, 2700, \-2700, 0 }\fC [static]\fP"
+
+.PP
+This is the current value of the target angles\&. 
 .SH "Event Documentation"
 .PP 
-.SS "\fBdelegate_position_change\fP^ GantryStatusRegisters::TrxStatusRegister::position_change_event\fC [static]\fP"
+.SS "\fBdelegate_activation_completed\fP^ GantryStatusRegisters::TrxStatusRegister::activation_completed_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the trx position is updated\&. This is not the activation completion event! Usage: \fBTrxStatusRegister::position_change_event\fP += gcnew delegate_position_change(&some_class, some_class::func) 
-.SS "\fBdelegate_target_change\fP^ GantryStatusRegisters::TrxStatusRegister::target_change_event\fC [static]\fP"
+This event is generated whenver the trx completes an activation! Usage: \fBTrxStatusRegister::activation_completed_event\fP += gcnew delegate_activation_completed(&some_class, some_class::func)  
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::TrxStatusRegister::position_change_event\fC [static]\fP"
 
 .PP
-This event is generated whenver the trx target is changed\&. Usage: \fBTrxStatusRegister::target_change_event\fP += gcnew delegate_target_change(&some_class, some_class::func) 
+This event is generated whenver the trx position is updated\&. This is not the activation completion event! Usage: \fBTrxStatusRegister::position_change_event\fP += gcnew delegate_void_callback(&some_class, some_class::func)  
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::TrxStatusRegister::target_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the trx target is changed\&. Usage: \fBTrxStatusRegister::target_change_event\fP += gcnew delegate void delegate_void_callback(unsigned short id, int error);//!< This is the delegate of the \fBactivation_completed_event()\fP;(&some_class, some_class::func)  
 
 .SH "Author"
 .PP 

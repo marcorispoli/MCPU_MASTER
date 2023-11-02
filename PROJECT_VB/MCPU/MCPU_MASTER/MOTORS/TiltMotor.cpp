@@ -1,5 +1,4 @@
-#include "pch.h"
-
+#include "TiltMotor.h"
 
 #define GEAR_RATIO (double) 352.2
 
@@ -155,7 +154,7 @@ static const unsigned char nanojTrxProgram[] = {
 
 };
 
-TiltMotor::TiltMotor(unsigned char devid) :CANOPEN::CanOpenMotor(devid, L"MOTOR_TILT", GEAR_RATIO)
+TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", GEAR_RATIO)
 {
     setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
 }

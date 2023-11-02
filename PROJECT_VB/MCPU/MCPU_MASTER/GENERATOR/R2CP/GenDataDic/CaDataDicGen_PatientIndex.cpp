@@ -11,7 +11,7 @@
  * \copyright SEDECAL S.A.
  * \ingroup   R2CPModule
 */
-#include "pch.h" 
+
 #include "CaDataDicGen.h"
 
 

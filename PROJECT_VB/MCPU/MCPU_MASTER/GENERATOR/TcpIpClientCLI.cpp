@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include <thread>
 #include "TcpIpClientCLI.h"
 
@@ -67,6 +67,7 @@ void TcpClientCLI::threadWork(void) {
 		// The server is now connected
 		connection_status = true;
 		connection_event(true);
+		Debug::WriteLine("Client connected to: " + ipserver + "\n");
 
 		// Connection loop
 		while (true) {

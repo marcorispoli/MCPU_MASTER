@@ -1,6 +1,9 @@
 #pragma once
 
+
 using namespace System::Collections::Generic;
+
+#include "TcpIpServerCLI.h"
 
 /// <summary>
 /// This is the module implementing the communication protocol with the AWS.
@@ -30,7 +33,7 @@ public:
 
 
 	/// This is the class constructor
-	awsProtocol(String^ ip, int command_port, int event_port);
+	awsProtocol(System::String^ ip, int command_port, int event_port);
 
 	/// This function returns the command server TcpIpServerCLI class handler
 	TcpIpServerCLI^ getCommmandHandler(void) { return command_server; };
@@ -55,10 +58,10 @@ public:
 	/// 
 
 	/// This function shall be connected to command completes events
-	void activationCompletedCallback(unsigned short id, int error);
+	void activationCompletedCallback(int id, int error);
 
 	/// This function shall be connected to the user select projection event
-	void selectProjectionCallback(String^ proj);
+	void selectProjectionCallback(System::String^ proj);
 
 	/// This function shall be connected to the abort projection event
 	void abortProjectionCallback(void);
@@ -77,9 +80,7 @@ public:
 	/// This function shall be connected to the push button status change event
 	void xrayPushbuttonStatusChangeCallback(void);
 
-	/// This function shall be connected to the ready for exposure change event
-	void exposureReadyChangeCallback(void);
-
+	
 	/// This function shall be connected to the xray completed event
 	void exposureSequenceCompletedCallback(void);
 
@@ -101,11 +102,11 @@ private:
 		bool valid; //!< The decoded frame is valid
 		unsigned short ID;//!< This is the command identifier
 
-		String^ command;//!< This is the command code
-		List<String^>^ parameters;//!< This is the list of command's parameters
+		System::String^ command;//!< This is the command code
+		List<System::String^>^ parameters;//!< This is the list of command's parameters
 
 		int errcode;//!< This is the error code assigned to the command
-		String^ errstr;//!<This is the error string assigned to the command
+		System::String^ errstr;//!<This is the error string assigned to the command
 
 		/// <summary>
 		/// This function returns the number of decode parameters
@@ -121,33 +122,33 @@ private:
 	TcpIpServerCLI^ event_server; //!< This is the event-server handler of the tcp/ip server implementation class
 	TcpIpServerCLI^ command_server;//!< This is the command-server handler of the tcp/ip server implementation class
 
-	void command_rx_handler(cli::array<Byte>^ buffer, int rc);//!< This is the command-server reception handler
-	void event_rx_handler(cli::array<Byte>^ buffer, int rc);//!< This is the event-server reception handler
+	void command_rx_handler(cli::array<System::Byte>^ buffer, int rc);//!< This is the command-server reception handler
+	void event_rx_handler(cli::array<System::Byte>^ buffer, int rc);//!< This is the event-server reception handler
 
-	bool findNextParam(int* i, String^ sFrame, String^% result, bool* completed);//!< This function finds the next item in a command frame
-	int decodeFrame(cli::array<Byte>^ buffer, int size, aws_decoded_frame_t^% pDecoded);//!< This function decodes an incoming buffer from the tcp/ip channel
+	bool findNextParam(int* i, System::String^ sFrame, System::String^% result, bool* completed);//!< This function finds the next item in a command frame
+	int decodeFrame(cli::array<System::Byte>^ buffer, int size, aws_decoded_frame_t^% pDecoded);//!< This function decodes an incoming buffer from the tcp/ip channel
 	aws_decoded_frame_t^ pDecodedFrame;//!< This is the decoded command
 	unsigned short event_counter;//!< This is the sequence counter of the events
 
 	delegate void command_callback(void); //!< This is the delegate of the function pointer for the command execution functions
-	Dictionary<String^, command_callback^>^ commandExec; //!< This is the dictionary of the command that are implemented
+	Dictionary<System::String^, command_callback^>^ commandExec; //!< This is the dictionary of the command that are implemented
 
 
 	void ackNa(void);//!< This is the Not Implemented command acknowledge function
 	void ackOk(void);	//!< This is the immediate command executed OK
-	void ackOk(List<String^>^ params);//!< This is the immediate command executed OK with parameters
+	void ackOk(List<System::String^>^ params);//!< This is the immediate command executed OK with parameters
 	void ackNok(void);	//!< This is the immediate command NOK
 	void ackExecuting(void);//!< This is the immediate command EXECUTING
 	void eventExecutedOk(unsigned short id);//!< This is the Command Executed OK event
-	void eventExecutedOk(unsigned short id, List<String^>^ params);//!< This is the Command Executed OK event with parameters
+	void eventExecutedOk(unsigned short id, List<System::String^>^ params);//!< This is the Command Executed OK event with parameters
 	void eventExecutedNok(unsigned short id, unsigned short errcode);//!< This is the Command Executed NOK event  with an error code
-	void eventExecutedNok(unsigned short id, unsigned short errcode, String^ errorstr);//!< This is the Command Executed NOK event  with an error code and error string
+	void eventExecutedNok(unsigned short id, unsigned short errcode, System::String^ errorstr);//!< This is the Command Executed NOK event  with an error code and error string
 
 
 	/// \defgroup awsProtoCommands AWS Protocol Command set
 	/// \ingroup awsModule
 	/// @{ 
-
+	void EXEC_TestCommand(void);
 	void EXEC_OpenStudy(void);
 	void EXEC_CloseStudy(void);
 
@@ -178,18 +179,18 @@ private:
 	/// \ingroup awsModule
 	/// @{ 
 	/// 
-	void EVENT_SelectProjection(String^ projname);
+	void EVENT_SelectProjection(System::String^ projname);
 	void EVENT_AbortProjection(void);
-	void EVENT_GantryStatus(String^ status);
+	void EVENT_GantryStatus(System::String^ status);
 	void EVENT_Compressor(unsigned short thick, unsigned short force);
-	void EVENT_Components(String^ component, String^ paddle, String^ colli_component);
+	void EVENT_Components(System::String^ component, System::String^ paddle, System::String^ colli_component);
 	void EVENT_ReadyForExposure(bool ready, unsigned short code);
-	void EVENT_XrayPushButton(String^ status);
-	void EVENT_XraySequenceCompleted(String^ result,
-		double kv0, double mas0, String^ filter0,
-		double kv1, double mas1, String^ filter1,
-		double kv2, double mas2, String^ filter2,
-		double kv3, double mas3, String^ filter3);
+	void EVENT_XrayPushButton(System::String^ status);
+	void EVENT_XraySequenceCompleted(System::String^ result,
+		double kv0, double mas0, System::String^ filter0,
+		double kv1, double mas1, System::String^ filter1,
+		double kv2, double mas2, System::String^ filter2,
+		double kv3, double mas3, System::String^ filter3);
 
 	/// @}
 

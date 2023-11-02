@@ -1,14 +1,15 @@
 #pragma once
+#include <Windows.h>
 
-using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::Threading;
 
-ref class CanDeviceProtocol : public System::Windows::Forms::Form
+ref class CanDeviceProtocol //: public System::Windows::Forms::Form
 {
 public:
 	
 	// Bootloader commands
-	#define GET_BOOTLOADER_INFO (Byte) 0x1, (Byte) 0,(Byte) 0, (Byte) 0,(Byte) 0,(Byte) 0, (Byte) 0,(Byte) 0,true
+	#define GET_BOOTLOADER_INFO (System::Byte) 0x1, (System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,true
 
 
 	ref class CanDeviceRegister {
@@ -83,6 +84,7 @@ public:
 		WAITING_REVISION,					//!< The module is waiting for the revision acquisition
 		DEVICE_CONFIGURATION,				//!< The module is uploading the device parameters
 		DEVICE_RUNNING,						//!< The module is Running
+		DEVICE_ERROR,						//!< The module is in Error condition
 		LEN,
 		UNDEF = LEN
 	};
@@ -93,7 +95,7 @@ public:
 		BOOTLOADER_PRESENT = 2,
 		BOOTLOADER_UNCKNOWN_STAT
 	};
-	static const cli::array<String^>^ bootloader_status_tags = gcnew cli::array<String^> { "NOT PRESENT", "RUNNING", "PRESENT", "UNCKNOWN"}; 
+	static const cli::array<System::String^>^ bootloader_status_tags = gcnew cli::array<System::String^> { "NOT PRESENT", "RUNNING", "PRESENT", "UNCKNOWN"}; 
 
 	CanDeviceProtocol(unsigned char devid, LPCWSTR devname);
 
@@ -114,12 +116,14 @@ public:
 
 	inline CanDeviceRegister^ getRxRegister(void) { return rx_register; }
 	inline status_options getStatus(void) { return internal_status; }
-	inline String^ getBootRevision(void) { return boot_maj.ToString() + "." + boot_min.ToString() + "." + boot_sub.ToString(); }
-	inline String^ getAppRevision(void) { return app_maj.ToString() + "." + app_min.ToString() + "." + app_sub.ToString(); }
-	inline String^ getBootStatus(void) { return bootloader_status_tags[ (int) bootloader_status]; }
+	inline System::String^ getBootRevision(void) { return boot_maj.ToString() + "." + boot_min.ToString() + "." + boot_sub.ToString(); }
+	inline System::String^ getAppRevision(void) { return app_maj.ToString() + "." + app_min.ToString() + "." + app_sub.ToString(); }
+	inline System::String^ getBootStatus(void) { return bootloader_status_tags[ (int) bootloader_status]; }
 	
 protected:
 	virtual void runningLoop(void) ;
+	virtual bool errorLoop(void);
+	virtual bool configurationLoop(void);
 private:
 
 	//bool blocking_write(unsigned short index, unsigned char sub, unsigned char dim, int val);

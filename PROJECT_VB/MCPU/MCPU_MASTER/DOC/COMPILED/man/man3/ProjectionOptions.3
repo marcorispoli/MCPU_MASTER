@@ -1,0 +1,119 @@
+.TH "ProjectionOptions" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ProjectionOptions \-  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ArmMotor\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBLCC\fP = 0, \fBLFB\fP, \fBLISO\fP, \fBLLM\fP, \fBLLMO\fP, \fBLML\fP, \fBLMLO\fP, \fBLSIO\fP, \fBRCC\fP, \fBRFB\fP, \fBRISO\fP, \fBRLM\fP, \fBRLMO\fP, \fBRML\fP, \fBRMLO\fP, \fBRSIO\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration option code of the selectable projections\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBProjectionOptions\fP ()"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBtags\fP"
+.br
+.RI "This is the option-tags static array\&. "
+.ti -1c
+.RI "static \fBGantryStatusRegisters::enumType\fP< \fBoptions\fP > ^ \fBValue\fP = gcnew \fBGantryStatusRegisters::enumType\fP<\fBoptions\fP>(\fBtags\fP)"
+.br
+.ti -1c
+.RI "static Dictionary< System::String^, Image^> ^ \fBProjectionsIcons\fP = gcnew Dictionary<System::String^, Image^>()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+
+This is the projection handling class\&.
+.PP
+This class defines the availabe projection options, store the current selected projection and the projection selectable list\&.
+.PP
+The class provides events related to the data change
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBProjectionOptions::options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration option code of the selectable projections\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILCC \fP\fP
+.TP
+\fB\fILFB \fP\fP
+.TP
+\fB\fILISO \fP\fP
+.TP
+\fB\fILLM \fP\fP
+.TP
+\fB\fILLMO \fP\fP
+.TP
+\fB\fILML \fP\fP
+.TP
+\fB\fILMLO \fP\fP
+.TP
+\fB\fILSIO \fP\fP
+.TP
+\fB\fIRCC \fP\fP
+.TP
+\fB\fIRFB \fP\fP
+.TP
+\fB\fIRISO \fP\fP
+.TP
+\fB\fIRLM \fP\fP
+.TP
+\fB\fIRLMO \fP\fP
+.TP
+\fB\fIRML \fP\fP
+.TP
+\fB\fIRMLO \fP\fP
+.TP
+\fB\fIRSIO \fP\fP
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "static ProjectionOptions::ProjectionOptions ()\fC [inline]\fP, \fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "Dictionary<System::String^, Image^> ^ ProjectionOptions::ProjectionsIcons = gcnew Dictionary<System::String^, Image^>()\fC [static]\fP"
+
+.SS "const cli::array<System::String^> ^ ProjectionOptions::tags\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= gcnew cli::array<System::String^> {
+        "LCC", "LFB", "LISO", "LLM", "LLMO", "LML", "LMLO", "LSIO", "RCC", "RFB", "RISO", "RLM", "RLMO", "RML", "RMLO", "RSIO",
+            "UNDEF"
+    }
+.fi
+.PP
+This is the option-tags static array\&. 
+.SS "\fBGantryStatusRegisters::enumType\fP<\fBoptions\fP> ^ ProjectionOptions::Value = gcnew \fBGantryStatusRegisters::enumType\fP<\fBoptions\fP>(\fBtags\fP)\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

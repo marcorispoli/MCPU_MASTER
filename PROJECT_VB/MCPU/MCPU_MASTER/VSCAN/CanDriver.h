@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 
 #define DEVICE_PROTOCOL_DISPATCH_MESSAGE (WM_USER + 1)
 #define CANOPEN_NMT_DISPATCH_MESSAGE (WM_USER + 2)
@@ -9,7 +11,7 @@
 #define CANOPEN_SDO_DISPATCH_MESSAGE (WM_USER + 6)
 #define CANOPEN_BOOTUP_DISPATCH_MESSAGE (WM_USER + 7)
 
-using namespace std;
+//using namespace std;
 
 ref class CanDriver: public System::Windows::Forms::Form
 {
@@ -29,8 +31,8 @@ public:
 
     inline bool isError(void) { return error; }
     inline bool isWarning(void) { return warning; }
-    inline String^ getErrorString(void) { return ErrorString; }
-    inline String^ getWarningString(void) { return WarningString; }
+    inline System::String^ getErrorString(void) { return ErrorString; }
+    inline System::String^ getWarningString(void) { return WarningString; }
 
 protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;//!< This is the function handling the Window's messages
 
@@ -44,16 +46,16 @@ public :
     int swrev_min;
 
 private:
-    Thread^ running_thread;
+    System::Threading::Thread^ running_thread;
     void threadWork(void);
     HWND can_hwnd;
     static bool can_connected;
 
     bool error;
-    String^ ErrorString;
+    System::String^ ErrorString;
 
     bool warning;
-    String^ WarningString;
+    System::String^ WarningString;
     
     
 

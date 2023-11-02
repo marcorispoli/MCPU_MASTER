@@ -1,7 +1,5 @@
 #pragma once
-#include "pch.h"
 
-using namespace System;
 using namespace System::Collections::Generic;
 
 /**
@@ -182,23 +180,23 @@ public:
     
     #define CONFIG_FILE_DESCRIPTOR  gcnew cli::array<ConfigFile::paramItemT^>
     #define CONFIG_FILE_ITEM        gcnew ConfigFile::paramItemT
-    #define CONFIG_FILE_DEFAULT     gcnew cli::array<const String^>
+    #define CONFIG_FILE_DEFAULT     gcnew cli::array<const System::String^>
     
     ref class paramItemT 
     {
         public:
 
-        paramItemT(const String^ tg, const String^ cmt, cli::array<const String^>^ def) {
+        paramItemT(const System::String^ tg, const System::String^ cmt, cli::array<const System::String^>^ def) {
             tag = tg;
             defaults = def;
-            values = gcnew cli::array<String^>(defaults->Length);
-            for (int i = 0; i < defaults->Length; i++) values[i] = (String^)defaults[i] ;            
+            values = gcnew cli::array<System::String^>(defaults->Length);
+            for (int i = 0; i < defaults->Length; i++) values[i] = (System::String^)defaults[i] ;
             comment = cmt;
         }
-        const String^ tag;        //!< Tag name of the parameter
-        cli::array<const String^>^ defaults; //!< Default Value list of a parameter
-        const String^ comment;    //!< comment
-        cli::array<String^>^ values;   //!< Value list of a parameter
+        const System::String^ tag;        //!< Tag name of the parameter
+        cli::array<const System::String^>^ defaults; //!< Default Value list of a parameter
+        const System::String^ comment;    //!< comment
+        cli::array<System::String^>^ values;   //!< Value list of a parameter
         
     };
    
@@ -208,13 +206,13 @@ public:
     {
         public:
 
-        String^ filename;   //!< Configuration filename
+        System::String^ filename;   //!< Configuration filename
         int revision;       //!< Configuration revision code
         cli::array<paramItemT^>^ descriptor; //!< Parameter descriptor
     };
 
 
-    ConfigFile(const String^ filename, int revision, cli::array<paramItemT^>^ descriptor);
+    ConfigFile(const System::String^ filename, int revision, cli::array<paramItemT^>^ descriptor);
 
     //! Load the configuration file in memory
     bool loadFile(void);
@@ -224,18 +222,18 @@ public:
 
     //! Override thecurrent file with the default values
     inline void setDefaultFile(void){ createDefaultFile(); }
-    inline String^ getFilename(void) { return filename; }
+    inline System::String^ getFilename(void) { return filename; }
     inline bool isWarning(void) { return warning; }
-    inline String^ getWarningString(void) { return warning_string; }
+    inline System::String^ getWarningString(void) { return warning_string; }
     
-    cli::array<String^>^ getParam(const String^ tag){
-        int i = getTagPosition((String^) tag);
+    cli::array<System::String^>^ getParam(const System::String^ tag){
+        int i = getTagPosition((System::String^) tag);
         if(i < 0)    return nullptr;        
         return data[i]->values;
     }
 
 
-    bool setParam(String^ tag, int index, String^ val){
+    bool setParam(System::String^ tag, int index, System::String^ val){
         int i = getTagPosition(tag);
         if( (i < 0) || (index >= data[i]->values->Length)) return false;
         
@@ -254,12 +252,12 @@ protected:
  private:
     
     cli::array<paramItemT^>^ data; //!< config file content in memory    
-    String^ filename;   //!< Configuration filename
+    System::String^ filename;   //!< Configuration filename
     int revision;       //!< Configuration revision code    
     int loaded_revision;//!< Revision read from the config file
     
     bool warning;
-    String^ warning_string;
+    System::String^ warning_string;
     
 
     /**
@@ -269,10 +267,10 @@ protected:
      * tag name
      * @return
      */
-    int getTagPosition(String^ tag);
-    String^ getConfigPath(void);
+    int getTagPosition(System::String^ tag);
+    System::String^ getConfigPath(void);
     void createDefaultFile(void); //!< Creates the default file based on the template
-    bool decodeLine(String^ rline);
+    bool decodeLine(System::String^ rline);
 
 };
 

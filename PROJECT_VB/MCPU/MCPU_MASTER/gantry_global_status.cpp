@@ -1,9 +1,9 @@
-#include "pch.h"
 #include "gantry_global_status.h"
-#include "mutex"
+#include "Errors.h"
+#include <mutex>
 
 namespace GantryStatusRegisters {
-    static mutex gantry_status_mutex;
+    static std::mutex gantry_status_mutex;
 
     void dataLock(void) {
         gantry_status_mutex.lock();
@@ -59,9 +59,51 @@ namespace GantryStatusRegisters {
         const std::lock_guard<std::mutex> lock(gantry_status_mutex);
         bulbHeat = bulb;    
         statorHeat = stator;
+
+        // Evaluate the error condition
+        int max = anodeHu;
+        if (bulbHeat > max) max = bulbHeat;
+        if (statorHeat > max) max = statorHeat; 
+        cumulated = max;
+        
+        if ((max > 90) && (!alarm)) {
+            alarm = true;
+            Notify::activate("TUBE_TEMP_WARNING", false);
+        }
+        else if ((max <= 90) && (alarm)) {
+            alarm = false;
+            Notify::deactivate("TUBE_TEMP_WARNING");
+        }
+        
         return;
     }
 
+    void TubeDataRegister::setAnodeHu(unsigned char ahu) {
+        const std::lock_guard<std::mutex> lock(gantry_status_mutex);
+        anodeHu = ahu;
+
+        // Evaluate the error condition
+        int max = anodeHu;
+        if (bulbHeat > max) max = bulbHeat;
+        if (statorHeat > max) max = statorHeat;
+        cumulated = max;
+
+        if( (max > 90) && (!alarm) ){
+            alarm = true;
+            Notify::activate("TUBE_TEMP_WARNING", false);
+        }
+        else if ((max <= 90) && (alarm)) {
+            alarm = false;
+            Notify::deactivate("TUBE_TEMP_WARNING");
+        }
+
+        return;
+    }
+
+   
+
+    
+    
 
 };
 

@@ -1,0 +1,204 @@
+.TH "ArmMotor" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ArmMotor
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ArmMotor\&.h>\fP
+.PP
+Inherits \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBArmMotor\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisTarget\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisValidTarget\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisInRange\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisValidPosition\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_target_change_callback\fP (int id, int target_position)"
+.br
+.ti -1c
+.RI "bool \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_target_abort_callback\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_abort_projection_request_callback\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_projection_request_callback\fP (System::String^ str)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBabortTarget\fP (void)"
+.br
+.ti -1c
+.RI "static \fBProjectionOptions\fP ^ \fBgetProjectionsList\fP ()"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetSelectedProjection\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBabortProjectionRequest\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBprojectionRequest\fP (System::String^ projection)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBinitializeSpecificObjectDictionary\fP (void) override"
+.br
+.RI "Sets specific registers for the Arm activation\&. "
+.ti -1c
+.RI "void \fBsetCommandCompletedCode\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "Override the basic class to handle the Virtual isocentric function\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_target_change_callback\fP^ \fBtarget_change_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_target_abort_callback\fP^ \fBtarget_abort_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_abort_projection_request_callback\fP^ \fBabort_projection_request_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_projection_request_callback\fP^ \fBprojection_request_event\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBProjectionOptions\fP ^ \fBprojections\fP = gcnew \fBProjectionOptions\fP"
+.br
+.RI "This is the current selected projection\&. "
+.ti -1c
+.RI "static int \fBallowed_low\fP = 0"
+.br
+.RI "Lower acceptable angle (°) "
+.ti -1c
+.RI "static int \fBallowed_high\fP = 0"
+.br
+.RI "Higher acceptable angle (°) "
+.ti -1c
+.RI "static bool \fBvalid_target\fP = false"
+.br
+.RI "True if the target is a valid target\&. "
+.ti -1c
+.RI "static int \fBselected_target\fP"
+.br
+.RI "Automatic selected target 
+.br
+ "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ArmMotor::ArmMotor (void)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static void ArmMotor::abortProjectionRequest (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void ArmMotor::abortTarget (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "delegate void ArmMotor::delegate_abort_projection_request_callback (void)"
+
+.SS "delegate void ArmMotor::delegate_projection_request_callback (System::String^ str)"
+
+.SS "delegate void ArmMotor::delegate_target_abort_callback (void)"
+
+.SS "delegate void ArmMotor::delegate_target_change_callback (int id, int target_position)"
+
+.SS "static \fBProjectionOptions\fP ^ ArmMotor::getProjectionsList ()\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static System::String ^ ArmMotor::getSelectedProjection (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "bool ArmMotor::initializeSpecificObjectDictionary (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Sets specific registers for the Arm activation\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool ArmMotor::isInRange (void)\fC [inline]\fP"
+
+.SS "bool ArmMotor::isTarget (void)\fC [inline]\fP"
+
+.SS "bool ArmMotor::isValidPosition (void)\fC [inline]\fP"
+
+.SS "bool ArmMotor::isValidTarget (void)\fC [inline]\fP"
+
+.SS "static void ArmMotor::projectionRequest (System::String^ projection)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "void ArmMotor::setCommandCompletedCode (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override the basic class to handle the Virtual isocentric function\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int ArmMotor::allowed_high = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Higher acceptable angle (°) 
+.SS "int ArmMotor::allowed_low = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Lower acceptable angle (°) 
+.SS "\fBProjectionOptions\fP ^ ArmMotor::projections = gcnew \fBProjectionOptions\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current selected projection\&. 
+.SS "int ArmMotor::selected_target\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Automatic selected target 
+.br
+ 
+.SS "bool ArmMotor::valid_target = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+True if the target is a valid target\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_abort_projection_request_callback\fP^ ArmMotor::abort_projection_request_event\fC [static]\fP"
+
+.SS "\fBdelegate_projection_request_callback\fP^ ArmMotor::projection_request_event\fC [static]\fP"
+
+.SS "\fBdelegate_target_abort_callback\fP^ ArmMotor::target_abort_event\fC [static]\fP"
+
+.SS "\fBdelegate_target_change_callback\fP^ ArmMotor::target_change_event\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

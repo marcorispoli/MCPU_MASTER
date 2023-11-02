@@ -1,0 +1,86 @@
+.TH "GantryStatusRegisters::ExposureCompletedOptions" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::ExposureCompletedOptions \- This class implements the XRAY completed status register\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBXRAY_COMPLETED_OK\fP = 0, \fBXRAY_COMPLETED_PARTIAL_DOSE\fP = 1, \fBXRAY_COMPLETED_NO_DOSE\fP = 2, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "Definition of the register enumeration codes 
+.br
+ "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBenumType\fP< \fBoptions\fP > ^ \fBValue\fP = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< String^> ^ \fBtags\fP = gcnew cli::array<String^> {'OK', 'PARTIAL', 'NOK', 'UNDEF'}"
+.br
+.RI "Definition of the register tags 
+.br
+ "
+.ti -1c
+.RI "static cli::array< \fBexposurePulse\fP^> ^ \fBexposed_pulses\fP = nullptr"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class implements the XRAY completed status register\&. 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::ExposureCompletedOptions::options\fP\fC [strong]\fP"
+
+.PP
+Definition of the register enumeration codes 
+.br
+ 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIXRAY_COMPLETED_OK \fP\fP
+XRAY sequence successfully completed\&. 
+.TP
+\fB\fIXRAY_COMPLETED_PARTIAL_DOSE \fP\fP
+XRAY sequence partially completed\&. 
+.TP
+\fB\fIXRAY_COMPLETED_NO_DOSE \fP\fP
+XRAY sequence aborted without dose\&. 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Data Documentation"
+.PP 
+.SS "cli::array<\fBexposurePulse\fP^> ^ GantryStatusRegisters::ExposureCompletedOptions::exposed_pulses = nullptr\fC [static]\fP"
+
+.SS "const cli::array<String^> ^ GantryStatusRegisters::ExposureCompletedOptions::tags = gcnew cli::array<String^> {'OK', 'PARTIAL', 'NOK', 'UNDEF'}\fC [static]\fP"
+
+.PP
+Definition of the register tags 
+.br
+ 
+.SS "\fBenumType\fP<\fBoptions\fP> ^ GantryStatusRegisters::ExposureCompletedOptions::Value = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

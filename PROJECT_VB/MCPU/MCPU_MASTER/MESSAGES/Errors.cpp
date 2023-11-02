@@ -1,93 +1,167 @@
-#include "pch.h"
+#include "Errors.h"
+#include "Translate.h"
 #include "mutex"
 
-static mutex gantry_errors_mutex;
+static std::mutex gantry_errors_mutex;
 
-void Errors::activate(String^ msg, bool one_shot) {
+void Notify::activate(System::String^ msg, bool one_shot) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+	Translate::item^ msgit;
 
-	for (int i = 0; i < list->Count; i++) {
-		// The error code is already active: tests if the error message is changed
-		if (list[i]->errmsg == msg) return;
+	msgit = Translate::getItem(msg);
+	if (msgit == nullptr) return;
+
+	if (msgit->isError()) {
+		for (int i = 0; i < error_list->Count; i++) {
+			// The error code is already active: tests if the error message is changed
+			if (error_list[i]->msg == msg) return;
+		}
+
+		// The error is a new error
+		last_error = gcnew item(msg, one_shot);
+		error_list->Add(gcnew item(msg, one_shot));
+		return;
 	}
 
-	// The error is a new error
-	list->Add(gcnew item(msg, one_shot));
-	current = list->Count - 1;
-	update = true;
+	if (msgit->isWarning()) {
+		for (int i = 0; i < warning_list->Count; i++) {	
+			if (warning_list[i]->msg == msg) return;
+		}
+
+		// The error is a new error
+		warning_list->Add(gcnew item(msg, one_shot));		
+		return;
+	}
+
+	if (msgit->isInfo()) {
+		for (int i = 0; i < info_list->Count; i++) {
+			if (info_list[i]->msg == msg) return;
+		}
+
+		// The error is a new error
+		info_list->Add(gcnew item(msg, one_shot));
+		return;
+	}
 
 }
 
-void Errors::deactivate(String^ msg) {
+void Notify::deactivate(System::String^ msg) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
-	String^ curmsg;
+	System::String^ curmsg;
+	Translate::item^ msgit;
 
-	if (current >= 0) curmsg = list[current]->errmsg;
-	if (msg == curmsg) current = -1;
+	msgit = Translate::getItem(msg);
+	if (msgit == nullptr) return;
 
-	for (int i = 0; i < list->Count; i++) {		
-		if (list[i]->errmsg == msg) {	
-			list->RemoveAt(i);			
-		}
-	}
+	if (msgit->isError()) {
 
-	// recalc the current position
-	if (current >= 0 ) {
-		for (int i = 0; i < list->Count; i++) {
-			if (list[i]->errmsg == curmsg) {
-				current = i;
-				return;
+		// Clear the last error if matchs with the deactivated message
+		if (last_error != nullptr) {
+			if (last_error->msg == msg) last_error = nullptr;
+ 		}
+
+		for (int i = 0; i < error_list->Count; i++) {
+			if (error_list[i]->msg == msg) {
+				error_list->RemoveAt(i);
 			}
 		}
+
+		return;
 	}
 
-	return;
+	if (msgit->isWarning()) {
+		
+		for (int i = 0; i < warning_list->Count; i++) {
+			if (warning_list[i]->msg == msg) {
+				warning_list->RemoveAt(i);
+			}
+		}
+		return;
+	}
+	
+	if (msgit->isInfo()) {
+
+		for (int i = 0; i < info_list->Count; i++) {
+			if (info_list[i]->msg == msg) {
+				info_list->RemoveAt(i);
+			}
+		}
+		return;
+	}
+
 }
 
 
-Errors::item^ Errors::getCurrent(void) {
+Notify::item^ Notify::getCurrent(void) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+	return last_error;
 
-	if (current < 0) return nullptr;
-	if (current >= list->Count) return nullptr;
-	return list[current];
 }
 
-void Errors::clrOneShotErrors(void) {
+void Notify::clrOneShotErrors(void) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
 
 	// Clears the one_shot errors from the list
-	for (int i = 0; i < list->Count; ) {
-		if (list[i]->one_shot) {
-			list->RemoveAt(i);
+	for (int i = 0; i < error_list->Count; ) {
+		if (error_list[i]->one_shot) {
+			error_list->RemoveAt(i);
 			continue;
 		}
 		i++;
 	}
+	for (int i = 0; i < warning_list->Count; ) {
+		if (warning_list[i]->one_shot) {
+			warning_list->RemoveAt(i);
+			continue;
+		}
+		i++;
+	}
+	for (int i = 0; i < info_list->Count; ) {
+		if (info_list[i]->one_shot) {
+			info_list->RemoveAt(i);
+			continue;
+		}
+		i++;
+	}
+
 }
 
+System::String^ Notify::formatMsg(System::String^ key) {
+	Translate::item^ msgit = Translate::getItem(key);
+	if (msgit == nullptr) return "";
 
-String^ Errors::getListOfErrors(void) {
+	//return Translate::title(msgit->contest) + " [" + msgit->id + "]: " + msgit->title + "\n" +  msgit->content;
+	return "[" + msgit->id + "]: " + msgit->title + "\n" + msgit->content;
+}
+
+System::String^ Notify::getListOfErrors(void) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
 
-	String^ errlist = "";
+	System::String^ errlist = "";
 	Translate::item^ msgit;
 
 
 	// Set the current error in the Top position of the string
-	if (current >= 0) {
-		msgit = Translate::getItem(list[current]->errmsg);
-		errlist += Translate::title(msgit->contest) + " [" + msgit->id + "]: " + msgit->title + "\n";
-		errlist += msgit->content + "\n\n";
+	if(last_error != nullptr){
+		errlist = formatMsg(last_error->msg);
+		errlist += "\n\n";		
 	}
 
-	// Sets the remaining list
-	for (int i = 0; i < list->Count; i++) {
-		if (i == current) continue;
-		msgit = Translate::getItem(list[i]->errmsg);
+	// Sets the full list
+	for (int i = 0; i < error_list->Count; i++) {
+		if ((last_error) && (last_error->msg == error_list[i]->msg)) continue;
+		errlist += formatMsg(error_list[i]->msg);
+		errlist += "\n\n";
+	}
 
-		errlist += Translate::title(msgit->contest) + " [" + msgit->id + "]: " + msgit->title + "\n";
-		errlist += msgit->content + "\n\n";
+	for (int i = 0; i < warning_list->Count; i++) {
+		errlist += formatMsg(warning_list[i]->msg);
+		errlist += "\n\n";
+	}
+
+	for (int i = 0; i < info_list->Count; i++) {
+		errlist += formatMsg(info_list[i]->msg);
+		errlist += "\n\n";
 	}
 
 	return errlist;

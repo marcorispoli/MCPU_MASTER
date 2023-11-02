@@ -23,9 +23,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gantry_global_status.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -161,15 +158,33 @@
     <ClInclude Include="GENERATOR\R2CP\GenDataDic\metInterfaces\metDataDicRadInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WINDOWS\ConfirmationWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\Projections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\ErrorForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MOTORS\ArmMotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MOTORS\VerticalMotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DEVICES\PCB326.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\CalibrationConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gantry_global_status.cpp">
@@ -257,6 +272,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_SystemIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\ConfirmationWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\Projections.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\ErrorForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\ArmMotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\VerticalMotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DEVICES\PCB326.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

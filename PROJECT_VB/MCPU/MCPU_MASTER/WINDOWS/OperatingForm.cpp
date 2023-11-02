@@ -1,13 +1,22 @@
-#include "pch.h"
+#include "OperatingForm.h"
+#include "Translate.h"
+#include "ErrorForm.h"
+#include "gantry_global_status.h"
+#include "Projections.h"
+#include "ConfirmationWindow.h"
+#include "ArmMotor.h"
 
 
-// Window Panels 
-#define MAIN_PANEL			1
-#define ERROR_PANEL			2
-
+#define PROJ_SELCTION_BACKGROUND_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ProjSelectionButton.PNG")
 
 // Main Panel Definition
+#define XRAY_ON_IMAGE  Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\XOn.PNG")
+#define XRAY_STDBY_IMAGE  Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\XStdby.PNG")
+#define XRAY_READY_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\XReady.PNG")
+
 #define LAMP_OFF_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\LampOff.PNG")
+
+#define WARNING_BUTTON_ON Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\WarningOn.PNG")
 #define ERROR_BUTTON_ON Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\AlarmOn.PNG")
 #define ERROR_BUTTON_OFF Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\AlarmOff.PNG")
 
@@ -27,21 +36,24 @@
 #define TUBE_TEMP_OK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\TubeOk.PNG")
 #define TUBE_TEMP_NOK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\TubeNok.PNG")
 
-#define ERRORPANEL_ERRORICON Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\error_160x145.PNG")
+#define DOOR_CLOSED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\DoorClosed.PNG")
+#define DOOR_OPEN_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\DoorOpen.PNG")
 
-// Error Panel Definition
-#define ERROR_PANEL_CANC_BUTTON Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\close_65x65.PNG")
-#define ERROR_PANEL_NEXT_BUTTON Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\arrow_80x80_r.PNG")
+#define MAGFACTOR_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\MagFactor.PNG")
 
-// Error Window timeout
-#define ERROR_WINDOW_TMO	15000
+#define COMPRESSION_RELEASE_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\CompressionReleaseOn.PNG")
+#define COMPRESSION_KEEP_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\CompressionReleaseOff.PNG")
 
+#define RESIDUAL_EXPOSURE_OK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ExposureLeftOk.PNG")
+#define RESIDUAL_EXPOSURE_NOK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ExposureLeftNok.PNG")
+
+#define PROJ_INFO_ICON  Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info_64x64.PNG")
 
 
 namespace OPERSTATUS {
-	typedef enum {
-		XRAY_STATUS_ON = 1,
-		XRAY_STATUS_NOT_READY,
+
+	typedef enum {		
+		XRAY_STATUS_NOT_READY = 1,
 		XRAY_STATUS_READY
 	}xray_status_t;
 
@@ -78,18 +90,30 @@ namespace OPERSTATUS {
 		force_mode_t		force_mode;
 	}paddleStatus;
 
+	typedef struct {
+		int exposure_mode;
+		bool exposure_data_valid;
+
+	}exposureStatus;
+
 	static struct {
 		paddleStatus paddle;
 		tubeStatus	tube;
-		bool closed_door;
 		xray_status_t xray_status;
+
+		bool closed_door;		
 		bool colli_lamp;
 		unsigned char currentPanel;
 		bool alarm;
-		
+		bool warning;
+
+		unsigned char mag_factor;
+		bool compressor_release;
+		unsigned char residual_exposures;
+		bool projectionSelected;
+
 	}Registers;
 };
-
 
 void OperatingForm::formInitialization(void) {
 
@@ -97,154 +121,427 @@ void OperatingForm::formInitialization(void) {
 	this->Left = GlobalObjects::monitor_X0;
 	this->Top = GlobalObjects::monitor_Y0;
 
-	OPERSTATUS::Registers.currentPanel = MAIN_PANEL;
-	mainPanel->Show();
-	errorPanel->Hide();
-
 	mainPanel->SetBounds(0, 0, 600, 1024);
-	//mainPanel->BackgroundImage = BACKGROUND;
+	
+	// Error Panel Setup ____________________________________________________________
+	pError = gcnew ErrorForm(this);
+	//________________________________________________________________________________________
 
+	// Projections Panel Setup ____________________________________________________________
+	pProj = gcnew ProjectionForm(this);
+	((ProjectionForm^)pProj)->button_canc_event += gcnew ProjectionForm::delegate_button_callback(this, &OperatingForm::onConfirmCanc);
+	((ProjectionForm^)pProj)->button_ok_event += gcnew ProjectionForm::delegate_button_callback(this, &OperatingForm::onConfirmOk);
+	//________________________________________________________________________________________
+
+	// Abort Projection Panel Setup ____________________________________________________________
+	System::String^ confInfoTitle = "[" + Translate::id("PROJECTION_ABORT_INFO") + "] " + Translate::title("PROJECTION_ABORT_INFO");
+	System::String^ confInfoContent = Translate::content("PROJECTION_ABORT_INFO");
+	pAbort = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
+	((ConfirmationWindow^)pAbort)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onAbortConfirmCanc);
+	((ConfirmationWindow^)pAbort)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onAbortConfirmOk);
+	//________________________________________________________________________________________
+	
+	OPERSTATUS::Registers.alarm = false;
+	OPERSTATUS::Registers.warning = false;
+
+	// Sets the Projection selection button
+	projSelection->BackgroundImage = PROJ_SELCTION_BACKGROUND_IMAGE;
+	selectedIcon->Hide();
+	OPERSTATUS::Registers.projectionSelected = false;
+	ArmMotor::target_change_event += gcnew ArmMotor::delegate_target_change_callback(this, &OperatingForm::onArmTargetChangedCallback);	
+	ArmMotor::target_abort_event += gcnew ArmMotor::delegate_target_abort_callback(this, &OperatingForm::onArmAbortTargetCallback);
+	
+	
 	// Sets the Xray status
 	OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;
-	labelXrayStatus->BackColor = Color::FromArgb(140, 140, 140);
 	labelXrayStatus->Text = Translate::label("NOT-READY-FOR-EXPOSURE");
+	xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
 
 	// Sets the current lamp status
 	OPERSTATUS::Registers.colli_lamp = false;
 	lampButton->BackgroundImage = LAMP_OFF_IMAGE;
 
 	// Error Button
-	OPERSTATUS::Registers.alarm = Errors::isError();
-	if (Errors::isError()) alarmButton->BackgroundImage = ERROR_BUTTON_ON;
-	else alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
+	OPERSTATUS::Registers.alarm = false;
+	alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
 
-	// Paddle Section
-	if (GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() == GantryStatusRegisters::CompressionModeOption::options::CMP_DISABLE) {
-		
-		// Compressor Disabled
-		OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_DISABLED;
-		paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
 
-		// Thickness Disabled
-		OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_DISABLED;
-		thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
+	// Compressor Disabled
+	OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_DISABLED;
+	paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
 
-		OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_DISABLED_COMPRESSED;
-		forceStatus->BackgroundImage = FORCE_DISABLED_COMPRESSED_IMAGE;
+	// Thickness Disabled
+	OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_DISABLED;
+	thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
 
-	}
-	else {
-		if (!GantryStatusRegisters::CompressorRegister::isPaddle())
-		{
-			// Compressor Not Detected
-			OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_NOT_DETECTED;
-			paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
+	OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_DISABLED_COMPRESSED;
+	forceStatus->BackgroundImage = FORCE_DISABLED_COMPRESSED_IMAGE;
 
-			// Thickness Disabled
-			OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_DISABLED;
-			thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
-
-			OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_DISABLED_NOT_COMPRESSED;
-			forceStatus->BackgroundImage = FORCE_DISABLED_NOT_COMPRESSED_IMAGE;
-		}
-		else {
-			OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_DETECTED;
-			paddleStatus->BackgroundImage = COMPRESSOR_ENABLE_IMAGE;
-
-			// Thickness Enabled
-			OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_ENABLED;
-			thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
-
-			OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_ENABLED;
-			forceStatus->BackgroundImage = FORCE_ENABLED_IMAGE;
-		}
-	}
 
 	// Collimator Status option
 	collimationStatus->BackgroundImage = COLLIMATION_IMAGE;
 
 	// Tube Status
-	OPERSTATUS::Registers.tube.bulb = GantryStatusRegisters::TubeDataRegister::getBulb();
-	OPERSTATUS::Registers.tube.stator = GantryStatusRegisters::TubeDataRegister::getStator();
-	OPERSTATUS::Registers.tube.anode = GantryStatusRegisters::TubeDataRegister::getAnode();
+	OPERSTATUS::Registers.tube.bulb = 0;
+	OPERSTATUS::Registers.tube.stator = 0;
+	OPERSTATUS::Registers.tube.anode = 0;
+	OPERSTATUS::Registers.tube.alarm = false;
+	tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
 
-	int max = OPERSTATUS::Registers.tube.bulb;
-	if (OPERSTATUS::Registers.tube.stator > max) max = OPERSTATUS::Registers.tube.stator;
-	if (OPERSTATUS::Registers.tube.anode > max) max = OPERSTATUS::Registers.tube.anode;
-	//labelTubeData->Text = max.ToString() + " %";
+	// Door Status 
+	OPERSTATUS::Registers.closed_door = false;
+	doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
 
-	if (max > 90)  {
-		OPERSTATUS::Registers.tube.alarm = true;
-		tubeStatus->BackgroundImage = TUBE_TEMP_NOK_IMAGE;
-	}
-	else {
-		OPERSTATUS::Registers.tube.alarm = false;
-		tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
-	}
+	// Magnification factor
+	OPERSTATUS::Registers.mag_factor = 10;
+	magnifierStatus->BackgroundImage = MAGFACTOR_IMAGE;
 
+	// Decompression status
+	OPERSTATUS::Registers.compressor_release = false;
+	decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 
-
-
-
-
-
-
-	// Build the Error Panel
-	errorPanelTitle->Text = Translate::title("ERROR_WINDOW_PANEL");
-	errorPanel->SetBounds(0, 0, 600, 1024);
-	errpanel_erricon->BackgroundImage = ERRORPANEL_ERRORICON;
-	errpanel_erricon->SetBounds(40, 137, 160, 145);
-	errorId->Location =  Point(247, 169);
-	errorTitle->Location = Point(249, 226);
-	errorContent->SetBounds(40,337, 520, 550);
-	buttonCanc->SetBounds(518, 10, 70, 70);
-	buttonCanc->BackgroundImage = ERROR_PANEL_CANC_BUTTON;
+	// Residual Exposures
+	OPERSTATUS::Registers.residual_exposures = 255;
+	residualExposures->BackgroundImage = RESIDUAL_EXPOSURE_OK_IMAGE;
 
 	operatingTimer = gcnew System::Timers::Timer(100);
 	operatingTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &OperatingForm::onOperatingTimeout);
 	operatingTimer->Stop();
 
-	errorPanelTimer = gcnew System::Timers::Timer(2000);
-	errorPanelTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &OperatingForm::onErrorTimeout);
-	errorPanelTimer->Stop();
-
+	
+	this->Hide();
+	open_status = false;
 }
 
 void OperatingForm::initOperatingStatus(void) {
 
 	// Initialize Date and time
-	DateTime date;
-	date = DateTime::Now;
+	System::DateTime date;
+	date = System::DateTime::Now;
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 	// Initialize the Patient name
 	labelPatientName->Text = GantryStatusRegisters::OperatingStatusRegister::getPatientName();
 
+	// Init Arm Angle 
+	float arm_position = ((float)pMARM->getCurrentPosition() / 100);
+	angleText->Text = "[" + arm_position.ToString() + "°]";
+
+	// Start the startup session	
+	operatingTimer->Start();
+
+	
+}
+
+void OperatingForm::open(void) {
+	if (open_status) return;
+	open_status = true;
+	initOperatingStatus();
 	
 	this->Show();
 
-	// Start the startup session	
-	//operatingTimer->Start();	
+}
 
+void OperatingForm::close(void) {
+	if (!open_status) return;
+	open_status = false;
+	operatingTimer->Stop();
+	((ProjectionForm^)pProj)->close();
+	((ErrorForm^)pError)->close();
+	((ConfirmationWindow^)pAbort)->close();
+	this->Hide();
+}
+
+
+
+void OperatingForm::onArmTargetChangedCallback(int id, int target){
+
+	if (pMARM->isValidTarget()) {
+		// Sets the current selected projection
+		System::String^ tag = ArmMotor::getSelectedProjection();
+		if (tag == "") return;
+
+		selectedIcon->BackgroundImage = ArmMotor::getProjectionsList()->ProjectionsIcons[tag];
+		selectedIcon->Show();
+		OPERSTATUS::Registers.projectionSelected = true;
+	}
+	else {
+		OPERSTATUS::Registers.projectionSelected = false;
+		selectedIcon->Hide();
+	}
+
+}
+
+void OperatingForm::onArmAbortTargetCallback(void) {
+	OPERSTATUS::Registers.projectionSelected = false;
+	selectedIcon->Hide();
+}
+
+
+void OperatingForm::onArmPositionChangeCallback(void) {
+	angleText->Text = (((float) pMARM->getCurrentPosition())/100).ToString();
+}
+
+void OperatingForm::evaluateXrayStatus(void) {
+
+	if (Notify::isError() || Notify::isWarning()) {
+		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_NOT_READY){
+			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;
+			labelXrayStatus->Text = Translate::label("NOT-READY-FOR-EXPOSURE");
+			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+		}
+	}
+	else {
+		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_READY){
+			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_READY;
+			labelXrayStatus->Text = Translate::label("READY-FOR-EXPOSURE");
+			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
+		}
+	}
+
+}
+void OperatingForm::evaluateLampStatus(void) {
+	// Sets the current lamp status
+	//OPERSTATUS::Registers.colli_lamp = false;
+	//lampButton->BackgroundImage = LAMP_OFF_IMAGE;
+
+}
+void OperatingForm::evaluateErrorStatus(void) {
+	static bool cmp_force_error = false;
+
+	// Compression Warning
+	if ((GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() != GantryStatusRegisters::CompressionModeOption::options::CMP_DISABLE) && (GantryStatusRegisters::CompressorRegister::getForce() == 0))
+		Notify::activate("MISSING_COMPRESSION_WARNING", false);
+	else Notify::deactivate("MISSING_COMPRESSION_WARNING");
+
+
+	// Patient Protection
+	if (
+		(GantryStatusRegisters::ExposureModeRegister::protectionMode->Value->getCode() != GantryStatusRegisters::PatientProtectionMode::options::PROTECTION_DIS) &&
+		(GantryStatusRegisters::ComponentRegister::Value->getCode() != GantryStatusRegisters::ComponentRegister::options::COMPONENT_PROTECTION_3D)&&
+		(GantryStatusRegisters::CollimatorComponentRegister::Value->getCode() != GantryStatusRegisters::CollimatorComponentRegister::options::COLLI_COMPONENT_PROTECTION_2D)
+		) Notify::activate("MISSING_PATIENT_PROTECTION_WARNING", false);
+	else Notify::deactivate("MISSING_PATIENT_PROTECTION_WARNING");
+	
+	// C-Arm Mode
+	if (
+		(GantryStatusRegisters::ExposureModeRegister::armMode->Value->getCode() != GantryStatusRegisters::ArmModeOption::options::ARM_DIS) &&
+		(!pMARM->isValidPosition())
+		) Notify::activate("WRONG_ARM_POSITION_WARNING", false);
+	else Notify::deactivate("WRONG_ARM_POSITION_WARNING");
+
+	// Paddle identification
+	if (
+		(GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() != GantryStatusRegisters::CompressionModeOption::options::CMP_DISABLE) &&
+			(
+				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::PAD_UNDETECTED) ||
+				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::PAD_UNLOCKED) ||
+				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::UNDEF)
+			)
+		) Notify::activate("WRONG_PADDLE_WARNING", false);
+	else Notify::deactivate("WRONG_PADDLE_WARNING");
+
+	// Exposure Mode selection
+	if (GantryStatusRegisters::ExposureModeRegister::exposureType->Value->getCode() == GantryStatusRegisters::ExposureTypeOption::options::UNDEF)
+		Notify::activate("MISSING_EXPOSURE_MODE_WARNING", false);
+	else Notify::deactivate("MISSING_EXPOSURE_MODE_WARNING");
+
+	// Exposure Data selection
+	if (!GantryStatusRegisters::ExposureDataRegister::getPulse(0)->isValid()) Notify::activate("MISSING_EXPOSURE_DATA_WARNING", false);
+	else Notify::deactivate("MISSING_EXPOSURE_DATA_WARNING");
+
+	// Xray Push Button Enable
+	if (GantryStatusRegisters::XrayPushButtonRegister::isDisabled()) Notify::activate("XRAY_BUTTON_DISABLED_WARNING", false);
+	else Notify::deactivate("XRAY_BUTTON_DISABLED_WARNING");
+
+	// Error Button
+	if (Notify::isError()) {
+		OPERSTATUS::Registers.warning = false;
+		if (!OPERSTATUS::Registers.alarm) {
+			alarmButton->BackgroundImage = ERROR_BUTTON_ON;
+			OPERSTATUS::Registers.alarm = true;
+		}
+	}else if (Notify::isWarning()) {
+		OPERSTATUS::Registers.alarm = false;
+		if (!OPERSTATUS::Registers.warning) {
+			alarmButton->BackgroundImage = WARNING_BUTTON_ON;
+			OPERSTATUS::Registers.warning = true;
+		}
+	}else {
+		if ((OPERSTATUS::Registers.warning) || (OPERSTATUS::Registers.alarm)) {
+			OPERSTATUS::Registers.warning = false;
+			OPERSTATUS::Registers.alarm = false;
+			alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
+		}
+
+	}
+
+	
+}
+void OperatingForm::evaluateCompressorStatus(void) {
+
+	// Paddle Section
+	if (GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() == GantryStatusRegisters::CompressionModeOption::options::CMP_DISABLE) {
+		// Compressor Disabled Option active
+
+		if (OPERSTATUS::Registers.paddle.compressor_mode != OPERSTATUS::COMPRESSOR_DISABLED) {
+			OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_DISABLED;
+			paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
+		}
+		
+		// Thickness Disabled
+		if (OPERSTATUS::Registers.paddle.thickness_mode != OPERSTATUS::THICKNESS_DISABLED) {
+			OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_DISABLED;
+			thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
+		}
+		
+		// Force Disabled Compressed
+		if (OPERSTATUS::Registers.paddle.force_mode != OPERSTATUS::FORCE_DISABLED_COMPRESSED) {
+			OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_DISABLED_COMPRESSED;
+			forceStatus->BackgroundImage = FORCE_DISABLED_COMPRESSED_IMAGE;
+		}
+		
+		// Compressor relase 		
+		if (OPERSTATUS::Registers.compressor_release) {
+			OPERSTATUS::Registers.compressor_release = false;
+			decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
+		}
+		
+		labelPaddle->Hide();
+		labelThickness->Show();
+		labelForce->Show();
+
+	}
+	else {
+
+		// Compressor relase 
+		if (GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() == GantryStatusRegisters::CompressionModeOption::options::CMP_KEEP) {
+			if (OPERSTATUS::Registers.compressor_release) {
+				OPERSTATUS::Registers.compressor_release = false;
+				decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
+			}
+		}
+		else if (GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() == GantryStatusRegisters::CompressionModeOption::options::CMP_RELEASE) {
+			if (!OPERSTATUS::Registers.compressor_release) {
+				OPERSTATUS::Registers.compressor_release = true;
+				decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
+			}
+		}
+
+		if (!GantryStatusRegisters::CompressorRegister::isPaddle())
+		{
+			// Compressor Not Detected
+			if (OPERSTATUS::Registers.paddle.compressor_mode != OPERSTATUS::COMPRESSOR_NOT_DETECTED) {
+				OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_NOT_DETECTED;
+				paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
+			}
+			
+
+			// Thickness Disabled
+			if (OPERSTATUS::Registers.paddle.thickness_mode != OPERSTATUS::THICKNESS_DISABLED) {
+				OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_DISABLED;
+				thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
+			}
+			
+			// Force Disabled Not Compressed
+			if (OPERSTATUS::Registers.paddle.force_mode != OPERSTATUS::FORCE_DISABLED_NOT_COMPRESSED) {
+				OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_DISABLED_NOT_COMPRESSED;
+				forceStatus->BackgroundImage = FORCE_DISABLED_NOT_COMPRESSED_IMAGE;
+			}
+			
+			// The Lables shall not be showed because no data can be calculated
+			labelPaddle->Hide();
+			labelThickness->Hide();
+			labelForce->Hide();
+		}
+		else {
+			if (OPERSTATUS::Registers.paddle.compressor_mode != OPERSTATUS::COMPRESSOR_DETECTED) {
+				OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_DETECTED;
+				paddleStatus->BackgroundImage = COMPRESSOR_ENABLE_IMAGE;
+			}
+			
+
+			// Thickness Enabled
+			if (OPERSTATUS::Registers.paddle.thickness_mode != OPERSTATUS::THICKNESS_ENABLED) {
+				OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_ENABLED;
+				thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
+			}
+			
+			// Force Active
+			if (OPERSTATUS::Registers.paddle.force_mode != OPERSTATUS::FORCE_ENABLED) {
+				OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_ENABLED;
+				forceStatus->BackgroundImage = FORCE_ENABLED_IMAGE;
+			}
+
+			// The Lables shall not be showed because no data can be calculated
+			labelPaddle->Show();
+			labelThickness->Show();
+			labelForce->Show();
+			
+		}
+	}
+
+
+}
+void OperatingForm::evaluateCollimatorStatus(void) {
+	// Collimator Status option
+	//collimationStatus->BackgroundImage = COLLIMATION_IMAGE;
+}
+
+
+void OperatingForm::evaluateTubeStatus(void) {
+
+	// Cumulated max energy of the X-RAY tube
+	labelTubeData->Text = GantryStatusRegisters::TubeDataRegister::getCumulated().ToString() + " %";
+	
+
+	if (GantryStatusRegisters::TubeDataRegister::isAlarm() != OPERSTATUS::Registers.tube.alarm) {
+		OPERSTATUS::Registers.tube.alarm = GantryStatusRegisters::TubeDataRegister::isAlarm();
+		if (OPERSTATUS::Registers.tube.alarm) tubeStatus->BackgroundImage = TUBE_TEMP_NOK_IMAGE;
+		else tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
+	}
+}
+void OperatingForm::evaluateMagStatus(void) {
+	return;
+	// Magnification factor
+	OPERSTATUS::Registers.mag_factor = GantryStatusRegisters::ComponentRegister::getMagFactor();
+	magnifierStatus->BackgroundImage = MAGFACTOR_IMAGE;
+
+}
+void OperatingForm::evaluateDoorStatus(void) {
+	if (GantryStatusRegisters::SafetyStatusRegister::getCloseDoor() != OPERSTATUS::Registers.closed_door) {
+		OPERSTATUS::Registers.closed_door = GantryStatusRegisters::SafetyStatusRegister::getCloseDoor();
+
+		if (OPERSTATUS::Registers.closed_door) {
+			doorStatus->BackgroundImage = DOOR_CLOSED_IMAGE;
+			Notify::deactivate("DOOR_STUDY_OPEN_WARNING");
+		}
+		else {
+			doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
+			Notify::activate("DOOR_STUDY_OPEN_WARNING", false);
+		}
+	}
+	
 }
 
 void OperatingForm::operatingStatusManagement(void) {
 
-	DateTime date;
-	date = DateTime::Now;
-	
+	System::DateTime date;
+	date = System::DateTime::Now;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-
-	if (Errors::isError()) {
-		alarmButton->Show();
-	}else alarmButton->Hide();
-
-	if ((Errors::isNewError()) || (Errors::isUpdateError())) {
-		openErrorWindow(true);
-	}
-
+	evaluateXrayStatus();
+	evaluateLampStatus();
+	evaluateErrorStatus();
+	evaluateCompressorStatus();
+	evaluateCollimatorStatus();
+	evaluateTubeStatus();
+	evaluateMagStatus();
+	evaluateDoorStatus();
+	onArmPositionChangeCallback();
+	
+	
 }
 
 void OperatingForm::WndProc(System::Windows::Forms::Message% m)
@@ -252,24 +549,10 @@ void OperatingForm::WndProc(System::Windows::Forms::Message% m)
 	switch (m.Msg) {
 
 	case (WM_USER + 1): // onIdleTimeout
-		
+
 		operatingStatusManagement();
 		break;
 
-	case (WM_USER + 2): // onErrorTimeout
-		openErrorWindow(false);
-		break;
-	case (WM_USER + 3):
-
-		break;
-
-	case (WM_USER + 4):
-
-		break;
-
-	case (WM_USER + 5):
-
-		break;
 	}
 
 
@@ -277,65 +560,31 @@ void OperatingForm::WndProc(System::Windows::Forms::Message% m)
 }
 
 void OperatingForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	
-	openErrorWindow(true);
+	if(Notify::isError() || Notify::isWarning())	((ErrorForm^)pError)->open();
 }
 
-void OperatingForm::openErrorWindow(bool status) {
-	static bool local_status = false;
-	Translate::item^ msgit;
-	
-	// Stops the exit timer
-	errorPanelTimer->Stop();
-
-	// Closing condition
-	if ((status == false) && (local_status)) {
-		local_status = false;
-		mainPanel->Show();
-		errorPanel->Hide();		
-		return;
-	}
-
-	
-	// Set the new error in evidence 
-	Errors::item^ newitem = Errors::getCurrent();
-	if ((!Errors::isUpdateError()) && (local_status)) return;  // The panel is already open and no update on the error queue
-	Errors::clrUpdate();
-
-	local_status = true;
-	errorPanelTimer->Start();
-
-	if (newitem) {
-		msgit = Translate::getItem(newitem->errmsg);
-
-		errorTitle->Text = msgit->title;
-		errorId->Text = msgit->id;
-
-	}
+void OperatingForm::viewSelection_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (!OPERSTATUS::Registers.projectionSelected)	((ProjectionForm^)pProj)->open();
 	else {
-		errorTitle->Text = "";
-		errorId->Text = "";
+		((ConfirmationWindow^)pAbort)->setContentBackground(selectedIcon->BackgroundImage);
+		((ConfirmationWindow^)pAbort)->open();
 	}
+}
 
-	// Clear the Error content box
-	errorContent->Text = "";
-
-	// Set the Content space with the list of active errors
-	errorContent->Text = Errors::getListOfErrors();
-
-	// Clears the index of the last occurred error
-	Errors::clrNewError();
-
-	// Refresh the Error queue removing the one_shot flagged errors
-	Errors::clrOneShotErrors();
-
+void OperatingForm::onConfirmOk(void) {
+	((ProjectionForm^)pProj)->close();
+	ArmMotor::projectionRequest(((ProjectionForm^)pProj)->selectedProjection);
 	
-	mainPanel->Hide();
-	errorPanel->Show();
-
+}
+void OperatingForm::onConfirmCanc(void) {
+	((ProjectionForm^)pProj)->close();
 }
 
-void OperatingForm::buttonCanc_Click(System::Object^ sender, System::EventArgs^ e) {
-	openErrorWindow(false);
-}
+void OperatingForm::onAbortConfirmOk(void) {
+	((ConfirmationWindow^)pAbort)->close();
+	ArmMotor::abortProjectionRequest();
 
+}
+void OperatingForm::onAbortConfirmCanc(void) {
+	((ConfirmationWindow^)pAbort)->close();
+}

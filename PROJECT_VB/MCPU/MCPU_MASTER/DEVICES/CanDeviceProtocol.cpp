@@ -1,14 +1,15 @@
-#include "pch.h"
+#include "CanDriver.h"
 #include "CanDeviceProtocol.h"
 #include <thread>
 
-using namespace System;
+using namespace System::Diagnostics;
 using namespace System::Collections::Generic;
+
 
 CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
 
     // Gets the handler of the class instance to be used for the Post/Send message functions.
-    hwnd = static_cast<HWND>(Handle.ToPointer());
+    //hwnd = static_cast<HWND>(Handle.ToPointer());
     device_id = devid;
     rx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
@@ -35,7 +36,7 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
 
     // Creates the Startup thread
     main_thread = gcnew Thread(gcnew ThreadStart(this, &CanDeviceProtocol::mainWorker));
-    main_thread->Name = "DEVICE" + Convert::ToString(device_id);
+    main_thread->Name = "DEVICE" + System::Convert::ToString(device_id);
     main_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
     main_thread->Start();
 
@@ -108,7 +109,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     
     if(!tmo)  attempt++;
     if (attempt > 10) {
-        if(!tmo) Debug::WriteLine("Device Board <" + Convert::ToString(device_id) + ">: TMO");
+        if(!tmo) Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: TMO");
         tmo = true;
     }
 
@@ -137,7 +138,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
 void CanDeviceProtocol::mainWorker(void) {
 
 
-    Debug::WriteLine("Device Board <" + Convert::ToString(device_id) + ">: MAIN THREAD STARTED");
+    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: MAIN THREAD STARTED");
 
     while (1) {
 
@@ -150,7 +151,7 @@ void CanDeviceProtocol::mainWorker(void) {
             if (CanDriver::isConnected()) {
                 internal_status = status_options::WAITING_REVISION;
             }else{
-                std::this_thread::sleep_for(std::chrono::microseconds(500000));
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
             }            
             break;
         
@@ -168,17 +169,23 @@ void CanDeviceProtocol::mainWorker(void) {
                 break;
             }
 
-            std::this_thread::sleep_for(std::chrono::microseconds(500000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
             
             break;
 
         case status_options::DEVICE_CONFIGURATION: // Waits for the device configuration
-            std::this_thread::sleep_for(std::chrono::microseconds(500000));
-            internal_status = status_options::DEVICE_RUNNING;
+            if(configurationLoop()) internal_status = status_options::DEVICE_RUNNING;
+            else internal_status = status_options::DEVICE_ERROR;
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));            
             break;
 
         case status_options::DEVICE_RUNNING: // Device running
             runningLoop();
+            break;
+
+        case status_options::DEVICE_ERROR: // Device running
+            if(errorLoop()) internal_status = status_options::DEVICE_CONFIGURATION;
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
             break;
 
         } // Switch internal_status
@@ -189,4 +196,13 @@ void CanDeviceProtocol::mainWorker(void) {
 void CanDeviceProtocol::runningLoop(void) {
     std::this_thread::sleep_for(std::chrono::microseconds(500000));
     return;
+}
+
+bool CanDeviceProtocol::errorLoop(void) {    
+    std::this_thread::sleep_for(std::chrono::microseconds(500000));
+    return false;
+}
+bool CanDeviceProtocol::configurationLoop(void) {
+    std::this_thread::sleep_for(std::chrono::microseconds(500000));
+    return true;
 }

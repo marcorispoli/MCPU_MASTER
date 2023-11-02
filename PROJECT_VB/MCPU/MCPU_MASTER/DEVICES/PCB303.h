@@ -5,7 +5,7 @@ ref class PCB303 : public CanDeviceProtocol
 {
 public:
 
-#define GET_STATUS_SYSTEM_REGISTER (Byte) 0, (Byte) 4,(Byte) 0, (Byte) 0,(Byte) 0,(Byte) 0, (Byte) 0,(Byte) 0, false
+#define GET_STATUS_SYSTEM_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
 
 
 

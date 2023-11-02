@@ -1,0 +1,91 @@
+.TH "GantryStatusRegisters::PowerStatusRegister" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::PowerStatusRegister
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetBatteryData\fP (bool ena, bool batt1low, bool batt2low, unsigned char vbatt1, unsigned char vbatt2)"
+.br
+.ti -1c
+.RI "static void \fBgetBatteryData\fP (bool *ena, bool *batt1low, bool *batt2low, unsigned char *vbatt1, unsigned char *vbatt2)"
+.br
+.ti -1c
+.RI "static void \fBsetPowerdown\fP (bool stat)"
+.br
+.ti -1c
+.RI "static bool \fBgetPowerdown\fP (void)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBpower_down\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBbattery_enabled\fP = false"
+.br
+.RI "Battery enabled\&. "
+.ti -1c
+.RI "static bool \fBbatt1_low\fP = false"
+.br
+.RI "Low voltage of battery 1\&. "
+.ti -1c
+.RI "static bool \fBbatt2_low\fP = false"
+.br
+.RI "Low voltage of battery 2\&. "
+.ti -1c
+.RI "static unsigned char \fBvoltage_batt1\fP = 0"
+.br
+.RI "10 * voltage level of battery 1 "
+.ti -1c
+.RI "static unsigned char \fBvoltage_batt2\fP = 0"
+.br
+.RI "10 * voltage level of battery 2 "
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void GantryStatusRegisters::PowerStatusRegister::getBatteryData (bool * ena, bool * batt1low, bool * batt2low, unsigned char * vbatt1, unsigned char * vbatt2)\fC [static]\fP"
+
+.SS "bool GantryStatusRegisters::PowerStatusRegister::getPowerdown (void)\fC [static]\fP"
+
+.SS "void GantryStatusRegisters::PowerStatusRegister::setBatteryData (bool ena, bool batt1low, bool batt2low, unsigned char vbatt1, unsigned char vbatt2)\fC [static]\fP"
+
+.SS "void GantryStatusRegisters::PowerStatusRegister::setPowerdown (bool stat)\fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "bool GantryStatusRegisters::PowerStatusRegister::batt1_low = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Low voltage of battery 1\&. 
+.SS "bool GantryStatusRegisters::PowerStatusRegister::batt2_low = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Low voltage of battery 2\&. 
+.SS "bool GantryStatusRegisters::PowerStatusRegister::battery_enabled = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Battery enabled\&. 
+.SS "bool GantryStatusRegisters::PowerStatusRegister::power_down = false\fC [static]\fP, \fC [private]\fP"
+
+.SS "unsigned char GantryStatusRegisters::PowerStatusRegister::voltage_batt1 = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+10 * voltage level of battery 1 
+.SS "unsigned char GantryStatusRegisters::PowerStatusRegister::voltage_batt2 = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+10 * voltage level of battery 2 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -3,7 +3,7 @@
 ref class TiltMotor : public CANOPEN::CanOpenMotor
 {
 public:
-	TiltMotor(unsigned char devid);
+	TiltMotor(void);
 
 
 };

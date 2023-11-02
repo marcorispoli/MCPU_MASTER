@@ -1,5 +1,4 @@
-#include "pch.h"
-
+#include "Translate.h"
 
 typedef struct {
 	char* key;
@@ -48,7 +47,7 @@ static const char* DEFAULT_ARRAY[] = {
 #define CONTENT 4
 #define ITEMLEN 5 
 
-void Translate::setLanguage(String^ language){
+void Translate::setLanguage(System::String^ language){
 
 	const char** pLanguage;
 
@@ -60,25 +59,25 @@ void Translate::setLanguage(String^ language){
 	else if (language == "RUS")  pLanguage = RUS_ARRAY;
 	else pLanguage = DEFAULT_ARRAY;
 
-	dictionary = gcnew Dictionary<String^, item^>();
+	dictionary = gcnew Dictionary<System::String^, item^>();
 
 	int i = 0;
 	while (1) {
 		
-		if (gcnew String(pLanguage[i]) == "LAST") break;
+		if (gcnew System::String(pLanguage[i]) == "LAST") break;
 		try
 		{
 			item^ it = gcnew item(
-				gcnew String(pLanguage[i+CONTEST]),
-				gcnew String(pLanguage[i+ ID]),
-				gcnew String(pLanguage[i+ TITLE]),
-				gcnew String(pLanguage[i + CONTENT])
+				gcnew System::String(pLanguage[i+CONTEST]),
+				gcnew System::String(pLanguage[i+ ID]),
+				gcnew System::String(pLanguage[i+ TITLE]),
+				gcnew System::String(pLanguage[i + CONTENT])
 				);
 
-			dictionary->Add(gcnew String(pLanguage[i+KEY]), it);
+			dictionary->Add(gcnew System::String(pLanguage[i+KEY]), it);
 			
 		}
-		catch (Exception^ ArgumentException)
+		catch (System::Exception^ ArgumentException)
 		{
 			
 		}
@@ -88,7 +87,7 @@ void Translate::setLanguage(String^ language){
 	
 };
 
-String^ Translate::title(String^ key) {
+System::String^ Translate::title(System::String^ key) {
 	item^ it;
 	if (dictionary == nullptr) return key;
 
@@ -96,14 +95,14 @@ String^ Translate::title(String^ key) {
 	{
 		it = dictionary[key];
 	}
-	catch (Exception^ KeyNotFoundException)
+	catch (System::Exception^ KeyNotFoundException)
 	{
 		return key;
 	}
 
 	return it->title;
 }
-String^ Translate::content(String^ key) {
+System::String^ Translate::content(System::String^ key) {
 	item^ it;
 	if (dictionary == nullptr) return key;
 
@@ -111,7 +110,7 @@ String^ Translate::content(String^ key) {
 	{
 		it = dictionary[key];
 	}
-	catch (Exception^ KeyNotFoundException)
+	catch (System::Exception^ KeyNotFoundException)
 	{
 		return key;
 	}
@@ -119,7 +118,7 @@ String^ Translate::content(String^ key) {
 	return it->content;
 }
 
-String^ Translate::id(String^ key) {
+System::String^ Translate::id(System::String^ key) {
 	item^ it;
 	if (dictionary == nullptr) return key;
 
@@ -127,7 +126,7 @@ String^ Translate::id(String^ key) {
 	{
 		it = dictionary[key];
 	}
-	catch (Exception^ KeyNotFoundException)
+	catch (System::Exception^ KeyNotFoundException)
 	{
 		return key;
 	}
@@ -136,7 +135,7 @@ String^ Translate::id(String^ key) {
 }
 
 
-Translate::item^ Translate::getItem(String^ key) {
+Translate::item^ Translate::getItem(System::String^ key) {
 	item^ it;
 	if (dictionary == nullptr) return nullptr;
 
@@ -144,7 +143,7 @@ Translate::item^ Translate::getItem(String^ key) {
 	{
 		it = dictionary[key];
 	}
-	catch (Exception^ KeyNotFoundException)
+	catch (System::Exception^ KeyNotFoundException)
 	{
 		return nullptr;
 	}

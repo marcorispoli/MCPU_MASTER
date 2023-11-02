@@ -76,11 +76,11 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
@@ -118,11 +118,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -137,8 +137,15 @@
   <ItemGroup>
     <ClInclude Include="AWS\awsProtocol.h" />
     <ClInclude Include="AWS\TcpIpServerCLI.h" />
+    <ClInclude Include="CONFIGURATION\CalibrationConfig.h" />
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
     <ClInclude Include="CONFIGURATION\SystemConfig.h" />
+    <ClInclude Include="DEVICES\PCB326.h" />
+    <ClInclude Include="MOTORS\ArmMotor.h" />
+    <ClInclude Include="MOTORS\VerticalMotor.h" />
+    <ClInclude Include="WINDOWS\ConfirmationWindow.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="DEVICES\CanDeviceProtocol.h" />
     <ClInclude Include="DEVICES\PCB301.h" />
     <ClInclude Include="DEVICES\PCB302.h" />
@@ -176,9 +183,11 @@
     <ClInclude Include="MOTORS\CanOpenMotor.h" />
     <ClInclude Include="MOTORS\pd4_od.h" />
     <ClInclude Include="MOTORS\TiltMotor.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="VSCAN\CanDriver.h" />
+    <ClInclude Include="WINDOWS\ErrorForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\IdleForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -188,12 +197,19 @@
     <ClInclude Include="WINDOWS\OperatingForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WINDOWS\Projections.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="AWS\awsProtocol.cpp" />
     <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
     <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
+    <ClCompile Include="DEVICES\PCB326.cpp" />
+    <ClCompile Include="MOTORS\ArmMotor.cpp" />
+    <ClCompile Include="MOTORS\VerticalMotor.cpp" />
+    <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
     <ClCompile Include="DEVICES\CanDeviceProtocol.cpp" />
     <ClCompile Include="DEVICES\PCB301.cpp" />
@@ -217,16 +233,12 @@
     <ClCompile Include="MESSAGES\Errors.cpp" />
     <ClCompile Include="MOTORS\CanOpenMotor.cpp" />
     <ClCompile Include="MOTORS\TiltMotor.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="VSCAN\CanDriver.cpp" />
+    <ClCompile Include="WINDOWS\ErrorForm.cpp" />
     <ClCompile Include="WINDOWS\IdleForm.cpp" />
     <ClCompile Include="WINDOWS\MainForm.cpp" />
     <ClCompile Include="WINDOWS\OperatingForm.cpp" />
+    <ClCompile Include="WINDOWS\Projections.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
@@ -246,9 +258,18 @@
     <None Include="DOC\mcpu_master_doxy" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="WINDOWS\ConfirmationWindow.resx">
+      <DependentUpon>WINDOWS\ConfirmationWindow.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\ErrorForm.resx">
+      <DependentUpon>WINDOWS\ErrorForm.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\IdleForm.resx" />
     <EmbeddedResource Include="WINDOWS\MainForm.resx" />
     <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />
+    <EmbeddedResource Include="WINDOWS\Projections.resx">
+      <DependentUpon>WINDOWS\Projections.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

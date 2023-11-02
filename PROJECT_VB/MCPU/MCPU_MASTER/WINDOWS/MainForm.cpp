@@ -1,5 +1,24 @@
-#include "pch.h"
+#include "gantry_global_status.h"
+#include "mainForm.h"
+#include "operatingForm.h"
+#include "idleForm.h"
+#include "awsProtocol.h"
 
+#include "SystemConfig.h"
+
+#include "CanOpenMotor.h"
+#include "TiltMotor.h"
+#include "ArmMotor.h"
+#include "VerticalMotor.h"
+
+#include "CanDriver.h"
+#include "PCB301.h"
+#include "PCB302.h"
+#include "PCB303.h"
+#include "PCB304.h"
+#include "PCB315.h"
+#include "PCB326.h"
+#include "Generator.h"
 
 
 using namespace CppCLRWinFormsProject;
@@ -30,10 +49,11 @@ void MainForm::MainFormInitialize(void) {
 	labelFW301->Text = "FW301 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW301];
 	labelFW302->Text = "FW302 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW302];
 	labelFW303->Text = "FW303 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW303];
-	labelFW304->Text = "FW302 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW304];
-	labelFW315->Text = "FW302 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW315];
-	labelCanDriver->Text = "FW302 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWCAN];
-	labelGeneratorRevision->Text = "FW302 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWGEN];
+	labelFW304->Text = "FW304 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW304];
+	labelFW315->Text = "FW315 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW315];
+	labelFW326->Text = "FW326 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW326];
+	labelCanDriver->Text = "CAN REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWCAN];
+	labelGeneratorRevision->Text = "SFHD REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWGEN];
 
 
 	// Initialize the Activities
@@ -42,8 +62,10 @@ void MainForm::MainFormInitialize(void) {
 	labelPcb303Activity->Text = "Waiting ..";
 	labelPcb304Activity->Text = "Waiting ..";
 	labelPcb315Activity->Text = "Waiting ..";
+	labelPcb326Activity->Text = "Waiting ..";
 	labelCanDriverActivity->Text = "Waiting ..";
 	labelGeneratorActivity->Text = "Waiting ..";
+	labelShActivity->Text = "Waiting ..";
 
 	labelMotorArmActivity->Text = "Waiting ..";
 	labelMotorTiltActivity->Text = "Waiting ..";
@@ -275,13 +297,47 @@ bool MainForm::Startup_PCB315(void) {
 	return false;
 }
 
+bool MainForm::Startup_PCB326(void) {
+	switch (startupSubFase) {
+
+	case 0: // Creates the PCB315 process
+		labelPcb326Activity->Text = "CONNECTION ..";
+		StartupLogMessages->Text += "> pcb326 initialization ..\n";
+		GlobalObjects::pFw326 = gcnew PCB326();
+		startupSubFase++;
+		break;
+
+	case 1: // Wait the connection and configuration
+		if (pFW326->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+			labelPcb326Activity->Text = "CONFIGURATION ..";
+			StartupLogMessages->Text += "> pcb326 firmware revision: ";
+			StartupLogMessages->Text += " BOOT:" + pFW326->getBootStatus() + ", REV:" + pFW326->getBootRevision();
+			StartupLogMessages->Text += " APP:" + pFW326->getAppRevision();
+			StartupLogMessages->Text += "\n";
+			startupSubFase++;
+		}
+		break;
+
+	case 2: // Wait the connection and configuration		
+		if (pFW326->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+			labelPcb326Activity->Text = "CONNECTED AND RUNNING";
+			labelPcb326Activity->ForeColor = Color::LightGreen;
+			return true;
+		}
+
+		break;
+
+	}
+	return false;
+}
+
 bool MainForm::Startup_MotorBody(void) {
 	switch (startupSubFase) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorBodyActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Body initialization ..\n";
-		GlobalObjects::pMotBody = gcnew CanOpenMotor(CANOPEN::BODY_ID, L"MOTOR_BODY", 453.2);
+		GlobalObjects::pMotBody = gcnew CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", 453.2);
 		startupSubFase++;
 		break;
 
@@ -322,7 +378,7 @@ bool MainForm::Startup_MotorTilt(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorTiltActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Tilt initialization ..\n";
-		GlobalObjects::pMotTilt = gcnew TiltMotor(CANOPEN::TILT_ID);
+		GlobalObjects::pMotTilt = gcnew TiltMotor();
 		startupSubFase++;
 		break;
 
@@ -364,7 +420,7 @@ bool MainForm::Startup_MotorArm(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorArmActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Arm initialization ..\n";
-		GlobalObjects::pMotArm = gcnew CanOpenMotor(CANOPEN::ARM_ID, L"MOTOR_ARM", 453.2);
+		GlobalObjects::pMotArm = gcnew ArmMotor();
 		startupSubFase++;
 		break;
 
@@ -446,7 +502,7 @@ bool MainForm::Startup_MotorVertical(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorUpDownActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Up/Down initialization ..\n";
-		GlobalObjects::pMotVert = gcnew CanOpenMotor(0x7, L"MOTOR_VERTICAL", 453.2);
+		GlobalObjects::pMotVert = gcnew VerticalMotor();
 		startupSubFase++;
 		break;
 
@@ -485,13 +541,16 @@ bool MainForm::Startup_Generator(void) {
 	switch (startupSubFase) {
 
 	case 0: // Smart Hub Connection
-		labelGeneratorActivity->Text = "WAIT SMART HUB CONNECTION..";
+		labelShActivity->Text = "WAIT SMART HUB CONNECTION..";
 		StartupLogMessages->Text += "> Generator: connection with SH ..\n";
 		startupSubFase++;
 		break;
 
 	case 1: // Wait Generator connection
 		if (!pGENERATOR->isSmartHubConnected()) break;
+		labelShActivity->Text = "CONNECTED AND RUNNING";
+		labelShActivity->ForeColor = Color::LightGreen;
+
 		labelGeneratorActivity->Text = "WAIT GENERATOR CONNECTION..";
 		StartupLogMessages->Text += "> Generator: connection with generator ..\n";
 		startupSubFase++;
@@ -531,11 +590,8 @@ void MainForm::StartupProcedure(void) {
 		startupTimer->Stop();
 		this->Hide();
 
-
-		//pIDLEFORM->initIdleStatus();
-		//pIDLEFORM->Show();				
-		pOPERFORM->initOperatingStatus();
-		pOPERFORM->Show();
+		// Opens the Idle
+		pIDLEFORM->open();
 		return;
 	}
 
@@ -547,13 +603,14 @@ void MainForm::StartupProcedure(void) {
 	case 3: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
 	case 4: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
 	case 5: if (Startup_PCB315()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
-	case 6: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 7: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 8: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 9: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 10: if (Startup_MotorVertical()) { startupFase+=2; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 11: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
-	case 12:
+	case 6: if (Startup_PCB326()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
+	case 7: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 8: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 9: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 10: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 11: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 12: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
+	case 13:
 
 		// Creates thw AWS
 		GlobalObjects::pAws = gcnew awsProtocol(
@@ -564,7 +621,7 @@ void MainForm::StartupProcedure(void) {
 		startupFase++; startupSubFase = 0;
 		break;
 
-	case 13:
+	case 14:
 		startupCompleted = true;
 		break;
 
@@ -574,10 +631,7 @@ void MainForm::WndProc(System::Windows::Forms::Message% m)
 {
 	switch (m.Msg) {
 
-	case (WM_USER + 1): // onStartupTimeout
-		//pIDLEFORM->Show();
-		//this->Hide();
-		//startupTimer->Stop();
+	case (WM_USER + 1): // onStartupTimeout		
 		StartupProcedure();
 		break;
 

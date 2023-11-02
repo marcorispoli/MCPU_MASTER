@@ -4,7 +4,7 @@ ref class PCB301 :  public CanDeviceProtocol
 {
 public:
 	
-	#define GET_STATUS_SYSTEM_REGISTER (Byte) 0, (Byte) 4,(Byte) 0, (Byte) 0,(Byte) 0,(Byte) 0, (Byte) 0,(Byte) 0, false
+	#define GET_STATUS_SYSTEM_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
 	#define GET_SYSTEM_BATTENA(d0,d1,d2,d3) (bool) (d0 & 0x80)
 	#define GET_SYSTEM_BATT1LOW(d0,d1,d2,d3) (bool) (d0 & 0x20)
 	#define GET_SYSTEM_BATT2LOW(d0,d1,d2,d3) (bool) (d0 & 0x40)
@@ -12,7 +12,7 @@ public:
 	#define GET_SYSTEM_CLOSEDOOR(d0,d1,d2,d3) (bool) (d2 & 0x10)
 
 
-	#define GET_STATUS_BATTERY_REGISTER (Byte) 0, (Byte) 4,(Byte) 0, (Byte) 0,(Byte) 0,(Byte) 0, (Byte) 0,(Byte) 0, false
+	#define GET_STATUS_BATTERY_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
 	#define GET_BATTERY_VBATT1(d3,d4,d5,d6) (unsigned char) (d3)
 	#define GET_BATTERY_VBATT2(d3,d4,d5,d6) (unsigned char) (d4)
 

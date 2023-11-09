@@ -118,26 +118,25 @@ private: System::Void InitializeComponent() {
 	// 
 	this->errorId->AutoSize = true;
 	this->errorId->BackColor = System::Drawing::Color::Transparent;
-	this->errorId->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 27.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+	this->errorId->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 24, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(0)));
-	this->errorId->Location = System::Drawing::Point(247, 169);
+	this->errorId->Location = System::Drawing::Point(175, 153);
 	this->errorId->Name = L"errorId";
-	this->errorId->Size = System::Drawing::Size(154, 42);
+	this->errorId->Size = System::Drawing::Size(132, 37);
 	this->errorId->TabIndex = 18;
 	this->errorId->Text = L"E00001";
 	// 
 	// errorTitle
 	// 
-	this->errorTitle->AutoSize = true;
 	this->errorTitle->BackColor = System::Drawing::Color::Transparent;
 	this->errorTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(0)));
-	this->errorTitle->Location = System::Drawing::Point(249, 226);
+	this->errorTitle->Location = System::Drawing::Point(35, 241);
 	this->errorTitle->Name = L"errorTitle";
-	this->errorTitle->Size = System::Drawing::Size(256, 29);
+	this->errorTitle->Size = System::Drawing::Size(525, 29);
 	this->errorTitle->TabIndex = 19;
 	this->errorTitle->Text = L"Xray Push Button Error";
-	this->errorTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+	this->errorTitle->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 	// 
 	// errorContent
 	// 
@@ -156,11 +155,10 @@ private: System::Void InitializeComponent() {
 	// 
 	// notifyIcon
 	// 
-	this->notifyIcon->BackColor = System::Drawing::Color::Black;
 	this->notifyIcon->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-	this->notifyIcon->Location = System::Drawing::Point(40, 137);
+	this->notifyIcon->Location = System::Drawing::Point(40, 122);
 	this->notifyIcon->Name = L"notifyIcon";
-	this->notifyIcon->Size = System::Drawing::Size(160, 145);
+	this->notifyIcon->Size = System::Drawing::Size(109, 103);
 	this->notifyIcon->TabIndex = 21;
 	// 
 	// ErrorForm
@@ -204,7 +202,11 @@ private: System::Void InitializeComponent() {
 
 	private: System::Void onErrorTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{
-		SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+		
+		if (!SendNotifyMessageA(window, WM_USER + 1, 0, 0)) {
+			int val = GetLastError();
+			System::Diagnostics::Debug::WriteLine("CAN OPEN ATTEMPT: " + System::Convert::ToString(val));
+		}
 	}
 
 	private: System::Void CancButton_Click(System::Object^ sender, System::EventArgs^ e);

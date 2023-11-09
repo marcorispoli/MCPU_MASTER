@@ -12,6 +12,8 @@
 "ERROR", "E00010", "BATTERY_LOW_ERROR", "System Power Monitoring", "Battery voltage monitoring error!\nThe battery voltage level is too low.",
 "ERROR", "E00011", "GENERATOR_ERROR_SH", "Generator Status", "Smart Hub not connected",
 "ERROR", "E00012", "GENERATOR_ERROR_GEN", "Generator Status", "Generator device not connected",
+"ERROR", "E00013", "FILTER_OUT_OF_POSITION", "Filter Out Of Position", "Repeat the command to select a valid filter position.",
+"ERROR", "E00014", "COLLIMATOR_OUT_OF_POSITION", "Collimator Out Of Position", "Error in setting the collimation format.\nCheck the collimator functionality.",
 
 
 /* -------- WARNINGS ---------------------------*/
@@ -25,6 +27,7 @@
 "WARNING", "W00008", "DOOR_STUDY_OPEN_WARNING", "Safety Monitoring", "The Study's door is detected Open.",
 "WARNING", "W00010", "GENERATOR_INIT_WARNING", "Generator Status Monitoring", "The Generator device is not ready for exposures.",
 "WARNING", "W00011", "TUBE_TEMP_WARNING", "X-Ray Tube Monitoring", "The X-Ray Tube cumulated energy is too high",
+"WARNING", "W00012", "COLLI_LIGHT_ACTIVATION_WARNING", "Collimator Light Command Failed", "The Collimation Light cannot be activated now.\nTry again.",
 
 /* -------- INFO ---------------------------*/
 

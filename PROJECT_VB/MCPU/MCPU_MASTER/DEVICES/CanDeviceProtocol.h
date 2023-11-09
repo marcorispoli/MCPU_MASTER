@@ -7,13 +7,45 @@ using namespace System::Threading;
 ref class CanDeviceProtocol //: public System::Windows::Forms::Form
 {
 public:
-	
+
+	/// <summary>
+	/// This is the command Code of the protocol frames
+	/// 
+	/// </summary>
+	enum class ProtocolFrameCode {
+		FRAME_READ_REVISION = 1,//!< Read Revision register frame command code
+		FRAME_READ_ERRORS,//!< Read Error register frame command code
+		FRAME_READ_COMMAND,//!< Read Command register frame command code
+		FRAME_READ_STATUS,//!< Read Status register frame command code
+		FRAME_READ_DATA,//!< Read Data register frame command code
+		FRAME_READ_PARAM,//!< Read Parameter register frame command code
+		FRAME_WRITE_DATA,//!< Write Data register frame command code
+		FRAME_WRITE_PARAM,//!< Write Parameter register frame command code
+		FRAME_STORE_PARAMS,//!< Store Parameters register frame command code
+		FRAME_COMMAND_EXEC,//!< Execute Command frame command code
+	};
+
 	// Bootloader commands
 	#define GET_BOOTLOADER_INFO (System::Byte) 0x1, (System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,true
+	#define GET_COMMAND_REGISTER (System::Byte) 0, (System::Byte) 3,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,false
 
+	enum class CommandRegisterStatus {
+		COMMAND_EXECUTING = 1,
+		COMMAND_TERMINATED,
+		COMMAND_ERROR,
+	};
+
+	enum class CommandRegisterErrors {
+		COMMAND_NO_ERROR = 0,
+		COMMAND_ERROR_BUSY,
+		COMMAND_ERROR_INVALID_PARAM,
+		COMMAND_ERROR_MOMENTARY_DISABLED,
+		COMMAND_DEVICE_TMO = 255
+	};
 
 	ref class CanDeviceRegister {
 	public:
+
 		CanDeviceRegister(void) {						
 			bootloader = false;
 		}
@@ -120,10 +152,17 @@ public:
 	inline System::String^ getAppRevision(void) { return app_maj.ToString() + "." + app_min.ToString() + "." + app_sub.ToString(); }
 	inline System::String^ getBootStatus(void) { return bootloader_status_tags[ (int) bootloader_status]; }
 	
+	// Command execution section
+	bool command(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo);
+	bool isCommandCompleted(void);
+	bool isCommandError(void) { return (command_error != (unsigned char) CommandRegisterErrors::COMMAND_NO_ERROR); }
+	
 protected:
 	virtual void runningLoop(void) ;
 	virtual bool errorLoop(void);
 	virtual bool configurationLoop(void);
+
+
 private:
 
 	//bool blocking_write(unsigned short index, unsigned char sub, unsigned char dim, int val);
@@ -131,7 +170,7 @@ private:
 	
 	Thread^ main_thread;
 	void mainWorker(void);
-
+	void InternalRunningLoop(void);
 
 	HWND hwnd;
 	unsigned short device_id;
@@ -156,6 +195,19 @@ private:
 	bool tmo;
 	bool rxOk;
 	int attempt;
+
+	// Command execution section
+	bool		  command_executing;
+	int			  command_tmo; // 100ms timeout
+	unsigned char command_code;
+	unsigned char command_d0;
+	unsigned char command_d1;
+	unsigned char command_d2;
+	unsigned char command_d3;
+	unsigned char command_ris0;
+	unsigned char command_ris1;
+	unsigned char command_error;
+
 
 };
 

@@ -2,6 +2,8 @@
 #include "../gantry_global_status.h"
 #include "awsProtocol.h"
 #include "ArmMotor.h"
+#include "PCB315.h"
+#include "PCB303.h"
 
 using namespace GantryStatusRegisters;
 using namespace System::Diagnostics;
@@ -743,9 +745,9 @@ void   awsProtocol::GET_TubeTemperature(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(TubeDataRegister::getAnode().ToString());
-    lista->Add(TubeDataRegister::getBulb().ToString());
-    lista->Add(TubeDataRegister::getStator().ToString());
+    lista->Add(PCB315::getAnode().ToString());
+    lista->Add(PCB315::getBulb().ToString());
+    lista->Add(PCB315::getStator().ToString());
 
     ackOk(lista);
     return;
@@ -907,20 +909,52 @@ void awsProtocol::exposureSequenceCompletedCallback(void) {
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
-    Debug::WriteLine("EXEC_TestCommand: ARM ACTIVATION");
+    Debug::WriteLine("EXEC_TestCommand: COLLIMATION");
 
-    if (pDecodedFrame->parameters->Count == 4) {
-        // 1 parameter command
-        int ctarget = Convert::ToInt16(pDecodedFrame->parameters[0]);
-        int cspeed = Convert::ToInt16(pDecodedFrame->parameters[1]);
-        int cacc = Convert::ToInt16(pDecodedFrame->parameters[2]);
-        int cdec = Convert::ToInt16(pDecodedFrame->parameters[3]);
+    if (pDecodedFrame->parameters->Count == 1) {
+        if (pDecodedFrame->parameters[0] == "OPEN") {
+            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
+            pFW303->setOpenCollimationMode();
+            ackOk();
+            return;
+        }else if(pDecodedFrame->parameters[0] == "AUTO") {
+            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
+            pFW303->setAutoCollimationMode();
+            ackOk();
+            return;
+        }else if (pDecodedFrame->parameters[0] == "STANDARD1") {
+            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
+            pFW303->setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD1);            
+            ackOk();
+            return;
+        }else if (pDecodedFrame->parameters[0] == "STANDARD2") {
+            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
+            pFW303->setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD2);
+            ackOk();
+            return;
+        }else if (pDecodedFrame->parameters[0] == "STANDARD3") {
+            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
+            pFW303->setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD3);
+            ackOk();
+            return;
+        }
 
-        pMARM->activateAutomaticPositioning(10, ctarget, 1000, 200, 200,true);
-        ackOk();
-        return;
+        
+        
+    }
+    else
+    {
+        if (pDecodedFrame->parameters[0] == "CALIB") {
+            unsigned short front = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
+            unsigned short back = System::Convert::ToUInt16(pDecodedFrame->parameters[2]);
+            unsigned short left = System::Convert::ToUInt16(pDecodedFrame->parameters[3]);
+            unsigned short right = System::Convert::ToUInt16(pDecodedFrame->parameters[4]);            
+            unsigned short trap = System::Convert::ToUInt16(pDecodedFrame->parameters[5]);
+            pFW303->setCalibrationCollimationMode(gcnew PCB303::formatBlades(front, back, left, right, trap));
+            ackOk();
+            return;
+        }
     }
 
-    
     return;
 }

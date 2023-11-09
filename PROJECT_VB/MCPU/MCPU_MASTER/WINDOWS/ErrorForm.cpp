@@ -5,6 +5,7 @@
 #define FORM_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Windows\\ErrorFormBackground.PNG")
 #define ERROR_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\error.PNG")
 #define WARNING_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\warning.PNG")
+#define INFO_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info.PNG")
 
 // Error Window timeout
 #define ERROR_WINDOW_TMO	15000
@@ -55,26 +56,30 @@ void ErrorForm::open(void) {
 	errorPanelTimer->Stop();
 	errorPanelTimer->Start();
 
-	// Sete the ICON
-	if (Notify::isError()) {
-		notifyIcon->BackgroundImage = ERROR_IMAGE;
-	}else notifyIcon->BackgroundImage = WARNING_IMAGE;
-
+	// Sets the new error in evidence 
 	Translate::item^ msgit;
-
-	// Set the new error in evidence 
 	Notify::item^ newitem = Notify::getCurrent();
 	
 	if (newitem) {
 		msgit = Translate::getItem(newitem->msg);
 		errorTitle->Text = msgit->title;
 		errorId->Text = msgit->id;
+
+		// Sete the ICON based on thelast error or warnings
+		if(msgit->isError()) notifyIcon->BackgroundImage = ERROR_IMAGE;
+		else if (msgit->isWarning()) notifyIcon->BackgroundImage = WARNING_IMAGE;
+		else notifyIcon->BackgroundImage = INFO_IMAGE;
 	}
 	else {
 		errorTitle->Text = "";
 		errorId->Text = "";
-	}
 
+		// Sete the ICON based on the current error or warnings
+		if (Notify::isError()) notifyIcon->BackgroundImage = ERROR_IMAGE;
+		else if (Notify::isWarning()) notifyIcon->BackgroundImage = WARNING_IMAGE;
+		else notifyIcon->BackgroundImage = INFO_IMAGE;
+
+	}
 
 	// Set the Content space with the list of active errors
 	errorContent->Text = Notify::getListOfErrors();
@@ -85,6 +90,7 @@ void ErrorForm::open(void) {
 	// Refresh the Error queue removing the one_shot flagged errors
 	Notify::clrOneShotErrors();
 	this->ShowDialog(parent);
+	window = static_cast<HWND>(Handle.ToPointer());
 }
 
 

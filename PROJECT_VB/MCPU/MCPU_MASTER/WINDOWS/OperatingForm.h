@@ -92,11 +92,10 @@ public:
 
 		void operatingStatusManagement(void);
 		void evaluateXrayStatus(void);
-		void evaluateLampStatus(void);
 		void evaluateErrorStatus(void);
 		void evaluateCompressorStatus(void);
 		void evaluateCollimatorStatus(void);
-		void evaluateTubeStatus(void);
+		
 		void evaluateMagStatus(void);
 		void evaluateDoorStatus(void);
 
@@ -104,6 +103,9 @@ public:
 		void onArmTargetChangedCallback(int id, int target);
 		void onArmAbortTargetCallback(void);
 		void onArmPositionChangeCallback(void);
+
+		// Command flags
+		bool collimator_light_activation;
 
 public:
 	OperatingForm(void)
@@ -304,6 +306,7 @@ private:
 		this->lampButton->Name = L"lampButton";
 		this->lampButton->Size = System::Drawing::Size(105, 105);
 		this->lampButton->TabIndex = 21;
+		this->lampButton->Click += gcnew System::EventHandler(this, &OperatingForm::lampButton_Click);
 		// 
 		// projSelection
 		// 
@@ -492,7 +495,9 @@ private:
 	}
 
 
+	private: System::Void lampButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void viewSelection_Click(System::Object^ sender, System::EventArgs^ e);
+
 };
 

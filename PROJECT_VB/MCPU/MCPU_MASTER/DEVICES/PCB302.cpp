@@ -5,7 +5,7 @@
 
 void PCB302::runningLoop(void) {
 
-    while (!send(GET_STATUS_SYSTEM_REGISTER));
+    while (!send(PCB302_GET_STATUS_SYSTEM_REGISTER));
 
     std::this_thread::sleep_for(std::chrono::microseconds(10000));
 

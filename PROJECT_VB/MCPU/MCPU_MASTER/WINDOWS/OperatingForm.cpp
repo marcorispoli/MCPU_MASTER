@@ -5,7 +5,7 @@
 #include "Projections.h"
 #include "ConfirmationWindow.h"
 #include "ArmMotor.h"
-
+#include "../DEVICES/PCB315.h"
 
 #define PROJ_SELCTION_BACKGROUND_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ProjSelectionButton.PNG")
 
@@ -15,6 +15,7 @@
 #define XRAY_READY_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\XReady.PNG")
 
 #define LAMP_OFF_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\LampOff.PNG")
+#define LAMP_ON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\LampOn.PNG")
 
 #define WARNING_BUTTON_ON Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\WarningOn.PNG")
 #define ERROR_BUTTON_ON Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\AlarmOn.PNG")
@@ -77,12 +78,12 @@ namespace OPERSTATUS {
 
 	typedef struct {
 
-		unsigned char anode;
-		unsigned char stator;
-		unsigned char bulb;
-		bool alarm;
-
-	}tubeStatus;
+		unsigned char	anode;
+		unsigned char	stator;
+		unsigned char	bulb;
+		bool			tube_alarm;
+		bool			light_on;
+	}collimatorStatus;
 
 	typedef struct {
 		compressor_mode_t	compressor_mode;
@@ -98,11 +99,10 @@ namespace OPERSTATUS {
 
 	static struct {
 		paddleStatus paddle;
-		tubeStatus	tube;
+		collimatorStatus collimator;
 		xray_status_t xray_status;
 
 		bool closed_door;		
-		bool colli_lamp;
 		unsigned char currentPanel;
 		bool alarm;
 		bool warning;
@@ -158,7 +158,7 @@ void OperatingForm::formInitialization(void) {
 	xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
 
 	// Sets the current lamp status
-	OPERSTATUS::Registers.colli_lamp = false;
+	OPERSTATUS::Registers.collimator.light_on= false;
 	lampButton->BackgroundImage = LAMP_OFF_IMAGE;
 
 	// Error Button
@@ -182,10 +182,10 @@ void OperatingForm::formInitialization(void) {
 	collimationStatus->BackgroundImage = COLLIMATION_IMAGE;
 
 	// Tube Status
-	OPERSTATUS::Registers.tube.bulb = 0;
-	OPERSTATUS::Registers.tube.stator = 0;
-	OPERSTATUS::Registers.tube.anode = 0;
-	OPERSTATUS::Registers.tube.alarm = false;
+	OPERSTATUS::Registers.collimator.bulb = 0;
+	OPERSTATUS::Registers.collimator.stator = 0;
+	OPERSTATUS::Registers.collimator.anode = 0;
+	OPERSTATUS::Registers.collimator.tube_alarm = false;
 	tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
 
 	// Door Status 
@@ -211,6 +211,8 @@ void OperatingForm::formInitialization(void) {
 	
 	this->Hide();
 	open_status = false;
+
+	collimator_light_activation = false;
 }
 
 void OperatingForm::initOperatingStatus(void) {
@@ -301,12 +303,6 @@ void OperatingForm::evaluateXrayStatus(void) {
 	}
 
 }
-void OperatingForm::evaluateLampStatus(void) {
-	// Sets the current lamp status
-	//OPERSTATUS::Registers.colli_lamp = false;
-	//lampButton->BackgroundImage = LAMP_OFF_IMAGE;
-
-}
 void OperatingForm::evaluateErrorStatus(void) {
 	static bool cmp_force_error = false;
 
@@ -376,6 +372,9 @@ void OperatingForm::evaluateErrorStatus(void) {
 		}
 
 	}
+
+	// One Shot events
+	if(Notify::isOneShot()) ((ErrorForm^)pError)->open();
 
 	
 }
@@ -485,23 +484,26 @@ void OperatingForm::evaluateCompressorStatus(void) {
 
 }
 void OperatingForm::evaluateCollimatorStatus(void) {
-	// Collimator Status option
-	//collimationStatus->BackgroundImage = COLLIMATION_IMAGE;
-}
-
-
-void OperatingForm::evaluateTubeStatus(void) {
-
-	// Cumulated max energy of the X-RAY tube
-	labelTubeData->Text = GantryStatusRegisters::TubeDataRegister::getCumulated().ToString() + " %";
 	
 
-	if (GantryStatusRegisters::TubeDataRegister::isAlarm() != OPERSTATUS::Registers.tube.alarm) {
-		OPERSTATUS::Registers.tube.alarm = GantryStatusRegisters::TubeDataRegister::isAlarm();
-		if (OPERSTATUS::Registers.tube.alarm) tubeStatus->BackgroundImage = TUBE_TEMP_NOK_IMAGE;
+	// Sets the current lamp status
+	if (PCB315::getPowerLightStatus() != OPERSTATUS::Registers.collimator.light_on) {
+		OPERSTATUS::Registers.collimator.light_on = PCB315::getPowerLightStatus();
+		if(OPERSTATUS::Registers.collimator.light_on) lampButton->BackgroundImage = LAMP_ON_IMAGE;
+		else lampButton->BackgroundImage = LAMP_OFF_IMAGE;
+	}
+
+
+	// Cumulated max energy of the X-RAY tube
+	labelTubeData->Text = PCB315::getTubeMaxCumulated().ToString() + " %";
+
+	if (PCB315::isTubeAlarm() != OPERSTATUS::Registers.collimator.tube_alarm) {
+		OPERSTATUS::Registers.collimator.tube_alarm = PCB315::isTubeAlarm();
+		if (OPERSTATUS::Registers.collimator.tube_alarm) tubeStatus->BackgroundImage = TUBE_TEMP_NOK_IMAGE;
 		else tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
 	}
 }
+
 void OperatingForm::evaluateMagStatus(void) {
 	return;
 	// Magnification factor
@@ -532,15 +534,17 @@ void OperatingForm::operatingStatusManagement(void) {
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 	evaluateXrayStatus();
-	evaluateLampStatus();
 	evaluateErrorStatus();
 	evaluateCompressorStatus();
 	evaluateCollimatorStatus();
-	evaluateTubeStatus();
 	evaluateMagStatus();
 	evaluateDoorStatus();
 	onArmPositionChangeCallback();
-	
+
+	// Command Mirror selection
+	if (collimator_light_activation) {
+		collimator_light_activation = ! pFW315->isCommandCompleted();
+	}
 	
 }
 
@@ -569,6 +573,14 @@ void OperatingForm::viewSelection_Click(System::Object^ sender, System::EventArg
 		((ConfirmationWindow^)pAbort)->setContentBackground(selectedIcon->BackgroundImage);
 		((ConfirmationWindow^)pAbort)->open();
 	}
+}
+
+void OperatingForm::lampButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (collimator_light_activation) return;
+	
+	collimator_light_activation = pFW315->command(PCB315_COMMAND_LIGHT_ON, 30);
+	if(!collimator_light_activation) Notify::activate("COLLI_LIGHT_ACTIVATION_WARNING", true);
+
 }
 
 void OperatingForm::onConfirmOk(void) {

@@ -259,9 +259,9 @@ void IdleForm::idleStatusManagement(void) {
 		else this->peripheralsConnected->Hide();
 	}
 
-	labelTubeData->Text = GantryStatusRegisters::TubeDataRegister::getCumulated().ToString() + " %";
-	if (GantryStatusRegisters::TubeDataRegister::isAlarm() != IDLESTATUS::Registers.tube.alarm) {
-		IDLESTATUS::Registers.tube.alarm = GantryStatusRegisters::TubeDataRegister::isAlarm();
+	labelTubeData->Text = PCB315::getTubeMaxCumulated().ToString() + " %";
+	if (PCB315::isTubeAlarm() != IDLESTATUS::Registers.tube.alarm) {
+		IDLESTATUS::Registers.tube.alarm = PCB315::isTubeAlarm();
 		if (IDLESTATUS::Registers.tube.alarm) tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;
 		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
 	}

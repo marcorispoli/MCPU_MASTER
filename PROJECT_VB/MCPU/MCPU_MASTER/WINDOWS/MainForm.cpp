@@ -600,15 +600,16 @@ void MainForm::StartupProcedure(void) {
 	case 0: if (Startup_CanDriver()) { startupFase++; startupSubFase = 0; } break; // Startup of the Can Driver process
 	case 1: if (Startup_PCB301()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB301 process
 	case 2: if (Startup_PCB302()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB302 process
-	case 3: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
-	case 4: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
-	case 5: if (Startup_PCB315()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
+	case 3: if (Startup_PCB315()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
+	case 4: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
+	case 5: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
+	
 	case 6: if (Startup_PCB326()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
 	case 7: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 8: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 9: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 10: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 11: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 11: if (Startup_MotorVertical()) { startupFase+=2; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 12: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
 	case 13:
 

@@ -1433,52 +1433,6 @@ namespace GantryStatusRegisters {
         static ExposureCompletedOptions^ exposure_complete = gcnew ExposureCompletedOptions;
     };
 
-    /// <summary>
-    /// This class handles the Xray Tybe data and setting.
-    /// 
-    /// \ingroup globalModule  
-    /// </summary>
-    ref class TubeDataRegister {
-    public:
-
-        /// <summary>
-        /// This function returns the cumulated anode Hu
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>Anode Hu in % respect the maximum</returns>
-        static unsigned char getAnode(void) { return anodeHu; }
-
-        /// <summary>
-        /// This function returns the cumulated bulb's heat
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>Bulb's heat in % respect the maximum</returns>
-        static unsigned char getBulb(void) { return bulbHeat; }
-
-        /// <summary>
-        /// This function returns the cumulated stator's heat
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>Stator's heat in % respect the maximum</returns>
-        static unsigned char getStator(void) { return statorHeat; }
-
-        static unsigned char getCumulated(void) { return cumulated; }
-        static bool isAlarm(void) { return alarm; }
-
-
-        static void setTubeTemp(unsigned char stator, unsigned char bulb);
-        static void setAnodeHu(unsigned char ahu);
-       
-
-    private:
-        static unsigned char  anodeHu = 0;     //!< Cumulated Anode HU %
-        static unsigned char  bulbHeat = 0;    //!< Cumulated Bulb Heat %
-        static unsigned char  statorHeat = 0;  //!< Cumulated Stator Heat %
-        static unsigned char  cumulated = 0;  //!< Cumulated Stator Heat %
-        static bool alarm = false;             //!< One of the data exceeds the acceptable range
-        
-    };
-
 
     /// <summary>
     /// This class handles the Interface language

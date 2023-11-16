@@ -1,4 +1,4 @@
-.TH "GlobalObjects" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GlobalObjects" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -63,6 +63,10 @@ GlobalObjects
 .br
 .RI "Pointer to the FW315 board\&. "
 .ti -1c
+.RI "static Object ^ \fBpFw326\fP = nullptr"
+.br
+.RI "Pointer to the FW326 board\&. "
+.ti -1c
 .RI "static int \fBmonitor_X0\fP"
 .br
 .RI "Pointer to the Monitor X0 position\&. "
@@ -125,6 +129,10 @@ Pointer to the FW304 board\&.
 
 .PP
 Pointer to the FW315 board\&. 
+.SS "Object ^ GlobalObjects::pFw326 = nullptr\fC [static]\fP"
+
+.PP
+Pointer to the FW326 board\&. 
 .SS "Object ^ GlobalObjects::pGenerator = nullptr\fC [static]\fP"
 
 .SS "Object ^ GlobalObjects::pIdleForm = nullptr\fC [static]\fP"

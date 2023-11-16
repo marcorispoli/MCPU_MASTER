@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::exposurePulse" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::exposurePulse" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,13 +13,9 @@ GantryStatusRegisters::exposurePulse \- Internal class uses to group the exposur
 
 .in +1c
 .ti -1c
-.RI "bool \fBset\fP (double kv, double mas, String^ filter_tag)"
+.RI "bool \fBset\fP (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt)"
 .br
 .RI "This function sets the pulse exposure data content "
-.ti -1c
-.RI "bool \fBset\fP (double \fBkV\fP, double \fBmAs\fP, \fBFilterOptions::options\fP filter_code)"
-.br
-.RI "This function sets the exposure data of a given exposure pulse number\&. "
 .ti -1c
 .RI "void \fBinvalidate\fP (void)"
 .br
@@ -41,7 +37,7 @@ GantryStatusRegisters::exposurePulse \- Internal class uses to group the exposur
 .br
 .RI "Returns the mAs of the pulse  "
 .ti -1c
-.RI "\fBFilterOptions\fP ^ \fBgetFilter\fP ()"
+.RI "\fBPCB315::filterMaterialCodes\fP \fBgetFilter\fP ()"
 .br
 .RI "Returnrn the filter option of the pulse  "
 .in -1c
@@ -49,9 +45,9 @@ GantryStatusRegisters::exposurePulse \- Internal class uses to group the exposur
 
 .in +1c
 .ti -1c
-.RI "\fBFilterOptions\fP ^ \fBfilter\fP"
+.RI "\fBPCB315::filterMaterialCodes\fP \fBfilter\fP"
 .br
-.RI "This is the assigned filter handle\&. "
+.RI "This is the assigned filter\&. "
 .ti -1c
 .RI "double \fBkV\fP"
 .br
@@ -78,7 +74,7 @@ Internal class uses to group the exposure data pulses
 This is the creator of the pulse data class\&.  
 .SH "Member Function Documentation"
 .PP 
-.SS "\fBFilterOptions\fP ^ GantryStatusRegisters::exposurePulse::getFilter ()\fC [inline]\fP"
+.SS "\fBPCB315::filterMaterialCodes\fP GantryStatusRegisters::exposurePulse::getFilter ()\fC [inline]\fP"
 
 .PP
 Returnrn the filter option of the pulse  
@@ -126,27 +122,7 @@ true if data are valid
 .RE
 .PP
 
-.SS "bool GantryStatusRegisters::exposurePulse::set (double kV, double mAs, \fBFilterOptions::options\fP filter_code)\fC [inline]\fP"
-
-.PP
-This function sets the exposure data of a given exposure pulse number\&. There are a maximum of 4 possible exposure pulses\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIfilter_code\fP This is the code of the filter used in the next exposure pulse
-.br
-\fIkV\fP kV value of the next exposure pulse [20:640] 
-.br
-\fImAs\fP mAs value of the next exposure pulse [0:640] 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if data are accepted
-.RE
-.PP
-
-.SS "bool GantryStatusRegisters::exposurePulse::set (double kv, double mas, String^ filter_tag)\fC [inline]\fP"
+.SS "bool GantryStatusRegisters::exposurePulse::set (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt)\fC [inline]\fP"
 
 .PP
 This function sets the pulse exposure data content 
@@ -168,10 +144,10 @@ true if data are accepted
 
 .SH "Member Data Documentation"
 .PP 
-.SS "\fBFilterOptions\fP ^ GantryStatusRegisters::exposurePulse::filter\fC [private]\fP"
+.SS "\fBPCB315::filterMaterialCodes\fP GantryStatusRegisters::exposurePulse::filter\fC [private]\fP"
 
 .PP
-This is the assigned filter handle\&. 
+This is the assigned filter\&. 
 .SS "double GantryStatusRegisters::exposurePulse::kV\fC [private]\fP"
 
 .PP

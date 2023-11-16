@@ -12,8 +12,14 @@
 "ERROR", "E00010", "BATTERY_LOW_ERROR", "System Power Monitoring", "Battery voltage monitoring error!\nThe battery voltage level is too low.",
 "ERROR", "E00011", "GENERATOR_ERROR_SH", "Generator Status", "Smart Hub not connected",
 "ERROR", "E00012", "GENERATOR_ERROR_GEN", "Generator Status", "Generator device not connected",
-"ERROR", "E00013", "FILTER_OUT_OF_POSITION", "Filter Out Of Position", "Repeat the command to select a valid filter position.",
-"ERROR", "E00014", "COLLIMATOR_OUT_OF_POSITION", "Collimator Out Of Position", "Error in setting the collimation format.\nCheck the collimator functionality.",
+"ERROR", "E00013", "COLLIMATION_SELECTION_ERROR", "Collimator Monitoring", "The Collimator selector seams to be blocked",
+"ERROR", "E00013", "FILTER_SELECTION_ERROR", "Filter Monitoring", "The Filter selector seams to be blocked",
+"ERROR", "E00015", "STATOR_SENSOR_LOW", "Tube Temperature Monitoring", "The Tube Stator sensor connection input\nseams to be broken",
+"ERROR", "E00016", "STATOR_SENSOR_SHORT", "Tube Temperature Monitoring", "The Tube Stator sensor connection input\nseams to be shorted",
+"ERROR", "E00017", "BULB_SENSOR_LOW", "Tube Temperature Monitoring", "The Tube Bulb sensor connection input\nseams to be broken",
+"ERROR", "E00018", "BULB_SENSOR_SHORT", "Tube Temperature Monitoring", "The Tube Bulb sensor connection input\nseams to be shorted",
+"ERROR", "E00019", "PCB315_COMMUNICATION_ERROR", "PCB315 Communication", "The PCB315 board no longer communicate with the MCPU",
+"ERROR", "E00020", "PCB303_COMMUNICATION_ERROR", "PCB303 Communication", "The PCB303 board no longer communicate with the MCPU",
 
 
 /* -------- WARNINGS ---------------------------*/
@@ -25,9 +31,14 @@
 "WARNING", "W00006", "MISSING_EXPOSURE_DATA_WARNING", "Exposure Parameters Monitoring", "Missing exposure data selection.",
 "WARNING", "W00007", "XRAY_BUTTON_DISABLED_WARNING", "X-Ray Button Monitoring", "The X-Ray button is not enabled.",
 "WARNING", "W00008", "DOOR_STUDY_OPEN_WARNING", "Safety Monitoring", "The Study's door is detected Open.",
-"WARNING", "W00010", "GENERATOR_INIT_WARNING", "Generator Status Monitoring", "The Generator device is not ready for exposures.",
-"WARNING", "W00011", "TUBE_TEMP_WARNING", "X-Ray Tube Monitoring", "The X-Ray Tube cumulated energy is too high",
-"WARNING", "W00012", "COLLI_LIGHT_ACTIVATION_WARNING", "Collimator Light Command Failed", "The Collimation Light cannot be activated now.\nTry again.",
+"WARNING", "W00009", "GENERATOR_INIT_WARNING", "Generator Status Monitoring", "The Generator device is not ready for exposures.",
+"WARNING", "W00010", "TUBE_TEMP_WARNING", "X-Ray Tube Monitoring", "The X-Ray Tube cumulated energy is too high",
+"WARNING", "W00011", "COLLI_LIGHT_ACTIVATION_WARNING", "Collimator Light Command Failed", "The Collimation Light cannot be activated now.\nTry again.",
+"WARNING", "W00012", "STATOR_SENSOR_HIGH", "Tube Temperature Monitoring", "The Tube Stator temperature is too high",
+"WARNING", "W00013", "BULB_SENSOR_HIGH", "Tube Temperature Monitoring", "The Tube Bulb temperature is too high",
+"WARNING", "W00014", "ANODE_TEMPERATURE_HIGH", "Tube Temperature Monitoring", "The Anode temperature is too high",
+"WARNING", "W00015", "FILTER_OUT_OF_POSITION", "Filter Monitoring", "The Filter selector is not in a valid position",
+"WARNING", "W00016", "COLLIMATOR_OUT_OF_POSITION", "Collimator Monitoring", "An invalid collimation format is detected",
 
 /* -------- INFO ---------------------------*/
 

@@ -3,6 +3,8 @@
 #include <math.h>
 #include "ConfigFile.h"
 #include "Errors.h"
+#include "PCB315.h"
+
 
 
 
@@ -310,72 +312,7 @@ namespace GantryStatusRegisters {
     //static test<options>^ core = gcnew test<options> (tags);
 
 
-    /// <summary>
-    /// This class implements the Filter selection interface.
-    /// 
-    /// The class is declared by registers that need to store a filter status info.
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class FilterOptions {
-    public:
 
-        /// <summary>
-        /// This is the enumeration option code 
-        /// </summary>
-        enum class options {
-            FILTER_Ag = 0, //!< Ag filter seletion option
-            FILTER_Al, //!< Al filter seletion option
-            FILTER_Mo, //!< Mo filter seletion option
-            FILTER_Rh, //!< Rh filter seletion option
-            FILTER_Cu, //!< Cu filter seletion option
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "Ag", "Al", "Mo", "Rh", "Cu", "UNDEF"}; //!< This is the tags array
-
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-    };
-
-
-    /// <summary>
-   /// This class handles the option for the Collimation behavior during the exposure.
-   /// 
-   /// 
-   /// \ingroup globalModule 
-   /// </summary>
-    ref class CollimationModeOption {
-    public:
-
-        /// <summary>
-        /// This is the enumeration option code 
-        /// </summary>
-        enum class options {
-            COLLI_AUTO = 0, //!< The Exposure uses the Automatic collimation set by the current detected Paddle
-            COLLI_24x30, //!< Force the 24x30 format
-            COLLI_18x24_C, //!< Force the 18x24 CENTER format
-            COLLI_18x24_L, //!< Force the 18x24 LEFT format
-            COLLI_18x24_R, //!< Force the 18x24 RIGHT format
-            COLLI_9x21, //!< Force the 9x21(MAG) format
-            COLLI_10x24, //!< Force the 10x24 format
-            COLLI_PROSTHESIS, //!< Force the PROSTHESIS format
-            COLLI_D75, //!< Force the D75(MAG) format
-            COLLI_BIOP2D, //!< Force the BIOPSY 2D format
-            COLLI_BIOP3D, //!< Force the BIOPSY STEREO format
-            COLLI_TOMO, //!< Force the TOMO 24x30 format
-            COLLI_9x9, //!< Force the TOMO 9x9(MAG) format
-            COLLI_CUSTOM, //!< Force the custom format
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "COLLI_AUTO", "COLLI_24x30", "COLLI_18x24_C", "COLLI_18x24_L", \
-            "COLLI_18x24_R", "COLLI_9x21", "COLLI_10x24", "COLLI_PROSTHESIS", \
-            "COLLI_D75", "COLLI_BIOP2D", "COLLI_BIOP3D", "COLLI_TOMO", \
-            "COLLI_9x9", "COLLI_CUSTOM", "UNDEF"}; //!< This is the option-tags static array
-
-
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-    };
 
     /// <summary>
     /// This class handles the Compression behavior during the exposure.
@@ -997,8 +934,7 @@ namespace GantryStatusRegisters {
     ref class ExposureModeRegister {
     public:
 
-        static ExposureTypeOption^ exposureType = gcnew ExposureTypeOption;
-        static CollimationModeOption^ collimationMode = gcnew CollimationModeOption;
+        static ExposureTypeOption^ exposureType = gcnew ExposureTypeOption;        
         static ArmModeOption^ armMode = gcnew ArmModeOption;
         static CompressionModeOption^ compressorMode = gcnew CompressionModeOption;
         static PatientProtectionMode^ protectionMode = gcnew PatientProtectionMode;
@@ -1274,7 +1210,7 @@ namespace GantryStatusRegisters {
         /// <param name="kV">kV value of the next exposure pulse [20:640] </param>
         /// <param name="mAs">mAs value of the next exposure pulse [0:640] </param>
         /// <returns>true if data are accepted</returns>
-        bool set(double kv, double mas, String^ filter_tag) {
+        bool set(double kv, double mas, PCB315::filterMaterialCodes flt) {
             if ((kv > 49.0) || (kv < 20.0)) return false;
             if ((mas > 640) || (mas < 0)) return false;
 
@@ -1282,7 +1218,7 @@ namespace GantryStatusRegisters {
             if (validated) return false;
 
             // Assignes the filter
-            if (!filter->Value->setCode(filter_tag)) return false;
+            filter = flt;            
 
             kV = kv;// Assignes the kV
             mAs = mas;// Assignes the mAs
@@ -1290,19 +1226,7 @@ namespace GantryStatusRegisters {
             return true;
         }
 
-        /// <summary>
-        /// This function sets the exposure data of a given exposure pulse number.
-        /// 
-        /// There are a maximum of 4 possible exposure pulses.
-        /// 
-        /// </summary>
-        /// <param name="filter_code"> This is the code of the filter used in the next exposure pulse</param>
-        /// <param name="kV">kV value of the next exposure pulse [20:640] </param>
-        /// <param name="mAs">mAs value of the next exposure pulse [0:640] </param>
-        /// <returns>true if data are accepted</returns>
-        bool set(double kV, double mAs, FilterOptions::options filter_code) {
-            return set(kV, mAs, filter->Value->ToTag((int)filter_code));
-        }
+       
 
         /// <summary>
         /// This function invalidate the usage of exposure data
@@ -1317,9 +1241,8 @@ namespace GantryStatusRegisters {
         /// <param name=""></param>
         exposurePulse(void) {
 
-
             // The handle of the filter selection is created
-            filter = gcnew FilterOptions;
+            filter = PCB315::filterMaterialCodes::FILTER_INVALID;
 
             // When created the pulse is invalidated for safety
             validated = false;
@@ -1348,10 +1271,10 @@ namespace GantryStatusRegisters {
         /// Returnrn the filter option of the pulse
         /// </summary>
         /// <returns>The filter option</returns>
-        inline FilterOptions^ getFilter() { return filter; }
+        inline PCB315::filterMaterialCodes getFilter() { return filter; }
 
     private:
-        FilterOptions^ filter; //!< This is the assigned filter handle
+        PCB315::filterMaterialCodes filter; //!< This is the assigned filter 
         double kV; //!< This is the selected kV value
         double mAs; //!< This is the selected mAs value
         bool   validated; //!< This is the flag that validate the use of thhis pulse in a sequence
@@ -1397,11 +1320,11 @@ namespace GantryStatusRegisters {
 
         static inline ExposureCompletedOptions^ getExposureComplete(void) { return exposure_complete; }
         static inline exposurePulse^ getPulse(int i) { if (i < pulses->Length) return pulses[i]; else return nullptr; }
-        static inline void setExposurePartial(ExposureCompletedOptions::options, double kV, double mAs, FilterOptions::options filter_code) {
+        static inline void setExposurePartial(ExposureCompletedOptions::options, double kV, double mAs, PCB315::filterMaterialCodes filter) {
             exposure_complete->exposed_pulses = pulses;
             for (int i = 0; i < 4; i++) {
                 if (exposure_complete->exposed_pulses[3 - i]->isValid()) {
-                    exposure_complete->exposed_pulses[3 - i]->set(kV, mAs, filter_code);
+                    exposure_complete->exposed_pulses[3 - i]->set(kV, mAs, filter);
                     break;
                 }
             }

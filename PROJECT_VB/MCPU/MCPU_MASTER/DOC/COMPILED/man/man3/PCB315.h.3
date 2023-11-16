@@ -1,0 +1,110 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB315.h" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB315.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'CanDeviceProtocol\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBPCB315\fP"
+.br
+.RI "This class implements the functions of the \fBPCB315\fP Module "
+.in -1c
+.SS "Macros"
+
+.PP
+.RI "\fB\fP"
+.br
+
+.in +1c
+.in +1c
+.ti -1c
+.RI "#define \fBPCB315_ERROR_BULB_LOW\fP(reg)   (reg\->d2 & 0x1)"
+.br
+.RI "This is the Bulb sensor low level\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_BULB_SHORT\fP(reg)   (reg\->d2 & 0x2)"
+.br
+.RI "This is the Bulb sensor connetions open\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_BULB_HIGH\fP(reg)   (reg\->d2 & 0x4)"
+.br
+.RI "This is the Bulb sensor high temperature\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_STATOR_LOW\fP(reg)   (reg\->d2 & 0x8)"
+.br
+.RI "This is the Bulb sensor low level\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_STATOR_SHORT\fP(reg)   (reg\->d2 & 0x10)"
+.br
+.RI "This is the Bulb sensor connetions open\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_STATOR_HIGH\fP(reg)   (reg\->d2 & 0x20)"
+.br
+.RI "This is the Bulb sensor high temperature\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_FILTER_SELECTION\fP(reg)   (reg\->d2 & 0x40)"
+.br
+.RI "This is the Filter selection error\&. "
+.ti -1c
+.RI "#define \fBPCB315_GET_SYSTEM_FILTER\fP(reg)   (unsigned char) (reg\->d0)"
+.br
+.RI "This macro returns the FILTER byte of the SYSTEM register\&. "
+.ti -1c
+.RI "#define \fBPCB315_GET_SYSTEM_STATOR\fP(reg)   (unsigned char) (reg\->d1)"
+.br
+.RI "This macro returns the STATOR byte of the SYSTEM register\&. "
+.ti -1c
+.RI "#define \fBPCB315_GET_SYSTEM_BULB\fP(reg)   (unsigned char) (reg\->d2)"
+.br
+.RI "This macro returns the BULB byte of the SYSTEM register\&. "
+.ti -1c
+.RI "#define \fBPCB315_GET_SYSTEM_FLAGS\fP(reg)   (unsigned char) (reg\->d3)"
+.br
+.RI "This macro returns the FLAGS byte of the SYSTEM register\&. "
+.ti -1c
+.RI "#define \fBPCB315_GET_LIGHT_FLAG\fP(flags)   ((flags) & 0x1)"
+.br
+.RI "This macro returns the Light On flag\&. "
+.ti -1c
+.RI "#define \fBPCB315_GET_ERROR_FLAG\fP(flags)   ((flags) & 0x80)"
+.br
+.RI "This macro returns the status of the Error present condition\&. "
+.ti -1c
+.RI "#define \fBPCB315_WRITE_FILTER1_REGISTER\fP(val)   (System::Byte) ParamRegisters::FILTER1_PARAM_REGISTER,(System::Byte) (val&0xFF), (System::Byte) ((val>>8)&0xFF),(System::Byte) 0, (System::Byte) 0"
+.br
+.ti -1c
+.RI "#define \fBPCB315_WRITE_FILTER2_REGISTER\fP(val)   (System::Byte) ParamRegisters::FILTER2_PARAM_REGISTER,(System::Byte) (val&0xFF), (System::Byte) ((val>>8)&0xFF),(System::Byte) 0, (System::Byte) 0"
+.br
+.ti -1c
+.RI "#define \fBPCB315_WRITE_FILTER3_REGISTER\fP(val)   (System::Byte) ParamRegisters::FILTER3_PARAM_REGISTER,(System::Byte) (val&0xFF), (System::Byte) ((val>>8)&0xFF),(System::Byte) 0, (System::Byte) 0"
+.br
+.ti -1c
+.RI "#define \fBPCB315_WRITE_FILTER4_REGISTER\fP(val)   (System::Byte) ParamRegisters::FILTER4_PARAM_REGISTER,(System::Byte) (val&0xFF), (System::Byte) ((val>>8)&0xFF),(System::Byte) 0, (System::Byte) 0"
+.br
+.ti -1c
+.RI "#define \fBPCB315_WRITE_MIRROR_REGISTER\fP(val)   (System::Byte) ParamRegisters::MIRROR_PARAM_REGISTER,(System::Byte) (val&0xFF), (System::Byte) 0,(System::Byte) 0, (System::Byte) 0"
+.br
+.ti -1c
+.RI "#define \fBPCB315_WRITE_POWERLIGHT_REGISTER\fP(val)   (System::Byte) ParamRegisters::POWERLIGHT_PARAM_REGISTER,(System::Byte) (val&0xFF), (System::Byte) 0,(System::Byte) 0, (System::Byte) 0"
+.br
+.ti -1c
+.RI "#define \fBPCB315_SET_POSITIONER_COMMAND\fP(cmd)   (System::Byte) Commandregister::SET_POSITIONER_COMMAND, (System::Byte) (cmd),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+.br
+.RI "This is the SET_POSITIONER_COMMAND byte frame\&. "
+.ti -1c
+.RI "#define \fBPCB315_SET_LIGH_COMMAND\fP(cmd)   (System::Byte) Commandregister::SET_LIGHT, (System::Byte) (cmd),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+.br
+.RI "This is the SET_POSITIONER_COMMAND byte frame\&. "
+.in -1c
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

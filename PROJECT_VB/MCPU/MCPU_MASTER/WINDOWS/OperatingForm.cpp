@@ -6,6 +6,7 @@
 #include "ConfirmationWindow.h"
 #include "ArmMotor.h"
 #include "../DEVICES/PCB315.h"
+#include "../DEVICES/PCB303.h"
 
 #define PROJ_SELCTION_BACKGROUND_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ProjSelectionButton.PNG")
 
@@ -212,7 +213,7 @@ void OperatingForm::formInitialization(void) {
 	this->Hide();
 	open_status = false;
 
-	collimator_light_activation = false;
+
 }
 
 void OperatingForm::initOperatingStatus(void) {
@@ -229,6 +230,12 @@ void OperatingForm::initOperatingStatus(void) {
 	// Init Arm Angle 
 	float arm_position = ((float)pMARM->getCurrentPosition() / 100);
 	angleText->Text = "[" + arm_position.ToString() + "°]";
+
+	// Sets the current collimation to OPEN mode
+	PCB303::setAutoCollimationMode();
+
+	// Sets the current Filter selector to manual mode
+	PCB315::setFilterAutoMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
 
 	// Start the startup session	
 	operatingTimer->Start();
@@ -494,8 +501,14 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 	}
 
 
+	// Evaluates the maximum tube temperature
+	int val = PCB315::getAnode();
+	if (PCB315::getBulb() > val) val = PCB315::getBulb();
+	if (PCB315::getStator() > val) val = PCB315::getStator();
+	
+
 	// Cumulated max energy of the X-RAY tube
-	labelTubeData->Text = PCB315::getTubeMaxCumulated().ToString() + " %";
+	labelTubeData->Text = val.ToString() + " %";
 
 	if (PCB315::isTubeAlarm() != OPERSTATUS::Registers.collimator.tube_alarm) {
 		OPERSTATUS::Registers.collimator.tube_alarm = PCB315::isTubeAlarm();
@@ -541,10 +554,6 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateDoorStatus();
 	onArmPositionChangeCallback();
 
-	// Command Mirror selection
-	if (collimator_light_activation) {
-		collimator_light_activation = ! pFW315->isCommandCompleted();
-	}
 	
 }
 
@@ -576,11 +585,8 @@ void OperatingForm::viewSelection_Click(System::Object^ sender, System::EventArg
 }
 
 void OperatingForm::lampButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (collimator_light_activation) return;
+	PCB315::setMirrorMode(true);
 	
-	collimator_light_activation = pFW315->command(PCB315_COMMAND_LIGHT_ON, 30);
-	if(!collimator_light_activation) Notify::activate("COLLI_LIGHT_ACTIVATION_WARNING", true);
-
 }
 
 void OperatingForm::onConfirmOk(void) {

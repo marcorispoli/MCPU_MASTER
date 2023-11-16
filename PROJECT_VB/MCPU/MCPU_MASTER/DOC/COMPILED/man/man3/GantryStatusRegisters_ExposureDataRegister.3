@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::ExposureDataRegister" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ExposureDataRegister" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -19,7 +19,7 @@ GantryStatusRegisters::ExposureDataRegister \- This register handle the Exposure
 .RI "static \fBexposurePulse\fP ^ \fBgetPulse\fP (int i)"
 .br
 .ti -1c
-.RI "static void \fBsetExposurePartial\fP (\fBExposureCompletedOptions::options\fP, double kV, double mAs, \fBFilterOptions::options\fP filter_code)"
+.RI "static void \fBsetExposurePartial\fP (\fBExposureCompletedOptions::options\fP, double kV, double mAs, \fBPCB315::filterMaterialCodes\fP filter)"
 .br
 .ti -1c
 .RI "static void \fBsetExposureCompleted\fP (void)"
@@ -67,7 +67,7 @@ The Exposure data of the exposure sequence is stored into this register\&. <>
 
 .SS "static void GantryStatusRegisters::ExposureDataRegister::setExposureNoDose (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "static void GantryStatusRegisters::ExposureDataRegister::setExposurePartial (\fBExposureCompletedOptions::options\fP, double kV, double mAs, \fBFilterOptions::options\fP filter_code)\fC [inline]\fP, \fC [static]\fP"
+.SS "static void GantryStatusRegisters::ExposureDataRegister::setExposurePartial (\fBExposureCompletedOptions::options\fP, double kV, double mAs, \fBPCB315::filterMaterialCodes\fP filter)\fC [inline]\fP, \fC [static]\fP"
 
 .SH "Member Data Documentation"
 .PP 

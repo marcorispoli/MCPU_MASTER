@@ -104,9 +104,7 @@ public:
 		void onArmAbortTargetCallback(void);
 		void onArmPositionChangeCallback(void);
 
-		// Command flags
-		bool collimator_light_activation;
-
+		
 public:
 	OperatingForm(void)
 	{

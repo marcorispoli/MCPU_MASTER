@@ -1,0 +1,232 @@
+.TH "PCB315_Internal" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB315_Internal \- Internal implementation section
+.SH SYNOPSIS
+.br
+.PP
+
+.in +1c
+.ti -1c
+.RI "static \fBfilterWorkingMode\fP \fBPCB315::filter_working_mode\fP = \fBfilterWorkingMode::FILTER_MANUAL_MODE\fP"
+.br
+.RI "This is the current Filter working mode\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBPCB315::auto_filter_selected\fP = \fBFilterSlotCodes::FILTER_INVALID\fP"
+.br
+.RI "This is the current filter automatically selected\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBPCB315::manual_filter_selected\fP = \fBFilterSlotCodes::FILTER_INVALID\fP"
+.br
+.RI "This is the current filter automatically selected 
+.br
+ "
+.ti -1c
+.RI "static bool \fBPCB315::valid_filter_format\fP"
+.br
+.RI "This flag is set when the filter format is correct and coherent with the filterWorkingMode register\&. "
+.ti -1c
+.RI "static bool \fBPCB315::filter_fault\fP"
+.br
+.RI "This flag is set when the filter is in fault condition\&. "
+.ti -1c
+.RI "static int \fBPCB315::filter_selection_attempt\fP"
+.br
+.RI "This register counts the attempt to exit from a fault condition\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBPCB315::filter_status\fP = \fBFilterSlotCodes::FILTER_OUT_OF_POSITION\fP"
+.br
+.RI "last STATUS filter status read "
+.ti -1c
+.RI "static unsigned char \fBPCB315::flags_status\fP = 0"
+.br
+.RI "This is the last read of the Flags status\&. "
+.ti -1c
+.RI "static bool \fBPCB315::request_light_activation\fP = false"
+.br
+.RI "A light activation request is pending\&. "
+.ti -1c
+.RI "static unsigned char \fBPCB315::stator_perc\fP = 0"
+.br
+.RI "This is the current stator temperature in percent of the maximum possible\&. "
+.ti -1c
+.RI "static unsigned char \fBPCB315::bulb_perc\fP = 0"
+.br
+.RI "This is the current bulb temperature in percent of the maximum possible\&. "
+.ti -1c
+.RI "static unsigned char \fBPCB315::anode_perc\fP = 0"
+.br
+.RI "This is the current anode temperature in percent of the maximum possible\&. "
+.ti -1c
+.RI "static bool \fBPCB315::tube_high_temp_alarm\fP = false"
+.br
+.RI "This is the current tube temperature alarm flag in case of fault detected\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBPCB315::filterAssignment\fP (System::String^ assignment)"
+.br
+.RI "This function traslates the assignment parameter value (in string format) to a FilterSlotCodes related code\&. "
+.ti -1c
+.RI "void \fBPCB315::runningLoop\fP (void) override"
+.br
+.RI "This is the Base class runningLoop override function\&. "
+.ti -1c
+.RI "bool \fBPCB315::configurationLoop\fP (void) override"
+.br
+.RI "This is the Base class configurationLoop override function\&. "
+.ti -1c
+.RI "bool \fBPCB315::updateStatusRegister\fP (void)"
+.br
+.RI "Function handling the status register acquisition\&. "
+.ti -1c
+.RI "void \fBPCB315::manageFilterSelection\fP (void)"
+.br
+.RI "Function handling the Filter selection operations\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "bool PCB315::configurationLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base class configurationLoop override function\&. This function is called by the Base class before to call the \fBrunningLoop()\fP allowing the module to properly configure the device\&.
+.PP
+In the configurationLoop routine this module:
+.IP "\(bu" 2
+Upload the Calibrated slot positions;
+.IP "\(bu" 2
+Upload the Timeout for the Light;
+.PP
+.PP
+The routine never exit in the case of communication issues
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "\fBPCB315::FilterSlotCodes\fP PCB315::filterAssignment (System::String^ assignment)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This function traslates the assignment parameter value (in string format) to a FilterSlotCodes related code\&. This function is internally used to link the Filter assignment parameter in the FilterCalibratioon file to the Internal code used to compare the actual status of the filter selection in the device board\&.
+.PP
+The Assignment Parameter is in String format: '1', '2', \&.\&.\&. 'n' 
+.br
+and the converted integer value (1, 2, \&.\&. N) is compared with the 
+.br
+ FilterConfig::FilterAssignment enumeraiton class used in the assignment 
+.br
+declaration\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIassignment\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The FilterSlotCodes selection, or \fBFilterSlotCodes::FILTER_INVALID\fP in case of missing valid assignment
+.RE
+.PP
+
+.SS "void PCB315::manageFilterSelection (void)\fC [private]\fP"
+
+.PP
+Function handling the Filter selection operations\&. 
+.SS "void PCB315::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base class runningLoop override function\&. This function is call by the Base class in order to handle the 
+.br
+communication workflow, after the module startup and configuration\&.
+.PP
+This module implements the device related functions here\&.
+.PP
+The module read the Status register in order to get the relevant registers from the device: \fBupdateStatusRegister()\fP: 
+.PP
+.nf
++ In case the function should fail in reading the Status register (several times), the\\n
+  module activates a Communication Error condition until the Status register finally is successfully read\&.\\n
+  During the fault condition the Filter selection and Tube temperature monitor activities are suspended\&. 
+
+.fi
+.PP
+ If the Status register should successfully read, the module:
+.PP
+.IP "\(bu" 2
+checks the presence of errors reading the Error register from the device;
+.IP "\(bu" 2
+manage the Filter/Mirror selection operations: \fBmanageFilterSelection()\fP;
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "bool PCB315::updateStatusRegister (void)\fC [private]\fP"
+
+.PP
+Function handling the status register acquisition\&. 
+.SH "Variable Documentation"
+.PP 
+.SS "unsigned char PCB315::anode_perc = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current anode temperature in percent of the maximum possible\&. 
+.SS "\fBFilterSlotCodes\fP PCB315::auto_filter_selected = \fBFilterSlotCodes::FILTER_INVALID\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current filter automatically selected\&. 
+.SS "unsigned char PCB315::bulb_perc = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current bulb temperature in percent of the maximum possible\&. 
+.SS "bool PCB315::filter_fault\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This flag is set when the filter is in fault condition\&. 
+.SS "int PCB315::filter_selection_attempt\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This register counts the attempt to exit from a fault condition\&. 
+.SS "\fBFilterSlotCodes\fP PCB315::filter_status = \fBFilterSlotCodes::FILTER_OUT_OF_POSITION\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+last STATUS filter status read 
+.SS "\fBfilterWorkingMode\fP PCB315::filter_working_mode = \fBfilterWorkingMode::FILTER_MANUAL_MODE\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current Filter working mode\&. 
+.br
+ 
+.SS "unsigned char PCB315::flags_status = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the last read of the Flags status\&. 
+.SS "\fBFilterSlotCodes\fP PCB315::manual_filter_selected = \fBFilterSlotCodes::FILTER_INVALID\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current filter automatically selected 
+.br
+ 
+.SS "bool PCB315::request_light_activation = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+A light activation request is pending\&. 
+.SS "unsigned char PCB315::stator_perc = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current stator temperature in percent of the maximum possible\&. 
+.SS "bool PCB315::tube_high_temp_alarm = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current tube temperature alarm flag in case of fault detected\&. 
+.SS "bool PCB315::valid_filter_format\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This flag is set when the filter format is correct and coherent with the filterWorkingMode register\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -146,6 +146,14 @@ void IdleForm::initIdleStatus(void) {
 	this->tubeTempOk->BackColor = Color::Transparent;
 	this->tubeTempOk->Show();
 	
+
+	// Sets the current collimation to OPEN mode
+	PCB303::setOpenCollimationMode();
+
+	// Sets the current Filter selector to manual mode
+	PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
+
+
 	// Start the startup session	
 	idleTimer->Start();	
 
@@ -259,7 +267,13 @@ void IdleForm::idleStatusManagement(void) {
 		else this->peripheralsConnected->Hide();
 	}
 
-	labelTubeData->Text = PCB315::getTubeMaxCumulated().ToString() + " %";
+	// Evaluates the maximum tube temperature
+	int val = PCB315::getAnode();
+	if (PCB315::getBulb() > val) val = PCB315::getBulb();
+	if (PCB315::getStator() > val) val = PCB315::getStator();
+	labelTubeData->Text = val.ToString() + " %";
+
+	// Sets the background color based on the temperature error condition
 	if (PCB315::isTubeAlarm() != IDLESTATUS::Registers.tube.alarm) {
 		IDLESTATUS::Registers.tube.alarm = PCB315::isTubeAlarm();
 		if (IDLESTATUS::Registers.tube.alarm) tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;

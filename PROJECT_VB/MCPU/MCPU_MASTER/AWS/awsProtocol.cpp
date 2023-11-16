@@ -3,6 +3,7 @@
 #include "awsProtocol.h"
 #include "ArmMotor.h"
 #include "PCB315.h"
+#include "PCB302.h"
 #include "PCB303.h"
 
 using namespace GantryStatusRegisters;
@@ -393,6 +394,8 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     // Open the study and assignes the patient name !!!
     if (!OperatingStatusRegister::setOpenStudy(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = 0; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
 
+    // With the OPEN Study, the collimator is automatically set to AUTO mode.
+    PCB303::setAutoCollimationMode();
 
     ackOk();
 }
@@ -555,8 +558,42 @@ void   awsProtocol::SET_ExposureMode(void) {
     if (!ExposureModeRegister::compressorMode->Value->setCode(pDecodedFrame->parameters[2])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_COMPRESSION_MODE"; ackNok(); return; }
 
     // Parameter 3: Collimation Mode
-    if (!ExposureModeRegister::collimationMode->Value->setCode(pDecodedFrame->parameters[3])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_COLLIMATION_MODE"; ackNok(); return; }
+    if (pDecodedFrame->parameters[3] == "COLLI_AUTO") {
+        PCB303::setAutoCollimationMode();
 
+    }else if (pDecodedFrame->parameters[3] == "COLLI_CUSTOM") {
+
+        // The PCB303::ColliStandardSelections::COLLI_STANDARD20 is reserved for the custom.
+        PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD20);
+    }
+    else {
+        // The AWS sets a format related to a given Paddle 
+        
+        // Gets the code of the paddle to be used as collimation format
+        int paddle = PCB302::getPaddleCode(pDecodedFrame->parameters[3]);
+        if (paddle == -1){  
+            // The Paddle is not a valid paddle
+            pDecodedFrame->errcode = 1; 
+            pDecodedFrame->errstr = "INVALID_PADDLE"; 
+            ackNok(); 
+            return;
+        }
+
+        // Gets the collimation format associated to the paddle code
+        int format = PCB302::getPaddleCollimationFormatIndex(paddle);
+        if (format <1) {
+            // The paddle is not associated to a valid format
+            pDecodedFrame->errcode = 1;
+            pDecodedFrame->errstr = "INVALID_COLLIMATION_FORMAT";
+            ackNok();
+            return;
+        }
+
+        // Activate the custom collimation mode
+        PCB303::setCustomCollimationMode((PCB303::ColliStandardSelections) format);
+    }
+    
+    
     // Parameter 4: Protection Mode
     if (!ExposureModeRegister::protectionMode->Value->setCode(pDecodedFrame->parameters[4])) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PATIENT_PROTECTION_MODE"; ackNok(); return; }
 
@@ -588,8 +625,16 @@ void   awsProtocol::SET_ExposureData(void) {
     System::Globalization::CultureInfo^ myInfo = gcnew  System::Globalization::CultureInfo("en-US", false);
     Double kV = Convert::ToDouble(pDecodedFrame->parameters[1], myInfo);
     Double mAs = Convert::ToDouble(pDecodedFrame->parameters[2], myInfo);
-    String^ filter = pDecodedFrame->parameters[3];
+    
+    // Test the Filter option value
+    PCB315::filterMaterialCodes filter = PCB315::getFilterFromTag(pDecodedFrame->parameters[3]);
 
+    if (filter == PCB315::filterMaterialCodes::FILTER_INVALID) {
+        pDecodedFrame->errcode = 1; 
+        pDecodedFrame->errstr = "INVALID_FILTER"; 
+        ackNok(); 
+        return;
+    }
 
     if (!ExposureDataRegister::getPulse(seq)->set(kV, mAs, filter)) { pDecodedFrame->errcode = 1; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return; }
 
@@ -745,7 +790,8 @@ void   awsProtocol::GET_TubeTemperature(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(PCB315::getAnode().ToString());
+    // lista->Add(PCB315::getAnode().ToString());
+    lista->Add("0"); // To Be Done ..
     lista->Add(PCB315::getBulb().ToString());
     lista->Add(PCB315::getStator().ToString());
 
@@ -883,7 +929,7 @@ void awsProtocol::xrayPushbuttonStatusChangeCallback(void) {
 
 void awsProtocol::exposureSequenceCompletedCallback(void) {
     ExposureCompletedOptions^ exposure = ExposureDataRegister::getExposureComplete();
-    String^ UNDEF = FilterOptions::tags[(int)FilterOptions::options::UNDEF];
+    String^ UNDEF = PCB315::getTagFromFilter( PCB315::filterMaterialCodes::FILTER_INVALID);
 
     if (exposure->exposed_pulses == nullptr) {
         EVENT_XraySequenceCompleted(exposure->Value->getTag(),
@@ -895,10 +941,10 @@ void awsProtocol::exposureSequenceCompletedCallback(void) {
     }
 
     EVENT_XraySequenceCompleted(exposure->Value->getTag(),
-        exposure->exposed_pulses[0]->getKv(), exposure->exposed_pulses[0]->getmAs(), exposure->exposed_pulses[0]->getFilter()->Value->getTag(),
-        exposure->exposed_pulses[1]->getKv(), exposure->exposed_pulses[1]->getmAs(), exposure->exposed_pulses[1]->getFilter()->Value->getTag(),
-        exposure->exposed_pulses[2]->getKv(), exposure->exposed_pulses[2]->getmAs(), exposure->exposed_pulses[2]->getFilter()->Value->getTag(),
-        exposure->exposed_pulses[3]->getKv(), exposure->exposed_pulses[3]->getmAs(), exposure->exposed_pulses[3]->getFilter()->Value->getTag()
+        exposure->exposed_pulses[0]->getKv(), exposure->exposed_pulses[0]->getmAs(), PCB315::getTagFromFilter(exposure->exposed_pulses[0]->getFilter()),
+        exposure->exposed_pulses[1]->getKv(), exposure->exposed_pulses[1]->getmAs(), PCB315::getTagFromFilter(exposure->exposed_pulses[1]->getFilter()),
+        exposure->exposed_pulses[2]->getKv(), exposure->exposed_pulses[2]->getmAs(), PCB315::getTagFromFilter(exposure->exposed_pulses[2]->getFilter()),
+        exposure->exposed_pulses[3]->getKv(), exposure->exposed_pulses[3]->getmAs(), PCB315::getTagFromFilter(exposure->exposed_pulses[3]->getFilter())
     );
 
 }
@@ -909,32 +955,60 @@ void awsProtocol::exposureSequenceCompletedCallback(void) {
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
-    Debug::WriteLine("EXEC_TestCommand: COLLIMATION");
+   
 
+    // Filter test
+    Debug::WriteLine("EXEC_TestCommand:FILTER");
+    if (pDecodedFrame->parameters->Count == 1) {
+        if (pDecodedFrame->parameters[0] == "AG") {
+            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_AG);
+        }
+        else if (pDecodedFrame->parameters[0] == "AL") {
+            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_AL);
+        }
+        else if (pDecodedFrame->parameters[0] == "CU") {
+            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_CU);
+        }
+        else if (pDecodedFrame->parameters[0] == "RH") {
+            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_RH);
+        }
+        else if (pDecodedFrame->parameters[0] == "MO") {
+            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_MO);
+        }
+        else if (pDecodedFrame->parameters[0] == "MIRROR") {
+            PCB315::setMirrorMode(true);
+        }
+
+
+    }
+    return;
+
+    // Collimator test
+    Debug::WriteLine("EXEC_TestCommand: COLLIMATION");
     if (pDecodedFrame->parameters->Count == 1) {
         if (pDecodedFrame->parameters[0] == "OPEN") {
             Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            pFW303->setOpenCollimationMode();
+            PCB303::setOpenCollimationMode();
             ackOk();
             return;
         }else if(pDecodedFrame->parameters[0] == "AUTO") {
             Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            pFW303->setAutoCollimationMode();
+            PCB303::setAutoCollimationMode();
             ackOk();
             return;
         }else if (pDecodedFrame->parameters[0] == "STANDARD1") {
             Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            pFW303->setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD1);            
+            PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD1);            
             ackOk();
             return;
         }else if (pDecodedFrame->parameters[0] == "STANDARD2") {
             Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            pFW303->setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD2);
+            PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD2);
             ackOk();
             return;
         }else if (pDecodedFrame->parameters[0] == "STANDARD3") {
             Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            pFW303->setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD3);
+            PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD3);
             ackOk();
             return;
         }
@@ -950,7 +1024,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
             unsigned short left = System::Convert::ToUInt16(pDecodedFrame->parameters[3]);
             unsigned short right = System::Convert::ToUInt16(pDecodedFrame->parameters[4]);            
             unsigned short trap = System::Convert::ToUInt16(pDecodedFrame->parameters[5]);
-            pFW303->setCalibrationCollimationMode(gcnew PCB303::formatBlades(front, back, left, right, trap));
+            PCB303::setCalibrationCollimationMode(gcnew PCB303::formatBlades(front, back, left, right, trap));
             ackOk();
             return;
         }

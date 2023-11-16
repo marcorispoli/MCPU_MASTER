@@ -23,3 +23,12 @@
 < 10 %  EXEC_TestCommand STANDARD3 % >
 
 < 10 %  EXEC_TestCommand CALIB 1000 1000 20000 20000 1000% >
+
+< 10 %  EXEC_TestCommand AG% >
+< 10 %  EXEC_TestCommand AL% >
+< 10 %  EXEC_TestCommand RH% >
+< 10 %  EXEC_TestCommand MO% >
+< 10 %  EXEC_TestCommand MIRROR% >
+
+
+

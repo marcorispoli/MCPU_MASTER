@@ -1,0 +1,331 @@
+.TH "PCB315" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB315 \- This class implements the functions of the \fBPCB315\fP Module  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <PCB315\&.h>\fP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBfilterMaterialCodes\fP { \fBfilterMaterialCodes::FILTER_DEFAULT\fP =0, \fBfilterMaterialCodes::FILTER_AG\fP, \fBfilterMaterialCodes::FILTER_AL\fP, \fBfilterMaterialCodes::FILTER_MO\fP, \fBfilterMaterialCodes::FILTER_RH\fP, \fBfilterMaterialCodes::FILTER_CU\fP, \fBfilterMaterialCodes::FILTER_LEN\fP, \fBfilterMaterialCodes::FILTER_INVALID\fP = FILTER_LEN }"
+.br
+.RI "This is the enumeration class defining the possible selectable filters "
+.ti -1c
+.RI "enum class \fBfilterWorkingMode\fP { \fBfilterWorkingMode::FILTER_AUTO_MODE\fP = 0, \fBfilterWorkingMode::FILTER_MANUAL_MODE\fP, \fBfilterWorkingMode::FILTER_MIRROR_MODE\fP }"
+.br
+.RI "This enumeration class defines the possibles filter working modes "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB315\fP ()"
+.br
+.RI "\fBPCB315\fP Class constructor\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.PP
+.RI "\fB\fP"
+.br
+
+.in +1c
+.in +1c
+.ti -1c
+.RI "static unsigned char \fBgetStator\fP (void)"
+.br
+.RI "This function returns the current Stator temperature in Percent "
+.ti -1c
+.RI "static unsigned char \fBgetBulb\fP (void)"
+.br
+.RI "This function returns the current Bulb temperature in Percent "
+.ti -1c
+.RI "static unsigned char \fBgetAnode\fP (void)"
+.br
+.RI "This function returns the current Anode cumulated HU in percent "
+.ti -1c
+.RI "static bool \fBisTubeAlarm\fP (void)"
+.br
+.RI "This function provides a quick info about the Temperature alarm active irrespective of which alarm is actually present (stator, bulb or anode) "
+.ti -1c
+.RI "static \fBfilterMaterialCodes\fP \fBgetFilterFromTag\fP (System::String^ filter_tag)"
+.br
+.RI "Returns the Filter selection code\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetTagFromFilter\fP (\fBfilterMaterialCodes\fP filter)"
+.br
+.RI "Returns the Filter name\&. "
+.ti -1c
+.RI "static void \fBsetFilterAutoMode\fP (\fBfilterMaterialCodes\fP code)"
+.br
+.RI "This function sets the Auto mode, assigning the filter to be selected\&. "
+.ti -1c
+.RI "static void \fBsetFilterAutoMode\fP (void)"
+.br
+.RI "This function acctivates the auto mode: the selected filter has been already set\&. "
+.ti -1c
+.RI "static void \fBsetFilterManualMode\fP (\fBfilterMaterialCodes\fP code)"
+.br
+.RI "This function activates the manaul mode assigning the filter to be selected\&. "
+.ti -1c
+.RI "static void \fBsetFilterManualMode\fP (void)"
+.br
+.RI "This function activates the manaul mode: the filter shall be already set\&. "
+.ti -1c
+.RI "static void \fBsetMirrorMode\fP (bool request_power_light)"
+.br
+.RI "This function activates the Mirror Mode and the light (if requested) "
+.ti -1c
+.RI "static bool \fBgetPowerLightStatus\fP (void)"
+.br
+.RI "This function returns the current status of the Power light  "
+.in -1c
+.in -1c
+.SS "Private Types"
+
+.PP
+.RI "\fB\fP"
+.br
+
+.in +1c
+.in +1c
+.ti -1c
+.RI "enum class \fBStatusRegisters\fP { \fBSYSTEM_STATUS_REGISTER\fP = 0 }"
+.br
+.RI "This is the Device STATUS Register implementation  "
+.ti -1c
+.RI "enum class \fBFilterSlotCodes\fP { \fBFILTER_OUT_OF_POSITION\fP = 0, \fBFILTER_INVALID\fP = 0, \fBFILTER1_SELECTION\fP, \fBFILTER2_SELECTION\fP, \fBFILTER3_SELECTION\fP, \fBFILTER4_SELECTION\fP, \fBMIRROR_SELECTION\fP, \fBFILTER_SELECTION_PENDING\fP }"
+.br
+.RI "This enumeration class defines the codes associated to the device internal Slot selection code\&. "
+.ti -1c
+.RI "enum class \fBParamRegisters\fP { \fBFILTER1_PARAM_REGISTER\fP = 0, \fBFILTER2_PARAM_REGISTER\fP, \fBFILTER3_PARAM_REGISTER\fP, \fBFILTER4_PARAM_REGISTER\fP, \fBMIRROR_PARAM_REGISTER\fP, \fBPOWERLIGHT_PARAM_REGISTER\fP }"
+.br
+.RI "This is the device protocol Parameters registers implementation  "
+.ti -1c
+.RI "enum class \fBCommandregister\fP { \fBABORT_COMMAND\fP = 0, \fBSET_POSITIONER_COMMAND\fP, \fBSET_POSITIONER_RAW_COMMAND\fP, \fBSET_LIGHT\fP }"
+.br
+.RI "
+.br
+ This enumeration class defines the Indexes of the Command Execution "
+.ti -1c
+.RI "enum class \fBPositionerCommands\fP { \fBPOSITIONER_SELECT_FILTER1\fP = 1, \fBPOSITIONER_SELECT_FILTER2\fP, \fBPOSITIONER_SELECT_FILTER3\fP, \fBPOSITIONER_SELECT_FILTER4\fP, \fBPOSITIONER_SELECT_MIRROR\fP }"
+.br
+.ti -1c
+.RI "enum class \fBLightCommands\fP { \fBLIGHT_OFF\fP = 0, \fBLIGHT_ON\fP }"
+.br
+.in -1c
+.in -1c
+.in +1c
+.ti -1c
+.RI "static \fBfilterWorkingMode\fP \fBfilter_working_mode\fP = \fBfilterWorkingMode::FILTER_MANUAL_MODE\fP"
+.br
+.RI "This is the current Filter working mode\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBauto_filter_selected\fP = \fBFilterSlotCodes::FILTER_INVALID\fP"
+.br
+.RI "This is the current filter automatically selected\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBmanual_filter_selected\fP = \fBFilterSlotCodes::FILTER_INVALID\fP"
+.br
+.RI "This is the current filter automatically selected 
+.br
+ "
+.ti -1c
+.RI "static bool \fBvalid_filter_format\fP"
+.br
+.RI "This flag is set when the filter format is correct and coherent with the filterWorkingMode register\&. "
+.ti -1c
+.RI "static bool \fBfilter_fault\fP"
+.br
+.RI "This flag is set when the filter is in fault condition\&. "
+.ti -1c
+.RI "static int \fBfilter_selection_attempt\fP"
+.br
+.RI "This register counts the attempt to exit from a fault condition\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBfilter_status\fP = \fBFilterSlotCodes::FILTER_OUT_OF_POSITION\fP"
+.br
+.RI "last STATUS filter status read "
+.ti -1c
+.RI "static unsigned char \fBflags_status\fP = 0"
+.br
+.RI "This is the last read of the Flags status\&. "
+.ti -1c
+.RI "static bool \fBrequest_light_activation\fP = false"
+.br
+.RI "A light activation request is pending\&. "
+.ti -1c
+.RI "static unsigned char \fBstator_perc\fP = 0"
+.br
+.RI "This is the current stator temperature in percent of the maximum possible\&. "
+.ti -1c
+.RI "static unsigned char \fBbulb_perc\fP = 0"
+.br
+.RI "This is the current bulb temperature in percent of the maximum possible\&. "
+.ti -1c
+.RI "static unsigned char \fBanode_perc\fP = 0"
+.br
+.RI "This is the current anode temperature in percent of the maximum possible\&. "
+.ti -1c
+.RI "static bool \fBtube_high_temp_alarm\fP = false"
+.br
+.RI "This is the current tube temperature alarm flag in case of fault detected\&. "
+.ti -1c
+.RI "static \fBFilterSlotCodes\fP \fBfilterAssignment\fP (System::String^ assignment)"
+.br
+.RI "This function traslates the assignment parameter value (in string format) to a FilterSlotCodes related code\&. "
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This is the Base class runningLoop override function\&. "
+.ti -1c
+.RI "bool \fBconfigurationLoop\fP (void) override"
+.br
+.RI "This is the Base class configurationLoop override function\&. "
+.ti -1c
+.RI "bool \fBupdateStatusRegister\fP (void)"
+.br
+.RI "Function handling the status register acquisition\&. "
+.ti -1c
+.RI "void \fBmanageFilterSelection\fP (void)"
+.br
+.RI "Function handling the Filter selection operations\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This class implements the functions of the \fBPCB315\fP Module 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB315::Commandregister\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+
+.br
+ This enumeration class defines the Indexes of the Command Execution 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIABORT_COMMAND \fP\fP
+Abort Command (mandatory as for device protocol) 
+.TP
+\fB\fISET_POSITIONER_COMMAND \fP\fP
+Select Filter or Mirror devices\&. 
+.TP
+\fB\fISET_POSITIONER_RAW_COMMAND \fP\fP
+To be done\&. 
+.TP
+\fB\fISET_LIGHT \fP\fP
+Activates/Deactivate the light\&. 
+.SS "enum class \fBPCB315::FilterSlotCodes\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+This enumeration class defines the codes associated to the device internal Slot selection code\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIFILTER_OUT_OF_POSITION \fP\fP
+The Filter is not in an expected position\&. (error condition) 
+.TP
+\fB\fIFILTER_INVALID \fP\fP
+The Filter selected is invalid (usually after the startup) 
+.TP
+\fB\fIFILTER1_SELECTION \fP\fP
+The Device is currently selecting the FILTER1\&. 
+.TP
+\fB\fIFILTER2_SELECTION \fP\fP
+The Device is currently selecting the FILTER2\&. 
+.TP
+\fB\fIFILTER3_SELECTION \fP\fP
+The Device is currently selecting the FILTER3\&. 
+.TP
+\fB\fIFILTER4_SELECTION \fP\fP
+The Device is currently selecting the FILTER4\&. 
+.TP
+\fB\fIMIRROR_SELECTION \fP\fP
+The Device is currently selecting the MIRROR\&. 
+.TP
+\fB\fIFILTER_SELECTION_PENDING \fP\fP
+The Device is selecting a Slot (command is executing) 
+.SS "enum class \fBPCB315::LightCommands\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILIGHT_OFF \fP\fP
+The power light shall be set OFF\&. 
+.TP
+\fB\fILIGHT_ON \fP\fP
+The power light shall be set ON (with internal predefined timeout) 
+.SS "enum class \fBPCB315::ParamRegisters\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+This is the device protocol Parameters registers implementation  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIFILTER1_PARAM_REGISTER \fP\fP
+um unit of FILTER1 calibration 
+.TP
+\fB\fIFILTER2_PARAM_REGISTER \fP\fP
+um unit of FILTER2 calibration 
+.TP
+\fB\fIFILTER3_PARAM_REGISTER \fP\fP
+um unit of FILTER3 calibration 
+.TP
+\fB\fIFILTER4_PARAM_REGISTER \fP\fP
+um unit of FILTER4 calibration 
+.TP
+\fB\fIMIRROR_PARAM_REGISTER \fP\fP
+um unit of MIRROR calibration 
+.TP
+\fB\fIPOWERLIGHT_PARAM_REGISTER \fP\fP
+Light activation timeout in seconds (s) 
+.SS "enum class \fBPCB315::PositionerCommands\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPOSITIONER_SELECT_FILTER1 \fP\fP
+The Positioner select the Filter1 slot\&. 
+.TP
+\fB\fIPOSITIONER_SELECT_FILTER2 \fP\fP
+The Positioner select the Filter2 slot\&. 
+.TP
+\fB\fIPOSITIONER_SELECT_FILTER3 \fP\fP
+The Positioner select the Filter3 slot\&. 
+.TP
+\fB\fIPOSITIONER_SELECT_FILTER4 \fP\fP
+The Positioner select the Filter4 slot\&. 
+.TP
+\fB\fIPOSITIONER_SELECT_MIRROR \fP\fP
+The Positioner select the Filter4 slot\&. 
+.SS "enum class \fBPCB315::StatusRegisters\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+This is the Device STATUS Register implementation  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISYSTEM_STATUS_REGISTER \fP\fP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

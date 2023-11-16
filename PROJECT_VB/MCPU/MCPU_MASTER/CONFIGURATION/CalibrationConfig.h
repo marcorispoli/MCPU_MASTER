@@ -88,6 +88,13 @@ public:
     static const System::String^ PADDLE_9x9_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
 
     //___________________________________________________________________________________________________//
+    static const System::String^ PARAM_PADDLE_9x21_MAG = "PADDLE_9x21_MAG";
+    static const System::String^ PARAM_PADDLE_9x21_MAG_COMMENT = "PADDLE_9x21_MAG calibration data";
+    static const System::String^ PADDLE_9x21_MAG_COLLIMATION_DEFAULT = "1"; // Format Collimation index
+    static const System::String^ PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
+    static const System::String^ PADDLE_9x21_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
+
+    //___________________________________________________________________________________________________//
     static const System::String^ PARAM_PADDLE_D75_MAG = "PADDLE_D75_MAG";
     static const System::String^ PARAM_PADDLE_D75_MAG_COMMENT = "PADDLE_D75_MAG calibration data";
     static const System::String^ PADDLE_D75_MAG_COLLIMATION_DEFAULT = "1"; // Format Collimation index
@@ -157,6 +164,12 @@ public:
             PADDLE_9x9_MAG_WEIGHT_DEFAULT,
             }),
 
+            CONFIG_FILE_ITEM(PARAM_PADDLE_9x21_MAG, PARAM_PADDLE_9x21_MAG_COMMENT, CONFIG_FILE_DEFAULT{
+            PADDLE_9x21_MAG_COLLIMATION_DEFAULT,
+            PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT,
+            PADDLE_9x21_MAG_WEIGHT_DEFAULT,
+            }),
+
             CONFIG_FILE_ITEM(PARAM_PADDLE_D75_MAG, PARAM_PADDLE_D75_MAG_COMMENT, CONFIG_FILE_DEFAULT{
             PADDLE_D75_MAG_COLLIMATION_DEFAULT,
             PADDLE_D75_MAG_POSITION_OFFSET_DEFAULT,
@@ -170,10 +183,37 @@ public:
 ref class FilterConfig
 {
 public:
+
+    // This is the enumeration for the Filter to Slot assignement
+    enum class FilterAssignment {
+        NOT_ASSIGNED = 0,
+        ASSIGNED_TO_FILTER1,
+        ASSIGNED_TO_FILTER2,
+        ASSIGNED_TO_FILTER3,
+        ASSIGNED_TO_FILTER4,
+    };
+    static const cli::array<System::String^>^ FilterAssignmentString = gcnew cli::array<System::String^>  {"0", "1", "2", "3", "4"};
+
     static const System::String^ FILENAME = "FilterCalibration.cnf";
     static const int     FILE_REVISION = 1;
 
+    //___________________________________________________________________________________________________//
+    static const System::String^ PARAM_FILTER_CONFIG = "FILTER_CONFIG";
+    static const System::String^ PARAM_FILTER_CONFIG_COMMENT = "Defines the Filter assignment";
+    static const int     PARAM_FILTER_RH_POSITION = 0;
+    static const int     PARAM_FILTER_AG_POSITION = 1;
+    static const int     PARAM_FILTER_AL_POSITION = 2;
+    static const int     PARAM_FILTER_CU_POSITION = 3;
+    static const int     PARAM_FILTER_MO_POSITION = 4;
+    static const int     PARAM_FILTER_DEFAULT_POSITION = 5;
 
+    static const System::String^ PARAM_FILTER_RH_POSITION_DEFAULT = FilterAssignmentString[(int) FilterAssignment::ASSIGNED_TO_FILTER1]; // FILTER1 position
+    static const System::String^ PARAM_FILTER_AG_POSITION_DEFAULT = FilterAssignmentString[(int)FilterAssignment::ASSIGNED_TO_FILTER2];; // FILTER2 position
+    static const System::String^ PARAM_FILTER_AL_POSITION_DEFAULT = FilterAssignmentString[(int)FilterAssignment::ASSIGNED_TO_FILTER3];; // FILTER3 position
+    static const System::String^ PARAM_FILTER_CU_POSITION_DEFAULT = FilterAssignmentString[(int)FilterAssignment::ASSIGNED_TO_FILTER4];; // FILTER4 position
+    static const System::String^ PARAM_FILTER_MO_POSITION_DEFAULT = FilterAssignmentString[(int)FilterAssignment::NOT_ASSIGNED];; // Not assigned
+    static const System::String^ PARAM_FILTER_DEFAULT_POSITION_DEFAULT = FilterAssignmentString[(int)FilterAssignment::ASSIGNED_TO_FILTER4];; // Assigned to FILTER1
+    
     //___________________________________________________________________________________________________//
     static const System::String^ PARAM_FILTER_CALIBRATION = "FILTER_CALIB";
     static const System::String^ PARAM_FILTER_CALIBRATION_COMMENT = "Filter calibration fields";
@@ -195,6 +235,15 @@ public:
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
+            CONFIG_FILE_ITEM(PARAM_FILTER_CONFIG, PARAM_FILTER_CONFIG_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FILTER_RH_POSITION_DEFAULT,
+            PARAM_FILTER_AG_POSITION_DEFAULT,
+            PARAM_FILTER_AL_POSITION_DEFAULT,
+            PARAM_FILTER_CU_POSITION_DEFAULT,
+            PARAM_FILTER_MO_POSITION_DEFAULT,
+            PARAM_FILTER_DEFAULT_POSITION_DEFAULT,
+            }),
+
             CONFIG_FILE_ITEM(PARAM_FILTER_CALIBRATION, PARAM_FILTER_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_FILTER_CALIBRATION_FILTER1_DEFAULT,
             PARAM_FILTER_CALIBRATION_FILTER2_DEFAULT,

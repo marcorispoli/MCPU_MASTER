@@ -332,3 +332,72 @@ bool CanDeviceProtocol::command(unsigned char code, unsigned char d0, unsigned c
 bool CanDeviceProtocol::isCommandCompleted(void) {
     return !command_executing;
 }
+
+CanDeviceProtocol::Register^ CanDeviceProtocol::readCommandRegister(void) {
+    return nullptr;
+}
+CanDeviceProtocol::Register^ CanDeviceProtocol::readErrorRegister(void) {
+    
+    if (!send(
+        (System::Byte)0, // Internally set to the sequence number
+        (System::Byte) ProtocolFrameCode::FRAME_READ_ERRORS, // Frame code
+        (System::Byte)0, // Index not used
+        (System::Byte)0, // D0 not used
+        (System::Byte)0, // D1 not used
+        (System::Byte)0, // D2 not used
+        (System::Byte)0, // D3 not used
+        (System::Byte)0, // CRC internally set
+        false)
+        ) return nullptr;
+
+    return gcnew Register(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+
+}
+CanDeviceProtocol::Register^ CanDeviceProtocol::readStatusRegister(unsigned char index) {
+
+    if (!send(
+        (System::Byte) 0, // Internally set to the sequence number
+        (System::Byte) ProtocolFrameCode::FRAME_READ_STATUS, // Frame code
+        (System::Byte) index, // Status register index
+        (System::Byte)0, // d0
+        (System::Byte)0, // D1
+        (System::Byte)0, // D2 
+        (System::Byte)0, // D3
+        (System::Byte)0, // CRC internally set
+        false)// Bootloader == true, Application = false
+    ) return nullptr;
+
+    return gcnew Register(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    
+}
+
+CanDeviceProtocol::Register^ CanDeviceProtocol::readDataRegister(unsigned char index) {
+    return nullptr;
+}
+bool CanDeviceProtocol::writeParamRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3) {
+    return send(
+        (System::Byte)0, // Internally set to the sequence number
+        (System::Byte)ProtocolFrameCode::FRAME_WRITE_PARAM, // Frame code
+        (System::Byte)index, // PARAM register index
+        (System::Byte)d0, // d0
+        (System::Byte)d1, // D1
+        (System::Byte)d2, // D2 
+        (System::Byte)d3, // D3
+        (System::Byte)0, // CRC internally set
+        false); // Bootloader == true, Application = false
+
+}
+bool CanDeviceProtocol::writeDataRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3) {
+
+    return send(
+        (System::Byte)0, // Internally set to the sequence number
+        (System::Byte)ProtocolFrameCode::FRAME_WRITE_DATA, // Frame code
+        (System::Byte)index, // DATA register index
+        (System::Byte)d0, // d0
+        (System::Byte)d1, // D1
+        (System::Byte)d2, // D2 
+        (System::Byte)d3, // D3
+        (System::Byte)0, // CRC internally set
+        false); // Bootloader == true, Application = false
+
+}

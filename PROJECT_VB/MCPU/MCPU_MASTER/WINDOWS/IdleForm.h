@@ -1,5 +1,16 @@
 #pragma once
 
+/// <summary>
+/// \defgroup Idle_Module Gantry IDLE Status Management Module
+/// This module implements the features of the Gantry IDLE status
+/// 
+/// # Features
+/// 
+/// - Collimation mode = OPEN
+/// - Filter Manual mode:  selected DEFAULT filter
+/// 
+/// </summary>
+/// 
 //using namespace System;
 using namespace System::ComponentModel;
 using namespace System::Collections;

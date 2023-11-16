@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,6 +12,8 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include 'Errors\&.h'\fP
 .br
+\fC#include 'PCB315\&.h'\fP
+.br
 
 .SS "Classes"
 
@@ -21,13 +23,6 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 .ti -1c
 .RI "class \fBGantryStatusRegisters::enumType< T >\fP"
-.br
-.ti -1c
-.RI "class \fBGantryStatusRegisters::FilterOptions\fP"
-.br
-.RI "This class implements the Filter selection interface\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CollimationModeOption\fP"
 .br
 .ti -1c
 .RI "class \fBGantryStatusRegisters::CompressionModeOption\fP"
@@ -98,10 +93,6 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 .RI "This register handle the Exposure pulse data info\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::TubeDataRegister\fP"
-.br
-.RI "This class handles the Xray Tybe data and setting\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
 .br
 .RI "This class handles the Interface language "
@@ -136,19 +127,22 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBpCAN\fP   ((CanDriver^) \fBGlobalObjects::pCan\fP)"
 .br
 .ti -1c
-.RI "#define \fBpFW301\fP   ((PCB301^) \fBGlobalObjects::pFw301\fP)"
+.RI "#define \fBpFW301\fP   ((\fBPCB301\fP^) \fBGlobalObjects::pFw301\fP)"
 .br
 .ti -1c
-.RI "#define \fBpFW302\fP   ((PCB302^) \fBGlobalObjects::pFw302\fP)"
+.RI "#define \fBpFW302\fP   ((\fBPCB302\fP^) \fBGlobalObjects::pFw302\fP)"
 .br
 .ti -1c
-.RI "#define \fBpFW303\fP   ((PCB303^) \fBGlobalObjects::pFw303\fP)"
+.RI "#define \fBpFW303\fP   ((\fBPCB303\fP^) \fBGlobalObjects::pFw303\fP)"
 .br
 .ti -1c
-.RI "#define \fBpFW304\fP   ((PCB304^) \fBGlobalObjects::pFw304\fP)"
+.RI "#define \fBpFW304\fP   ((\fBPCB304\fP^) \fBGlobalObjects::pFw304\fP)"
 .br
 .ti -1c
-.RI "#define \fBpFW315\fP   ((PCB315^) \fBGlobalObjects::pFw315\fP)"
+.RI "#define \fBpFW315\fP   ((\fBPCB315\fP^) \fBGlobalObjects::pFw315\fP)"
+.br
+.ti -1c
+.RI "#define \fBpFW326\fP   ((\fBPCB326\fP^) \fBGlobalObjects::pFw326\fP)"
 .br
 .ti -1c
 .RI "#define \fBpMBODY\fP   ((CanOpenMotor^) \fBGlobalObjects::pMotBody\fP)"
@@ -201,15 +195,17 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .SS "#define pCAN   ((CanDriver^) \fBGlobalObjects::pCan\fP)"
 
-.SS "#define pFW301   ((PCB301^) \fBGlobalObjects::pFw301\fP)"
+.SS "#define pFW301   ((\fBPCB301\fP^) \fBGlobalObjects::pFw301\fP)"
 
-.SS "#define pFW302   ((PCB302^) \fBGlobalObjects::pFw302\fP)"
+.SS "#define pFW302   ((\fBPCB302\fP^) \fBGlobalObjects::pFw302\fP)"
 
-.SS "#define pFW303   ((PCB303^) \fBGlobalObjects::pFw303\fP)"
+.SS "#define pFW303   ((\fBPCB303\fP^) \fBGlobalObjects::pFw303\fP)"
 
-.SS "#define pFW304   ((PCB304^) \fBGlobalObjects::pFw304\fP)"
+.SS "#define pFW304   ((\fBPCB304\fP^) \fBGlobalObjects::pFw304\fP)"
 
-.SS "#define pFW315   ((PCB315^) \fBGlobalObjects::pFw315\fP)"
+.SS "#define pFW315   ((\fBPCB315\fP^) \fBGlobalObjects::pFw315\fP)"
+
+.SS "#define pFW326   ((\fBPCB326\fP^) \fBGlobalObjects::pFw326\fP)"
 
 .SS "#define pGENERATOR   ((Generator^) \fBGlobalObjects::pGenerator\fP)"
 

@@ -43,6 +43,14 @@ public:
 		COMMAND_DEVICE_TMO = 255
 	};
 
+	ref class Register {
+	public:
+		Register(unsigned char pd0, unsigned char pd1, unsigned char pd2, unsigned char pd3) {
+			d0 = pd0; d1 = pd1; d2 = pd2; d3 = pd3;
+		}
+		unsigned char d0, d1, d2, d3;
+	};
+
 	ref class CanDeviceRegister {
 	public:
 
@@ -144,6 +152,16 @@ public:
 	void thread_can_rx_callback(unsigned short canid, unsigned char* data, unsigned char len);
 
 	bool send(unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl);
+	Register^ readCommandRegister(void);
+	Register^ readErrorRegister(void);
+	Register^ readStatusRegister(unsigned char index);
+	Register^ readDataRegister(unsigned char index);
+	bool writeParamRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
+	bool writeDataRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
+
+
+
+
 	inline bool isTmo(void) { return tmo; }
 
 	inline CanDeviceRegister^ getRxRegister(void) { return rx_register; }

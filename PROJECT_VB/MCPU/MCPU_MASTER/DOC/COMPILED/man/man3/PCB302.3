@@ -1,0 +1,251 @@
+.TH "PCB302" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB302
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <PCB302\&.h>\fP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBpaddleCodes\fP { \fBPADDLE_PROSTHESIS\fP, \fBPADDLE_BIOP2D\fP, \fBPADDLE_BIOP3D\fP, \fBPADDLE_TOMO\fP, \fBPADDLE_24x30_CONTACT\fP, \fBPADDLE_18x24_C_CONTACT\fP, \fBPADDLE_18x24_L_CONTACT\fP, \fBPADDLE_18x24_R_CONTACT\fP, \fBPADDLE_10x24_CONTACT\fP, \fBPADDLE_9x21_MAG\fP, \fBPADDLE_9x9_MAG\fP, \fBPADDLE_D75_MAG\fP, \fBPADDLE_LEN\fP, \fBPADDLE_NOT_DETECTED\fP = PADDLE_LEN }"
+.br
+.RI "This enumeration class defines the Paddle identified by the Application "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB302\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static int \fBgetPaddleCollimationFormatIndex\fP (unsigned char paddle_code)"
+.br
+.RI "This function returns the index of the collimation format associated at the paddle\&. "
+.ti -1c
+.RI "static int \fBgetPaddleCode\fP (System::String^ tag)"
+.br
+.RI "This function returns the paddle code from the paddle name\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetPaddleName\fP (\fBpaddleCodes\fP paddle)"
+.br
+.RI "This function returns the name of the paddle\&. "
+.ti -1c
+.RI "static \fBpaddleCodes\fP \fBgetDetectedPaddleCode\fP (void)"
+.br
+.RI "This function returns the current detected paddle code\&. "
+.ti -1c
+.RI "static int \fBgetDetectedPaddleCollimationFormat\fP (void)"
+.br
+.RI "This function returns he collimation format index associated to the detected paddle "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBrunningLoop\fP (void) override"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBpaddle_name\fP"
+.br
+.RI "This is the option-tags static array\&. "
+.ti -1c
+.RI "static \fBpaddleCodes\fP \fBdetected_paddle\fP"
+.br
+.RI "This is the current detected paddle\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB302::paddleCodes\fP\fC [strong]\fP"
+
+.PP
+This enumeration class defines the Paddle identified by the Application 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPADDLE_PROSTHESIS \fP\fP
+Paddle PROSTHESIS format\&. 
+.TP
+\fB\fIPADDLE_BIOP2D \fP\fP
+Paddle BIOPSY 2D format\&. 
+.TP
+\fB\fIPADDLE_BIOP3D \fP\fP
+Paddle BIOPSY STEREO format\&. 
+.TP
+\fB\fIPADDLE_TOMO \fP\fP
+Paddle TOMO 24x30 format\&. 
+.TP
+\fB\fIPADDLE_24x30_CONTACT \fP\fP
+Paddle 24x30 format\&. 
+.TP
+\fB\fIPADDLE_18x24_C_CONTACT \fP\fP
+Paddle 18x24 CENTER format\&. 
+.TP
+\fB\fIPADDLE_18x24_L_CONTACT \fP\fP
+Paddle 18x24 LEFT format\&. 
+.TP
+\fB\fIPADDLE_18x24_R_CONTACT \fP\fP
+Paddle 18x24 RIGHT format\&. 
+.TP
+\fB\fIPADDLE_10x24_CONTACT \fP\fP
+Paddle 10x24 format\&. 
+.TP
+\fB\fIPADDLE_9x21_MAG \fP\fP
+Paddle 9x21(MAG) format\&. 
+.TP
+\fB\fIPADDLE_9x9_MAG \fP\fP
+Paddle TOMO 9x9(MAG) format\&. 
+.TP
+\fB\fIPADDLE_D75_MAG \fP\fP
+Paddle D75(MAG) format\&. 
+.TP
+\fB\fIPADDLE_LEN \fP\fP
+.TP
+\fB\fIPADDLE_NOT_DETECTED \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PCB302::PCB302 ()\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBPCB302::paddleCodes\fP PCB302::getDetectedPaddleCode (void)\fC [static]\fP"
+
+.PP
+This function returns the current detected paddle code\&. This function returns the current detected paddle code
+.PP
+\fBReturns\fP
+.RS 4
+the current detected paddle code
+.RE
+.PP
+
+.SS "int PCB302::getDetectedPaddleCollimationFormat (void)\fC [static]\fP"
+
+.PP
+This function returns he collimation format index associated to the detected paddle 
+.PP
+\fBReturns\fP
+.RS 4
+the format index or -1 if no format is available 
+.RE
+.PP
+
+.SS "int PCB302::getPaddleCode (System::String^ tag)\fC [static]\fP"
+
+.PP
+This function returns the paddle code from the paddle name\&. This function returns the paddle code from the paddle name
+.PP
+The Paddle name is a string name describing the Paddle\&.
+.br
+The paddle name is used in the system for string protocols like the AWS protocol\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fItag\fP name of the paddle
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the paddle code or -1 if the no paddle is found
+.RE
+.PP
+
+.SS "int PCB302::getPaddleCollimationFormatIndex (unsigned char paddle_code)\fC [static]\fP"
+
+.PP
+This function returns the index of the collimation format associated at the paddle\&. This function returns the index of the collimation format associated at the paddle\&.
+.PP
+The index of the collimation format should be in the range of 1:x where x should depend by the collimator number of available collimation format parameters\&. 
+.PP
+.nf
+NOTE: This module cannot check the index value that depends by other modules (the collimaotor)\&.
+
+.fi
+.PP
+.PP
+\fBParameters\fP
+.RS 4
+\fIpaddle_code\fP the code of the paddle to be investigated
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the collimation format or \&.-1 if the paddle is notn a valid paddle
+.RE
+.PP
+
+.SS "System::String PCB302::getPaddleName (\fBpaddleCodes\fP paddle)\fC [static]\fP"
+
+.PP
+This function returns the name of the paddle\&. This function returns the name of the paddle
+.PP
+.PP
+.nf
+NOTE: If the paddle code shouldn't match with any paddle name available\\n
+the function returns a NULLPTR\&. The Application shall check the result before to use it\&. 
+.fi
+.PP
+  
+.PP
+\fBParameters\fP
+.RS 4
+\fIpaddle\fP This is the paddle code
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The name of the paddle or nullptr if the name is not found
+.RE
+.PP
+
+.SS "void PCB302::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBpaddleCodes\fP PCB302::detected_paddle\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current detected paddle\&. 
+.SS "const cli::array<System::String^> ^ PCB302::paddle_name\fC [static]\fP, \fC [private]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= gcnew cli::array<System::String^>  { 
+        "PADDLE_PROSTHESIS",
+        "PADDLE_BIOP2D", 
+        "PADDLE_BIOP3D", 
+        "PADDLE_TOMO", 
+        "PADDLE_24x30_CONTACT",
+        "PADDLE_18x24_C_CONTACT", 
+        "PADDLE_18x24_L_CONTACT", 
+        "PADDLE_18x24_R_CONTACT", 
+        "PADDLE_10x24_CONTACT", 
+        "PADDLE_9x21_MAG", 
+        "PADDLE_9x9_MAG", 
+        "PADDLE_D75_MAG"
+    }
+.fi
+.PP
+This is the option-tags static array\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

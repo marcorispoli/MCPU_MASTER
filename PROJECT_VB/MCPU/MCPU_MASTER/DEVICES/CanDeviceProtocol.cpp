@@ -11,6 +11,7 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     // Gets the handler of the class instance to be used for the Post/Send message functions.
     //hwnd = static_cast<HWND>(Handle.ToPointer());
     device_id = devid;
+    device_reset = false;
     rx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tmo = true;
@@ -66,7 +67,13 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
         return; // Not a target
     }
 
-    
+    // Verifies if there is a Device Reset condition to be signaled
+    if ((!bootloader) && (rx_register->b1 == (unsigned char) ProtocolFrameCode::FRAME_DEVICE_RESET)) {
+        device_reset = true;
+        SetEvent(rxEvent);
+        return;
+    }
+
     if (
         (bootloader != tx_register->bootloader) ||  // Wrong destination
         (!rx_register->decode(data, bootloader)) || // CRC error
@@ -80,7 +87,7 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
     
 
     // Checks that the received Object registers matches with the expected    
-    rx_pending = false;    
+    rx_pending = false; 
     rxOk = true;
 
     // Wake the waiting command
@@ -140,7 +147,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
 void CanDeviceProtocol::mainWorker(void) {
 
 
-    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: MAIN THREAD STARTED");
+    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Module started: Wait Can Driver Connection");
 
     while (1) {
 
@@ -152,6 +159,7 @@ void CanDeviceProtocol::mainWorker(void) {
         case status_options::WAITING_CAN_DRIVER_CONNECTION: // Waits for the CAN DRIVER connection
             if (CanDriver::isConnected()) {
                 internal_status = status_options::WAITING_REVISION;
+                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Wait Revision");
             }else{
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             }            
@@ -168,6 +176,7 @@ void CanDeviceProtocol::mainWorker(void) {
                 app_min = rx_register->b6;
                 app_sub = rx_register->b7;
                 internal_status = status_options::DEVICE_CONFIGURATION;
+                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Configuration");
                 break;
             }
 
@@ -176,19 +185,26 @@ void CanDeviceProtocol::mainWorker(void) {
             break;
 
         case status_options::DEVICE_CONFIGURATION: // Waits for the device configuration
-            if(configurationLoop()) internal_status = status_options::DEVICE_RUNNING;
-            else internal_status = status_options::DEVICE_ERROR;
+            if (configurationLoop()) {
+                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Running");
+                internal_status = status_options::DEVICE_RUNNING;
+            }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));            
             break;
 
         case status_options::DEVICE_RUNNING: // Device running
+            // If the device should reset
+            if (device_reset) {
+                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Reset Detected");
+                device_reset = false;
+                internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
+                resetLoop();
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                break;
+            }
             InternalRunningLoop();
             break;
 
-        case status_options::DEVICE_ERROR: // Device running
-            if(errorLoop()) internal_status = status_options::DEVICE_CONFIGURATION;
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            break;
 
         } // Switch internal_status
     }
@@ -300,16 +316,16 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
 }
 
 
-void CanDeviceProtocol::runningLoop(void) {
+void CanDeviceProtocol::runningLoop(void) {    
     std::this_thread::sleep_for(std::chrono::microseconds(500000));
     return;
 }
 
-bool CanDeviceProtocol::errorLoop(void) {    
+void CanDeviceProtocol::resetLoop(void) {        
     std::this_thread::sleep_for(std::chrono::microseconds(500000));
-    return false;
+    return ;
 }
-bool CanDeviceProtocol::configurationLoop(void) {
+bool CanDeviceProtocol::configurationLoop(void) {    
     std::this_thread::sleep_for(std::chrono::microseconds(500000));
     return true;
 }

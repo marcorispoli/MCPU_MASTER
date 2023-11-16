@@ -1,6 +1,18 @@
 
 /* -------- ERRORS ---------------------------*/
 
+"ERROR", "E00001", "PCB301_RESET", "PCB301 Communication", "The Board has been reset",
+"ERROR", "E00001", "PCB302_RESET", "PCB302 Communication", "The Board has been reset",
+"ERROR", "E00001", "PCB303_RESET", "PCB303 Communication", "The Board has been reset",
+"ERROR", "E00001", "PCB304_RESET", "PCB304 Communication", "The Board has been reset",
+"ERROR", "E00001", "PCB315_RESET", "PCB315 Communication", "The Board has been reset",
+"ERROR", "E00001", "PCB326_RESET", "PCB326 Communication", "The Board has been reset",
+"ERROR", "E00019", "PCB301_COMMUNICATION_ERROR", "PCB301 Communication", "The board no longer communicate with the MCPU",
+"ERROR", "E00020", "PCB302_COMMUNICATION_ERROR", "PCB302 Communication", "The board no longer communicate with the MCPU",
+"ERROR", "E00019", "PCB303_COMMUNICATION_ERROR", "PCB303 Communication", "The board no longer communicate with the MCPU",
+"ERROR", "E00020", "PCB304_COMMUNICATION_ERROR", "PCB304 Communication", "The board no longer communicate with the MCPU",
+"ERROR", "E00019", "PCB315_COMMUNICATION_ERROR", "PCB315 Communication", "The board no longer communicate with the MCPU",
+"ERROR", "E00020", "PCB326_COMMUNICATION_ERROR", "PCB326 Communication", "The board no longer communicate with the MCPU",
 "ERROR", "E00001", "XRAY_PUSH_FAULT", "Xray push button fault", "Xray push button locked On",
 "ERROR", "E00002", "MOTOR_PEDALS_UD_FAULT", "Motor Pedals Fault", "Up/Down pedals locked On",
 "ERROR", "E00003", "MOTOR_PEDALS_COMP_FAULT", "Motor Pedals Fault", "Compressor pedals locked On",
@@ -18,8 +30,6 @@
 "ERROR", "E00016", "STATOR_SENSOR_SHORT", "Tube Temperature Monitoring", "The Tube Stator sensor connection input\nseams to be shorted",
 "ERROR", "E00017", "BULB_SENSOR_LOW", "Tube Temperature Monitoring", "The Tube Bulb sensor connection input\nseams to be broken",
 "ERROR", "E00018", "BULB_SENSOR_SHORT", "Tube Temperature Monitoring", "The Tube Bulb sensor connection input\nseams to be shorted",
-"ERROR", "E00019", "PCB315_COMMUNICATION_ERROR", "PCB315 Communication", "The PCB315 board no longer communicate with the MCPU",
-"ERROR", "E00020", "PCB303_COMMUNICATION_ERROR", "PCB303 Communication", "The PCB303 board no longer communicate with the MCPU",
 
 
 /* -------- WARNINGS ---------------------------*/

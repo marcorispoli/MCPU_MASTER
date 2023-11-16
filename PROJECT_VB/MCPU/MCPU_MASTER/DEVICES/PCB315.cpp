@@ -277,6 +277,21 @@ void PCB315::runningLoop(void) {
 /// 
 /// </summary>
 /// 
+/// This function activate a One Shot alarm notifying the 
+/// operator that the device has been reset. 
+/// 
+/// 
+/// <param name=""></param>
+void PCB315::resetLoop(void) {
+
+    // Ths error is a one shot error: it is reset as soon as the operator open the error window
+    Notify::activate("PCB315_RESET", true);
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// 
 /// This function is called by the Base class before to call the runningLoop() 
 /// allowing the module to properly configure the device.
 /// 
@@ -289,7 +304,6 @@ void PCB315::runningLoop(void) {
 /// <param name=""></param>
 /// <returns></returns>
 bool PCB315::configurationLoop(void) {
-
     
     // 0.1mm position of the filters and mirror in the filter slots
     unsigned short calibrated_filter_1 = System::Convert::ToInt16(FilterConfig::Configuration->getParam(FilterConfig::PARAM_FILTER_CALIBRATION)[FilterConfig::PARAM_FILTER_CALIBRATION_FILTER1]);

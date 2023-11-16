@@ -317,6 +317,21 @@ PCB303::ColliStandardSelections PCB303::getAutomaticStandardFormatIndex(void) {
 }
 
 /// <summary>
+/// 
+/// </summary>
+/// 
+/// This function activate a One Shot alarm notifying the 
+/// operator that the device has been reset. 
+/// 
+/// 
+/// <param name=""></param>
+void PCB303::resetLoop(void) {
+
+    // Ths error is a one shot error: it is reset as soon as the operator open the error window
+    Notify::activate("PCB303_RESET", true);
+}
+
+/// <summary>
 /// This is the configuration loop routine executed at the beginning of the 
 /// device connection, before to execute the runningLoop() routine.
 /// 

@@ -367,7 +367,7 @@ public: enum class ColliStandardSelections {
 	/// \ingroup PCB303_Internal
 	///@{
 	/// 
-	
+	protected: 	void resetLoop(void) override;//!< This is the Base class resetLoop override function
 	protected: 	virtual void runningLoop(void) override;//!< This is the Base Class override function to handle the normal operation workflow 
 	protected: 	bool configurationLoop(void) override;//!< This is the Base Class override function to handle the device configuration
 	private:	bool updateStatusRegister(void); //! Read the status registers and handle the related bytes

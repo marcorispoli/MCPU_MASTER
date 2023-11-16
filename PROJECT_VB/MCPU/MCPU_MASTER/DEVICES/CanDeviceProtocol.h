@@ -23,6 +23,7 @@ public:
 		FRAME_WRITE_PARAM,//!< Write Parameter register frame command code
 		FRAME_STORE_PARAMS,//!< Store Parameters register frame command code
 		FRAME_COMMAND_EXEC,//!< Execute Command frame command code
+		FRAME_DEVICE_RESET,//!< Device Reset Code
 	};
 
 	// Bootloader commands
@@ -123,8 +124,7 @@ public:
 		WAITING_CAN_DRIVER_CONNECTION = 0,	//!< The Device is waiting the Can Driver connection		
 		WAITING_REVISION,					//!< The module is waiting for the revision acquisition
 		DEVICE_CONFIGURATION,				//!< The module is uploading the device parameters
-		DEVICE_RUNNING,						//!< The module is Running
-		DEVICE_ERROR,						//!< The module is in Error condition
+		DEVICE_RUNNING,						//!< The module is Running		
 		LEN,
 		UNDEF = LEN
 	};
@@ -177,7 +177,7 @@ public:
 	
 protected:
 	virtual void runningLoop(void) ;
-	virtual bool errorLoop(void);
+	virtual void resetLoop(void);
 	virtual bool configurationLoop(void);
 
 
@@ -196,6 +196,7 @@ private:
 	static unsigned char rx_sequence;
 	HANDLE rxEvent; //!< Event object signaled by the receiving callback
 	bool rx_pending; //!< A reception data is pending 
+	bool device_reset;//!< A Device reset code has been received
 	CanDeviceRegister^ tx_register; //!< Received register
 	CanDeviceRegister^ rx_register; //!< Received register
 

@@ -13,6 +13,7 @@ public:
 	{
 		detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;
 	}
+	static PCB302^ device = gcnew PCB302();
 
 	/// <summary>
 	///  This enumeration class defines the Paddle identified by the Application
@@ -61,7 +62,13 @@ public:
 	static int getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name
 	static System::String^ getPaddleName(paddleCodes paddle); //!< This function returns the name of the paddle
 	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
-	static int getDetectedPaddleCollimationFormat(void); // This function returns he collimation format index associated to the detected paddle
+	static int getDetectedPaddleCollimationFormat(void); //!< This function returns he collimation format index associated to the detected paddle
+
+//_________________________________________________________________________// 
+// To be implemented
+	
+	static void setCompressorUnlock(void) {}; //!< This function unlocks the compression
+
 };
 
 

@@ -60,54 +60,53 @@ namespace R2CP
         if(MessageInfo == nullptr)  return;
         if(!m_p_RadInterface_) return;
         if(Access != DATADIC_ACCESS_ANSWER_EVENT) return;
+        
+
+        // Max number of databank is set to 10 in CaDataDicGen.h file
+        unsigned char data_bank_index = pData[3];
+        if (data_bank_index >= 10) return;
 
 
+        unsigned char result_code = pData[19];
+        unsigned char focus = pData[15];
         float kV = ((float) pData[4] * 256. + (float) pData[5]) / 10.;
         float mA = ((float) pData[6] * 65536. + (float) pData[7] * 256. + (float) pData[8]) / 100.;
         float ms = ((float) pData[9] * 65536. + (float) pData[10] * 256. + (float) pData[11]) / 100.;
         float mAs = ms*mA/1000;
-        //float mAs = ((float) pData[12] * 65536. + (float) pData[13] * 256. + (float) pData[14]) / 1000.;
+       
+        m_p_instance_->executed_pulses[data_bank_index].result_code = result_code;
+        unsigned int samples = m_p_instance_->executed_pulses[data_bank_index].samples;
 
-        std::string focus ;
-        if(pData[15]) focus = "LARGE";
-        else focus = "SMALL";
-
-        std::string result;
-
-        switch(pData[19]){
-        case 0: result = "EXPOSURE NOT-STARTED"; break;
-        case 1: result = "EXPOSURE COMPLETED"; break;
-        case 2: result = "EXPOSURE COMPLETED AEC"; break;
-        case 3: result = "EXPOSURE AEC TIMEOUT"; break;
-        case 4: result = "EXPOSURE PUSH BUTTON RELEASE"; break;
-        case 5: result = "EXPOSURE ABORTED WITH ERROR"; break;
-        case 6: result = "EXPOSURE ABORTED BEFORE READY"; break;
-        case 7: result = "EXPOSURE ABORTED PANEL NOT READY"; break;
-        case 8: result = "EXPOSURE ABORTED BECAUSE INHIBIT"; break;
-        case 9: result = "EXPOSURE ABORTED BECAUSE OF EXPWIN OUT"; break;
+        if (m_p_instance_->executed_pulses[data_bank_index].samples == 0) {
+            m_p_instance_->executed_pulses[data_bank_index].focus = focus;
+            m_p_instance_->executed_pulses[data_bank_index].kV = kV;
+            m_p_instance_->executed_pulses[data_bank_index].mA = mA;
+            m_p_instance_->executed_pulses[data_bank_index].ms = ms;
+            m_p_instance_->executed_pulses[data_bank_index].mAs = mAs;
         }
-
-        /*
-        qDebug() << " POST EXPOSURE: " << (pData[0] * 256 + pData[1]) << " ----------------- ";
-        qDebug() << " Procedure: " << pData[2];
-        qDebug() << " DB Number: " << pData[3];
-        qDebug() << " EXIT: " << result;
-        qDebug() << " Focus: " << focus;
-        qDebug() << " kV: " << kV;
-        qDebug() << " mAs: " << mAs;
-        qDebug() << " mA: " << mA;
-        qDebug() << " mS: " << ms;
-        */
-
-        /* TBD
-        unsigned char foc = exposureManager::_FOCUS_SMALL;
-        if(pData[15]) foc = exposureManager::_FOCUS_LARGE;
-
-        COMMUNICATION->PostExposureEvent(pData[3], foc, kV, mAs,mA,ms,pData[19]);
-        */
+        else {
+            m_p_instance_->executed_pulses[data_bank_index].kV = (m_p_instance_->executed_pulses[data_bank_index].kV * samples + kV) / samples + 1;
+            m_p_instance_->executed_pulses[data_bank_index].mA = (m_p_instance_->executed_pulses[data_bank_index].mA * samples + mA) / samples + 1;
+            m_p_instance_->executed_pulses[data_bank_index].ms += ms;
+            m_p_instance_->executed_pulses[data_bank_index].mAs += mAs;
+        }
+        
+        m_p_instance_->executed_pulses[data_bank_index].samples++;
+        
     }
 
-
+    void CaDataDicGen::resetExecutedPulse(void) {
+        
+        for (int i = 0; i < 10; i++) {
+            m_p_instance_->executed_pulses[i].samples = 0;
+            m_p_instance_->executed_pulses[i].result_code = 0;
+            m_p_instance_->executed_pulses[i].kV = 0;
+            m_p_instance_->executed_pulses[i].mAs = 0;
+            m_p_instance_->executed_pulses[i].ms = 0;
+            m_p_instance_->executed_pulses[i].mA = 0;
+        }
+        
+    }
 
 
     // Get Functions
@@ -165,7 +164,7 @@ namespace R2CP
     }
 
 
-    void CaDataDicGen::Generator_Set_2D_Databank(unsigned char dbId, unsigned char focus, float KV, float MAS, unsigned long tmo){
+    void CaDataDicGen::Generator_Set_2D_Databank(unsigned char dbId, bool large_focus, float KV, float MAS, unsigned long tmo){
         if((dbId < 1) || (dbId >= DB_LastId)) return;
 
         unsigned char pData[27];
@@ -208,11 +207,9 @@ namespace R2CP
         pData[17] = (unsigned char ) (((MInt * 1) >> 0) & 0xFF);
 
         // Focal spot
-
-        /*TBD 
-        if(focus == exposureManager::_FOCUS_LARGE) pData[18] = 1;
+        if(large_focus) pData[18] = 1;
         else pData[18] = 0;
-        */
+        
 
         pData[19] = 0; // NA
         pData[20] = 0; // NA

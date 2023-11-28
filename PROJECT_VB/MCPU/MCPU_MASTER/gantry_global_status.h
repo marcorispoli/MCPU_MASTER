@@ -3,7 +3,7 @@
 #include <math.h>
 #include "ConfigFile.h"
 #include "Errors.h"
-#include "PCB315.h"
+
 
 
 
@@ -19,45 +19,22 @@ public:
     #define pOPERFORM  ((OperatingForm^) GlobalObjects::pOperatingForm)
 
     #define pAWS ((awsProtocol^) GlobalObjects::pAws)
-    #define pCAN ((CanDriver^) GlobalObjects::pCan)
-
-    #define pFW301 ((PCB301^) GlobalObjects::pFw301)
-    #define pFW302 ((PCB302^) GlobalObjects::pFw302)
-    #define pFW303 ((PCB303^) GlobalObjects::pFw303)
-    #define pFW304 ((PCB304^) GlobalObjects::pFw304)
-    #define pFW315 ((PCB315^) GlobalObjects::pFw315)
-    #define pFW326 ((PCB326^) GlobalObjects::pFw326)
-
-    #define pMBODY ((CanOpenMotor^) GlobalObjects::pMotBody)
-    #define pMTILT ((TiltMotor^) GlobalObjects::pMotTilt)
-    #define pMARM  ((ArmMotor^) GlobalObjects::pMotArm)
+    
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
-    #define pMVERT  ((VerticalMotor^) GlobalObjects::pMotVert)
+   
 
-    #define pGENERATOR  ((Generator^) GlobalObjects::pGenerator)
 
-    static Object^ pGenerator = nullptr;
-    static Object^ pAws = nullptr; //!< Pointer to the AWS interface
-    static Object^ pCan = nullptr; //!< Pointer to the Can Driver
 
-    // Motor pointers
-    static Object^ pMotTilt = nullptr; //!< Pointer to the Tilt Motor
-    static Object^ pMotArm = nullptr;  //!< Pointer to the Arm Motor
-    static Object^ pMotBody = nullptr; //!< Pointer to the Body Motor
+    static Object^ pAws = nullptr; //!< Pointer to the AWS interface    
     static Object^ pMotShift = nullptr; //!< Pointer to the Shift Motor
-    static Object^ pMotVert = nullptr;//!< Pointer to the Up/Down Motor
+    
 
-    static Object^ pFw301 = nullptr; //!< Pointer to the FW301 board
-    static Object^ pFw302 = nullptr; //!< Pointer to the FW302 board
-    static Object^ pFw303 = nullptr; //!< Pointer to the FW303 board
-    static Object^ pFw304 = nullptr; //!< Pointer to the FW304 board
-    static Object^ pFw315 = nullptr; //!< Pointer to the FW315 board
-    static Object^ pFw326 = nullptr; //!< Pointer to the FW326 board
-
+  
     // Monitor coordinates
     static int monitor_X0;//!< Pointer to the Monitor X0 position
     static int monitor_Y0;//!< Pointer to the Monitor Y0 position
     static System::String^ applicationResourcePath; //!< This is the current application resource path
+    
     // Forms
     static Object^ pIdleForm = nullptr; //!< Pointer to the IdleForm 
     static Object^ pOperatingForm = nullptr; //!< Pointer to the OperatingForm 
@@ -314,131 +291,7 @@ namespace GantryStatusRegisters {
 
 
 
-    /// <summary>
-    /// This class handles the Compression behavior during the exposure.
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class CompressionModeOption {
-    public:
-
-        /// <summary>
-        /// This is the enumeration option code 
-        /// </summary>
-        enum class options {
-            CMP_KEEP = 0, //!< Keeps the compression after exposure;
-            CMP_RELEASE,  //!< Releases the compression after exposure;
-            CMP_DISABLE, //!< Disables the Compression check (for exposures without the compression);
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "CMP_KEEP", "CMP_RELEASE", "CMP_DISABLE", "UNDEF"}; //!< This is the option-tags static array
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-
-    };
-
-    /// <summary>
-    /// This class handles the exposure type status.
-    ///     
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class ExposureTypeOption {
-    public:
-
-        /// <summary>
-        /// This is the enumeration option code 
-        /// </summary>
-        enum class options {
-            MAN_2D = 0, //!< The next exposure is a 2D manual mode
-            AEC_2D, //!< The next exposure is a 2D with AEC
-            MAN_3D, //!< The next exposure is a Tomo 3D in manual mode
-            AEC_3D, //!< The next exposure is a Tomo 3D with AEC
-            MAN_COMBO, //!< The next exposure is a Manual Combo
-            AEC_COMBO, //!< The next exposure is a Combo with AEC
-            MAN_AE, //!< The next exposure is a Dual energy exposure in manual mode
-            AEC_AE, //!< The next exposure is a Dual energy with AEC
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "MAN_2D", "AEC_2D", "MAN_3D", "AEC_3D", "MAN_COMBO", "AEC_COMBO", "MAN_AE", "AEC_AE", "UNDEF"}; //!< This is the option-tags static array
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-    };
-
-    /// <summary>
-    /// This class handles the Detector model selection.
-    /// 
-    /// The Detector model influences the behavior of the exposure sequence
-    /// due to possibly differences in the synch signals and or timing.
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class DetectorTypeOption {
-    public:
-
-        /// <summary>
-        /// This is the enumeration option code 
-        /// </summary>
-        enum class options {
-            LMAM2V2 = 0, //!< Analogic LMAM2 V2
-            LMAM2FDIV2,  //!< Analogic LMAM2 FDI-V2            
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "LMAM2V2", "LMAM2FDIV2", "UNDEF"}; //!< This is the option-tags static array
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-    };
-
-    /// <summary>
-    /// This class provides the Arm Mode options handling.
-    /// 
-    /// The Arm mode options enable/disable the check of the Arm position 
-    /// in order to validate the exposure.
-    /// 
-    /// </summary>
-    ref class ArmModeOption {
-    public:
-        /// <summary>
-        /// This is the enumeration option code for the Arm Mode option        
-        /// 
-        /// </summary>
-        enum class options {
-            ARM_ENA = 0, //!< Enables the Angle range check during exposure;
-            ARM_DIS, //!< Disables the Angle range check during the exposure;            
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "ARM_ENA", "ARM_DIS", "UNDEF"}; //!< This is the option-tags static array
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-    };
-
-    /// <summary>
-    /// This class handles the Usage of the patient protection during the exposure.
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class PatientProtectionMode {
-    public:
-
-        /// <summary>
-        /// This is the enumeration option code 
-        /// </summary>
-        enum class options {
-            PROTECTION_ENA = 0, //!< Enables the Patient protection check;
-            PROTECTION_DIS, //!< Disables the Patient protection check;            
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "PROTECTION_ENA", "PROTECTION_DIS", "UNDEF"}; //!< This is the option-tags static array
-
-        /// <summary>
-        /// This function tests if the use of the Patient protection is enabled
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>true if the use of the protection is enabled</returns>
-        inline bool useProtection(void) { return Value->getCode() == options::PROTECTION_ENA; }
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-    };
-
+    
     
     /// <summary>
     /// This register handles the Paddles identifiable by the compressor device
@@ -923,28 +776,6 @@ namespace GantryStatusRegisters {
 
 
    
-
-    /// <summary>
-    /// This class handles the exposure type status.
-    /// 
-    /// The Exposure type status determines what kind of exposure 
-    /// will take place. 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class ExposureModeRegister {
-    public:
-
-        static ExposureTypeOption^ exposureType = gcnew ExposureTypeOption;        
-        static ArmModeOption^ armMode = gcnew ArmModeOption;
-        static CompressionModeOption^ compressorMode = gcnew CompressionModeOption;
-        static PatientProtectionMode^ protectionMode = gcnew PatientProtectionMode;
-        static DetectorTypeOption^ detector = gcnew DetectorTypeOption;
-    };
-
-
-
-
-
     
 
 
@@ -1192,169 +1023,6 @@ namespace GantryStatusRegisters {
     };
 
 
-
-    /// <summary>
-    /// Internal class uses to group the exposure data pulses
-    /// 
-    /// </summary>
-    ref class exposurePulse {
-    public:
-
-
-        /// <summary>
-        /// This function sets the pulse exposure data content
-        /// 
-        /// 
-        /// </summary>
-        /// <param name="filter_tag"> This is the tag of the filter used in the next exposure pulse</param>
-        /// <param name="kV">kV value of the next exposure pulse [20:640] </param>
-        /// <param name="mAs">mAs value of the next exposure pulse [0:640] </param>
-        /// <returns>true if data are accepted</returns>
-        bool set(double kv, double mas, PCB315::filterMaterialCodes flt) {
-            if ((kv > 49.0) || (kv < 20.0)) return false;
-            if ((mas > 640) || (mas < 0)) return false;
-
-            // The pulse shall be consumed before to reuse it.
-            if (validated) return false;
-
-            // Assignes the filter
-            filter = flt;            
-
-            kV = kv;// Assignes the kV
-            mAs = mas;// Assignes the mAs
-            validated = true;
-            return true;
-        }
-
-       
-
-        /// <summary>
-        /// This function invalidate the usage of exposure data
-        /// </summary>
-        /// <param name=""></param>
-        inline void invalidate(void) { validated = false; }
-
-
-        /// <summary>
-        /// This is the creator of the pulse data class.
-        /// </summary>
-        /// <param name=""></param>
-        exposurePulse(void) {
-
-            // The handle of the filter selection is created
-            filter = PCB315::filterMaterialCodes::FILTER_INVALID;
-
-            // When created the pulse is invalidated for safety
-            validated = false;
-        };
-
-        /// <summary>
-        /// Returns the Pulse data Validation status
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns>true if data are valid</returns>
-        inline bool isValid(void) { return validated; }
-
-        /// <summary>
-        /// Returns the kV of the pulse
-        /// </summary>
-        /// <returns>kV value</returns>
-        inline double getKv() { return kV; }
-
-        /// <summary>
-        /// Returns the mAs of the pulse
-        /// </summary>
-        /// <returns>mAs value</returns>
-        inline double getmAs() { return mAs; }
-
-        /// <summary>
-        /// Returnrn the filter option of the pulse
-        /// </summary>
-        /// <returns>The filter option</returns>
-        inline PCB315::filterMaterialCodes getFilter() { return filter; }
-
-    private:
-        PCB315::filterMaterialCodes filter; //!< This is the assigned filter 
-        double kV; //!< This is the selected kV value
-        double mAs; //!< This is the selected mAs value
-        bool   validated; //!< This is the flag that validate the use of thhis pulse in a sequence
-    };
-
-    /// <summary>
-    /// This class implements the XRAY completed status register.
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
-    ref class ExposureCompletedOptions {
-    public:
-
-
-        ///  Definition of the register enumeration codes        
-        enum class options {
-            XRAY_COMPLETED_OK = 0, //!< XRAY sequence successfully completed
-            XRAY_COMPLETED_PARTIAL_DOSE = 1,//!< XRAY sequence partially completed
-            XRAY_COMPLETED_NO_DOSE = 2,//!< XRAY sequence aborted without dose
-            LEN,
-            UNDEF = LEN
-        };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^>  {"OK", "PARTIAL", "NOK", "UNDEF"}; //!< Definition of the register tags        
-        enumType<options>^ Value = gcnew enumType<options>(tags);
-
-        static cli::array<exposurePulse^>^ exposed_pulses = nullptr;
-    };
-
-    /// <summary>
-    /// This register handle the Exposure pulse data info.
-    /// 
-    /// The Exposure data of the exposure sequence is stored into this register.
-    /// \ingroup globalModule  
-    /// </summary>
-    ref class ExposureDataRegister {
-    public:
-
-        /// <summary>
-        /// This event is generated when the value changes
-        ///        
-        /// </summary>
-        static event delegate_void_callback^ exposure_completed_event;
-
-        static inline ExposureCompletedOptions^ getExposureComplete(void) { return exposure_complete; }
-        static inline exposurePulse^ getPulse(int i) { if (i < pulses->Length) return pulses[i]; else return nullptr; }
-        static inline void setExposurePartial(ExposureCompletedOptions::options, double kV, double mAs, PCB315::filterMaterialCodes filter) {
-            exposure_complete->exposed_pulses = pulses;
-            for (int i = 0; i < 4; i++) {
-                if (exposure_complete->exposed_pulses[3 - i]->isValid()) {
-                    exposure_complete->exposed_pulses[3 - i]->set(kV, mAs, filter);
-                    break;
-                }
-            }
-            clear();
-            exposure_complete->Value->setCode(ExposureCompletedOptions::options::XRAY_COMPLETED_PARTIAL_DOSE);
-            exposure_completed_event();
-        }
-        static inline void setExposureCompleted(void) {
-            exposure_complete->exposed_pulses = pulses;
-            clear();
-            exposure_complete->Value->setCode(ExposureCompletedOptions::options::XRAY_COMPLETED_OK);
-            exposure_completed_event();
-
-        }
-        static inline void setExposureNoDose(void) {
-            exposure_complete->exposed_pulses = nullptr;
-            clear();
-            exposure_complete->Value->setCode(ExposureCompletedOptions::options::XRAY_COMPLETED_NO_DOSE);
-            exposure_completed_event();
-        }
-
-
-        static inline void clear(void) {
-            pulses = gcnew cli::array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};
-        }
-
-    private:
-        static cli::array<exposurePulse^>^ pulses = gcnew cli::array<exposurePulse^>{gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse(), gcnew exposurePulse()};//!< Stores the array of data pulses
-        static ExposureCompletedOptions^ exposure_complete = gcnew ExposureCompletedOptions;
-    };
 
 
     /// <summary>

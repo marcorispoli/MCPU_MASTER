@@ -155,9 +155,6 @@
     <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicTestInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GENERATOR\R2CP\GenDataDic\metInterfaces\metDataDicRadInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WINDOWS\ConfirmationWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -177,6 +174,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CONFIGURATION\CalibrationConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\ExposureModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MOTORS\BodyMotor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -290,6 +293,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DEVICES\PCB326.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AWS\awsCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AWS\awsEvents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\Exposure2DModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\Exposure3DModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\ExposureAEModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\ExposureComboModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\BodyMotor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

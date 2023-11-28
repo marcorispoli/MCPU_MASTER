@@ -138,6 +138,36 @@ namespace R2CP
 
     }
 
+    void CaDataDicGen::SystemMessages_SetTestMessage(unsigned long msg) {
+
+        unsigned char pData[12];
+        unsigned long msgId = msg;
+
+        pData[0] = mNodeId;
+        pData[1] = (unsigned char)((msgId & 0xFF000000) >> 24);
+        pData[2] = (unsigned char)((msgId & 0x00FF0000) >> 16);
+        pData[3] = (unsigned char)((msgId & 0x0000FF00) >> 8);
+        pData[4] = (unsigned char)((msgId & 0x000000FF));
+        pData[5] = 1; // Active        
+        pData[6] = 1;      // Inhibit
+        pData[7] = 2;      // Standby
+        pData[8] = 0;
+        pData[9] = 0;
+        pData[10] = 0;
+        pData[11] = 0;
+
+        (void)m_Type_->Set(ETH_LOWEST_PRIORITY,
+            GENERATOR_NODE_ID,
+            mNodeId,
+            SYSTEM_COMMANDS_ENTRY,
+            SYSTEM_SYSTEM_MESSAGE,
+            10,
+            pData);
+
+        return;
+
+    }
+
 
 
 

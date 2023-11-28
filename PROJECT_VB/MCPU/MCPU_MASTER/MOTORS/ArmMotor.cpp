@@ -37,7 +37,7 @@ bool ArmMotor::initializeSpecificObjectDictionary(void) {
 void ArmMotor::setCommandCompletedCode(MotorCompletedCodes error) {
 
     // If the C-ARM activation is not a Isocentric mode (or is terminated in error) then the command termines here
-    if ((!command_iso) || (error != MotorCompletedCodes::ACTIVATION_SUCCESS)) {
+    if ((!iso_activation_mode) || (error != MotorCompletedCodes::COMMAND_SUCCESS)) {
         CanOpenMotor::setCommandCompletedCode(error);
         return;
     }
@@ -46,10 +46,10 @@ void ArmMotor::setCommandCompletedCode(MotorCompletedCodes error) {
     // The C-ARM position is expressed in cents of degrees;
     // The Vertical Arm position is espressed in millimeters
 
-    double init_h = COMPRESSION_PLANE_MM * cos((double) getIsoPosition() * 3.14159 / (double)18000);
+    double init_h = COMPRESSION_PLANE_MM * cos((double) getPreviousPosition() * 3.14159 / (double)18000);
     double end_h = COMPRESSION_PLANE_MM * cos((double)current_uposition * 3.14159 / (double)18000);
-    int target = pMVERT->getIsoPosition() + (int) init_h - (int) end_h;
+    int target = VerticalMotor::device->getCurrentPosition() + (int) init_h - (int) end_h;
 
-    pMVERT->activateAutomaticPositioning(command_id, target, 50, 10, 10, true);
+    VerticalMotor::device->activateAutomaticPositioning(command_id, target, 50, 10, 10);
     return;
 }

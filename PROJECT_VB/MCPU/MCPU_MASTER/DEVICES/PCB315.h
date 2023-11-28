@@ -338,6 +338,7 @@ private:
 	{
 
 	}
+	static PCB315^ device = gcnew PCB315();
 
 	/// <summary>
 	/// This is the enumeration class defining the possible selectable filters

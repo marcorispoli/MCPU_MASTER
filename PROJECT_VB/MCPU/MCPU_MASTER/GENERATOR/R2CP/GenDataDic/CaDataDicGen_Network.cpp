@@ -36,6 +36,14 @@ namespace R2CP
 										data);
 	}
 	
+	/// <summary>
+	/// This function is called whenever a CONNECTION-CHANGED EVENT is received
+	/// 
+	/// </summary>
+	/// <param name="Access"></param>
+	/// <param name="pData"></param>
+	/// <param name="nData"></param>
+	/// <param name="MessageInfo"></param>
 	void CaDataDicGen::Network_ConnectionChanged(tDataDicAccess Access, unsigned char *pData, unsigned short  nData, tInfoMessage *MessageInfo)
 	{
         if(MessageInfo == nullptr) return;
@@ -54,14 +62,62 @@ namespace R2CP
 
 	}
 	
+	void CaDataDicGen::Network_GetApplicationNodeStatus(void)
+	{
+		unsigned char node_iss = APPLICATION_NODE_ID;
+		unsigned char node_dest = SH_NODE_ID;
+		unsigned char node_get = APPLICATION_NODE_ID;
+		
+		(void)m_Type_->Get(ETH_LOWEST_PRIORITY,
+			node_dest,
+			node_iss,
+			NETWORK_COMMANDS_ENTRY,
+			NETWORK_NODESTATUS,
+			1,
+			&node_get);
+	}
+
+	void CaDataDicGen::Network_GetGeneratorNodeStatus(void)
+	{
+		unsigned char node_iss = APPLICATION_NODE_ID;
+		unsigned char node_dest = SH_NODE_ID;
+		unsigned char node_get = GENERATOR_NODE_ID;
+
+		(void)m_Type_->Get(ETH_LOWEST_PRIORITY,
+			node_dest,
+			node_iss,
+			NETWORK_COMMANDS_ENTRY,
+			NETWORK_NODESTATUS,
+			1,
+			&node_get);
+	}
+
+
+
+	/// <summary>
+	/// This function is called when a network NODE-STATUS ANSWER/EVENT is received.
+	/// 
+	/// </summary>
+	/// <param name="Access"></param>
+	/// <param name="pData"></param>
+	/// <param name="nData"></param>
+	/// <param name="MessageInfo"></param>
 	void CaDataDicGen::Network_NodeStatus(tDataDicAccess Access, unsigned char *pData, unsigned short  nData, tInfoMessage *MessageInfo)
 	{
 		if(MessageInfo == nullptr)
 			return;
 	
-		if(m_p_NetworkInteface_)
-			m_p_NetworkInteface_->II_Network_SS_NodeStatus(pData[0] , pData[1]);
-	
+		
+		if (pData[0] == APPLICATION_NODE_ID) {
+			if(pData[1]) m_Type_->smartHubConnected = true;
+			else m_Type_->smartHubConnected = false;
+		}
+
+		if (pData[0] == GENERATOR_NODE_ID) {
+			if (pData[1]) m_Type_->generatorConnected = true;
+			else m_Type_->generatorConnected = false;
+		}
+
 	}
 	
 	void CaDataDicGen::Network_ConnectionRequest(tDataDicAccess Access, unsigned char *pData, unsigned short  nData, tInfoMessage *MessageInfo)
@@ -88,6 +144,8 @@ namespace R2CP
 										&node_iss);
 	}
 	
+	
+
 	void CaDataDicGen::Network_IpConfig(tDataDicAccess Access, unsigned char *pData, unsigned short  nData, tInfoMessage *MessageInfo)
 	{
 		if(MessageInfo == nullptr)

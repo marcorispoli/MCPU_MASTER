@@ -30,5 +30,6 @@
 < 10 %  EXEC_TestCommand MO% >
 < 10 %  EXEC_TestCommand MIRROR% >
 
+< 10 %  EXEC_TestCommand 450 % >
 
 

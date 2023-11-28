@@ -20,8 +20,8 @@ static steady_clock::time_point stop;
  double dtempo;
 
 CanDriver::CanDriver() {
-    can_hwnd = static_cast<HWND>(Handle.ToPointer());
-    can_connected = false;
+    
+    
 
     error = false;
     ErrorString ="";
@@ -70,47 +70,6 @@ bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsi
     
 
     return true;
-}
-
-void CanDriver::WndProc(System::Windows::Forms::Message% m)
-{
-
-    switch (m.Msg) {
-
-    case DEVICE_PROTOCOL_DISPATCH_MESSAGE:
-        Debug::WriteLine("CAN DEVICE Dispach Message!\n");        
-        break;
-
-    case CANOPEN_NMT_DISPATCH_MESSAGE:
-        Debug::WriteLine("CANOPEN NMT Dispatch Message!\n");       
-        break;
-
-
-    case CANOPEN_SYNC_DISPATCH_MESSAGE:
-        Debug::WriteLine("CANOPEN SYNC Dispatch Message!\n");
-        break;
-
-
-    case CANOPEN_EMERGENCY_DISPATCH_MESSAGE:
-        Debug::WriteLine("CANOPEN EMRG Dispatch Message!\n");
-        break;
-
-
-    case CANOPEN_PDO_DISPATCH_MESSAGE:
-        Debug::WriteLine("CANOPEN PDO Dispatch Message!\n");
-        break;
-
-
-    case CANOPEN_SDO_DISPATCH_MESSAGE:
-        //Debug::WriteLine("CANOPEN SDO Dispatch Message!\n");
-        break;
-
-    case CANOPEN_BOOTUP_DISPATCH_MESSAGE:
-        Debug::WriteLine("CANOPEN BOOT-UP Dispatch Message!\n");
-        break;
-
-    }     
-    Form::WndProc(m);
 }
 
 //void driver_thread(void) {
@@ -284,41 +243,34 @@ void CanDriver::threadWork(void) {
             for (int j = 0; j < rxmsgs[i].Size; j++) rxCanData[j] = rxmsgs[i].Data[j];
 
             if ((rxCanId >= 0x100) && (rxCanId <= 0x17F)) {                
-                canrx_device_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                //SendNotifyMessageA(can_hwnd, DEVICE_PROTOCOL_DISPATCH_MESSAGE, 0, 0);
+                canrx_device_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }
             if ((rxCanId >= 0x580) && (rxCanId <= 0x5FF)) {
                 stop = std::chrono::steady_clock::now();
                 dtempo = (stop - start).count();
                 start = std::chrono::steady_clock::now();
-                canrx_canopen_sdo_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                //SendNotifyMessageA(can_hwnd, CANOPEN_SDO_DISPATCH_MESSAGE, 0, 0);
+                canrx_canopen_sdo_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }
             if ((rxCanId >= 0) && (rxCanId <= 0x7F)) {
-                canrx_canopen_nmt_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                SendNotifyMessageA(can_hwnd, CANOPEN_NMT_DISPATCH_MESSAGE, 0, 0);
+                canrx_canopen_nmt_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }
             if ((rxCanId >= 0x700) && (rxCanId <= 0x707)) {
-                canrx_canopen_bootup_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                SendNotifyMessageA(can_hwnd, CANOPEN_BOOTUP_DISPATCH_MESSAGE, 0, 0);
+                canrx_canopen_bootup_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }
             if (rxCanId == 0x80) {                
-                canrx_canopen_sync_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                SendNotifyMessageA(can_hwnd, CANOPEN_SYNC_DISPATCH_MESSAGE, 0, 0);
+                canrx_canopen_sync_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }                
             if ((rxCanId >= 0x81) && (rxCanId <= 0xFF)) {
-                canrx_canopen_emrg_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                SendNotifyMessageA(can_hwnd, CANOPEN_EMERGENCY_DISPATCH_MESSAGE, 0, 0);
+                canrx_canopen_emrg_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }
             if ((rxCanId >= 0x180) && (rxCanId <= 0x57F)) {
-                canrx_canopen_pdo_event(rxCanId, rxCanData, rxmsgs[i].Size);
-                SendNotifyMessageA(can_hwnd, CANOPEN_PDO_DISPATCH_MESSAGE, 0, 0);
+                canrx_canopen_pdo_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }
 

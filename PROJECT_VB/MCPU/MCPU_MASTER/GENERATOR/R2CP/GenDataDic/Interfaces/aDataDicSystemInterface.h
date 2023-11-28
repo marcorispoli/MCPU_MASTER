@@ -8,6 +8,10 @@ namespace R2CP
 {
 // #define GENERAL_RX_DISABLE_MSG_ID ((unsigned long) 500074)
  const unsigned long  GENERAL_RX_DISABLE_MSG_ID		= 500074;
+ const unsigned long  GENERAL_TEST1_MSG_ID = 500073;
+ const unsigned long  GENERAL_TEST2_MSG_ID = 500072;
+ const unsigned long  GENERAL_TEST3_MSG_ID = 500071;
+
 
 	typedef struct{
 		unsigned char IssuingNode;

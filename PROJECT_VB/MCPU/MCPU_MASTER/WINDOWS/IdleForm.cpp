@@ -9,6 +9,7 @@
 #include "PCB303.h"
 #include "PCB304.h"
 #include "PCB315.h"
+#include "PCB326.h"
 #include "../gantry_global_status.h"
 
 
@@ -254,11 +255,12 @@ void IdleForm::idleStatusManagement(void) {
 	// Handles the Device connection status
 	bool peripherals_connected = false;
 	if (
-		((pFW301) && (!pFW301->isTmo())) &&
-		((pFW302) && (!pFW302->isTmo())) &&
-		((pFW303) && (!pFW303->isTmo())) &&
-		((pFW304) && (!pFW304->isTmo())) &&
-		((pFW315) && (!pFW315->isTmo()))
+		(!PCB301::device->isTmo()) && 
+		(!PCB302::device->isTmo()) &&
+		(!PCB303::device->isTmo()) &&
+		(!PCB304::device->isTmo()) &&
+		(!PCB315::device->isTmo())&&
+		(!PCB326::device->isTmo())
 		)	peripherals_connected = true;
 
 	if (IDLESTATUS::Registers.peripherals_connected != peripherals_connected) {

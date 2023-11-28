@@ -1,14 +1,13 @@
 #include "CanOpenMotor.h"
 #include "Translate.h"
 #include "Generator.h"
+#include "ExposureModule.h"
 #include "IdleForm.h"
 #include "MainForm.h"
 #include "OperatingForm.h"
 #include "./gantry_global_status.h"
 
 using namespace System;
-
-
 using namespace System::Windows::Forms;
 using namespace CANOPEN;
 
@@ -45,7 +44,8 @@ int main()
 	  }
   }
 
-  GlobalObjects::pGenerator = gcnew Generator();
+  //GlobalObjects::pGenerator = gcnew Generator();
+
 
 
   //globalObjects::pProtocol = paws; // Assignes the class pointer to the global pointer for the application usage

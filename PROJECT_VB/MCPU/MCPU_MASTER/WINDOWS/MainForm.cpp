@@ -7,6 +7,7 @@
 #include "SystemConfig.h"
 
 #include "CanOpenMotor.h"
+#include "BodyMotor.h"
 #include "TiltMotor.h"
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
@@ -97,24 +98,24 @@ bool MainForm::Startup_CanDriver(void) {
 	case 0: // Creates the Can Driver Object
 		StartupLogMessages->Text += "> can driver initialization ..\n";
 		labelCanDriverActivity->Text = "Connection ..";
-		GlobalObjects::pCan = gcnew CanDriver();
+		//GlobalObjects::pCan = gcnew CanDriver();
 		startupSubFase++;
 		break;
 
 	case 1:
-		if (pCAN->isError()) {
+		if (CanDriver::isError()) {
 			labelCanDriverActivity->Text = "STARTUP ERROR!";
-			StartupErrorMessages->Text += "> can driver error: " + ((CanDriver^)GlobalObjects::pCan)->getErrorString();
+			StartupErrorMessages->Text += "> can driver error: " + CanDriver::getErrorString();
 			startupError = true;
 			break;
 		}
 
-		if (pCAN->isConnected()) {
+		if (CanDriver::isConnected()) {
 			labelCanDriverActivity->Text = "CONNECTED AND RUNNING";
 			StartupLogMessages->Text += "> can driver revision: ";
-			StartupLogMessages->Text += " API:" + ((CanDriver^)GlobalObjects::pCan)->apirev_maj.ToString() + "." + ((CanDriver^)GlobalObjects::pCan)->apirev_min.ToString();
-			StartupLogMessages->Text += " SW:" + ((CanDriver^)GlobalObjects::pCan)->swrev_maj.ToString() + "." + ((CanDriver^)GlobalObjects::pCan)->swrev_min.ToString();
-			StartupLogMessages->Text += " HW:" + ((CanDriver^)GlobalObjects::pCan)->hwrev_maj.ToString() + "." + ((CanDriver^)GlobalObjects::pCan)->hwrev_min.ToString();
+			StartupLogMessages->Text += " API:" + CanDriver::apirev_maj.ToString() + "." + CanDriver::apirev_min.ToString();
+			StartupLogMessages->Text += " SW:" + CanDriver::swrev_maj.ToString() + "." + CanDriver::swrev_min.ToString();
+			StartupLogMessages->Text += " HW:" + CanDriver::hwrev_maj.ToString() + "." + CanDriver::hwrev_min.ToString();
 			StartupLogMessages->Text += "\n";
 			labelCanDriverActivity->ForeColor = Color::LightGreen;
 			return true; // Completed
@@ -132,24 +133,23 @@ bool MainForm::Startup_PCB301(void) {
 
 	case 0: // Creates the PCB301 process
 		labelPcb301Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb301 initialization ..\n";
-		GlobalObjects::pFw301 = gcnew PCB301();
+		StartupLogMessages->Text += "> pcb301 initialization ..\n";		
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (pFW301->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB301::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb301Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb301 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + pFW301->getBootStatus() + ", REV:" + pFW301->getBootRevision();
-			StartupLogMessages->Text += " APP:" + pFW301->getAppRevision();
+			StartupLogMessages->Text += " BOOT:" + PCB301::device->getBootStatus() + ", REV:" + PCB301::device->getBootRevision();
+			StartupLogMessages->Text += " APP:" + PCB301::device->getAppRevision();
 			StartupLogMessages->Text += "\n";
 			startupSubFase++;
 		}
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (pFW301->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+		if (PCB301::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
 			labelPcb301Activity->Text = "CONNECTED AND RUNNING";
 			labelPcb301Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -166,24 +166,23 @@ bool MainForm::Startup_PCB302(void) {
 
 	case 0: // Creates the PCB302 process
 		labelPcb302Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb302 initialization ..\n";
-		GlobalObjects::pFw302 = gcnew PCB302();
+		StartupLogMessages->Text += "> pcb302 initialization ..\n";		
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (pFW302->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB302::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb302Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb302 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + pFW302->getBootStatus() + ", REV:" + pFW302->getBootRevision();
-			StartupLogMessages->Text += " APP:" + pFW302->getAppRevision();
+			StartupLogMessages->Text += " BOOT:" + PCB302::device->getBootStatus() + ", REV:" + PCB302::device->getBootRevision();
+			StartupLogMessages->Text += " APP:" + PCB302::device->getAppRevision();
 			StartupLogMessages->Text += "\n";
 			startupSubFase++;
 		}
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (pFW302->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+		if (PCB302::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
 			labelPcb302Activity->Text = "CONNECTED AND RUNNING";
 			labelPcb302Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -201,23 +200,22 @@ bool MainForm::Startup_PCB303(void) {
 	case 0: // Creates the PCB303 process
 		labelPcb303Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb303 initialization ..\n";
-		GlobalObjects::pFw303 = gcnew PCB303();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (pFW303->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB303::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb303Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb303 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + pFW303->getBootStatus() + ", REV:" + pFW303->getBootRevision();
-			StartupLogMessages->Text += " APP:" + pFW303->getAppRevision();
+			StartupLogMessages->Text += " BOOT:" + PCB303::device->getBootStatus() + ", REV:" + PCB303::device->getBootRevision();
+			StartupLogMessages->Text += " APP:" + PCB303::device->getAppRevision();
 			StartupLogMessages->Text += "\n";
 			startupSubFase++;
 		}
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (pFW303->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+		if (PCB303::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
 			labelPcb303Activity->Text = "CONNECTED AND RUNNING";
 			labelPcb303Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -235,23 +233,22 @@ bool MainForm::Startup_PCB304(void) {
 	case 0: // Creates the PCB304 process
 		labelPcb304Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb304 initialization ..\n";
-		GlobalObjects::pFw304 = gcnew PCB304();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (pFW304->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB304::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb304Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb304 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + pFW304->getBootStatus() + ", REV:" + pFW304->getBootRevision();
-			StartupLogMessages->Text += " APP:" + pFW304->getAppRevision();
+			StartupLogMessages->Text += " BOOT:" + PCB304::device->getBootStatus() + ", REV:" + PCB304::device->getBootRevision();
+			StartupLogMessages->Text += " APP:" + PCB304::device->getAppRevision();
 			StartupLogMessages->Text += "\n";
 			startupSubFase++;
 		}
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (pFW304->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+		if (PCB304::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
 			labelPcb304Activity->Text = "CONNECTED AND RUNNING";
 			labelPcb304Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -268,24 +265,23 @@ bool MainForm::Startup_PCB315(void) {
 
 	case 0: // Creates the PCB315 process
 		labelPcb315Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb315 initialization ..\n";
-		GlobalObjects::pFw315 = gcnew PCB315();
+		StartupLogMessages->Text += "> pcb315 initialization ..\n";		
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (pFW315->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB315::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb315Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb315 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + pFW315->getBootStatus() + ", REV:" + pFW315->getBootRevision();
-			StartupLogMessages->Text += " APP:" + pFW315->getAppRevision();
+			StartupLogMessages->Text += " BOOT:" + PCB315::device->getBootStatus() + ", REV:" + PCB315::device->getBootRevision();
+			StartupLogMessages->Text += " APP:" + PCB315::device->getAppRevision();
 			StartupLogMessages->Text += "\n";
 			startupSubFase++;
 		}
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (pFW315->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+		if (PCB315::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
 			labelPcb315Activity->Text = "CONNECTED AND RUNNING";
 			labelPcb315Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -302,24 +298,23 @@ bool MainForm::Startup_PCB326(void) {
 
 	case 0: // Creates the PCB315 process
 		labelPcb326Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb326 initialization ..\n";
-		GlobalObjects::pFw326 = gcnew PCB326();
+		StartupLogMessages->Text += "> pcb326 initialization ..\n";		
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (pFW326->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB326::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb326Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb326 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + pFW326->getBootStatus() + ", REV:" + pFW326->getBootRevision();
-			StartupLogMessages->Text += " APP:" + pFW326->getAppRevision();
+			StartupLogMessages->Text += " BOOT:" + PCB326::device->getBootStatus() + ", REV:" + PCB326::device->getBootRevision();
+			StartupLogMessages->Text += " APP:" + PCB326::device->getAppRevision();
 			StartupLogMessages->Text += "\n";
 			startupSubFase++;
 		}
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (pFW326->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+		if (PCB326::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
 			labelPcb326Activity->Text = "CONNECTED AND RUNNING";
 			labelPcb326Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -336,29 +331,28 @@ bool MainForm::Startup_MotorBody(void) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorBodyActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Body initialization ..\n";
-		GlobalObjects::pMotBody = gcnew CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", 453.2);
+		StartupLogMessages->Text += "> Motor Body initialization ..\n";		
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (!pMBODY->activateConfiguration()) break;
+		if (!BodyMotor::device->activateConfiguration()) break;
 
 		labelMotorBodyActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> motor body status:" + pMBODY->getInternalStatusStr();
+		StartupLogMessages->Text += "> motor body status:" + BodyMotor::device->getInternalStatusStr();
 		StartupLogMessages->Text += "\n";
 		startupSubFase++;
 		break;
 
 	case 2: // Wait the connection and configuration
-		if (pMBODY->isConfigurating()) break;
-		if ((!pMBODY->isODConfigured()) || (!pMBODY->isNanojConfigured())) {
+		if (BodyMotor::device->isConfigurating()) break;
+		if ((!BodyMotor::device->isODConfigured()) || (!BodyMotor::device->isNanojConfigured())) {
 			startupError = true;
 			labelMotorBodyActivity->Text = "CONFIGURATION ERROR";
 			labelMotorBodyActivity->ForeColor = Color::Red;
 
-			if (!pMBODY->isODConfigured()) StartupErrorMessages->Text += "> Motor Body Object Dictionary initialization Failed\n";
-			if (!pMBODY->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Body Nanoj initialization Failed\n";
+			if (!BodyMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Body Object Dictionary initialization Failed\n";
+			if (!BodyMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Body Nanoj initialization Failed\n";
 			return true;
 		}
 		
@@ -378,28 +372,27 @@ bool MainForm::Startup_MotorTilt(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorTiltActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Tilt initialization ..\n";
-		GlobalObjects::pMotTilt = gcnew TiltMotor();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (!pMTILT->activateConfiguration()) break;
+		if (!TiltMotor::device->activateConfiguration()) break;
 
 		labelMotorTiltActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Tilt status:" + pMTILT->getInternalStatusStr();
+		StartupLogMessages->Text += "> Motor Tilt status:" + TiltMotor::device->getInternalStatusStr();
 		StartupLogMessages->Text += "\n";
 		startupSubFase++;
 		break;
 
 	case 2: // Wait the connection and configuration
-		if (pMTILT->isConfigurating()) break;
-		if ( (!pMTILT->isODConfigured()) || (!pMTILT->isNanojConfigured())) {
+		if (TiltMotor::device->isConfigurating()) break;
+		if ( (!TiltMotor::device->isODConfigured()) || (!TiltMotor::device->isNanojConfigured())) {
 			startupError = true;
 			labelMotorTiltActivity->Text = "CONFIGURATION ERROR";
 			labelMotorTiltActivity->ForeColor = Color::Red;
 
-			if(!pMTILT->isODConfigured()) StartupErrorMessages->Text += "> Motor Tilt Object Dictionary initialization Failed\n";
-			if (!pMTILT->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Tilt Nanoj initialization Failed\n";
+			if(!TiltMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Tilt Object Dictionary initialization Failed\n";
+			if (!TiltMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Tilt Nanoj initialization Failed\n";
 			return true;
 		}
 
@@ -420,28 +413,27 @@ bool MainForm::Startup_MotorArm(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorArmActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Arm initialization ..\n";
-		GlobalObjects::pMotArm = gcnew ArmMotor();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (!pMARM->activateConfiguration()) break;
+		if (!ArmMotor::device->activateConfiguration()) break;
 
 		labelMotorArmActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Arm status:" + pMARM->getInternalStatusStr();
+		StartupLogMessages->Text += "> Motor Arm status:" + ArmMotor::device->getInternalStatusStr();
 		StartupLogMessages->Text += "\n";
 		startupSubFase++;
 		break;
 
 	case 2: // Wait the connection and configuration
-		if (pMARM->isConfigurating()) break;
-		if ((!pMARM->isODConfigured()) || (!pMARM->isNanojConfigured())) {
+		if (ArmMotor::device->isConfigurating()) break;
+		if ((!ArmMotor::device->isODConfigured()) || (!ArmMotor::device->isNanojConfigured())) {
 			startupError = true;
 			labelMotorArmActivity->Text = "CONFIGURATION ERROR";
 			labelMotorArmActivity->ForeColor = Color::Red;
 
-			if (!pMARM->isODConfigured()) StartupErrorMessages->Text += "> Motor Arm Object Dictionary initialization Failed\n";
-			if (!pMARM->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Arm Nanoj initialization Failed\n";
+			if (!ArmMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Arm Object Dictionary initialization Failed\n";
+			if (!ArmMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Arm Nanoj initialization Failed\n";
 			return true;
 		}
 
@@ -502,28 +494,27 @@ bool MainForm::Startup_MotorVertical(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorUpDownActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Up/Down initialization ..\n";
-		GlobalObjects::pMotVert = gcnew VerticalMotor();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (!pMVERT->activateConfiguration()) break;
+		if (!VerticalMotor::device->activateConfiguration()) break;
 
 		labelMotorUpDownActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Up/Down status:" + pMVERT->getInternalStatusStr();
+		StartupLogMessages->Text += "> Motor Up/Down status:" + VerticalMotor::device->getInternalStatusStr();
 		StartupLogMessages->Text += "\n";
 		startupSubFase++;
 		break;
 
 	case 2: // Wait the connection and configuration
-		if (pMVERT->isConfigurating()) break;
-		if ((!pMVERT->isODConfigured()) || (!pMVERT->isNanojConfigured())) {
+		if (VerticalMotor::device->isConfigurating()) break;
+		if ((!VerticalMotor::device->isODConfigured()) || (!VerticalMotor::device->isNanojConfigured())) {
 			startupError = true;
 			labelMotorUpDownActivity->Text = "CONFIGURATION ERROR";
 			labelMotorUpDownActivity->ForeColor = Color::Red;
 
-			if (!pMVERT->isODConfigured()) StartupErrorMessages->Text += "> Motor UpDown Object Dictionary initialization Failed\n";
-			if (!pMVERT->isNanojConfigured()) StartupErrorMessages->Text += "> Motor UpDown Nanoj initialization Failed\n";
+			if (!VerticalMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor UpDown Object Dictionary initialization Failed\n";
+			if (!VerticalMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor UpDown Nanoj initialization Failed\n";
 			return true;
 		}
 
@@ -547,7 +538,7 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 1: // Wait Generator connection
-		if (!pGENERATOR->isSmartHubConnected()) break;
+		if (!Generator::isSmartHubConnected()) break;
 		labelShActivity->Text = "CONNECTED AND RUNNING";
 		labelShActivity->ForeColor = Color::LightGreen;
 
@@ -557,21 +548,21 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 2: // Wait Generator setup
-		if (!pGENERATOR->isGeneratorConnected()) break;
+		if (!Generator::isGeneratorConnected()) break;
 		labelGeneratorActivity->Text = "WAIT GENERATOR SETUP..";
 		StartupLogMessages->Text += "> Generator: setup protocol ..\n";
 		startupSubFase++;
 		break;
 
 	case 3: // Wait Clear System Messages
-		if (!pGENERATOR->isGeneratorSetupCompleted()) break;
+		if (!Generator::isGeneratorSetupCompleted()) break;
 		labelGeneratorActivity->Text = "WAIT GENERATOR IDLE..";
 		StartupLogMessages->Text += "> Generator: configuration ..\n";
 		startupSubFase++;
 		break;
 
 	case 4: // Wait Generator Idle
-		if (!pGENERATOR->isGeneratorIdle()) break;		
+		if (!Generator::isGeneratorIdle()) break;
 		labelGeneratorActivity->Text = "CONNECTED AND CONFIGURED";
 		labelGeneratorActivity->ForeColor = Color::LightGreen;
 		return true;

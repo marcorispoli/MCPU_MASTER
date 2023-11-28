@@ -363,6 +363,7 @@ public: enum class ColliStandardSelections {
 		collimator_fault = false;
 		format_collimation_attempt = 0;
 	}
+	static PCB303^ device = gcnew PCB303();
 
 	/// \ingroup PCB303_Internal
 	///@{

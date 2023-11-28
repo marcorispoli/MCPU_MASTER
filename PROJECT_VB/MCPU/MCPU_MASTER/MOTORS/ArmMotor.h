@@ -77,20 +77,21 @@ ref class ArmMotor : public CANOPEN::CanOpenMotor
 {
 public:
 	ArmMotor(void);
+    static ArmMotor^ device = gcnew ArmMotor();
 
     // Exposure acceptable conditions
 public: 
-    bool isTarget(void) { return ((current_uposition >= selected_target - 1) && (current_uposition <= selected_target + 1));}
-    bool isValidTarget(void) { return valid_target; }
-    bool isInRange(void) { return ((current_uposition >= allowed_low) && (current_uposition <= allowed_high)); }
-    bool isValidPosition(void) { return (valid_target && isInRange()); }
+    static bool isTarget(void) { return ((device->current_uposition >= selected_target - 1) && (device->current_uposition <= selected_target + 1));}
+    static bool isValidTarget(void) { return valid_target; }
+    static bool isInRange(void) { return ((device->current_uposition >= allowed_low) && (device->current_uposition <= allowed_high)); }
+    static bool isValidPosition(void) { return (valid_target && isInRange()); }
 
     // Arm activation section
 public:
     delegate void delegate_target_change_callback(int id, int target_position);
     static event delegate_target_change_callback^ target_change_event;
     
-    bool setTarget(int pos, int low, int high, System::String^ proj, int id) {       
+    static bool setTarget(int pos, int low, int high, System::String^ proj, int id) {       
         if (projections->Value->indexOf(proj) < 0) return false;
 
         // Assignes the projection
@@ -105,7 +106,8 @@ public:
         target_change_event(id, pos); // For the Window Form update state
         
         // Activate an Isocentric C-ARM rotation
-        return activateAutomaticPositioning(id, pos, 1000,200,200,true);
+        device->iso_activation_mode = true;
+        return device->activateAutomaticPositioning(id, pos, 1000,200,200);
     }
 
     delegate void delegate_target_abort_callback(void);
@@ -134,6 +136,7 @@ public:
 protected:
     bool initializeSpecificObjectDictionary(void) override; //!< Sets specific registers for the Arm activation
     void setCommandCompletedCode(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function
+    bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
 
 private:
     static ProjectionOptions^ projections = gcnew ProjectionOptions;  //!< This is the current selected projection

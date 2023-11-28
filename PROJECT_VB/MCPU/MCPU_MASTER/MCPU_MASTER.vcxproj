@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -141,7 +141,9 @@
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
     <ClInclude Include="CONFIGURATION\SystemConfig.h" />
     <ClInclude Include="DEVICES\PCB326.h" />
+    <ClInclude Include="GENERATOR\ExposureModule.h" />
     <ClInclude Include="MOTORS\ArmMotor.h" />
+    <ClInclude Include="MOTORS\BodyMotor.h" />
     <ClInclude Include="MOTORS\VerticalMotor.h" />
     <ClInclude Include="WINDOWS\ConfirmationWindow.h">
       <FileType>CppForm</FileType>
@@ -166,7 +168,6 @@
     <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicServiceInterface.h" />
     <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicSystemInterface.h" />
     <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicTestInterface.h" />
-    <ClInclude Include="GENERATOR\R2CP\GenDataDic\metInterfaces\metDataDicRadInterface.h" />
     <ClInclude Include="GENERATOR\R2CP\GenDataDic\R2CP_Index.h" />
     <ClInclude Include="GENERATOR\R2CP\R2CP_Eth.h" />
     <ClInclude Include="GENERATOR\R2CP\system_messages.h" />
@@ -203,11 +204,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="AWS\awsCommands.cpp" />
+    <ClCompile Include="AWS\awsEvents.cpp" />
     <ClCompile Include="AWS\awsProtocol.cpp" />
     <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
     <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
     <ClCompile Include="DEVICES\PCB326.cpp" />
+    <ClCompile Include="GENERATOR\Exposure2DModule.cpp" />
+    <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureAEModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />
     <ClCompile Include="MOTORS\ArmMotor.cpp" />
+    <ClCompile Include="MOTORS\BodyMotor.cpp" />
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
     <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />

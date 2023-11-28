@@ -131,6 +131,8 @@ using namespace CANOPEN;
 #define OD_3240_05  0x3240, 0x05 ,ODRegister::SDODataDimension::R4B  // Input Raw Value
 #define OD_3240_06  0x3240, 0x06 ,ODRegister::SDODataDimension::R4B  // Input Range Select (0,threshold,5V, 1: threshold,24V)
 
+#define OD_60FD_00  0x60FD, 0x00 ,ODRegister::SDODataDimension::R4B  // Input Read Status register
+
 // Digital Input Capture
 #define OD_3241_01  0x3241, 0x01 ,ODRegister::SDODataDimension::R4B  // Control (0:off, 1:RE, 2:FE, 3:RE+FE)
 #define OD_3241_02  0x3241, 0x02 ,ODRegister::SDODataDimension::R4B  // Capture Count
@@ -143,6 +145,8 @@ using namespace CANOPEN;
 #define OD_3250_03  0x3250, 0x03 ,ODRegister::SDODataDimension::R4B  // Force Enable
 #define OD_3250_04  0x3250, 0x04 ,ODRegister::SDODataDimension::R4B  // Force Value
 #define OD_3250_08  0x3250, 0x08 ,ODRegister::SDODataDimension::R4B  // Routing Enable
+
+#define OD_60FE_01  0x60FE, 0x01 ,ODRegister::SDODataDimension::R4B  // Output write register
 
 
 // Change status reaction:-1 No reaction,0 Immediate stop,1 Braking with "slow down ramp",2 Braking with "quick stop ramp"

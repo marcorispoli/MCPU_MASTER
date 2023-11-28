@@ -5,6 +5,7 @@
 #include "Projections.h"
 #include "ConfirmationWindow.h"
 #include "ArmMotor.h"
+#include "ExposureModule.h"
 #include "../DEVICES/PCB315.h"
 #include "../DEVICES/PCB303.h"
 
@@ -228,7 +229,7 @@ void OperatingForm::initOperatingStatus(void) {
 	labelPatientName->Text = GantryStatusRegisters::OperatingStatusRegister::getPatientName();
 
 	// Init Arm Angle 
-	float arm_position = ((float)pMARM->getCurrentPosition() / 100);
+	float arm_position = ((float)ArmMotor::device->getCurrentPosition() / 100);
 	angleText->Text = "[" + arm_position.ToString() + "°]";
 
 	// Sets the current collimation to OPEN mode
@@ -266,7 +267,7 @@ void OperatingForm::close(void) {
 
 void OperatingForm::onArmTargetChangedCallback(int id, int target){
 
-	if (pMARM->isValidTarget()) {
+	if (ArmMotor::device->isValidTarget()) {
 		// Sets the current selected projection
 		System::String^ tag = ArmMotor::getSelectedProjection();
 		if (tag == "") return;
@@ -289,7 +290,7 @@ void OperatingForm::onArmAbortTargetCallback(void) {
 
 
 void OperatingForm::onArmPositionChangeCallback(void) {
-	angleText->Text = (((float) pMARM->getCurrentPosition())/100).ToString();
+	angleText->Text = (((float)ArmMotor::device->getCurrentPosition())/100).ToString();
 }
 
 void OperatingForm::evaluateXrayStatus(void) {
@@ -313,15 +314,15 @@ void OperatingForm::evaluateXrayStatus(void) {
 void OperatingForm::evaluateErrorStatus(void) {
 	static bool cmp_force_error = false;
 
-	// Compression Warning
-	if ((GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() != GantryStatusRegisters::CompressionModeOption::options::CMP_DISABLE) && (GantryStatusRegisters::CompressorRegister::getForce() == 0))
+	// Compression Mode Warning
+	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) && (GantryStatusRegisters::CompressorRegister::getForce() == 0))
 		Notify::activate("MISSING_COMPRESSION_WARNING", false);
 	else Notify::deactivate("MISSING_COMPRESSION_WARNING");
 
 
-	// Patient Protection
+	// Patient Protection Mode Warning
 	if (
-		(GantryStatusRegisters::ExposureModeRegister::protectionMode->Value->getCode() != GantryStatusRegisters::PatientProtectionMode::options::PROTECTION_DIS) &&
+		(ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) &&
 		(GantryStatusRegisters::ComponentRegister::Value->getCode() != GantryStatusRegisters::ComponentRegister::options::COMPONENT_PROTECTION_3D)&&
 		(GantryStatusRegisters::CollimatorComponentRegister::Value->getCode() != GantryStatusRegisters::CollimatorComponentRegister::options::COLLI_COMPONENT_PROTECTION_2D)
 		) Notify::activate("MISSING_PATIENT_PROTECTION_WARNING", false);
@@ -329,14 +330,14 @@ void OperatingForm::evaluateErrorStatus(void) {
 	
 	// C-Arm Mode
 	if (
-		(GantryStatusRegisters::ExposureModeRegister::armMode->Value->getCode() != GantryStatusRegisters::ArmModeOption::options::ARM_DIS) &&
-		(!pMARM->isValidPosition())
+		(ExposureModule::getArmMode() != ExposureModule::arm_mode_option::ARM_DIS) &&
+		(!ArmMotor::device->isValidPosition())
 		) Notify::activate("WRONG_ARM_POSITION_WARNING", false);
 	else Notify::deactivate("WRONG_ARM_POSITION_WARNING");
 
 	// Paddle identification
 	if (
-		(GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() != GantryStatusRegisters::CompressionModeOption::options::CMP_DISABLE) &&
+		(ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) &&
 			(
 				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::PAD_UNDETECTED) ||
 				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::PAD_UNLOCKED) ||
@@ -345,13 +346,12 @@ void OperatingForm::evaluateErrorStatus(void) {
 		) Notify::activate("WRONG_PADDLE_WARNING", false);
 	else Notify::deactivate("WRONG_PADDLE_WARNING");
 
-	// Exposure Mode selection
-	if (GantryStatusRegisters::ExposureModeRegister::exposureType->Value->getCode() == GantryStatusRegisters::ExposureTypeOption::options::UNDEF)
-		Notify::activate("MISSING_EXPOSURE_MODE_WARNING", false);
+	// Exposure Mode selection	
+	if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) Notify::activate("MISSING_EXPOSURE_MODE_WARNING", false);
 	else Notify::deactivate("MISSING_EXPOSURE_MODE_WARNING");
 
-	// Exposure Data selection
-	if (!GantryStatusRegisters::ExposureDataRegister::getPulse(0)->isValid()) Notify::activate("MISSING_EXPOSURE_DATA_WARNING", false);
+	// Valid Exposure Data present
+	if (!ExposureModule::getExposedPulse(0)->getValidated()) Notify::activate("MISSING_EXPOSURE_DATA_WARNING", false);
 	else Notify::deactivate("MISSING_EXPOSURE_DATA_WARNING");
 
 	// Xray Push Button Enable
@@ -388,7 +388,7 @@ void OperatingForm::evaluateErrorStatus(void) {
 void OperatingForm::evaluateCompressorStatus(void) {
 
 	// Paddle Section
-	if (GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() == GantryStatusRegisters::CompressionModeOption::options::CMP_DISABLE) {
+	if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_DISABLE) {
 		// Compressor Disabled Option active
 
 		if (OPERSTATUS::Registers.paddle.compressor_mode != OPERSTATUS::COMPRESSOR_DISABLED) {
@@ -422,13 +422,13 @@ void OperatingForm::evaluateCompressorStatus(void) {
 	else {
 
 		// Compressor relase 
-		if (GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() == GantryStatusRegisters::CompressionModeOption::options::CMP_KEEP) {
+		if (ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_KEEP) {
 			if (OPERSTATUS::Registers.compressor_release) {
 				OPERSTATUS::Registers.compressor_release = false;
 				decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 			}
 		}
-		else if (GantryStatusRegisters::ExposureModeRegister::compressorMode->Value->getCode() == GantryStatusRegisters::CompressionModeOption::options::CMP_RELEASE) {
+		else if (ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_RELEASE) {
 			if (!OPERSTATUS::Registers.compressor_release) {
 				OPERSTATUS::Registers.compressor_release = true;
 				decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;

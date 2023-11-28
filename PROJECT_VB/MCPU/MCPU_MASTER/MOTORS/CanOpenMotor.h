@@ -51,6 +51,37 @@ namespace CANOPEN {
 	ref class ODRegister {
 	public:
 
+		/// <summary>
+		/// Returns a string defining the Ack Error in an SDO transation.
+		/// 
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <returns></returns>
+		System::String^ getError(unsigned char* frame) {
+			unsigned long code = frame[5] + 256 * frame[5] + 256 * 256 * frame[6] + 256 * 256 * 256 * frame[7];
+			unsigned short index = frame[1] + 256 * frame[2];
+			unsigned char subindex = frame[3];
+
+			
+			switch (code) {
+			case 0x05030000: return "ERR: IDX:" + index.ToString()+" SUB:"+subindex.ToString()+" > Toggle bit notchanged";
+			case 0x05040001: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Command specifier unknown";
+			case 0x06010000: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Unsupported access";
+			case 0x06010002: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Read only entry";
+			case 0x06020000: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Object not existing";
+			case 0x06040041: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Object cannot be PDO mapped";
+			case 0x06040042: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Mapped Pdo exceed PDO";
+			case 0x06070012: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > parameter lenght too long";
+			case 0x06070013: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > parameter lenght too short";
+			case 0x06090011: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Sub index not existing";
+			case 0x06090031: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Value too great";
+			case 0x06090032: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Value too small";
+			case 0x08000000: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > General error";
+			case 0x08000022: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > Data cannot be read or stored in this state";
+			default: return "ERR: IDX:" + index.ToString() + " SUB:" + subindex.ToString() + " > " + code.ToString();
+			}
+		}
+
 		enum class SDOCommandCodes {
 			WRCMD = 0x20,	//!< SDO Write command for frame to the remote device
 			WRANSW = 0x60,  //!< SDO Write command ack code from the remote device
@@ -276,8 +307,15 @@ namespace CANOPEN {
 				return false;
 			}
 
+			unsigned char received_cmd = getCmd(frame);
+			if (received_cmd == (unsigned char)SDOCommandCodes::ERRACK) {
+				if(cmd == SDOCommandCodes::RDCMD) Debug::WriteLine("READ: " + getError(frame));
+				else Debug::WriteLine("WRITE: " + getError(frame));
+				return false;
+			}
+
 			if (cmd == SDOCommandCodes::RDCMD)  {
-				if (getCmd(frame) != (unsigned char) SDOCommandCodes::RDANSW) {
+				if (received_cmd != (unsigned char) SDOCommandCodes::RDANSW) {
 
 					System::String^ stringa = " ";
 					for (int i = 0; i < 8; i++) stringa += System::Convert::ToString(frame[i]) + " ";
@@ -291,7 +329,7 @@ namespace CANOPEN {
 				
 			}
 			else {
-				if (getCmd(frame) != (unsigned char)SDOCommandCodes::WRANSW) {
+				if (received_cmd != (unsigned char)SDOCommandCodes::WRANSW) {
 					Debug::WriteLine("WRANSW");
 					return false;
 				}
@@ -402,8 +440,13 @@ namespace CANOPEN {
 
 		public:delegate void delegate_command_completed_callback(int id, int code);
 		public:static event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
-		public:bool activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool iso);	
-		public: inline int getIsoPosition(void) { return iso_uposition; }
+
+		public:bool activateResetEncoderCommand(int id);
+		public:bool activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning
+		protected: virtual bool automaticPositioningPreparation(void); //!< This function shall be implemented by the Subclass 
+		protected: virtual void automaticPositioningCompletion(void); //!< This function shall be implemented by the Subclass 
+		protected: virtual bool idleCallback(void);
+		protected: inline int getPreviousPosition(void) { return previous_uposition; }
 
 		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
 
@@ -415,17 +458,22 @@ namespace CANOPEN {
 				MOTOR_FAULT
 			};
 
+			/// <summary>
+			/// This enumeration class defines the Command codes
+			/// </summary>
 			public:enum class MotorCommands {
-				MOTOR_IDLE = 0,
-				MOTOR_ZERO_SETTING,
-				MOTOR_AUTO_POSITIONING,
+				MOTOR_IDLE = 0,			//!< No command are presents
+				MOTOR_ENCODER_RESET,	//!< Encoder reset to 0 at the current position
+				MOTOR_HOMING,			//!< Homing procedure for automatic zero setting
+				MOTOR_AUTO_POSITIONING, //!< Motor Automatic activation to target
 			};
 
 			public:enum class MotorCompletedCodes {
-				ACTIVATION_SUCCESS = 0,
+				COMMAND_SUCCESS = 0,
 				ERROR_MOTOR_BUSY,
 				ERROR_INITIALIZATION,
 				ERROR_UNEXPECTED_STATUS,
+				ERROR_SUBCLASS_PREPARATION,
 				ERROR_TIMOUT,
 				ERROR_INTERNAL_FAULT,
 				ERROR_ACTIVATION_REGISTER,
@@ -447,19 +495,21 @@ namespace CANOPEN {
 		protected:virtual bool	initializeSpecificObjectDictionary(void);
 		protected:bool			initializeObjectDictionary(void);		
 		protected:void			setNanoJPtr(const unsigned char* ptr, int size) { pNanoj = ptr; nanojSize = size; }
-		
+		protected: bool			initResetEncoderCommand(void);
+
 		// Device Status _________________________________________________________________________
 		static const cli::array<System::String^>^ status_tags = gcnew cli::array<System::String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
 		private:status_options internal_status;
 		protected: int current_eposition;		//!< Current Encoder position
 		protected: int current_uposition;		//!< Current User position 
-		protected: int iso_uposition;			//!< This is the last target position for non coordinate activations
+		protected: int previous_uposition;			//!< This is the last target position for non coordinate activations
 		private: int target_range_h;			//!< This is the acceptable target range (positive limit)
 		private: int target_range_l;			//!< This is the acceptable target range (negative limit)
 		protected: void setTargetRange(int h, int l) { target_range_h = h; target_range_l = l; }
 
-		protected: bool od_initialized;   //!< Object dictionary has been intialized
+		protected: bool od_initialized;    //!< Object dictionary has been intialized
 		protected: bool nanoj_initialized; //!< Nano-J program has been intialized
+		protected: bool home_initialized;  //!< The device has executed the homing procedure
 
 		// Device Definition
 		private: double rot_per_unit; //!< This is Rotation/units
@@ -528,11 +578,13 @@ namespace CANOPEN {
 		
 
 		// Activation Management Section ____________________________________________________
-		protected: virtual	void setCommandCompletedCode(MotorCompletedCodes error);
+		protected:  virtual	void setCommandCompletedCode(MotorCompletedCodes error);
 		private:	void updateCurrentPosition(void);
 		private:	void setActivationTimeout(int speed, int acc, int dec, int target);
+		private:	bool isTarget(void) { return ((current_uposition <= command_target + target_range_h) && (current_uposition >= command_target - target_range_h)); }
+
 		private:	void manageAutomaticPositioning(void);
-		private:	bool isTarget(void) {return ((current_uposition <= command_target + target_range_h) && (current_uposition >= command_target - target_range_h));	}
+		private:	void manageEncoderResetCommand(void);
 
 		private: MotorCommands request_command; //!< Application request command code
 		private: MotorCommands current_command; //!< Current executing command code
@@ -544,7 +596,7 @@ namespace CANOPEN {
 		private:int command_dec;			//!< Deceleration in user/s2
 		private:int command_speed;			//!< Speed in user/s
 		private:int command_ms_tmo;			//!< Timoeut activation in ms
-		protected:bool command_iso;			//!< The requested command is for a isocentric activation
+		
 
 		
 

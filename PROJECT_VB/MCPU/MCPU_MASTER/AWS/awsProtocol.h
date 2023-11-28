@@ -4,6 +4,7 @@
 using namespace System::Collections::Generic;
 
 #include "TcpIpServerCLI.h"
+#include "Generator.h"
 
 /// <summary>
 /// This is the module implementing the communication protocol with the AWS.
@@ -82,7 +83,7 @@ public:
 
 	
 	/// This function shall be connected to the xray completed event
-	void exposureSequenceCompletedCallback(void);
+	void exposureSequenceCompletedCallback(Generator::exposure_completed_options code);
 
 	/// This function shall be connected to the xray pulse completed event
 	void exposurePulseCompletedCallback(unsigned char npulse) {};

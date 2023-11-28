@@ -21,8 +21,28 @@ public:
 	{
 
 	}
+	static PCB301^ device = gcnew PCB301();
 
 	protected: 	virtual void runningLoop(void) override;
 
+	/// <summary>
+	/// This function returns the current activation status of the X-RAY push button
+	/// 
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>True if the X-RAY push button should be activated</returns>
+	public: static inline bool isXrayButton(void) { return xray_push_button_input; }
+
+	/// <summary>
+	/// This function sets the current status of the X-RAY enable signal.
+	///  
+	/// </summary>
+	/// <param name="status"></param>
+	/// <returns></returns>
+	public: static inline void setXrayEnable(bool status) { xray_enable_status_output = status; }
+
+private:
+	static bool xray_push_button_input   = false;	//!< This is the current X-RAY push button activation status
+	static bool xray_enable_status_output = false; //!< This is the current X-RAY enable status setting
 };
 

@@ -76,6 +76,7 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds
     nanoj_initialized = false;
     pNanoj = nullptr;
     nanojSize = 0;
+    home_initialized = false;
 
     // Gets the handler of the class instance to be used for the Post/Send message functions.
     //hwnd = static_cast<HWND>(Handle.ToPointer());    
@@ -181,6 +182,7 @@ void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned
     if (canid != device_id + 0x700) return; // This frame is not a SDO or is not addressed to this device!
 
     od_initialized = false;
+    home_initialized = false;
 }
 
 /// <summary>
@@ -442,9 +444,10 @@ void CanOpenMotor::mainWorker(void) {
             od_initialized = initializeObjectDictionary();
             configuration_command = false;
 
-            // Assignes the initial_
-            updateCurrentPosition();
-            iso_uposition = current_uposition;
+            // Assignes the initial value to the encoder
+            for (int i = 0; i < 5; i++) { if (initResetEncoderCommand()) break; }
+            
+            previous_uposition = current_uposition;
         }
         
 
@@ -530,6 +533,9 @@ void CanOpenMotor::CiA402_ReadyToSwitchOnCallback(void) {
     return;
 }
 
+bool CanOpenMotor::idleCallback(void) {
+    return true;
+}
 
 /// <summary>
 /// This function is called when the CiA402_SwitchedOn status is detected.  
@@ -546,6 +552,15 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
         
     }
 
+    // The subclass can add extra commands in IDLE and enable the command execution
+    if (!idleCallback()) {
+        if (request_command != MotorCommands::MOTOR_IDLE) {
+            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR DUE TO SUBCLASS IDLE CONDITIONS");
+            setCommandCompletedCode(MotorCompletedCodes::ERROR_SUBCLASS_PREPARATION);
+        }
+        return;
+    }
+
     // Initiate a requested command
     switch (request_command) {
     case MotorCommands::MOTOR_AUTO_POSITIONING:
@@ -554,9 +569,18 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
         request_command = MotorCommands::MOTOR_IDLE;
         break;
 
-    case MotorCommands::MOTOR_ZERO_SETTING:
+    case MotorCommands::MOTOR_ENCODER_RESET:
+        current_command = request_command;
+        manageEncoderResetCommand();
+        request_command = MotorCommands::MOTOR_IDLE;
         break;
+
+    case MotorCommands::MOTOR_HOMING:
+
+        break;
+
     case MotorCommands::MOTOR_IDLE:
+        
         break;
 
     }
@@ -1091,6 +1115,16 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     return true;
 }
 
+bool CanOpenMotor::activateResetEncoderCommand(int id) {
+
+    // Command already in execution
+    if (!isReady()) return false;
+
+    command_id = id;
+    request_command = MotorCommands::MOTOR_ENCODER_RESET;
+    return true;
+}
+
 /// <summary>
 /// This is the function to activate an Automatic positioning.
 /// 
@@ -1116,9 +1150,8 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
 /// <param name="speed">This is the speed in the Application units</param>
 /// <param name="acc">This is the Acceleration rate in Application units</param>
 /// <param name="dec">This is the Deceleration rate in Application units</param>
-/// <param name="iso">True in case this is aIsocentric command</param>
 /// <returns>true if the command can be executed</returns>
-bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool iso) {
+bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec) {
     
     // Command already in execution
     if (!isReady()) return false;
@@ -1128,9 +1161,44 @@ bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, i
     command_acc = acc;
     command_dec = dec;
     command_speed = speed;
-    command_iso = iso;
     request_command = MotorCommands::MOTOR_AUTO_POSITIONING;
     return true;
+}
+
+/// <summary>
+/// </summary>
+/// 
+/// This function shall be overridden by the subclass that 
+/// needs to custom the activation phase.
+/// 
+/// The function is called just after the motor in Operating mode (power on then motor phases)
+/// so that the motor strongly keep the position during this application preparation.
+/// 
+/// For example: the case where the application should control a motor brake
+/// before to start the positioning.
+/// 
+/// <param name=""></param>
+/// <returns>true to allow the procedure to continue</returns>
+bool CanOpenMotor::automaticPositioningPreparation(void) 
+{ 
+    return true; 
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// This function shall be overridden by the subclass that 
+/// needs to custom the activation completion phase.
+/// 
+/// 
+/// For example: the case where the application should control a motor brake
+/// after the positioning completion.
+/// 
+/// 
+/// <param name=""></param>
+void CanOpenMotor::automaticPositioningCompletion(void)
+{
+    return ;
 }
 
 
@@ -1240,7 +1308,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Test if the actual position is already in target position
     if (isTarget()) {
         Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (ALREADY IN POSITION)");
-        setCommandCompletedCode(MotorCompletedCodes::ACTIVATION_SUCCESS);
+        setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
         return;
     }
 
@@ -1263,6 +1331,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
+
 
     // Tries to activate the Operation Enabled 
     error_condition = true;
@@ -1287,9 +1356,20 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     }
    
 
+    // Allows the application to prepare for the motor activation
+    if (!automaticPositioningPreparation()) {
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_SUBCLASS_PREPARATION);
+        return;
+    }
+    
+    // Update the previous position
+    previous_uposition = current_uposition;
+
+
     // Set the start bit (BIT4) in the control word register
     if (!writeControlWord(POSITION_SETTING_START_MASK, POSITION_SETTING_START_VAL)){
         setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+        automaticPositioningCompletion();
         return;
     }
 
@@ -1297,7 +1377,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     typedef std::chrono::high_resolution_clock clock;
     clock::time_point start = clock::now();
     
-
+    
     while (true) {
 
         // Reads the status to be sure that it is still Operation Enabled 
@@ -1338,16 +1418,14 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
             else {
                 Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSIITONING COMPLETED actually In =  " + System::Convert::ToString(ms.count()) + " (ms)");
             }
-            setCommandCompletedCode(MotorCompletedCodes::ACTIVATION_SUCCESS);
+            setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
 
             // resets the OMS bit of the control word
             writeControlWord(0x0270, 0);
 
             // set the cia Switched On status
             writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
-            
-            // Sets the new iso position for non iso commands
-            if (!command_iso) iso_uposition = current_uposition;
+                        
             break;
         }
 
@@ -1362,6 +1440,9 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
+    // Call the application activation completed callback
+    automaticPositioningCompletion();
+
     // set the cia Switched On status
     writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
     
@@ -1369,5 +1450,118 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     current_command = MotorCommands::MOTOR_IDLE;
     
     return;
+
+}
+
+bool CanOpenMotor::initResetEncoderCommand(void) {
+
+    updateCurrentPosition();
+
+    // Already reset in this position
+    if (current_eposition == 0) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER RESET SUCCESS");
+        return true; 
+    }
+
+    // Write the Homing method to 35: current osition
+    if (!blocking_writeOD(OD_6098_00, 35)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6098");
+        return false;
+    }
+
+    // Write the operating mode to HOMING
+    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_HOMING)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO HOMING");       
+        return false;
+    }
+
+    // Set the start bit (BIT4) in the control word register
+    if (!writeControlWord(0x10, 0x10)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING CW BIT 4");
+        return false;
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Clear the start bit (BIT4) in the control word register
+    if (!writeControlWord(0x10, 0)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLEARING CW BIT 4");
+        return false;
+    }
+
+    // Write the operating mode to PROFILE POSITIONING
+    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_POSITIONING)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO POSITIONING");        
+        return false;
+    }
+
+    updateCurrentPosition();
+    if (current_eposition != 0) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER NOT ZERO");        
+        return false;
+    }
+
+    
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER RESET SUCCESS");
+    return true;
+
+
+}
+
+void CanOpenMotor::manageEncoderResetCommand(void) {
+    updateCurrentPosition();
+    
+    // Already reset in this position
+    if (current_eposition == 0) {        
+        setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+        return;
+    }
+
+    // Write the Homing method to 35: current osition
+    if (!blocking_writeOD(OD_6098_00, 35)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6098");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);        
+        return;
+    }
+
+    // Write the operating mode to HOMING
+    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_HOMING)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO HOMING");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+        return;
+    }
+
+    // Set the start bit (BIT4) in the control word register
+    if (!writeControlWord(0x10,0x10)) {
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);        
+        return;
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Clear the start bit (BIT4) in the control word register
+    if (!writeControlWord(0x10, 0)) {
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+        return;
+    }
+
+    // Write the operating mode to PROFILE POSITIONING
+    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_POSITIONING)) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO POSITIONING");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+        return;
+    }
+
+    updateCurrentPosition();
+    if (current_eposition != 0) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER REST FAILED");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_UNEXPECTED_STATUS);
+        return;
+    }
+    
+    setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER RESET SUCCESS");
+    return;
+
 
 }

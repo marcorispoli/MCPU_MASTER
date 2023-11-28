@@ -13,10 +13,12 @@
 
 //using namespace std;
 
-ref class CanDriver: public System::Windows::Forms::Form
+ref class CanDriver
 {
 public:
     CanDriver();
+    static CanDriver^ driver = gcnew  CanDriver();
+
     delegate void delegate_can_rx_frame(unsigned short canid, unsigned char* data, unsigned char len);
     static event delegate_can_rx_frame^ canrx_canopen_sdo_event;
     static event delegate_can_rx_frame^ canrx_canopen_pdo_event;
@@ -29,35 +31,31 @@ public:
     static bool multithread_send(unsigned short canId, unsigned char* data, unsigned char len);
     static inline bool isConnected(void) { return can_connected; }
 
-    inline bool isError(void) { return error; }
-    inline bool isWarning(void) { return warning; }
-    inline System::String^ getErrorString(void) { return ErrorString; }
-    inline System::String^ getWarningString(void) { return WarningString; }
+    static inline bool isError(void) { return error; }
+    static inline bool isWarning(void) { return warning; }
+    static inline System::String^ getErrorString(void) { return ErrorString; }
+    static inline System::String^ getWarningString(void) { return WarningString; }
 
-protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;//!< This is the function handling the Window's messages
 
 public :
-    int apirev_maj;
-    int apirev_min;
-    int apirev_sub;
-    int hwrev_maj;
-    int hwrev_min;
-    int swrev_maj;
-    int swrev_min;
+    static int apirev_maj = 0;
+    static int apirev_min = 0;
+    static int apirev_sub = 0;
+    static int hwrev_maj = 0;
+    static int hwrev_min = 0;
+    static int swrev_maj = 0;
+    static int swrev_min = 0;
 
 private:
     System::Threading::Thread^ running_thread;
     void threadWork(void);
-    HWND can_hwnd;
-    static bool can_connected;
+    static bool can_connected = false;
 
-    bool error;
-    System::String^ ErrorString;
+    static bool error = false;
+    static System::String^ ErrorString = "";
 
-    bool warning;
-    System::String^ WarningString;
+    static bool warning = false;
+    static System::String^ WarningString = "";
     
-    
-
 };
 

@@ -123,6 +123,8 @@ namespace R2CP
 		//Events
 		void Network_IpConfig_Event(udword IpAddress, udword MaskSubNetwork , udword Gateway , udword ShIpAdress);
         void Network_ConnectionRequest_Event(void);
+		void Network_GetApplicationNodeStatus(void);
+		void Network_GetGeneratorNodeStatus(void);
 		void Network_BackupSnapShot_Event ( tBackupSnapShotStatus Status );
 		void Network_Restore_Event ( tRestoreStatus Status );
 		
@@ -160,6 +162,7 @@ namespace R2CP
         void Generator_Get_StatusV6(void);
         void SystemMessages_Get_AllMessages(void);
         void SystemMessages_SetDisableRx(bool state);
+		void SystemMessages_SetTestMessage(unsigned long msg);
 
         bool SystemMessages_Clear_Message(unsigned int ID);
 
@@ -168,7 +171,7 @@ namespace R2CP
         void Patient_SetupProcedureV6(unsigned char procId, unsigned char param);
         void Patient_ClearAllProcedures(void);
         void Generator_Get_Databank(unsigned char i);
-        void Generator_Set_2D_Databank(unsigned char i, unsigned char focus, float kV, float mAs, unsigned long tmo);
+        void Generator_Set_2D_Databank(unsigned char i, bool large_focus, float kV, float mAs, unsigned long tmo);
         void Generator_Set_3D_Databank(unsigned char i, unsigned char focus, float kV, float MA, float MS, float MT);
         void Generator_Set_Ms_Databank(unsigned char dbId, float MS);
 
@@ -241,8 +244,21 @@ namespace R2CP
 		static CaDataDicPatientInterface 	*m_p_PatientInterface_;		
 		static CaDataDicServiceInterface	*m_p_ServiceInterface_;
 
+		typedef struct {
+			unsigned char result_code;
+			unsigned char focus;
+			float kV;
+			float mAs;
+			float ms;
+			float mA;
+			unsigned int samples;
+		}databank_executed_t;
+
 
     public:
+		databank_executed_t executed_pulses[10]; //!< Sets the array of per Databank received pulses
+		void resetExecutedPulse(void); //!< Resets all the databank exposed pulses
+
         CaDataDicRadInterface       radInterface;
         CaDataDicSystemInterface    systemInterface;
         tDataDicProtocolVersion     protocolVersion;

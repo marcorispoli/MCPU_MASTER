@@ -1,4 +1,4 @@
-.TH "PCB303_Internal" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB303_Internal" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -56,6 +56,10 @@ PCB303_Internal \- Internal implementation section
 .RI "Retrives what is the current automatic format to be calibrated\&. "
 .in -1c
 .in +1c
+.ti -1c
+.RI "void \fBPCB303::resetLoop\fP (void) override"
+.br
+.RI "This is the Base class resetLoop override function\&. "
 .ti -1c
 .RI "virtual void \fBPCB303::runningLoop\fP (void) override"
 .br
@@ -145,6 +149,12 @@ returns the Format collimation assigned to the current paddle
 .RE
 .PP
 
+.SS "void PCB303::resetLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base class resetLoop override function\&. This function activate a One Shot alarm notifying the operator that the device has been reset\&.
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "void PCB303::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP

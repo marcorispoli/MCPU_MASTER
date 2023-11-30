@@ -351,10 +351,10 @@ PCB315::FilterSlotCodes PCB315::filterAssignment(System::String^ assignment) {
 
     // Translate the integer value with the meaning in the FilterConfig file to the Filter selection in the FilterSlotCodes codes
     // This way the module is independent by the declaration into the FilterConfig file! 
-    if (val == (int) FilterConfig::FilterAssignment::ASSIGNED_TO_FILTER1) return FilterSlotCodes::FILTER1_SELECTION;
-    if (val == (int)FilterConfig::FilterAssignment::ASSIGNED_TO_FILTER2) return FilterSlotCodes::FILTER2_SELECTION;
-    if (val == (int)FilterConfig::FilterAssignment::ASSIGNED_TO_FILTER3) return FilterSlotCodes::FILTER3_SELECTION;
-    if (val == (int)FilterConfig::FilterAssignment::ASSIGNED_TO_FILTER4) return FilterSlotCodes::FILTER4_SELECTION;
+    if (val == (int) System::Convert::ToInt16(FilterConfig::FILTER1_ASSIGNMENT)) return FilterSlotCodes::FILTER1_SELECTION;
+    if (val == (int) System::Convert::ToInt16(FilterConfig::FILTER2_ASSIGNMENT)) return FilterSlotCodes::FILTER2_SELECTION;
+    if (val == (int) System::Convert::ToInt16(FilterConfig::FILTER3_ASSIGNMENT)) return FilterSlotCodes::FILTER3_SELECTION;
+    if (val == (int) System::Convert::ToInt16(FilterConfig::FILTER4_ASSIGNMENT)) return FilterSlotCodes::FILTER4_SELECTION;
 
     // In case there is not a valid assignment, the INVALID code is returned
     return PCB315::FilterSlotCodes::FILTER_INVALID;

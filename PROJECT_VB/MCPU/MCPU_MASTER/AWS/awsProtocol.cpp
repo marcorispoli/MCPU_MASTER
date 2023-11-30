@@ -2,6 +2,7 @@
 #include "../gantry_global_status.h"
 #include "awsProtocol.h"
 #include "ArmMotor.h"
+#include "VerticalMotor.h"
 #include "PCB315.h"
 #include "PCB302.h"
 #include "PCB303.h"
@@ -59,7 +60,8 @@ awsProtocol::awsProtocol(String^ ip, int command_port, int event_port) {
     // Connects the Global register callbacks to the local Events
     XrayPushButtonRegister::activationStatus->value_change_event += gcnew delegate_void_callback(this, &awsProtocol::xrayPushbuttonStatusChangeCallback);
     Generator::xray_complete_event += gcnew Generator::delegate_xray_complete_callback(this, &awsProtocol::exposureSequenceCompletedCallback);
-    ArmMotor::command_completed_event += gcnew ArmMotor::delegate_command_completed_callback(this, &awsProtocol::activationCompletedCallback);
+    ArmMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(this, &awsProtocol::activationCompletedCallback);
+    VerticalMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(this, &awsProtocol::activationCompletedCallback);
     ArmMotor::projection_request_event += gcnew ArmMotor::delegate_projection_request_callback(this, &awsProtocol::selectProjectionCallback);
     ArmMotor::abort_projection_request_event += gcnew ArmMotor::delegate_abort_projection_request_callback(this, &awsProtocol::abortProjectionCallback);
 

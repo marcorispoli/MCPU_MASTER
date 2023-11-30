@@ -4,47 +4,47 @@
 ref class SystemConfig
 {
 public:
-    static const System::String^ FILENAME = "SystemInit.cnf";
-    static const int     FILE_REVISION = 1;
+    literal System::String^ FILENAME = "SystemInit.cnf";
+    literal int     FILE_REVISION = 1;
 
     //___________________________________________________________________________________________________//
-    static const System::String^ PARAM_INSTALLATION_NAME = "INSTALL_NAME";
-    static const System::String^ PARAM_INSTALLATION_NAME_COMMENT = "Name of the installation";
-    static const int     PARAM_INSTALLATION_NAME_TOP = 0;
-    static const System::String^ PARAM_INSTALLATION_NAME_TOP_DEFAULT = "FACTORY INSTALLATION";
+    literal System::String^ PARAM_INSTALLATION_NAME = "INSTALL_NAME";
+    literal System::String^ PARAM_INSTALLATION_NAME_COMMENT = "Name of the installation";
+    literal int     PARAM_INSTALLATION_NAME_TOP = 0;
+    literal System::String^ PARAM_INSTALLATION_NAME_TOP_DEFAULT = "FACTORY INSTALLATION";
 
     //___________________________________________________________________________________________________//
-    static const System::String^    PARAM_PACKAGE = "PACKAGE";
-    static const System::String^    PARAM_PACKAGE_COMMENT = "Package revision set";
-    static const int        PARAM_PACKAGE_ID = 0;
-    static const int        PARAM_PACKAGE_FW301 = 1;
-    static const int        PARAM_PACKAGE_FW302 = 2;
-    static const int        PARAM_PACKAGE_FW303 = 3;
-    static const int        PARAM_PACKAGE_FW304 = 4;
-    static const int        PARAM_PACKAGE_FW315 = 5;
-    static const int        PARAM_PACKAGE_FW326 = 6;
-    static const int        PARAM_PACKAGE_FWCAN = 7;
-    static const int        PARAM_PACKAGE_FWGEN = 8;
+    literal System::String^    PARAM_PACKAGE = "PACKAGE";
+    literal System::String^    PARAM_PACKAGE_COMMENT = "Package revision set";
+    literal int        PARAM_PACKAGE_ID = 0;
+    literal int        PARAM_PACKAGE_FW301 = 1;
+    literal int        PARAM_PACKAGE_FW302 = 2;
+    literal int        PARAM_PACKAGE_FW303 = 3;
+    literal int        PARAM_PACKAGE_FW304 = 4;
+    literal int        PARAM_PACKAGE_FW315 = 5;
+    literal int        PARAM_PACKAGE_FW326 = 6;
+    literal int        PARAM_PACKAGE_FWCAN = 7;
+    literal int        PARAM_PACKAGE_FWGEN = 8;
 
-    static const System::String^    PARAM_PACKAGE_ID_DEFAULT =    "1.0";
-    static const System::String^    PARAM_PACKAGE_FW301_DEFAULT = "0.1";
-    static const System::String^    PARAM_PACKAGE_FW302_DEFAULT = "0.1";
-    static const System::String^    PARAM_PACKAGE_FW303_DEFAULT = "0.1";
-    static const System::String^    PARAM_PACKAGE_FW304_DEFAULT = "0.1";
-    static const System::String^    PARAM_PACKAGE_FW315_DEFAULT = "0.1";
-    static const System::String^    PARAM_PACKAGE_FW326_DEFAULT = "0.1";
-    static const System::String^    PARAM_PACKAGE_FWCAN_DEFAULT = "0.1";
-    static const System::String^    PARAM_PACKAGE_FWGEN_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_ID_DEFAULT =    "1.0";
+    literal System::String^    PARAM_PACKAGE_FW301_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_FW302_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_FW303_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_FW304_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_FW315_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_FW326_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_FWCAN_DEFAULT = "0.1";
+    literal System::String^    PARAM_PACKAGE_FWGEN_DEFAULT = "0.1";
 
     //___________________________________________________________________________________________________//
-    static const System::String^    PARAM_AWS_CONNECTIONS = "AWS_CONNECTION";
-    static const System::String^    PARAM_AWS_CONNECTIONS_COMMENT = "Addresses of the connections with the AWS";
-    static const int        PARAM_AWS_CONNECTIONS_IP = 0;
-    static const int        PARAM_AWS_CONNECTIONS_PORT_COMMAND = 1;
-    static const int        PARAM_AWS_CONNECTIONS_PORT_EVENTS = 2;
-    static const System::String^    PARAM_AWS_CONNECTIONS_IP_DEFAULT = "127.0.0.1";
-    static const System::String^    PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT = "10000";
-    static const System::String^    PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = "10001";
+    literal System::String^    PARAM_AWS_CONNECTIONS = "AWS_CONNECTION";
+    literal System::String^    PARAM_AWS_CONNECTIONS_COMMENT = "Addresses of the connections with the AWS";
+    literal int        PARAM_AWS_CONNECTIONS_IP = 0;
+    literal int        PARAM_AWS_CONNECTIONS_PORT_COMMAND = 1;
+    literal int        PARAM_AWS_CONNECTIONS_PORT_EVENTS = 2;
+    literal System::String^    PARAM_AWS_CONNECTIONS_IP_DEFAULT = "127.0.0.1";
+    literal System::String^    PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT = "10000";
+    literal System::String^    PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = "10001";
 
    
 

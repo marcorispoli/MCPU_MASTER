@@ -157,4 +157,5 @@ static const unsigned char nanojTrxProgram[] = {
 TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", GEAR_RATIO)
 {
     setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
+  
 }

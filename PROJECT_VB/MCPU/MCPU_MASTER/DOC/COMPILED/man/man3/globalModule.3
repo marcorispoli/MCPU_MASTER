@@ -1,4 +1,4 @@
-.TH "globalModule" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "globalModule" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,22 +20,6 @@ globalModule \- Gantry Global Status Registers
 .SS "Classes"
 
 .in +1c
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CompressionModeOption\fP"
-.br
-.RI "This class handles the Compression behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureTypeOption\fP"
-.br
-.RI "This class handles the exposure type status\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::DetectorTypeOption\fP"
-.br
-.RI "This class handles the Detector model selection\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientProtectionMode\fP"
-.br
-.RI "This class handles the Usage of the patient protection during the exposure\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::PaddleOption\fP"
 .br
@@ -65,21 +49,9 @@ globalModule \- Gantry Global Status Registers
 .br
 .RI "This is the register handling the compression force and thickness\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureModeRegister\fP"
-.br
-.RI "This class handles the exposure type status\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
 .br
 .RI "This class handles the Trx motorization "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureCompletedOptions\fP"
-.br
-.RI "This class implements the XRAY completed status register\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureDataRegister\fP"
-.br
-.RI "This register handle the Exposure pulse data info\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
 .br
@@ -87,6 +59,10 @@ globalModule \- Gantry Global Status Registers
 .ti -1c
 .RI "class \fBProjectionOptions\fP"
 .br
+.ti -1c
+.RI "class \fBBodyMotor\fP"
+.br
+.RI "This is the Body Module class implementation"
 .in -1c
 .SH "Detailed Description"
 .PP 

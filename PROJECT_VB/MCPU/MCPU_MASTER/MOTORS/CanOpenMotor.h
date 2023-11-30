@@ -441,11 +441,8 @@ namespace CANOPEN {
 		public:delegate void delegate_command_completed_callback(int id, int code);
 		public:static event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
-		public:bool activateResetEncoderCommand(int id);
-		public:bool activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning
-		protected: virtual bool automaticPositioningPreparation(void); //!< This function shall be implemented by the Subclass 
-		protected: virtual void automaticPositioningCompletion(void); //!< This function shall be implemented by the Subclass 
-		protected: virtual bool idleCallback(void);
+		public:bool activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
+		public:bool activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
 		protected: inline int getPreviousPosition(void) { return previous_uposition; }
 
 		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
@@ -462,21 +459,24 @@ namespace CANOPEN {
 			/// This enumeration class defines the Command codes
 			/// </summary>
 			public:enum class MotorCommands {
-				MOTOR_IDLE = 0,			//!< No command are presents
-				MOTOR_ENCODER_RESET,	//!< Encoder reset to 0 at the current position
+				MOTOR_IDLE = 0,			//!< No command are presents				
 				MOTOR_HOMING,			//!< Homing procedure for automatic zero setting
 				MOTOR_AUTO_POSITIONING, //!< Motor Automatic activation to target
 			};
 
 			public:enum class MotorCompletedCodes {
 				COMMAND_SUCCESS = 0,
+				COMMAND_PROCEED = 0,
 				ERROR_MOTOR_BUSY,
 				ERROR_INITIALIZATION,
 				ERROR_UNEXPECTED_STATUS,
-				ERROR_SUBCLASS_PREPARATION,
+				ERROR_LIMIT_SWITCH,
+				ERROR_BRAKE_DEVICE,
+				ERROR_INVALID_COMMAND_INITIAL_CONDITION,
 				ERROR_TIMOUT,
 				ERROR_INTERNAL_FAULT,
 				ERROR_ACTIVATION_REGISTER,
+				ERROR_MISSING_HOME,
 			};
 
 		public: inline System::String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
@@ -492,14 +492,15 @@ namespace CANOPEN {
 		
 
 		// Device Initialization __________________________________________________________________
-		protected:virtual bool	initializeSpecificObjectDictionary(void);
+		
 		protected:bool			initializeObjectDictionary(void);		
 		protected:void			setNanoJPtr(const unsigned char* ptr, int size) { pNanoj = ptr; nanojSize = size; }
-		protected: bool			initResetEncoderCommand(void);
+		protected: bool			initResetEncoderCommand(int initial_position);
 
 		// Device Status _________________________________________________________________________
 		static const cli::array<System::String^>^ status_tags = gcnew cli::array<System::String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
 		private:status_options internal_status;
+		protected: int encoder_initial_value; //! This is the value that shall be assigne to the encoder at the startup
 		protected: int current_eposition;		//!< Current Encoder position
 		protected: int current_uposition;		//!< Current User position 
 		protected: int previous_uposition;			//!< This is the last target position for non coordinate activations
@@ -510,8 +511,8 @@ namespace CANOPEN {
 		protected: bool od_initialized;    //!< Object dictionary has been intialized
 		protected: bool nanoj_initialized; //!< Nano-J program has been intialized
 		protected: bool home_initialized;  //!< The device has executed the homing procedure
-
-		// Device Definition
+		
+		// Device Unit Definition ________________________________________________________________
 		private: double rot_per_unit; //!< This is Rotation/units
 		protected: int convert_Encoder_To_User(int x);
 		protected: int convert_User_To_Encoder(int x);
@@ -577,14 +578,15 @@ namespace CANOPEN {
 		private: int nanojSize;
 		
 
-		// Activation Management Section ____________________________________________________
-		protected:  virtual	void setCommandCompletedCode(MotorCompletedCodes error);
+		// Device Activation Management Section ____________________________________________________	
+		private:	void setCommandCompletedCode(MotorCompletedCodes error); //!< This function 	
 		private:	void updateCurrentPosition(void);
 		private:	void setActivationTimeout(int speed, int acc, int dec, int target);
 		private:	bool isTarget(void) { return ((current_uposition <= command_target + target_range_h) && (current_uposition >= command_target - target_range_h)); }
 
 		private:	void manageAutomaticPositioning(void);
-		private:	void manageEncoderResetCommand(void);
+		private:	void manageAutomaticHoming(void);
+
 
 		private: MotorCommands request_command; //!< Application request command code
 		private: MotorCommands current_command; //!< Current executing command code
@@ -596,9 +598,20 @@ namespace CANOPEN {
 		private:int command_dec;			//!< Deceleration in user/s2
 		private:int command_speed;			//!< Speed in user/s
 		private:int command_ms_tmo;			//!< Timoeut activation in ms
-		
+		private:int command_homing_on_method;  //!< Homing method whith zero photocell starting in ON status
+		private:int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
 
+		// Subclass Overridable callbacks ____________________________________________________
 		
+		
+		protected:	virtual MotorCompletedCodes automaticPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
+		protected:	virtual void automaticPositioningCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
+		
+		protected:	virtual MotorCompletedCodes automaticHomingPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
+		protected:	virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
+
+		protected:	virtual bool idleCallback(void) { return true; }
+		protected:	virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
 
 	};
 

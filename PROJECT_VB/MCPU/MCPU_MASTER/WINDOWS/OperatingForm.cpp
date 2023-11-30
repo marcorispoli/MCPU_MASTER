@@ -150,7 +150,7 @@ void OperatingForm::formInitialization(void) {
 	projSelection->BackgroundImage = PROJ_SELCTION_BACKGROUND_IMAGE;
 	selectedIcon->Hide();
 	OPERSTATUS::Registers.projectionSelected = false;
-	ArmMotor::target_change_event += gcnew ArmMotor::delegate_target_change_callback(this, &OperatingForm::onArmTargetChangedCallback);	
+	ArmMotor::target_change_event += gcnew ArmMotor::delegate_target_change_callback(this, &OperatingForm::onArmTargetChangedCallback);		
 	ArmMotor::target_abort_event += gcnew ArmMotor::delegate_target_abort_callback(this, &OperatingForm::onArmAbortTargetCallback);
 	
 	

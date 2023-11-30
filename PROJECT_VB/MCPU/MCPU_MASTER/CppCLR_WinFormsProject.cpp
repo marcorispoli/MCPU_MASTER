@@ -5,6 +5,7 @@
 #include "IdleForm.h"
 #include "MainForm.h"
 #include "OperatingForm.h"
+#include "ArmMotor.h"
 #include "./gantry_global_status.h"
 
 using namespace System;
@@ -30,7 +31,7 @@ int main()
   // Get the current directory for the resources
   GlobalObjects::applicationResourcePath = System::IO::Directory::GetCurrentDirectory() + "\\RESOURCES\\";
 
-
+  
   // Gets the Monitors p
   // osition
   for (int i = 0; i < monitors; i++) {

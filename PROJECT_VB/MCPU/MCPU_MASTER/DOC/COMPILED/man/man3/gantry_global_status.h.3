@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,8 +12,6 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include 'Errors\&.h'\fP
 .br
-\fC#include 'PCB315\&.h'\fP
-.br
 
 .SS "Classes"
 
@@ -24,26 +22,6 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "class \fBGantryStatusRegisters::enumType< T >\fP"
 .br
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CompressionModeOption\fP"
-.br
-.RI "This class handles the Compression behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureTypeOption\fP"
-.br
-.RI "This class handles the exposure type status\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::DetectorTypeOption\fP"
-.br
-.RI "This class handles the Detector model selection\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ArmModeOption\fP"
-.br
-.RI "This class provides the Arm Mode options handling\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientProtectionMode\fP"
-.br
-.RI "This class handles the Usage of the patient protection during the exposure\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::PaddleOption\fP"
 .br
@@ -73,25 +51,9 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 .RI "This is the register handling the compression force and thickness\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureModeRegister\fP"
-.br
-.RI "This class handles the exposure type status\&. "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
 .br
 .RI "This class handles the Trx motorization "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::exposurePulse\fP"
-.br
-.RI "Internal class uses to group the exposure data pulses "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureCompletedOptions\fP"
-.br
-.RI "This class implements the XRAY completed status register\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureDataRegister\fP"
-.br
-.RI "This register handle the Exposure pulse data info\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
 .br
@@ -124,43 +86,7 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBpAWS\fP   ((awsProtocol^) \fBGlobalObjects::pAws\fP)"
 .br
 .ti -1c
-.RI "#define \fBpCAN\fP   ((CanDriver^) \fBGlobalObjects::pCan\fP)"
-.br
-.ti -1c
-.RI "#define \fBpFW301\fP   ((\fBPCB301\fP^) \fBGlobalObjects::pFw301\fP)"
-.br
-.ti -1c
-.RI "#define \fBpFW302\fP   ((\fBPCB302\fP^) \fBGlobalObjects::pFw302\fP)"
-.br
-.ti -1c
-.RI "#define \fBpFW303\fP   ((\fBPCB303\fP^) \fBGlobalObjects::pFw303\fP)"
-.br
-.ti -1c
-.RI "#define \fBpFW304\fP   ((\fBPCB304\fP^) \fBGlobalObjects::pFw304\fP)"
-.br
-.ti -1c
-.RI "#define \fBpFW315\fP   ((\fBPCB315\fP^) \fBGlobalObjects::pFw315\fP)"
-.br
-.ti -1c
-.RI "#define \fBpFW326\fP   ((\fBPCB326\fP^) \fBGlobalObjects::pFw326\fP)"
-.br
-.ti -1c
-.RI "#define \fBpMBODY\fP   ((CanOpenMotor^) \fBGlobalObjects::pMotBody\fP)"
-.br
-.ti -1c
-.RI "#define \fBpMTILT\fP   ((\fBTiltMotor\fP^) \fBGlobalObjects::pMotTilt\fP)"
-.br
-.ti -1c
-.RI "#define \fBpMARM\fP   ((\fBArmMotor\fP^) \fBGlobalObjects::pMotArm\fP)"
-.br
-.ti -1c
 .RI "#define \fBpMSHIFT\fP   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
-.br
-.ti -1c
-.RI "#define \fBpMVERT\fP   ((\fBVerticalMotor\fP^) \fBGlobalObjects::pMotVert\fP)"
-.br
-.ti -1c
-.RI "#define \fBpGENERATOR\fP   ((Generator^) \fBGlobalObjects::pGenerator\fP)"
 .br
 .in -1c
 .SS "Functions"
@@ -193,33 +119,9 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .PP 
 .SS "#define pAWS   ((awsProtocol^) \fBGlobalObjects::pAws\fP)"
 
-.SS "#define pCAN   ((CanDriver^) \fBGlobalObjects::pCan\fP)"
-
-.SS "#define pFW301   ((\fBPCB301\fP^) \fBGlobalObjects::pFw301\fP)"
-
-.SS "#define pFW302   ((\fBPCB302\fP^) \fBGlobalObjects::pFw302\fP)"
-
-.SS "#define pFW303   ((\fBPCB303\fP^) \fBGlobalObjects::pFw303\fP)"
-
-.SS "#define pFW304   ((\fBPCB304\fP^) \fBGlobalObjects::pFw304\fP)"
-
-.SS "#define pFW315   ((\fBPCB315\fP^) \fBGlobalObjects::pFw315\fP)"
-
-.SS "#define pFW326   ((\fBPCB326\fP^) \fBGlobalObjects::pFw326\fP)"
-
-.SS "#define pGENERATOR   ((Generator^) \fBGlobalObjects::pGenerator\fP)"
-
 .SS "#define pIDLEFORM   ((IdleForm^) \fBGlobalObjects::pIdleForm\fP)"
 
-.SS "#define pMARM   ((\fBArmMotor\fP^) \fBGlobalObjects::pMotArm\fP)"
-
-.SS "#define pMBODY   ((CanOpenMotor^) \fBGlobalObjects::pMotBody\fP)"
-
 .SS "#define pMSHIFT   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
-
-.SS "#define pMTILT   ((\fBTiltMotor\fP^) \fBGlobalObjects::pMotTilt\fP)"
-
-.SS "#define pMVERT   ((\fBVerticalMotor\fP^) \fBGlobalObjects::pMotVert\fP)"
 
 .SS "#define pOPERFORM   ((OperatingForm^) \fBGlobalObjects::pOperatingForm\fP)"
 

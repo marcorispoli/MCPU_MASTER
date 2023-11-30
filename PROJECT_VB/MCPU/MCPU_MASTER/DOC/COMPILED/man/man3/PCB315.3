@@ -1,4 +1,4 @@
-.TH "PCB315" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -88,6 +88,13 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This function returns the current status of the Power light  "
 .in -1c
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB315\fP ^ \fBdevice\fP = gcnew \fBPCB315\fP()"
+.br
 .in -1c
 .SS "Private Types"
 
@@ -190,6 +197,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "bool \fBconfigurationLoop\fP (void) override"
 .br
 .RI "This is the Base class configurationLoop override function\&. "
+.ti -1c
+.RI "void \fBresetLoop\fP (void) override"
+.br
+.RI "This is the Base class resetLoop override function\&. "
 .ti -1c
 .RI "bool \fBupdateStatusRegister\fP (void)"
 .br
@@ -324,6 +335,9 @@ This is the Device STATUS Register implementation
 .in +1c
 .TP
 \fB\fISYSTEM_STATUS_REGISTER \fP\fP
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPCB315\fP ^ PCB315::device = gcnew \fBPCB315\fP()\fC [static]\fP"
 
 
 .SH "Author"

@@ -1,4 +1,4 @@
-.TH "GlobalObjects" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GlobalObjects" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,60 +12,15 @@ GlobalObjects
 
 .in +1c
 .ti -1c
-.RI "static Object ^ \fBpGenerator\fP = nullptr"
-.br
-.ti -1c
 .RI "static Object ^ \fBpAws\fP = nullptr"
 .br
-.RI "Pointer to the AWS interface\&. "
-.ti -1c
-.RI "static Object ^ \fBpCan\fP = nullptr"
+.RI "Pointer to the AWS interface 
 .br
-.RI "Pointer to the Can Driver\&. "
-.ti -1c
-.RI "static Object ^ \fBpMotTilt\fP = nullptr"
-.br
-.RI "Pointer to the Tilt Motor\&. "
-.ti -1c
-.RI "static Object ^ \fBpMotArm\fP = nullptr"
-.br
-.RI "Pointer to the Arm Motor\&. "
-.ti -1c
-.RI "static Object ^ \fBpMotBody\fP = nullptr"
-.br
-.RI "Pointer to the Body Motor\&. "
+ "
 .ti -1c
 .RI "static Object ^ \fBpMotShift\fP = nullptr"
 .br
 .RI "Pointer to the Shift Motor\&. "
-.ti -1c
-.RI "static Object ^ \fBpMotVert\fP = nullptr"
-.br
-.RI "Pointer to the Up/Down Motor\&. "
-.ti -1c
-.RI "static Object ^ \fBpFw301\fP = nullptr"
-.br
-.RI "Pointer to the FW301 board\&. "
-.ti -1c
-.RI "static Object ^ \fBpFw302\fP = nullptr"
-.br
-.RI "Pointer to the FW302 board\&. "
-.ti -1c
-.RI "static Object ^ \fBpFw303\fP = nullptr"
-.br
-.RI "Pointer to the FW303 board\&. "
-.ti -1c
-.RI "static Object ^ \fBpFw304\fP = nullptr"
-.br
-.RI "Pointer to the FW304 board\&. "
-.ti -1c
-.RI "static Object ^ \fBpFw315\fP = nullptr"
-.br
-.RI "Pointer to the FW315 board\&. "
-.ti -1c
-.RI "static Object ^ \fBpFw326\fP = nullptr"
-.br
-.RI "Pointer to the FW326 board\&. "
 .ti -1c
 .RI "static int \fBmonitor_X0\fP"
 .br
@@ -104,61 +59,17 @@ Pointer to the Monitor Y0 position\&.
 .SS "Object ^ GlobalObjects::pAws = nullptr\fC [static]\fP"
 
 .PP
-Pointer to the AWS interface\&. 
-.SS "Object ^ GlobalObjects::pCan = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the Can Driver\&. 
-.SS "Object ^ GlobalObjects::pFw301 = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the FW301 board\&. 
-.SS "Object ^ GlobalObjects::pFw302 = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the FW302 board\&. 
-.SS "Object ^ GlobalObjects::pFw303 = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the FW303 board\&. 
-.SS "Object ^ GlobalObjects::pFw304 = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the FW304 board\&. 
-.SS "Object ^ GlobalObjects::pFw315 = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the FW315 board\&. 
-.SS "Object ^ GlobalObjects::pFw326 = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the FW326 board\&. 
-.SS "Object ^ GlobalObjects::pGenerator = nullptr\fC [static]\fP"
-
+Pointer to the AWS interface 
+.br
+ 
 .SS "Object ^ GlobalObjects::pIdleForm = nullptr\fC [static]\fP"
 
 .PP
 Pointer to the IdleForm\&. 
-.SS "Object ^ GlobalObjects::pMotArm = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the Arm Motor\&. 
-.SS "Object ^ GlobalObjects::pMotBody = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the Body Motor\&. 
 .SS "Object ^ GlobalObjects::pMotShift = nullptr\fC [static]\fP"
 
 .PP
 Pointer to the Shift Motor\&. 
-.SS "Object ^ GlobalObjects::pMotTilt = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the Tilt Motor\&. 
-.SS "Object ^ GlobalObjects::pMotVert = nullptr\fC [static]\fP"
-
-.PP
-Pointer to the Up/Down Motor\&. 
 .SS "Object ^ GlobalObjects::pOperatingForm = nullptr\fC [static]\fP"
 
 .PP

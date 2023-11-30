@@ -1,4 +1,4 @@
-.TH "PCB302" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB302" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -47,7 +47,17 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "static int \fBgetDetectedPaddleCollimationFormat\fP (void)"
 .br
-.RI "This function returns he collimation format index associated to the detected paddle "
+.RI "This function returns he collimation format index associated to the detected paddle\&. "
+.ti -1c
+.RI "static void \fBsetCompressorUnlock\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB302\fP ^ \fBdevice\fP = gcnew \fBPCB302\fP()"
+.br
 .in -1c
 .SS "Protected Member Functions"
 
@@ -68,7 +78,6 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This is the current detected paddle\&. "
 .in -1c
-.SS "Additional Inherited Members"
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBPCB302::paddleCodes\fP\fC [strong]\fP"
@@ -138,7 +147,7 @@ the current detected paddle code
 .SS "int PCB302::getDetectedPaddleCollimationFormat (void)\fC [static]\fP"
 
 .PP
-This function returns he collimation format index associated to the detected paddle 
+This function returns he collimation format index associated to the detected paddle\&. This function returns he collimation format index associated to the detected paddle
 .PP
 \fBReturns\fP
 .RS 4
@@ -218,12 +227,16 @@ The name of the paddle or nullptr if the name is not found
 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "static void PCB302::setCompressorUnlock (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SH "Member Data Documentation"
 .PP 
 .SS "\fBpaddleCodes\fP PCB302::detected_paddle\fC [static]\fP, \fC [private]\fP"
 
 .PP
 This is the current detected paddle\&. 
+.SS "\fBPCB302\fP ^ PCB302::device = gcnew \fBPCB302\fP()\fC [static]\fP"
+
 .SS "const cli::array<System::String^> ^ PCB302::paddle_name\fC [static]\fP, \fC [private]\fP"
 \fBInitial value:\fP
 .PP

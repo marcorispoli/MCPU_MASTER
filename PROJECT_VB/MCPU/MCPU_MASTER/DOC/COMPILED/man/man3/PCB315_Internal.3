@@ -1,4 +1,4 @@
-.TH "PCB315_Internal" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Internal" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -75,6 +75,10 @@ PCB315_Internal \- Internal implementation section
 .br
 .RI "This is the Base class configurationLoop override function\&. "
 .ti -1c
+.RI "void \fBPCB315::resetLoop\fP (void) override"
+.br
+.RI "This is the Base class resetLoop override function\&. "
+.ti -1c
 .RI "bool \fBPCB315::updateStatusRegister\fP (void)"
 .br
 .RI "Function handling the status register acquisition\&. "
@@ -118,7 +122,7 @@ The Assignment Parameter is in String format: '1', '2', \&.\&.\&. 'n'
 .br
 and the converted integer value (1, 2, \&.\&. N) is compared with the 
 .br
- FilterConfig::FilterAssignment enumeraiton class used in the assignment 
+ \fBFilterConfig::FilterAssignment\fP enumeraiton class used in the assignment 
 .br
 declaration\&.
 .PP
@@ -137,6 +141,12 @@ The FilterSlotCodes selection, or \fBFilterSlotCodes::FILTER_INVALID\fP in case 
 
 .PP
 Function handling the Filter selection operations\&. 
+.SS "void PCB315::resetLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base class resetLoop override function\&. This function activate a One Shot alarm notifying the operator that the device has been reset\&.
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "void PCB315::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP

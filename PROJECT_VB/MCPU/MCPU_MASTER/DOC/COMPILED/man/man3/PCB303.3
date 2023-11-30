@@ -1,4 +1,4 @@
-.TH "PCB303" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB303" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -60,6 +60,13 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "In case of collimation fault condition, this function starts a new collimation attempt\&. "
 .in -1c
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB303\fP ^ \fBdevice\fP = gcnew \fBPCB303\fP()"
+.br
 .in -1c
 .SS "Private Types"
 
@@ -149,6 +156,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "Retrives what is the current automatic format to be calibrated\&. "
 .in -1c
 .in +1c
+.ti -1c
+.RI "void \fBresetLoop\fP (void) override"
+.br
+.RI "This is the Base class resetLoop override function\&. "
 .ti -1c
 .RI "virtual void \fBrunningLoop\fP (void) override"
 .br
@@ -455,6 +466,10 @@ This is the current Left and Right position (if the position is valid)
 .TP
 \fB\fISYSTEM_CURRENT_T_REGISTER \fP\fP
 This is the current Trap position (if the position is valid) 
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPCB303\fP ^ PCB303::device = gcnew \fBPCB303\fP()\fC [static]\fP"
+
 
 .SH "Author"
 .PP 

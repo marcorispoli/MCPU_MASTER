@@ -3,7 +3,7 @@
 
 using namespace System::IO;
 
-ConfigFile::ConfigFile(const System::String^ file, int rev, cli::array<paramItemT^>^ descriptor)
+ConfigFile::ConfigFile( System::String^ file, int rev, cli::array<paramItemT^>^ descriptor)
 {
     warning = false;
     warning_string = "";
@@ -86,10 +86,9 @@ bool ConfigFile::decodeLine(System::String^ rline)
 }
 
 int ConfigFile::getTagPosition(System::String^ tag) {
-    System::String^ stringa;
-    for (int i = 0; i < data->Length; i++) {
-        stringa = (System::String^)data[i]->tag;
-        if (stringa == tag)  return i;
+    
+    for (int i = 0; i < data->Length; i++) {             
+        if (data[i]->tag == tag)  return i;
     }
 
     return -1;
@@ -98,6 +97,11 @@ int ConfigFile::getTagPosition(System::String^ tag) {
 
 bool ConfigFile::loadFile(void){
     
+    // Reload the default values
+    for (int i = 0; i < data->Length; i++) {
+        data[i]->values = gcnew cli::array<System::String^>(data[i]->defaults->Length);
+        for (int j = 0; j < data[i]->defaults->Length; j++) data[i]->values[j] = (System::String^)data[i]->defaults[j];
+    }
 
     StreamReader^ din = File::OpenText(filename);
 
@@ -107,6 +111,7 @@ bool ConfigFile::loadFile(void){
     {
         count++;
         decodeLine(str);
+
         if (loaded_revision != revision) {
             warning = true;
             warning_string += "configuration file revision changed.\n";

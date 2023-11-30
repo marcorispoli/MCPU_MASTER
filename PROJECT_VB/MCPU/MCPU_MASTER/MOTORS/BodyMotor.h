@@ -12,10 +12,10 @@
 /// # Motor Mechanical Assembly setup
 /// 
 /// + The Motor gear ratio is 80-1: 80 motor turns equal to 360 degree body rotation;
-/// + When the motor rotates clockwise, the Body rotates clockwise (viewed from the Body Top);
+/// + When the motor rotates clockwise, the Body rotates counter_clockwise (viewed from the Body Top);
 /// + The Zero setting photocell: 
-///		+ when it is ON (on light) the body has to rotate clockwise to find the center;
-///		+ when it is OFF (obscured) the body has to rotate counter_clockwise to find the center;
+///		+ when it is ON (on light) the body has to rotate clockwise (the motor rotate counter_clockwise) to find the center;
+///		+ when it is OFF (obscured) the body has to rotate counter_clockwise  (the motor rotate clockwise) to find the center;
 /// 
 /// + Limit switch photocell OFF (obscured): 
 ///		+ with Zero setting ON: the limit is the counter-clockwise;
@@ -97,15 +97,23 @@ ref class BodyMotor : public CANOPEN::CanOpenMotor
 public:
 	BodyMotor(void);
 	static BodyMotor^ device = gcnew BodyMotor();
+	static bool startHoming(void);
+	
 
 protected:
-	bool initializeSpecificObjectDictionary(void) override;
-	bool automaticPositioningPreparation(void) override;
-	void automaticPositioningCompletion(void) override;
+	bool initializeSpecificObjectDictionaryCallback(void) override;
+	MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
+	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override;
+
+
 	bool idleCallback(void) override;
+
+	MotorCompletedCodes automaticHomingPreparationCallback(void) override;
+	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 
 private:
 	static bool brake_alarm = false; //!< This is the current brake malfunction alarm
 
 };
 
+		

@@ -4,7 +4,7 @@ using namespace System::Collections::Generic;
 
 /**
  * @brief This class handles the configuration file management
- *
+ * \ingroup ModuleParam
  * # ABSTRACT
  *
  * The configuration file is a special file with a proper
@@ -180,22 +180,22 @@ public:
     
     #define CONFIG_FILE_DESCRIPTOR  gcnew cli::array<ConfigFile::paramItemT^>
     #define CONFIG_FILE_ITEM        gcnew ConfigFile::paramItemT
-    #define CONFIG_FILE_DEFAULT     gcnew cli::array<const System::String^>
+    #define CONFIG_FILE_DEFAULT     gcnew cli::array<System::String^>
     
     ref class paramItemT 
     {
         public:
 
-        paramItemT(const System::String^ tg, const System::String^ cmt, cli::array<const System::String^>^ def) {
+        paramItemT(System::String^ tg, System::String^ cmt, cli::array<System::String^>^ def) {
             tag = tg;
             defaults = def;
             values = gcnew cli::array<System::String^>(defaults->Length);
             for (int i = 0; i < defaults->Length; i++) values[i] = (System::String^)defaults[i] ;
             comment = cmt;
         }
-        const System::String^ tag;        //!< Tag name of the parameter
-        cli::array<const System::String^>^ defaults; //!< Default Value list of a parameter
-        const System::String^ comment;    //!< comment
+        System::String^ tag;        //!< Tag name of the parameter
+        cli::array<System::String^>^ defaults; //!< Default Value list of a parameter
+        System::String^ comment;    //!< comment
         cli::array<System::String^>^ values;   //!< Value list of a parameter
         
     };
@@ -212,7 +212,7 @@ public:
     };
 
 
-    ConfigFile(const System::String^ filename, int revision, cli::array<paramItemT^>^ descriptor);
+    ConfigFile(System::String^ filename, int revision, cli::array<paramItemT^>^ descriptor);
 
     //! Load the configuration file in memory
     bool loadFile(void);
@@ -226,14 +226,14 @@ public:
     inline bool isWarning(void) { return warning; }
     inline System::String^ getWarningString(void) { return warning_string; }
     
-    cli::array<System::String^>^ getParam(const System::String^ tag){
+    cli::array<System::String^>^ getParam(System::String^ tag){
         int i = getTagPosition((System::String^) tag);
         if(i < 0)    return nullptr;        
         return data[i]->values;
     }
 
 
-    bool setParam(System::String^ tag, int index, System::String^ val){
+    bool setParam(System::String^ tag,  int index, System::String^ val){
         int i = getTagPosition(tag);
         if( (i < 0) || (index >= data[i]->values->Length)) return false;
         
@@ -267,7 +267,7 @@ protected:
      * tag name
      * @return
      */
-    int getTagPosition(System::String^ tag);
+    int getTagPosition( System::String^ tag);
     System::String^ getConfigPath(void);
     void createDefaultFile(void); //!< Creates the default file based on the template
     bool decodeLine(System::String^ rline);

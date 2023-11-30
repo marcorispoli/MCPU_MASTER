@@ -78,9 +78,10 @@ ref class ArmMotor : public CANOPEN::CanOpenMotor
 public:
 	ArmMotor(void);
     static ArmMotor^ device = gcnew ArmMotor();
+    static bool startHoming(void);
+    static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
 
     // Exposure acceptable conditions
-public: 
     static bool isTarget(void) { return ((device->current_uposition >= selected_target - 1) && (device->current_uposition <= selected_target + 1));}
     static bool isValidTarget(void) { return valid_target; }
     static bool isInRange(void) { return ((device->current_uposition >= allowed_low) && (device->current_uposition <= allowed_high)); }
@@ -91,25 +92,6 @@ public:
     delegate void delegate_target_change_callback(int id, int target_position);
     static event delegate_target_change_callback^ target_change_event;
     
-    static bool setTarget(int pos, int low, int high, System::String^ proj, int id) {       
-        if (projections->Value->indexOf(proj) < 0) return false;
-
-        // Assignes the projection
-        projections->Value->setCode(proj);
-
-        // Assignes the target data
-        allowed_low = low;
-        allowed_high = high;
-        valid_target = true;
-        selected_target = pos;
-        
-        target_change_event(id, pos); // For the Window Form update state
-        
-        // Activate an Isocentric C-ARM rotation
-        device->iso_activation_mode = true;
-        return device->activateAutomaticPositioning(id, pos, 1000,200,200);
-    }
-
     delegate void delegate_target_abort_callback(void);
     static event delegate_target_abort_callback^ target_abort_event;
     static void abortTarget(void) {
@@ -134,8 +116,11 @@ public:
     static void projectionRequest(System::String^ projection) { if (projections->Value->isPresent(projection)) projection_request_event(projection); }
 
 protected:
-    bool initializeSpecificObjectDictionary(void) override; //!< Sets specific registers for the Arm activation
-    void setCommandCompletedCode(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function
+    bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
+    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    
+    bool idleCallback(void) override;
+    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
+
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
 
 private:

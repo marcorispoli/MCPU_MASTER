@@ -1,4 +1,4 @@
-.TH "ArmMotor" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ArmMotor" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,22 +17,7 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "\fBArmMotor\fP (void)"
 .br
 .ti -1c
-.RI "bool \fBisTarget\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBisValidTarget\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBisInRange\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBisValidPosition\fP (void)"
-.br
-.ti -1c
 .RI "delegate void \fBdelegate_target_change_callback\fP (int id, int target_position)"
-.br
-.ti -1c
-.RI "bool \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
 .br
 .ti -1c
 .RI "delegate void \fBdelegate_target_abort_callback\fP (void)"
@@ -47,6 +32,21 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "Static Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "static bool \fBisTarget\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisValidTarget\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisInRange\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisValidPosition\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
+.br
 .ti -1c
 .RI "static void \fBabortTarget\fP (void)"
 .br
@@ -63,6 +63,13 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "static void \fBprojectionRequest\fP (System::String^ projection)"
 .br
 .in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBArmMotor\fP ^ \fBdevice\fP = gcnew \fBArmMotor\fP()"
+.br
+.in -1c
 .SS "Protected Member Functions"
 
 .in +1c
@@ -74,6 +81,14 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "void \fBsetCommandCompletedCode\fP (\fBMotorCompletedCodes\fP error) override"
 .br
 .RI "Override the basic class to handle the Virtual isocentric function\&. "
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBiso_activation_mode\fP"
+.br
+.RI "Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. "
 .in -1c
 .SS "Events"
 
@@ -146,13 +161,13 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 Sets specific registers for the Arm activation\&. 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "bool ArmMotor::isInRange (void)\fC [inline]\fP"
+.SS "static bool ArmMotor::isInRange (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "bool ArmMotor::isTarget (void)\fC [inline]\fP"
+.SS "static bool ArmMotor::isTarget (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "bool ArmMotor::isValidPosition (void)\fC [inline]\fP"
+.SS "static bool ArmMotor::isValidPosition (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "bool ArmMotor::isValidTarget (void)\fC [inline]\fP"
+.SS "static bool ArmMotor::isValidTarget (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static void ArmMotor::projectionRequest (System::String^ projection)\fC [inline]\fP, \fC [static]\fP"
 
@@ -162,7 +177,7 @@ Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 Override the basic class to handle the Virtual isocentric function\&. 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "bool ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fC [inline]\fP"
+.SS "static bool ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fC [inline]\fP, \fC [static]\fP"
 
 .SH "Member Data Documentation"
 .PP 
@@ -174,6 +189,12 @@ Higher acceptable angle (°)
 
 .PP
 Lower acceptable angle (°) 
+.SS "\fBArmMotor\fP ^ ArmMotor::device = gcnew \fBArmMotor\fP()\fC [static]\fP"
+
+.SS "bool ArmMotor::iso_activation_mode\fC [protected]\fP"
+
+.PP
+Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. 
 .SS "\fBProjectionOptions\fP ^ ArmMotor::projections = gcnew \fBProjectionOptions\fP\fC [static]\fP, \fC [private]\fP"
 
 .PP

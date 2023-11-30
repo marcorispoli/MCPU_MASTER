@@ -1,4 +1,4 @@
-.TH "CanDeviceProtocol" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanDeviceProtocol" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,7 +24,7 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 
 .in +1c
 .ti -1c
-.RI "enum class \fBProtocolFrameCode\fP { \fBFRAME_READ_REVISION\fP = 1, \fBFRAME_READ_ERRORS\fP, \fBFRAME_READ_COMMAND\fP, \fBFRAME_READ_STATUS\fP, \fBFRAME_READ_DATA\fP, \fBFRAME_READ_PARAM\fP, \fBFRAME_WRITE_DATA\fP, \fBFRAME_WRITE_PARAM\fP, \fBFRAME_STORE_PARAMS\fP, \fBFRAME_COMMAND_EXEC\fP }"
+.RI "enum class \fBProtocolFrameCode\fP { \fBFRAME_READ_REVISION\fP = 1, \fBFRAME_READ_ERRORS\fP, \fBFRAME_READ_COMMAND\fP, \fBFRAME_READ_STATUS\fP, \fBFRAME_READ_DATA\fP, \fBFRAME_READ_PARAM\fP, \fBFRAME_WRITE_DATA\fP, \fBFRAME_WRITE_PARAM\fP, \fBFRAME_STORE_PARAMS\fP, \fBFRAME_COMMAND_EXEC\fP, \fBFRAME_DEVICE_RESET\fP }"
 .br
 .RI "This is the command Code of the protocol frames "
 .ti -1c
@@ -34,7 +34,7 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "enum class \fBCommandRegisterErrors\fP { \fBCOMMAND_NO_ERROR\fP = 0, \fBCOMMAND_ERROR_BUSY\fP, \fBCOMMAND_ERROR_INVALID_PARAM\fP, \fBCOMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCOMMAND_DEVICE_TMO\fP = 255 }"
 .br
 .ti -1c
-.RI "enum class \fBstatus_options\fP { \fBWAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBWAITING_REVISION\fP, \fBDEVICE_CONFIGURATION\fP, \fBDEVICE_RUNNING\fP, \fBDEVICE_ERROR\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBstatus_options\fP { \fBWAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBWAITING_REVISION\fP, \fBDEVICE_CONFIGURATION\fP, \fBDEVICE_RUNNING\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
 .ti -1c
 .RI "enum class \fBbootloader_options\fP { \fBBOOTLOADER_NOT_PRESENT\fP = 0, \fBBOOTLOADER_RUNNING\fP = 1, \fBBOOTLOADER_PRESENT\fP = 2, \fBBOOTLOADER_UNCKNOWN_STAT\fP }"
@@ -113,7 +113,7 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "virtual void \fBrunningLoop\fP (void)"
 .br
 .ti -1c
-.RI "virtual bool \fBerrorLoop\fP (void)"
+.RI "virtual void \fBresetLoop\fP (void)"
 .br
 .ti -1c
 .RI "virtual bool \fBconfigurationLoop\fP (void)"
@@ -149,6 +149,10 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "bool \fBrx_pending\fP"
 .br
 .RI "A reception data is pending\&. "
+.ti -1c
+.RI "bool \fBdevice_reset\fP"
+.br
+.RI "A Device reset code has been received\&. "
 .ti -1c
 .RI "\fBCanDeviceRegister\fP ^ \fBtx_register\fP"
 .br
@@ -306,6 +310,9 @@ Store Parameters register frame command code\&.
 .TP
 \fB\fIFRAME_COMMAND_EXEC \fP\fP
 Execute Command frame command code\&. 
+.TP
+\fB\fIFRAME_DEVICE_RESET \fP\fP
+Device Reset Code\&. 
 .SS "enum class \fBCanDeviceProtocol::status_options\fP\fC [strong]\fP"
 
 .PP
@@ -324,10 +331,9 @@ The module is waiting for the revision acquisition\&.
 The module is uploading the device parameters\&. 
 .TP
 \fB\fIDEVICE_RUNNING \fP\fP
-The module is Running\&. 
-.TP
-\fB\fIDEVICE_ERROR \fP\fP
-The module is in Error condition\&. 
+The module is Running 
+.br
+ 
 .TP
 \fB\fILEN \fP\fP
 .TP
@@ -344,8 +350,6 @@ The module is in Error condition\&.
 
 .PP
 Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
-.SS "bool CanDeviceProtocol::errorLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
-
 .SS "System::String ^ CanDeviceProtocol::getAppRevision (void)\fC [inline]\fP"
 
 .SS "System::String ^ CanDeviceProtocol::getBootRevision (void)\fC [inline]\fP"
@@ -374,6 +378,10 @@ Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
 
 .SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readStatusRegister (unsigned char index)"
 
+.SS "void CanDeviceProtocol::resetLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
 .SS "void CanDeviceProtocol::runningLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -441,6 +449,10 @@ This is the callback to be connected to the CAN reception event\&.  This callbac
 
 .SS "unsigned short CanDeviceProtocol::device_id\fC [private]\fP"
 
+.SS "bool CanDeviceProtocol::device_reset\fC [private]\fP"
+
+.PP
+A Device reset code has been received\&. 
 .SS "HWND CanDeviceProtocol::hwnd\fC [private]\fP"
 
 .SS "\fBstatus_options\fP CanDeviceProtocol::internal_status\fC [private]\fP"

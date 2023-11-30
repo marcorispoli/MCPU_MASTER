@@ -1,4 +1,4 @@
-.TH "PCB315_Module" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Module" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -226,7 +226,7 @@ The name of the Slots are FILTER1, FILTER2, FILTER3, FILTER4\&.
 .br
  The phisical positions of the slots are described in the Hardware specification document of the \fBPCB315\fP board\&.
 .PP
-The FilterConfig file assignes the slots to the Material Filters\&.
+The \fBFilterConfig\fP file assignes the slots to the Material Filters\&.
 .PP
 For example, it can be assigned:
 .IP "\(bu" 2
@@ -239,7 +239,7 @@ The Filter 'Rh' to the FILTER3 slot;
 The Filter 'Cu' to the FILTER4 slot; In that example, the filter 'Mo' shall be NOT assigned to prevent errors even if it can be reassigned to any of the possible slots\&.
 .PP
 .PP
-See the FilterConfig class section for details\&.
+See the \fBFilterConfig\fP class section for details\&.
 .SH "Tube Temperature Monitoring"
 .PP
 The Filter device reads the Tube internal sensors positioned near the Rotating Anode Stator (Stator sensor) and the Cathode Filament (Bulb sensor) \&.

@@ -2,6 +2,7 @@
 #include "../gantry_global_status.h"
 #include "awsProtocol.h"
 #include "ArmMotor.h"
+#include "VerticalMotor.h"
 #include "BodyMotor.h"
 #include "PCB315.h"
 #include "PCB302.h"
@@ -497,8 +498,8 @@ void   awsProtocol::SET_Language(void) {
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
    
-    // Reset test
-    BodyMotor::device->activateResetEncoderCommand((int) 1);
+    // Body Homing
+    VerticalMotor::startHoming();
     return;
 
     // Body test

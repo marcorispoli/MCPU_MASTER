@@ -1,4 +1,4 @@
-.TH "PCB301" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB301" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,12 +17,43 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "\fBPCB301\fP ()"
 .br
 .in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisXrayButton\fP (void)"
+.br
+.RI "This function returns the current activation status of the X-RAY push button "
+.ti -1c
+.RI "static void \fBsetXrayEnable\fP (bool status)"
+.br
+.RI "This function sets the current status of the X-RAY enable signal\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB301\fP ^ \fBdevice\fP = gcnew \fBPCB301\fP()"
+.br
+.in -1c
 .SS "Protected Member Functions"
 
 .in +1c
 .ti -1c
 .RI "virtual void \fBrunningLoop\fP (void) override"
 .br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBxray_push_button_input\fP = false"
+.br
+.RI "This is the current X-RAY push button activation status\&. "
+.ti -1c
+.RI "static bool \fBxray_enable_status_output\fP = false"
+.br
+.RI "This is the current X-RAY enable status setting\&. "
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Constructor & Destructor Documentation"
@@ -31,10 +62,48 @@ Inherits \fBCanDeviceProtocol\fP\&.
 
 .SH "Member Function Documentation"
 .PP 
+.SS "static bool PCB301::isXrayButton (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the current activation status of the X-RAY push button 
+.PP
+\fBReturns\fP
+.RS 4
+True if the X-RAY push button should be activated
+.RE
+.PP
+
 .SS "void PCB301::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "static void PCB301::setXrayEnable (bool status)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function sets the current status of the X-RAY enable signal\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstatus\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPCB301\fP ^ PCB301::device = gcnew \fBPCB301\fP()\fC [static]\fP"
+
+.SS "bool PCB301::xray_enable_status_output = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current X-RAY enable status setting\&. 
+.SS "bool PCB301::xray_push_button_input = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current X-RAY push button activation status\&. 
 
 .SH "Author"
 .PP 

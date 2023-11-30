@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::ExposureDataRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::ExposureDataRegister" 3 "Thu Nov 16 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,115 +9,80 @@ GantryStatusRegisters::ExposureDataRegister \- This register handle the Exposure
 .PP
 .PP
 \fC#include <gantry_global_status\&.h>\fP
-.SS "Classes"
-
-.in +1c
-.ti -1c
-.RI "class \fBexposurePulse\fP"
-.br
-.RI "Internal class uses to group the exposure data pulses "
-.in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "static bool \fBsetPulse\fP (unsigned char seq, double kV, double mAs, String^ filter_tag)"
+.RI "static \fBExposureCompletedOptions\fP ^ \fBgetExposureComplete\fP (void)"
 .br
-.RI "This function sets the exposure data of a given exposure pulse number\&. "
 .ti -1c
-.RI "static bool \fBsetPulse\fP (unsigned char seq, double kV, double mAs, \fBFilterOptions::options\fP filter_code)"
+.RI "static \fBexposurePulse\fP ^ \fBgetPulse\fP (int i)"
 .br
-.RI "This function sets the exposure data of a given exposure pulse number\&. "
 .ti -1c
-.RI "static bool \fBgetValidatedPulse\fP (unsigned char seq, \fBexposurePulse\fP^ % pulse, bool invalidate)"
+.RI "static void \fBsetExposurePartial\fP (\fBExposureCompletedOptions::options\fP, double kV, double mAs, \fBPCB315::filterMaterialCodes\fP filter)"
 .br
-.RI "This function retrive the data of a given pulse\&. The Pulse is then invalidated (consumed) "
+.ti -1c
+.RI "static void \fBsetExposureCompleted\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetExposureNoDose\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBclear\fP (void)"
+.br
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_void_callback\fP^ \fBexposure_completed_event\fP"
+.br
+.RI "This event is generated when the value changes "
 .in -1c
 .SS "Static Private Attributes"
 
 .in +1c
 .ti -1c
-.RI "static array< \fBexposurePulse\fP^> ^ \fBpulses\fP = gcnew array<\fBexposurePulse\fP^>{gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP}"
+.RI "static cli::array< \fBexposurePulse\fP^> ^ \fBpulses\fP = gcnew cli::array<\fBexposurePulse\fP^>{gcnew \fBexposurePulse\fP(), gcnew \fBexposurePulse\fP(), gcnew \fBexposurePulse\fP(), gcnew \fBexposurePulse\fP()}"
 .br
 .RI "Stores the array of data pulses\&. "
+.ti -1c
+.RI "static \fBExposureCompletedOptions\fP ^ \fBexposure_complete\fP = gcnew \fBExposureCompletedOptions\fP"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
 This register handle the Exposure pulse data info\&. 
 
-The Exposure data of the exposure sequence is stored into this register\&.
+The Exposure data of the exposure sequence is stored into this register\&. <>  
 .SH "Member Function Documentation"
 .PP 
-.SS "static bool GantryStatusRegisters::ExposureDataRegister::getValidatedPulse (unsigned char seq, \fBexposurePulse\fP^ % pulse, bool invalidate)\fC [inline]\fP, \fC [static]\fP"
+.SS "static void GantryStatusRegisters::ExposureDataRegister::clear (void)\fC [inline]\fP, \fC [static]\fP"
 
-.PP
-This function retrive the data of a given pulse\&. The Pulse is then invalidated (consumed) 
-.PP
-\fBParameters\fP
-.RS 4
-\fIseq\fP This is the pulse sequence number [0:3]
-.br
-\fIpulse\fP This is the reference of a pulse structure receiving the data
-.br
-\fIinvalidate\fP This is the action after the call\&. If true the pulse is consumed
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if the data are not correct or the pulse is not validated yet
-.RE
-.PP
+.SS "static \fBExposureCompletedOptions\fP ^ GantryStatusRegisters::ExposureDataRegister::getExposureComplete (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "static bool GantryStatusRegisters::ExposureDataRegister::setPulse (unsigned char seq, double kV, double mAs, \fBFilterOptions::options\fP filter_code)\fC [inline]\fP, \fC [static]\fP"
+.SS "static \fBexposurePulse\fP ^ GantryStatusRegisters::ExposureDataRegister::getPulse (int i)\fC [inline]\fP, \fC [static]\fP"
 
-.PP
-This function sets the exposure data of a given exposure pulse number\&. There are a maximum of 4 possible exposure pulses\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIseq\fP This is the pulse number, [0:3] 
-.br
-\fIfilter_code\fP This is the code of the filter used in the next exposure pulse
-.br
-\fIkV\fP kV value of the next exposure pulse [20:640] 
-.br
-\fImAs\fP mAs value of the next exposure pulse [0:640] 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if data are accepted
-.RE
-.PP
+.SS "static void GantryStatusRegisters::ExposureDataRegister::setExposureCompleted (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "static bool GantryStatusRegisters::ExposureDataRegister::setPulse (unsigned char seq, double kV, double mAs, String^ filter_tag)\fC [inline]\fP, \fC [static]\fP"
+.SS "static void GantryStatusRegisters::ExposureDataRegister::setExposureNoDose (void)\fC [inline]\fP, \fC [static]\fP"
 
-.PP
-This function sets the exposure data of a given exposure pulse number\&. There are a maximum of 4 possible exposure pulses\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIseq\fP This is the pulse number, [0:3] 
-.br
-\fIfilter_tag\fP This is the tag of the filter used in the next exposure pulse
-.br
-\fIkV\fP kV value of the next exposure pulse [20:640] 
-.br
-\fImAs\fP mAs value of the next exposure pulse [0:640] 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-true if data are accepted
-.RE
-.PP
+.SS "static void GantryStatusRegisters::ExposureDataRegister::setExposurePartial (\fBExposureCompletedOptions::options\fP, double kV, double mAs, \fBPCB315::filterMaterialCodes\fP filter)\fC [inline]\fP, \fC [static]\fP"
 
 .SH "Member Data Documentation"
 .PP 
-.SS "array<\fBexposurePulse\fP^> ^ GantryStatusRegisters::ExposureDataRegister::pulses = gcnew array<\fBexposurePulse\fP^>{gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP, gcnew \fBexposurePulse\fP}\fC [static]\fP, \fC [private]\fP"
+.SS "\fBExposureCompletedOptions\fP ^ GantryStatusRegisters::ExposureDataRegister::exposure_complete = gcnew \fBExposureCompletedOptions\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "cli::array<\fBexposurePulse\fP^> ^ GantryStatusRegisters::ExposureDataRegister::pulses = gcnew cli::array<\fBexposurePulse\fP^>{gcnew \fBexposurePulse\fP(), gcnew \fBexposurePulse\fP(), gcnew \fBexposurePulse\fP(), gcnew \fBexposurePulse\fP()}\fC [static]\fP, \fC [private]\fP"
 
 .PP
 Stores the array of data pulses\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_void_callback\fP^ GantryStatusRegisters::ExposureDataRegister::exposure_completed_event\fC [static]\fP"
+
+.PP
+This event is generated when the value changes 
 
 .SH "Author"
 .PP 

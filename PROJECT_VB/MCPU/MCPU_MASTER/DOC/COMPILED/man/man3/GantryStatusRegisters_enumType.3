@@ -1,0 +1,291 @@
+.TH "GantryStatusRegisters::enumType< T >" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::enumType< T >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBenumType\fP (const cli::array< String^>^% tagsvar)"
+.br
+.RI "This is the constructor of the template class\&. "
+.ti -1c
+.RI "String ^ \fBToTag\fP (int code)"
+.br
+.RI "Returns the String tag from the enum code  "
+.ti -1c
+.RI "T \fBgetCode\fP (void)"
+.br
+.RI "Returns the option code of the register  "
+.ti -1c
+.RI "String ^ \fBgetTag\fP (void)"
+.br
+.RI "Returns the option tag of the register  "
+.ti -1c
+.RI "int \fBindexOf\fP (String^ str)"
+.br
+.RI "This function verifies if a string is part of the enumearation tags "
+.ti -1c
+.RI "bool \fBsetCode\fP (T val)"
+.br
+.ti -1c
+.RI "bool \fBsetCode\fP (String^ val)"
+.br
+.ti -1c
+.RI "bool \fBclearCode\fP (void)"
+.br
+.RI "This function set the internal code to UNDEF "
+.ti -1c
+.RI "bool \fBisPresent\fP (String^ s)"
+.br
+.RI "This function verifies if the string is part of the list of items T "
+.ti -1c
+.RI "String ^ \fBgetItem\fP (unsigned char i)"
+.br
+.RI "This function return the Tag string of an item in the list  "
+.ti -1c
+.RI "int \fBCount\fP (void)"
+.br
+.RI "This function returns the count elements of the internal list  "
+.ti -1c
+.RI "bool \fBsetList\fP (List< String^>^ l)"
+.br
+.RI "This function set the list of the enumerations\&. "
+.ti -1c
+.RI "void \fBaddToList\fP (T item)"
+.br
+.ti -1c
+.RI "void \fBclearList\fP (void)"
+.br
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "\fBdelegate_void_callback\fP^ \fBvalue_change_event\fP"
+.br
+.RI "This event is generated when the value changes "
+.ti -1c
+.RI "\fBdelegate_void_callback\fP^ \fBlista_change_event\fP"
+.br
+.RI "This event is generated if the list of the T elemnts changes "
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "T \fBenum_code\fP"
+.br
+.ti -1c
+.RI "List< T > ^ \fBlist_code\fP"
+.br
+.ti -1c
+.RI "cli::array< String^> ^ \fBarray_tags\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<class T > \fBGantryStatusRegisters::enumType\fP< T >::enumType (const cli::array< String^>^% tagsvar)\fC [inline]\fP"
+
+.PP
+This is the constructor of the template class\&. The constructor assignes the tags vector to the internal pointer and initializes the code to a UNDEF
+.PP
+The class template provides an event for the internal data change:
+.IP "\(bu" 2
+\fBvalue_change_event()\fP;
+.PP
+.PP
+\fBParameters\fP
+.RS 4
+\fItagsvar\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class T > void \fBGantryStatusRegisters::enumType\fP< T >::addToList (T item)\fC [inline]\fP"
+
+.SS "template<class T > bool \fBGantryStatusRegisters::enumType\fP< T >::clearCode (void)\fC [inline]\fP"
+
+.PP
+This function set the internal code to UNDEF 
+.SS "template<class T > void \fBGantryStatusRegisters::enumType\fP< T >::clearList (void)\fC [inline]\fP"
+
+.SS "template<class T > int \fBGantryStatusRegisters::enumType\fP< T >::Count (void)\fC [inline]\fP"
+
+.PP
+This function returns the count elements of the internal list  
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "template<class T > T \fBGantryStatusRegisters::enumType\fP< T >::getCode (void)\fC [inline]\fP"
+
+.PP
+Returns the option code of the register  
+.PP
+\fBReturns\fP
+.RS 4
+the value of the option code 
+.RE
+.PP
+
+.SS "template<class T > String ^ \fBGantryStatusRegisters::enumType\fP< T >::getItem (unsigned char i)\fC [inline]\fP"
+
+.PP
+This function return the Tag string of an item in the list  
+.PP
+\fBParameters\fP
+.RS 4
+\fIi\fP index of the element
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The Tag string of the item 
+.RE
+.PP
+
+.SS "template<class T > String ^ \fBGantryStatusRegisters::enumType\fP< T >::getTag (void)\fC [inline]\fP"
+
+.PP
+Returns the option tag of the register  
+.PP
+\fBReturns\fP
+.RS 4
+the value of the Tag 
+.RE
+.PP
+
+.SS "template<class T > int \fBGantryStatusRegisters::enumType\fP< T >::indexOf (String^ str)\fC [inline]\fP"
+
+.PP
+This function verifies if a string is part of the enumearation tags 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP String tag to be tested
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+index of a tag [0:LEN];
+.IP "\(bu" 2
+-1 if the string doesn't belong to the enumerated tags
+.PP
+.RE
+.PP
+
+.SS "template<class T > bool \fBGantryStatusRegisters::enumType\fP< T >::isPresent (String^ s)\fC [inline]\fP"
+
+.PP
+This function verifies if the string is part of the list of items T 
+.PP
+\fBParameters\fP
+.RS 4
+\fIs\fP String to be verified
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the string is in the internal list
+.RE
+.PP
+
+.SS "template<class T > bool \fBGantryStatusRegisters::enumType\fP< T >::setCode (String^ val)\fC [inline]\fP"
+This function set the register with the option tag (and related code)\&.
+.PP
+The register is updated with the tag and the related option code and, in case of value change, the status_change_event() is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the tag to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SS "template<class T > bool \fBGantryStatusRegisters::enumType\fP< T >::setCode (T val)\fC [inline]\fP"
+
+.PP
+This function set the register with the option code (and related tag)\&.
+.PP
+The register is updated with the option code and related tag and, in case of value change, the status_change_event() is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the option-code to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SS "template<class T > bool \fBGantryStatusRegisters::enumType\fP< T >::setList (List< String^>^ l)\fC [inline]\fP"
+
+.PP
+This function set the list of the enumerations\&. In case of list change, the list_change_event() is generated 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlista\fP This is the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the list is a valid list
+.RE
+.PP
+
+.SS "template<class T > String ^ \fBGantryStatusRegisters::enumType\fP< T >::ToTag (int code)\fC [inline]\fP"
+
+.PP
+Returns the String tag from the enum code  
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "template<class T > cli::array<String^> ^ \fBGantryStatusRegisters::enumType\fP< T >::array_tags\fC [private]\fP"
+
+.SS "template<class T > T \fBGantryStatusRegisters::enumType\fP< T >::enum_code\fC [private]\fP"
+
+.SS "template<class T > List<T> ^ \fBGantryStatusRegisters::enumType\fP< T >::list_code\fC [private]\fP"
+
+.SH "Event Documentation"
+.PP 
+.SS "template<class T > \fBdelegate_void_callback\fP^ \fBGantryStatusRegisters::enumType\fP< T >::lista_change_event"
+
+.PP
+This event is generated if the list of the T elemnts changes 
+.SS "template<class T > \fBdelegate_void_callback\fP^ \fBGantryStatusRegisters::enumType\fP< T >::value_change_event"
+
+.PP
+This event is generated when the value changes 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -1,0 +1,161 @@
+.TH "BodyMotor" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BodyMotor \- This is the Body Module class implementation 
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <BodyMotor\&.h>\fP
+.PP
+Inherits \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBodyMotor\fP (void)"
+.br
+.RI "This is the class constructor\&.  "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBBodyMotor\fP ^ \fBdevice\fP = gcnew \fBBodyMotor\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBinitializeSpecificObjectDictionary\fP (void) override"
+.br
+.RI "This function initializes Input and Output digital registers "
+.ti -1c
+.RI "bool \fBautomaticPositioningPreparation\fP (void) override"
+.br
+.RI "The \fBBodyMotor\fP class override this function in order to deactivate the motor brake before to start the motor in the target direction\&. "
+.ti -1c
+.RI "void \fBautomaticPositioningCompletion\fP (void) override"
+.br
+.RI "The \fBBodyMotor\fP class override this function in order to activate the motor brake as soon as the activation command termines\&. "
+.ti -1c
+.RI "bool \fBidleCallback\fP (void) override"
+.br
+.RI "The \fBBodyMotor\fP class override this function in order to handle the IDLE activities "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBbrake_alarm\fP = false"
+.br
+.RI "This is the current brake malfunction alarm\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This is the Body Module class implementation
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BodyMotor::BodyMotor (void)"
+
+.PP
+This is the class constructor\&.  The Constructor initializes the base class and assignes the module can open address and user unit ratio\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void BodyMotor::automaticPositioningCompletion (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBBodyMotor\fP class override this function in order to activate the motor brake as soon as the activation command termines\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool BodyMotor::automaticPositioningPreparation (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBBodyMotor\fP class override this function in order to deactivate the motor brake before to start the motor in the target direction\&. This function shall unlock the e\&.m brake to allow the rotation\&.
+.PP
+The function test the brake unlocked condition befor to enable the command execution\&.
+.PP
+In case of fault condition, a non resettable alarm is activated\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool BodyMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBBodyMotor\fP class override this function in order to handle the IDLE activities 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool BodyMotor::initializeSpecificObjectDictionary (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function initializes Input and Output digital registers The modules set the Digital Io as follows:
+.IP "\(bu" 2
+Output1 and output2: controls the e\&.m\&. brake activation\&. They are normally closed output;
+.IP "\(bu" 2
+Input1 and Input2: used for limit switches detection\&. They are active low inputs, 5V threshold;
+.IP "\(bu" 2
+Input3: homing\&. It is not inverted input, with 5V threshold
+.IP "\(bu" 2
+Input4: read back the actual brake activation status\&. It is not inverted input, with 5V threshold
+.PP
+.PP
+The module makes a test on the Brake control\&.
+.PP
+The sequence of the test is as follows:
+.IP "\(bu" 2
+Test OFF OFF;
+.IP "\(bu" 2
+Test OFF ON;
+.IP "\(bu" 2
+Test ON ON;
+.IP "\(bu" 2
+Test OFF OFF;
+.PP
+.PP
+If the test should fail, a relevant non resettable alarm is generated and no more activations can be executed\&.
+.PP
+>NOTE: the function returns false only if a communicaton issue should prevent to set or read the registers\&.
+.PP
+\fBReturns\fP
+.RS 4
+true if the initialization termines successfully
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool BodyMotor::brake_alarm = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current brake malfunction alarm\&. 
+.SS "\fBBodyMotor\fP ^ BodyMotor::device = gcnew \fBBodyMotor\fP()\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -1,0 +1,487 @@
+.TH "CanDeviceProtocol" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanDeviceProtocol
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CanDeviceProtocol\&.h>\fP
+.PP
+Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\fP, and \fBPCB326\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCanDeviceRegister\fP"
+.br
+.ti -1c
+.RI "class \fBRegister\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBProtocolFrameCode\fP { \fBFRAME_READ_REVISION\fP = 1, \fBFRAME_READ_ERRORS\fP, \fBFRAME_READ_COMMAND\fP, \fBFRAME_READ_STATUS\fP, \fBFRAME_READ_DATA\fP, \fBFRAME_READ_PARAM\fP, \fBFRAME_WRITE_DATA\fP, \fBFRAME_WRITE_PARAM\fP, \fBFRAME_STORE_PARAMS\fP, \fBFRAME_COMMAND_EXEC\fP, \fBFRAME_DEVICE_RESET\fP }"
+.br
+.RI "This is the command Code of the protocol frames "
+.ti -1c
+.RI "enum class \fBCommandRegisterStatus\fP { \fBCOMMAND_EXECUTING\fP = 1, \fBCOMMAND_TERMINATED\fP, \fBCOMMAND_ERROR\fP }"
+.br
+.ti -1c
+.RI "enum class \fBCommandRegisterErrors\fP { \fBCOMMAND_NO_ERROR\fP = 0, \fBCOMMAND_ERROR_BUSY\fP, \fBCOMMAND_ERROR_INVALID_PARAM\fP, \fBCOMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCOMMAND_DEVICE_TMO\fP = 255 }"
+.br
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBWAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBWAITING_REVISION\fP, \fBDEVICE_CONFIGURATION\fP, \fBDEVICE_RUNNING\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.ti -1c
+.RI "enum class \fBbootloader_options\fP { \fBBOOTLOADER_NOT_PRESENT\fP = 0, \fBBOOTLOADER_RUNNING\fP = 1, \fBBOOTLOADER_PRESENT\fP = 2, \fBBOOTLOADER_UNCKNOWN_STAT\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceProtocol\fP (unsigned char devid, LPCWSTR devname)"
+.br
+.ti -1c
+.RI "void \fBthread_can_rx_callback\fP (unsigned short canid, unsigned char *data, unsigned char len)"
+.br
+.RI "This is the callback to be connected to the CAN reception event\&.  "
+.ti -1c
+.RI "bool \fBsend\fP (unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadCommandRegister\fP (void)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadErrorRegister\fP (void)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadStatusRegister\fP (unsigned char index)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadDataRegister\fP (unsigned char index)"
+.br
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.ti -1c
+.RI "bool \fBisTmo\fP (void)"
+.br
+.ti -1c
+.RI "\fBCanDeviceRegister\fP ^ \fBgetRxRegister\fP (void)"
+.br
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetStatus\fP (void)"
+.br
+.ti -1c
+.RI "System::String ^ \fBgetBootRevision\fP (void)"
+.br
+.ti -1c
+.RI "System::String ^ \fBgetAppRevision\fP (void)"
+.br
+.ti -1c
+.RI "System::String ^ \fBgetBootStatus\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBcommand\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int \fBtmo\fP)"
+.br
+.ti -1c
+.RI "bool \fBisCommandCompleted\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisCommandError\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBbootloader_status_tags\fP = gcnew cli::array<System::String^> { 'NOT PRESENT', 'RUNNING', 'PRESENT', 'UNCKNOWN'}"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBrunningLoop\fP (void)"
+.br
+.ti -1c
+.RI "virtual void \fBresetLoop\fP (void)"
+.br
+.ti -1c
+.RI "virtual bool \fBconfigurationLoop\fP (void)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBmainWorker\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInternalRunningLoop\fP (void)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "Thread ^ \fBmain_thread\fP"
+.br
+.ti -1c
+.RI "HWND \fBhwnd\fP"
+.br
+.ti -1c
+.RI "unsigned short \fBdevice_id\fP"
+.br
+.ti -1c
+.RI "HANDLE \fBrxEvent\fP"
+.br
+.RI "Event object signaled by the receiving callback\&. "
+.ti -1c
+.RI "bool \fBrx_pending\fP"
+.br
+.RI "A reception data is pending\&. "
+.ti -1c
+.RI "bool \fBdevice_reset\fP"
+.br
+.RI "A Device reset code has been received\&. "
+.ti -1c
+.RI "\fBCanDeviceRegister\fP ^ \fBtx_register\fP"
+.br
+.RI "Received register\&. "
+.ti -1c
+.RI "\fBCanDeviceRegister\fP ^ \fBrx_register\fP"
+.br
+.RI "Received register\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBinternal_status\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBboot_maj\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBboot_min\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBboot_sub\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBapp_maj\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBapp_min\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBapp_sub\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBbootloader_status\fP"
+.br
+.ti -1c
+.RI "bool \fBtmo\fP"
+.br
+.ti -1c
+.RI "bool \fBrxOk\fP"
+.br
+.ti -1c
+.RI "int \fBattempt\fP"
+.br
+.ti -1c
+.RI "bool \fBcommand_executing\fP"
+.br
+.ti -1c
+.RI "int \fBcommand_tmo\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_code\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_d0\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_d1\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_d2\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_d3\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_ris0\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_ris1\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommand_error\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static unsigned char \fBrx_sequence\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBCanDeviceProtocol::bootloader_options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIBOOTLOADER_NOT_PRESENT \fP\fP
+.TP
+\fB\fIBOOTLOADER_RUNNING \fP\fP
+.TP
+\fB\fIBOOTLOADER_PRESENT \fP\fP
+.TP
+\fB\fIBOOTLOADER_UNCKNOWN_STAT \fP\fP
+.SS "enum class \fBCanDeviceProtocol::CommandRegisterErrors\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOMMAND_NO_ERROR \fP\fP
+.TP
+\fB\fICOMMAND_ERROR_BUSY \fP\fP
+.TP
+\fB\fICOMMAND_ERROR_INVALID_PARAM \fP\fP
+.TP
+\fB\fICOMMAND_ERROR_MOMENTARY_DISABLED \fP\fP
+.TP
+\fB\fICOMMAND_DEVICE_TMO \fP\fP
+.SS "enum class \fBCanDeviceProtocol::CommandRegisterStatus\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOMMAND_EXECUTING \fP\fP
+.TP
+\fB\fICOMMAND_TERMINATED \fP\fP
+.TP
+\fB\fICOMMAND_ERROR \fP\fP
+.SS "enum class \fBCanDeviceProtocol::ProtocolFrameCode\fP\fC [strong]\fP"
+
+.PP
+This is the command Code of the protocol frames 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIFRAME_READ_REVISION \fP\fP
+Read Revision register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_ERRORS \fP\fP
+Read Error register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_COMMAND \fP\fP
+Read Command register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_STATUS \fP\fP
+Read Status register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_DATA \fP\fP
+Read Data register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_PARAM \fP\fP
+Read Parameter register frame command code\&. 
+.TP
+\fB\fIFRAME_WRITE_DATA \fP\fP
+Write Data register frame command code\&. 
+.TP
+\fB\fIFRAME_WRITE_PARAM \fP\fP
+Write Parameter register frame command code\&. 
+.TP
+\fB\fIFRAME_STORE_PARAMS \fP\fP
+Store Parameters register frame command code\&. 
+.TP
+\fB\fIFRAME_COMMAND_EXEC \fP\fP
+Execute Command frame command code\&. 
+.TP
+\fB\fIFRAME_DEVICE_RESET \fP\fP
+Device Reset Code\&. 
+.SS "enum class \fBCanDeviceProtocol::status_options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIWAITING_CAN_DRIVER_CONNECTION \fP\fP
+The Device is waiting the Can Driver connection 
+.br
+ 
+.TP
+\fB\fIWAITING_REVISION \fP\fP
+The module is waiting for the revision acquisition\&. 
+.TP
+\fB\fIDEVICE_CONFIGURATION \fP\fP
+The module is uploading the device parameters\&. 
+.TP
+\fB\fIDEVICE_RUNNING \fP\fP
+The module is Running 
+.br
+ 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CanDeviceProtocol::CanDeviceProtocol (unsigned char devid, LPCWSTR devname)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool CanDeviceProtocol::command (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+
+.SS "bool CanDeviceProtocol::configurationLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
+.SS "System::String ^ CanDeviceProtocol::getAppRevision (void)\fC [inline]\fP"
+
+.SS "System::String ^ CanDeviceProtocol::getBootRevision (void)\fC [inline]\fP"
+
+.SS "System::String ^ CanDeviceProtocol::getBootStatus (void)\fC [inline]\fP"
+
+.SS "\fBCanDeviceRegister\fP ^ CanDeviceProtocol::getRxRegister (void)\fC [inline]\fP"
+
+.SS "\fBstatus_options\fP CanDeviceProtocol::getStatus (void)\fC [inline]\fP"
+
+.SS "void CanDeviceProtocol::InternalRunningLoop (void)\fC [private]\fP"
+
+.SS "bool CanDeviceProtocol::isCommandCompleted (void)"
+
+.SS "bool CanDeviceProtocol::isCommandError (void)\fC [inline]\fP"
+
+.SS "bool CanDeviceProtocol::isTmo (void)\fC [inline]\fP"
+
+.SS "void CanDeviceProtocol::mainWorker (void)\fC [private]\fP"
+
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readCommandRegister (void)"
+
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readDataRegister (unsigned char index)"
+
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readErrorRegister (void)"
+
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readStatusRegister (unsigned char index)"
+
+.SS "void CanDeviceProtocol::resetLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
+.SS "void CanDeviceProtocol::runningLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\fP, and \fBPCB326\fP\&.
+.SS "bool CanDeviceProtocol::send (unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl)"
+
+.SS "void CanDeviceProtocol::thread_can_rx_callback (unsigned short canid, unsigned char * data, unsigned char len)"
+
+.PP
+This is the callback to be connected to the CAN reception event\&.  This callback is called in a different thread than this module: precautions shall be implemented in order to be thread safe\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanid\fP This is the canId identifier address
+.br
+\fIdata\fP Thi is the pointer to the received data frame (8 bytes max) 
+.br
+\fIlen\fP This is the lenght of the buffer
+.RE
+.PP
+
+.SS "bool CanDeviceProtocol::writeDataRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+
+.SS "bool CanDeviceProtocol::writeParamRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char CanDeviceProtocol::app_maj\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::app_min\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::app_sub\fC [private]\fP"
+
+.SS "int CanDeviceProtocol::attempt\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::boot_maj\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::boot_min\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::boot_sub\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::bootloader_status\fC [private]\fP"
+
+.SS "const cli::array<System::String^> ^ CanDeviceProtocol::bootloader_status_tags = gcnew cli::array<System::String^> { 'NOT PRESENT', 'RUNNING', 'PRESENT', 'UNCKNOWN'}\fC [static]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_code\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_d0\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_d1\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_d2\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_d3\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_error\fC [private]\fP"
+
+.SS "bool CanDeviceProtocol::command_executing\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_ris0\fC [private]\fP"
+
+.SS "unsigned char CanDeviceProtocol::command_ris1\fC [private]\fP"
+
+.SS "int CanDeviceProtocol::command_tmo\fC [private]\fP"
+
+.SS "unsigned short CanDeviceProtocol::device_id\fC [private]\fP"
+
+.SS "bool CanDeviceProtocol::device_reset\fC [private]\fP"
+
+.PP
+A Device reset code has been received\&. 
+.SS "HWND CanDeviceProtocol::hwnd\fC [private]\fP"
+
+.SS "\fBstatus_options\fP CanDeviceProtocol::internal_status\fC [private]\fP"
+
+.SS "Thread ^ CanDeviceProtocol::main_thread\fC [private]\fP"
+
+.SS "bool CanDeviceProtocol::rx_pending\fC [private]\fP"
+
+.PP
+A reception data is pending\&. 
+.SS "\fBCanDeviceRegister\fP ^ CanDeviceProtocol::rx_register\fC [private]\fP"
+
+.PP
+Received register\&. 
+.SS "unsigned char CanDeviceProtocol::rx_sequence\fC [static]\fP, \fC [private]\fP"
+
+.SS "HANDLE CanDeviceProtocol::rxEvent\fC [private]\fP"
+
+.PP
+Event object signaled by the receiving callback\&. 
+.SS "bool CanDeviceProtocol::rxOk\fC [private]\fP"
+
+.SS "bool CanDeviceProtocol::tmo\fC [private]\fP"
+
+.SS "\fBCanDeviceRegister\fP ^ CanDeviceProtocol::tx_register\fC [private]\fP"
+
+.PP
+Received register\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

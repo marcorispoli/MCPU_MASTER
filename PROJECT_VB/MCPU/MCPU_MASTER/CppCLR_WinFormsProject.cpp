@@ -1,22 +1,17 @@
-#include "pch.h"
+#include "CanOpenMotor.h"
+#include "Translate.h"
+#include "Generator.h"
+#include "ExposureModule.h"
+#include "IdleForm.h"
+#include "MainForm.h"
+#include "OperatingForm.h"
+#include "ArmMotor.h"
+#include "./gantry_global_status.h"
 
 using namespace System;
-
-// int main(array<System::String ^> ^args)
-// {
-//    return 0;
-// }
-
-#include "MainForm.h"
-#include "IdleForm.h"
-#include "CanDriver.h"
-#include "CanOpenMotor.h"
-#include "SystemConfig.h"
-#include "CanDeviceProtocol.h"
-
-
 using namespace System::Windows::Forms;
 using namespace CANOPEN;
+
 
 [STAThread]
 int main()
@@ -28,12 +23,26 @@ int main()
   int monitors = Screen::AllScreens->Length;  
   int H,W;
 
+  // Set the current language for messages and GUI
+  Translate::setLanguage("ENG");
+  
+  Notify::disable("GENERATOR_NOT_READY");
+  Notify::disable("GENERATOR_INIT_WARNING");
+  Notify::disable("GENERATOR_ERROR_CONNECTION");
+  Notify::disable("STATOR_SENSOR_LOW");
+  Notify::disable("BULB_SENSOR_LOW");
+
+
   Debug::WriteLine("DETECTED MONITORS:" + monitors.ToString());
 
-  GlobalObjects::pTranslate = gcnew Translate("ENG");
-  GlobalObjects::pErrors = gcnew Errors();
+  
 
+  // Get the current directory for the resources
+  GlobalObjects::applicationResourcePath = System::IO::Directory::GetCurrentDirectory() + "\\RESOURCES\\";
 
+  
+  // Gets the Monitors p
+  // osition
   for (int i = 0; i < monitors; i++) {
 	  H = Screen::AllScreens[i]->Bounds.Height;
 	  W = Screen::AllScreens[i]->Bounds.Width;
@@ -45,16 +54,13 @@ int main()
 	  }
   }
 
-  
-  
-  
-  
-  
+  //GlobalObjects::pGenerator = gcnew Generator();
 
 
 
   //globalObjects::pProtocol = paws; // Assignes the class pointer to the global pointer for the application usage
   GlobalObjects::pIdleForm = gcnew IdleForm();
+  GlobalObjects::pOperatingForm = gcnew OperatingForm();
 
   Application::Run(gcnew CppCLRWinFormsProject::MainForm());
   return 0;

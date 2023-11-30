@@ -1,0 +1,147 @@
+.TH "MotorConfig" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MotorConfig \-  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CalibrationConfig\&.h>\fP
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const System::String ^ \fBFILENAME\fP = 'MotorCalibration\&.cnf'"
+.br
+.RI "This is the name of the configuration file\&. "
+.ti -1c
+.RI "static const int \fBFILE_REVISION\fP = 1"
+.br
+.RI "This is the current revision code\&. "
+.ti -1c
+.RI "static const System::String ^ \fBMOTOR_UNDEFINED_POSITION\fP = 'UNDEF'"
+.br
+.RI "This is the TAG of the Undefined position\&. "
+.ti -1c
+.RI "static const int \fBPARAM_POSITION\fP = 0"
+.br
+.RI "Parameter position for the last valid motor position\&. "
+.ti -1c
+.RI "static const int \fBPARAM_SPEED\fP = 1"
+.br
+.RI "Parameter position for the motor speed\&. "
+.ti -1c
+.RI "static const int \fBPARAM_ACC\fP = 2"
+.br
+.RI "Parameter position for the motor acceleration\&. "
+.ti -1c
+.RI "static const int \fBPARAM_DEC\fP = 3"
+.br
+.RI "Parameter position for the motor deceleration\&. "
+.ti -1c
+.RI "static const System::String ^ \fBPARAM_BODY\fP = 'BODY_CALIBRATION'"
+.br
+.RI "This is the Body Motor parameter section\&. "
+.ti -1c
+.RI "static const System::String ^ \fBPARAM_BODY_COMMENT\fP = 'BODY_CALIBRATION calibration data'"
+.br
+.ti -1c
+.RI "static const System::String ^ \fBPARAM_BODY_CURRENT_POSITION_DEFAULT\fP = \fBMOTOR_UNDEFINED_POSITION\fP"
+.br
+.RI "The last valid Body Motor position (for initial zero setting) "
+.ti -1c
+.RI "static const System::String ^ \fBPARAM_BODY_SPEED_DEFAULT\fP = '50'"
+.br
+.RI "Body Speed in 0\&.1 degree/s\&. "
+.ti -1c
+.RI "static const System::String ^ \fBPARAM_BODY_ACC_DEFAULT\fP = '10'"
+.br
+.RI "Body Acc in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "static const System::String ^ \fBPARAM_BODY_DEC_DEFAULT\fP = '10'"
+.br
+.RI "Body Dec in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+
+This is the class implementing the Body Motor parameter configuration file\&.  
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBConfigFile\fP ^ MotorConfig::Configuration\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= gcnew ConfigFile(FILENAME, FILE_REVISION,
+        CONFIG_FILE_DESCRIPTOR
+        {
+            CONFIG_FILE_ITEM(PARAM_BODY, PARAM_BODY_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_BODY_CURRENT_POSITION_DEFAULT,
+            PARAM_BODY_SPEED_DEFAULT,
+            PARAM_BODY_ACC_DEFAULT,
+            PARAM_BODY_DEC_DEFAULT,
+            }),
+
+        }
+    )
+.fi
+.SS "const int MotorConfig::FILE_REVISION = 1\fC [static]\fP"
+
+.PP
+This is the current revision code\&. 
+.SS "const System::String ^ MotorConfig::FILENAME = 'MotorCalibration\&.cnf'\fC [static]\fP"
+
+.PP
+This is the name of the configuration file\&. 
+.SS "const System::String ^ MotorConfig::MOTOR_UNDEFINED_POSITION = 'UNDEF'\fC [static]\fP"
+
+.PP
+This is the TAG of the Undefined position\&. 
+.SS "const int MotorConfig::PARAM_ACC = 2\fC [static]\fP"
+
+.PP
+Parameter position for the motor acceleration\&. 
+.SS "const System::String ^ MotorConfig::PARAM_BODY = 'BODY_CALIBRATION'\fC [static]\fP"
+
+.PP
+This is the Body Motor parameter section\&. 
+.SS "const System::String ^ MotorConfig::PARAM_BODY_ACC_DEFAULT = '10'\fC [static]\fP"
+
+.PP
+Body Acc in 0\&.1 degree/ss\&. 
+.SS "const System::String ^ MotorConfig::PARAM_BODY_COMMENT = 'BODY_CALIBRATION calibration data'\fC [static]\fP"
+
+.SS "const System::String ^ MotorConfig::PARAM_BODY_CURRENT_POSITION_DEFAULT = \fBMOTOR_UNDEFINED_POSITION\fP\fC [static]\fP"
+
+.PP
+The last valid Body Motor position (for initial zero setting) 
+.SS "const System::String ^ MotorConfig::PARAM_BODY_DEC_DEFAULT = '10'\fC [static]\fP"
+
+.PP
+Body Dec in 0\&.1 degree/ss\&. 
+.SS "const System::String ^ MotorConfig::PARAM_BODY_SPEED_DEFAULT = '50'\fC [static]\fP"
+
+.PP
+Body Speed in 0\&.1 degree/s\&. 
+.SS "const int MotorConfig::PARAM_DEC = 3\fC [static]\fP"
+
+.PP
+Parameter position for the motor deceleration\&. 
+.SS "const int MotorConfig::PARAM_POSITION = 0\fC [static]\fP"
+
+.PP
+Parameter position for the last valid motor position\&. 
+.SS "const int MotorConfig::PARAM_SPEED = 1\fC [static]\fP"
+
+.PP
+Parameter position for the motor speed\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

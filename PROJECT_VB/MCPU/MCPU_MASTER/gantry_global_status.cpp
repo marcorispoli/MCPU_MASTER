@@ -1,9 +1,9 @@
-#include "pch.h"
 #include "gantry_global_status.h"
-#include "mutex"
+#include "Errors.h"
+#include <mutex>
 
 namespace GantryStatusRegisters {
-    static mutex gantry_status_mutex;
+    static std::mutex gantry_status_mutex;
 
     void dataLock(void) {
         gantry_status_mutex.lock();
@@ -35,7 +35,10 @@ namespace GantryStatusRegisters {
     void PowerStatusRegister::setPowerdown(bool stat) {
         const std::lock_guard<std::mutex> lock(gantry_status_mutex);
         power_down = stat;
+        return;
     }
+
+    
 
     bool PowerStatusRegister::getPowerdown(void) {
         const std::lock_guard<std::mutex> lock(gantry_status_mutex);
@@ -52,13 +55,10 @@ namespace GantryStatusRegisters {
         return  closed_door;
     }
 
-    void TubeDataRegister::setTubeTemp(unsigned char stator, unsigned char bulb) {
-        const std::lock_guard<std::mutex> lock(gantry_status_mutex);
-        bulbHeat = bulb;    
-        statorHeat = stator;
-        return;
-    }
+   
 
+    
+    
 
 };
 

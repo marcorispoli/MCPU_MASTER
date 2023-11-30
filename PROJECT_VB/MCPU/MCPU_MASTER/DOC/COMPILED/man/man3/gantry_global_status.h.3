@@ -1,29 +1,31 @@
-.TH "C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MCPU_MASTER/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h
 .SH SYNOPSIS
 .br
 .PP
 \fC#include <math\&.h>\fP
+.br
+\fC#include 'ConfigFile\&.h'\fP
+.br
+\fC#include 'Errors\&.h'\fP
 .br
 
 .SS "Classes"
 
 .in +1c
 .ti -1c
-.RI "class \fBGantryStatusRegisters::FilterOptions\fP"
+.RI "class \fBGlobalObjects\fP"
 .br
-.RI "This class implements the Filter selection interface\&. "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::XrayCompletedRegister\fP"
+.RI "class \fBGantryStatusRegisters::enumType< T >\fP"
 .br
-.RI "This class implements the XRAY completed status register\&."
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ReadyForExposureRegister\fP"
+.RI "class \fBGantryStatusRegisters::PaddleOption\fP"
 .br
-.RI "This class register handles the REady for exposure conditions\&. "
+.RI "This register handles the Paddles identifiable by the compressor device "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::XrayPushButtonRegister\fP"
 .br
@@ -35,11 +37,7 @@ C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MCPU_MASTER
 .ti -1c
 .RI "class \fBGantryStatusRegisters::OperatingStatusRegister\fP"
 .br
-.RI "This is the Gantry operating status register definition"
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ProjectionRegister\fP"
-.br
-.RI "This is the projection handling option class\&. "
+.RI "This is the Gantry operating status register definition\&. "
 .ti -1c
 .RI "class \fBGantryStatusRegisters::ComponentRegister\fP"
 .br
@@ -49,57 +47,23 @@ C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MCPU_MASTER
 .br
 .RI "This register handles the component applicable to the collimator "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::PaddleRegister\fP"
-.br
-.RI "This register handles the Paddles identifiable by the compressor device "
-.ti -1c
 .RI "class \fBGantryStatusRegisters::CompressorRegister\fP"
 .br
 .RI "This is the register handling the compression force and thickness\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ErrorRegister\fP"
-.br
-.RI "This is the Error handling register "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureModeRegister\fP"
-.br
-.RI "This class handles the exposure type status\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::DetectorTypeRegister\fP"
-.br
-.RI "This class handles the Detector model selection\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CompressionModeRegister\fP"
-.br
-.RI "This class handles the Compression behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CollimationModeRegister\fP"
-.br
-.RI "This class handles the Collimation behavior during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientProtectionRegister\fP"
-.br
-.RI "This class handles the Usage of the patient protection during the exposure\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ArmStatusRegister\fP"
-.br
-.RI "This is the status register of the Arm motorization\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PatientDataRegister\fP"
-.br
-.RI "This is the class handling the patient name"
 .ti -1c
 .RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
 .br
 .RI "This class handles the Trx motorization "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureDataRegister\fP"
+.RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
 .br
-.RI "This register handle the Exposure pulse data info\&. "
+.RI "This class handles the Interface language "
 .ti -1c
-.RI "class \fBGantryStatusRegisters::ExposureDataRegister::exposurePulse\fP"
+.RI "class \fBGantryStatusRegisters::PowerStatusRegister\fP"
 .br
-.RI "Internal class uses to group the exposure data pulses "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::SafetyStatusRegister\fP"
+.br
 .in -1c
 .SS "Namespaces"
 
@@ -109,6 +73,58 @@ C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MCPU_MASTER
 .br
 .RI "This is the class implementing the AWS Interface Module "
 .in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBpIDLEFORM\fP   ((IdleForm^) \fBGlobalObjects::pIdleForm\fP)"
+.br
+.ti -1c
+.RI "#define \fBpOPERFORM\fP   ((OperatingForm^) \fBGlobalObjects::pOperatingForm\fP)"
+.br
+.ti -1c
+.RI "#define \fBpAWS\fP   ((awsProtocol^) \fBGlobalObjects::pAws\fP)"
+.br
+.ti -1c
+.RI "#define \fBpMSHIFT\fP   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBGantryStatusRegisters::delegate_void_callback\fP (void)"
+.br
+.RI "This is the delegate of the function with a void as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBGantryStatusRegisters::delegate_string_callback\fP (String^ str)"
+.br
+.RI "This is the delegate of the function with a string as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBGantryStatusRegisters::delegate_int_callback\fP (int i)"
+.br
+.RI "This is the delegate of the function with an integer as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBGantryStatusRegisters::delegate_activation_completed\fP (unsigned short id, int error)"
+.br
+.RI "This is the delegate of the activation_completed_event();\&. "
+.ti -1c
+.RI "void \fBGantryStatusRegisters::dataLock\fP (void)"
+.br
+.ti -1c
+.RI "void \fBGantryStatusRegisters::dataUnlock\fP (void)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define pAWS   ((awsProtocol^) \fBGlobalObjects::pAws\fP)"
+
+.SS "#define pIDLEFORM   ((IdleForm^) \fBGlobalObjects::pIdleForm\fP)"
+
+.SS "#define pMSHIFT   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
+
+.SS "#define pOPERFORM   ((OperatingForm^) \fBGlobalObjects::pOperatingForm\fP)"
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

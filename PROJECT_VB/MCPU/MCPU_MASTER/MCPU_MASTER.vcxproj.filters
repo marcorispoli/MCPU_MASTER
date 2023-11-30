@@ -23,64 +23,163 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MainForm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="awsProtocol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gantry_global_status.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TcpIpServerCLI.h">
+    <ClInclude Include="DEVICES\CanDeviceProtocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CanDriver.h">
+    <ClInclude Include="DEVICES\PCB301.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CanOpenMotor.h">
+    <ClInclude Include="DEVICES\PCB302.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pd4_od.h">
+    <ClInclude Include="DEVICES\PCB303.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigFile.h">
+    <ClInclude Include="DEVICES\PCB304.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SystemConfig.h">
+    <ClInclude Include="DEVICES\PCB315.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CanDeviceProtocol.h">
+    <ClInclude Include="VSCAN\CanDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TiltMotor.h">
+    <ClInclude Include="MOTORS\CanOpenMotor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IdleForm.h">
+    <ClInclude Include="MOTORS\TiltMotor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PCB301.h">
+    <ClInclude Include="MOTORS\pd4_od.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PCB315.h">
+    <ClInclude Include="CONFIGURATION\ConfigFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PCB302.h">
+    <ClInclude Include="CONFIGURATION\SystemConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PCB303.h">
+    <ClInclude Include="AWS\awsProtocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PCB304.h">
+    <ClInclude Include="AWS\TcpIpServerCLI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Translate.h">
+    <ClInclude Include="LANGUAGE\Translate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Errors.h">
+    <ClInclude Include="LANGUAGE\translate_eng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LANGUAGE\translate_esp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LANGUAGE\translate_fra.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LANGUAGE\translate_ita.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LANGUAGE\translate_por.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LANGUAGE\translate_rus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MESSAGES\Errors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\IdleForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\MainForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\OperatingForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\TcpIpClientCLI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\Generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\api_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\CaDataDic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\R2CP_Eth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\system_messages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\R2CP_Index.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicHdlInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicNetworkInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicPatientInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicR2CPInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRadInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRFInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicServiceInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicSystemInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicTestInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\ConfirmationWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\Projections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\ErrorForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MOTORS\ArmMotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MOTORS\VerticalMotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DEVICES\PCB326.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\CalibrationConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GENERATOR\ExposureModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MOTORS\BodyMotor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -91,58 +190,130 @@
     <ClCompile Include="AssemblyInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="awsProtocol.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TcpIpServerCLI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CanDriver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CanOpenMotor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CanDeviceProtocol.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TiltMotor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IdleForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PCB301.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gantry_global_status.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PCB315.cpp">
+    <ClCompile Include="DEVICES\CanDeviceProtocol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PCB302.cpp">
+    <ClCompile Include="DEVICES\PCB301.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PCB303.cpp">
+    <ClCompile Include="DEVICES\PCB302.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PCB304.cpp">
+    <ClCompile Include="DEVICES\PCB303.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Translate.cpp">
+    <ClCompile Include="DEVICES\PCB304.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Errors.cpp">
+    <ClCompile Include="DEVICES\PCB315.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VSCAN\CanDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\CanOpenMotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\TiltMotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CONFIGURATION\ConfigFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AWS\awsProtocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AWS\TcpIpServerCLI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LANGUAGE\Translate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MESSAGES\Errors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\IdleForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\MainForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\OperatingForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\TcpIpClientCLI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\Generator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\api_log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\CaDataDic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\R2CP_Eth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_GenIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_PatientIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Service.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_SystemIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\ConfirmationWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\Projections.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\ErrorForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\ArmMotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\VerticalMotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DEVICES\PCB326.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AWS\awsCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AWS\awsEvents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\Exposure2DModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\Exposure3DModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\ExposureAEModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\ExposureComboModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\BodyMotor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -156,5 +327,16 @@
     <None Include="DOC\mcpu_master_doxy" />
     <None Include="DOC\aws_interface_protocol_implementation.html" />
     <None Include="DOC\aws_interface_protocol_implementation.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WINDOWS\IdleForm.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\MainForm.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\OperatingForm.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

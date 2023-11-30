@@ -1,0 +1,72 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB301.h" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB301.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'CanDeviceProtocol\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBPCB301\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPCB301_GET_STATUS_SYSTEM_REGISTER\fP   (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_BATTENA\fP(d0,  d1,  d2,  d3)   (bool) (d0 & 0x80)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_BATT1LOW\fP(d0,  d1,  d2,  d3)   (bool) (d0 & 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_BATT2LOW\fP(d0,  d1,  d2,  d3)   (bool) (d0 & 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_POWERDOWN\fP(d0,  d1,  d2,  d3)   (bool) (d0 & 0x04)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_CLOSEDOOR\fP(d0,  d1,  d2,  d3)   (bool) (d2 & 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_STATUS_BATTERY_REGISTER\fP   (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BATTERY_VBATT1\fP(d3,  d4,  d5,  d6)   (unsigned char) (d3)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BATTERY_VBATT2\fP(d3,  d4,  d5,  d6)   (unsigned char) (d4)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define PCB301_GET_BATTERY_VBATT1(d3, d4, d5, d6)   (unsigned char) (d3)"
+
+.SS "#define PCB301_GET_BATTERY_VBATT2(d3, d4, d5, d6)   (unsigned char) (d4)"
+
+.SS "#define PCB301_GET_STATUS_BATTERY_REGISTER   (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false"
+
+.SS "#define PCB301_GET_STATUS_SYSTEM_REGISTER   (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false"
+
+.SS "#define PCB301_GET_SYSTEM_BATT1LOW(d0, d1, d2, d3)   (bool) (d0 & 0x20)"
+
+.SS "#define PCB301_GET_SYSTEM_BATT2LOW(d0, d1, d2, d3)   (bool) (d0 & 0x40)"
+
+.SS "#define PCB301_GET_SYSTEM_BATTENA(d0, d1, d2, d3)   (bool) (d0 & 0x80)"
+
+.SS "#define PCB301_GET_SYSTEM_CLOSEDOOR(d0, d1, d2, d3)   (bool) (d2 & 0x10)"
+
+.SS "#define PCB301_GET_SYSTEM_POWERDOWN(d0, d1, d2, d3)   (bool) (d0 & 0x04)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

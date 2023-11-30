@@ -1,0 +1,212 @@
+.TH "PCB303_Internal" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB303_Internal \- Internal implementation section
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBPCB303::collimationModeEnum\fP { \fBPCB303::collimationModeEnum::AUTO_COLLIMATION\fP = 0, \fBPCB303::collimationModeEnum::CUSTOM_COLLIMATION\fP, \fBPCB303::collimationModeEnum::CALIBRATION_MODE\fP, \fBPCB303::collimationModeEnum::OPEN_MODE\fP, \fBPCB303::collimationModeEnum::TOMO_MODE\fP }"
+.br
+.RI "This enumeration class describes the possible collimation modes the Application can select"
+.in -1c
+.in +1c
+.ti -1c
+.RI "static \fBcollimationModeEnum\fP \fBPCB303::collimationMode\fP"
+.br
+.RI "Sets the current collimation mode\&. "
+.ti -1c
+.RI "static bool \fBPCB303::valid_collimation_format\fP"
+.br
+.RI "This flag is set when the collimation format is correct and coherent with the collimationMode register\&. "
+.ti -1c
+.RI "static bool \fBPCB303::collimator_fault\fP"
+.br
+.RI "This flag is set when the collimator is in fault condition\&. "
+.ti -1c
+.RI "static int \fBPCB303::format_collimation_attempt\fP"
+.br
+.RI "This register counts the attempt to exit from a fault condition\&. "
+.ti -1c
+.RI "static \fBColliStandardSelections\fP \fBPCB303::customStandardSelection\fP"
+.br
+.RI "Custom 2D standard format requested (in case of CUSTOM mode) "
+.ti -1c
+.RI "static \fBformatBlades\fP \fBPCB303::calibrationBlades\fP"
+.br
+.ti -1c
+.RI "static \fBCollimationStatusCode\fP \fBPCB303::collimation_status\fP"
+.br
+.RI "last status collimation status read "
+.ti -1c
+.RI "static \fBColliStandardSelections\fP \fBPCB303::format_index\fP"
+.br
+.RI "last status format index read "
+.ti -1c
+.RI "static unsigned char \fBPCB303::system_flags\fP"
+.br
+.RI "Last system flags\&. "
+.ti -1c
+.RI "static \fBColliStandardSelections\fP \fBPCB303::getAutomaticStandardFormatIndex\fP (void)"
+.br
+.RI "Retrives what is the current automatic format to be calibrated\&. "
+.in -1c
+.in +1c
+.ti -1c
+.RI "void \fBPCB303::resetLoop\fP (void) override"
+.br
+.RI "This is the Base class resetLoop override function\&. "
+.ti -1c
+.RI "virtual void \fBPCB303::runningLoop\fP (void) override"
+.br
+.RI "This is the Base Class override function to handle the normal operation workflow\&. "
+.ti -1c
+.RI "bool \fBPCB303::configurationLoop\fP (void) override"
+.br
+.RI "This is the Base Class override function to handle the device configuration\&. "
+.ti -1c
+.RI "bool \fBPCB303::updateStatusRegister\fP (void)"
+.br
+.ti -1c
+.RI "void \fBPCB303::formatCollimationManagement\fP (void)"
+.br
+.RI "Read the status registers and handle the related bytes\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBPCB303::collimationModeEnum\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+This enumeration class describes the possible collimation modes the Application can select
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIAUTO_COLLIMATION \fP\fP
+The collimator is in Auto mode: the paddle model defines the current collimation format\&. 
+.TP
+\fB\fICUSTOM_COLLIMATION \fP\fP
+The collimator is in Custom mode: the collimation format is set by the operator\&. 
+.TP
+\fB\fICALIBRATION_MODE \fP\fP
+The collimator is in Calibration mode: the collimation format is set manually by the service software\&. 
+.TP
+\fB\fIOPEN_MODE \fP\fP
+The collimator is in Open mode: the collimation format set OPEN\&. 
+.TP
+\fB\fITOMO_MODE \fP\fP
+The collimator is in Tomo mode: the collimation format is dinamically set by the tomo pulse sequence\&. 
+.SH "Function Documentation"
+.PP 
+.SS "bool PCB303::configurationLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base Class override function to handle the device configuration\&. This is the configuration loop routine executed at the beginning of the device connection, before to execute the \fBrunningLoop()\fP routine\&.
+.PP
+\fBReturns\fP
+.RS 4
+true if the configuration success
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB303::formatCollimationManagement (void)\fC [private]\fP"
+
+.PP
+Read the status registers and handle the related bytes\&. This routine handles the format collimation\&.
+.PP
+This is the Base Class override function to handle the device configuration
+.PP
+The procedure set the collimation format based on the collimation mode set by the application\&.
+.PP
+In the case the collimation should be AUTOMATIC, the format collimation is set according with the current detected paddle and the related collimation format assigned to it (see the PaddleCalibration file)\&.
+.PP
+In the case the collimation should be CUSTOM, the format collimation is set to a specific format set by the application\&.
+.PP
+In the case the collimation should be CALIBRATION, the format collimation is set according with the blade positions set by the application\&.
+.PP
+In the case the collimation should be OPEN, the format collimation is set to 0 position for all the blades\&.
+.PP
+The procedure makes a maximum of 5 attempts to set the collimation format as expected\&. When the attempts termines the collimator remains in fault condition until the fault condition is reset by the application (see the resetFault() function)
+.SS "\fBPCB303::ColliStandardSelections\fP PCB303::getAutomaticStandardFormatIndex (void)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Retrives what is the current automatic format to be calibrated\&. This function returns the Collimation format assigned to a Paddle detected in the System by the Compressor device\&.
+.PP
+If the Paddle should not be detected, the COLLI_STANDARD1 Standard collimation is selected\&.
+.PP
+\fBReturns\fP
+.RS 4
+returns the Format collimation assigned to the current paddle
+.RE
+.PP
+
+.SS "void PCB303::resetLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base class resetLoop override function\&. This function activate a One Shot alarm notifying the operator that the device has been reset\&.
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB303::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base Class override function to handle the normal operation workflow\&. This is the main loop running after the device configuration\&.
+.PP
+The procedure reads the relevant registers from the device and manages the following collimator main workflows:
+.IP "\(bu" 2
+handles the format collimation;
+.IP "\(bu" 2
+handle the Tomo Dynamic collimation;
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "bool PCB303::updateStatusRegister (void)\fC [private]\fP"
+
+.SH "Variable Documentation"
+.PP 
+.SS "\fBformatBlades\fP PCB303::calibrationBlades\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBCollimationStatusCode\fP PCB303::collimation_status\fC [static]\fP, \fC [private]\fP"
+
+.PP
+last status collimation status read 
+.SS "\fBcollimationModeEnum\fP PCB303::collimationMode\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Sets the current collimation mode\&. 
+.SS "bool PCB303::collimator_fault\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This flag is set when the collimator is in fault condition\&. 
+.SS "\fBColliStandardSelections\fP PCB303::customStandardSelection\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Custom 2D standard format requested (in case of CUSTOM mode) 
+.SS "int PCB303::format_collimation_attempt\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This register counts the attempt to exit from a fault condition\&. 
+.SS "\fBColliStandardSelections\fP PCB303::format_index\fC [static]\fP, \fC [private]\fP"
+
+.PP
+last status format index read 
+.SS "unsigned char PCB303::system_flags\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Last system flags\&. 
+.SS "bool PCB303::valid_collimation_format\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This flag is set when the collimation format is correct and coherent with the collimationMode register\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

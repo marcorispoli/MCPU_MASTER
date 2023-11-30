@@ -1,0 +1,107 @@
+.TH "BodyMotor_Module" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BodyMotor_Module \- Body Module controller
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+
+
+This module implements the Body rotation requirements\&.
+.SH "Motor Mechanical Assembly setup"
+.PP
+.IP "\(bu" 2
+The Motor gear ratio is 80-1: 80 motor turns equal to 360 degree body rotation;
+.IP "\(bu" 2
+When the motor rotates clockwise, the Body rotates clockwise (viewed from the Body Top);
+.IP "\(bu" 2
+The Zero setting photocell:
+.IP "  \(bu" 4
+when it is ON (on light) the body has to rotate clockwise to find the center;
+.IP "  \(bu" 4
+when it is OFF (obscured) the body has to rotate counter_clockwise to find the center;
+.PP
+
+.IP "\(bu" 2
+Limit switch photocell OFF (obscured):
+.IP "  \(bu" 4
+with Zero setting ON: the limit is the counter-clockwise;
+.IP "  \(bu" 4
+with Zero setting OFF: the limit is the clockwise;
+.PP
+
+.PP
+.SH "Motor GPIO assignment"
+.PP
+.SS "Digital Inputs"
+.IP "\(bu" 2
+DIGITAL INPUT 1 and 2: Assigned to the limit switch photocell;
+.IP "\(bu" 2
+DIGITAL INPUT 3: Homing photocell;
+.IP "\(bu" 2
+DIGITAL INPUT 4: Brake activation status;
+.PP
+.PP
+The Input1 and Input 2 are assigned to the same photocell: the limit switch\&.
+.br
+The Limit switch is an active low: when 0 means that the limit switch has been detected\&.
+.PP
+The Input3 shal be assigned to the Homing Driver process\&.
+.PP
+The Input4 is a Positive logic assigned to the current brake status:
+.IP "\(bu" 2
+ON: the brake is powered;
+.IP "\(bu" 2
+OFF: the brake is not powered;
+.PP
+.PP
+NOTE: the Brake device is a normally closed brake, so when it should be powered, it releases the braking force!
+.SS "Digital Outputs"
+.IP "\(bu" 2
+DIGITAL OUTPUT 1 and 2: brake activation outputs
+.PP
+.PP
+The Output are tw open collector output that shall be set as Normally closed (OFF = 0V output)\&.
+.PP
+In order to power the Brake device both Outpuyt shall be set ON\&.
+.PP
+The use of the Output should be:
+.IP "\(bu" 2
+OUTPUT2 shall be set normally ON: ift should be set OFF only in case of brake malfunction;
+.IP "\(bu" 2
+OUTPUT1 shall be set ON/OFF to control the actual brake status;
+.PP
+NOTE: The OUPUT2 should be kept ON because this status should guarantee that one of the power Mosfet controlling the Brake remains working in case, for any reason, the other Mosfet should be broken\&.
+.PP
+.SH "Position unit definition"
+.PP
+.IP "\(bu" 2
+The module provides the position readout in the range of +/-180 degree;
+.IP "\(bu" 2
+The allowed activation is in the range of +/- 90° with a precision of 0\&.1 degree;
+.IP "\(bu" 2
+The positive angle is the counter-clockwise direction (from the TOP View);
+.PP
+.SH "Brake Diagnostic Test"
+.PP
+The Brake activation is tested at the beginning during the motor initialization, and during the Motor IDLE status\&.
+.SS "Brake Test at the Initialization"
+During the Motor Initialization, both the OUTPUT1 and OUTPUT2 shall be set to OFF,
+.br
+ and the Input4 should be OFF:
+.IP "\(bu" 2
+In case Input4 should be ON, a non resettable fault condition is generated\&.
+.PP
+.SS "Brake Test in IDLE"
+During the IDLE mode, the OUTPUT 2 is kept ONand the OUTPUT1 is set OFF:
+.IP "\(bu" 2
+In case the Input4 should be detected ON, a non resettable fault condition is generated\&.
+.PP
+.SS "Brake Fault Condition"
+In case a Brake device should be detected in Fault, the OUTPUT1 and OUTPUT2 will both be set OFF and a relevant non resettable alarm will be generated\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

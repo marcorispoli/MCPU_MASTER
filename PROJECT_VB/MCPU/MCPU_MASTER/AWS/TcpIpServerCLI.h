@@ -8,16 +8,10 @@
 
 #pragma comment (lib, "User32.lib")
 
-
-#define TcpIpServerCLI_DISPATCH_MESSAGE (WM_USER + 1)
-#define TcpIpServerCLI_DISCONNECTION_MESSAGE (WM_USER + 2)
-#define TcpIpServerCLI_CONNECTION_MESSAGE (WM_USER + 3)
-
 #define TcpIpServerCLI_RX_BUFFER_SIZE (4096)
 #define TcpIpServerCLI_TX_BUFFER_SIZE (4096)
-#define TcpIpServerCLI_DISPATCH_BUFFER_SIZE (100)
 
-ref class TcpIpServerCLI: public System::Windows::Forms::Form
+ref class TcpIpServerCLI 
 {
 public:
 
@@ -39,24 +33,21 @@ public:
 	public: bool isConnected(void) { return connection_status; }
 
 	protected: void threadWork(void);//!< This is the worker thread for the connection management
-	protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;//!< This is the function handling the Window's messages
+	
 
 private:
 
-	HWND window; //!< This is Form's class handler
+	
 	System::Threading::Thread^ running_thread;//!< This is the worker thread handler
 	System::Net::Sockets::Socket^ serverSocket;//!< This is the server socket handler
 	System::Net::Sockets::Socket^ clientSocket;//!< This is the connected client socket handler
-	HANDLE ghSemaphore;//!< This is the semaphore used to protect the received buffer during the buffer dispatching
+	
 
 	bool connection_status;//!< This is the current connection status
 
 	int rx_rc;//!< This is the number of the received bytes
 	cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer
 
-	int dispatch_rc;//!< This is the number of the byte to be dispatched
-	cli::array<System::Byte>^ dispatchBuffer;//!< This is the buffer to be dispatched
-	
 	
 };
 

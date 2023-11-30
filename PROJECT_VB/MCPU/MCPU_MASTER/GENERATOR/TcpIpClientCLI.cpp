@@ -1,7 +1,9 @@
 
 #include <thread>
 #include "TcpIpClientCLI.h"
+#include "mutex"
 
+static std::mutex send_mutex;
 
 /// <summary>
 /// This is the Class constructor 
@@ -114,6 +116,10 @@ void TcpClientCLI::rxData(cli::array<Byte>^ receiveBuffer, int rc){
 /// </summary>
 /// <param name="buffer">This is the data buffer to be sent</param>
 void TcpClientCLI::send(cli::array<Byte>^ buffer) {
+	
+	// Protect the multi thread send commands
+	const std::lock_guard<std::mutex> lock(send_mutex);
+
 	if (!connection_status) return;
 	if (clientSocket == nullptr) return;
 

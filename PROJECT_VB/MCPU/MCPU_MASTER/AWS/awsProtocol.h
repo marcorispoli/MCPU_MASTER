@@ -27,74 +27,85 @@ using namespace System::Collections::Generic;
 ref class awsProtocol
 {
 public:
+	/// \defgroup awsErrors AWS Command Error Codes
+	/// \ingroup awsModule
+	/// @{ 
+	
+	/// <summary>
+	/// Thi is the enumeration class fo rthe command returned error codes
+	/// </summary>
+	enum class return_errors {
+		AWS_RET_WRONG_PARAMETERS = 1,	//!< The number of the command parameters is invalid
+		AWS_RET_WRONG_OPERATING_STATUS, //!< The current operating status is not valid for the command
+		AWS_RET_SYSTEM_ERRORS,			//!< The command cannot be executed with active system errors
+		AWS_RET_SYSTEM_WARNINGS,			//!< There are active System warnings
+		AWS_RET_INVALID_PARAMETER_FORMAT,		//!< A parameter is not in the expected format
+		AWS_RET_INVALID_PARAMETER_VALUE,		//!< A parameter is not in the expected range
+		AWS_RET_DATA_NOT_ALLOWED,				//!< The current system setting is not ready to accept the command
+		AWS_RET_DEVICE_BUSY,				//!< The target device cannot be activated
+		AWS_RET_DEVICE_ERROR,				//!< The Device signaled an error condition in executing the command
+	};
 
+	/// @}
+	
 	/// \defgroup awsProtoApi AWS Protocol Api 
 	/// \ingroup awsModule
 	/// @{ 
 
 
-	/// This is the class constructor
-	awsProtocol(System::String^ ip, int command_port, int event_port);
+	/// This is the class constructor	
+	awsProtocol();
+	static awsProtocol^ device = gcnew awsProtocol(); //!< Auto generation declaration
 
-	/// This function returns the command server TcpIpServerCLI class handler
-	TcpIpServerCLI^ getCommmandHandler(void) { return command_server; };
-
-	/// This function returns the event server TcpIpServerCLI class handler
-	TcpIpServerCLI^ getEventHandler(void) { return event_server; };
-
-	inline bool isConnected(void) {
-		return (command_server->isConnected() && event_server->isConnected());
+	static inline bool isConnected(void) {
+		return (device->command_server->isConnected() && device->event_server->isConnected());
 	}
 
 
 	/// @}
 
-	/// \defgroup awsProtoCallback AWS Protocol Callbacks
-	/// 
-	/// This section describes the callbacks that allows the module
-	/// to cooperate with other modules
-	/// 
+	/// \defgroup awsProtoEvents AWS Protocol Events
 	/// \ingroup awsModule
 	/// @{ 
-	/// 
+	
 
-	/// This function shall be connected to command completes events
-	void activationCompletedCallback(int id, int error);
+	/// This is the protocol activation completed Event when a delayd command termines
+	static void EVENT_ActivationCompleted(int id, int error);
 
 	/// This function shall be connected to the user select projection event
-	void selectProjectionCallback(System::String^ proj);
+	static void EVENT_SelectProjection(System::String^ proj);
 
 	/// This function shall be connected to the abort projection event
-	void abortProjectionCallback(void);
+	static void EVENT_AbortProjection(void);
 
 	/// This function shall be connected to the Gantry status change
-	void gantryStatusChangeCallback(void);
+	static void EVENT_GantryStatus(void);
 
 	/// This function shall be connected to the Compressor data change events
-	void compressorDataChangeCallback(void);
+	static void EVENT_Compressor(void);
 
 	/// This function shall be connected to the system component's change events
-	void componentDataChangeCallback(void);
+	static void EVENT_Components(void);
 
-
+	static void EVENT_ReadyForExposure(bool ready, unsigned short code);
 
 	/// This function shall be connected to the push button status change event
-	void xrayPushbuttonStatusChangeCallback(void);
+	static void EVENT_XrayPushButton(void);
 
-	
+
 	/// This function shall be connected to the xray completed event
-	void exposureSequenceCompletedCallback(Generator::exposure_completed_options code);
+	static void EVENT_XraySequenceCompleted(Generator::exposure_completed_options code);
 
 	/// This function shall be connected to the xray pulse completed event
-	void exposurePulseCompletedCallback(unsigned char npulse) {};
+	static void EVENT_exposurePulseCompleted(unsigned char npulse) {};
 
 	/// This function shall be connected to the operating status change event
-	void operatingStatusChangeCallback(void) {};
-
+	static void EVENT_operatingStatusChange(void) {};
 
 
 	/// @}
 
+	
 private:
 
 
@@ -176,32 +187,7 @@ private:
 	void AWS_NotRecognizedCommand(void) { ackNa(); };
 	/// @}
 
-	/// \defgroup awsProtoEvents AWS Protocol Events
-	/// \ingroup awsModule
-	/// @{ 
-	/// 
-	void EVENT_SelectProjection(System::String^ projname);
-	void EVENT_AbortProjection(void);
-	void EVENT_GantryStatus(System::String^ status);
-	void EVENT_Compressor(unsigned short thick, unsigned short force);
-	void EVENT_Components(System::String^ component, System::String^ paddle, System::String^ colli_component);
-	void EVENT_ReadyForExposure(bool ready, unsigned short code);
-	void EVENT_XrayPushButton(System::String^ status);
-	void EVENT_XraySequenceCompleted(System::String^ result,
-		double kv0, double mas0, System::String^ filter0,
-		double kv1, double mas1, System::String^ filter1,
-		double kv2, double mas2, System::String^ filter2,
-		double kv3, double mas3, System::String^ filter3);
 
-	/// @}
-
-	/*
-
-
-	virtual void EVENT_XrayPulseCompleted(unsigned char pulse) {};
-
-	*/
-	/// @}
 };
 
 

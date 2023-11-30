@@ -602,15 +602,7 @@ void MainForm::StartupProcedure(void) {
 	case 10: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 11: if (Startup_MotorVertical()) { startupFase+=2; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 12: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
-	case 13:
-
-		// Creates thw AWS
-		GlobalObjects::pAws = gcnew awsProtocol(
-			SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_IP],
-			Convert::ToInt32(SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_PORT_COMMAND]),
-			Convert::ToInt32(SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS])
-		);
-		startupFase++; startupSubFase = 0;
+	case 13: startupFase++; startupSubFase = 0;
 		break;
 
 	case 14:

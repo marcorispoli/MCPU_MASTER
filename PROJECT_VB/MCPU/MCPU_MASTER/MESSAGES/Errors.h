@@ -41,6 +41,7 @@ public:
 	static void activate(System::String^ msg, bool one_shot);
 	static void activate(System::String^ msg, System::String^ extra, bool one_shot);
 	static void deactivate(System::String^ msg);
+	static void disable(System::String^ msg);
 
 private:
 	static List<item^>^ error_list = gcnew List<item^>();
@@ -49,5 +50,8 @@ private:
 	static List<item^>^ warning_list = gcnew List<item^>();
 	static List<item^>^ info_list = gcnew List<item^>();
 	static bool one_shot = false;
+
+	static List<item^>^ disable_list = gcnew List<item^>(); //!< This is a list of disabled messages
+
 };
 

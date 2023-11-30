@@ -23,10 +23,19 @@ int main()
   int monitors = Screen::AllScreens->Length;  
   int H,W;
 
-  Debug::WriteLine("DETECTED MONITORS:" + monitors.ToString());
-
   // Set the current language for messages and GUI
   Translate::setLanguage("ENG");
+  
+  Notify::disable("GENERATOR_NOT_READY");
+  Notify::disable("GENERATOR_INIT_WARNING");
+  Notify::disable("GENERATOR_ERROR_CONNECTION");
+  Notify::disable("STATOR_SENSOR_LOW");
+  Notify::disable("BULB_SENSOR_LOW");
+
+
+  Debug::WriteLine("DETECTED MONITORS:" + monitors.ToString());
+
+  
 
   // Get the current directory for the resources
   GlobalObjects::applicationResourcePath = System::IO::Directory::GetCurrentDirectory() + "\\RESOURCES\\";

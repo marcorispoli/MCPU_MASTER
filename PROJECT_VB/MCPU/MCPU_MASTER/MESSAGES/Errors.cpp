@@ -11,7 +11,10 @@ void Notify::activate(System::String^ msg, bool os) {
 	msgit = Translate::getItem(msg);
 	if (msgit == nullptr) return;
 	
-
+	// verifies if the message should be disabled
+	for (int i = 0; i < disable_list->Count; i++) {
+		if (disable_list[i]->msg == msg) return;
+	}
 	if (msgit->isError()) {
 		for (int i = 0; i < error_list->Count; i++) {
 			// The error code is already active: tests if the error message is changed
@@ -53,6 +56,10 @@ void Notify::activate(System::String^ msg, System::String^ extra, bool os) {
 	msgit = Translate::getItem(msg);
 	if (msgit == nullptr) return;
 
+	// verifies if the message should be disabled
+	for (int i = 0; i < disable_list->Count; i++) {
+		if (disable_list[i]->msg == msg) return;
+	}
 
 	if (msgit->isError()) {
 		for (int i = 0; i < error_list->Count; i++) {
@@ -135,6 +142,25 @@ void Notify::deactivate(System::String^ msg) {
 		return;
 	}
 
+}
+
+void Notify::disable(System::String^ msg) {
+	
+	System::String^ curmsg;
+	Translate::item^ msgit;
+
+	msgit = Translate::getItem(msg);
+	if (msgit == nullptr) return;
+
+	// Deactivate the message if it should be present
+	deactivate(msg);
+	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+
+	for (int i = 0; i < disable_list->Count; i++) {
+		// The error code is already active: tests if the error message is changed
+		if (disable_list[i]->msg == msg) return;		
+	}
+	disable_list->Add(gcnew item(msg, false));
 }
 
 

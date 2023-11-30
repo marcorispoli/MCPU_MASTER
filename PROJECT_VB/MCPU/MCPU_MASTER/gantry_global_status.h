@@ -18,14 +18,14 @@ public:
     #define pIDLEFORM  ((IdleForm^) GlobalObjects::pIdleForm)
     #define pOPERFORM  ((OperatingForm^) GlobalObjects::pOperatingForm)
 
-    #define pAWS ((awsProtocol^) GlobalObjects::pAws)
+   // #define pAWS ((awsProtocol^) GlobalObjects::pAws)
     
     #define pMSHIFT  ((CanOpenMotor^) GlobalObjects::pMotShift)
    
 
 
 
-    static Object^ pAws = nullptr; //!< Pointer to the AWS interface    
+    //static Object^ pAws = nullptr; //!< Pointer to the AWS interface    
     static Object^ pMotShift = nullptr; //!< Pointer to the Shift Motor
     
 

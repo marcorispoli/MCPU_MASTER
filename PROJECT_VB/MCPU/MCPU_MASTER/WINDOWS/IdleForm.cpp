@@ -244,9 +244,8 @@ void IdleForm::idleStatusManagement(void) {
 	}
 
 	// Handles the AWS connection status
-	if ((pAWS == nullptr) || (pAWS->isConnected() != IDLESTATUS::Registers.aws_connected)) {
-		if (pAWS == nullptr) IDLESTATUS::Registers.aws_connected = false;
-		else IDLESTATUS::Registers.aws_connected = pAWS->isConnected();
+	if (awsProtocol::isConnected() != IDLESTATUS::Registers.aws_connected) {
+		IDLESTATUS::Registers.aws_connected = awsProtocol::isConnected();
 
 		if(IDLESTATUS::Registers.aws_connected) this->awsConnected->Show();
 		else this->awsConnected->Hide();

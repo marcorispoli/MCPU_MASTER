@@ -8,26 +8,22 @@
 #include "PCB303.h"
 #include "ExposureModule.h"
 #include "Generator.h"
+#include "SystemConfig.h"
 
 
 using namespace GantryStatusRegisters;
 using namespace System::Diagnostics;
 
-/// <summary>
-/// This is the class constructor.
-/// 
-/// This function initializes the module.
-/// 
-/// </summary>
-/// <param name="ip">IP4 Address (String format) for the servers</param>
-/// <param name="command_port">Command server port address</param>
-/// <param name="event_port">Event server port address</param>
-awsProtocol::awsProtocol(String^ ip, int command_port, int event_port) {
+awsProtocol::awsProtocol(void) {
+    System::String^ ip = SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_IP];
+    int cp = System::Convert::ToInt16(SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_PORT_COMMAND]);
+    int ep = System::Convert::ToInt16(SystemConfig::Configuration->getParam(SystemConfig::PARAM_AWS_CONNECTIONS)[SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS]);
+    
     pDecodedFrame = gcnew aws_decoded_frame_t;
 
     // Creates the TcpIp based Servers
-    command_server = gcnew TcpIpServerCLI(ip, command_port);
-    event_server = gcnew TcpIpServerCLI(ip, event_port);
+    command_server = gcnew TcpIpServerCLI(ip, cp);
+    event_server = gcnew TcpIpServerCLI(ip, ep);
     event_counter = 1;
 
     // Connect the reception Events 
@@ -58,14 +54,15 @@ awsProtocol::awsProtocol(String^ ip, int command_port, int event_port) {
     commandExec->Add("EXEC_TestCommand", gcnew command_callback(this, &awsProtocol::EXEC_TestCommand));
 
     // Connects the Global register callbacks to the local Events
-    XrayPushButtonRegister::activationStatus->value_change_event += gcnew delegate_void_callback(this, &awsProtocol::xrayPushbuttonStatusChangeCallback);
-    Generator::xray_complete_event += gcnew Generator::delegate_xray_complete_callback(this, &awsProtocol::exposureSequenceCompletedCallback);
-    ArmMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(this, &awsProtocol::activationCompletedCallback);
-    VerticalMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(this, &awsProtocol::activationCompletedCallback);
-    ArmMotor::projection_request_event += gcnew ArmMotor::delegate_projection_request_callback(this, &awsProtocol::selectProjectionCallback);
-    ArmMotor::abort_projection_request_event += gcnew ArmMotor::delegate_abort_projection_request_callback(this, &awsProtocol::abortProjectionCallback);
+    XrayPushButtonRegister::activationStatus->value_change_event += gcnew delegate_void_callback(&awsProtocol::EVENT_XrayPushButton);
+    Generator::xray_complete_event += gcnew Generator::delegate_xray_complete_callback(&awsProtocol::EVENT_XraySequenceCompleted);
+    ArmMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_ActivationCompleted);
+    VerticalMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_ActivationCompleted);
+    ArmMotor::projection_request_event += gcnew ArmMotor::delegate_projection_request_callback(&awsProtocol::EVENT_SelectProjection);
+    ArmMotor::abort_projection_request_event += gcnew ArmMotor::delegate_abort_projection_request_callback(&awsProtocol::EVENT_AbortProjection);
 
 }
+
 
 /// <summary>
 /// This function retrive the next item in the current decoding frame.

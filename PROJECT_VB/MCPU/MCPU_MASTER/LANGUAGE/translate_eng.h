@@ -30,6 +30,11 @@
 "ERROR", "E00017", "BULB_SENSOR_LOW", "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be broken",
 "ERROR", "E00018", "BULB_SENSOR_SHORT", "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be shorted",
 "ERROR", "E00019", "BODY_MOTOR_BRAKE_FAULT", "Body Motor Monitoring", "The brake device is in Fault condition",
+"ERROR", "E00020", "VERTICAL_MOTOR_HOMING", "Vertical Motor Monitoring", "The encoder is not initialized.",
+"ERROR", "E00021", "ARM_MOTOR_HOMING", "ARM Motor Monitoring", "The encoder is not initialized.",
+"ERROR", "E00022", "SHIFT_MOTOR_HOMING", "Shift Motor Monitoring", "The encoder is not initialized.",
+"ERROR", "E00023", "TILT_MOTOR_HOMING", "Tilt Motor Monitoring", "The encoder is not initialized.",
+"ERROR", "E00024", "BODY_MOTOR_HOMING", "Body Motor Monitoring", "The encoder is not initialized.",
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
 "ERROR", "E00900", "X-RAY_BUTTON_RELEASED", "X-RAY Sequence Error", "X-Ray push button early released",
@@ -58,11 +63,6 @@
 "WARNING", "W00016", "ANODE_TEMPERATURE_HIGH", "Tube Temperature Monitoring", "The Anode temperature is too high",
 "WARNING", "W00017", "FILTER_OUT_OF_POSITION", "Filter Monitoring", "The Filter selector is not in a valid position",
 "WARNING", "W00018", "COLLIMATOR_OUT_OF_POSITION", "Collimator Monitoring", "An invalid collimation format is detected",
-"WARNING", "W00019", "BODY_MOTOR_HOMING", "Body Motor Monitoring", "The encoder is not initialized.",
-"WARNING", "W00020", "VERTICAL_MOTOR_HOMING", "Vertical Motor Monitoring", "The encoder is not initialized.",
-"WARNING", "W00021", "ARM_MOTOR_HOMING", "ARM Motor Monitoring", "The encoder is not initialized.",
-"WARNING", "W00022", "SHIFT_MOTOR_HOMING", "Shift Motor Monitoring", "The encoder is not initialized.",
-"WARNING", "W00023", "TILT_MOTOR_HOMING", "Tilt Motor Monitoring", "The encoder is not initialized.",
 
 /* -------- INFO ---------------------------*/
 

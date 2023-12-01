@@ -101,9 +101,9 @@ void Generator::threadWork(void) {
 
     while (true) {
         Debug::WriteLine("Try to connect the Smart Hub and Generator!\n");
-        Notify::activate("GENERATOR_ERROR_CONNECTION", false);
-        Notify::activate("GENERATOR_INIT_WARNING", false);
-        Notify::activate("GENERATOR_NOT_READY", false);
+        Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION, false);
+        Notify::activate(Notify::messages::WARNING_GENERATOR_INIT, false);
+        Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY, false);
 
         R2CP_Eth->smartHubConnected = false;
         R2CP_Eth->generatorConnected = false;
@@ -137,7 +137,7 @@ void Generator::threadWork(void) {
 
         }
        
-        Notify::deactivate("GENERATOR_ERROR_CONNECTION");        
+        Notify::deactivate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
         Debug::WriteLine("Generator Connected!\n");
         
         // Inits of the generator
@@ -162,7 +162,7 @@ void Generator::threadWork(void) {
 
         Debug::WriteLine("Generator In Idle\n");
         idle_status = true;
-        Notify::deactivate("GENERATOR_INIT_WARNING");
+        Notify::deactivate(Notify::messages::WARNING_GENERATOR_INIT);
 
         // Handles the Idle mode
         if (!generatorIdle()) continue;
@@ -390,11 +390,11 @@ bool Generator::generatorIdle(void) {
             Debug::WriteLine("GENERATOR: Current generator status: " + generator_status.ToString() + "\n");
 
             if (generator_status == 2) {
-                Notify::deactivate("GENERATOR_NOT_READY");
+                Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
                 ready_for_exposure = true;
             }
             else {
-                Notify::activate("GENERATOR_NOT_READY", false);
+                Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY, false);
                 ready_for_exposure = false;
             }
         }
@@ -552,7 +552,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
         current_error_list_id += id.ToString() + " ";        
     }
     error_list_id = current_error_list_id;
-    Notify::activate("GENERATOR_MESSAGES", current_error_list_id, false);
+    Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id, false);
     Debug::WriteLine("GENERATOR: system messages present:" + error_list_id + "\n");
 
     while (true) {
@@ -564,7 +564,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
         if (!handleCommandProcessedState(nullptr)) return false;
 
         if (R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size() == 0) {
-            Notify::deactivate("GENERATOR_MESSAGES");
+            Notify::deactivate(Notify::messages::WARNING_GENERATOR_MESSAGE);
             Debug::WriteLine("GENERATOR: system messages removed \n");
             return true;
         }
@@ -578,8 +578,8 @@ bool Generator::generatorErrorMessagesLoop(void) {
 
         if (current_error_list_id != error_list_id) {
             error_list_id = current_error_list_id;
-            Notify::deactivate("GENERATOR_MESSAGES");
-            Notify::activate("GENERATOR_MESSAGES", current_error_list_id, false);
+            Notify::deactivate(Notify::messages::WARNING_GENERATOR_MESSAGE);
+            Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id, false);
             Debug::WriteLine("GENERATOR: system messages present:" + error_list_id + "\n");
         }
 

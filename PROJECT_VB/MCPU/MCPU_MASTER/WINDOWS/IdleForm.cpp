@@ -3,7 +3,7 @@
 #include "ErrorForm.h"
 #include "operatingForm.h"
 #include "SystemConfig.h"
-#include "Translate.h"
+#include "Notify.h"
 #include "PCB301.h"
 #include "PCB302.h"
 #include "PCB303.h"

@@ -1,5 +1,5 @@
 #include "CalibrationConfig.h"
-#include "Errors.h"
+#include "Notify.h"
 #include "VerticalMotor.h"
 #include "pd4_od.h"
 
@@ -61,7 +61,7 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
     this->encoder_initial_value = init_position;
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate("VERTICAL_MOTOR_HOMING", false);
+    if (!home_initialized) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, false);
     
 }
 
@@ -83,7 +83,7 @@ bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
 /// handle the Isocentric automatic activation code
 /// 
 /// </summary>
-/// <param name="error"></param>
+/// <param name=LABEL_ERROR></param>
 void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
     
     // Sets the current Vertical position
@@ -141,12 +141,12 @@ void VerticalMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) 
         // Set the position in the configuration file and clear the alarm
         MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
-        Notify::deactivate("VERTICAL_MOTOR_HOMING");
+        Notify::deactivate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
     }
     else {
         // Reset the position in the configuration file and reactivate the alarm
         MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
         MotorConfig::Configuration->storeFile();
-        Notify::activate("VERTICAL_MOTOR_HOMING", false);
+        Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, false);
     }
 }

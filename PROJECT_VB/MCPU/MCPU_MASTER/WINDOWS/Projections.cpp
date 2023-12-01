@@ -1,5 +1,5 @@
 #include "Projections.h"
-#include "Translate.h"
+#include "Notify.h"
 #include "ConfirmationWindow.h"
 #include "ArmMotor.h"
 #include "gantry_global_status.h"
@@ -27,7 +27,7 @@ void ProjectionForm::formInitialization(void) {
 	panelNumber = 0;
 
 	// Title
-	TitleText->Text = Translate::label("PROJECTION_SELECTION_PANEL");
+	TitleText->Text = Notify::TranslateLabel(Notify::messages::LABEL_PROJECTION_SELECTION_PANEL);
 	TitleText->BackColor = Color::Transparent;
 
 	// Selection Area
@@ -41,8 +41,8 @@ void ProjectionForm::formInitialization(void) {
 	
 
 	// Confirmation Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Translate::id("PROJECTION_CONFIRMATION_INFO") + "] " + Translate::title("PROJECTION_CONFIRMATION_INFO");
-	System::String^ confInfoContent = Translate::content("PROJECTION_CONFIRMATION_INFO");
+	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_PROJECTION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_PROJECTION_CONFIRMATION);
+	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_PROJECTION_CONFIRMATION);
 	pConf = gcnew ConfirmationWindow(parent, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
 	((ConfirmationWindow^)pConf)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ProjectionForm::onConfirmCanc);
 	((ConfirmationWindow^)pConf)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ProjectionForm::onConfirmOk);

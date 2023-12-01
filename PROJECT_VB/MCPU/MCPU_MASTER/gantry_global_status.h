@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include "ConfigFile.h"
-#include "Errors.h"
+#include "Notify.h"
 
 
 
@@ -1001,7 +1001,7 @@ namespace GantryStatusRegisters {
         /// 
         /// </summary>
         /// <param name="angle">THis is the final angle</param>
-        /// <param name="error">This is an error code</param>
+        /// <param name=LABEL_ERROR>This is an error code</param>
         static void  activationCompleted(int angle, int error) {
             if (!executing) return;
             executing = false;

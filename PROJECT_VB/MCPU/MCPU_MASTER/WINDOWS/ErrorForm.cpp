@@ -1,5 +1,5 @@
 #include "ErrorForm.h"
-#include "Translate.h"
+#include "Notify.h"
 #include "gantry_global_status.h"
 
 #define FORM_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Windows\\ErrorFormBackground.PNG")
@@ -22,7 +22,7 @@ void ErrorForm::formInitialization(void) {
 	this->BackgroundImage = FORM_IMAGE;
 
 	// Title
-	TitleText->Text = Translate::label("ERROR_WINDOW_PANEL");
+	TitleText->Text = Notify::TranslateLabel(Notify::messages::LABEL_ERROR_WINDOW_PANEL);
 	TitleText->BackColor = Color::Transparent;
 
 	notifyIcon->BackColor = Color::Transparent;
@@ -57,13 +57,13 @@ void ErrorForm::open(void) {
 	errorPanelTimer->Start();
 
 	// Sets the new error in evidence 
-	Translate::item^ msgit;
-	Notify::item^ newitem = Notify::getCurrent();
+	Notify::translate^ msgit;
+	Notify::messages lastmsg = Notify::getLastMessage();
 	
-	if (newitem) {
-		msgit = Translate::getItem(newitem->msg);
+	if (lastmsg != Notify::messages::NO_MESSAGE) {
+		msgit = Notify::Translate(lastmsg);
 		errorTitle->Text = msgit->title;
-		errorId->Text = msgit->id;
+		errorId->Text = msgit->number;
 
 		// Sete the ICON based on thelast error or warnings
 		if(msgit->isError()) notifyIcon->BackgroundImage = ERROR_IMAGE;

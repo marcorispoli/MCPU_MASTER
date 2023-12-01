@@ -172,7 +172,6 @@
     <ClInclude Include="GENERATOR\R2CP\R2CP_Eth.h" />
     <ClInclude Include="GENERATOR\R2CP\system_messages.h" />
     <ClInclude Include="GENERATOR\TcpIpClientCLI.h" />
-    <ClInclude Include="LANGUAGE\Translate.h" />
     <ClInclude Include="LANGUAGE\translate_eng.h" />
     <ClInclude Include="LANGUAGE\translate_esp.h" />
     <ClInclude Include="LANGUAGE\translate_fra.h" />
@@ -180,7 +179,7 @@
     <ClInclude Include="LANGUAGE\translate_por.h" />
     <ClInclude Include="LANGUAGE\translate_rus.h" />
     <ClInclude Include="gantry_global_status.h" />
-    <ClInclude Include="MESSAGES\Errors.h" />
+    <ClInclude Include="MESSAGES\Notify.h" />
     <ClInclude Include="MOTORS\CanOpenMotor.h" />
     <ClInclude Include="MOTORS\pd4_od.h" />
     <ClInclude Include="MOTORS\TiltMotor.h" />
@@ -237,8 +236,7 @@
     <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_SystemIndex.cpp" />
     <ClCompile Include="GENERATOR\R2CP\R2CP_Eth.cpp" />
     <ClCompile Include="GENERATOR\TcpIpClientCLI.cpp" />
-    <ClCompile Include="LANGUAGE\Translate.cpp" />
-    <ClCompile Include="MESSAGES\Errors.cpp" />
+    <ClCompile Include="MESSAGES\Notify.cpp" />
     <ClCompile Include="MOTORS\CanOpenMotor.cpp" />
     <ClCompile Include="MOTORS\TiltMotor.cpp" />
     <ClCompile Include="VSCAN\CanDriver.cpp" />

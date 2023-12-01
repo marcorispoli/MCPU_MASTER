@@ -14,7 +14,7 @@ void PCB315::manageFilterSelection(void) {
         // Activate the selectuion error if necessary
         if (!filter_select_error) {
             filter_select_error = true;
-            Notify::activate("FILTER_SELECTION_ERROR", false);
+            Notify::activate(Notify::messages::ERROR_FILTER_SELECTION_ERROR, false);
         }
         return;
     }
@@ -22,7 +22,7 @@ void PCB315::manageFilterSelection(void) {
     // Resets the Selection error
     if (filter_select_error) {
         filter_select_error = false;
-        Notify::deactivate("FILTER_SELECTION_ERROR");
+        Notify::deactivate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);
     }
 
     // Verifies the correct calibration format
@@ -153,8 +153,8 @@ bool PCB315::updateStatusRegister(void) {
         current_filter_status = filter_status;
 
         // Signals a warning if the filter is not in a valid position
-        if(filter_status == FilterSlotCodes::FILTER_OUT_OF_POSITION) Notify::activate("FILTER_OUT_OF_POSITION", false);
-        else Notify::deactivate("FILTER_OUT_OF_POSITION");
+        if(filter_status == FilterSlotCodes::FILTER_OUT_OF_POSITION) Notify::activate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION, false);
+        else Notify::deactivate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
     }
 
     // If an error condition is signaled gets the error register 
@@ -166,31 +166,31 @@ bool PCB315::updateStatusRegister(void) {
         Register^ error_register = readErrorRegister();
         if (error_register != nullptr)
         {
-            if (PCB315_ERROR_BULB_LOW(error_register))    Notify::activate("BULB_SENSOR_LOW", false);
-            else Notify::deactivate("BULB_SENSOR_LOW");
-            if (PCB315_ERROR_BULB_SHORT(error_register))    Notify::activate("BULB_SENSOR_SHORT", false);
-            else Notify::deactivate("BULB_SENSOR_SHORT");
+            if (PCB315_ERROR_BULB_LOW(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_LOW, false);
+            else Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_LOW);
+            if (PCB315_ERROR_BULB_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_SHORT, false);
+            else Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_SHORT);
            
 
-            if (PCB315_ERROR_STATOR_LOW(error_register))    Notify::activate("STATOR_SENSOR_LOW", false);
-            else Notify::deactivate("STATOR_SENSOR_LOW");
-            if (PCB315_ERROR_STATOR_SHORT(error_register))    Notify::activate("STATOR_SENSOR_SHORT", false);
-            else Notify::deactivate("STATOR_SENSOR_SHORT");
+            if (PCB315_ERROR_STATOR_LOW(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_LOW, false);
+            else Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_LOW);
+            if (PCB315_ERROR_STATOR_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_SHORT, false);
+            else Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_SHORT);
 
             // Evaluates the Warning related to the High tube temperature
             if (PCB315_ERROR_BULB_HIGH(error_register) || PCB315_ERROR_STATOR_HIGH(error_register)) {
                 tube_high_temp_alarm = true;
 
-                if (PCB315_ERROR_BULB_HIGH(error_register)) Notify::activate("BULB_SENSOR_HIGH", false);
-                else Notify::deactivate("BULB_SENSOR_HIGH");
+                if (PCB315_ERROR_BULB_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_BULB_SENSOR_HIGH, false);
+                else Notify::deactivate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
 
-                if (PCB315_ERROR_STATOR_HIGH(error_register)) Notify::activate("STATOR_SENSOR_HIGH", false);
-                else Notify::deactivate("STATOR_SENSOR_HIGH");
+                if (PCB315_ERROR_STATOR_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_STATOR_SENSOR_HIGH, false);
+                else Notify::deactivate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
 
             }
             else {
-                Notify::deactivate("BULB_SENSOR_HIGH");
-                Notify::deactivate("STATOR_SENSOR_HIGH");
+                Notify::deactivate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
+                Notify::deactivate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
                 tube_high_temp_alarm = false;
             }
 
@@ -201,12 +201,12 @@ bool PCB315::updateStatusRegister(void) {
 
             // Resets all the possible errors
             error_status = false;
-            Notify::deactivate("BULB_SENSOR_LOW");
-            Notify::deactivate("BULB_SENSOR_SHORT");
-            Notify::deactivate("BULB_SENSOR_HIGH");
-            Notify::deactivate("STATOR_SENSOR_LOW");
-            Notify::deactivate("STATOR_SENSOR_SHORT");
-            Notify::deactivate("STATOR_SENSOR_HIGH");
+            Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_LOW);
+            Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_SHORT);
+            Notify::deactivate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
+            Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_LOW);
+            Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_SHORT);
+            Notify::deactivate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
         }
 
        
@@ -252,7 +252,7 @@ void PCB315::runningLoop(void) {
 
         // resets the communication error
         if (comm_error) {
-            Notify::deactivate("PCB315_COMMUNICATION_ERROR");
+            Notify::deactivate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR);
             comm_error = false;
         }
     }
@@ -263,7 +263,7 @@ void PCB315::runningLoop(void) {
         if (comm_attempt > 10) {
             if (!comm_error) {
                 comm_error = true;
-                Notify::activate("PCB315_COMMUNICATION_ERROR", false);
+                Notify::activate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR, false);
             }
         }else comm_attempt++;
     }
@@ -285,7 +285,7 @@ void PCB315::runningLoop(void) {
 void PCB315::resetLoop(void) {
 
     // Ths error is a one shot error: it is reset as soon as the operator open the error window
-    Notify::activate("PCB315_RESET", true);
+    Notify::activate(Notify::messages::ERROR_PCB315_RESET, true);
 }
 
 /// <summary>

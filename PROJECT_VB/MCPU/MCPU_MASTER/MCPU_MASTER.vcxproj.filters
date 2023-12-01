@@ -68,9 +68,6 @@
     <ClInclude Include="AWS\TcpIpServerCLI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LANGUAGE\Translate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LANGUAGE\translate_eng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -89,7 +86,7 @@
     <ClInclude Include="LANGUAGE\translate_rus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MESSAGES\Errors.h">
+    <ClInclude Include="MESSAGES\Notify.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WINDOWS\IdleForm.h">
@@ -229,10 +226,7 @@
     <ClCompile Include="AWS\TcpIpServerCLI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LANGUAGE\Translate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MESSAGES\Errors.cpp">
+    <ClCompile Include="MESSAGES\Notify.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WINDOWS\IdleForm.cpp">

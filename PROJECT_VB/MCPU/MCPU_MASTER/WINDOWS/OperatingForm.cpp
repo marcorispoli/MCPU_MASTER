@@ -1,5 +1,5 @@
 #include "OperatingForm.h"
-#include "Translate.h"
+#include "Notify.h"
 #include "ErrorForm.h"
 #include "gantry_global_status.h"
 #include "Projections.h"
@@ -136,8 +136,8 @@ void OperatingForm::formInitialization(void) {
 	//________________________________________________________________________________________
 
 	// Abort Projection Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Translate::id("PROJECTION_ABORT_INFO") + "] " + Translate::title("PROJECTION_ABORT_INFO");
-	System::String^ confInfoContent = Translate::content("PROJECTION_ABORT_INFO");
+	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_PROJECTION_ABORT) + "] " + Notify::TranslateTitle(Notify::messages::INFO_PROJECTION_ABORT);
+	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_PROJECTION_ABORT);
 	pAbort = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
 	((ConfirmationWindow^)pAbort)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onAbortConfirmCanc);
 	((ConfirmationWindow^)pAbort)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onAbortConfirmOk);
@@ -156,7 +156,7 @@ void OperatingForm::formInitialization(void) {
 	
 	// Sets the Xray status
 	OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;
-	labelXrayStatus->Text = Translate::label("NOT-READY-FOR-EXPOSURE");
+	labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
 	xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
 
 	// Sets the current lamp status
@@ -298,14 +298,14 @@ void OperatingForm::evaluateXrayStatus(void) {
 	if (Notify::isError() || Notify::isWarning()) {
 		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_NOT_READY){
 			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;
-			labelXrayStatus->Text = Translate::label("NOT-READY-FOR-EXPOSURE");
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
 			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
 		}
 	}
 	else {
 		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_READY){
 			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_READY;
-			labelXrayStatus->Text = Translate::label("READY-FOR-EXPOSURE");
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
 		}
 	}
@@ -316,8 +316,8 @@ void OperatingForm::evaluateErrorStatus(void) {
 
 	// Compression Mode Warning
 	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) && (GantryStatusRegisters::CompressorRegister::getForce() == 0))
-		Notify::activate("MISSING_COMPRESSION_WARNING", false);
-	else Notify::deactivate("MISSING_COMPRESSION_WARNING");
+		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION, false);
+	else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
 
 
 	// Patient Protection Mode Warning
@@ -325,15 +325,15 @@ void OperatingForm::evaluateErrorStatus(void) {
 		(ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) &&
 		(GantryStatusRegisters::ComponentRegister::Value->getCode() != GantryStatusRegisters::ComponentRegister::options::COMPONENT_PROTECTION_3D)&&
 		(GantryStatusRegisters::CollimatorComponentRegister::Value->getCode() != GantryStatusRegisters::CollimatorComponentRegister::options::COLLI_COMPONENT_PROTECTION_2D)
-		) Notify::activate("MISSING_PATIENT_PROTECTION_WARNING", false);
-	else Notify::deactivate("MISSING_PATIENT_PROTECTION_WARNING");
+		) Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION, false);
+	else Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	
 	// C-Arm Mode
 	if (
 		(ExposureModule::getArmMode() != ExposureModule::arm_mode_option::ARM_DIS) &&
 		(!ArmMotor::device->isValidPosition())
-		) Notify::activate("WRONG_ARM_POSITION_WARNING", false);
-	else Notify::deactivate("WRONG_ARM_POSITION_WARNING");
+		) Notify::activate(Notify::messages::WARNING_ARM_POSITION_WARNING, false);
+	else Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
 
 	// Paddle identification
 	if (
@@ -343,20 +343,20 @@ void OperatingForm::evaluateErrorStatus(void) {
 				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::PAD_UNLOCKED) ||
 				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::UNDEF)
 			)
-		) Notify::activate("WRONG_PADDLE_WARNING", false);
-	else Notify::deactivate("WRONG_PADDLE_WARNING");
+		) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE, false);
+	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
 
 	// Exposure Mode selection	
-	if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) Notify::activate("MISSING_EXPOSURE_MODE_WARNING", false);
-	else Notify::deactivate("MISSING_EXPOSURE_MODE_WARNING");
+	if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE, false);
+	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 
 	// Valid Exposure Data present
-	if (!ExposureModule::getExposedPulse(0)->getValidated()) Notify::activate("MISSING_EXPOSURE_DATA_WARNING", false);
-	else Notify::deactivate("MISSING_EXPOSURE_DATA_WARNING");
+	if (!ExposureModule::getExposedPulse(0)->getValidated()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA, false);
+	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 
 	// Xray Push Button Enable
-	if (GantryStatusRegisters::XrayPushButtonRegister::isDisabled()) Notify::activate("XRAY_BUTTON_DISABLED_WARNING", false);
-	else Notify::deactivate("XRAY_BUTTON_DISABLED_WARNING");
+	if (GantryStatusRegisters::XrayPushButtonRegister::isDisabled()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED, false);
+	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 
 	// Error Button
 	if (Notify::isError()) {
@@ -530,11 +530,11 @@ void OperatingForm::evaluateDoorStatus(void) {
 
 		if (OPERSTATUS::Registers.closed_door) {
 			doorStatus->BackgroundImage = DOOR_CLOSED_IMAGE;
-			Notify::deactivate("DOOR_STUDY_OPEN_WARNING");
+			Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
 		}
 		else {
 			doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
-			Notify::activate("DOOR_STUDY_OPEN_WARNING", false);
+			Notify::activate(Notify::messages::WARNING_DOOR_STUDY_OPEN, false);
 		}
 	}
 	

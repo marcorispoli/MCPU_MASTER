@@ -22,8 +22,8 @@ void PCB301::runningLoop(void) {
         powerdown = bval;
 
         // Sets the general error
-        if (powerdown) Notify::activate("POWER_DOWN_ERROR", false);
-        else Notify::deactivate("POWER_DOWN_ERROR");
+        if (powerdown) Notify::activate(Notify::messages::ERROR_POWER_DOWN_ERROR, false);
+        else Notify::deactivate(Notify::messages::ERROR_POWER_DOWN_ERROR);
     }
 
     // Monitor of the Battery Enable input
@@ -31,8 +31,8 @@ void PCB301::runningLoop(void) {
     if (bval != batt_ena) {
         batt_ena = bval;
         if (batt_ena == false) {
-            Notify::activate("BATTERY_DISABLED_INFO", false);
-        }else Notify::deactivate("BATTERY_DISABLED_INFO");
+            Notify::activate(Notify::messages::INFO_BATTERY_DISABLED, false);
+        }else Notify::deactivate(Notify::messages::INFO_BATTERY_DISABLED);
     }
     
     // Monitor of the Battery Low error condition
@@ -48,8 +48,8 @@ void PCB301::runningLoop(void) {
     }
     if ((batt1_low || batt2_low) != batt_low) {
         batt_low = (batt1_low || batt2_low);
-        if(batt_low) Notify::activate("BATTERY_LOW_ERROR", false);
-        else  Notify::deactivate("BATTERY_LOW_ERROR");
+        if(batt_low) Notify::activate(Notify::messages::ERROR_BATTERY_LOW_ERROR, false);
+        else  Notify::deactivate(Notify::messages::ERROR_BATTERY_LOW_ERROR);
     }
 
     // Monitor of the Study door input
@@ -57,8 +57,8 @@ void PCB301::runningLoop(void) {
     if (bval != study_door_closed) {
         study_door_closed = bval;
 
-        if(study_door_closed) Notify::deactivate("DOOR_STUDY_OPEN_WARNING");
-        else Notify::activate("DOOR_STUDY_OPEN_WARNING", false);
+        if(study_door_closed) Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
+        else Notify::activate(Notify::messages::WARNING_DOOR_STUDY_OPEN, false);
     }
     GantryStatusRegisters::SafetyStatusRegister::setCloseDoor(study_door_closed);
 

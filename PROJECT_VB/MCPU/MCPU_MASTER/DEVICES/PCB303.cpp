@@ -2,7 +2,7 @@
 #include "PCB303.h"
 #include "PCB302.h"
 #include "CalibrationConfig.h"
-#include "MESSAGES/Errors.h"
+#include "MESSAGES/Notify.h"
 #include <thread>
 
 /// <summary>
@@ -44,7 +44,7 @@ void PCB303::formatCollimationManagement(void) {
         // Activate the selectuion error if necessary
         if (!collimation_select_error) {
             collimation_select_error = true;
-            Notify::activate("COLLIMATION_SELECTION_ERROR", false);
+            Notify::activate(Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR, false);
         }
         return;
     }
@@ -52,7 +52,7 @@ void PCB303::formatCollimationManagement(void) {
     // Resets the Selection error
     if (collimation_select_error) {
         collimation_select_error = false;
-        Notify::deactivate("COLLIMATION_SELECTION_ERROR");
+        Notify::deactivate(Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR);
     }
 
 
@@ -229,14 +229,14 @@ bool PCB303::updateStatusRegister(void) {
 
         if (!collimator_fault) {
             collimator_fault = true;
-            Notify::activate("COLLIMATOR_OUT_OF_POSITION", err_string, false);
+            Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, err_string, false);
         }
     }
     else {
         format_collimation_attempt = 0;
         if (collimator_fault) {
             collimator_fault = false;
-            Notify::deactivate("COLLIMATOR_OUT_OF_POSITION");
+            Notify::deactivate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
         }
     }
 
@@ -267,7 +267,7 @@ void PCB303::runningLoop(void) {
 
         // resets the communication error
         if (comm_error) {
-            Notify::deactivate("PCB303_COMMUNICATION_ERROR");
+            Notify::deactivate(Notify::messages::ERROR_PCB303_COMMUNICATION_ERROR);
             comm_error = false;
         }
     }
@@ -277,7 +277,7 @@ void PCB303::runningLoop(void) {
         if (comm_attempt > 10) {
             if (!comm_error) {
                 comm_error = true;
-                Notify::activate("PCB303_COMMUNICATION_ERROR", false);
+                Notify::activate(Notify::messages::ERROR_PCB303_COMMUNICATION_ERROR, false);
             }
         }
         else comm_attempt++;
@@ -328,7 +328,7 @@ PCB303::ColliStandardSelections PCB303::getAutomaticStandardFormatIndex(void) {
 void PCB303::resetLoop(void) {
 
     // Ths error is a one shot error: it is reset as soon as the operator open the error window
-    Notify::activate("PCB303_RESET", true);
+    Notify::activate(Notify::messages::ERROR_PCB303_RESET, true);
 }
 
 /// <summary>

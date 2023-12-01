@@ -1,5 +1,5 @@
 #include "CalibrationConfig.h"
-#include "Errors.h"
+#include "Notify.h"
 #include "BodyMotor.h"
 #include "pd4_od.h"
 #include <thread>
@@ -42,7 +42,7 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     this->encoder_initial_value = init_position;
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate("BODY_MOTOR_HOMING", false);
+    if (!home_initialized) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING, false);
     
 }
 
@@ -96,7 +96,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test output off, off");
-        Notify::activate("BODY_MOTOR_BRAKE_FAULT", false);
+        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
         return true;
     }
 
@@ -106,7 +106,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test output off, on");
-        Notify::activate("BODY_MOTOR_BRAKE_FAULT", false);
+        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
 
         // Clear the OUTPUTS
         blocking_writeOD(OD_60FE_01, 0);
@@ -121,7 +121,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     if (!BRAKE_INPUT_MASK(rxSdoRegister->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test output on, on");
-        Notify::activate("BODY_MOTOR_BRAKE_FAULT", false);
+        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
 
         // Clear the OUTPUTS
         blocking_writeOD(OD_60FE_01, 0);
@@ -134,7 +134,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test last output off, off ");
-        Notify::activate("BODY_MOTOR_BRAKE_FAULT", false);
+        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
 
         // Clear the OUTPUTS
         blocking_writeOD(OD_60FE_01, 0);
@@ -160,7 +160,7 @@ bool BodyMotor::idleCallback(void) {
         if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
             brake_alarm = true;
             Debug::WriteLine("BodyMotor: Failed test brake input in IDLE");
-            Notify::activate("BODY_MOTOR_BRAKE_FAULT", false);
+            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
             blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
             return false;
         }
@@ -210,7 +210,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::automaticPositioningPreparationCall
         // Failed the brake power activation detected
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed to unlock");
-        Notify::activate("BODY_MOTOR_BRAKE_FAULT", false);
+        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
 
         // Clear the OUTPUTS
         blocking_writeOD(OD_60FE_01, 0);
@@ -227,7 +227,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::automaticPositioningPreparationCall
 /// and the command termination
 /// 
 /// </summary>
-/// <param name="error"></param>
+/// <param name=LABEL_ERROR></param>
 void BodyMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
     
     // Lock the brake device
@@ -266,13 +266,13 @@ void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
         // Set the position in the configuration file and clear the alarm
         MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
-        Notify::deactivate("BODY_MOTOR_HOMING");
+        Notify::deactivate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
     }
     else {
         // Reset the position in the configuration file and reactivate the alarm
         MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
         MotorConfig::Configuration->storeFile();
-        Notify::activate("BODY_MOTOR_HOMING", false);
+        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING, false);
     }
 }
 

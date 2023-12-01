@@ -31,7 +31,7 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDe
     this->encoder_initial_value = init_position;
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate("ARM_MOTOR_HOMING", false);
+    if (!home_initialized) Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
 
 
 }
@@ -56,7 +56,7 @@ bool ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// handle the Isocentric automatic activation code
 /// 
 /// </summary>
-/// <param name="error"></param>
+/// <param name=LABEL_ERROR></param>
 void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
 
     // Sets the current Vertical position
@@ -155,12 +155,12 @@ void ArmMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
         // Set the position in the configuration file and clear the alarm
         MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
-        Notify::deactivate("ARM_MOTOR_HOMING");
+        Notify::deactivate(Notify::messages::ERROR_ARM_MOTOR_HOMING);
     }
     else {
         // Reset the position in the configuration file and reactivate the alarm
         MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
         MotorConfig::Configuration->storeFile();
-        Notify::activate("ARM_MOTOR_HOMING", false);
+        Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
     }
 }

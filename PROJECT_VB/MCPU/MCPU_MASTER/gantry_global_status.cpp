@@ -1,5 +1,5 @@
 #include "gantry_global_status.h"
-#include "Errors.h"
+#include "Notify.h"
 #include <mutex>
 
 namespace GantryStatusRegisters {

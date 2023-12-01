@@ -1,5 +1,5 @@
 #include "CanOpenMotor.h"
-#include "Translate.h"
+#include "Notify.h"
 #include "Generator.h"
 #include "ExposureModule.h"
 #include "IdleForm.h"
@@ -24,13 +24,13 @@ int main()
   int H,W;
 
   // Set the current language for messages and GUI
-  Translate::setLanguage("ENG");
+  Notify::setLanguage("ENG");
   
-  Notify::disable("GENERATOR_NOT_READY");
-  Notify::disable("GENERATOR_INIT_WARNING");
-  Notify::disable("GENERATOR_ERROR_CONNECTION");
-  Notify::disable("STATOR_SENSOR_LOW");
-  Notify::disable("BULB_SENSOR_LOW");
+  Notify::disable(Notify::messages::WARNING_GENERATOR_NOT_READY);
+  Notify::disable(Notify::messages::WARNING_GENERATOR_INIT);
+  Notify::disable(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
+  Notify::disable(Notify::messages::ERROR_STATOR_SENSOR_LOW);
+  Notify::disable(Notify::messages::ERROR_BULB_SENSOR_LOW);
 
 
   Debug::WriteLine("DETECTED MONITORS:" + monitors.ToString());

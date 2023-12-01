@@ -1219,7 +1219,7 @@ void CanOpenMotor::setActivationTimeout(int speed, int acc, int dec, int target)
 /// This function is internally used to set a command completion code.
 /// 
 /// </summary>
-/// <param name="error"></param>
+/// <param name=LABEL_ERROR></param>
 
 void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes error) {
     command_completed_code = error;

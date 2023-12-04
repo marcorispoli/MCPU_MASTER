@@ -3,7 +3,14 @@
 #include "ExposureModule.h"
 #include "R2CP_Eth.h"
 
-
+/// <summary>
+/// \defgroup Generator_Module Generator module controller
+///   
+/// </summary>
+ 
+/// <summary>
+/// \ingroup Generator_Module  
+/// </summary>
 ref class Generator: public TcpClientCLI
 {
 public:

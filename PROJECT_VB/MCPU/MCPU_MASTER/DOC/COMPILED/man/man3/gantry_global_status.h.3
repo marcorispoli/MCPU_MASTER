@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,7 +10,7 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include 'ConfigFile\&.h'\fP
 .br
-\fC#include 'Errors\&.h'\fP
+\fC#include 'Notify\&.h'\fP
 .br
 
 .SS "Classes"
@@ -77,13 +77,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .in +1c
 .ti -1c
-.RI "#define \fBpIDLEFORM\fP   ((IdleForm^) \fBGlobalObjects::pIdleForm\fP)"
+.RI "#define \fBpIDLEFORM\fP   ((\fBIdleForm\fP^) \fBGlobalObjects::pIdleForm\fP)"
 .br
 .ti -1c
-.RI "#define \fBpOPERFORM\fP   ((OperatingForm^) \fBGlobalObjects::pOperatingForm\fP)"
-.br
-.ti -1c
-.RI "#define \fBpAWS\fP   ((awsProtocol^) \fBGlobalObjects::pAws\fP)"
+.RI "#define \fBpOPERFORM\fP   ((\fBOperatingForm\fP^) \fBGlobalObjects::pOperatingForm\fP)"
 .br
 .ti -1c
 .RI "#define \fBpMSHIFT\fP   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
@@ -117,13 +114,11 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
-.SS "#define pAWS   ((awsProtocol^) \fBGlobalObjects::pAws\fP)"
-
-.SS "#define pIDLEFORM   ((IdleForm^) \fBGlobalObjects::pIdleForm\fP)"
+.SS "#define pIDLEFORM   ((\fBIdleForm\fP^) \fBGlobalObjects::pIdleForm\fP)"
 
 .SS "#define pMSHIFT   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
 
-.SS "#define pOPERFORM   ((OperatingForm^) \fBGlobalObjects::pOperatingForm\fP)"
+.SS "#define pOPERFORM   ((\fBOperatingForm\fP^) \fBGlobalObjects::pOperatingForm\fP)"
 
 .SH "Author"
 .PP 

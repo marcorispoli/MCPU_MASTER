@@ -1,4 +1,4 @@
-.TH "awsProtocol::aws_decoded_frame_t" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtocol::aws_decoded_frame_t" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,11 +27,11 @@ awsProtocol::aws_decoded_frame_t \- This structure stores the decoded command\&.
 .br
 .RI "This is the command identifier\&. "
 .ti -1c
-.RI "String ^ \fBcommand\fP"
+.RI "System::String ^ \fBcommand\fP"
 .br
 .RI "This is the command code\&. "
 .ti -1c
-.RI "List< String^> ^ \fBparameters\fP"
+.RI "List< System::String^> ^ \fBparameters\fP"
 .br
 .RI "This is the list of command's parameters\&. "
 .ti -1c
@@ -39,7 +39,7 @@ awsProtocol::aws_decoded_frame_t \- This structure stores the decoded command\&.
 .br
 .RI "This is the error code assigned to the command\&. "
 .ti -1c
-.RI "String ^ \fBerrstr\fP"
+.RI "System::String ^ \fBerrstr\fP"
 .br
 .RI "This is the error string assigned to the command\&. "
 .in -1c
@@ -61,7 +61,7 @@ This function returns the number of decode parameters
 
 .SH "Member Data Documentation"
 .PP 
-.SS "String ^ awsProtocol::aws_decoded_frame_t::command"
+.SS "System::String ^ awsProtocol::aws_decoded_frame_t::command"
 
 .PP
 This is the command code\&. 
@@ -69,7 +69,7 @@ This is the command code\&.
 
 .PP
 This is the error code assigned to the command\&. 
-.SS "String ^ awsProtocol::aws_decoded_frame_t::errstr"
+.SS "System::String ^ awsProtocol::aws_decoded_frame_t::errstr"
 
 .PP
 This is the error string assigned to the command\&. 
@@ -77,7 +77,7 @@ This is the error string assigned to the command\&.
 
 .PP
 This is the command identifier\&. 
-.SS "List<String^> ^ awsProtocol::aws_decoded_frame_t::parameters"
+.SS "List<System::String^> ^ awsProtocol::aws_decoded_frame_t::parameters"
 
 .PP
 This is the list of command's parameters\&. 

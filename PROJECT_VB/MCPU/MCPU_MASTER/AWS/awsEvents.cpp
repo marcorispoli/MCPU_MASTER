@@ -119,8 +119,19 @@ void awsProtocol::EVENT_XraySequenceCompleted(Generator::exposure_completed_opti
 
 }
 
+/// <summary>
+/// This is the EVENT the Gantry shall generate when a delayed command completes.
+/// 
+/// </summary>
+/// 
+/// The Id == 0 codes are rserved for internal activations that shall not 
+/// be acknowledge to the AWS softwrae.
+/// 
+/// <param name="id">Id > 0 is the ID of the pending AWS command, Id==0 is an internal command termination Event</param>
+/// <param name="error">In case of error condition, it is the error code</param>
+void awsProtocol::EVENT_Executed(int id, int error) {
+    if (id == 0) return; // Only with valid ID's
 
-void awsProtocol::EVENT_ActivationCompleted(int id, int error) {
     const std::lock_guard<std::mutex> lock(event_mutex);
     if (error) device->eventExecutedNok(id, error);
     else device->eventExecutedOk(id);

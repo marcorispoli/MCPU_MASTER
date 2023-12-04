@@ -10,6 +10,8 @@
 #include "PCB304.h"
 #include "PCB315.h"
 #include "PCB326.h"
+#include "VerticalMotor.h"
+#include "BodyMotor.h"
 #include "../gantry_global_status.h"
 
 
@@ -280,6 +282,9 @@ void IdleForm::idleStatusManagement(void) {
 		if (IDLESTATUS::Registers.tube.alarm) tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;
 		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
 	}
+
+	VerticalMotor::setManualEnable(true);
+	BodyMotor::setManualEnable(true);
 
 	if ((Notify::isError()) || (Notify::isWarning())) {
 		errorButton->Show();

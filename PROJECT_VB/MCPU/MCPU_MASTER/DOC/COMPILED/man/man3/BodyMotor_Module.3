@@ -1,4 +1,4 @@
-.TH "BodyMotor_Module" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "BodyMotor_Module" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,14 @@ BodyMotor_Module \- Body Module controller
 .SH SYNOPSIS
 .br
 .PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBBodyMotor\fP"
+.br
+.RI "This is the Body Module class implementation"
+.in -1c
 .SH "Detailed Description"
 .PP 
 
@@ -16,13 +24,13 @@ This module implements the Body rotation requirements\&.
 .IP "\(bu" 2
 The Motor gear ratio is 80-1: 80 motor turns equal to 360 degree body rotation;
 .IP "\(bu" 2
-When the motor rotates clockwise, the Body rotates clockwise (viewed from the Body Top);
+When the motor rotates clockwise, the Body rotates counter_clockwise (viewed from the Body Top);
 .IP "\(bu" 2
 The Zero setting photocell:
 .IP "  \(bu" 4
-when it is ON (on light) the body has to rotate clockwise to find the center;
+when it is ON (on light) the body has to rotate clockwise (the motor rotate counter_clockwise) to find the center;
 .IP "  \(bu" 4
-when it is OFF (obscured) the body has to rotate counter_clockwise to find the center;
+when it is OFF (obscured) the body has to rotate counter_clockwise (the motor rotate clockwise) to find the center;
 .PP
 
 .IP "\(bu" 2

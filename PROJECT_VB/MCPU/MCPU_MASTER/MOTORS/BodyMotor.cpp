@@ -1,6 +1,7 @@
 #include "CalibrationConfig.h"
 #include "Notify.h"
 #include "BodyMotor.h"
+#include "PCB301.h"
 #include "pd4_od.h"
 #include <thread>
 
@@ -33,9 +34,9 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     bool homing_initialized = false;
     int  init_position = 0;
 
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
         homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_POSITION]);
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
  
     this->home_initialized = homing_initialized;
@@ -145,33 +146,61 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
 }
 
 /// <summary>
-/// The BodyMotor class override this function in order to 
-/// handle the IDLE activities
+/// The BodyMotor class override this function in order to handle the IDLE activities
 /// 
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
 bool BodyMotor::idleCallback(void) {
+    static PCB301::body_activation_options body_request = PCB301::body_activation_options::BODY_NO_ACTIVATION;
+    int speed, acc, dec;
 
-    // Check if the BRAKE input is OFF. In case it should be ON, a relevant alarm shall be activated
-    if (!brake_alarm) {
-        if (!blocking_readOD(OD_60FD_00)) return false;
+    // With the brake alarm present, no more action can be executed
+    if (brake_alarm) {
 
-        if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
-            brake_alarm = true;
-            Debug::WriteLine("BodyMotor: Failed test brake input in IDLE");
-            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
-            blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-            return false;
-        }
-
-        // All things are OK
-        return true;
+        // Alarm condition
+        blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
+        return false;
     }
 
-    // Alarm condition
-    blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-    return false;
+    // Check if the BRAKE input is OFF. In case it should be ON, a relevant alarm shall be activated
+    if (!blocking_readOD(OD_60FD_00)) return false;
+    if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+
+        brake_alarm = true;
+        Debug::WriteLine("BodyMotor: Failed test brake input in IDLE");
+        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
+        blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
+        return false;
+    }
+
+    // Handle the Safety condition 
+
+    // Handle a Manual activation mode
+    if (PCB301::getBodyActivationStatus() != body_request) {
+        body_request = PCB301::getBodyActivationStatus();
+
+        if (manual_activation_enabled) {
+            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_SPEED]);
+            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_ACC]);
+            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_DEC]);
+
+            switch (body_request) {
+            case PCB301::body_activation_options::BODY_CW_ACTIVATION:
+                device->activateManualPositioning(MAX_ROTATION_ANGLE, speed, acc, dec);
+                manual_cw_direction = true;
+                break;
+            case PCB301::body_activation_options::BODY_CCW_ACTIVATION:
+                device->activateManualPositioning(MIN_ROTATION_ANGLE, speed, acc, dec);
+                manual_cw_direction = false;
+                break;
+
+            }
+        } // Enabled command
+    }
+
+   
+    return true;
     
 }
 
@@ -221,6 +250,14 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::automaticPositioningPreparationCall
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
+CanOpenMotor::MotorCompletedCodes BodyMotor::automaticHomingPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
+}
+
+CanOpenMotor::MotorCompletedCodes BodyMotor::manualPositioningPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
+}
+
 
 /// <summary>
 /// The BodyMotor class override this function in order to update the current position
@@ -236,16 +273,21 @@ void BodyMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error)
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     if (device->home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
     }
 
     return;
 }
 
+void BodyMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
 
-CanOpenMotor::MotorCompletedCodes BodyMotor::automaticHomingPreparationCallback(void) {
-    return automaticPositioningPreparationCallback();
+    // Lock the brake device
+    // The control of the brake status is done in the IDLE status
+    blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    return;
 }
 
 /// <summary>
@@ -256,7 +298,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::automaticHomingPreparationCallback(
 /// <param name=""></param>
 /// <returns></returns>
 void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
-    
+
     // Lock the brake device
     // The control of the brake status is done in the IDLE status
     blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
@@ -264,17 +306,20 @@ void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
 
     if (device->home_initialized) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
     }
     else {
         // Reset the position in the configuration file and reactivate the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
         MotorConfig::Configuration->storeFile();
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING, false);
     }
 }
+
+
+
 
 
 /// <summary>
@@ -293,3 +338,29 @@ bool BodyMotor::startHoming(void) {
 
 
 
+/// <summary>
+/// The BodyMotor class override this function in order to handle the manual activation process.
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+BodyMotor::MotorCompletedCodes  BodyMotor::manualPositioningRunningCallback(void) {
+
+    // Handles the enable condition
+    if (!manual_activation_enabled) {
+        return MotorCompletedCodes::ERROR_COMMAND_DISABLED;
+    }
+
+    // Handle the limit switches
+
+    // Handle the safety
+
+    // handle the manual hardware inputs
+    PCB301::body_activation_options body_request = PCB301::getBodyActivationStatus();
+    if (body_request == PCB301::body_activation_options::BODY_NO_ACTIVATION) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    else if ((manual_cw_direction) && (body_request == PCB301::body_activation_options::BODY_CCW_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    else if ((!manual_cw_direction) && (body_request == PCB301::body_activation_options::BODY_CW_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+
+    // Proceeds with the manual activation
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}

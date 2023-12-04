@@ -1,4 +1,4 @@
-.TH "PaddleConfig" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PaddleConfig" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,204 +8,208 @@ PaddleConfig
 .PP
 .PP
 \fC#include <CalibrationConfig\&.h>\fP
-.SS "Static Public Attributes"
+.SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "static const System::String ^ \fBFILENAME\fP = 'PaddleCalibration\&.cnf'"
+.RI "literal System::String ^ \fBFILENAME\fP = 'PaddleCalibration\&.cnf'"
 .br
 .ti -1c
-.RI "static const int \fBFILE_REVISION\fP = 1"
+.RI "literal int \fBFILE_REVISION\fP = 1"
 .br
 .ti -1c
-.RI "static const int \fBPADDLE_COLLIMATION\fP = 0"
+.RI "literal int \fBPADDLE_COLLIMATION\fP = 0"
 .br
 .ti -1c
-.RI "static const int \fBPADDLE_POSITION_OFFSET\fP = 1"
+.RI "literal int \fBPADDLE_POSITION_OFFSET\fP = 1"
 .br
 .ti -1c
-.RI "static const int \fBPADDLE_WEIGHT\fP = 2"
+.RI "literal int \fBPADDLE_WEIGHT\fP = 2"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_PROSTHESIS\fP = 'PADDLE_PROSTHESIS'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_PROSTHESIS\fP = 'PADDLE_PROSTHESIS'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_PROSTHESIS_COMMENT\fP = 'PADDLE_PROSTHESIS calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_PROSTHESIS_COMMENT\fP = 'PADDLE_PROSTHESIS calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_PROSTHESIS_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_PROSTHESIS_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_PROSTHESIS_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_PROSTHESIS_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_BIOP2D\fP = 'PADDLE_BIOP2D'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_BIOP2D\fP = 'PADDLE_BIOP2D'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_BIOP2D_COMMENT\fP = 'PADDLE_BIOP2D calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_BIOP2D_COMMENT\fP = 'PADDLE_BIOP2D calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_BIOP2D_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_BIOP2D_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_BIOP2D_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_BIOP2D_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_BIOP2D_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_BIOP2D_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_BIOP3D\fP = 'PADDLE_BIOP3D'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_BIOP3D\fP = 'PADDLE_BIOP3D'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_BIOP3D_COMMENT\fP = 'PADDLE_BIOP3D calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_BIOP3D_COMMENT\fP = 'PADDLE_BIOP3D calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_BIOP3D_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_BIOP3D_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_BIOP3D_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_BIOP3D_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_BIOP3D_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_BIOP3D_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_TOMO\fP = 'PADDLE_TOMO'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_TOMO\fP = 'PADDLE_TOMO'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_TOMO_COMMENT\fP = 'PADDLE_TOMO calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_TOMO_COMMENT\fP = 'PADDLE_TOMO calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_TOMO_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_TOMO_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_TOMO_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_TOMO_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_TOMO_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_TOMO_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_24x30_CONTACT\fP = 'PADDLE_24x30_CONTACT'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_24x30_CONTACT\fP = 'PADDLE_24x30_CONTACT'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_24x30_CONTACT_COMMENT\fP = 'PADDLE_24x30_CONTACT calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_24x30_CONTACT_COMMENT\fP = 'PADDLE_24x30_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_24x30_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_24x30_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_24x30_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_24x30_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_24x30_CONTACT_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_24x30_CONTACT_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_18x24_C_CONTACT\fP = 'PADDLE_18x24_C_CONTACT'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_18x24_C_CONTACT\fP = 'PADDLE_18x24_C_CONTACT'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_18x24_C_CONTACT_COMMENT\fP = 'PADDLE_18x24_C_CONTACT calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_18x24_C_CONTACT_COMMENT\fP = 'PADDLE_18x24_C_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_C_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_18x24_C_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_C_CONTACT_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_18x24_C_CONTACT_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_18x24_L_CONTACT\fP = 'PADDLE_18x24_L_CONTACT'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_18x24_L_CONTACT\fP = 'PADDLE_18x24_L_CONTACT'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_18x24_L_CONTACT_COMMENT\fP = 'PADDLE_18x24_L_CONTACT calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_18x24_L_CONTACT_COMMENT\fP = 'PADDLE_18x24_L_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_L_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_18x24_L_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_L_CONTACT_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_18x24_L_CONTACT_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_18x24_R_CONTACT\fP = 'PADDLE_18x24_R_CONTACT'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_18x24_R_CONTACT\fP = 'PADDLE_18x24_R_CONTACT'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_18x24_R_CONTACT_COMMENT\fP = 'PADDLE_18x24_R_CONTACT calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_18x24_R_CONTACT_COMMENT\fP = 'PADDLE_18x24_R_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_R_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_18x24_R_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_18x24_R_CONTACT_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_18x24_R_CONTACT_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_10x24_CONTACT\fP = 'PADDLE_10x24_CONTACT'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_10x24_CONTACT\fP = 'PADDLE_10x24_CONTACT'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_10x24_CONTACT_COMMENT\fP = 'PADDLE_10x24_CONTACT calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_10x24_CONTACT_COMMENT\fP = 'PADDLE_10x24_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_10x24_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_10x24_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_10x24_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_10x24_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_10x24_CONTACT_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_10x24_CONTACT_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_9x9_MAG\fP = 'PADDLE_9x9_MAG'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_9x9_MAG\fP = 'PADDLE_9x9_MAG'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_9x9_MAG_COMMENT\fP = 'PADDLE_9x9_MAG calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_9x9_MAG_COMMENT\fP = 'PADDLE_9x9_MAG calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_9x9_MAG_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_9x9_MAG_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_9x9_MAG_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_9x9_MAG_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_9x21_MAG\fP = 'PADDLE_9x21_MAG'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_9x21_MAG\fP = 'PADDLE_9x21_MAG'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_9x21_MAG_COMMENT\fP = 'PADDLE_9x21_MAG calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_9x21_MAG_COMMENT\fP = 'PADDLE_9x21_MAG calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_9x21_MAG_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_9x21_MAG_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_9x21_MAG_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_9x21_MAG_WEIGHT_DEFAULT\fP = '10'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_D75_MAG\fP = 'PADDLE_D75_MAG'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_D75_MAG\fP = 'PADDLE_D75_MAG'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PADDLE_D75_MAG_COMMENT\fP = 'PADDLE_D75_MAG calibration data'"
+.RI "literal System::String ^ \fBPARAM_PADDLE_D75_MAG_COMMENT\fP = 'PADDLE_D75_MAG calibration data'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_D75_MAG_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_D75_MAG_COLLIMATION_DEFAULT\fP = '1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_D75_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
+.RI "literal System::String ^ \fBPADDLE_D75_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPADDLE_D75_MAG_WEIGHT_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPADDLE_D75_MAG_WEIGHT_DEFAULT\fP = '10'"
 .br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
 .ti -1c
 .RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
 .br
@@ -214,135 +218,135 @@ PaddleConfig
 .PP 
 .SS "\fBConfigFile\fP ^ PaddleConfig::Configuration\fC [static]\fP"
 
-.SS "const int PaddleConfig::FILE_REVISION = 1\fC [static]\fP"
+.SS "literal int PaddleConfig::FILE_REVISION = 1"
 
-.SS "const System::String ^ PaddleConfig::FILENAME = 'PaddleCalibration\&.cnf'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::FILENAME = 'PaddleCalibration\&.cnf'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_9x21_MAG_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x21_MAG_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_9x21_MAG_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x21_MAG_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_9x9_MAG_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x9_MAG_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_9x9_MAG_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x9_MAG_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_BIOP2D_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP2D_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_BIOP2D_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP2D_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_BIOP2D_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP2D_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_BIOP3D_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP3D_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_BIOP3D_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP3D_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_BIOP3D_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP3D_WEIGHT_DEFAULT = '10'"
 
-.SS "const int PaddleConfig::PADDLE_COLLIMATION = 0\fC [static]\fP"
+.SS "literal int PaddleConfig::PADDLE_COLLIMATION = 0"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_D75_MAG_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_D75_MAG_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_D75_MAG_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_D75_MAG_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_D75_MAG_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_D75_MAG_WEIGHT_DEFAULT = '10'"
 
-.SS "const int PaddleConfig::PADDLE_POSITION_OFFSET = 1\fC [static]\fP"
+.SS "literal int PaddleConfig::PADDLE_POSITION_OFFSET = 1"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_PROSTHESIS_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_PROSTHESIS_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_PROSTHESIS_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_PROSTHESIS_WEIGHT_DEFAULT = '10'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_TOMO_COLLIMATION_DEFAULT = '1'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_TOMO_COLLIMATION_DEFAULT = '1'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_TOMO_POSITION_OFFSET_DEFAULT = '120'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_TOMO_POSITION_OFFSET_DEFAULT = '120'"
 
-.SS "const System::String ^ PaddleConfig::PADDLE_TOMO_WEIGHT_DEFAULT = '10'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PADDLE_TOMO_WEIGHT_DEFAULT = '10'"
 
-.SS "const int PaddleConfig::PADDLE_WEIGHT = 2\fC [static]\fP"
+.SS "literal int PaddleConfig::PADDLE_WEIGHT = 2"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_10x24_CONTACT = 'PADDLE_10x24_CONTACT'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_10x24_CONTACT = 'PADDLE_10x24_CONTACT'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_10x24_CONTACT_COMMENT = 'PADDLE_10x24_CONTACT calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_10x24_CONTACT_COMMENT = 'PADDLE_10x24_CONTACT calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT = 'PADDLE_18x24_C_CONTACT'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT = 'PADDLE_18x24_C_CONTACT'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT_COMMENT = 'PADDLE_18x24_C_CONTACT calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT_COMMENT = 'PADDLE_18x24_C_CONTACT calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT = 'PADDLE_18x24_L_CONTACT'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT = 'PADDLE_18x24_L_CONTACT'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT_COMMENT = 'PADDLE_18x24_L_CONTACT calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT_COMMENT = 'PADDLE_18x24_L_CONTACT calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT = 'PADDLE_18x24_R_CONTACT'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT = 'PADDLE_18x24_R_CONTACT'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT_COMMENT = 'PADDLE_18x24_R_CONTACT calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT_COMMENT = 'PADDLE_18x24_R_CONTACT calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_24x30_CONTACT = 'PADDLE_24x30_CONTACT'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_24x30_CONTACT = 'PADDLE_24x30_CONTACT'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_24x30_CONTACT_COMMENT = 'PADDLE_24x30_CONTACT calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_24x30_CONTACT_COMMENT = 'PADDLE_24x30_CONTACT calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_9x21_MAG = 'PADDLE_9x21_MAG'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_9x21_MAG = 'PADDLE_9x21_MAG'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_9x21_MAG_COMMENT = 'PADDLE_9x21_MAG calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_9x21_MAG_COMMENT = 'PADDLE_9x21_MAG calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_9x9_MAG = 'PADDLE_9x9_MAG'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_9x9_MAG = 'PADDLE_9x9_MAG'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_9x9_MAG_COMMENT = 'PADDLE_9x9_MAG calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_9x9_MAG_COMMENT = 'PADDLE_9x9_MAG calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_BIOP2D = 'PADDLE_BIOP2D'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_BIOP2D = 'PADDLE_BIOP2D'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_BIOP2D_COMMENT = 'PADDLE_BIOP2D calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_BIOP2D_COMMENT = 'PADDLE_BIOP2D calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_BIOP3D = 'PADDLE_BIOP3D'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_BIOP3D = 'PADDLE_BIOP3D'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_BIOP3D_COMMENT = 'PADDLE_BIOP3D calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_BIOP3D_COMMENT = 'PADDLE_BIOP3D calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_D75_MAG = 'PADDLE_D75_MAG'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_D75_MAG = 'PADDLE_D75_MAG'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_D75_MAG_COMMENT = 'PADDLE_D75_MAG calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_D75_MAG_COMMENT = 'PADDLE_D75_MAG calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_PROSTHESIS = 'PADDLE_PROSTHESIS'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_PROSTHESIS = 'PADDLE_PROSTHESIS'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_PROSTHESIS_COMMENT = 'PADDLE_PROSTHESIS calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_PROSTHESIS_COMMENT = 'PADDLE_PROSTHESIS calibration data'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_TOMO = 'PADDLE_TOMO'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_TOMO = 'PADDLE_TOMO'"
 
-.SS "const System::String ^ PaddleConfig::PARAM_PADDLE_TOMO_COMMENT = 'PADDLE_TOMO calibration data'\fC [static]\fP"
+.SS "literal System::String ^ PaddleConfig::PARAM_PADDLE_TOMO_COMMENT = 'PADDLE_TOMO calibration data'"
 
 
 .SH "Author"

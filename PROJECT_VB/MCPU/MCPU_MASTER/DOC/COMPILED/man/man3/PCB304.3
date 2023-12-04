@@ -1,4 +1,4 @@
-.TH "PCB304" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB304" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -39,7 +39,7 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "static bool \fBisGridSynchReady\fP (void)"
 .br
-.RI "If the grid has been set to Generator Synch, the function returns true when the grid is ready to start\&. "
+.RI "If the grid has been set to \fBGenerator\fP Synch, the function returns true when the grid is ready to start\&. "
 .ti -1c
 .RI "static bool \fBisError\fP (void)"
 .br
@@ -109,7 +109,7 @@ True if the Grid is in field
 .SS "static bool PCB304::isGridSynchReady (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-If the grid has been set to Generator Synch, the function returns true when the grid is ready to start\&. The ready condition is set when the grid device is positioned 
+If the grid has been set to \fBGenerator\fP Synch, the function returns true when the grid is ready to start\&. The ready condition is set when the grid device is positioned 
 .br
 at the beginning of the travel (home position)
 .PP

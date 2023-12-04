@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenMotor.cpp" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenMotor.cpp" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,15 +27,28 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBVMM_STATUS_OD\fP   \fBOD_1F57_02\fP"
 .br
+.ti -1c
+.RI "#define \fBDRIVER_POLLING_MS\fP   100"
+.br
+.ti -1c
+.RI "#define \fBZERO_INPUT_MASK\fP(x)   (x & 0x00040000)"
+.br
+.RI "Not in the Special region [00II][0000]\&. "
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define DRIVER_POLLING_MS   100"
+
 .SS "#define VMM_CTRL_OD   \fBOD_1F51_02\fP"
 
 .SS "#define VMM_DATA_OD   \fBOD_1F50_02\fP"
 
 .SS "#define VMM_STATUS_OD   \fBOD_1F57_02\fP"
 
+.SS "#define ZERO_INPUT_MASK(x)   (x & 0x00040000)"
+
+.PP
+Not in the Special region [00II][0000]\&. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

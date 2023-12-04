@@ -3,6 +3,7 @@
 
 /// <summary>
 /// \defgroup PCB303_Module PCB303 Module: format collimation
+/// \ingroup CanDevice_Module 
 /// This module implements the functions of the Collimator device
 /// 
 /// - 2D Format collimation;

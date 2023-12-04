@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/VerticalMotor.cpp" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/VerticalMotor.cpp" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .SH SYNOPSIS
 .br
 .PP
+\fC#include 'CalibrationConfig\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
+.br
 \fC#include 'VerticalMotor\&.h'\fP
 .br
 \fC#include 'pd4_od\&.h'\fP
@@ -17,11 +21,34 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBROT_PER_MM\fP   ((double) 1/ (double) 1)"
 .br
+.RI "Defines the position user units in 1 mm\&. "
+.ti -1c
+.RI "#define \fBMAX_POSITION\fP   6500"
+.br
+.ti -1c
+.RI "#define \fBMIN_POSITION\fP   \-6500"
+.br
+.ti -1c
+.RI "#define \fBHOMING_ON_METHOD\fP   22"
+.br
+.ti -1c
+.RI "#define \fBHOMING_OFF_METHOD\fP   21"
+.br
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define HOMING_OFF_METHOD   21"
+
+.SS "#define HOMING_ON_METHOD   22"
+
+.SS "#define MAX_POSITION   6500"
+
+.SS "#define MIN_POSITION   \-6500"
+
 .SS "#define ROT_PER_MM   ((double) 1/ (double) 1)"
 
+.PP
+Defines the position user units in 1 mm\&. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

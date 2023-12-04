@@ -1,6 +1,14 @@
 #pragma once
 #include <Windows.h>
 
+/// <summary>
+/// \defgroup ConfirmationGUI_Module Confirmation Window Management Module
+/// \ingroup GUI_Module Gantry GUI modules
+/// 
+/// 
+/// </summary>
+/// 
+
 
 using namespace System::ComponentModel;
 using namespace System::Collections;

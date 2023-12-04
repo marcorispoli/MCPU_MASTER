@@ -1,4 +1,4 @@
-.TH "ConfigFile" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ConfigFile" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,7 +24,7 @@ ConfigFile \- This class handles the configuration file management\&.
 
 .in +1c
 .ti -1c
-.RI "\fBConfigFile\fP (const System::String^ \fBfilename\fP, int \fBrevision\fP, cli::array< \fBparamItemT\fP^>^ descriptor)"
+.RI "\fBConfigFile\fP (System::String^ \fBfilename\fP, int \fBrevision\fP, cli::array< \fBparamItemT\fP^>^ descriptor)"
 .br
 .ti -1c
 .RI "bool \fBloadFile\fP (void)"
@@ -48,7 +48,7 @@ ConfigFile \- This class handles the configuration file management\&.
 .RI "System::String ^ \fBgetWarningString\fP (void)"
 .br
 .ti -1c
-.RI "cli::array< System::String^> ^ \fBgetParam\fP (const System::String^ tag)"
+.RI "cli::array< System::String^> ^ \fBgetParam\fP (System::String^ tag)"
 .br
 .ti -1c
 .RI "bool \fBsetParam\fP (System::String^ tag, int index, System::String^ val)"
@@ -283,7 +283,7 @@ configFile::setDefaultFile();
 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "ConfigFile::ConfigFile (const System::String^ filename, int revision, cli::array< \fBparamItemT\fP^>^ descriptor)"
+.SS "ConfigFile::ConfigFile (System::String^ filename, int revision, cli::array< \fBparamItemT\fP^>^ descriptor)"
 
 .SH "Member Function Documentation"
 .PP 
@@ -297,7 +297,7 @@ Creates the default file based on the template\&.
 
 .SS "System::String ^ ConfigFile::getFilename (void)\fC [inline]\fP"
 
-.SS "cli::array< System::String^> ^ ConfigFile::getParam (const System::String^ tag)\fC [inline]\fP"
+.SS "cli::array< System::String^> ^ ConfigFile::getParam (System::String^ tag)\fC [inline]\fP"
 
 .SS "int ConfigFile::getTagPosition (System::String^ tag)\fC [private]\fP"
 

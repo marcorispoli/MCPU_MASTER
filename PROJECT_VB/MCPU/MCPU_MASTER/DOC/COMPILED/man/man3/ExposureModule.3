@@ -1,0 +1,280 @@
+.TH "ExposureModule" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExposureModule
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ExposureModule\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBexposure_pulse\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBexposure_type_options\fP { \fBMAN_2D\fP = 0, \fBAEC_2D\fP, \fBMAN_3D\fP, \fBAEC_3D\fP, \fBMAN_COMBO\fP, \fBAEC_COMBO\fP, \fBMAN_AE\fP, \fBAEC_AE\fP, \fBEXP_NOT_DEFINED\fP }"
+.br
+.RI "This is the enumeration class defining all the possible exposures "
+.ti -1c
+.RI "enum class \fBcompression_mode_option\fP { \fBCMP_KEEP\fP = 0, \fBCMP_RELEASE\fP, \fBCMP_DISABLE\fP }"
+.br
+.RI "This is the enumeration of the possible Compression modes\&. "
+.ti -1c
+.RI "enum class \fBarm_mode_option\fP { \fBARM_ENA\fP = 0, \fBARM_DIS\fP }"
+.br
+.RI "This is the enumeration of the possible ARM usage during exposure "
+.ti -1c
+.RI "enum class \fBpatient_protection_option\fP { \fBPROTECTION_ENA\fP = 0, \fBPROTECTION_DIS\fP }"
+.br
+.RI "This is the enumeration of the possible Patient Protection usage during exposure "
+.ti -1c
+.RI "enum class \fBdetector_model_option\fP { \fBLMAM2V2\fP = 0, \fBFDIV2\fP }"
+.br
+.RI "This is the enumeration of the possible Detectors used for exposures "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetExposureMode\fP (\fBexposure_type_options\fP mode)"
+.br
+.ti -1c
+.RI "static \fBexposure_type_options\fP \fBgetExposureMode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetDetectorType\fP (\fBdetector_model_option\fP detector)"
+.br
+.ti -1c
+.RI "static \fBdetector_model_option\fP \fBgetDetectorType\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetCompressorMode\fP (\fBcompression_mode_option\fP mode)"
+.br
+.ti -1c
+.RI "static \fBcompression_mode_option\fP \fBgetCompressorMode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetProtectionMode\fP (\fBpatient_protection_option\fP mode)"
+.br
+.ti -1c
+.RI "static \fBpatient_protection_option\fP \fBgetProtectionMode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetArmMode\fP (\fBarm_mode_option\fP mode)"
+.br
+.ti -1c
+.RI "static \fBarm_mode_option\fP \fBgetArmMode\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetExposurePulse\fP (unsigned char seq, \fBexposure_pulse\fP^ pls)"
+.br
+.ti -1c
+.RI "static bool \fBsetExposedPulse\fP (unsigned char seq, \fBexposure_pulse\fP^ pls)"
+.br
+.ti -1c
+.RI "static \fBexposure_pulse\fP ^ \fBgetExposedPulse\fP (unsigned char seq)"
+.br
+.ti -1c
+.RI "static \fBexposure_pulse\fP ^ \fBgetExposurePulse\fP (unsigned char seq)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static cli::array< \fBexposure_pulse\fP^> ^ \fBpulse\fP = gcnew array<\fBexposure_pulse\fP^> {gcnew \fBexposure_pulse\fP (),gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP() }"
+.br
+.ti -1c
+.RI "static cli::array< \fBexposure_pulse\fP^> ^ \fBexposed\fP = gcnew array<\fBexposure_pulse\fP^> {gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP() }"
+.br
+.ti -1c
+.RI "static \fBexposure_type_options\fP \fBexposure_type\fP = \fBexposure_type_options::EXP_NOT_DEFINED\fP"
+.br
+.ti -1c
+.RI "static \fBarm_mode_option\fP \fBarm_mode\fP = \fBarm_mode_option::ARM_ENA\fP"
+.br
+.ti -1c
+.RI "static \fBcompression_mode_option\fP \fBcompressor_mode\fP = \fBcompression_mode_option::CMP_KEEP\fP"
+.br
+.ti -1c
+.RI "static \fBpatient_protection_option\fP \fBprotection_mode\fP = \fBpatient_protection_option::PROTECTION_ENA\fP"
+.br
+.ti -1c
+.RI "static \fBdetector_model_option\fP \fBdetector_model\fP = \fBdetector_model_option::LMAM2V2\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBExposureModule::arm_mode_option\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the possible ARM usage during exposure 
+.IP "\(bu" 2
+ARM_ENA: The ARM shall be in a position defined by the Acquisition software;
+.IP "\(bu" 2
+ARM_DIS: The ARM can be in a arbitrary position;
+.PP
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIARM_ENA \fP\fP
+Enables the Angle range check during exposure;\&. 
+.TP
+\fB\fIARM_DIS \fP\fP
+Disables the Angle range check during the exposure; 
+.br
+ 
+.SS "enum class \fBExposureModule::compression_mode_option\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the possible Compression modes\&. 
+.IP "\(bu" 2
+CMP_KEEP: The commpressor paddle is not released after exposure;
+.IP "\(bu" 2
+CMP_RELEASE: The coompressor paddle is released after exposure;
+.IP "\(bu" 2
+CMP_DISABLE: The compression is not necessary (but can be applied) for the current exposure\&.
+.PP
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICMP_KEEP \fP\fP
+Keeps the compression after exposure;\&. 
+.TP
+\fB\fICMP_RELEASE \fP\fP
+Releases the compression after exposure;\&. 
+.TP
+\fB\fICMP_DISABLE \fP\fP
+Disables the Compression check (for exposures without the compression);\&. 
+.SS "enum class \fBExposureModule::detector_model_option\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the possible Detectors used for exposures 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILMAM2V2 \fP\fP
+Analogic LMAM2 V2\&. 
+.TP
+\fB\fIFDIV2 \fP\fP
+Analogic FDI-V2 
+.br
+ 
+.SS "enum class \fBExposureModule::exposure_type_options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration class defining all the possible exposures 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMAN_2D \fP\fP
+The next exposure is a 2D manual mode\&. 
+.TP
+\fB\fIAEC_2D \fP\fP
+The next exposure is a 2D with AEC\&. 
+.TP
+\fB\fIMAN_3D \fP\fP
+The next exposure is a Tomo 3D in manual mode\&. 
+.TP
+\fB\fIAEC_3D \fP\fP
+The next exposure is a Tomo 3D with AEC\&. 
+.TP
+\fB\fIMAN_COMBO \fP\fP
+The next exposure is a Manual Combo\&. 
+.TP
+\fB\fIAEC_COMBO \fP\fP
+The next exposure is a Combo with AEC\&. 
+.TP
+\fB\fIMAN_AE \fP\fP
+The next exposure is a Dual energy exposure in manual mode\&. 
+.TP
+\fB\fIAEC_AE \fP\fP
+The next exposure is a Dual energy with AEC 
+.br
+ 
+.TP
+\fB\fIEXP_NOT_DEFINED \fP\fP
+.SS "enum class \fBExposureModule::patient_protection_option\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the possible Patient Protection usage during exposure 
+.IP "\(bu" 2
+PROTECTION_ENA: The Patient protection shall be present during exposure;
+.IP "\(bu" 2
+PROTECTION_DIS: The patient protection can be removed during exposure;
+.PP
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPROTECTION_ENA \fP\fP
+Enables the Patient protection check;\&. 
+.TP
+\fB\fIPROTECTION_DIS \fP\fP
+Disables the Patient protection check; 
+.br
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBarm_mode_option\fP ExposureModule::getArmMode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBcompression_mode_option\fP ExposureModule::getCompressorMode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBdetector_model_option\fP ExposureModule::getDetectorType (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBexposure_pulse\fP ^ ExposureModule::getExposedPulse (unsigned char seq)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBexposure_type_options\fP ExposureModule::getExposureMode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBexposure_pulse\fP ^ ExposureModule::getExposurePulse (unsigned char seq)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBpatient_protection_option\fP ExposureModule::getProtectionMode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void ExposureModule::setArmMode (\fBarm_mode_option\fP mode)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void ExposureModule::setCompressorMode (\fBcompression_mode_option\fP mode)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void ExposureModule::setDetectorType (\fBdetector_model_option\fP detector)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool ExposureModule::setExposedPulse (unsigned char seq, \fBexposure_pulse\fP^ pls)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void ExposureModule::setExposureMode (\fBexposure_type_options\fP mode)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool ExposureModule::setExposurePulse (unsigned char seq, \fBexposure_pulse\fP^ pls)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void ExposureModule::setProtectionMode (\fBpatient_protection_option\fP mode)\fC [inline]\fP, \fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBarm_mode_option\fP ExposureModule::arm_mode = \fBarm_mode_option::ARM_ENA\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBcompression_mode_option\fP ExposureModule::compressor_mode = \fBcompression_mode_option::CMP_KEEP\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBdetector_model_option\fP ExposureModule::detector_model = \fBdetector_model_option::LMAM2V2\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "cli::array<\fBexposure_pulse\fP^> ^ ExposureModule::exposed = gcnew array<\fBexposure_pulse\fP^> {gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP() }\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBexposure_type_options\fP ExposureModule::exposure_type = \fBexposure_type_options::EXP_NOT_DEFINED\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBpatient_protection_option\fP ExposureModule::protection_mode = \fBpatient_protection_option::PROTECTION_ENA\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "cli::array<\fBexposure_pulse\fP^> ^ ExposureModule::pulse = gcnew array<\fBexposure_pulse\fP^> {gcnew \fBexposure_pulse\fP (),gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP(), gcnew \fBexposure_pulse\fP() }\fC [static]\fP, \fC [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

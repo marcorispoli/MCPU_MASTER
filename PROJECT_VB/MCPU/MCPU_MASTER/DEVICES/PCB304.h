@@ -1,6 +1,10 @@
 #pragma once
 #include "CanDeviceProtocol.h"
 
+/// <summary>
+/// \defgroup PCB304_Module PCB304 Module: Grid device module controller
+/// \ingroup CanDevice_Module  
+/// </summary>
 ref class PCB304 : public CanDeviceProtocol
 {
 public:

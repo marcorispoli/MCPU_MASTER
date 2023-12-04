@@ -1,0 +1,93 @@
+.TH "ExposureModule::exposure_pulse" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExposureModule::exposure_pulse
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ExposureModule\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBexposure_pulse\fP (void)"
+.br
+.RI "This is the creator of the pulse data class\&. "
+.ti -1c
+.RI "\fBexposure_pulse\fP (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt)"
+.br
+.ti -1c
+.RI "double \fBgetKv\fP ()"
+.br
+.ti -1c
+.RI "double \fBgetmAs\fP ()"
+.br
+.ti -1c
+.RI "\fBPCB315::filterMaterialCodes\fP \fBgetFilter\fP ()"
+.br
+.ti -1c
+.RI "bool \fBgetValidated\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB315::filterMaterialCodes\fP \fBfilter\fP"
+.br
+.RI "This is the assigned filter\&. "
+.ti -1c
+.RI "double \fBkV\fP"
+.br
+.RI "This is the selected kV value\&. "
+.ti -1c
+.RI "double \fBmAs\fP"
+.br
+.RI "This is the selected mAs value\&. "
+.ti -1c
+.RI "bool \fBvalidated\fP"
+.br
+.RI "This is the flag that validate the use of thhis pulse in a sequence\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ExposureModule::exposure_pulse::exposure_pulse (void)\fC [inline]\fP"
+
+.PP
+This is the creator of the pulse data class\&. 
+.SS "ExposureModule::exposure_pulse::exposure_pulse (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBPCB315::filterMaterialCodes\fP ExposureModule::exposure_pulse::getFilter ()\fC [inline]\fP"
+
+.SS "double ExposureModule::exposure_pulse::getKv ()\fC [inline]\fP"
+
+.SS "double ExposureModule::exposure_pulse::getmAs ()\fC [inline]\fP"
+
+.SS "bool ExposureModule::exposure_pulse::getValidated ()\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPCB315::filterMaterialCodes\fP ExposureModule::exposure_pulse::filter"
+
+.PP
+This is the assigned filter\&. 
+.SS "double ExposureModule::exposure_pulse::kV"
+
+.PP
+This is the selected kV value\&. 
+.SS "double ExposureModule::exposure_pulse::mAs"
+
+.PP
+This is the selected mAs value\&. 
+.SS "bool ExposureModule::exposure_pulse::validated"
+
+.PP
+This is the flag that validate the use of thhis pulse in a sequence\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

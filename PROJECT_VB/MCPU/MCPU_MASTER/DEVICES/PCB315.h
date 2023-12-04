@@ -4,6 +4,7 @@
 
 /// <summary>
 /// \defgroup PCB315_Module PCB315 Module: filter selection and tube temperature control
+/// \ingroup CanDevice_Module 
 /// This module implements the functions of the Filter device
 /// 
 /// - Filter selection;

@@ -1,0 +1,149 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/IdleForm.cpp" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/IdleForm.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./AWS/awsProtocol\&.h'\fP
+.br
+\fC#include 'idleForm\&.h'\fP
+.br
+\fC#include 'ErrorForm\&.h'\fP
+.br
+\fC#include 'operatingForm\&.h'\fP
+.br
+\fC#include 'SystemConfig\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
+.br
+\fC#include 'PCB301\&.h'\fP
+.br
+\fC#include 'PCB302\&.h'\fP
+.br
+\fC#include 'PCB303\&.h'\fP
+.br
+\fC#include 'PCB304\&.h'\fP
+.br
+\fC#include 'PCB315\&.h'\fP
+.br
+\fC#include 'PCB326\&.h'\fP
+.br
+\fC#include '\&.\&./gantry_global_status\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBIDLESTATUS::batteryStatus\fP"
+.br
+.ti -1c
+.RI "struct \fBIDLESTATUS::tubeStatus\fP"
+.br
+.in -1c
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBIDLESTATUS\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBBACKGROUND\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\IdleFormBackground\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBXRAY_MODE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBBATTERY_CONNECTED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnected\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBBATTERY_CONNECTED_LOW\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnectedLow\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBBATTERY_POWERDOWN\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryPowerdownFull\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBAWS_CONNECTED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AwsConnected\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBPERIPHERALS_CONNECTED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\PeripheralsConnected\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBDOOR_CLOSED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\DoorClosed\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTUBE_TEMP_OK\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempOk\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTUBE_TEMP_NOK\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempNok\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBERRORPANEL_ERRORICON\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBERROR_BUTTON\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "struct {"
+.br
+.ti -1c
+.RI "   \fBbatteryStatus\fP \fBIDLESTATUS::battery\fP"
+.br
+.ti -1c
+.RI "   \fBtubeStatus\fP \fBIDLESTATUS::tube\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::powerdown\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::closed_door\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::aws_connected\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::peripherals_connected\fP"
+.br
+.ti -1c
+.RI "} \fBIDLESTATUS::Registers\fP"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define AWS_CONNECTED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AwsConnected\&.PNG')"
+
+.SS "#define BACKGROUND   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\IdleFormBackground\&.PNG')"
+
+.SS "#define BATTERY_CONNECTED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnected\&.PNG')"
+
+.SS "#define BATTERY_CONNECTED_LOW   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnectedLow\&.PNG')"
+
+.SS "#define BATTERY_POWERDOWN   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryPowerdownFull\&.PNG')"
+
+.SS "#define DOOR_CLOSED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\DoorClosed\&.PNG')"
+
+.SS "#define ERROR_BUTTON   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
+
+.SS "#define ERRORPANEL_ERRORICON   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
+
+.SS "#define PERIPHERALS_CONNECTED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\PeripheralsConnected\&.PNG')"
+
+.SS "#define TUBE_TEMP_NOK   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempNok\&.PNG')"
+
+.SS "#define TUBE_TEMP_OK   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempOk\&.PNG')"
+
+.SS "#define XRAY_MODE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

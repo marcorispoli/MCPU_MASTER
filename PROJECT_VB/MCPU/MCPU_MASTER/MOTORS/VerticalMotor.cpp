@@ -2,6 +2,8 @@
 #include "Notify.h"
 #include "VerticalMotor.h"
 #include "pd4_od.h"
+#include "PCB301.h"
+
 
 #define ROT_PER_MM ((double) 1/ (double) 1) //!< Defines the position user units in 1 mm
 
@@ -52,9 +54,9 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
     bool homing_initialized = false;
     int  init_position = 0;
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
         homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_POSITION]);
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
 
     this->home_initialized = homing_initialized;
@@ -71,9 +73,9 @@ bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
     int target = VerticalMotor::device->getCurrentPosition() + delta_h;
 
     // Activate the automatic positioning for isocentric correction
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_ACC]);
-    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_DEC]);
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_AUTO_DEC]);
     iso_activation_mode = true;
     return device->activateAutomaticPositioning(id, target, speed, acc, dec);    
 }
@@ -88,7 +90,7 @@ void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes er
     
     // Sets the current Vertical position
     if (device->home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
     }
 
@@ -100,15 +102,55 @@ void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes er
 
 
 /// <summary>
-/// The VerticalMotor class override this function in order to 
-/// handle the IDLE activities
+/// The VerticalMotor class override this function in order to  handle the IDLE activities
 /// 
 /// </summary>
+/// 
+/// # Safety Management
+/// 
+/// # Manual Activation Feature    
+/// 
+/// The function polls the status of the hardware inputs of the PCB301 board 
+/// in order to detect a request for a manual activation.
+/// 
+/// If the request should change state from No Activation 
+/// to Up or Down activation code, the manual activation procedure is started.
+/// 
+/// This procedure shall be enabled in order to be executed. (see setManualEnable() )
+/// 
 /// <param name=""></param>
 /// <returns></returns>
 bool VerticalMotor::idleCallback(void) {
+    static PCB301::vertical_activation_options vertical_request = PCB301::vertical_activation_options::VERTICAL_NO_ACTIVATION;
 
+    int speed, acc, dec;
 
+    // Handle the Safety condition 
+    
+    // Handle a Manual activation mode
+    if (PCB301::getVerticalActivationStatus() != vertical_request) {
+        vertical_request = PCB301::getVerticalActivationStatus();
+        if (manual_activation_enabled) {
+            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_SPEED]);
+            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_ACC]);
+            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_DEC]);
+
+            switch (vertical_request) {
+            case PCB301::vertical_activation_options::VERTICAL_UP_ACTIVATION:
+                device->activateManualPositioning(MAX_POSITION, speed, acc, dec);
+                manual_up_direction = true;
+                break;
+            case PCB301::vertical_activation_options::VERTICAL_DOWN_ACTIVATION:
+                device->activateManualPositioning(MIN_POSITION, speed, acc, dec);
+                manual_up_direction = false;
+                break;
+
+            }
+        } // Enabled command
+    }
+   
+
+    // Allows to proceed with commands
     return true;
 
 }
@@ -139,14 +181,42 @@ void VerticalMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) 
     
     if (device->home_initialized) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
     }
     else {
         // Reset the position in the configuration file and reactivate the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
         MotorConfig::Configuration->storeFile();
         Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, false);
     }
+}
+
+/// <summary>
+/// The VerticalMotor class override this function in order to 
+/// handle the manual activation process.
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+VerticalMotor::MotorCompletedCodes  VerticalMotor::manualPositioningRunningCallback(void) {
+    
+    // Handles the enable condition
+    if (!manual_activation_enabled) {
+        return MotorCompletedCodes::ERROR_COMMAND_DISABLED;
+    }
+
+    // Handle the limit switches
+
+    // Handle the safety
+
+    // handle the manual hardware inputs
+    PCB301::vertical_activation_options vertical_request = PCB301::getVerticalActivationStatus();
+    if (vertical_request == PCB301::vertical_activation_options::VERTICAL_NO_ACTIVATION) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    else if( (manual_up_direction) && (vertical_request == PCB301::vertical_activation_options::VERTICAL_DOWN_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    else if ((!manual_up_direction) && (vertical_request == PCB301::vertical_activation_options::VERTICAL_UP_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+
+    // Proceeds with the manual activation
+    return MotorCompletedCodes::COMMAND_PROCEED;
 }

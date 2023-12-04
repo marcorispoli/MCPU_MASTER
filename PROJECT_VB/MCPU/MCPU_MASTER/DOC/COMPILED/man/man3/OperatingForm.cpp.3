@@ -1,0 +1,257 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/OperatingForm.cpp" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/OperatingForm.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'OperatingForm\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
+.br
+\fC#include 'ErrorForm\&.h'\fP
+.br
+\fC#include 'gantry_global_status\&.h'\fP
+.br
+\fC#include 'Projections\&.h'\fP
+.br
+\fC#include 'ConfirmationWindow\&.h'\fP
+.br
+\fC#include 'ArmMotor\&.h'\fP
+.br
+\fC#include 'ExposureModule\&.h'\fP
+.br
+\fC#include '\&.\&./DEVICES/PCB315\&.h'\fP
+.br
+\fC#include '\&.\&./DEVICES/PCB303\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBOPERSTATUS::collimatorStatus\fP"
+.br
+.ti -1c
+.RI "struct \fBOPERSTATUS::paddleStatus\fP"
+.br
+.ti -1c
+.RI "struct \fBOPERSTATUS::exposureStatus\fP"
+.br
+.in -1c
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBOPERSTATUS\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPROJ_SELCTION_BACKGROUND_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ProjSelectionButton\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBXRAY_ON_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\XOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBXRAY_STDBY_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\XStdby\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBXRAY_READY_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\XReady\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBLAMP_OFF_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\LampOff\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBLAMP_ON_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\LampOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBWARNING_BUTTON_ON\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\WarningOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBERROR_BUTTON_ON\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\AlarmOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBERROR_BUTTON_OFF\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\AlarmOff\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBCOMPRESSOR_DISABLED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CompressionNotEnabled\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBCOMPRESSOR_ENABLE_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ActivePaddleDetected\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBCOMPRESSOR_NOT_DETECTED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\PaddleNotPresent\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTHICKNESS_DISABLED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ThicknessDisabled\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTHICKNESS_ENABLED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ThicknessEnabled\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBFORCE_DISABLED_NOT_COMPRESSED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ForceDisabledNotCompressed\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBFORCE_DISABLED_COMPRESSED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ForceDisabledCompressed\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBFORCE_ENABLED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledCompressed\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBCOLLIMATION_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CollimationMode\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTUBE_TEMP_OK_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\TubeOk\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTUBE_TEMP_NOK_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\TubeNok\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBDOOR_CLOSED_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\DoorClosed\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBDOOR_OPEN_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\DoorOpen\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBMAGFACTOR_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\MagFactor\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBCOMPRESSION_RELEASE_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CompressionReleaseOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBCOMPRESSION_KEEP_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CompressionReleaseOff\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBRESIDUAL_EXPOSURE_OK_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ExposureLeftOk\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBRESIDUAL_EXPOSURE_NOK_IMAGE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ExposureLeftNok\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBPROJ_INFO_ICON\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'Icons\\\\info_64x64\&.PNG')"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBOPERSTATUS::xray_status_t\fP { \fBOPERSTATUS::XRAY_STATUS_NOT_READY\fP = 1, \fBOPERSTATUS::XRAY_STATUS_READY\fP }"
+.br
+.ti -1c
+.RI "enum \fBOPERSTATUS::compressor_mode_t\fP { \fBOPERSTATUS::COMPRESSOR_DISABLED\fP = 1, \fBOPERSTATUS::COMPRESSOR_NOT_DETECTED\fP, \fBOPERSTATUS::COMPRESSOR_DETECTED\fP }"
+.br
+.ti -1c
+.RI "enum \fBOPERSTATUS::thickness_mode_t\fP { \fBOPERSTATUS::THICKNESS_DISABLED\fP = 1, \fBOPERSTATUS::THICKNESS_ENABLED\fP }"
+.br
+.ti -1c
+.RI "enum \fBOPERSTATUS::force_mode_t\fP { \fBOPERSTATUS::FORCE_DISABLED_NOT_COMPRESSED\fP = 1, \fBOPERSTATUS::FORCE_DISABLED_COMPRESSED\fP, \fBOPERSTATUS::FORCE_ENABLED\fP }"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "struct {"
+.br
+.ti -1c
+.RI "   \fBpaddleStatus\fP \fBOPERSTATUS::paddle\fP"
+.br
+.ti -1c
+.RI "   \fBcollimatorStatus\fP \fBOPERSTATUS::collimator\fP"
+.br
+.ti -1c
+.RI "   \fBxray_status_t\fP \fBOPERSTATUS::xray_status\fP"
+.br
+.ti -1c
+.RI "   bool \fBOPERSTATUS::closed_door\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBOPERSTATUS::currentPanel\fP"
+.br
+.ti -1c
+.RI "   bool \fBOPERSTATUS::alarm\fP"
+.br
+.ti -1c
+.RI "   bool \fBOPERSTATUS::warning\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBOPERSTATUS::mag_factor\fP"
+.br
+.ti -1c
+.RI "   bool \fBOPERSTATUS::compressor_release\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBOPERSTATUS::residual_exposures\fP"
+.br
+.ti -1c
+.RI "   bool \fBOPERSTATUS::projectionSelected\fP"
+.br
+.ti -1c
+.RI "} \fBOPERSTATUS::Registers\fP"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define COLLIMATION_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CollimationMode\&.PNG')"
+
+.SS "#define COMPRESSION_KEEP_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CompressionReleaseOff\&.PNG')"
+
+.SS "#define COMPRESSION_RELEASE_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CompressionReleaseOn\&.PNG')"
+
+.SS "#define COMPRESSOR_DISABLED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\CompressionNotEnabled\&.PNG')"
+
+.SS "#define COMPRESSOR_ENABLE_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ActivePaddleDetected\&.PNG')"
+
+.SS "#define COMPRESSOR_NOT_DETECTED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\PaddleNotPresent\&.PNG')"
+
+.SS "#define DOOR_CLOSED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\DoorClosed\&.PNG')"
+
+.SS "#define DOOR_OPEN_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\DoorOpen\&.PNG')"
+
+.SS "#define ERROR_BUTTON_OFF   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\AlarmOff\&.PNG')"
+
+.SS "#define ERROR_BUTTON_ON   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\AlarmOn\&.PNG')"
+
+.SS "#define FORCE_DISABLED_COMPRESSED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ForceDisabledCompressed\&.PNG')"
+
+.SS "#define FORCE_DISABLED_NOT_COMPRESSED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ForceDisabledNotCompressed\&.PNG')"
+
+.SS "#define FORCE_ENABLED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledCompressed\&.PNG')"
+
+.SS "#define LAMP_OFF_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\LampOff\&.PNG')"
+
+.SS "#define LAMP_ON_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\LampOn\&.PNG')"
+
+.SS "#define MAGFACTOR_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\MagFactor\&.PNG')"
+
+.SS "#define PROJ_INFO_ICON   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'Icons\\\\info_64x64\&.PNG')"
+
+.SS "#define PROJ_SELCTION_BACKGROUND_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ProjSelectionButton\&.PNG')"
+
+.SS "#define RESIDUAL_EXPOSURE_NOK_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ExposureLeftNok\&.PNG')"
+
+.SS "#define RESIDUAL_EXPOSURE_OK_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ExposureLeftOk\&.PNG')"
+
+.SS "#define THICKNESS_DISABLED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ThicknessDisabled\&.PNG')"
+
+.SS "#define THICKNESS_ENABLED_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\ThicknessEnabled\&.PNG')"
+
+.SS "#define TUBE_TEMP_NOK_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\TubeNok\&.PNG')"
+
+.SS "#define TUBE_TEMP_OK_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\TubeOk\&.PNG')"
+
+.SS "#define WARNING_BUTTON_ON   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\WarningOn\&.PNG')"
+
+.SS "#define XRAY_ON_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\XOn\&.PNG')"
+
+.SS "#define XRAY_READY_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\XReady\&.PNG')"
+
+.SS "#define XRAY_STDBY_IMAGE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'OperatingForm\\\\XStdby\&.PNG')"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

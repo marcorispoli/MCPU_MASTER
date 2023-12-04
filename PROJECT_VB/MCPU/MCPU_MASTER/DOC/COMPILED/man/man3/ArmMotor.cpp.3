@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/ArmMotor.cpp" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/ArmMotor.cpp" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .SH SYNOPSIS
 .br
 .PP
+\fC#include 'CalibrationConfig\&.h'\fP
+.br
 \fC#include 'ArmMotor\&.h'\fP
 .br
 \fC#include 'verticalMotor\&.h'\fP
@@ -19,19 +21,42 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBROT_PER_CDEGREE\fP   ((double) 112/ (double) 36000)"
 .br
+.RI "Defines the position user units in 0\&.01 degree\&. "
 .ti -1c
 .RI "#define \fBCOMPRESSION_PLANE_MM\fP   ((double) 100)"
 .br
-.RI "Distance from the compression plane and the C-ARM rotation axe\&. "
+.RI "Distance from the compression plane and the C-ARM rotation axe for the Isocentric calculation\&. "
+.ti -1c
+.RI "#define \fBMAX_ROTATION_ANGLE\fP   18000"
+.br
+.ti -1c
+.RI "#define \fBMIN_ROTATION_ANGLE\fP   \-18000"
+.br
+.ti -1c
+.RI "#define \fBHOMING_ON_METHOD\fP   19"
+.br
+.ti -1c
+.RI "#define \fBHOMING_OFF_METHOD\fP   20"
+.br
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
 .SS "#define COMPRESSION_PLANE_MM   ((double) 100)"
 
 .PP
-Distance from the compression plane and the C-ARM rotation axe\&. 
+Distance from the compression plane and the C-ARM rotation axe for the Isocentric calculation\&. 
+.SS "#define HOMING_OFF_METHOD   20"
+
+.SS "#define HOMING_ON_METHOD   19"
+
+.SS "#define MAX_ROTATION_ANGLE   18000"
+
+.SS "#define MIN_ROTATION_ANGLE   \-18000"
+
 .SS "#define ROT_PER_CDEGREE   ((double) 112/ (double) 36000)"
 
+.PP
+Defines the position user units in 0\&.01 degree\&. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

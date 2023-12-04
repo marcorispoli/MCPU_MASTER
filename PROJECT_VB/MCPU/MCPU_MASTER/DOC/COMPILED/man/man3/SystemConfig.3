@@ -1,4 +1,4 @@
-.TH "SystemConfig" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "SystemConfig" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,111 +8,115 @@ SystemConfig
 .PP
 .PP
 \fC#include <SystemConfig\&.h>\fP
-.SS "Static Public Attributes"
+.SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "static const System::String ^ \fBFILENAME\fP = 'SystemInit\&.cnf'"
+.RI "literal System::String ^ \fBFILENAME\fP = 'SystemInit\&.cnf'"
 .br
 .ti -1c
-.RI "static const int \fBFILE_REVISION\fP = 1"
+.RI "literal int \fBFILE_REVISION\fP = 1"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_INSTALLATION_NAME\fP = 'INSTALL_NAME'"
+.RI "literal System::String ^ \fBPARAM_INSTALLATION_NAME\fP = 'INSTALL_NAME'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_INSTALLATION_NAME_COMMENT\fP = 'Name of the installation'"
+.RI "literal System::String ^ \fBPARAM_INSTALLATION_NAME_COMMENT\fP = 'Name of the installation'"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_INSTALLATION_NAME_TOP\fP = 0"
+.RI "literal int \fBPARAM_INSTALLATION_NAME_TOP\fP = 0"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_INSTALLATION_NAME_TOP_DEFAULT\fP = 'FACTORY INSTALLATION'"
+.RI "literal System::String ^ \fBPARAM_INSTALLATION_NAME_TOP_DEFAULT\fP = 'FACTORY INSTALLATION'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE\fP = 'PACKAGE'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE\fP = 'PACKAGE'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_COMMENT\fP = 'Package revision set'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_COMMENT\fP = 'Package revision set'"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_ID\fP = 0"
+.RI "literal int \fBPARAM_PACKAGE_ID\fP = 0"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FW301\fP = 1"
+.RI "literal int \fBPARAM_PACKAGE_FW301\fP = 1"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FW302\fP = 2"
+.RI "literal int \fBPARAM_PACKAGE_FW302\fP = 2"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FW303\fP = 3"
+.RI "literal int \fBPARAM_PACKAGE_FW303\fP = 3"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FW304\fP = 4"
+.RI "literal int \fBPARAM_PACKAGE_FW304\fP = 4"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FW315\fP = 5"
+.RI "literal int \fBPARAM_PACKAGE_FW315\fP = 5"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FW326\fP = 6"
+.RI "literal int \fBPARAM_PACKAGE_FW326\fP = 6"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FWCAN\fP = 7"
+.RI "literal int \fBPARAM_PACKAGE_FWCAN\fP = 7"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_PACKAGE_FWGEN\fP = 8"
+.RI "literal int \fBPARAM_PACKAGE_FWGEN\fP = 8"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_ID_DEFAULT\fP = '1\&.0'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_ID_DEFAULT\fP = '1\&.0'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FW301_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FW301_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FW302_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FW302_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FW303_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FW303_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FW304_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FW304_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FW315_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FW315_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FW326_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FW326_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FWCAN_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FWCAN_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_PACKAGE_FWGEN_DEFAULT\fP = '0\&.1'"
+.RI "literal System::String ^ \fBPARAM_PACKAGE_FWGEN_DEFAULT\fP = '0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_AWS_CONNECTIONS\fP = 'AWS_CONNECTION'"
+.RI "literal System::String ^ \fBPARAM_AWS_CONNECTIONS\fP = 'AWS_CONNECTION'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_AWS_CONNECTIONS_COMMENT\fP = 'Addresses of the connections with the AWS'"
+.RI "literal System::String ^ \fBPARAM_AWS_CONNECTIONS_COMMENT\fP = 'Addresses of the connections with the AWS'"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_AWS_CONNECTIONS_IP\fP = 0"
+.RI "literal int \fBPARAM_AWS_CONNECTIONS_IP\fP = 0"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_AWS_CONNECTIONS_PORT_COMMAND\fP = 1"
+.RI "literal int \fBPARAM_AWS_CONNECTIONS_PORT_COMMAND\fP = 1"
 .br
 .ti -1c
-.RI "static const int \fBPARAM_AWS_CONNECTIONS_PORT_EVENTS\fP = 2"
+.RI "literal int \fBPARAM_AWS_CONNECTIONS_PORT_EVENTS\fP = 2"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_AWS_CONNECTIONS_IP_DEFAULT\fP = '127\&.0\&.0\&.1'"
+.RI "literal System::String ^ \fBPARAM_AWS_CONNECTIONS_IP_DEFAULT\fP = '127\&.0\&.0\&.1'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT\fP = '10000'"
+.RI "literal System::String ^ \fBPARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT\fP = '10000'"
 .br
 .ti -1c
-.RI "static const System::String ^ \fBPARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT\fP = '10001'"
+.RI "literal System::String ^ \fBPARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT\fP = '10001'"
 .br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
 .ti -1c
 .RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
 .br
@@ -152,73 +156,73 @@ SystemConfig
         }
     )
 .fi
-.SS "const int SystemConfig::FILE_REVISION = 1\fC [static]\fP"
+.SS "literal int SystemConfig::FILE_REVISION = 1"
 
-.SS "const System::String ^ SystemConfig::FILENAME = 'SystemInit\&.cnf'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::FILENAME = 'SystemInit\&.cnf'"
 
-.SS "const System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS = 'AWS_CONNECTION'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS = 'AWS_CONNECTION'"
 
-.SS "const System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_COMMENT = 'Addresses of the connections with the AWS'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_COMMENT = 'Addresses of the connections with the AWS'"
 
-.SS "const int SystemConfig::PARAM_AWS_CONNECTIONS_IP = 0\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_AWS_CONNECTIONS_IP = 0"
 
-.SS "const System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_IP_DEFAULT = '127\&.0\&.0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_IP_DEFAULT = '127\&.0\&.0\&.1'"
 
-.SS "const int SystemConfig::PARAM_AWS_CONNECTIONS_PORT_COMMAND = 1\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_AWS_CONNECTIONS_PORT_COMMAND = 1"
 
-.SS "const System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT = '10000'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT = '10000'"
 
-.SS "const int SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS = 2\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS = 2"
 
-.SS "const System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = '10001'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = '10001'"
 
-.SS "const System::String ^ SystemConfig::PARAM_INSTALLATION_NAME = 'INSTALL_NAME'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_INSTALLATION_NAME = 'INSTALL_NAME'"
 
-.SS "const System::String ^ SystemConfig::PARAM_INSTALLATION_NAME_COMMENT = 'Name of the installation'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_INSTALLATION_NAME_COMMENT = 'Name of the installation'"
 
-.SS "const int SystemConfig::PARAM_INSTALLATION_NAME_TOP = 0\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_INSTALLATION_NAME_TOP = 0"
 
-.SS "const System::String ^ SystemConfig::PARAM_INSTALLATION_NAME_TOP_DEFAULT = 'FACTORY INSTALLATION'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_INSTALLATION_NAME_TOP_DEFAULT = 'FACTORY INSTALLATION'"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE = 'PACKAGE'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE = 'PACKAGE'"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_COMMENT = 'Package revision set'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_COMMENT = 'Package revision set'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FW301 = 1\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FW301 = 1"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FW301_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FW301_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FW302 = 2\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FW302 = 2"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FW302_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FW302_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FW303 = 3\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FW303 = 3"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FW303_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FW303_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FW304 = 4\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FW304 = 4"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FW304_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FW304_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FW315 = 5\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FW315 = 5"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FW315_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FW315_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FW326 = 6\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FW326 = 6"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FW326_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FW326_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FWCAN = 7\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FWCAN = 7"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FWCAN_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FWCAN_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_FWGEN = 8\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_FWGEN = 8"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_FWGEN_DEFAULT = '0\&.1'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_FWGEN_DEFAULT = '0\&.1'"
 
-.SS "const int SystemConfig::PARAM_PACKAGE_ID = 0\fC [static]\fP"
+.SS "literal int SystemConfig::PARAM_PACKAGE_ID = 0"
 
-.SS "const System::String ^ SystemConfig::PARAM_PACKAGE_ID_DEFAULT = '1\&.0'\fC [static]\fP"
+.SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_ID_DEFAULT = '1\&.0'"
 
 
 .SH "Author"

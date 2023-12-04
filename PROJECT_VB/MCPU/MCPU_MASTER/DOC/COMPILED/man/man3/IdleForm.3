@@ -1,0 +1,191 @@
+.TH "IdleForm" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IdleForm
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IdleForm\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBopen\fP (void)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "\fBIdleForm\fP (void)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Timers::Timer ^ \fBidleTimer\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~IdleForm\fP ()"
+.br
+.RI "Clean up any resources being used\&.  "
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitIdleStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBidleStatusManagement\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&.  "
+.ti -1c
+.RI "System::Void \fBonIdleTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBerrorButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelDate\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelInstallation\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTime\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTubeData\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBtubeTempOk\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBerrorButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBmainPanel\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "Object ^ \fBpError\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBxrayMode\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBbatteryConnected\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBawsConnected\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBperipheralsConnected\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBdoorClosed\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&.  "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IdleForm::IdleForm (void)\fC [inline]\fP"
+
+.SS "IdleForm::~IdleForm ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Clean up any resources being used\&.  
+.SH "Member Function Documentation"
+.PP 
+.SS "void IdleForm::close (void)"
+
+.SS "void IdleForm::errorButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void IdleForm::formInitialization (void)\fC [private]\fP"
+
+.SS "void IdleForm::idleStatusManagement (void)\fC [private]\fP"
+
+.SS "void IdleForm::InitializeComponent (void)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&.  
+.SS "void IdleForm::initIdleStatus (void)\fC [private]\fP"
+
+.SS "System::Void IdleForm::onIdleTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void IdleForm::open (void)"
+
+.SS "void IdleForm::WndProc (System::Windows::Forms::Message% m)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::PictureBox ^ IdleForm::awsConnected\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ IdleForm::batteryConnected\fC [private]\fP"
+
+.SS "System::ComponentModel::Container ^ IdleForm::components\fC [private]\fP"
+
+.PP
+Required designer variable\&.  
+.SS "System::Windows::Forms::PictureBox ^ IdleForm::doorClosed\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ IdleForm::errorButton\fC [private]\fP"
+
+.SS "System::Timers::Timer ^ IdleForm::idleTimer"
+
+.SS "System::Windows::Forms::Label ^ IdleForm::labelDate\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ IdleForm::labelInstallation\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ IdleForm::labelTime\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ IdleForm::labelTubeData\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ IdleForm::mainPanel\fC [private]\fP"
+
+.SS "bool IdleForm::open_status\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ IdleForm::peripheralsConnected\fC [private]\fP"
+
+.SS "Object ^ IdleForm::pError\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ IdleForm::tubeTempOk\fC [private]\fP"
+
+.SS "HWND IdleForm::window\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ IdleForm::xrayMode\fC [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

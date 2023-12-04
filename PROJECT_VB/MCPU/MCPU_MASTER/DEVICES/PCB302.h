@@ -1,6 +1,10 @@
 #pragma once
 #include "CanDeviceProtocol.h"
 
+/// <summary>
+/// \defgroup PCB302_Module PCB302 Module: Compressor device module controller
+/// \ingroup CanDevice_Module 
+/// </summary>
 ref class PCB302 : public CanDeviceProtocol
 {
 public:

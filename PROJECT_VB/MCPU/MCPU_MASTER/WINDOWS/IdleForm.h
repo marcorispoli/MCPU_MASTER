@@ -1,7 +1,8 @@
 #pragma once
 
 /// <summary>
-/// \defgroup Idle_Module Gantry IDLE Status Management Module
+/// \defgroup IdleGUI_Module IDLE Status Window Management Module
+/// \ingroup GUI_Module Gantry GUI modules
 /// This module implements the features of the Gantry IDLE status
 /// 
 /// # Features
@@ -11,7 +12,7 @@
 /// 
 /// </summary>
 /// 
-//using namespace System;
+
 using namespace System::ComponentModel;
 using namespace System::Collections;
 using namespace System::Windows::Forms;

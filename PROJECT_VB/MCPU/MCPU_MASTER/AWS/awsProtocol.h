@@ -7,11 +7,43 @@ using namespace System::Collections::Generic;
 #include "Generator.h"
 
 /// <summary>
-/// This is the module implementing the communication protocol with the AWS.
+/// This is the module implementing the communication protocol with the AWS software.
 /// 
 /// \defgroup awsModule AWS Interface Module
 /// 
+/// # Protocol general Description
 /// 
+/// This module implements the details of the AWS protocol specification document.
+/// 
+/// The communication takes place with two ethernet channels:
+/// - Command channel: the channel where the AWS sends command to the Gantry;
+/// - Event channel: the channel where the Gantry sends Status change notify frame to the AWS software.
+/// 
+/// Both channels are Tcp/Ip based connections where the Gantry acts as Server of the communication 
+/// with the following communication parameters:
+/// - Command channel: IP = 127.0.0.1, PORT 10000;
+/// - Event channel: IP = 127.0.0.1, PORT 10001;
+/// 
+///		>NOTE: the actual address and port can be changed in the SystemInit.cnf configuration file.
+/// 
+/// The data frame format are equivalent for both channels:
+/// 
+/// + COMMAND FRAME: 
+///		+ **<ID % EXEC_xxx Param ... %>** for sequence execution commands;
+///		+ **<ID % SET_xxx Param ... %>** for setting status commands;
+///		+ **<ID % GET_xxx Param ... %>** for getting status commands;
+/// 
+/// + EVENT FRAME: 
+///		+ <ID % EVENT_xxx Param ... %> for status Events notification;
+///		+ <ID % EXECUTED OK optional-Param ... %> for execution command successfully completed notifications;
+///		+ <ID % EXECUTED NOK optional-Param ... %> for execution command terminated in error notifications;
+/// 
+/// Only for COMMANDS Gantry will acknowledge with three possible frames:
+/// - OK frame: <ID % OK optional-params..>, a command has been successfully executed;
+/// - NOK frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
+/// - EXECUTING: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS) 
+/// 
+///  
 /// 
 /// 
 /// 
@@ -32,18 +64,20 @@ public:
 	/// @{ 
 	
 	/// <summary>
-	/// Thi is the enumeration class fo rthe command returned error codes
+	/// The module implements a standard set of error codes that 
+	/// can be returned (NOK frames) to the AWS in executing a Command request.
+	///  
 	/// </summary>
 	enum class return_errors {
-		AWS_RET_WRONG_PARAMETERS = 1,	//!< The number of the command parameters is invalid
-		AWS_RET_WRONG_OPERATING_STATUS, //!< The current operating status is not valid for the command
-		AWS_RET_SYSTEM_ERRORS,			//!< The command cannot be executed with active system errors
-		AWS_RET_SYSTEM_WARNINGS,			//!< There are active System warnings
-		AWS_RET_INVALID_PARAMETER_FORMAT,		//!< A parameter is not in the expected format
-		AWS_RET_INVALID_PARAMETER_VALUE,		//!< A parameter is not in the expected range
-		AWS_RET_DATA_NOT_ALLOWED,				//!< The current system setting is not ready to accept the command
-		AWS_RET_DEVICE_BUSY,				//!< The target device cannot be activated
-		AWS_RET_DEVICE_ERROR,				//!< The Device signaled an error condition in executing the command
+		AWS_RET_WRONG_PARAMETERS = 1,		//!< [1] The number of the command parameters is invalid
+		AWS_RET_WRONG_OPERATING_STATUS,		//!< [2] The current operating status is not valid for the command
+		AWS_RET_SYSTEM_ERRORS,				//!< [3] The command cannot be executed with active system errors
+		AWS_RET_SYSTEM_WARNINGS,			//!< [4] There are active System warnings
+		AWS_RET_INVALID_PARAMETER_FORMAT,	//!< [5] A parameter is not in the expected format
+		AWS_RET_INVALID_PARAMETER_VALUE,	//!< [6] A parameter is not in the expected range
+		AWS_RET_DATA_NOT_ALLOWED,			//!< [7] The current system setting is not ready to accept the command
+		AWS_RET_DEVICE_BUSY,				//!< [8] The target device cannot be activated
+		AWS_RET_DEVICE_ERROR,				//!< [9] The Device signaled an error condition in executing the command
 	};
 
 	/// @}
@@ -57,6 +91,11 @@ public:
 	awsProtocol();
 	static awsProtocol^ device = gcnew awsProtocol(); //!< Auto generation declaration
 
+	/// <summary>
+	/// This function returns true in case both Command and Event channels are connected.
+	/// 
+	/// </summary>
+	/// <param name="code"></param>
 	static inline bool isConnected(void) {
 		return (device->command_server->isConnected() && device->event_server->isConnected());
 	}
@@ -69,39 +108,37 @@ public:
 	/// @{ 
 	
 
-	/// This is the protocol activation completed Event when a delayd command termines
-	static void EVENT_ActivationCompleted(int id, int error);
+	/// This is the event for command terminated notification
+	static void EVENT_Executed(int id, int error);
 
-	/// This function shall be connected to the user select projection event
+	/// This is the EVENT the gantry sends to AWS to request a projection selection
 	static void EVENT_SelectProjection(System::String^ proj);
 
-	/// This function shall be connected to the abort projection event
+	/// This is the EVENT the gantry sends to AWS to request a projection abort
 	static void EVENT_AbortProjection(void);
 
-	/// This function shall be connected to the Gantry status change
+	/// This is the EVENT the gantry sends to AWS to notify about its internal operating status
 	static void EVENT_GantryStatus(void);
 
-	/// This function shall be connected to the Compressor data change events
+	/// This is the EVENT the gantry sends to AWS to notify about compressor data change
 	static void EVENT_Compressor(void);
 
-	/// This function shall be connected to the system component's change events
+	/// This is the EVENT the gantry sends to AWS to notify about component data change
 	static void EVENT_Components(void);
 
+	/// This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status
 	static void EVENT_ReadyForExposure(bool ready, unsigned short code);
 
-	/// This function shall be connected to the push button status change event
+	/// This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation
 	static void EVENT_XrayPushButton(void);
 
-
-	/// This function shall be connected to the xray completed event
+	/// This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated
 	static void EVENT_XraySequenceCompleted(Generator::exposure_completed_options code);
 
-	/// This function shall be connected to the xray pulse completed event
+	/// This is the EVENT the gantry sends to AWS to notify about a x-ray  pulse termination
 	static void EVENT_exposurePulseCompleted(unsigned char npulse) {};
-
-	/// This function shall be connected to the operating status change event
+	
 	static void EVENT_operatingStatusChange(void) {};
-
 
 	/// @}
 
@@ -160,6 +197,7 @@ private:
 	/// \defgroup awsProtoCommands AWS Protocol Command set
 	/// \ingroup awsModule
 	/// @{ 
+	
 	void EXEC_TestCommand(void);
 	void EXEC_OpenStudy(void);
 	void EXEC_CloseStudy(void);
@@ -185,6 +223,7 @@ private:
 	void SET_Language(void);
 	void EXEC_PowerOff(void) { ackNa(); };
 	void AWS_NotRecognizedCommand(void) { ackNa(); };
+
 	/// @}
 
 

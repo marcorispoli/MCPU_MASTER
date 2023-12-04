@@ -1,0 +1,309 @@
+.TH "ProjectionForm" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ProjectionForm
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Projections\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBInfoType\fP { \fBINF_WIN\fP = 0, \fBWRN_WIN\fP, \fBERR_WIN\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_button_callback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBopen\fP (void)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonConfirmOk\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonConfirmCanc\fP (void)"
+.br
+.ti -1c
+.RI "void \fBloadProjections\fP (void)"
+.br
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "\fBProjectionForm\fP (Form^ pp)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "Object ^ \fBpConf\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "System::String ^ \fBselectedProjection\fP"
+.br
+.ti -1c
+.RI "cli::array< System::String^> ^ \fBproj_name\fP"
+.br
+.ti -1c
+.RI "\fBInfoType\fP \fBwType\fP"
+.br
+.ti -1c
+.RI "int \fBpanelNumber\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~ProjectionForm\fP ()"
+.br
+.RI "Clean up any resources being used\&.  "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "\fBdelegate_button_callback\fP^ \fBbutton_canc_event\fP"
+.br
+.ti -1c
+.RI "\fBdelegate_button_callback\fP^ \fBbutton_ok_event\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "System::Void \fBInitializeComponent\fP ()"
+.br
+.ti -1c
+.RI "System::Void \fBCancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBOkButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBNextButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj1_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj2_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj3_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj4_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj5_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj6_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj7_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBproj8_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBPrevButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBSelectionPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj8\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj7\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj6\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj4\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj3\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBproj1\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBTitleText\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBCancButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBPrevButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBNextButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBOkButton\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&.  "
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBProjectionForm::InfoType\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIINF_WIN \fP\fP
+.TP
+\fB\fIWRN_WIN \fP\fP
+.TP
+\fB\fIERR_WIN \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ProjectionForm::ProjectionForm (Form^ pp)\fC [inline]\fP"
+
+.SS "ProjectionForm::~ProjectionForm ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Clean up any resources being used\&.  
+.SH "Member Function Documentation"
+.PP 
+.SS "void ProjectionForm::CancButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::close (void)"
+
+.SS "delegate void ProjectionForm::delegate_button_callback (void)"
+
+.SS "void ProjectionForm::formInitialization (void)"
+
+.SS "System::Void ProjectionForm::InitializeComponent ()\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void ProjectionForm::loadProjections (void)"
+
+.SS "void ProjectionForm::NextButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::OkButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::onConfirmCanc (void)"
+
+.SS "void ProjectionForm::onConfirmOk (void)"
+
+.SS "void ProjectionForm::open (void)"
+
+.SS "void ProjectionForm::PrevButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj1_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj2_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj3_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj4_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj5_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj6_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj7_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void ProjectionForm::proj8_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::Button ^ ProjectionForm::CancButton\fC [private]\fP"
+
+.SS "System::ComponentModel::Container ^ ProjectionForm::components\fC [private]\fP"
+
+.PP
+Required designer variable\&.  
+.SS "System::Windows::Forms::Button ^ ProjectionForm::NextButton\fC [private]\fP"
+
+.SS "System::Windows::Forms::Button ^ ProjectionForm::OkButton\fC [private]\fP"
+
+.SS "bool ProjectionForm::open_status"
+
+.SS "int ProjectionForm::panelNumber"
+
+.SS "Form ^ ProjectionForm::parent"
+
+.SS "Object ^ ProjectionForm::pConf"
+
+.SS "System::Windows::Forms::Button ^ ProjectionForm::PrevButton\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj1\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj2\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj3\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj4\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj5\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj6\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj7\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::proj8\fC [private]\fP"
+
+.SS "cli::array<System::String^> ^ ProjectionForm::proj_name"
+
+.SS "System::String ^ ProjectionForm::selectedProjection"
+
+.SS "System::Windows::Forms::Panel ^ ProjectionForm::SelectionPanel\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ProjectionForm::TitleText\fC [private]\fP"
+
+.SS "HWND ProjectionForm::window"
+
+.SS "\fBInfoType\fP ProjectionForm::wType"
+
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_button_callback\fP^ ProjectionForm::button_canc_event"
+
+.SS "\fBdelegate_button_callback\fP^ ProjectionForm::button_ok_event"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

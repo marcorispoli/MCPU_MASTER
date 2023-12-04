@@ -1,8 +1,9 @@
-.TH "VerticalMotor" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "VerticalMotor" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-VerticalMotor
+VerticalMotor \- This is the Vertical Module class implementation 
+
 .SH SYNOPSIS
 .br
 .PP
@@ -17,6 +18,18 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "\fBVerticalMotor\fP (void)"
 .br
 .in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBactivateIsocentricCorrection\fP (int id, int delta_target)"
+.br
+.RI "This command activates the isocentric correction\&. "
+.ti -1c
+.RI "static bool \fBstartHoming\fP (void)"
+.br
+.RI "This function activates the Automatic Homing procedure "
+.in -1c
 .SS "Static Public Attributes"
 
 .in +1c
@@ -28,26 +41,108 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .in +1c
 .ti -1c
-.RI "bool \fBinitializeSpecificObjectDictionary\fP (void) override"
+.RI "bool \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
 .br
-.RI "Sets specific registers for the Vertical activation\&. "
+.RI "Sets specific registers for the Arm activation\&. "
+.ti -1c
+.RI "void \fBautomaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "Override the basic class to handle the Virtual isocentric function 
+.br
+ "
+.ti -1c
+.RI "bool \fBidleCallback\fP (void) override"
+.br
+.RI "The \fBVerticalMotor\fP class override this function in order to handle the IDLE activities "
+.ti -1c
+.RI "void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "The \fBVerticalMotor\fP class override this function in order to handle the homing completion process\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBiso_activation_mode\fP = false"
+.br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This is the Vertical Module class implementation
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "VerticalMotor::VerticalMotor (void)"
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool VerticalMotor::initializeSpecificObjectDictionary (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "bool VerticalMotor::activateIsocentricCorrection (int id, int delta_target)\fC [static]\fP"
 
 .PP
-Sets specific registers for the Vertical activation\&. 
+This command activates the isocentric correction\&. 
+.SS "void VerticalMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBVerticalMotor\fP class override this function in order to handle the homing completion process\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "void VerticalMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override the basic class to handle the Virtual isocentric function 
+.br
+ The \fBVerticalMotor\fP class override this function in order to handle the Isocentric automatic activation code
+.PP
+\fBParameters\fP
+.RS 4
+\fILABEL_ERROR\fP 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool VerticalMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBVerticalMotor\fP class override this function in order to handle the IDLE activities 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool VerticalMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Sets specific registers for the Arm activation\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool VerticalMotor::startHoming (void)\fC [static]\fP"
+
+.PP
+This function activates the Automatic Homing procedure 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
 .SH "Member Data Documentation"
 .PP 
 .SS "\fBVerticalMotor\fP ^ VerticalMotor::device = gcnew \fBVerticalMotor\fP()\fC [static]\fP"
+
+.SS "bool VerticalMotor::iso_activation_mode = false\fC [static]\fP, \fC [private]\fP"
 
 
 .SH "Author"

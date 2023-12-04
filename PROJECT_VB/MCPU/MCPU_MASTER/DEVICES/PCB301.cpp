@@ -9,9 +9,9 @@ void PCB301::runningLoop(void) {
     static bool batt_low = false; 
     static bool study_door_closed = false;
 
-    bool bval;
+    bool bval, b1val;
 
-    std::this_thread::sleep_for(std::chrono::microseconds(10000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     //__________________________________________________________________________________________________________________ REGISTER STATUS
     while (!send(PCB301_GET_STATUS_SYSTEM_REGISTER)) ;
@@ -62,8 +62,26 @@ void PCB301::runningLoop(void) {
     }
     GantryStatusRegisters::SafetyStatusRegister::setCloseDoor(study_door_closed);
 
+    // Handles the manual vertical activation request
+    bool up_stat = PCB301_GET_VERTICAL_UP(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    bool down_stat = PCB301_GET_VERTICAL_DOWN(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
 
-    std::this_thread::sleep_for(std::chrono::microseconds(10000));
+    if (up_stat && down_stat) vertical_activation_status = vertical_activation_options::VERTICAL_INVALID_CODE;
+    else if ((up_stat) && (!down_stat)) vertical_activation_status = vertical_activation_options::VERTICAL_UP_ACTIVATION;
+    else if ((!up_stat) && (down_stat)) vertical_activation_status = vertical_activation_options::VERTICAL_DOWN_ACTIVATION;
+    else vertical_activation_status = vertical_activation_options::VERTICAL_NO_ACTIVATION;
+
+    // Handles the manual body activation request
+    bool cw_stat = PCB301_GET_BODY_CW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    bool ccw_stat = PCB301_GET_BODY_CCW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+
+    if (cw_stat && ccw_stat) body_activation_status = body_activation_options::BODY_INVALID_CODE;
+    else if ((cw_stat) && (!ccw_stat)) body_activation_status = body_activation_options::BODY_CW_ACTIVATION;
+    else if ((!cw_stat) && (ccw_stat)) body_activation_status = body_activation_options::BODY_CCW_ACTIVATION;
+    else body_activation_status = body_activation_options::BODY_NO_ACTIVATION;
+
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     //__________________________________________________________________________________________________________________ REGISTER BATTERY
     while (!send(PCB301_GET_STATUS_BATTERY_REGISTER));
     unsigned char vbatt1 = PCB301_GET_BATTERY_VBATT1(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);

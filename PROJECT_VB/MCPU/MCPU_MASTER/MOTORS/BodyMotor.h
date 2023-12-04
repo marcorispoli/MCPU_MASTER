@@ -3,6 +3,7 @@
 
 /// <summary>
 /// \defgroup BodyMotor_Module Body Module controller
+/// \ingroup CanOpenModule 
 /// 
 /// This module implements the Body rotation requirements.
 /// 
@@ -90,7 +91,7 @@
 
 /// <summary>
 /// This is the Body Module class  implementation
-/// \ingroup globalModule
+/// \ingroup BodyMotor_Module
 /// </summary>
 ref class BodyMotor : public CANOPEN::CanOpenMotor
 {
@@ -98,7 +99,7 @@ public:
 	BodyMotor(void);
 	static BodyMotor^ device = gcnew BodyMotor();
 	static bool startHoming(void);
-	
+	static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override;
@@ -111,8 +112,14 @@ protected:
 	MotorCompletedCodes automaticHomingPreparationCallback(void) override;
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 
+	MotorCompletedCodes manualPositioningPreparationCallback(void) override;
+	void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+	MotorCompletedCodes manualPositioningRunningCallback(void) override;
+
 private:
 	static bool brake_alarm = false; //!< This is the current brake malfunction alarm
+	static bool manual_activation_enabled = false; //!< This is the flag activating the body manual activation
+	static bool manual_cw_direction = false; //!< Sets true if the CW manual command is executing, false if the CCW manual activation is executing
 
 };
 

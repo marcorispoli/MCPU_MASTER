@@ -1,4 +1,4 @@
-.TH "ModuleMotorParam" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ModuleMotorParam" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -41,8 +41,15 @@ Tilt Motor Parameters: the parameters controlling the TILT rotation;
 .PP
 .SH "Body Motor Parameters"
 .PP
-POSITION   PARAM-CODE   TYPE   DESCRIPTION    0   PARAM_POSITION   16 bit Integer   Position in 0\&.1 degree units assigned at the startup to avoid the Homing procedure    1   PARAM_SPEED   16 bit Integer   Speed in 0\&.1 degree / seconds of the Motor rotation    2   PARAM_ACC   16 bit Integer   Acceleration in 0\&.1 degree / seconds^2 of the Motor rotation    2   PARAM_DEC   16 bit Integer   Deceleration in 0\&.1 degree / seconds^2 of the Motor rotation   
-.SS "PARAM_POSITION Details"
+POSITION   PARAM-CODE   TYPE   DESCRIPTION    0   PARAM_POSITION   32 bit Integer   Motor encoder position (motor units) assigned at the startup to avoid the Homing procedure    1   PARAM_SPEED   16 bit Integer   Speed in 0\&.1 degree / seconds of the Motor rotation    2   PARAM_ACC   16 bit Integer   Acceleration in 0\&.1 degree / seconds^2 of the Motor rotation    3   PARAM_DEC   16 bit Integer   Deceleration in 0\&.1 degree / seconds^2 of the Motor rotation    4   PARAM_HOME_SPEED   16 bit Integer   Speed in 0\&.1 degree / seconds of the Motor Homing    5   PARAM_HOME_ACC   16 bit Integer   Acceleration in 0\&.1 degree / seconds^2 of the Motor Homing   
+.SH "Arm Motor Parameters"
+.PP
+POSITION   PARAM-CODE   TYPE   DESCRIPTION    0   PARAM_POSITION   32 bit Integer   Motor encoder position (motor units) assigned at the startup to avoid the Homing procedure    1   PARAM_SPEED   16 bit Integer   Speed in 0\&.01 degree / seconds of the Motor rotation    2   PARAM_ACC   16 bit Integer   Acceleration in 0\&.01 degree / seconds^2 of the Motor rotation    3   PARAM_DEC   16 bit Integer   Deceleration in 0\&.01 degree / seconds^2 of the Motor rotation    4   PARAM_HOME_SPEED   16 bit Integer   Speed in 0\&.01 degree / seconds of the Motor Homing    5   PARAM_HOME_ACC   16 bit Integer   Acceleration in 0\&.01 degree / seconds^2 of the Motor Homing   
+.SH "Vertical Motor Parameters"
+.PP
+POSITION   PARAM-CODE   TYPE   DESCRIPTION    0   PARAM_POSITION   32 bit Integer   Motor encoder position (motor units) assigned at the startup to avoid the Homing procedure    1   PARAM_SPEED   16 bit Integer   Speed in 1mm / seconds of the Motor rotation    2   PARAM_ACC   16 bit Integer   Acceleration in 1mm / seconds^2 of the Motor rotation    3   PARAM_DEC   16 bit Integer   Deceleration in 1mm / seconds^2 of the Motor rotation    4   PARAM_HOME_SPEED   16 bit Integer   Speed in 1mm / seconds of the Motor Homing    5   PARAM_HOME_ACC   16 bit Integer   Acceleration 1mm degree / seconds^2 of the Motor Homing   
+.SH "PARAM_POSITION Details"
+.PP
 This field is an integer value set to the last valid Body position\&.
 .br
 At the system startup, if this value should be set to 'UNDEF' 

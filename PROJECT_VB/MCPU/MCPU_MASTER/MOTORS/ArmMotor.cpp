@@ -22,9 +22,9 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDe
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
     bool homing_initialized = false;
     int  init_position = 0;
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
         homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_POSITION]);
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
 
     this->home_initialized = homing_initialized;
@@ -61,7 +61,7 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
 
     // Sets the current Vertical position
     if (home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
     }
 
@@ -118,9 +118,9 @@ bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int i
     device->iso_activation_mode = true;
 
     // Activate the command
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_ACC]);
-    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_DEC]);
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_DEC]);
     return device->activateAutomaticPositioning(id, pos, speed, acc, dec);
 
 }
@@ -153,13 +153,13 @@ void ArmMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
    
     if (device->home_initialized) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_ARM_MOTOR_HOMING);
     }
     else {
         // Reset the position in the configuration file and reactivate the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
         MotorConfig::Configuration->storeFile();
         Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
     }

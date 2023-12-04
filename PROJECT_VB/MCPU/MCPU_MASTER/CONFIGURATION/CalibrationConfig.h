@@ -127,34 +127,43 @@ ref class MotorConfig
 {
 public:
     literal System::String^ FILENAME = "MotorCalibration.cnf"; //!< This is the name of the configuration file
-    literal int     FILE_REVISION = 1;//!< This is the current revision code
+    literal int     FILE_REVISION = 2;//!< This is the current revision code
 
     literal System::String^ MOTOR_UNDEFINED_POSITION = "UNDEF";    //!< This is the TAG of the Undefined position 
-    literal int PARAM_POSITION = 0;                                //!< Parameter position for the last valid motor position 
-    literal int PARAM_SPEED = 1;                                   //!< Parameter position for the motor speed
-    literal int PARAM_ACC = 2;                                     //!< Parameter position for the motor acceleration
-    literal int PARAM_DEC = 3;                                     //!< Parameter position for the motor deceleration 
-    literal int PARAM_HOME_SPEED = 4;                              //!< Parameter speed in home procedure
-    literal int PARAM_HOME_ACC = 5;                                //!< Parameter acceleration in home procedure
+    literal int PARAM_CURRENT_POSITION = 0;                        //!< Parameter position for the last valid motor position 
+    literal int PARAM_AUTO_SPEED = 1;                              //!< Parameter position for the Automatic mode motor speed
+    literal int PARAM_AUTO_ACC = 2;                                //!< Parameter position for the Automatic mode  motor acceleration
+    literal int PARAM_AUTO_DEC = 3;                                //!< Parameter position for the Automatic mode  motor deceleration 
+    literal int PARAM_MANUAL_SPEED = 4;                            //!< Parameter position for the Manual mode  motor speed
+    literal int PARAM_MANUAL_ACC = 5;                              //!< Parameter position for the Manual mode  motor acceleration
+    literal int PARAM_MANUAL_DEC = 6;                              //!< Parameter position for the Manual mode   motor deceleration 
+    literal int PARAM_HOME_SPEED = 7;                              //!< Parameter speed in home procedure
+    literal int PARAM_HOME_ACC = 8;                                //!< Parameter acceleration in home procedure
     
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_BODY = "BODY_CALIBRATION";                               //!< This is the Body Motor parameter section
     literal System::String^ PARAM_BODY_COMMENT = "BODY_CALIBRATION calibration data";
     literal System::String^ PARAM_BODY_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid Body Motor position (for initial zero setting)
-    literal System::String^ PARAM_BODY_SPEED_DEFAULT = "50";                                       //!< Body Speed in 0.1 degree/s
-    literal System::String^ PARAM_BODY_ACC_DEFAULT = "10";                                         //!< Body Acc in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_DEC_DEFAULT = "10";                                         //!< Body Dec in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_HOME_SPEED_DEFAULT = "30";                                  //!< Body Homoe Speed in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_AUTO_SPEED_DEFAULT = "50";                                  //!< Body Auto Speed in 0.1 degree/s
+    literal System::String^ PARAM_BODY_AUTO_ACC_DEFAULT = "10";                                    //!< Body Auto Acc in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_AUTO_DEC_DEFAULT = "10";                                    //!< Body Auto  Dec in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_MANUAL_SPEED_DEFAULT = "50";                                //!< Body Manual  Speed in 0.1 degree/s
+    literal System::String^ PARAM_BODY_MANUAL_ACC_DEFAULT = "10";                                  //!< Body Manual  Acc in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_MANUAL_DEC_DEFAULT = "10";                                  //!< Body Manual Dec in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_HOME_SPEED_DEFAULT = "30";                                  //!< Body Home Speed in 0.1 degree/ss
     literal System::String^ PARAM_BODY_HOME_ACC_DEFAULT = "10";                                    //!< Body Home Acc in 0.1 degree/ss
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_ARM = "ARM_CALIBRATION";                                         //!< This is the ARM Motor parameter section
     literal System::String^ PARAM_ARM_COMMENT = "ARM_CALIBRATION calibration data";
-    literal System::String^ PARAM_ARM_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder ARM Motor position (for initial zero setting)
-    literal System::String^ PARAM_ARM_SPEED_DEFAULT = "1000";                                       //!< Arm Speed in 0.01 degree/s
-    literal System::String^ PARAM_ARM_ACC_DEFAULT = "500";                                         //!< Arm Acc in 0.01 degree/ss
-    literal System::String^ PARAM_ARM_DEC_DEFAULT = "500";                                         //!< Arm Dec in 0.01 degree/ss
+    literal System::String^ PARAM_ARM_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder ARM Motor position (for initial zero setting)
+    literal System::String^ PARAM_ARM_AUTO_SPEED_DEFAULT = "1000";                                 //!< Arm Auto Speed in 0.01 degree/s
+    literal System::String^ PARAM_ARM_AUTO_ACC_DEFAULT = "500";                                    //!< Arm Auto Acc in 0.01 degree/ss
+    literal System::String^ PARAM_ARM_AUTO_DEC_DEFAULT = "500";                                    //!< Arm Auto Dec in 0.01 degree/ss
+    literal System::String^ PARAM_ARM_MANUAL_SPEED_DEFAULT = "1000";                               //!< Arm Manual Speed in 0.01 degree/s
+    literal System::String^ PARAM_ARM_MANUAL_ACC_DEFAULT = "500";                                  //!< Arm Manual Acc in 0.01 degree/ss
+    literal System::String^ PARAM_ARM_MANUAL_DEC_DEFAULT = "500";                                  //!< Arm Manual Dec in 0.01 degree/ss
     literal System::String^ PARAM_ARM_HOME_SPEED_DEFAULT = "5000";                                 //!< Arm Home Speed in 0.01 degree/ss
     literal System::String^ PARAM_ARM_HOME_ACC_DEFAULT = "100";                                    //!< Arm Home Acc in 0.01 degree/ss
 
@@ -162,10 +171,13 @@ public:
     literal System::String^ PARAM_VERTICAL = "VERTICAL_CALIBRATION";                                   //!< This is the VERTICAL Motor parameter section
     literal System::String^ PARAM_VERTICAL_COMMENT = "VERTICAL_CALIBRATION calibration data";
     literal System::String^ PARAM_VERTICAL_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder VERTICAL Motor position (for initial zero setting)
-    literal System::String^ PARAM_VERTICAL_SPEED_DEFAULT = "50";                                       //!< VERTICAL Speed in 1 mm/s
-    literal System::String^ PARAM_VERTICAL_ACC_DEFAULT = "10";                                         //!< VERTICAL Acc in 1mm /ss
-    literal System::String^ PARAM_VERTICAL_DEC_DEFAULT = "10";                                         //!< VERTICAL Dec in 1mm /ss
-    literal System::String^ PARAM_VERTICAL_HOME_SPEED_DEFAULT = "50";                                 //!< VERTICAL Home Speed in 1mm degree/ss
+    literal System::String^ PARAM_VERTICAL_AUTO_SPEED_DEFAULT = "50";                                  //!< VERTICAL Auto Speed in 1 mm/s
+    literal System::String^ PARAM_VERTICAL_AUTO_ACC_DEFAULT = "10";                                    //!< VERTICAL Auto Acc in 1mm /ss
+    literal System::String^ PARAM_VERTICAL_AUTO_DEC_DEFAULT = "10";                                    //!< VERTICAL Auto Dec in 1mm /ss
+    literal System::String^ PARAM_VERTICAL_MANUAL_SPEED_DEFAULT = "50";                                //!< VERTICAL Manual Speed in 1 mm/s
+    literal System::String^ PARAM_VERTICAL_MANUAL_ACC_DEFAULT = "10";                                  //!< VERTICAL Manual Acc in 1mm /ss
+    literal System::String^ PARAM_VERTICAL_MANUAL_DEC_DEFAULT = "10";                                  //!< VERTICAL Manual Dec in 1mm /ss
+    literal System::String^ PARAM_VERTICAL_HOME_SPEED_DEFAULT = "50";                                  //!< VERTICAL Home Speed in 1mm degree/ss
     literal System::String^ PARAM_VERTICAL_HOME_ACC_DEFAULT = "10";                                    //!< VERTICAL Home Acc in 1mm degree/ss
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
@@ -173,27 +185,36 @@ public:
         {
             CONFIG_FILE_ITEM(PARAM_BODY, PARAM_BODY_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_BODY_CURRENT_POSITION_DEFAULT,
-            PARAM_BODY_SPEED_DEFAULT,
-            PARAM_BODY_ACC_DEFAULT,
-            PARAM_BODY_DEC_DEFAULT,
+            PARAM_BODY_AUTO_SPEED_DEFAULT,
+            PARAM_BODY_AUTO_ACC_DEFAULT,
+            PARAM_BODY_AUTO_DEC_DEFAULT,
+            PARAM_BODY_MANUAL_SPEED_DEFAULT,
+            PARAM_BODY_MANUAL_ACC_DEFAULT,
+            PARAM_BODY_MANUAL_DEC_DEFAULT,
             PARAM_BODY_HOME_SPEED_DEFAULT,
             PARAM_BODY_HOME_ACC_DEFAULT
             }),
 
             CONFIG_FILE_ITEM(PARAM_ARM, PARAM_ARM_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_ARM_CURRENT_POSITION_DEFAULT,
-            PARAM_ARM_SPEED_DEFAULT,
-            PARAM_ARM_ACC_DEFAULT,
-            PARAM_ARM_DEC_DEFAULT,
+            PARAM_ARM_AUTO_SPEED_DEFAULT,
+            PARAM_ARM_AUTO_ACC_DEFAULT,
+            PARAM_ARM_AUTO_DEC_DEFAULT,
+            PARAM_ARM_MANUAL_SPEED_DEFAULT,
+            PARAM_ARM_MANUAL_ACC_DEFAULT,
+            PARAM_ARM_MANUAL_DEC_DEFAULT,
             PARAM_ARM_HOME_SPEED_DEFAULT,
             PARAM_ARM_HOME_ACC_DEFAULT
             }),
 
             CONFIG_FILE_ITEM(PARAM_VERTICAL, PARAM_VERTICAL_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_VERTICAL_CURRENT_POSITION_DEFAULT,
-            PARAM_VERTICAL_SPEED_DEFAULT,
-            PARAM_VERTICAL_ACC_DEFAULT,
-            PARAM_VERTICAL_DEC_DEFAULT,
+            PARAM_VERTICAL_AUTO_SPEED_DEFAULT,
+            PARAM_VERTICAL_AUTO_ACC_DEFAULT,
+            PARAM_VERTICAL_AUTO_DEC_DEFAULT,
+            PARAM_VERTICAL_MANUAL_SPEED_DEFAULT,
+            PARAM_VERTICAL_MANUAL_ACC_DEFAULT,
+            PARAM_VERTICAL_MANUAL_DEC_DEFAULT,
             PARAM_VERTICAL_HOME_SPEED_DEFAULT,
             PARAM_VERTICAL_HOME_ACC_DEFAULT
             }),

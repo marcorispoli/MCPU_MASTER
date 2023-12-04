@@ -1,8 +1,19 @@
+/// <summary>
+/// \defgroup GUI_Module Gantry GUI modules
+///   
+/// </summary>
+
+
 #pragma once
 
 extern  double dtempo;
 #include <Windows.h>
 
+
+/// <summary>
+/// \defgroup StartupGUI Startup GUI Module 
+/// \ingroup GUI_Module Gantry GUI modules
+/// </summary>
 namespace CppCLRWinFormsProject {
 
 	

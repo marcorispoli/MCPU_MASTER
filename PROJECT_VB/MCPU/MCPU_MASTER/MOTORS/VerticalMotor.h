@@ -4,7 +4,7 @@
 
 /// <summary>
 /// \defgroup VerticalMotor_Module Vertical Module controller
-/// 
+/// \ingroup CanOpenModule 
 /// This module implements the Vertical activation requirements.
 /// 
 /// </summary>
@@ -57,18 +57,23 @@ ref class VerticalMotor : public CANOPEN::CanOpenMotor
 public:
 	VerticalMotor(void);
 	
+	
 	static bool activateIsocentricCorrection(int id, int delta_target); //!< This command activates the isocentric correction
 	static VerticalMotor^ device = gcnew VerticalMotor();
 	static bool startHoming(void);
-
+	static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
 private:
 	static bool iso_activation_mode = false;
-	
+	static bool manual_activation_enabled = false; //!< This is the flag activating the vertical manual activation
+	static bool manual_up_direction = false; //!< Sets true if the Upward manual command is executing, false if the downward manual activation is executing
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
-	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    
-	bool idleCallback(void) override;
+	
+	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
+	bool idleCallback(void) override;
+
+	MotorCompletedCodes manualPositioningRunningCallback(void) override;
 };
 

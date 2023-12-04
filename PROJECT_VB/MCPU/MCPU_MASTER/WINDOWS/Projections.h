@@ -1,6 +1,13 @@
 #pragma once
 #include <Windows.h>
 
+/// <summary>
+/// \defgroup ProjectionsGUI_Module Projection Selection Window Management Module
+/// \ingroup GUI_Module Gantry GUI modules
+/// 
+/// 
+/// </summary>
+/// 
 
 using namespace System::ComponentModel;
 using namespace System::Collections;

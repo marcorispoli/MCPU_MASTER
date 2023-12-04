@@ -1,8 +1,9 @@
-.TH "ArmMotor" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ArmMotor" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ArmMotor
+ArmMotor \-  
+
 .SH SYNOPSIS
 .br
 .PP
@@ -33,6 +34,13 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .in +1c
 .ti -1c
+.RI "static bool \fBstartHoming\fP (void)"
+.br
+.RI "This function activates the Automatic Homing procedure "
+.ti -1c
+.RI "static bool \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
+.br
+.ti -1c
 .RI "static bool \fBisTarget\fP (void)"
 .br
 .ti -1c
@@ -43,9 +51,6 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .br
 .ti -1c
 .RI "static bool \fBisValidPosition\fP (void)"
-.br
-.ti -1c
-.RI "static bool \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
 .br
 .ti -1c
 .RI "static void \fBabortTarget\fP (void)"
@@ -74,13 +79,23 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .in +1c
 .ti -1c
-.RI "bool \fBinitializeSpecificObjectDictionary\fP (void) override"
+.RI "bool \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
 .br
 .RI "Sets specific registers for the Arm activation\&. "
 .ti -1c
-.RI "void \fBsetCommandCompletedCode\fP (\fBMotorCompletedCodes\fP error) override"
+.RI "void \fBautomaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
 .br
-.RI "Override the basic class to handle the Virtual isocentric function\&. "
+.RI "Override the basic class to handle the Virtual isocentric function 
+.br
+ "
+.ti -1c
+.RI "bool \fBidleCallback\fP (void) override"
+.br
+.RI "The \fBArmMotor\fP class override this function in order to handle the IDLE activities "
+.ti -1c
+.RI "void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "The \fBArmMotor\fP class override this function in order to handle the homing completion process\&. "
 .in -1c
 .SS "Protected Attributes"
 
@@ -133,6 +148,11 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
  "
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+
+
+
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "ArmMotor::ArmMotor (void)"
@@ -143,6 +163,34 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .SS "static void ArmMotor::abortTarget (void)\fC [inline]\fP, \fC [static]\fP"
 
+.SS "void ArmMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBArmMotor\fP class override this function in order to handle the homing completion process\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "void ArmMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override the basic class to handle the Virtual isocentric function 
+.br
+ The \fBArmMotor\fP class override this function in order to handle the Isocentric automatic activation code
+.PP
+\fBParameters\fP
+.RS 4
+\fILABEL_ERROR\fP 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "delegate void ArmMotor::delegate_abort_projection_request_callback (void)"
 
 .SS "delegate void ArmMotor::delegate_projection_request_callback (System::String^ str)"
@@ -155,10 +203,30 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .SS "static System::String ^ ArmMotor::getSelectedProjection (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "bool ArmMotor::initializeSpecificObjectDictionary (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "bool ArmMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Sets specific registers for the Arm activation\&. 
+The \fBArmMotor\fP class override this function in order to handle the IDLE activities 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool ArmMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Sets specific registers for the Arm activation\&. The \fBBodyMotor\fP override this function in order to initialize specific motor registers
+.PP
+\fBReturns\fP
+.RS 4
+true if the initialization termines successfully
+.RE
+.PP
+
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "static bool ArmMotor::isInRange (void)\fC [inline]\fP, \fC [static]\fP"
@@ -171,13 +239,18 @@ Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 
 .SS "static void ArmMotor::projectionRequest (System::String^ projection)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "void ArmMotor::setCommandCompletedCode (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "bool ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fC [static]\fP"
+
+.SS "bool ArmMotor::startHoming (void)\fC [static]\fP"
 
 .PP
-Override the basic class to handle the Virtual isocentric function\&. 
+This function activates the Automatic Homing procedure 
 .PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "static bool ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fC [inline]\fP, \fC [static]\fP"
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
 
 .SH "Member Data Documentation"
 .PP 

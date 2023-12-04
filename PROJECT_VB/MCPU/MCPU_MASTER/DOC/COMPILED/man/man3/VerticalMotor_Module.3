@@ -1,0 +1,66 @@
+.TH "VerticalMotor_Module" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+VerticalMotor_Module \- Vertical Module controller
+.PP
+ \- This module implements the Vertical activation requirements\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+This module implements the Vertical activation requirements\&. 
+
+
+.SH "Motor Mechanical Assembly setup"
+.PP
+.IP "\(bu" 2
+The Motor Rotation conversion ratio is 1g - 1mm: 1 motor round equals 1mm vertical position change;
+.IP "\(bu" 2
+When the motor rotates clockwise, the ARM moves downward;
+.IP "\(bu" 2
+Zero setting photocell:
+.IP "  \(bu" 4
+ON (Light) the motor has to rotate clockwise (Arm downward) to find the center;
+.IP "  \(bu" 4
+OFF (Dark) the motor has to rotate counter-clockwise (Arm upward) to find the center;
+.PP
+
+.IP "\(bu" 2
+Limit switch photocell:
+.IP "  \(bu" 4
+ON (Light): the limit switch is not detected
+.IP "  \(bu" 4
+OFF (Dark): the limit switch is detected
+.PP
+
+.PP
+.PP
+When the limit position photocell is engaged (OFF status), the actual limit position 
+.br
+is determined evaluating the status of both Limit and Zero photocells as 
+.br
+the following Truth table:
+.PP
+Zero Photocell   Limit Photocell   Position    x   ON   travel range    ON   OFF   Upper position    OFF   OFF   Lower position   
+.SH "Motor GPIO assignment"
+.PP
+.SS "Digital Inputs"
+.IP "\(bu" 2
+DIGITAL INPUT 1 and 2: Assigned to the limit switch photocell;
+.IP "\(bu" 2
+DIGITAL INPUT 3: Homing photocell;
+.PP
+.PP
+The Input1 and Input2 are assigned to the same photocell: the limit switch\&.
+.br
+The Input3 shall be assigned to the special function Homing switch\&.
+.SS "Digital Outputs"
+Not used 
+.br
+ 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

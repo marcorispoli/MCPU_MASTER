@@ -1,6 +1,11 @@
 #pragma once
 #include "CanDeviceProtocol.h"
 
+/// <summary>
+/// \defgroup PCB326_Module PCB326 Module: Obstacle device module controller
+/// 
+/// \ingroup CanDevice_Module  
+/// </summary>
 ref class PCB326 : public CanDeviceProtocol
 {
 public:

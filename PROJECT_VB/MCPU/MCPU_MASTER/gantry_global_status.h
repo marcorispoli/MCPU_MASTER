@@ -800,7 +800,7 @@ namespace GantryStatusRegisters {
             LEN,
             UNDEF = LEN
         };
-        static const cli::array<String^>^ tags = gcnew cli::array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEF"}; //!< This is the tags array
+        static const cli::array<String^>^ trx_target_tags = gcnew cli::array<String^> { "SCOUT", "BP_R", "BP_L", "TOMO_H", "TOMO_E", "TRX_UNDEF"}; //!< This is the tags array
         static cli::array<int>^ targets = gcnew cli::array<int> {0, 1500, -1500, 2700, -2700, 0 }; //!< This is the current value of the target angles
 
 
@@ -876,7 +876,7 @@ namespace GantryStatusRegisters {
             if (executing) return false;
 
             for (int i = 0; i < (int)target_options::LEN; i++) {
-                if (tags[i] == tag) {
+                if (trx_target_tags[i] == tag) {
                     return setTarget((target_options)i, id);
                 }
             }
@@ -945,7 +945,7 @@ namespace GantryStatusRegisters {
         /// <param name=""></param>
         /// <returns>The target Tag </returns>
         static String^ getTargetTag(void) {
-            return tags[(int)getTargetCode()];
+            return trx_target_tags[(int)getTargetCode()];
         }
 
         /// <summary>
@@ -983,7 +983,7 @@ namespace GantryStatusRegisters {
         /// <param name=""></param>
         /// <returns>The current position </returns>
         static String^ getCurrentTag(void) {
-            return tags[(int)getCurrentCode()];
+            return trx_target_tags[(int)getCurrentCode()];
         }
 
 

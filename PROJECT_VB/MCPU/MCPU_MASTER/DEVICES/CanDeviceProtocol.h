@@ -1,9 +1,20 @@
 #pragma once
 #include <Windows.h>
 
+/// <summary>
+/// \defgroup CanDevice_Module Device board modules based on CAN bus protocol
+/// 
+/// This module implements the genera device communication protocol based on the CAN bus
+/// 
+/// </summary>
+
 using namespace System::Collections::Generic;
 using namespace System::Threading;
 
+/// <summary>
+/// \ingroup CanDevice_Module 
+/// 
+/// </summary>
 ref class CanDeviceProtocol //: public System::Windows::Forms::Form
 {
 public:

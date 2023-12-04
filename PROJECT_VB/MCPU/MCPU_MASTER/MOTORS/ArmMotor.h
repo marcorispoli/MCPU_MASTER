@@ -3,15 +3,20 @@
 #include "gantry_global_status.h"
 
 /// <summary>
-    /// This is the projection handling  class.
-    /// 
-    /// This class defines the availabe projection options,
-    /// store the current selected projection and the projection selectable list.
-    /// 
-    /// The class provides events related to the data change 
-    /// 
-    /// \ingroup globalModule 
-    /// </summary>
+/// \defgroup ArmMotor_Module C-ARM Module controller
+/// \ingroup CanOpenModule 
+/// 
+/// This module implements the Body rotation requirements.
+/// 
+/// </summary>
+/// 
+///  
+/// 
+
+/// <summary>
+/// 
+/// \ingroup ArmMotor_Module
+/// </summary>
 ref class ProjectionOptions {
 public:
     static ProjectionOptions() {
@@ -73,6 +78,10 @@ public:
 
 };
 
+/// <summary>
+/// 
+/// \ingroup ArmMotor_Module
+/// </summary>
 ref class ArmMotor : public CANOPEN::CanOpenMotor
 {
 public:

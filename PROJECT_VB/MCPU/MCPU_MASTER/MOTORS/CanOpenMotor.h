@@ -16,6 +16,7 @@ using namespace System::Threading;
 namespace CANOPEN {
 
 	#define SPEED_DENOMINATOR       120 //!< This is the Speed conversion denominator unit 
+	
 
 	/// <summary>
 	/// This is the enumeration of the Application Motor device addresses
@@ -441,9 +442,13 @@ namespace CANOPEN {
 		public:delegate void delegate_command_completed_callback(int id, int code);
 		public:static event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
+		protected: inline int getPreviousPosition(void) { return previous_uposition; }
+		
 		public:bool activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
 		public:bool activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
-		protected: inline int getPreviousPosition(void) { return previous_uposition; }
+		public: bool activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
+		
+
 
 		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
 
@@ -462,11 +467,15 @@ namespace CANOPEN {
 				MOTOR_IDLE = 0,			//!< No command are presents				
 				MOTOR_HOMING,			//!< Homing procedure for automatic zero setting
 				MOTOR_AUTO_POSITIONING, //!< Motor Automatic activation to target
+				MOTOR_MANUAL_POSITIONING, //!< Motor Manual activation to target
 			};
 
 			public:enum class MotorCompletedCodes {
 				COMMAND_SUCCESS = 0,
 				COMMAND_PROCEED = 0,
+				COMMAND_MANUAL_TERMINATION,
+				MOTOR_ERRORS,
+				ERROR_OBSTACLE_DETECTED = MOTOR_ERRORS,
 				ERROR_MOTOR_BUSY,
 				ERROR_INITIALIZATION,
 				ERROR_UNEXPECTED_STATUS,
@@ -477,6 +486,7 @@ namespace CANOPEN {
 				ERROR_INTERNAL_FAULT,
 				ERROR_ACTIVATION_REGISTER,
 				ERROR_MISSING_HOME,
+				ERROR_COMMAND_DISABLED,
 			};
 
 		public: inline System::String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
@@ -586,18 +596,21 @@ namespace CANOPEN {
 
 		private:	void manageAutomaticPositioning(void);
 		private:	void manageAutomaticHoming(void);
+		private:	void manageManualPositioning(void);
+			   
 
 
 		private: MotorCommands request_command; //!< Application request command code
 		private: MotorCommands current_command; //!< Current executing command code
 		private:MotorCompletedCodes command_completed_code;//!< Activation result
 		
-		protected:int command_id;				//!< ID code of the requested command
+		protected:int command_id;			//!< ID code of the requested command 
 		private:int command_target;			//!< Target position in user units
 		private:int command_acc;			//!< Acceleration in user/s2
 		private:int command_dec;			//!< Deceleration in user/s2
 		private:int command_speed;			//!< Speed in user/s
 		private:int command_ms_tmo;			//!< Timoeut activation in ms
+		private:bool command_stop;			//!< Request to stop the current activation
 		private:int command_homing_on_method;  //!< Homing method whith zero photocell starting in ON status
 		private:int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
 
@@ -605,9 +618,15 @@ namespace CANOPEN {
 		
 		
 		protected:	virtual MotorCompletedCodes automaticPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
+		protected:	virtual MotorCompletedCodes automaticPositioningRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
 		protected:	virtual void automaticPositioningCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
 		
+		protected:	virtual MotorCompletedCodes manualPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
+		protected:	virtual MotorCompletedCodes manualPositioningRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
+		protected:	virtual void manualPositioningCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
+
 		protected:	virtual MotorCompletedCodes automaticHomingPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
+		protected:	virtual MotorCompletedCodes automaticHomingRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
 		protected:	virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
 
 		protected:	virtual bool idleCallback(void) { return true; }

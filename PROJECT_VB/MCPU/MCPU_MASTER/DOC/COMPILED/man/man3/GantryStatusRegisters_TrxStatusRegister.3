@@ -1,4 +1,4 @@
-.TH "GantryStatusRegisters::TrxStatusRegister" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "GantryStatusRegisters::TrxStatusRegister" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -68,7 +68,7 @@ GantryStatusRegisters::TrxStatusRegister \- This class handles the Trx motorizat
 
 .in +1c
 .ti -1c
-.RI "static const cli::array< String^> ^ \fBtags\fP = gcnew cli::array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEF'}"
+.RI "static const cli::array< String^> ^ \fBtrx_target_tags\fP = gcnew cli::array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEF'}"
 .br
 .RI "This is the tags array\&. "
 .ti -1c
@@ -163,7 +163,7 @@ This function shall be called when the activation termines
 .RS 4
 \fIangle\fP THis is the final angle
 .br
-\fIerror\fP This is an error code
+\fILABEL_ERROR\fP This is an error code
 .RE
 .PP
 
@@ -319,10 +319,6 @@ AWS command Id\&.
 
 .PP
 Sets the maximum difference from current_ange and position_target\&. 
-.SS "const cli::array<String^> ^ GantryStatusRegisters::TrxStatusRegister::tags = gcnew cli::array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEF'}\fC [static]\fP"
-
-.PP
-This is the tags array\&. 
 .SS "int GantryStatusRegisters::TrxStatusRegister::target_angle = 0\fC [static]\fP, \fC [private]\fP"
 
 .PP
@@ -333,6 +329,10 @@ This is the Trx target position in 0\&.01° units
 
 .PP
 This is the current value of the target angles\&. 
+.SS "const cli::array<String^> ^ GantryStatusRegisters::TrxStatusRegister::trx_target_tags = gcnew cli::array<String^> { 'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'TRX_UNDEF'}\fC [static]\fP"
+
+.PP
+This is the tags array\&. 
 .SH "Event Documentation"
 .PP 
 .SS "\fBdelegate_activation_completed\fP^ GantryStatusRegisters::TrxStatusRegister::activation_completed_event\fC [static]\fP"

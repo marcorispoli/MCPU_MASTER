@@ -1,4 +1,4 @@
-.TH "CANOPEN::CanOpenMotor" 3 "Wed Nov 29 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CANOPEN::CanOpenMotor" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -18,11 +18,11 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 .RI "enum class \fBstatus_options\fP { \fBMOTOR_NOT_CONNECTED\fP = 0, \fBMOTOR_CONFIGURATION\fP, \fBMOTOR_READY\fP, \fBMOTOR_BUSY\fP, \fBMOTOR_FAULT\fP }"
 .br
 .ti -1c
-.RI "enum class \fBMotorCommands\fP { \fBMOTOR_IDLE\fP = 0, \fBMOTOR_ENCODER_RESET\fP, \fBMOTOR_HOMING\fP, \fBMOTOR_AUTO_POSITIONING\fP }"
+.RI "enum class \fBMotorCommands\fP { \fBMOTOR_IDLE\fP = 0, \fBMOTOR_HOMING\fP, \fBMOTOR_AUTO_POSITIONING\fP }"
 .br
 .RI "This enumeration class defines the Command codes  "
 .ti -1c
-.RI "enum class \fBMotorCompletedCodes\fP { \fBCOMMAND_SUCCESS\fP = 0, \fBERROR_MOTOR_BUSY\fP, \fBERROR_INITIALIZATION\fP, \fBERROR_UNEXPECTED_STATUS\fP, \fBERROR_SUBCLASS_PREPARATION\fP, \fBERROR_TIMOUT\fP, \fBERROR_INTERNAL_FAULT\fP, \fBERROR_ACTIVATION_REGISTER\fP }"
+.RI "enum class \fBMotorCompletedCodes\fP { \fBCOMMAND_SUCCESS\fP = 0, \fBCOMMAND_PROCEED\fP = 0, \fBERROR_MOTOR_BUSY\fP, \fBERROR_INITIALIZATION\fP, \fBERROR_UNEXPECTED_STATUS\fP, \fBERROR_LIMIT_SWITCH\fP, \fBERROR_BRAKE_DEVICE\fP, \fBERROR_INVALID_COMMAND_INITIAL_CONDITION\fP, \fBERROR_TIMOUT\fP, \fBERROR_INTERNAL_FAULT\fP, \fBERROR_ACTIVATION_REGISTER\fP, \fBERROR_MISSING_HOME\fP }"
 .br
 .in -1c
 .SS "Public Member Functions"
@@ -35,12 +35,15 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 .RI "delegate void \fBdelegate_command_completed_callback\fP (int id, int code)"
 .br
 .ti -1c
-.RI "bool \fBactivateResetEncoderCommand\fP (int id)"
-.br
-.ti -1c
 .RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec)"
 .br
-.RI "This function starts an automatic positioning\&. "
+.RI "This function starts an automatic positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateAutomaticHoming\fP (int method_on, int method_off, int speed, int acc)"
+.br
+.RI "This function starts the automatic homing procedure\&. "
 .ti -1c
 .RI "\fBCanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, double gear)"
 .br
@@ -75,23 +78,8 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 
 .in +1c
 .ti -1c
-.RI "virtual bool \fBautomaticPositioningPreparation\fP (void)"
-.br
-.RI "This function shall be implemented by the Subclass\&. "
-.ti -1c
-.RI "virtual void \fBautomaticPositioningCompletion\fP (void)"
-.br
-.RI "This function shall be implemented by the Subclass\&. "
-.ti -1c
-.RI "virtual bool \fBidleCallback\fP (void)"
-.br
-.ti -1c
 .RI "int \fBgetPreviousPosition\fP (void)"
 .br
-.ti -1c
-.RI "virtual bool \fBinitializeSpecificObjectDictionary\fP (void)"
-.br
-.RI "This is an Overrideable function that the specific motor implementation can modify in order to set the internal register with specific values at the motor configuration step during initialization\&. "
 .ti -1c
 .RI "bool \fBinitializeObjectDictionary\fP (void)"
 .br
@@ -100,7 +88,7 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 .RI "void \fBsetNanoJPtr\fP (const unsigned char *ptr, int size)"
 .br
 .ti -1c
-.RI "bool \fBinitResetEncoderCommand\fP (void)"
+.RI "bool \fBinitResetEncoderCommand\fP (int initial_position)"
 .br
 .ti -1c
 .RI "void \fBsetTargetRange\fP (int h, int l)"
@@ -126,17 +114,39 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 .br
 .RI "This function Reads a SDO register in the target motor device; "
 .ti -1c
-.RI "virtual void \fBsetCommandCompletedCode\fP (\fBMotorCompletedCodes\fP error)"
+.RI "virtual \fBMotorCompletedCodes\fP \fBautomaticPositioningPreparationCallback\fP (void)"
 .br
-.RI "This function is internally used to set a command completion code\&. "
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "virtual void \fBautomaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
+.br
+.RI "This function is called when the command is terminated\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBautomaticHomingPreparationCallback\fP (void)"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "virtual void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
+.br
+.RI "This function is called when the command is terminated\&. "
+.ti -1c
+.RI "virtual bool \fBidleCallback\fP (void)"
+.br
+.ti -1c
+.RI "virtual bool \fBinitializeSpecificObjectDictionaryCallback\fP (void)"
+.br
+.RI "Override this function to initialize specific registers of the target Motor Device\&. "
 .in -1c
 .SS "Protected Attributes"
 
 .in +1c
 .ti -1c
+.RI "int \fBencoder_initial_value\fP"
+.br
+.ti -1c
 .RI "int \fBcurrent_eposition\fP"
 .br
-.RI "Current Encoder position\&. "
+.RI "This is the value that shall be assigne to the encoder at the startup\&. "
 .ti -1c
 .RI "int \fBcurrent_uposition\fP"
 .br
@@ -274,6 +284,12 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 .br
 .RI "This function handles the Upload nanoj program steps\&. "
 .ti -1c
+.RI "void \fBsetCommandCompletedCode\fP (\fBMotorCompletedCodes\fP error)"
+.br
+.RI "This function 
+.br
+ "
+.ti -1c
 .RI "void \fBupdateCurrentPosition\fP (void)"
 .br
 .RI "This function updates the current position\&. "
@@ -289,7 +305,7 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 .br
 .RI "This function executes the Automatic positioning of the motor at the expected target position\&. "
 .ti -1c
-.RI "void \fBmanageEncoderResetCommand\fP (void)"
+.RI "void \fBmanageAutomaticHoming\fP (void)"
 .br
 .in -1c
 .SS "Private Attributes"
@@ -388,6 +404,14 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMo
 .RI "int \fBcommand_ms_tmo\fP"
 .br
 .RI "Timoeut activation in ms\&. "
+.ti -1c
+.RI "int \fBcommand_homing_on_method\fP"
+.br
+.RI "Homing method whith zero photocell starting in ON status\&. "
+.ti -1c
+.RI "int \fBcommand_homing_off_method\fP"
+.br
+.RI "Homing method whith zero photocell starting in OFF status\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -493,10 +517,9 @@ This enumeration class defines the Command codes
 .in +1c
 .TP
 \fB\fIMOTOR_IDLE \fP\fP
-No command are presents\&. 
-.TP
-\fB\fIMOTOR_ENCODER_RESET \fP\fP
-Encoder reset to 0 at the current position\&. 
+No command are presents 
+.br
+ 
 .TP
 \fB\fIMOTOR_HOMING \fP\fP
 Homing procedure for automatic zero setting\&. 
@@ -511,19 +534,27 @@ Motor Automatic activation to target\&.
 .TP
 \fB\fICOMMAND_SUCCESS \fP\fP
 .TP
+\fB\fICOMMAND_PROCEED \fP\fP
+.TP
 \fB\fIERROR_MOTOR_BUSY \fP\fP
 .TP
 \fB\fIERROR_INITIALIZATION \fP\fP
 .TP
 \fB\fIERROR_UNEXPECTED_STATUS \fP\fP
 .TP
-\fB\fIERROR_SUBCLASS_PREPARATION \fP\fP
+\fB\fIERROR_LIMIT_SWITCH \fP\fP
+.TP
+\fB\fIERROR_BRAKE_DEVICE \fP\fP
+.TP
+\fB\fIERROR_INVALID_COMMAND_INITIAL_CONDITION \fP\fP
 .TP
 \fB\fIERROR_TIMOUT \fP\fP
 .TP
 \fB\fIERROR_INTERNAL_FAULT \fP\fP
 .TP
 \fB\fIERROR_ACTIVATION_REGISTER \fP\fP
+.TP
+\fB\fIERROR_MISSING_HOME \fP\fP
 .SS "enum class \fBCANOPEN::CanOpenMotor::status_options\fP\fC [strong]\fP"
 
 .PP
@@ -558,14 +589,20 @@ This is the Class constructor\&.
 
 .SH "Member Function Documentation"
 .PP 
+.SS "bool CanOpenMotor::activateAutomaticHoming (int method_on, int method_off, int speed, int acc)"
+
+.PP
+This function starts the automatic homing procedure\&. 
 .SS "bool CanOpenMotor::activateAutomaticPositioning (int id, int target, int speed, int acc, int dec)"
 
 .PP
-This function starts an automatic positioning\&. This is the function to activate an Automatic positioning\&.
+This function starts an automatic positioning 
+.br
+ This is the function to activate an Automatic positioning\&.
 .PP
 This function can be used by the application in order to request the execution of a positioning\&.
 .PP
-The unction return immediatelly if the motor shouldn't in the right status to execute a command\&.
+The function return immediatelly if the motor shouldn't in the right status to execute a command (busy or not homing)\&.
 .PP
 When a command should be accepted the Application shall wait for the \fBcommand_completed_event()\fP callback to detect the command completion\&.
 .PP
@@ -595,7 +632,7 @@ true if the command can be executed
 .SS "bool CanOpenMotor::activateConfiguration (void)"
 
 .PP
-This function activate motor configuration fase\&. During the motor configuration fase, the device Object registers are written with the wanted values (see \fBinitializeObjectDictionary()\fP and \fBinitializeSpecificObjectDictionary()\fP);
+This function activate motor configuration fase\&. During the motor configuration fase, the device Object registers are written with the wanted values (see \fBinitializeObjectDictionary()\fP and \fBinitializeSpecificObjectDictionaryCallback()\fP);
 .PP
 If the implementation needs the Nanoj program, the applicaiton program is uploaded into the device\&.
 .PP
@@ -604,31 +641,28 @@ If the implementation needs the Nanoj program, the applicaiton program is upload
 .RE
 .PP
 
-.SS "bool CanOpenMotor::activateResetEncoderCommand (int id)"
-
-.SS "void CanOpenMotor::automaticPositioningCompletion (void)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "virtual void CANOPEN::CanOpenMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-This function shall be implemented by the Subclass\&. This function shall be overridden by the subclass that needs to custom the activation completion phase\&.
+This function is called when the command is terminated\&. 
 .PP
-For example: the case where the application should control a motor brake after the positioning completion\&.
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::automaticHomingPreparationCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
 .PP
 Reimplemented in \fBBodyMotor\fP\&.
-.SS "bool CanOpenMotor::automaticPositioningPreparation (void)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "virtual void CANOPEN::CanOpenMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-This function shall be implemented by the Subclass\&. This function shall be overridden by the subclass that needs to custom the activation phase\&.
+This function is called when the command is terminated\&. 
 .PP
-The function is called just after the motor in Operating mode (power on then motor phases) so that the motor strongly keep the position during this application preparation\&.
-.PP
-For example: the case where the application should control a motor brake before to start the positioning\&.
-.PP
-\fBReturns\fP
-.RS 4
-true to allow the procedure to continue
-.RE
-.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::automaticPositioningPreparationCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
+.PP
+This function is called just before to Power the motor phases\&. 
 .PP
 Reimplemented in \fBBodyMotor\fP\&.
 .SS "bool CanOpenMotor::blocking_readOD (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim)\fC [protected]\fP"
@@ -846,16 +880,16 @@ This is a convenient function to decode a Error Code string from the register 10
 
 .SS "int CANOPEN::CanOpenMotor::getPreviousPosition (void)\fC [inline]\fP, \fC [protected]\fP"
 
-.SS "bool CanOpenMotor::idleCallback (void)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "virtual bool CANOPEN::CanOpenMotor::idleCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Reimplemented in \fBBodyMotor\fP\&.
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, and \fBVerticalMotor\fP\&.
 .SS "bool CanOpenMotor::initializeObjectDictionary (void)\fC [protected]\fP"
 
 .PP
 This is the function initializing the Motor register with common default values\&. This function is called during the initialization fase in order to set the internal register with default values, widely used for PD4 motors\&.
 .PP
-In case a subclassed module should personalize the default values, the module should override the \fBinitializeSpecificObjectDictionary()\fP in order to set those registers to be changed\&.
+In case a subclassed module should personalize the default values, the module should override the \fBinitializeSpecificObjectDictionaryCallback()\fP in order to set those registers to be changed\&.
 .PP
 \fBReturns\fP
 .RS 4
@@ -863,19 +897,10 @@ true in case of success
 .RE
 .PP
 
-.SS "bool CanOpenMotor::initializeSpecificObjectDictionary (void)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "virtual bool CANOPEN::CanOpenMotor::initializeSpecificObjectDictionaryCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-This is an Overrideable function that the specific motor implementation can modify in order to set the internal register with specific values at the motor configuration step during initialization\&. The function is called soon after the whole set of registers are initiated with standard values common of all the base class motors\&.
-.PP
-if the Application shouldn't override this function, the motor will be uploaded with the standard common register values\&.
-.PP
-\fBReturns\fP
-.RS 4
-true in case of success
-.RE
-.PP
-
+Override this function to initialize specific registers of the target Motor Device\&. 
 .PP
 Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, and \fBVerticalMotor\fP\&.
 .SS "bool CanOpenMotor::initNanojDataRegister (void)\fC [private]\fP"
@@ -889,7 +914,7 @@ This function initializes the Nanoj program download
 .RE
 .PP
 
-.SS "bool CanOpenMotor::initResetEncoderCommand (void)\fC [protected]\fP"
+.SS "bool CanOpenMotor::initResetEncoderCommand (int initial_position)\fC [protected]\fP"
 
 .SS "bool CANOPEN::CanOpenMotor::isConfigurating (void)\fC [inline]\fP"
 
@@ -925,6 +950,8 @@ Soon as possible after the application startup;
 .IP "\(bu" 2
 In case the device should reset (Boot-Up frame received);
 .PP
+
+.SS "void CanOpenMotor::manageAutomaticHoming (void)\fC [private]\fP"
 
 .SS "void CanOpenMotor::manageAutomaticPositioning (void)\fC [private]\fP"
 
@@ -965,8 +992,6 @@ With the command completion, the following event is generated:
 .IP "\(bu" 2
 \fBcommand_completed_event(command_id, termination_code)\fP;
 .PP
-
-.SS "void CanOpenMotor::manageEncoderResetCommand (void)\fC [private]\fP"
 
 .SS "bool CanOpenMotor::nanojWrite1024Block (int vectorIndex, int block_size)\fC [private]\fP"
 
@@ -1011,19 +1036,19 @@ The timeout is calculated based on this operating mode
 .RE
 .PP
 
-.SS "void CanOpenMotor::setCommandCompletedCode (\fBMotorCompletedCodes\fP error)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "void CanOpenMotor::setCommandCompletedCode (\fBMotorCompletedCodes\fP error)\fC [private]\fP"
 
 .PP
-This function is internally used to set a command completion code\&. 
+This function 
+.br
+ This function is internally used to set a command completion code\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIerror\fP 
+\fILABEL_ERROR\fP 
 .RE
 .PP
 
-.PP
-Reimplemented in \fBArmMotor\fP\&.
 .SS "void CANOPEN::CanOpenMotor::setNanoJPtr (const unsigned char * ptr, int size)\fC [inline]\fP, \fC [protected]\fP"
 
 .SS "void CANOPEN::CanOpenMotor::setTargetRange (int h, int l)\fC [inline]\fP, \fC [protected]\fP"
@@ -1135,6 +1160,14 @@ Activation result\&.
 
 .PP
 Deceleration in user/s2\&. 
+.SS "int CANOPEN::CanOpenMotor::command_homing_off_method\fC [private]\fP"
+
+.PP
+Homing method whith zero photocell starting in OFF status\&. 
+.SS "int CANOPEN::CanOpenMotor::command_homing_on_method\fC [private]\fP"
+
+.PP
+Homing method whith zero photocell starting in ON status\&. 
 .SS "int CANOPEN::CanOpenMotor::command_id\fC [protected]\fP"
 
 .PP
@@ -1160,12 +1193,14 @@ Current executing command code\&.
 .SS "int CANOPEN::CanOpenMotor::current_eposition\fC [protected]\fP"
 
 .PP
-Current Encoder position\&. 
+This is the value that shall be assigne to the encoder at the startup\&. Current Encoder position 
 .SS "int CANOPEN::CanOpenMotor::current_uposition\fC [protected]\fP"
 
 .PP
 Current User position\&. 
 .SS "unsigned char CANOPEN::CanOpenMotor::device_id\fC [private]\fP"
+
+.SS "int CANOPEN::CanOpenMotor::encoder_initial_value\fC [protected]\fP"
 
 .SS "unsigned int CANOPEN::CanOpenMotor::error_class\fC [private]\fP"
 

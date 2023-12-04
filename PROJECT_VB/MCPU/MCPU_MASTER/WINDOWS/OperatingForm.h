@@ -1,5 +1,14 @@
 #pragma once
 
+/// <summary>
+/// \defgroup OperatingGUI_Module Operating Status Window Management Module
+/// \ingroup GUI_Module Gantry GUI modules
+/// 
+/// 
+/// </summary>
+/// 
+
+
 #include <windows.h>
 
 using namespace System::ComponentModel;

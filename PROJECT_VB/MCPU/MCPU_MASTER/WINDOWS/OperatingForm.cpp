@@ -8,49 +8,53 @@
 #include "ExposureModule.h"
 #include "../DEVICES/PCB315.h"
 #include "../DEVICES/PCB303.h"
+#include "../DEVICES/PCB302.h"
+#include "../DEVICES/PCB301.h"
+#include "../DEVICES/PCB304.h"
+#include "../DEVICES/PCB326.h"
 
-#define PROJ_SELCTION_BACKGROUND_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ProjSelectionButton.PNG")
+#define PROJ_SELCTION_BACKGROUND_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ProjSelectionButton.PNG")
 
 // Main Panel Definition
-#define XRAY_ON_IMAGE  Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\XOn.PNG")
-#define XRAY_STDBY_IMAGE  Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\XStdby.PNG")
-#define XRAY_READY_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\XReady.PNG")
+#define XRAY_ON_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\XOn.PNG")
+#define XRAY_STDBY_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\XStdby.PNG")
+#define XRAY_READY_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\XReady.PNG")
 
-#define LAMP_OFF_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\LampOff.PNG")
-#define LAMP_ON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\LampOn.PNG")
+#define LAMP_OFF_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\LampOff.PNG")
+#define LAMP_ON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\LampOn.PNG")
 
-#define WARNING_BUTTON_ON Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\WarningOn.PNG")
-#define ERROR_BUTTON_ON Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\AlarmOn.PNG")
-#define ERROR_BUTTON_OFF Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\AlarmOff.PNG")
+#define WARNING_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\WarningOn.PNG")
+#define ERROR_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOn.PNG")
+#define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOff.PNG")
 
-#define COMPRESSOR_DISABLED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\CompressionNotEnabled.PNG")
-#define COMPRESSOR_ENABLE_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ActivePaddleDetected.PNG")
-#define COMPRESSOR_NOT_DETECTED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\PaddleNotPresent.PNG")
+#define COMPRESSOR_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CompressionNotEnabled.PNG")
+#define COMPRESSOR_ENABLE_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ActivePaddleDetected.PNG")
+#define COMPRESSOR_NOT_DETECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\PaddleNotPresent.PNG")
 
-#define THICKNESS_DISABLED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ThicknessDisabled.PNG")
-#define THICKNESS_ENABLED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ThicknessEnabled.PNG")
+#define THICKNESS_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ThicknessDisabled.PNG")
+#define THICKNESS_ENABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ThicknessEnabled.PNG")
 
-#define FORCE_DISABLED_NOT_COMPRESSED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ForceDisabledNotCompressed.PNG")
-#define FORCE_DISABLED_COMPRESSED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ForceDisabledCompressed.PNG")
-#define FORCE_ENABLED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ForceEnabledCompressed.PNG")
+#define FORCE_DISABLED_NOT_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceDisabledNotCompressed.PNG")
+#define FORCE_DISABLED_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceDisabledCompressed.PNG")
+#define FORCE_ENABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceEnabledCompressed.PNG")
 
-#define COLLIMATION_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\CollimationMode.PNG")
+#define COLLIMATION_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CollimationMode.PNG")
 
-#define TUBE_TEMP_OK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\TubeOk.PNG")
-#define TUBE_TEMP_NOK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\TubeNok.PNG")
+#define TUBE_TEMP_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\TubeOk.PNG")
+#define TUBE_TEMP_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\TubeNok.PNG")
 
-#define DOOR_CLOSED_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\DoorClosed.PNG")
-#define DOOR_OPEN_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\DoorOpen.PNG")
+#define DOOR_CLOSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\DoorClosed.PNG")
+#define DOOR_OPEN_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\DoorOpen.PNG")
 
-#define MAGFACTOR_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\MagFactor.PNG")
+#define MAGFACTOR_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\MagFactor.PNG")
 
-#define COMPRESSION_RELEASE_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\CompressionReleaseOn.PNG")
-#define COMPRESSION_KEEP_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\CompressionReleaseOff.PNG")
+#define COMPRESSION_RELEASE_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CompressionReleaseOn.PNG")
+#define COMPRESSION_KEEP_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CompressionReleaseOff.PNG")
 
-#define RESIDUAL_EXPOSURE_OK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ExposureLeftOk.PNG")
-#define RESIDUAL_EXPOSURE_NOK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "OperatingForm\\ExposureLeftNok.PNG")
+#define RESIDUAL_EXPOSURE_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ExposureLeftOk.PNG")
+#define RESIDUAL_EXPOSURE_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ExposureLeftNok.PNG")
 
-#define PROJ_INFO_ICON  Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info_64x64.PNG")
+#define PROJ_INFO_ICON  Image::FromFile(Gantry::applicationResourcePath + "Icons\\info_64x64.PNG")
 
 
 namespace OPERSTATUS {
@@ -104,7 +108,7 @@ namespace OPERSTATUS {
 		collimatorStatus collimator;
 		xray_status_t xray_status;
 
-		bool closed_door;		
+		PCB301::door_options door_status;		
 		unsigned char currentPanel;
 		bool alarm;
 		bool warning;
@@ -120,8 +124,8 @@ namespace OPERSTATUS {
 void OperatingForm::formInitialization(void) {
 
 	// Initialize the position of the form
-	this->Left = GlobalObjects::monitor_X0;
-	this->Top = GlobalObjects::monitor_Y0;
+	this->Left = Gantry::monitor_X0;
+	this->Top = Gantry::monitor_Y0;
 
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	
@@ -191,7 +195,7 @@ void OperatingForm::formInitialization(void) {
 	tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
 
 	// Door Status 
-	OPERSTATUS::Registers.closed_door = false;
+	OPERSTATUS::Registers.door_status = PCB301::door_options::OPEN_DOOR;
 	doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
 
 	// Magnification factor
@@ -226,7 +230,7 @@ void OperatingForm::initOperatingStatus(void) {
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 	// Initialize the Patient name
-	labelPatientName->Text = GantryStatusRegisters::OperatingStatusRegister::getPatientName();
+	labelPatientName->Text = Gantry::getPatientName();
 
 	// Init Arm Angle 
 	float arm_position = ((float)ArmMotor::device->getCurrentPosition() / 100);
@@ -267,12 +271,8 @@ void OperatingForm::close(void) {
 
 void OperatingForm::onArmTargetChangedCallback(int id, int target){
 
-	if (ArmMotor::device->isValidTarget()) {
-		// Sets the current selected projection
-		System::String^ tag = ArmMotor::getSelectedProjection();
-		if (tag == "") return;
-
-		selectedIcon->BackgroundImage = ArmMotor::getProjectionsList()->ProjectionsIcons[tag];
+	if (ArmMotor::device->isValidTarget()) {		
+		selectedIcon->BackgroundImage = ArmMotor::getProjectionsList()->getCurrentProjectionIcon();
 		selectedIcon->Show();
 		OPERSTATUS::Registers.projectionSelected = true;
 	}
@@ -315,18 +315,20 @@ void OperatingForm::evaluateErrorStatus(void) {
 	static bool cmp_force_error = false;
 
 	// Compression Mode Warning
-	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) && (GantryStatusRegisters::CompressorRegister::getForce() == 0))
+	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
 		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION, false);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
 
 
 	// Patient Protection Mode Warning
-	if (
-		(ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) &&
-		(GantryStatusRegisters::ComponentRegister::Value->getCode() != GantryStatusRegisters::ComponentRegister::options::COMPONENT_PROTECTION_3D)&&
-		(GantryStatusRegisters::CollimatorComponentRegister::Value->getCode() != GantryStatusRegisters::CollimatorComponentRegister::options::COLLI_COMPONENT_PROTECTION_2D)
-		) Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION, false);
-	else Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
+	bool patient_protection = false;
+	if ((PCB304::isPatientProtection()) && (!PCB304::isPatientProtectionShifted())) patient_protection = true;
+	else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) patient_protection = true;
+
+	if ((ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) && (patient_protection))
+		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION, false);
+	else 
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	
 	// C-Arm Mode
 	if (
@@ -336,14 +338,8 @@ void OperatingForm::evaluateErrorStatus(void) {
 	else Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
 
 	// Paddle identification
-	if (
-		(ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) &&
-			(
-				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::PAD_UNDETECTED) ||
-				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::PAD_UNLOCKED) ||
-				(GantryStatusRegisters::CompressorRegister::getPaddle()->Value->getCode() == GantryStatusRegisters::PaddleOption::options::UNDEF)
-			)
-		) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE, false);
+	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) &&
+		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE, false);
 	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
 
 	// Exposure Mode selection	
@@ -355,7 +351,7 @@ void OperatingForm::evaluateErrorStatus(void) {
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 
 	// Xray Push Button Enable
-	if (GantryStatusRegisters::XrayPushButtonRegister::isDisabled()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED, false);
+	if (!PCB301::getXrayEventEna()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED, false);
 	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 
 	// Error Button
@@ -435,7 +431,7 @@ void OperatingForm::evaluateCompressorStatus(void) {
 			}
 		}
 
-		if (!GantryStatusRegisters::CompressorRegister::isPaddle())
+		if (PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)
 		{
 			// Compressor Not Detected
 			if (OPERSTATUS::Registers.paddle.compressor_mode != OPERSTATUS::COMPRESSOR_NOT_DETECTED) {
@@ -518,23 +514,21 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 }
 
 void OperatingForm::evaluateMagStatus(void) {
-	return;
-	// Magnification factor
-	OPERSTATUS::Registers.mag_factor = GantryStatusRegisters::ComponentRegister::getMagFactor();
-	magnifierStatus->BackgroundImage = MAGFACTOR_IMAGE;
+
+	labelMag->Text = PCB304::getMagnifierfactorString();
 
 }
-void OperatingForm::evaluateDoorStatus(void) {
-	if (GantryStatusRegisters::SafetyStatusRegister::getCloseDoor() != OPERSTATUS::Registers.closed_door) {
-		OPERSTATUS::Registers.closed_door = GantryStatusRegisters::SafetyStatusRegister::getCloseDoor();
 
-		if (OPERSTATUS::Registers.closed_door) {
+void OperatingForm::evaluateDoorStatus(void) {
+
+	if (PCB301::getDoorStatus() != OPERSTATUS::Registers.door_status) {
+		OPERSTATUS::Registers.door_status = PCB301::getDoorStatus();
+
+		if (OPERSTATUS::Registers.door_status == PCB301::door_options::CLOSED_DOOR) {
 			doorStatus->BackgroundImage = DOOR_CLOSED_IMAGE;
-			Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
 		}
 		else {
 			doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
-			Notify::activate(Notify::messages::WARNING_DOOR_STUDY_OPEN, false);
 		}
 	}
 	

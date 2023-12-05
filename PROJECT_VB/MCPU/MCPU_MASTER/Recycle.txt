@@ -1,0 +1,186 @@
+
+/// <summary>
+   /// This class implements the Tomo configuration selection options.
+   /// 
+   /// The Tomomo configuration file is stored in the Disk.
+   /// 
+   /// There are several predefined configuration files 
+   /// and in each of the configuration files there are a set of predefined 
+   /// sequence description with its unit descriptor identifier.
+   /// 
+   /// The configuration file identifier is named confid;
+   /// The sequnce descriptor is named seqid;
+   /// The selection is achieved with the confid + seqid codes.
+   /// 
+   /// \ingroup globalModule 
+   /// </summary>
+ref class TomoConfigRegister {
+public:
+
+    /// <summary>
+    /// This is the enumeration option code for file configuration 
+    /// </summary>
+    enum class options_conf {
+        TOMO_1F = 0, //!< Tomo configuration file 1F
+        TOMO_2F, //!< Tomo configuration file 2F
+        TOMO_3F, //!< Tomo configuration file 3F
+        TOMO_4F, //!< Tomo configuration file 4F
+        TOMO_5F, //!< Tomo configuration file 5F
+        LEN,
+        UNDEF = LEN
+    };
+    static const cli::array<String^>^ tags_conf = gcnew cli::array<String^>  { "TOMO_1F", "TOMO_2F", "TOMO_3F", "TOMO_4F", "TOMO_5F", "UNDEF" }; //!< This is the config id option-tags static array
+
+    /// <summary>
+    /// This is the enumeration option code for the particolar sequence in the configuration file  
+    /// </summary>
+    enum class options_seq {
+        NARROW = 0,         //!< Narrow sequence
+        INTERMEDIATE,   //!< Intermediate sequence
+        WIDE,           //!< Wide seqeunce
+        SUPERWIDE,      //!< Super-wide sequence
+        LEN,
+        UNDEF = LEN
+    };
+    static const cli::array<String^>^ tags_seq = gcnew cli::array<String^>  { "N", "I", "W", "SW", "UNDEF" }; //!< This is the sequence option-tags static array
+
+
+
+    
+
+    /// <summary>
+    /// This function selects a Tomo configuration sequence 
+    /// based on the confid and seqid identifiers.
+    /// 
+    /// If the selection changes, the selection_change_event() is generated.
+    /// 
+    /// </summary>
+    /// <param name="conftag">this is the configuration file identifier tag</param>
+    /// <param name="seqtag">this is the sequence identifier tag</param>
+    /// <returns> tue if the confid + seqid exists</returns>
+    static bool select(String^ conftag, String^ seqtag) {
+        int i;
+
+        options_conf curconf = confid;
+        options_seq curseq = seqid;
+
+        for (i = 0; i < (int)options_conf::LEN; i++) {
+            if (conftag == tags_conf[i]) {
+                confid = (options_conf)i;
+                break;
+            }
+        }
+        if (i == (int)options_conf::LEN) {
+            confid = options_conf::UNDEF;
+            seqid = options_seq::UNDEF;
+            return false;
+        }
+
+        for (i = 0; i < (int)options_seq::LEN; i++) {
+            if (seqtag == tags_seq[i]) {
+                seqid = (options_seq)i;
+
+
+                /**/
+                if ((confid != curconf) || (seqid != curseq))
+                    selection_change_event();
+
+                return true;
+            }
+        }
+
+        confid = options_conf::UNDEF;
+        seqid = options_seq::UNDEF;
+        return false;
+
+    }
+
+    /// <summary>
+    /// This function returns the Tomo Configuration file name
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns>Tomo Configuration file name</returns>
+    static inline String^ getConfig(void) { return tags_conf[(int)confid]; }
+
+    /// <summary>
+    /// This function returns the Tomo Sequence name
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns>Tomo Sequence name</returns>
+    static inline String^ getSequence(void) { return tags_seq[(int)seqid]; }
+
+    /// <summary>
+    /// This function returns true if the Tomo configuration has been selected
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns>true if a valid configuration is selected</returns>
+    static inline bool isValid(void) { return ((confid != options_conf::UNDEF) && (seqid != options_seq::UNDEF)); }
+
+    /// <summary>
+    /// This function returns the Home position of a selected configuration
+    /// 
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns>Tomo home position in 0.01°</returns>
+    static inline int getTomoHome(void) { return tomo_home; }
+
+    /// <summary>
+   /// This function returns the End position of a selected configuration
+   /// 
+   /// </summary>
+   /// <param name=""></param>
+   /// <returns>Tomo End position in 0.01°</returns>
+    static inline int getTomoEnd(void) { return tomo_end; }
+
+    /// <summary>
+   /// This function returns the Acceleration of a selected Tomo configuration
+   /// 
+   /// </summary>
+   /// <param name=""></param>
+   /// <returns>Acceleration in 0.01°/ss </returns>
+    static inline int getTomoAcc(void) { return tomo_acc; }
+
+    /// <summary>
+  /// This function returns the Deceleration of a selected Tomo configuration
+  /// 
+  /// </summary>
+  /// <param name=""></param>
+  /// <returns>Deceleration in 0.01°/ss </returns>
+    static inline int getTomoDec(void) { return tomo_dec; }
+
+    /// <summary>
+  /// This function returns the Speed of a selected Tomo configuration
+  /// 
+  /// </summary>
+  /// <param name=""></param>
+  /// <returns>Speed in 0.01°/s </returns>
+    static inline int getTomoRun(void) { return tomo_run; }
+
+    /// <summary>
+    /// This function returns the number of valid sample of a selected Tomo configuration
+    /// 
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns>Number of sequence samples </returns>
+    static inline int getTomoSmp(void) { return tomo_smp; }
+
+    /// <summary>
+    /// This function returns the number of initial skips of a selected Tomo configuration
+    /// 
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns>Number of initial skips </returns>
+    static inline int getTomoSkp(void) { return tomo_skp; }
+
+
+private:
+    static options_conf confid = options_conf::UNDEF; //!< This is the register conf_id 
+    static options_seq seqid = options_seq::UNDEF; //!< This is the register sequence_id 
+    static int tomo_home;//!< This is the Home position in 0.01°
+    static int tomo_end;//!< This is the Tomo End position in 0.01°
+    static int tomo_acc;//!< This is the acceleration in 0.01°/ss
+    static int tomo_dec;//!< This is the deceleration in 0.01°/ss
+    static int tomo_run;//!< This is the speed in 0.01°/s
+    static int tomo_smp;//!<  This is the number of valid samples
+    static int tomo_skp;//!<  This is the number of initial skip pulses
+};

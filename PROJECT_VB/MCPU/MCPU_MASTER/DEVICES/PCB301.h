@@ -25,6 +25,7 @@ public:
 	#define PCB301_GET_BODY_CW(d0,d1,d2,d3) (bool) (d1 & 0x40)
 	#define PCB301_GET_BODY_CCW(d0,d1,d2,d3) (bool) (d1 & 0x80)
 
+	#define PCB301_GET_XRAY_PUSH_BUTTON(d0,d1,d2,d3) (bool) (d2 & 0x08)
 	#define PCB301_GET_SYSTEM_CLOSEDOOR(d0,d1,d2,d3) (bool) (d2 & 0x10)
 
 
@@ -72,6 +73,11 @@ public:
 		BODY_INVALID_CODE,
 	};
 
+	public: enum class door_options {
+		CLOSED_DOOR = 0,
+		OPEN_DOOR
+	};
+
 	/// <summary>
 	/// This function returns the current status of the Vertical activation hardware inputs
 	/// 
@@ -86,10 +92,39 @@ public:
 	/// <returns>the current status request</returns>
 	public: static body_activation_options getBodyActivationStatus(void) { return body_activation_status; }
 
+	
+	public: static bool getPowerdown(void) { return power_down_status; }
+	public: static door_options getDoorStatus(void) { return door_status; }
+	public: static bool getBatteryEna(void) { return battery_enabled_status; }
+	public: static bool getBatteryAlarm(void) { return (batt1_low_alarm || batt2_low_alarm); }
+	public: static unsigned char getVoltageBatt1(void) { return voltage_batt1; }
+	public: static unsigned char getVoltageBatt2(void) { return voltage_batt2; }
+	
+	public: static bool getXrayStat(void) { return xray_push_button; }
+	public: static bool getXrayEventEna(void) { return xray_push_button_event_enable; }
+	public: static void setXrayEventEna(bool stat) { xray_push_button_event_enable = stat; }
+
+
+
+
 private:
 	static bool xray_push_button_input   = false;	//!< This is the current X-RAY push button activation status
 	static bool xray_enable_status_output = false; //!< This is the current X-RAY enable status setting
 	static vertical_activation_options vertical_activation_status = vertical_activation_options::VERTICAL_NO_ACTIVATION;		//!< This is the current status of the vertical activation request
-	static body_activation_options body_activation_status = body_activation_options::BODY_NO_ACTIVATION;		//!< This is the current status of the body activation request
+	static body_activation_options body_activation_status = body_activation_options::BODY_NO_ACTIVATION;		//!< This is the current status of the body activation request	
+	static door_options door_status = door_options::OPEN_DOOR; //!< This is the current status of the Study door
+	
+	static bool power_down_status = false; // Powerdown Status
+
+	// Battery management
+	static bool battery_enabled_status = false; //!< Battery enabled system button status
+	static bool batt1_low_alarm = false;		//!< Low voltage of battery 1
+	static bool batt2_low_alarm = false;		//!< Low voltage of battery 2
+	static unsigned char voltage_batt1 = 0;		//!< 10 * voltage level of battery 1
+	static unsigned char voltage_batt2 = 0;		//!< 10 * voltage level of battery 2
+
+	// X-RAY push button handling
+	static bool xray_push_button = false; //!> This is the current X-RAY status 
+	static bool xray_push_button_event_enable = false; //!> This is the event genration flag
 };
 

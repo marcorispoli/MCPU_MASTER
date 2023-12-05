@@ -1,6 +1,7 @@
 #include "CalibrationConfig.h"
 #include "ArmMotor.h"
 #include "verticalMotor.h"
+#include "Notify.h"
 #include "../gantry_global_status.h"
 
 
@@ -99,12 +100,21 @@ bool ArmMotor::idleCallback(void) {
 
 }
 
+void ArmMotor::abortTarget(void) {
+    if (!valid_target) return;
+    valid_target = false;
+
+    projections->clrProjection();
+    target_abort_event();
+}
 
 bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id) {
-    if (projections->Value->indexOf(proj) < 0) return false;
+
+    // Checks the validity of the requested projection
+    if (!projections->isValidProjection(proj) ) return false;
 
     // Assignes the projection
-    projections->Value->setCode(proj);
+    projections->setProjection(proj);
 
     // Assignes the target data
     allowed_low = low;

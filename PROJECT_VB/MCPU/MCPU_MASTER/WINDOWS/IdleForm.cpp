@@ -16,26 +16,25 @@
 
 
 // Main Panel Definition
-#define BACKGROUND Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\IdleFormBackground.PNG")
-#define XRAY_MODE Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\XrayMode.PNG")
-#define BATTERY_CONNECTED Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\Battery\\BatteryConnected.PNG")
-#define BATTERY_CONNECTED_LOW Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\Battery\\BatteryConnectedLow.PNG")
-#define BATTERY_POWERDOWN Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\Battery\\BatteryPowerdownFull.PNG")
-#define AWS_CONNECTED Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\AwsConnected.PNG")
-#define PERIPHERALS_CONNECTED Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\PeripheralsConnected.PNG")
-#define DOOR_CLOSED Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\DoorClosed.PNG")
-#define TUBE_TEMP_OK Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\tubeTempOk.PNG")
-#define TUBE_TEMP_NOK Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\tubeTempNok.PNG")
-#define ERRORPANEL_ERRORICON Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\error_160x145.PNG")
-#define ERROR_BUTTON Image::FromFile(GlobalObjects::applicationResourcePath + "IdleForm\\AlarmOn.PNG")
+#define BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\IdleFormBackground.PNG")
+#define XRAY_MODE Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\XrayMode.PNG")
+#define BATTERY_CONNECTED Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\Battery\\BatteryConnected.PNG")
+#define BATTERY_CONNECTED_LOW Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\Battery\\BatteryConnectedLow.PNG")
+#define BATTERY_POWERDOWN Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\Battery\\BatteryPowerdownFull.PNG")
+#define AWS_CONNECTED Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\AwsConnected.PNG")
+#define PERIPHERALS_CONNECTED Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\PeripheralsConnected.PNG")
+#define DOOR_CLOSED Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\DoorClosed.PNG")
+#define TUBE_TEMP_OK Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\tubeTempOk.PNG")
+#define TUBE_TEMP_NOK Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\tubeTempNok.PNG")
+#define ERRORPANEL_ERRORICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\error_160x145.PNG")
+#define ERROR_BUTTON Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\AlarmOn.PNG")
 
 namespace IDLESTATUS {
 	typedef struct {
 
 		// Battery Status local variables
 		bool battena;
-		bool batt1low;
-		bool batt2low;
+		bool battery_alarm;
 		unsigned char vbatt1;
 		unsigned char vbatt2;
 
@@ -55,7 +54,7 @@ namespace IDLESTATUS {
 		tubeStatus	tube;
 
 		bool powerdown;
-		bool closed_door;
+		PCB301::door_options door_status;
 		bool aws_connected;
 		bool peripherals_connected;
 		
@@ -66,8 +65,8 @@ namespace IDLESTATUS {
 void IdleForm::formInitialization(void) {
 
 	// Initialize the position of the form
-	this->Left = GlobalObjects::monitor_X0;
-	this->Top = GlobalObjects::monitor_Y0;
+	this->Left = Gantry::monitor_X0;
+	this->Top = Gantry::monitor_Y0;
 
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	mainPanel->BackgroundImage = BACKGROUND;
@@ -104,10 +103,13 @@ void IdleForm::initIdleStatus(void) {
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 	// Handle the Powerdown
-	IDLESTATUS::Registers.powerdown = GantryStatusRegisters::PowerStatusRegister::getPowerdown();
+	IDLESTATUS::Registers.powerdown = PCB301::getPowerdown();
 
 	// Handle The Battery status
-	GantryStatusRegisters::PowerStatusRegister::getBatteryData(&IDLESTATUS::Registers.battery.battena, &IDLESTATUS::Registers.battery.batt1low, &IDLESTATUS::Registers.battery.batt2low, &IDLESTATUS::Registers.battery.vbatt1, &IDLESTATUS::Registers.battery.vbatt2);
+	IDLESTATUS::Registers.battery.battena = PCB301::getBatteryEna();
+	IDLESTATUS::Registers.battery.battery_alarm = PCB301::getBatteryAlarm();
+	IDLESTATUS::Registers.battery.vbatt1 = PCB301::getVoltageBatt1();
+	IDLESTATUS::Registers.battery.vbatt2 = PCB301::getVoltageBatt2();
 
 	// Set the proper status to the Battery Icon
 	if (IDLESTATUS::Registers.powerdown) {
@@ -115,7 +117,7 @@ void IdleForm::initIdleStatus(void) {
 		this->batteryConnected->BackgroundImage = BATTERY_POWERDOWN;
 	}
 	else if (IDLESTATUS::Registers.battery.battena) {
-		if ((IDLESTATUS::Registers.battery.batt1low) || (IDLESTATUS::Registers.battery.batt2low)) this->batteryConnected->BackgroundImage = BATTERY_CONNECTED_LOW;
+		if (IDLESTATUS::Registers.battery.battery_alarm) this->batteryConnected->BackgroundImage = BATTERY_CONNECTED_LOW;
 		else this->batteryConnected->BackgroundImage = BATTERY_CONNECTED;
 		this->batteryConnected->Show();
 	}
@@ -131,9 +133,9 @@ void IdleForm::initIdleStatus(void) {
 	this->peripheralsConnected->BackgroundImage = PERIPHERALS_CONNECTED;
 	this->peripheralsConnected->Hide();
 
-	IDLESTATUS::Registers.closed_door = GantryStatusRegisters::SafetyStatusRegister::getCloseDoor();
+	IDLESTATUS::Registers.door_status = PCB301::getDoorStatus();
 	this->doorClosed->BackgroundImage = DOOR_CLOSED;
-	if (!IDLESTATUS::Registers.closed_door) this->doorClosed->Hide();
+	if (IDLESTATUS::Registers.door_status == PCB301::door_options::OPEN_DOOR) this->doorClosed->Hide();
 	else this->doorClosed->Show();
 
 
@@ -188,32 +190,25 @@ void IdleForm::idleStatusManagement(void) {
 	System::DateTime date;
 	date = System::DateTime::Now;
 	
-	// Verifies if there is a StudyOpen condition
-	if (GantryStatusRegisters::OperatingStatusRegister::isOPEN()) {
-		this->close();
-		pOPERFORM->open();
-		return;
-	}
-
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-	IDLESTATUS::batteryStatus battery;
-	bool powerdown;
+	bool powerdown = PCB301::getPowerdown();
 	bool powerstatus_chg = false;
-
+	IDLESTATUS::batteryStatus battery;
+	
 	// Handle The Battery status
-	GantryStatusRegisters::PowerStatusRegister::getBatteryData(&battery.battena, &battery.batt1low, &battery.batt2low, &battery.vbatt1, &battery.vbatt2);
-	powerdown = GantryStatusRegisters::PowerStatusRegister::getPowerdown();
-
+	battery.battena = PCB301::getBatteryEna();
+	battery.battery_alarm = PCB301::getBatteryAlarm();
+	battery.vbatt1 = PCB301::getVoltageBatt1();
+	battery.vbatt2 = PCB301::getVoltageBatt2();
+	
 	if (IDLESTATUS::Registers.powerdown != powerdown) {
 		IDLESTATUS::Registers.powerdown = powerdown;
 		powerstatus_chg = true;
 	}
 
 	if ((IDLESTATUS::Registers.battery.battena != battery.battena) ||
-		(IDLESTATUS::Registers.battery.batt1low != battery.batt1low) ||
-		(IDLESTATUS::Registers.battery.batt2low != battery.batt2low)) {
-
+		(IDLESTATUS::Registers.battery.battery_alarm != battery.battery_alarm) ) {
 		IDLESTATUS::Registers.battery = battery;
 		powerstatus_chg = true;
 	}
@@ -224,7 +219,7 @@ void IdleForm::idleStatusManagement(void) {
 			this->batteryConnected->BackgroundImage = BATTERY_POWERDOWN;
 		}
 		else if (battery.battena) {
-			if ((battery.batt1low) || (battery.batt2low)) this->batteryConnected->BackgroundImage = BATTERY_CONNECTED_LOW;
+			if (battery.battery_alarm) this->batteryConnected->BackgroundImage = BATTERY_CONNECTED_LOW;
 			else this->batteryConnected->BackgroundImage = BATTERY_CONNECTED;
 			this->batteryConnected->Show();
 		}else 
@@ -234,15 +229,11 @@ void IdleForm::idleStatusManagement(void) {
 	}
 
 	// Handles the Door Closed status
-	if (IDLESTATUS::Registers.closed_door != GantryStatusRegisters::SafetyStatusRegister::getCloseDoor())
+	if (IDLESTATUS::Registers.door_status != PCB301::getDoorStatus())
 	{
-		IDLESTATUS::Registers.closed_door = GantryStatusRegisters::SafetyStatusRegister::getCloseDoor();
-		if (!IDLESTATUS::Registers.closed_door) {
-			this->doorClosed->Hide();			
-		}
-		else {
-			this->doorClosed->Show();			
-		}
+		IDLESTATUS::Registers.door_status = PCB301::getDoorStatus();
+		if (IDLESTATUS::Registers.door_status == PCB301::door_options::OPEN_DOOR) this->doorClosed->Hide();			
+		else this->doorClosed->Show();				
 	}
 
 	// Handles the AWS connection status

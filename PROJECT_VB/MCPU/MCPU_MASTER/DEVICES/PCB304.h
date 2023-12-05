@@ -19,6 +19,7 @@ public:
 	}
 	static PCB304^ device = gcnew PCB304();
 
+	
 	/// <summary>
 	/// This function returns the presence of the magnifier device
 	/// 
@@ -26,6 +27,7 @@ public:
 	/// <param name=""></param>
 	/// <returns>True if the Magnifier device has been detected </returns>
 	inline static bool isMagnifierDeviceDetected(void) { return magnifier_device_detected; }
+	static System::String^  getMagnifierfactorString(void) { return magnifier_factor_string; }
 
 	/// <summary>
 	/// This function set the Grid in Field.
@@ -74,10 +76,17 @@ public:
 
 	inline static bool isError(void) { return error; }
 
+	inline static bool isPatientProtection(void) { return patient_protection_detected; }
+	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
+
+
 protected: 	virtual void runningLoop(void) override;
 
 private:
+	static bool patient_protection_detected = false; //!< Is set if the patient protection should be detcted
+	static bool patient_protection_shifted = false; //!< Is set if the patient protection should be shifted out of standard position
 	static bool magnifier_device_detected = false; //!< Is set if the Magnifier device has been detected
+	static System::String^  magnifier_factor_string = "1.0"; //!< This is the current magnification factor detected in string format
 	static bool grid_on_field = false; //!< This is the status of the current grid position.
 	static bool grid_on_field_ready = false; //!< This flag stands for grid correctly positioned in Field
 	static bool synch_grid = false; //!< This flag set the current synch status 

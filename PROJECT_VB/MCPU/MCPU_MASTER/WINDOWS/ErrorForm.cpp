@@ -2,10 +2,10 @@
 #include "Notify.h"
 #include "gantry_global_status.h"
 
-#define FORM_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Windows\\ErrorFormBackground.PNG")
-#define ERROR_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\error.PNG")
-#define WARNING_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\warning.PNG")
-#define INFO_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info.PNG")
+#define FORM_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Windows\\ErrorFormBackground.PNG")
+#define ERROR_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\error.PNG")
+#define WARNING_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\warning.PNG")
+#define INFO_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\info.PNG")
 
 // Error Window timeout
 #define ERROR_WINDOW_TMO	15000
@@ -15,8 +15,8 @@ void ErrorForm::formInitialization(void) {
 
 	// Initialize the position of the form
 	// NOTE: Set the Position of the Form as Manual to be valid
-	this->Left = GlobalObjects::monitor_X0 ;
-	this->Top = GlobalObjects::monitor_Y0 ;
+	this->Left = Gantry::monitor_X0 ;
+	this->Top = Gantry::monitor_Y0 ;
 
 	this->BackColor = Color::FromArgb(216, 207, 208);
 	this->BackgroundImage = FORM_IMAGE;

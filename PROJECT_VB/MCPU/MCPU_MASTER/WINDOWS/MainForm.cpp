@@ -28,8 +28,8 @@ using namespace CANOPEN;
 void MainForm::MainFormInitialize(void) {
 
 	// Initialize the position of the form
-	this->Left = GlobalObjects::monitor_X0;
-	this->Top = GlobalObjects::monitor_Y0;
+	this->Left = Gantry::monitor_X0;
+	this->Top = Gantry::monitor_Y0;
 	
 
 	// Clear the messages area
@@ -80,7 +80,7 @@ void MainForm::MainFormInitialize(void) {
 	startupError = false;
 
 	// Init of the Global operating status
-	GantryStatusRegisters::OperatingStatusRegister::setStartup();
+	Gantry::setStartup();
 
 	// Start the startup session
 	startupTimer = gcnew System::Timers::Timer(100);
@@ -453,7 +453,7 @@ bool MainForm::Startup_MotorShift(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorShiftActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Shift initialization ..\n";
-		GlobalObjects::pMotShift = gcnew CanOpenMotor(0x5, L"MOTOR_SHIFT", 453.2);
+		Gantry::pMotShift = gcnew CanOpenMotor(0x5, L"MOTOR_SHIFT", 453.2);
 		startupSubFase++;
 		break;
 
@@ -577,12 +577,9 @@ void MainForm::StartupProcedure(void) {
 		return;
 	}
 	if (startupCompleted) {
-		GantryStatusRegisters::OperatingStatusRegister::setIdle();
 		startupTimer->Stop();
 		this->Hide();
-
-		// Opens the Idle
-		pIDLEFORM->open();
+		Gantry::setIdle();
 		return;
 	}
 

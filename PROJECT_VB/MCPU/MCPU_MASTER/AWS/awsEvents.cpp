@@ -5,11 +5,14 @@
 #include "PCB315.h"
 #include "PCB302.h"
 #include "PCB303.h"
+#include "PCB301.h"
+#include "PCB304.h"
+#include "PCB326.h"
 #include "ExposureModule.h"
 #include "Generator.h"
 #include "mutex"
 
-using namespace GantryStatusRegisters;
+
 using namespace System::Diagnostics;
 
 static std::mutex event_mutex;
@@ -41,7 +44,7 @@ void awsProtocol::EVENT_AbortProjection(void) {
 
 void awsProtocol::EVENT_GantryStatus(void) {
     const std::lock_guard<std::mutex> lock(event_mutex);
-    String^ status = OperatingStatusRegister::getStatus();
+    String^ status = Gantry::getOperatingStatusName();
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_GantryStatus  " + status + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
@@ -49,22 +52,55 @@ void awsProtocol::EVENT_GantryStatus(void) {
 
 void awsProtocol::EVENT_Compressor(void) {
     const std::lock_guard<std::mutex> lock(event_mutex);
-    unsigned short thick = CompressorRegister::getThickness();
-    unsigned short force = CompressorRegister::getForce();
+    unsigned short thick = PCB302::getThickness();
+    unsigned short force = PCB302::getForce();
 
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Compressor  " + thick.ToString() + "  " + force.ToString() + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
 }
 
+/// <summary>
+/// Vedere GET_Component
+/// </summary>
+/// <param name=""></param>
 void awsProtocol::EVENT_Components(void) {
     const std::lock_guard<std::mutex> lock(event_mutex);
-    String^ component = ComponentRegister::Value->getTag();
-    String^ paddle = CompressorRegister::getPaddle()->Value->getTag();
-    String^ colli_component = CollimatorComponentRegister::Value->getTag();
-    
+    System::String^ potter_type;
+    System::String^ mag_factor;
+    System::String^ paddle;
+    System::String^ protection;
+    System::String^ colli_tool;
+
+    // Potter Type parameter
+    if (Biopsy::isBiopsy()) {
+        potter_type = "BIOPSY";
+    }
+    else  if (PCB304::isMagnifierDeviceDetected()) {
+        potter_type = "MAGNIFIER";
+    }
+    else {
+        potter_type = "POTTER";
+    }
+
+    // Magnification factor
+    mag_factor = PCB304::getMagnifierfactorString();
+
+    // Compressor paddle
+    paddle = PCB302::getPaddleName(PCB302::getDetectedPaddleCode());
+
+    // Protection Type
+    if (PCB304::isPatientProtection()) protection = "PROTECTION_3D";
+    else if (PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) protection = "PROTECTION_2D";
+    else protection = "UNDETECTED_PROTECTION";
+
+    // Collimation Tool
+    if (PCB315::getComponent() == PCB315::component_options::LEAD_SCREEN)  colli_tool = "LEAD_SCREEN";
+    else if (PCB315::getComponent() == PCB315::component_options::SPECIMEN)  colli_tool = "SPECIMEN";
+    else colli_tool = "UNDETECTED_COLLIMATOR";
+
     device->event_counter++;
-    String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Components  " + component + " " + paddle + " " + colli_component + " %>";
+    String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Components  " + potter_type + " " + mag_factor + " " + paddle + " " + protection + " " + colli_tool + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
 }
 
@@ -82,15 +118,18 @@ void awsProtocol::EVENT_ReadyForExposure(bool ready, unsigned short code) {
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
 }
 
-void awsProtocol::EVENT_XrayPushButton(void) {
+void awsProtocol::EVENT_XrayPushButton(bool status) {
     const std::lock_guard<std::mutex> lock(event_mutex);
-    if (XrayPushButtonRegister::isEnabled()) {
-        System::String^  status = XrayPushButtonRegister::activationStatus->getTag();
-        device->event_counter++;
-        String^ answer = "<" + device->event_counter.ToString() + " %EVENT_XrayPushButton  " + status + " %>";
-        device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
-    }
 
+    
+        device->event_counter++;
+        System::String^ strstat;
+        if (status) strstat = "ON";
+        else strstat = "OFF";
+
+        String^ answer = "<" + device->event_counter.ToString() + " %EVENT_XrayPushButton  " + strstat + " %>";
+        device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    
    
 }
 

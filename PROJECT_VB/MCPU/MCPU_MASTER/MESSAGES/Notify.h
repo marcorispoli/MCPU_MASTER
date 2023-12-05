@@ -6,7 +6,7 @@ using namespace System::Collections::Generic;
 ref class Notify
 {
 public:
-
+	
 	enum class  messages {
 		NO_MESSAGE =0,
 		ERROR_PCB301_RESET,
@@ -125,7 +125,7 @@ public:
 	};
 
 	static List<translate^>^ dictionary = nullptr;
-	static void setLanguage(System::String^ language);
+	static bool setLanguage(System::String^ language);
 	
 	static System::String^ TranslateTitle(messages msg);
 	static System::String^ TranslateContent(messages msg);

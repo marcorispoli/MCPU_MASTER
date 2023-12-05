@@ -11,7 +11,7 @@
 #include "SystemConfig.h"
 
 
-using namespace GantryStatusRegisters;
+
 using namespace System::Diagnostics;
 
 awsProtocol::awsProtocol(void) {
@@ -53,8 +53,7 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("EXEC_PowerOff", gcnew command_callback(this, &awsProtocol::EXEC_PowerOff));
     commandExec->Add("EXEC_TestCommand", gcnew command_callback(this, &awsProtocol::EXEC_TestCommand));
 
-    // Connects the Global register callbacks to the local Events
-    XrayPushButtonRegister::activationStatus->value_change_event += gcnew delegate_void_callback(&awsProtocol::EVENT_XrayPushButton);
+    // Connects the Global register callbacks to the local Events    
     Generator::xray_complete_event += gcnew Generator::delegate_xray_complete_callback(&awsProtocol::EVENT_XraySequenceCompleted);
     ArmMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
     VerticalMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);

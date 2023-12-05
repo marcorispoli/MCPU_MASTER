@@ -3,15 +3,19 @@
 #include "awsProtocol.h"
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
+#include "TiltMotor.h"
 #include "BodyMotor.h"
-#include "PCB315.h"
+#include "PCB301.h"
 #include "PCB302.h"
 #include "PCB303.h"
+#include "PCB304.h"
+#include "PCB315.h"
+#include "PCB326.h"
 #include "ExposureModule.h"
 #include "Generator.h"
+#include "Notify.h"
 
 
-using namespace GantryStatusRegisters;
 using namespace System::Diagnostics;
 
 
@@ -49,7 +53,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     String^ patient_name = pDecodedFrame->parameters[0];
 
     // Open the study and assignes the patient name !!!
-    if (!OperatingStatusRegister::setOpenStudy(patient_name)) { pDecodedFrame->errcode = (int) return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+    if (!Gantry::setOpenStudy(patient_name)) { pDecodedFrame->errcode = (int) return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
 
  
     // With the OPEN Study, the collimator is automatically set to AUTO mode.
@@ -78,7 +82,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 /// <param name=""></param>
 void  awsProtocol::EXEC_CloseStudy(void) {
     Debug::WriteLine("EXEC_CloseStudy COMMAND MANAGEMENT");
-    if (!OperatingStatusRegister::setCloseStudy()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::setCloseStudy()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     ackOk();
 
@@ -111,8 +115,8 @@ void  awsProtocol::EXEC_CloseStudy(void) {
 /// <param name=""></param>
 void awsProtocol::SET_ProjectionList(void) {
     Debug::WriteLine("SET_ProjectionList COMMAND MANAGEMENT");
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
-    if (!ArmMotor::getProjectionsList()->Value->setList(pDecodedFrame->parameters)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PROJECTION_IN_THE_LIST"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!ArmMotor::getProjectionsList()->setList(pDecodedFrame->parameters)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PROJECTION_IN_THE_LIST"; ackNok(); return; }
 
     ackOk();
     return;
@@ -175,10 +179,10 @@ void awsProtocol::SET_ProjectionList(void) {
 void awsProtocol::EXEC_ArmPosition(void) {
     Debug::WriteLine("EXEC_ArmPosition COMMAND MANAGEMENT");
 
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if ((!ArmMotor::device->isReady())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_BUSY"; ackNok(); return; }
-    if (ArmMotor::getProjectionsList()->Value->indexOf(pDecodedFrame->parameters[0]) < 0) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
+    if (ArmMotor::getProjectionsList()->isValidProjection(pDecodedFrame->parameters[0]) < 0) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
 
     if (!ArmMotor::setTarget(
         Convert::ToInt16(pDecodedFrame->parameters[1]) ,
@@ -223,7 +227,7 @@ void awsProtocol::EXEC_ArmPosition(void) {
 void awsProtocol::EXEC_AbortProjection(void) {
     Debug::WriteLine("EXEC_AbortProjection COMMAND MANAGEMENT");
 
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     ArmMotor::abortTarget();
     ackOk();
 
@@ -258,24 +262,23 @@ void awsProtocol::EXEC_AbortProjection(void) {
 /// |return_errors::AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
 /// |return_errors::AWS_RET_DEVICE_BUSY|"TRX_BUSY"|The TRX is currently executing a rotation|
 /// |return_errors::AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_TARGET" | One of the angle parameter is not correct or out of range |
-///
-/// In case of success, Gantry returns:
-/// - <ID % EXECUTING%> frame: the TRX start executing;
-/// - <ID % OK%> frame: the TRX is already positioned;
+/// |return_errors::AWS_RET_DEVICE_ERROR |  "DEVICE_ERROR" | The Tilt Device cannot activate the command for an internal reason |
+/// 
+/// Gantry always returns <ID % EXECUTING%> frame: the TRX start executing;
 ///  
 /// <param name=""></param>
 void awsProtocol::EXEC_TrxPosition(void) {
     Debug::WriteLine("EXEC_TrxPosition COMMAND MANAGEMENT");
 
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (TrxStatusRegister::isBusy()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "TRX_BUSY"; ackNok(); return; }
-    if (!TrxStatusRegister::setTarget(pDecodedFrame->parameters[0], pDecodedFrame->ID)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_TARGET"; ackNok(); return; }
+    if (!TiltMotor::device->isReady()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "TRX_BUSY"; ackNok(); return; }
+    TiltMotor::target_options target = TiltMotor::getTargetCode(pDecodedFrame->parameters[0]);
+    if(target == TiltMotor::target_options::UNDEF) { pDecodedFrame->errcode = (int) return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_TARGET"; ackNok(); return; }
+    if (!TiltMotor::setTarget(target, pDecodedFrame->ID)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return; }
 
-    // VErifies if the TRX is actually started or it is already in position
-    if (TrxStatusRegister::isBusy()) ackExecuting();
-    else ackOk();
-
+    ackExecuting();
+    
     return;
 }
 
@@ -289,11 +292,11 @@ void awsProtocol::SET_TomoConfig(void) {
     Debug::WriteLine("SET_TomoConfig COMMAND MANAGEMENT");
 
     if (pDecodedFrame->parameters->Count != 2) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     // Parameter 0: Tomo config file id;
     // Parameter 1: Sequence id;
-    if (!TomoConfigRegister::select(pDecodedFrame->parameters[0], pDecodedFrame->parameters[1])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_CONFID_SEQID"; ackNok(); return; }
+    //if (!TomoConfigRegister::select(pDecodedFrame->parameters[0], pDecodedFrame->parameters[1])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_CONFID_SEQID"; ackNok(); return; }
 
     ackOk();
 
@@ -310,7 +313,7 @@ void   awsProtocol::SET_ExposureMode(void) {
 
 
     if (pDecodedFrame->parameters->Count != 6) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     String^ exposure_type = pDecodedFrame->parameters[0];
     String^ detector_type = pDecodedFrame->parameters[1];
@@ -399,7 +402,7 @@ void   awsProtocol::SET_ExposureData(void) {
     Debug::WriteLine("SET_ExposureData COMMAND MANAGEMENT");
 
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     String^ pulse_param = pDecodedFrame->parameters[0];
     String^ kv_param = pDecodedFrame->parameters[1];
@@ -427,8 +430,10 @@ void   awsProtocol::SET_EnableXrayPush(void) {
     Debug::WriteLine("SET_EnableXrayPush COMMAND MANAGEMENT");
 
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
-    if (!XrayPushButtonRegister::enableStatus->setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return; }
+    if (!Gantry::isOPEN()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    
+    if (pDecodedFrame->parameters[0] == "ON") PCB301::setXrayEventEna(true);
+    else PCB301::setXrayEventEna(false);
 
     ackOk();
 
@@ -500,8 +505,8 @@ void   awsProtocol::GET_Compressor(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(CompressorRegister::getThickness().ToString());
-    lista->Add(CompressorRegister::getForce().ToString());
+    lista->Add(PCB302::getThickness().ToString());
+    lista->Add(PCB302::getForce().ToString());
 
     ackOk(lista);
     return;
@@ -511,15 +516,39 @@ void   awsProtocol::GET_Compressor(void) {
 /// This command requests the component identified by the system.
 /// 
 /// </summary>
+/// 
+/// + Potter-Type, Mag Factor, ComprPaddle, ProtectionType, CollimationTool
 /// <param name=""></param>
 void   awsProtocol::GET_Components(void) {
     Debug::WriteLine("GET_Components COMMAND MANAGEMENT");
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(ComponentRegister::Value->getTag());
-    lista->Add(CompressorRegister::getPaddle()->Value->getTag());
-    lista->Add(CollimatorComponentRegister::Value->getTag());
+
+    // Potter Type parameter
+    if (Biopsy::isBiopsy()) {
+        lista->Add("BIOPSY");
+    }else  if (PCB304::isMagnifierDeviceDetected()) {
+        lista->Add("MAGNIFIER");
+    }else  {
+        lista->Add("POTTER");
+    }
+
+    // Magnification factor
+    lista->Add(PCB304::getMagnifierfactorString());
+
+    // Compressor paddle
+    lista->Add(PCB302::getPaddleName(PCB302::getDetectedPaddleCode()));
+
+    // Protection Type
+    if(PCB304::isPatientProtection()) lista->Add("PROTECTION_3D");
+    else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) lista->Add("PROTECTION_2D");
+    else lista->Add("UNDETECTED_PROTECTION");
+
+    // Collimation Tool
+    if (PCB315::getComponent() == PCB315::component_options::LEAD_SCREEN)  lista->Add("LEAD_SCREEN");
+    else if (PCB315::getComponent() == PCB315::component_options::SPECIMEN)  lista->Add("SPECIMEN");
+    else lista->Add("UNDETECTED_COLLIMATOR");
 
 
     ackOk(lista);
@@ -538,8 +567,9 @@ void   awsProtocol::GET_Trx(void) {
 
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
-    lista->Add(TrxStatusRegister::getCurrentTag());
-    lista->Add(TrxStatusRegister::getCurrentAngle().ToString());
+
+    lista->Add(TiltMotor::getTargetName(TiltMotor::getTargetPosition()));
+    lista->Add(TiltMotor::device->getCurrentPosition().ToString());
 
 
     ackOk(lista);
@@ -591,9 +621,9 @@ void   awsProtocol::GET_TubeTemperature(void) {
 void   awsProtocol::SET_Language(void) {
     Debug::WriteLine("SET_Language COMMAND MANAGEMENT");
 
-    if (OperatingStatusRegister::isOPEN()) { pDecodedFrame->errcode = pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    if (Gantry::isOPEN()) { pDecodedFrame->errcode = pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!LanguageRegister::Value->setCode(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_LANGUAGE"; ackNok(); return; }
+    if (!Notify::setLanguage(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_LANGUAGE"; ackNok(); return; }
 
     ackOk();
     return;

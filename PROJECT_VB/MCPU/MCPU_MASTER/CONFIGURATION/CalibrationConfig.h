@@ -180,6 +180,19 @@ public:
     literal System::String^ PARAM_VERTICAL_HOME_SPEED_DEFAULT = "50";                                  //!< VERTICAL Home Speed in 1mm degree/ss
     literal System::String^ PARAM_VERTICAL_HOME_ACC_DEFAULT = "10";                                    //!< VERTICAL Home Acc in 1mm degree/ss
 
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_TILT = "TILT_CALIBRATION";                                       //!< This is the TILT Motor parameter section
+    literal System::String^ PARAM_TILT_COMMENT = "TILT_CALIBRATION calibration data";
+    literal System::String^ PARAM_TILT_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder TILT Motor position (for initial zero setting)
+    literal System::String^ PARAM_TILT_AUTO_SPEED_DEFAULT = "500";                                  //!< TILT Auto Speed in 0.01 degree/s
+    literal System::String^ PARAM_TILT_AUTO_ACC_DEFAULT = "500";                                    //!< TILT Auto Acc in 0.01 degree /ss
+    literal System::String^ PARAM_TILT_AUTO_DEC_DEFAULT = "500";                                    //!< TILT Auto Dec in 0.01 degree /ss
+    literal System::String^ PARAM_TILT_MANUAL_SPEED_DEFAULT = "100";                                //!< TILT Manual Speed in 0.01 degree mm/s
+    literal System::String^ PARAM_TILT_MANUAL_ACC_DEFAULT = "100";                                  //!< TILT Manual Acc in 0.01 degree /ss
+    literal System::String^ PARAM_TILT_MANUAL_DEC_DEFAULT = "100";                                  //!< TILT Manual Dec in 0.01 degree /ss
+    literal System::String^ PARAM_TILT_HOME_SPEED_DEFAULT = "100";                                  //!< TILT Home Speed in 0.01 degree degree/ss
+    literal System::String^ PARAM_TILT_HOME_ACC_DEFAULT = "100";                                    //!< TILT Home Acc in 0.01 degree degree/ss
+
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
@@ -217,6 +230,18 @@ public:
             PARAM_VERTICAL_MANUAL_DEC_DEFAULT,
             PARAM_VERTICAL_HOME_SPEED_DEFAULT,
             PARAM_VERTICAL_HOME_ACC_DEFAULT
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_TILT, PARAM_TILT_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_TILT_CURRENT_POSITION_DEFAULT,
+            PARAM_TILT_AUTO_SPEED_DEFAULT,
+            PARAM_TILT_AUTO_ACC_DEFAULT,
+            PARAM_TILT_AUTO_DEC_DEFAULT,
+            PARAM_TILT_MANUAL_SPEED_DEFAULT,
+            PARAM_TILT_MANUAL_ACC_DEFAULT,
+            PARAM_TILT_MANUAL_DEC_DEFAULT,
+            PARAM_TILT_HOME_SPEED_DEFAULT,
+            PARAM_TILT_HOME_ACC_DEFAULT
             }),
 
         }

@@ -376,6 +376,17 @@ private:
 		FILTER_MIRROR_MODE //!< The Mirror shall be selected
 	};
 	
+	/// <summary>
+	/// This is the enumeration class for the component mounted under the collimator.
+	/// </summary>
+	/// The Componet is detected by the PCB315 board.
+	public: enum class component_options {
+		LEAD_SCREEN,
+		SPECIMEN,
+		PROTECTION_2D,
+		UNDEFINED
+	};
+
 	/// \ingroup PCB315_Internal
 	///@{ 
 	
@@ -405,6 +416,7 @@ private:
 	private: bool updateStatusRegister(void); //!< Function handling the status register acquisition
 	private: void manageFilterSelection(void);//!< Function handling the Filter selection operations
 	
+	static component_options detected_component = component_options::UNDEFINED; //!< This is the current detected component
 	///@}
 
 public: 
@@ -412,6 +424,9 @@ public:
 	/// \ingroup PCB315_Interface
 	///@{
 	
+	inline static component_options getComponent(void) { return detected_component; }
+	
+
 	/// <summary>
 	/// This function returns the current Stator temperature in Percent
 	/// 

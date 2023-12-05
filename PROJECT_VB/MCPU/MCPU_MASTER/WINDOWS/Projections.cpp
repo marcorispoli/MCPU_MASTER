@@ -4,22 +4,22 @@
 #include "ArmMotor.h"
 #include "gantry_global_status.h"
 
-#define FORM_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\PROJ_BACKGROUND.PNG")
-#define NO_PROJ_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\no_proj.PNG")
+#define FORM_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Projections\\PROJ_BACKGROUND.PNG")
+#define NO_PROJ_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Projections\\no_proj.PNG")
 
 
-#define ERR_ICON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\error_160x145.PNG")
-#define INFO_ICON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info_64x64.PNG")
-#define WRN_ICON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info_64x64.PNG")
-#define CANC_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\close_65x65.PNG")
-#define OK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\close_65x65.PNG")
+#define ERR_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\error_160x145.PNG")
+#define INFO_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\info_64x64.PNG")
+#define WRN_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\info_64x64.PNG")
+#define CANC_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\close_65x65.PNG")
+#define OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\close_65x65.PNG")
 
 void ProjectionForm::formInitialization(void) {
 
 	// Initialize the position of the form
 	// NOTE: Set the Position of the Form as Manual to be valid
-	this->Left = GlobalObjects::monitor_X0 ;
-	this->Top = GlobalObjects::monitor_Y0 ;
+	this->Left = Gantry::monitor_X0 ;
+	this->Top = Gantry::monitor_Y0 ;
 
 	this->BackColor = Color::FromArgb(216, 207, 208);
 	this->BackgroundImage = FORM_IMAGE;
@@ -165,20 +165,23 @@ void ProjectionForm::proj8_Click(System::Object^ sender, System::EventArgs^ e) {
 void ProjectionForm::loadProjections(void) {
 	cli::array<Panel^>^  panels = gcnew array<Panel^> { proj1 , proj2, proj3, proj4, proj5 , proj6, proj7 , proj8};
 
+	//ArmMotor::ProjectionOptions^ projection = ArmMotor::getProjectionsList();
+	List<ProjectionOptions::options>^ list = ArmMotor::getProjectionsList()->getCurrentProjectionList();
+
 	// Number of panels
-	int pn = (ArmMotor::getProjectionsList()->Value->Count() - 1) / 8;
+	int pn = (list->Count - 1) / 8;
 	if (panelNumber > pn) panelNumber = pn;
 
 
 	for (int i = 0, j = panelNumber * 8; i < 8; i++, j++) {
-		if (j < ArmMotor::getProjectionsList()->Value->Count()) {
-			System::String^ tag = ArmMotor::getProjectionsList()->Value->getItem(j);
-			panels[i]->BackgroundImage = ArmMotor::getProjectionsList()->ProjectionsIcons[tag];
+		if (j < list->Count) {
+			System::String^ tag = ProjectionOptions::getProjectionName((ProjectionOptions::options) j);
+			panels[i]->BackgroundImage = ProjectionOptions::getProjectionIcon(tag);
 			panels[i]->Enabled = true;
 			proj_name[i] = tag;
 		}
 		else {
-			panels[i]->BackgroundImage = ArmMotor::getProjectionsList()->ProjectionsIcons["UNDEF"];
+			panels[i]->BackgroundImage = ProjectionOptions::getProjectionIcon(ProjectionOptions::options::UNDEF);
 			panels[i]->Enabled = false;
 			proj_name[i] = "";
 		}

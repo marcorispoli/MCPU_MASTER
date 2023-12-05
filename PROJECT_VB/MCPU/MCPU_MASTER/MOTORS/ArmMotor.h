@@ -17,27 +17,37 @@
 /// 
 /// \ingroup ArmMotor_Module
 /// </summary>
+
+
 ref class ProjectionOptions {
 public:
-    static ProjectionOptions() {
-        ProjectionsIcons->Add("", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\NO_PROJ.PNG"));
-        ProjectionsIcons->Add("UNDEF", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\NO_PROJ.PNG"));
-        ProjectionsIcons->Add("LCC", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LCC.PNG"));
-        ProjectionsIcons->Add("LFB", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LFB.PNG"));
-        ProjectionsIcons->Add("LISO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LISO.PNG"));
-        ProjectionsIcons->Add("LLM", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LLM.PNG"));
-        ProjectionsIcons->Add("LLMO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LLMO.PNG"));
-        ProjectionsIcons->Add("LML", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LML.PNG"));
-        ProjectionsIcons->Add("LMLO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LMLO.PNG"));
-        ProjectionsIcons->Add("LSIO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\LSIO.PNG"));
-        ProjectionsIcons->Add("RCC", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RCC.PNG"));
-        ProjectionsIcons->Add("RFB", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RFB.PNG"));
-        ProjectionsIcons->Add("RISO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RISO.PNG"));
-        ProjectionsIcons->Add("RLM", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RLM.PNG"));
-        ProjectionsIcons->Add("RLMO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RLMO.PNG"));
-        ProjectionsIcons->Add("RML", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RML.PNG"));
-        ProjectionsIcons->Add("RMLO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RMLO.PNG"));
-        ProjectionsIcons->Add("RSIO", Image::FromFile(GlobalObjects::applicationResourcePath + "Projections\\prjFFDM\\RSIO.PNG"));
+    ProjectionOptions() {
+
+        // Initialize the selected projection
+        clrProjection();
+
+        // Create a void list
+        projection_list = gcnew List<options>();
+
+        ProjectionsIcons = gcnew Dictionary<System::String^, Image^>();
+        ProjectionsIcons->Add("", Image::FromFile(Gantry::applicationResourcePath + "Projections\\NO_PROJ.PNG"));
+        ProjectionsIcons->Add("UNDEF", Image::FromFile(Gantry::applicationResourcePath + "Projections\\NO_PROJ.PNG"));
+        ProjectionsIcons->Add("LCC", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LCC.PNG"));
+        ProjectionsIcons->Add("LFB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LFB.PNG"));
+        ProjectionsIcons->Add("LISO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LISO.PNG"));
+        ProjectionsIcons->Add("LLM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LLM.PNG"));
+        ProjectionsIcons->Add("LLMO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LLMO.PNG"));
+        ProjectionsIcons->Add("LML", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LML.PNG"));
+        ProjectionsIcons->Add("LMLO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LMLO.PNG"));
+        ProjectionsIcons->Add("LSIO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LSIO.PNG"));
+        ProjectionsIcons->Add("RCC", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RCC.PNG"));
+        ProjectionsIcons->Add("RFB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RFB.PNG"));
+        ProjectionsIcons->Add("RISO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RISO.PNG"));
+        ProjectionsIcons->Add("RLM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RLM.PNG"));
+        ProjectionsIcons->Add("RLMO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RLMO.PNG"));
+        ProjectionsIcons->Add("RML", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RML.PNG"));
+        ProjectionsIcons->Add("RMLO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RMLO.PNG"));
+        ProjectionsIcons->Add("RSIO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RSIO.PNG"));
 
 
         //ProjectionOptions::Value->addToList(options::LCC);
@@ -73,10 +83,74 @@ public:
             "UNDEF"
     };//!< This is the option-tags static array
 
-    static GantryStatusRegisters::enumType<options>^ Value = gcnew GantryStatusRegisters::enumType<options>(tags);
-    static Dictionary<System::String^, Image^>^ ProjectionsIcons = gcnew Dictionary<System::String^, Image^>();
+    static options getCode(System::String^ tg) {
+        for (int i = 0; i < (int)options::LEN; i++) {
+            if (tags[i] == tg) return (options)i;
+        }
+        return options::UNDEF;
+    }
 
+    void clrProjection(void) {
+        current_projection_code = options::UNDEF;
+        current_projection_name = tags[(int)current_projection_code];
+    }
+
+    bool setProjection(System::String^ tag) {
+        for (int i = 0; i < (int)options::UNDEF; i++) {
+            if (tags[i] == tag) return setProjection((options)i);
+        }
+        return false;
+    }
+
+    bool isValidProjection(System::String^ tag) {
+        for (int i = 0; i < (int)options::UNDEF; i++) {
+            if (tags[i] == tag) {
+                if (projection_list->Contains((options)i)) return true;
+                else return false;
+            }
+        }
+        return false;
+    }
+
+    bool setProjection(options code) {
+        if ((int)code >= (int)options::UNDEF) return false;
+        if (!projection_list->Contains(code)) return false;
+        current_projection_code = code;
+        current_projection_name = tags[(int)code];
+        return true;
+    }
+
+    bool setList(List<System::String^>^ list) {
+        projection_list->Clear();
+
+        for (int i = 0; i < list->Count; i++) {
+            options code = getCode(list[i]);
+            if (code == options::UNDEF) {
+                projection_list->Clear();
+                return false;
+            }
+            projection_list->Add(code);
+        }
+        return true;
+    }
+
+    System::String^ getCurrentProjectionName(void) { return current_projection_name; }
+    options getCurrentProjectionCode(void) { return current_projection_code; }
+    Image^ getCurrentProjectionIcon(void) { return ProjectionsIcons[current_projection_name]; }
+    List<options>^ getCurrentProjectionList(void) { return projection_list; }
+
+    static System::String^ getProjectionName(options code) { return tags[(int)code]; }
+    static Image^ getProjectionIcon(System::String^ tag) { return ProjectionsIcons[tag]; }
+    static Image^ getProjectionIcon(options code) { return ProjectionsIcons[tags[(int)code]]; }
+
+
+private:
+    options current_projection_code;
+    System::String^ current_projection_name;
+    static Dictionary<System::String^, Image^>^ ProjectionsIcons;
+    List<options>^ projection_list;
 };
+
 
 /// <summary>
 /// 
@@ -85,11 +159,12 @@ public:
 ref class ArmMotor : public CANOPEN::CanOpenMotor
 {
 public:
+    
+
+public:
 	ArmMotor(void);
     static ArmMotor^ device = gcnew ArmMotor();
-    static bool startHoming(void);
-    static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
-
+    
     // Exposure acceptable conditions
     static bool isTarget(void) { return ((device->current_uposition >= selected_target - 1) && (device->current_uposition <= selected_target + 1));}
     static bool isValidTarget(void) { return valid_target; }
@@ -97,24 +172,20 @@ public:
     static bool isValidPosition(void) { return (valid_target && isInRange()); }
 
     // Arm activation section
-public:
+    static bool startHoming(void);
+
     delegate void delegate_target_change_callback(int id, int target_position);
     static event delegate_target_change_callback^ target_change_event;
-    
+    static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
+
     delegate void delegate_target_abort_callback(void);
     static event delegate_target_abort_callback^ target_abort_event;
-    static void abortTarget(void) {
-        if (!valid_target) return;
-        valid_target = false;
-        projections->Value->clearCode();
-        target_abort_event();
-    }
+    static void abortTarget(void);
 
 
-    // Projection selection section
 public:
     static inline ProjectionOptions^ getProjectionsList() { return projections; }
-    static System::String^ getSelectedProjection(void) { return projections->Value->getTag(); }
+    static System::String^ getSelectedProjection(void) { return projections->getCurrentProjectionName(); }
     
     delegate void delegate_abort_projection_request_callback(void);
     static event delegate_abort_projection_request_callback^ abort_projection_request_event;
@@ -122,7 +193,9 @@ public:
 
     delegate void delegate_projection_request_callback(System::String^ str);
     static event delegate_projection_request_callback^ projection_request_event;
-    static void projectionRequest(System::String^ projection) { if (projections->Value->isPresent(projection)) projection_request_event(projection); }
+    static void projectionRequest(System::String^ projection) {
+        if (projections->isValidProjection(projection)) projection_request_event(projection); 
+    }
 
 protected:
     bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation

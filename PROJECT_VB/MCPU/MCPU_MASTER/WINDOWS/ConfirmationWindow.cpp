@@ -2,12 +2,12 @@
 #include "../gantry_global_status.h"
 
 
-#define ERR_ICON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\error_160x145.PNG")
-#define INFO_ICON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info_64x64.PNG")
-#define WRN_ICON_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\info_64x64.PNG")
-#define CANC_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\CANC_ICON.PNG")
-#define OK_IMAGE Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\OK_ICON.PNG")
-#define FORM_BACKGROUND Image::FromFile(GlobalObjects::applicationResourcePath + "Icons\\DIALOG_BACKGROUND.PNG")
+#define ERR_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\error_160x145.PNG")
+#define INFO_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\info_64x64.PNG")
+#define WRN_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\info_64x64.PNG")
+#define CANC_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\CANC_ICON.PNG")
+#define OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\OK_ICON.PNG")
+#define FORM_BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "Icons\\DIALOG_BACKGROUND.PNG")
 
 void ConfirmationWindow::formInitialization(InfoType wtype, System::String^ info_title, System::String^ info_content) {
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 
 /// <summary>
 /// \defgroup IdleGUI_Module IDLE Status Window Management Module

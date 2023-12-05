@@ -59,7 +59,10 @@ private: static const cli::array<System::String^>^ paddle_name = gcnew cli::arra
 	
 protected: 	virtual void runningLoop(void) override;
 
-private: static paddleCodes detected_paddle; //!< This is the current detected paddle
+private: 
+	static paddleCodes detected_paddle; //!< This is the current detected paddle
+	static unsigned short breast_thickness = 0;  //!< Compressed breast thickness in mm
+	static unsigned short compression_force = 0; //!< Compression force in N
 
 public:
 	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
@@ -72,6 +75,8 @@ public:
 // To be implemented
 	
 	static void setCompressorUnlock(void) {}; //!< This function unlocks the compression
+	static unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
+	static unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
 
 };
 

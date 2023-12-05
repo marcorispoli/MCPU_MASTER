@@ -44,17 +44,20 @@ static const language_item DEFAULT_ARRAY[] = {
 	{"LAST",Notify::messages::NO_MESSAGE,"",""}
 };
 
-void Notify::setLanguage(System::String^ language) {
+bool Notify::setLanguage(System::String^ language) {
 
 	const language_item* pLanguage;
-
+	bool language_ok = true;
 	if (language == "ITA")  pLanguage = ITA_ARRAY;
 	else if (language == "ENG")  pLanguage = ENG_ARRAY;
 	else if (language == "FRA")  pLanguage = FRA_ARRAY;
 	else if (language == "ESP")  pLanguage = ESP_ARRAY;
 	else if (language == "POR")  pLanguage = POR_ARRAY;
 	else if (language == "RUS")  pLanguage = RUS_ARRAY;
-	else pLanguage = DEFAULT_ARRAY;
+	else {
+		pLanguage = DEFAULT_ARRAY;
+		language_ok = false;
+	}
 
 	dictionary = gcnew List<translate^>();
 	
@@ -68,6 +71,8 @@ void Notify::setLanguage(System::String^ language) {
 		dictionary->Add(gcnew translate(err, pLanguage[i].msg, title, content));
 		i ++;
 	}
+
+	return language_ok;
 
 };
 

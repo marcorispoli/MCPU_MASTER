@@ -130,7 +130,7 @@ public:
 	static void EVENT_ReadyForExposure(bool ready, unsigned short code);
 
 	/// This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation
-	static void EVENT_XrayPushButton(void);
+	static void EVENT_XrayPushButton(bool status);
 
 	/// This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated
 	static void EVENT_XraySequenceCompleted(Generator::exposure_completed_options code);

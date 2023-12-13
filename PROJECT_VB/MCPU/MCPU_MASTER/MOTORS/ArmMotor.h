@@ -32,6 +32,8 @@ public:
         ProjectionsIcons = gcnew Dictionary<System::String^, Image^>();
         ProjectionsIcons->Add("", Image::FromFile(Gantry::applicationResourcePath + "Projections\\NO_PROJ.PNG"));
         ProjectionsIcons->Add("UNDEF", Image::FromFile(Gantry::applicationResourcePath + "Projections\\NO_PROJ.PNG"));
+
+        // ----------------------- FFDM SELECTIONS ------------------------------------------------------------------- //
         ProjectionsIcons->Add("LCC", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LCC.PNG"));
         ProjectionsIcons->Add("LFB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LFB.PNG"));
         ProjectionsIcons->Add("LISO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\LISO.PNG"));
@@ -49,8 +51,77 @@ public:
         ProjectionsIcons->Add("RMLO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RMLO.PNG"));
         ProjectionsIcons->Add("RSIO", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjFFDM\\RSIO.PNG"));
 
+        // ----------------------- TOMO SELECTIONS ------------------------------------------------------------------- //       
+        ProjectionsIcons->Add("LCCT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LCCT.PNG"));
+        ProjectionsIcons->Add("LFBT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LFBT.PNG"));
+        ProjectionsIcons->Add("LISOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LISOT.PNG"));
+        ProjectionsIcons->Add("LLMT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LLMT.PNG"));
+        ProjectionsIcons->Add("LLMOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LLMOT.PNG"));
+        ProjectionsIcons->Add("LMLT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LMLT.PNG"));
+        ProjectionsIcons->Add("LMLOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LMLOT.PNG"));
+        ProjectionsIcons->Add("LSIOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\LSIOT.PNG"));
+        ProjectionsIcons->Add("RCCT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RCCT.PNG"));
+        ProjectionsIcons->Add("RFBT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RFBT.PNG"));
+        ProjectionsIcons->Add("RISOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RISOT.PNG"));
+        ProjectionsIcons->Add("RLMT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RLMT.PNG"));
+        ProjectionsIcons->Add("RLMOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RLMOT.PNG"));
+        ProjectionsIcons->Add("RMLT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RMLT.PNG"));
+        ProjectionsIcons->Add("RMLOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RMLOT.PNG"));
+        ProjectionsIcons->Add("RSIOT", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjTOMO\\RSIOT.PNG"));
 
-        //ProjectionOptions::Value->addToList(options::LCC);
+        // ----------------------- CESM SELECTIONS ------------------------------------------------------------------- //       
+        ProjectionsIcons->Add("LCCD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LCCD.PNG"));
+        ProjectionsIcons->Add("LFBD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LFBD.PNG"));
+        ProjectionsIcons->Add("LISOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LISOD.PNG"));
+        ProjectionsIcons->Add("LLMD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LLMD.PNG"));
+        ProjectionsIcons->Add("LLMOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LLMOD.PNG"));
+        ProjectionsIcons->Add("LMLD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LMLD.PNG"));
+        ProjectionsIcons->Add("LMLOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LMLOD.PNG"));
+        ProjectionsIcons->Add("LSIOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\LSIOD.PNG"));
+        ProjectionsIcons->Add("RCCD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RCCD.PNG"));
+        ProjectionsIcons->Add("RFBD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RFBD.PNG"));
+        ProjectionsIcons->Add("RISOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RISOD.PNG"));
+        ProjectionsIcons->Add("RLMD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RLMD.PNG"));
+        ProjectionsIcons->Add("RLMOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RLMOD.PNG"));
+        ProjectionsIcons->Add("RMLD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RMLD.PNG"));
+        ProjectionsIcons->Add("RMLOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RMLOD.PNG"));
+        ProjectionsIcons->Add("RSIOD", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCESM\\RSIOD.PNG"));
+
+        // ----------------------- COMBO SELECTIONS ------------------------------------------------------------------- //       
+        ProjectionsIcons->Add("LCCB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LCCB.PNG"));
+        ProjectionsIcons->Add("LFBB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LFBB.PNG"));
+        ProjectionsIcons->Add("LISOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LISOB.PNG"));
+        ProjectionsIcons->Add("LLMB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LLMB.PNG"));
+        ProjectionsIcons->Add("LLMOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LLMOB.PNG"));
+        ProjectionsIcons->Add("LMLB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LMLB.PNG"));
+        ProjectionsIcons->Add("LMLOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LMLOB.PNG"));
+        ProjectionsIcons->Add("LSIOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\LSIOB.PNG"));
+        ProjectionsIcons->Add("RCCB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RCCB.PNG"));
+        ProjectionsIcons->Add("RFBB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RFBB.PNG"));
+        ProjectionsIcons->Add("RISOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RISOB.PNG"));
+        ProjectionsIcons->Add("RLMB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RLMB.PNG"));
+        ProjectionsIcons->Add("RLMOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RLMOB.PNG"));
+        ProjectionsIcons->Add("RMLB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RMLB.PNG"));
+        ProjectionsIcons->Add("RMLOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RMLOB.PNG"));
+        ProjectionsIcons->Add("RSIOB", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjCOMBO\\RSIOB.PNG"));
+      
+        // ----------------------- VI SELECTIONS ------------------------------------------------------------------- //       
+        ProjectionsIcons->Add("LCCM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LCCM.PNG"));
+        ProjectionsIcons->Add("LFBM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LFBM.PNG"));
+        ProjectionsIcons->Add("LISOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LISOM.PNG"));
+        ProjectionsIcons->Add("LLMM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LLMM.PNG"));
+        ProjectionsIcons->Add("LLMOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LLMOM.PNG"));
+        ProjectionsIcons->Add("LMLM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LMLM.PNG"));
+        ProjectionsIcons->Add("LMLOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LMLOM.PNG"));
+        ProjectionsIcons->Add("LSIOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\LSIOM.PNG"));
+        ProjectionsIcons->Add("RCCM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RCCM.PNG"));
+        ProjectionsIcons->Add("RFBM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RFBM.PNG"));
+        ProjectionsIcons->Add("RISOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RISOM.PNG"));
+        ProjectionsIcons->Add("RLMM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RLMM.PNG"));
+        ProjectionsIcons->Add("RLMOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RLMOM.PNG"));
+        ProjectionsIcons->Add("RMLM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RMLM.PNG"));
+        ProjectionsIcons->Add("RMLOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RMLOM.PNG"));
+        ProjectionsIcons->Add("RSIOM", Image::FromFile(Gantry::applicationResourcePath + "Projections\\prjVI\\RSIOM.PNG"));
     }
 
     /// <summary>
@@ -74,13 +145,86 @@ public:
         RML,
         RMLO,
         RSIO,
+
+        LCCT,
+        LFBT,
+        LISOT,
+        LLMT,
+        LLMOT,
+        LMLT,
+        LMLOT,
+        LSIOT,
+        RCCT,
+        RFBT,
+        RISOT,
+        RLMT,
+        RLMOT,
+        RMLT,
+        RMLOT,
+        RSIOT,
+
+        LCCD,
+        LFBD,
+        LISOD,
+        LLMD,
+        LLMOD,
+        LMLD,
+        LMLOD,
+        LSIOD,
+        RCCD,
+        RFBD,
+        RISOD,
+        RLMD,
+        RLMOD,
+        RMLD,
+        RMLOD,
+        RSIOD,
+
+        LCCB,
+        LFBB,
+        LISOB,
+        LLMB,
+        LLMOB,
+        LMLB,
+        LMLOB,
+        LSIOB,
+        RCCB,
+        RFBB,
+        RISOB,
+        RLMB,
+        RLMOB,
+        RMLB,
+        RMLOB,
+        RSIOB,
+
+        LCCM,
+        LFBM,
+        LISOM,
+        LLMM,
+        LLMOM,
+        LMLM,
+        LMLOM,
+        LSIOM,
+        RCCM,
+        RFBM,
+        RISOM,
+        RLMM,
+        RLMOM,
+        RMLM,
+        RMLOM,
+        RSIOM,
+
         LEN,
         UNDEF = LEN
     };
 
     static const cli::array<System::String^>^ tags = gcnew cli::array<System::String^> {
         "LCC", "LFB", "LISO", "LLM", "LLMO", "LML", "LMLO", "LSIO", "RCC", "RFB", "RISO", "RLM", "RLMO", "RML", "RMLO", "RSIO",
-            "UNDEF"
+         "LCCT", "LFBT", "LISOT", "LLMT", "LLMOT", "LMLT", "LMLOT", "LSIOT", "RCCT", "RFBT", "RISOT", "RLMT", "RLMOT", "RMLT", "RMLOT", "RSIOT",
+         "LCCD", "LFBD", "LISOD", "LLMD", "LLMOD", "LMLD", "LMLOD", "LSIOD", "RCCD", "RFBD", "RISOD", "RLMD", "RLMOD", "RMLD", "RMLOD", "RSIOD",
+         "LCCB", "LFBB", "LISOB", "LLMB", "LLMOB", "LMLB", "LMLOB", "LSIOB", "RCCB", "RFBB", "RISOB", "RLMB", "RLMOB", "RMLB", "RMLOB", "RSIOB",
+         "LCCM", "LFBM", "LISOM", "LLMM", "LLMOM", "LMLM", "LMLOM", "LSIOM", "RCCM", "RFBM", "RISOM", "RLMM", "RLMOM", "RMLM", "RMLOM", "RSIOM",
+        "UNDEF"
     };//!< This is the option-tags static array
 
     static options getCode(System::String^ tg) {
@@ -173,6 +317,7 @@ public:
 
     // Arm activation section
     static bool startHoming(void);
+    static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
 
     delegate void delegate_target_change_callback(int id, int target_position);
     static event delegate_target_change_callback^ target_change_event;
@@ -205,11 +350,18 @@ protected:
 
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
 
+    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+    MotorCompletedCodes manualPositioningRunningCallback(void) override;
+
 private:
     static ProjectionOptions^ projections = gcnew ProjectionOptions;  //!< This is the current selected projection
     static int         allowed_low = 0;            //!< Lower acceptable angle (°)
     static int         allowed_high = 0;           //!< Higher acceptable angle (°)
     static bool        valid_target = false;       //!< True if the target is a valid target
     static int         selected_target;            //!< Automatic selected target  
+
+    static bool manual_activation_enabled = false; //!< This is the flag activating the body manual activation
+    static bool manual_cw_direction = false; //!< Sets true if the CW manual command is executing, false if the CCW manual activation is executing
+
 };
 

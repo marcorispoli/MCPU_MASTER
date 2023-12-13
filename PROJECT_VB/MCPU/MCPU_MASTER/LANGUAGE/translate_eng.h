@@ -30,9 +30,10 @@
 "E00017", Notify::messages::ERROR_BULB_SENSOR_LOW, "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be broken",
 "E00018", Notify::messages::ERROR_BULB_SENSOR_SHORT, "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be shorted",
 "E00019", Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, "Body Motor Monitoring", "The brake device is in Fault condition",
+"E00019", Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT, "Tilt Motor Monitoring", "The brake device is in Fault condition",
 "E00020", Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, "Vertical Motor Monitoring", "The encoder is not initialized.",
 "E00021", Notify::messages::ERROR_ARM_MOTOR_HOMING, "ARM Motor Monitoring", "The encoder is not initialized.",
-"E00022", Notify::messages::ERROR_SHIFT_MOTOR_HOMING, "Shift Motor Monitoring", "The encoder is not initialized.",
+"E00022", Notify::messages::ERROR_SLIDE_MOTOR_HOMING, "Slide Motor Monitoring", "The encoder is not initialized.",
 "E00023", Notify::messages::ERROR_TILT_MOTOR_HOMING, "Tilt Motor Monitoring", "The encoder is not initialized.",
 "E00024", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized.",
 

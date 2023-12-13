@@ -3,6 +3,9 @@
 #include "awsProtocol.h"
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
+#include "TiltMotor.h"
+#include "BodyMotor.h"
+#include "SlideMotor.h"
 #include "PCB315.h"
 #include "PCB302.h"
 #include "PCB303.h"
@@ -57,6 +60,9 @@ awsProtocol::awsProtocol(void) {
     Generator::xray_complete_event += gcnew Generator::delegate_xray_complete_callback(&awsProtocol::EVENT_XraySequenceCompleted);
     ArmMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
     VerticalMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
+    TiltMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
+    BodyMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
+    SlideMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);    
     ArmMotor::projection_request_event += gcnew ArmMotor::delegate_projection_request_callback(&awsProtocol::EVENT_SelectProjection);
     ArmMotor::abort_projection_request_event += gcnew ArmMotor::delegate_abort_projection_request_callback(&awsProtocol::EVENT_AbortProjection);
 
@@ -222,6 +228,12 @@ void awsProtocol::command_rx_handler(cli::array<Byte>^ buffer, int rc) {
     // Decodes the content of the received frame
     pDecodedFrame->errcode = decodeFrame(buffer, rc, pDecodedFrame);
     if (!pDecodedFrame->valid) return;
+
+    // The Id shall be greater then 0!
+    if (pDecodedFrame->ID == 0) {
+        ackNa();
+        return;
+    }
 
     try {
         // Executes the matched function with the command string

@@ -52,7 +52,7 @@ bool ConfigFile::decodeLine(System::String^ rline)
     if (!rline->Contains(">")) return false;
 
     // Replace spaces and formatted symbols
-    rline = rline->Replace(" ", "");
+    //rline = rline->Replace(" ", "");
     rline = rline->Replace("<", "");
     rline = rline->Replace(">", "");
 

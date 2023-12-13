@@ -65,10 +65,12 @@ bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsi
     }
 
     // Prova ad inviare il dati
-    if (VSCAN_Write(handle, &msg, 1, &written) != VSCAN_ERR_OK) return false;
+    if (VSCAN_Write(handle, &msg, 1, &written) != VSCAN_ERR_OK) {
+        Debug::WriteLine("Can Driver Failed to Send ");
+        return false;
+    }
     VSCAN_Flush(handle);
     
-
     return true;
 }
 
@@ -235,12 +237,11 @@ void CanDriver::threadWork(void) {
         // Blocking Read command
         VSCAN_Read(handle, rxmsgs, VSCAN_NUM_MESSAGES, &rxmsg); 
         if (!rxmsg) continue;
-           
-
+        
         for (int i = 0; i < (int)rxmsg; i++) {
             rxCanId = rxmsgs[i].Id;    
-               
             for (int j = 0; j < rxmsgs[i].Size; j++) rxCanData[j] = rxmsgs[i].Data[j];
+            
 
             if ((rxCanId >= 0x100) && (rxCanId <= 0x17F)) {                
                 canrx_device_event(rxCanId, rxCanData, rxmsgs[i].Size);                

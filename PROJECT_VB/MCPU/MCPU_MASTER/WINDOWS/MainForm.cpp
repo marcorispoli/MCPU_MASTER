@@ -11,7 +11,7 @@
 #include "TiltMotor.h"
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
-
+#include "SlideMotor.h"
 #include "CanDriver.h"
 #include "PCB301.h"
 #include "PCB302.h"
@@ -452,29 +452,29 @@ bool MainForm::Startup_MotorShift(void) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorShiftActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Shift initialization ..\n";
-		Gantry::pMotShift = gcnew CanOpenMotor(0x5, L"MOTOR_SHIFT", 453.2);
+		StartupLogMessages->Text += "> Motor Slide initialization ..\n";		
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (!pMSHIFT->activateConfiguration()) break;
+		if (!SlideMotor::device->activateConfiguration()) break;
+		
 
 		labelMotorShiftActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Shift status:" + pMSHIFT->getInternalStatusStr();
+		StartupLogMessages->Text += "> Motor Slide status:" + SlideMotor::device->getInternalStatusStr();
 		StartupLogMessages->Text += "\n";
 		startupSubFase++;
 		break;
 
 	case 2: // Wait the connection and configuration
-		if (pMSHIFT->isConfigurating()) break;
-		if ((!pMSHIFT->isODConfigured()) || (!pMSHIFT->isNanojConfigured())) {
+		if (SlideMotor::device->isConfigurating()) break;
+		if ((!SlideMotor::device->isODConfigured()) || (!SlideMotor::device->isNanojConfigured())) {
 			startupError = true;
 			labelMotorShiftActivity->Text = "CONFIGURATION ERROR";
 			labelMotorShiftActivity->ForeColor = Color::Red;
 
-			if (!pMSHIFT->isODConfigured()) StartupErrorMessages->Text += "> Motor Shift Object Dictionary initialization Failed\n";
-			if (!pMSHIFT->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Shift Nanoj initialization Failed\n";
+			if (!SlideMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Slide Object Dictionary initialization Failed\n";
+			if (!SlideMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Slide Nanoj initialization Failed\n";
 			return true;
 		}
 
@@ -588,10 +588,9 @@ void MainForm::StartupProcedure(void) {
 	case 0: if (Startup_CanDriver()) { startupFase++; startupSubFase = 0; } break; // Startup of the Can Driver process
 	case 1: if (Startup_PCB301()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB301 process
 	case 2: if (Startup_PCB302()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB302 process
-	case 3: if (Startup_PCB315()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
-	case 4: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
+	case 3: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
+	case 4: if (Startup_PCB315()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
 	case 5: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
-	
 	case 6: if (Startup_PCB326()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
 	case 7: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 8: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process

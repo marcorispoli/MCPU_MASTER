@@ -38,7 +38,7 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDe
 }
 
 /// <summary>
-/// The BodyMotor override this function in order to initialize specific motor registers
+/// The ArmMotor override this function in order to initialize specific motor registers
 /// 
 /// </summary>
 /// 
@@ -173,4 +173,47 @@ void ArmMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
         MotorConfig::Configuration->storeFile();
         Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
     }
+
+    // Notify the command termination event
+    device->command_completed_event((int)0, (int)error);
+}
+
+
+void ArmMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
+
+  
+
+    // Notify the command termination event
+    device->command_completed_event((int)0, (int)error);
+
+    return;
+}
+
+/// <summary>
+/// The ArmMotor class override this function in order to handle the manual activation process.
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+ArmMotor::MotorCompletedCodes  ArmMotor::manualPositioningRunningCallback(void) {
+
+    /*
+    // Handles the enable condition
+    if (!manual_activation_enabled) {
+        return MotorCompletedCodes::ERROR_COMMAND_DISABLED;
+    }
+
+    // Handle the limit switches
+
+    // Handle the safety
+
+    // handle the manual hardware inputs
+    PCB301::body_activation_options body_request = PCB301::getBodyActivationStatus();
+    if (body_request == PCB301::body_activation_options::BODY_NO_ACTIVATION) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    else if ((manual_cw_direction) && (body_request == PCB301::body_activation_options::BODY_CCW_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    else if ((!manual_cw_direction) && (body_request == PCB301::body_activation_options::BODY_CW_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+
+    */
+    // Proceeds with the manual activation
+    return MotorCompletedCodes::COMMAND_PROCEED;
 }

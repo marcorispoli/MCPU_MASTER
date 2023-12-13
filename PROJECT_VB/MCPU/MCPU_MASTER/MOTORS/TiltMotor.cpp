@@ -1,6 +1,22 @@
+#include "CalibrationConfig.h"
+#include "Notify.h"
 #include "TiltMotor.h"
+#include "PCB301.h"
+#include "pd4_od.h"
+#include <thread>
+
 
 #define GEAR_RATIO (double) 352.2
+
+#define BRAKE_INPUT_MASK(x) (x & 0x00080000) //!< Not in the Special region [00II][0000]
+#define OUPUT1_OUT_MASK     0x00010000 //!< Not in the Special region [00II][0000]
+#define OUPUT2_OUT_MASK     0x00020000 //!< Not in the Special region [00II][0000]
+
+#define MAX_ROTATION_ANGLE 2700
+#define MIN_ROTATION_ANGLE -2700
+#define HOMING_ON_METHOD 19
+#define HOMING_OFF_METHOD 20
+
 
 /*      Versione con attesa iniziale del segnale EXP WIN
  *      ad un livello IDLE e inizializzazione a zero degli
@@ -157,5 +173,244 @@ static const unsigned char nanojTrxProgram[] = {
 TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", GEAR_RATIO)
 {
     setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
+
+    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
+    bool homing_initialized = false;
+    int  init_position = 0;
+
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+        homing_initialized = true;
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION]);
+    }
+
+    this->home_initialized = homing_initialized;
+    this->encoder_initial_value = init_position;
+
+    // Activate a warning condition is the motor should'n be initialized
+    if (!home_initialized) Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING, false);
   
+}
+
+
+/// <summary>
+/// The TiltMotor override this function in order to initialize specific motor registers
+/// 
+/// </summary>
+/// 
+/// 
+/// <param name=""></param>
+/// <returns>true if the initialization termines successfully</returns>
+
+bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
+
+
+    return true;
+}
+
+
+/// <summary>
+/// The TiltMotor class override this function in order to handle the IDLE activities
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+bool TiltMotor::idleCallback(void) {
+    
+    /*
+    // With the brake alarm present, no more action can be executed
+    if (brake_alarm) {
+
+        // Alarm condition
+        blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
+        return false;
+    }
+
+    // Check if the BRAKE input is OFF. In case it should be ON, a relevant alarm shall be activated
+    if (!blocking_readOD(OD_60FD_00)) return false;
+    if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+
+        brake_alarm = true;
+        Debug::WriteLine("TiltMotor: Failed test brake input in IDLE");
+        Notify::activate(Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT, false);
+        blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
+        return false;
+    }
+
+    // Handle the Safety condition 
+
+    */
+    return true;
+
+}
+
+/// <summary>
+/// The BodyMotor class override this function in order to 
+/// deactivate the motor brake before to start the motor in the target direction.
+/// 
+/// </summary>
+/// 
+/// This function shall unlock the e.m brake to allow the rotation.
+/// 
+/// The function test the brake unlocked condition befor to 
+/// enable the command execution.
+/// 
+/// In case of fault condition, a non resettable alarm is activated.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+CanOpenMotor::MotorCompletedCodes TiltMotor::automaticPositioningPreparationCallback(void) {
+
+    // Unlock the Brake device
+    /*
+    if (!blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK | OUPUT1_OUT_MASK)) {
+
+        // Failed to receive the command answer: in any case switch off the brake
+        blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
+        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
+    }
+    */
+
+    // wait a while before to proceed
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    // Test if the brake is actually activated
+
+    /*
+    if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_BRAKE_DEVICE; // Reads the Inputs
+    if (!BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+
+        // Failed the brake power activation detected
+        brake_alarm = true;
+        Debug::WriteLine("TiltMotor: Failed to unlock");
+        Notify::activate(Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT, false);
+
+        // Clear the OUTPUTS
+        blocking_writeOD(OD_60FE_01, 0);
+        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
+    }
+    */
+
+    // OK. Brake device correctly powered
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+CanOpenMotor::MotorCompletedCodes TiltMotor::automaticHomingPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
+}
+
+CanOpenMotor::MotorCompletedCodes TiltMotor::manualPositioningPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
+}
+
+
+/// <summary>
+/// The TiltMotor class override this function in order to update the current position
+/// and the command termination
+/// 
+/// </summary>
+/// <param name=error></param>
+void TiltMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
+
+    // Lock the brake device
+    // The control of the brake status is done in the IDLE status
+    blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    if (device->home_initialized) {
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->storeFile();
+    }
+
+    // Notify the command termination event
+    device->command_completed_event(command_id, (int)error);
+
+    return;
+}
+
+void TiltMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
+
+    // Lock the brake device
+    // The control of the brake status is done in the IDLE status
+    blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Notify the command termination event
+    device->command_completed_event((int)0, (int)error);
+
+    return;
+}
+
+/// <summary>
+/// The TiltMotor class override this function in order to 
+///handle the homing completion process.
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+void TiltMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
+
+    // Lock the brake device
+    // The control of the brake status is done in the IDLE status
+    blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    if (device->home_initialized) {
+        // Set the position in the configuration file and clear the alarm
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->storeFile();
+        Notify::deactivate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
+    }
+    else {
+        // Reset the position in the configuration file and reactivate the alarm
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+        MotorConfig::Configuration->storeFile();
+        Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING, false);
+    }
+
+    // Notify the command termination event
+    device->command_completed_event((int)0, (int)error);
+}
+
+
+
+
+
+/// <summary>
+/// This function activates the Automatic Homing procedure
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+bool TiltMotor::startHoming(void) {
+
+    // Gets the Speed and Acceleration from the configuration file
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_HOME_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_HOME_ACC]);
+    return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
+}
+
+
+
+/// <summary>
+/// The BodyMotor class override this function in order to handle the manual activation process.
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+TiltMotor::MotorCompletedCodes  TiltMotor::manualPositioningRunningCallback(void) {
+
+    // Handles the enable condition
+    if (!manual_activation_enabled) {
+        return MotorCompletedCodes::ERROR_COMMAND_DISABLED;
+    }
+
+    // Handle the limit switches
+
+    // Handle the safety
+
+    // handle the manual hardware inputs
+    
+
+    // Proceeds with the manual activation
+    return MotorCompletedCodes::COMMAND_PROCEED;
 }

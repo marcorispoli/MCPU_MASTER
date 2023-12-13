@@ -7,6 +7,8 @@ ref class TiltMotor : public CANOPEN::CanOpenMotor
 public:
 	TiltMotor(void);
 	static TiltMotor^ device = gcnew TiltMotor();
+    static bool startHoming(void);
+    static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
 
     literal int SCOUT_POSITION = 0;
     literal int BP_R_POSITION = 1500;
@@ -84,5 +86,25 @@ public:
     }
 
     static System::String^ getTargetName(target_options tg) { return target_tags[(int)tg]; }
+
+protected:
+    bool initializeSpecificObjectDictionaryCallback(void) override;
+    MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
+    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override;
+
+
+    bool idleCallback(void) override;
+
+    MotorCompletedCodes automaticHomingPreparationCallback(void) override;
+    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
+
+    MotorCompletedCodes manualPositioningPreparationCallback(void) override;
+    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+    MotorCompletedCodes manualPositioningRunningCallback(void) override;
+
+private:
+    static bool brake_alarm = false; //!< This is the current brake malfunction alarm
+    static bool manual_activation_enabled = false; //!< This is the flag activating the body manual activation
+    static bool manual_cw_direction = false; //!< Sets true if the CW manual command is executing, false if the CCW manual activation is executing
 };
 

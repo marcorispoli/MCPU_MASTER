@@ -632,6 +632,15 @@ namespace CANOPEN {
 		protected:	virtual bool idleCallback(void) { return true; }
 		protected:	virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
 
+
+		private:
+			bool read_sdo_tmo;
+			bool write_sdo_tmo;
+		
+	public:
+			unsigned int sent_messages;
+			unsigned int unreceived_messages;
+			
 	};
 
 }; 

@@ -144,6 +144,7 @@
     <ClInclude Include="GENERATOR\ExposureModule.h" />
     <ClInclude Include="MOTORS\ArmMotor.h" />
     <ClInclude Include="MOTORS\BodyMotor.h" />
+    <ClInclude Include="MOTORS\SlideMotor.h" />
     <ClInclude Include="MOTORS\VerticalMotor.h" />
     <ClInclude Include="WINDOWS\ConfirmationWindow.h">
       <FileType>CppForm</FileType>
@@ -200,6 +201,9 @@
     <ClInclude Include="WINDOWS\Projections.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WINDOWS\ServiceForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -215,6 +219,7 @@
     <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />
     <ClCompile Include="MOTORS\ArmMotor.cpp" />
     <ClCompile Include="MOTORS\BodyMotor.cpp" />
+    <ClCompile Include="MOTORS\SlideMotor.cpp" />
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
     <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
@@ -245,6 +250,9 @@
     <ClCompile Include="WINDOWS\MainForm.cpp" />
     <ClCompile Include="WINDOWS\OperatingForm.cpp" />
     <ClCompile Include="WINDOWS\Projections.cpp" />
+    <ClCompile Include="WINDOWS\ServiceForm.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_main_panel.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_zero_setting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
@@ -275,6 +283,9 @@
     <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />
     <EmbeddedResource Include="WINDOWS\Projections.resx">
       <DependentUpon>WINDOWS\Projections.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\ServiceForm.resx">
+      <DependentUpon>WINDOWS\ServiceForm.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

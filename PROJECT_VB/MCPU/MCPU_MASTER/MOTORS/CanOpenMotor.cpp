@@ -10,6 +10,7 @@ using namespace CANOPEN;
 #define VMM_DATA_OD OD_1F50_02
 #define VMM_STATUS_OD OD_1F57_02
 #define DRIVER_POLLING_MS 100
+#define SEND_TMO          50 // ms waiting the reception
 
 /// <summary>
 /// This function allows to convert the User units to Encoder units.
@@ -79,8 +80,13 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds
     nanojSize = 0;
     home_initialized = false;
     encoder_initial_value = 0;
-    
-    
+
+    // For Can Diagnose
+    read_sdo_tmo = false;
+    write_sdo_tmo = false;
+    sent_messages = 0;
+    unreceived_messages = 0;
+
     // Gets the handler of the class instance to be used for the Post/Send message functions.
     //hwnd = static_cast<HWND>(Handle.ToPointer());    
     device_id = devid;
@@ -215,24 +221,34 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODR
         rxSdoRegister->getWriteBuffer(buffer);
 
         // Activates the transmission
+        sent_messages++;
         CanDriver::multithread_send(0x600 + device_id, buffer, 8);
 
         sdo_rx_pending = true;
 
         // Waits to be signalled: waits for 50ms
-        dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+        dwWaitResult = WaitForSingleObject(rxSDOEvent, SEND_TMO);
         sdo_rx_pending = false;
 
 
         // Checks if the Event has been signalled or it is a timeout event.
-        if (dwWaitResult != WAIT_OBJECT_0)
+        if (dwWaitResult != WAIT_OBJECT_0) {
+            write_sdo_tmo = true;
+            unreceived_messages++;
             continue;
+        }
+
+        if (write_sdo_tmo) {
+            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: RESET WRITE SDO TMO IN" + System::Convert::ToString(i));
+            write_sdo_tmo = false;
+        }
+
         if (!rxSdoRegister->valid)
             continue;
 
         return true;
     }
-
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:FAILED WR SDO ");
     return false;
 }
 
@@ -262,19 +278,26 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
         rxSdoRegister->getReadBuffer(buffer);
 
         // Activates the transmission
+        sent_messages++;
         CanDriver::multithread_send(0x600 + device_id, buffer, 8);
         sdo_rx_pending = true;
 
         // Waits to be signalled: waits for 50ms
-        dwWaitResult = WaitForSingleObject(rxSDOEvent, 1000);
+        dwWaitResult = WaitForSingleObject(rxSDOEvent, SEND_TMO);
         sdo_rx_pending = false;
 
         // Checks if the Event has been signalled or it is a timeout event.
         if (dwWaitResult != WAIT_OBJECT_0) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: TMO");
+            read_sdo_tmo = true;
+            unreceived_messages++;
             continue;
         }
 
+        if (read_sdo_tmo) {
+            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: RESET  READ SDO TMO IN " + System::Convert::ToString(i));
+            read_sdo_tmo = false;
+        }
+            
         if (!rxSdoRegister->valid) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: INVALID");
             continue;
@@ -284,6 +307,7 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
 
     }
 
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:FAILED RD SDO ");
     return false;
 }
 
@@ -433,6 +457,8 @@ void CanOpenMotor::mainWorker(void) {
         // Read the status word
         if (!blocking_readOD(OD_6041_00)) {
             internal_status = status_options::MOTOR_NOT_CONNECTED;
+            sent_messages = 0;
+            unreceived_messages = 0;
             continue;
         }
 

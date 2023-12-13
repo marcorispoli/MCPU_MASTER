@@ -277,6 +277,9 @@ void BodyMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error)
         MotorConfig::Configuration->storeFile();
     }
 
+    // Notify the command termination event
+    device->command_completed_event(command_id, (int) error);
+
     return;
 }
 
@@ -286,6 +289,9 @@ void BodyMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
     // The control of the brake status is done in the IDLE status
     blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Notify the command termination event
+    device->command_completed_event((int) 0, (int)error);
 
     return;
 }
@@ -316,6 +322,9 @@ void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
         MotorConfig::Configuration->storeFile();
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING, false);
     }
+
+    // Notify the command termination event
+    device->command_completed_event((int)0, (int)error);
 }
 
 

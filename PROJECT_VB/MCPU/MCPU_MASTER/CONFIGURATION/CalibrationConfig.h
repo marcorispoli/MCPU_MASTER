@@ -193,6 +193,20 @@ public:
     literal System::String^ PARAM_TILT_HOME_SPEED_DEFAULT = "100";                                  //!< TILT Home Speed in 0.01 degree degree/ss
     literal System::String^ PARAM_TILT_HOME_ACC_DEFAULT = "100";                                    //!< TILT Home Acc in 0.01 degree degree/ss
 
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_SLIDE = "SLIDE_CALIBRATION";                                       //!< This is the SLIDE Motor parameter section
+    literal System::String^ PARAM_SLIDE_COMMENT = "SLIDE_CALIBRATION calibration data";
+    literal System::String^ PARAM_SLIDE_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder SLIDE Motor position (for initial zero setting)
+    literal System::String^ PARAM_SLIDE_AUTO_SPEED_DEFAULT = "50";                                 //!< SLIDE Auto Speed in 0.1 degree/s
+    literal System::String^ PARAM_SLIDE_AUTO_ACC_DEFAULT = "20";                                    //!< SLIDE Auto Acc in 0.1 degree/ss
+    literal System::String^ PARAM_SLIDE_AUTO_DEC_DEFAULT = "20";                                    //!< SLIDE Auto Dec in 0.1 degree/ss
+    literal System::String^ PARAM_SLIDE_MANUAL_SPEED_DEFAULT = "50";                               //!< SLIDE Manual Speed in 0.1 degree/s
+    literal System::String^ PARAM_SLIDE_MANUAL_ACC_DEFAULT = "20";                                  //!< SLIDE Manual Acc in 0.1 degree/ss
+    literal System::String^ PARAM_SLIDE_MANUAL_DEC_DEFAULT = "20";                                  //!< SLIDE Manual Dec in 0.1 degree/ss
+    literal System::String^ PARAM_SLIDE_HOME_SPEED_DEFAULT = "50";                                 //!< SLIDE Home Speed in 0.1 degree/ss
+    literal System::String^ PARAM_SLIDE_HOME_ACC_DEFAULT = "20";                                    //!< SLIDE Home Acc in 0.1 degree/ss
+
+
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
@@ -242,6 +256,18 @@ public:
             PARAM_TILT_MANUAL_DEC_DEFAULT,
             PARAM_TILT_HOME_SPEED_DEFAULT,
             PARAM_TILT_HOME_ACC_DEFAULT
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_SLIDE, PARAM_SLIDE_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_SLIDE_CURRENT_POSITION_DEFAULT,
+            PARAM_SLIDE_AUTO_SPEED_DEFAULT,
+            PARAM_SLIDE_AUTO_ACC_DEFAULT,
+            PARAM_SLIDE_AUTO_DEC_DEFAULT,
+            PARAM_SLIDE_MANUAL_SPEED_DEFAULT,
+            PARAM_SLIDE_MANUAL_ACC_DEFAULT,
+            PARAM_SLIDE_MANUAL_DEC_DEFAULT,
+            PARAM_SLIDE_HOME_SPEED_DEFAULT,
+            PARAM_SLIDE_HOME_ACC_DEFAULT
             }),
 
         }

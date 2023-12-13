@@ -34,6 +34,7 @@ private: System::Windows::Forms::Label^ labelTubeData;
 private: System::Windows::Forms::Panel^ tubeTempOk;
 
 private: System::Windows::Forms::Panel^ errorButton;
+private: System::Windows::Forms::PictureBox^ serviceButton;
 private: System::Windows::Forms::Panel^ mainPanel;
 
 public:
@@ -106,6 +107,7 @@ private:
 		this->tubeTempOk = (gcnew System::Windows::Forms::Panel());
 		this->errorButton = (gcnew System::Windows::Forms::Panel());
 		this->mainPanel = (gcnew System::Windows::Forms::Panel());
+		this->serviceButton = (gcnew System::Windows::Forms::PictureBox());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->xrayMode))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->batteryConnected))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->awsConnected))->BeginInit();
@@ -113,6 +115,7 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->doorClosed))->BeginInit();
 		this->tubeTempOk->SuspendLayout();
 		this->mainPanel->SuspendLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceButton))->BeginInit();
 		this->SuspendLayout();
 		// 
 		// xrayMode
@@ -228,6 +231,7 @@ private:
 		// 
 		// mainPanel
 		// 
+		this->mainPanel->Controls->Add(this->serviceButton);
 		this->mainPanel->Controls->Add(this->labelDate);
 		this->mainPanel->Controls->Add(this->errorButton);
 		this->mainPanel->Controls->Add(this->labelInstallation);
@@ -242,6 +246,16 @@ private:
 		this->mainPanel->Name = L"mainPanel";
 		this->mainPanel->Size = System::Drawing::Size(600, 1024);
 		this->mainPanel->TabIndex = 14;
+		// 
+		// serviceButton
+		// 
+		this->serviceButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->serviceButton->Location = System::Drawing::Point(410, 834);
+		this->serviceButton->Name = L"serviceButton";
+		this->serviceButton->Size = System::Drawing::Size(160, 160);
+		this->serviceButton->TabIndex = 14;
+		this->serviceButton->TabStop = false;
+		this->serviceButton->Click += gcnew System::EventHandler(this, &IdleForm::serviceButton_Click);
 		// 
 		// IdleForm
 		// 
@@ -262,6 +276,7 @@ private:
 		this->tubeTempOk->PerformLayout();
 		this->mainPanel->ResumeLayout(false);
 		this->mainPanel->PerformLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceButton))->EndInit();
 		this->ResumeLayout(false);
 
 	}
@@ -277,5 +292,6 @@ private:
 private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
 
 
+private: System::Void serviceButton_Click(System::Object^ sender, System::EventArgs^ e);
 };
 

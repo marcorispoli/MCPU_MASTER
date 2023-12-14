@@ -107,7 +107,7 @@ protected:
 	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override;
 
 
-	bool idleCallback(void) override;
+	MotorCompletedCodes idleCallback(void) override;
 
 	MotorCompletedCodes automaticHomingPreparationCallback(void) override;
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;

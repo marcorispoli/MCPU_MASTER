@@ -13,13 +13,7 @@ public:
     static Gantry^ gantry_handle = gcnew Gantry();
     static void initialize(void) {}; //!< Causes the Gantry auto creation
 
-    #define pMSHIFT  ((CanOpenMotor^) Gantry::pMotShift)
    
-
-    //static Object^ pAws = nullptr; //!< Pointer to the AWS interface    
-    static Object^ pMotShift = nullptr; //!< Pointer to the Shift Motor
-    
-
     // Monitor coordinates
     static int monitor_X0;//!< Pointer to the Monitor X0 position
     static int monitor_Y0;//!< Pointer to the Monitor Y0 position
@@ -28,11 +22,12 @@ public:
     // Forms
     static Object^ pIdleForm; //!< Pointer to the IdleForm 
     static Object^ pOperatingForm; //!< Pointer to the OperatingForm 
+    static Object^ pServiceForm; //!< Pointer to the ServiceForm 
     
     enum class operating_status_options {
         GANTRY_STARTUP = 0, //!< Gantry is in the Startup operating mode
         GANTRY_IDLE,        //!< Gantry is in the Idle operating mode
-        GANTRY_OPEN_STUDY,  //!< Gantry is in the Open-Study operating mode
+        GANTRY_OPERATING,  //!< Gantry is in the Operating operating mode
         GANTRY_SERVICE,     //!< Gantry is in the Service operating mode       
     };
     static const cli::array<System::String^>^ operating_status_tags = gcnew cli::array<System::String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
@@ -47,12 +42,13 @@ public:
     static System::String^ getOperatingStatusName(void) { return operating_status_tags[(int)current_operating_status]; }
     static bool isSERVICE(void) { return (current_operating_status == operating_status_options::GANTRY_SERVICE); }
     static bool isIDLE(void) { return (current_operating_status == operating_status_options::GANTRY_IDLE); }
-    static bool isOPEN(void) { return (current_operating_status == operating_status_options::GANTRY_OPEN_STUDY); }
-    static bool isCLOSE(void) { return isIDLE(); }
+    static bool isOPERATING(void) { return (current_operating_status == operating_status_options::GANTRY_OPERATING); }
+    static bool isSTARTUP(void) { return (current_operating_status == operating_status_options::GANTRY_STARTUP); }
 
-    static void setIdle(void);
+    static bool setIdle(void);
     static void setStartup(void);
-    static void setOperating(void);
+    static bool setOperating(void);
+    static bool setService(void);
 
 private:
     static operating_status_options current_operating_status = operating_status_options::GANTRY_STARTUP;

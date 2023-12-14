@@ -14,8 +14,15 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     device_reset = false;
     rx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
-    tmo = true;
+    tmo = false;
     attempt = 0;
+    
+    sent_messages = 0;
+    unreceived_messages = 0;
+    perc_sent_messages = 0;
+    perc_unreceived_messages = 0;
+    register_access_fault = 0;
+    register_access_fault_counter = 0;
 
     // Creates the Reception event
     rxEvent = CreateEvent(
@@ -49,6 +56,8 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
     // Be careful!! This call is runing into the program thread pull, out of the class thread.
     bool bootloader = false;
 
+    // No more transaction with a register access fault activated
+    if (register_access_fault) return ;
     
     if ( 
         (!rx_pending) || // No data is expected 
@@ -67,6 +76,8 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
         return; // Not a target
     }
 
+    bool decode_ok = rx_register->decode(data, bootloader);
+
     // Verifies if there is a Device Reset condition to be signaled
     if ((!bootloader) && (rx_register->b1 == (unsigned char) ProtocolFrameCode::FRAME_DEVICE_RESET)) {
         device_reset = true;
@@ -74,16 +85,49 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
         return;
     }
 
-    if (
-        (bootloader != tx_register->bootloader) ||  // Wrong destination
-        (!rx_register->decode(data, bootloader)) || // CRC error
-        (rx_register->b0 != tx_register->b0) ||     // First byte equal for both protocols
-        ((!bootloader) && (rx_register->b1 != tx_register->b1))// The command equals only for non bootloader frames
-        )
-    {
+    // Wrong destination address
+    if (bootloader != tx_register->bootloader) {
+        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong destination (bootloader vs application)");
         SetEvent(rxEvent);
         return;
     }
+    
+    // Wrong CRC
+    if (!decode_ok) {
+        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong crc");
+        SetEvent(rxEvent);
+        return;
+    }
+
+    // Invalid sequence number
+    if (rx_register->b0 != tx_register->b0) {
+        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: invalid seq number");
+        SetEvent(rxEvent);
+        return;
+    }
+
+    // Invalid register access
+    if (rx_register->b1 == (unsigned char) ProtocolFrameCode::FRAME_ERROR) {
+
+        if (register_access_fault_counter > 10) {
+            register_access_fault = true;
+            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: FATAL!! invalid register access. Stop communication");
+        } else {
+            register_access_fault_counter++;
+            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: invalid register access");
+        }
+
+        SetEvent(rxEvent);
+        return;
+    }
+
+    // Wrong Command match
+    if ((!bootloader) && (rx_register->b1 != tx_register->b1)) {
+        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong command match");
+        SetEvent(rxEvent);
+        return;
+    }
+
     
 
     // Checks that the received Object registers matches with the expected    
@@ -102,6 +146,11 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     DWORD dwWaitResult;
     unsigned short canid;
 
+    // No more transaction with a register access fault activated
+    if (register_access_fault) return false;
+
+    sent_messages++;
+    perc_sent_messages++;
 
     if (bootl) {
         canid = device_id + 0x100;
@@ -111,13 +160,14 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     else {
         canid = device_id + 0x140;
         rx_sequence++;
+        if (!rx_sequence) rx_sequence = 1;
         tx_register->set(rx_sequence, d1, d2, d3, d4, d5, d6, d7, bootl);
         tx_register->format(buffer);
         buffer[7] = tx_register->crc;
     }
     
     if(!tmo)  attempt++;
-    if (attempt > 10) {
+    if (attempt > 2) {
         if(!tmo) Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: TMO");
         tmo = true;
     }
@@ -129,13 +179,15 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     rx_pending = true;
 
     // Waits to be signalled: waits for 100ms
-    dwWaitResult = WaitForSingleObject(rxEvent, 100);
+    dwWaitResult = WaitForSingleObject(rxEvent, 50);
     rx_pending = false;
 
-
     // Checks if the Event has been signalled or it is a timeout event.
-    if (dwWaitResult != WAIT_OBJECT_0) return false;
-    if (!rxOk) return false;
+    if ((dwWaitResult != WAIT_OBJECT_0) || (!rxOk)) {
+        unreceived_messages++;
+        return false;
+    }
+    
 
     attempt=0;
     tmo = false;
@@ -188,6 +240,11 @@ void CanDeviceProtocol::mainWorker(void) {
             if (configurationLoop()) {
                 Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Running");
                 internal_status = status_options::DEVICE_RUNNING;
+                sent_messages = 0;
+                unreceived_messages = 0;
+                perc_sent_messages = 0;
+                perc_unreceived_messages = 0;
+
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));            
             break;
@@ -213,6 +270,16 @@ void CanDeviceProtocol::mainWorker(void) {
 
 
 void CanDeviceProtocol::InternalRunningLoop(void) {
+
+    // Every 100 messages checks for a 1% error
+    if (perc_sent_messages > 100){
+        if (perc_unreceived_messages) {
+            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: % can errors -> " + perc_unreceived_messages.ToString() + " - Total Msg:" + sent_messages.ToString() + " Err Msg:" + unreceived_messages.ToString());
+        }
+        perc_sent_messages = 0;
+        perc_unreceived_messages = 0;
+    }
+
 
     // Command execution sequence
     if (command_executing) {

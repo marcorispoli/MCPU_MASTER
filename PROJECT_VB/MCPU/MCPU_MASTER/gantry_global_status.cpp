@@ -1,6 +1,8 @@
 #include "gantry_global_status.h"
 #include "WINDOWS/IdleForm.h"
 #include "WINDOWS/OperatingForm.h"
+#include "WINDOWS/ServiceForm.h"
+
 #include "Notify.h"
 #include <mutex>
 
@@ -35,39 +37,52 @@ Gantry::Gantry() {
         // Creates the status Windows
         pIdleForm = gcnew IdleForm();
         pOperatingForm = gcnew OperatingForm();
+        pServiceForm = gcnew ServiceForm();
     
 }
 
-void Gantry::setIdle() {
-    if (current_operating_status == operating_status_options::GANTRY_IDLE) return;
-    if (current_operating_status == operating_status_options::GANTRY_OPEN_STUDY) ((OperatingForm^)pOperatingForm)->close();
+bool Gantry::setIdle() {
+    if (current_operating_status == operating_status_options::GANTRY_IDLE) return true;
+    if (current_operating_status == operating_status_options::GANTRY_OPERATING) ((OperatingForm^)pOperatingForm)->close();
+    if (current_operating_status == operating_status_options::GANTRY_SERVICE) ((ServiceForm^)pServiceForm)->close();
 
     current_operating_status = operating_status_options::GANTRY_IDLE;
     ((IdleForm^)pIdleForm)->open();
+    return true;
 }
 
-void Gantry::setOperating() {
-    if (current_operating_status == operating_status_options::GANTRY_OPEN_STUDY) return;
+bool Gantry::setOperating() {
+    if (current_operating_status == operating_status_options::GANTRY_OPERATING) return true;
+    if (current_operating_status == operating_status_options::GANTRY_SERVICE) return false;
     if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
 
-    current_operating_status = operating_status_options::GANTRY_OPEN_STUDY;
+    current_operating_status = operating_status_options::GANTRY_OPERATING;
     ((OperatingForm^)pOperatingForm)->open();
+    return true;
 }
+
+bool Gantry::setService() {
+    if (current_operating_status == operating_status_options::GANTRY_OPERATING) return false;
+    if (current_operating_status == operating_status_options::GANTRY_SERVICE) return true;
+    
+    if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
+
+    current_operating_status = operating_status_options::GANTRY_SERVICE;
+    ((ServiceForm^)pServiceForm)->open();
+    return true;
+}
+
 
 void Gantry::setStartup(void) {
     current_operating_status = operating_status_options::GANTRY_STARTUP;
 }
 
-bool Gantry::setOpenStudy(System::String^ patient) {
-    if (current_operating_status != operating_status_options::GANTRY_IDLE) return false;
+bool Gantry::setOpenStudy(System::String^ patient) {    
     patient_name = patient;
-    setOperating();
-    return true;
+    return setOperating();    
 }
 
-bool Gantry::setCloseStudy(void) {
-    if (current_operating_status != operating_status_options::GANTRY_OPEN_STUDY) return false;
+bool Gantry::setCloseStudy(void) {    
     patient_name = "";
-    setIdle();
-    return true;
+    return setIdle();
 }

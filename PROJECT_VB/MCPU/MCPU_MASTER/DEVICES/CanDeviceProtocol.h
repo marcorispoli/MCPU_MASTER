@@ -24,7 +24,8 @@ public:
 	/// 
 	/// </summary>
 	enum class ProtocolFrameCode {
-		FRAME_READ_REVISION = 1,//!< Read Revision register frame command code
+		FRAME_ERROR = 0,	// Device detected an invalid access to the registers
+		FRAME_READ_REVISION,//!< Read Revision register frame command code
 		FRAME_READ_ERRORS,//!< Read Error register frame command code
 		FRAME_READ_COMMAND,//!< Read Command register frame command code
 		FRAME_READ_STATUS,//!< Read Status register frame command code
@@ -190,8 +191,8 @@ protected:
 	virtual void runningLoop(void) ;
 	virtual void resetLoop(void);
 	virtual bool configurationLoop(void);
-
-
+	bool register_access_fault;
+	int register_access_fault_counter;
 private:
 
 	//bool blocking_write(unsigned short index, unsigned char sub, unsigned char dim, int val);
@@ -238,6 +239,11 @@ private:
 	unsigned char command_ris1;
 	unsigned char command_error;
 
+public:
+	unsigned int sent_messages;
+	unsigned int unreceived_messages;
+	unsigned int perc_sent_messages;
+	unsigned int perc_unreceived_messages;
 
 };
 

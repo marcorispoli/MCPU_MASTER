@@ -86,6 +86,9 @@ void IdleForm::formInitialization(void) {
 	errorButton->BackgroundImage = ERROR_BUTTON;
 	errorButton->Hide();
 
+	// Service Button
+	serviceButton->BackColor = Color::Transparent;
+
 
 	idleTimer = gcnew System::Timers::Timer(100);
 	idleTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onIdleTimeout);
@@ -299,4 +302,7 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 
 void IdleForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	((ErrorForm^)pError)->open();
+}
+System::Void IdleForm::serviceButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	Gantry::setService();
 }

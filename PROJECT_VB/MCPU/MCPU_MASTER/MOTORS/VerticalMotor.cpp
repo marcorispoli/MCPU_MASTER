@@ -120,7 +120,7 @@ void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes er
 /// 
 /// <param name=""></param>
 /// <returns></returns>
-bool VerticalMotor::idleCallback(void) {
+CanOpenMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
     static PCB301::vertical_activation_options vertical_request = PCB301::vertical_activation_options::VERTICAL_NO_ACTIVATION;
 
     int speed, acc, dec;
@@ -151,7 +151,7 @@ bool VerticalMotor::idleCallback(void) {
    
 
     // Allows to proceed with commands
-    return true;
+    return MotorCompletedCodes::COMMAND_PROCEED;
 
 }
 

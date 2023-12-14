@@ -151,7 +151,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool BodyMotor::idleCallback(void) {
+CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     static PCB301::body_activation_options body_request = PCB301::body_activation_options::BODY_NO_ACTIVATION;
     int speed, acc, dec;
 
@@ -160,18 +160,18 @@ bool BodyMotor::idleCallback(void) {
 
         // Alarm condition
         blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-        return false;
+        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
     }
 
     // Check if the BRAKE input is OFF. In case it should be ON, a relevant alarm shall be activated
-    if (!blocking_readOD(OD_60FD_00)) return false;
+    if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_ACTIVATION_REGISTER;
     if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
 
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test brake input in IDLE");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
         blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-        return false;
+        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
     }
 
     // Handle the Safety condition 
@@ -200,7 +200,7 @@ bool BodyMotor::idleCallback(void) {
     }
 
    
-    return true;
+    return MotorCompletedCodes::COMMAND_PROCEED;
     
 }
 

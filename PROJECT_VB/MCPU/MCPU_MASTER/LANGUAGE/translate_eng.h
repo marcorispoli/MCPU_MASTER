@@ -75,9 +75,31 @@
 
 "L00001", Notify::messages::LABEL_ERROR_WINDOW_PANEL, "Error Window Panel", "-",
 "L00002", Notify::messages::LABEL_PROJECTION_SELECTION_PANEL, "Projection Selection", "-",
-"L00003", Notify::messages::LABEL_ERROR, "ERR", "-",
-"L00004", Notify::messages::LABEL_WARNING, "WRN", "-",
-"L00005", Notify::messages::LABEL_INFO, "INF", "-",
-"L00006", Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE, "STAND-BY", "-",
-"L00007", Notify::messages::LABEL_READY_FOR_EXPOSURE, "READY", "-",
-"L00008", Notify::messages::LABEL_X_RAY_ON, "X-RAY ON", "-",
+"L00003", Notify::messages::LABEL_ZERO_SETTING_PANEL_TITLE, "Zero Setting Panel", "-",
+"L00004", Notify::messages::LABEL_ERROR, "ERR", "-",
+"L00005", Notify::messages::LABEL_WARNING, "WRN", "-",
+"L00006", Notify::messages::LABEL_INFO, "INF", "-",
+"L00007", Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE, "STAND-BY", "-",
+"L00008", Notify::messages::LABEL_READY_FOR_EXPOSURE, "READY", "-",
+"L00009", Notify::messages::LABEL_X_RAY_ON, "X-RAY ON", "-",
+
+"L00010", Notify::messages::LABEL_MOTOR_COMMAND_SUCCESS, "Command successfully completed", "-",
+"L00011", Notify::messages::LABEL_MOTOR_COMMAND_MANUAL_TERMINATION, "Command manually terminated", "-",
+"L00012", Notify::messages::LABEL_MOTOR_ERROR_OBSTACLE_DETECTED, "Obstacle detected error", "-",
+"L00013", Notify::messages::LABEL_MOTOR_ERROR_MOTOR_BUSY, "Motor busy error", "-",
+"L00014", Notify::messages::LABEL_MOTOR_ERROR_INITIALIZATION, "Command initialization error", "-",
+"L00015", Notify::messages::LABEL_MOTOR_ERROR_UNEXPECTED_STATUS, "Unexpected internal status error", "-",
+"L00016", Notify::messages::LABEL_MOTOR_ERROR_LIMIT_SWITCH, "Limit switches activation error", "-",
+"L00017", Notify::messages::LABEL_MOTOR_ERROR_BRAKE_DEVICE, "Brake device activation error", "-",
+"L00018", Notify::messages::LABEL_MOTOR_ERROR_INVALID_COMMAND_INITIAL_CONDITION, "Command initialization error", "-",
+"L00019", Notify::messages::LABEL_MOTOR_ERROR_TIMOUT, "Timeout activation error", "-",
+"L00020", Notify::messages::LABEL_MOTOR_ERROR_INTERNAL_FAULT, "Driver internal error", "-",
+"L00021", Notify::messages::LABEL_MOTOR_ERROR_ACTIVATION_REGISTER, "Driver access register error", "-",
+"L00022", Notify::messages::LABEL_MOTOR_ERROR_MISSING_HOME, "Missing zero setting error", "-",
+"L00023", Notify::messages::LABEL_MOTOR_ERROR_COMMAND_DISABLED, "Motor activation disabled error", "-",
+"L00024", Notify::messages::LABEL_MOTOR_ERROR_COMMAND_ABORTED, "Motor activation aborted", "-",
+
+
+
+
+

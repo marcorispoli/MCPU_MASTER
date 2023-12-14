@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE_CALIBRATION;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
@@ -181,8 +181,8 @@
     <ClInclude Include="LANGUAGE\translate_rus.h" />
     <ClInclude Include="gantry_global_status.h" />
     <ClInclude Include="MESSAGES\Notify.h" />
-    <ClInclude Include="MOTORS\CanOpenMotor.h" />
-    <ClInclude Include="MOTORS\pd4_od.h" />
+    <ClInclude Include="MOTORS\CanOpenDriver\CanOpenMotor.h" />
+    <ClInclude Include="MOTORS\CanOpenDriver\pd4_od.h" />
     <ClInclude Include="MOTORS\TiltMotor.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="VSCAN\CanDriver.h" />
@@ -204,6 +204,7 @@
     <ClInclude Include="WINDOWS\ServiceForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE_CALIBRATION\calib_panel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -219,6 +220,11 @@
     <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />
     <ClCompile Include="MOTORS\ArmMotor.cpp" />
     <ClCompile Include="MOTORS\BodyMotor.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenAutomaticPositioning.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenCiAProcedures.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenHoming.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenManualPositioning.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenNanoJ.cpp" />
     <ClCompile Include="MOTORS\SlideMotor.cpp" />
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
     <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
@@ -242,7 +248,7 @@
     <ClCompile Include="GENERATOR\R2CP\R2CP_Eth.cpp" />
     <ClCompile Include="GENERATOR\TcpIpClientCLI.cpp" />
     <ClCompile Include="MESSAGES\Notify.cpp" />
-    <ClCompile Include="MOTORS\CanOpenMotor.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenMotor.cpp" />
     <ClCompile Include="MOTORS\TiltMotor.cpp" />
     <ClCompile Include="VSCAN\CanDriver.cpp" />
     <ClCompile Include="WINDOWS\ErrorForm.cpp" />

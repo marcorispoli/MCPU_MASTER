@@ -62,6 +62,7 @@ void ServiceForm::open(void) {
 	if (open_status) return;
 	open_status = true;	
 	initServiceStatus();
+
 	this->Show();
 }
 
@@ -76,10 +77,15 @@ void ServiceForm::close(void) {
 
 void ServiceForm::setActivePanel(ServiceForm::panels p) {
 	if (p == current_panel) return;
+	current_panel = p;
 
+	// ides all the panels
 	mainPanel->Hide();
 	calibPanel->Hide();
 	calibZerosettingPanel->Hide();
+
+	// Stops the timer: each individual panel starts its timer version 
+	serviceTimer->Stop();
 
 	if (p == panels::MAIN_SERVICE_PANEL) {
 		initMainPanel();
@@ -96,7 +102,9 @@ void ServiceForm::setActivePanel(ServiceForm::panels p) {
 }
 
 void ServiceForm::serviceStatusManagement(void) {
-
+	switch (current_panel) {
+	case panels::CALIB_ZEROSETTING_PANEL: zeroSettingPanelTimer(); break;
+	}
 	
 }
 
@@ -104,7 +112,7 @@ void ServiceForm::WndProc(System::Windows::Forms::Message% m)
 {
 	switch (m.Msg) {
 
-	case (WM_USER + 1): // onIdleTimeout
+	case (WM_USER + 1): // on statusTimer Timeout
 		
 		serviceStatusManagement();
 		break;

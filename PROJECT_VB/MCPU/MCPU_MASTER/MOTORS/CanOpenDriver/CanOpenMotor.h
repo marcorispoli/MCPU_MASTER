@@ -16,7 +16,12 @@ using namespace System::Threading;
 namespace CANOPEN {
 
 	#define SPEED_DENOMINATOR       120 //!< This is the Speed conversion denominator unit 
-	
+	#define VMM_CTRL_OD OD_1F51_02
+	#define VMM_DATA_OD OD_1F50_02
+	#define VMM_STATUS_OD OD_1F57_02
+	#define DRIVER_POLLING_MS 100
+	#define SEND_TMO          50 // ms waiting the reception
+
 
 	/// <summary>
 	/// This is the enumeration of the Application Motor device addresses
@@ -447,7 +452,7 @@ namespace CANOPEN {
 		public:bool activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
 		public:bool activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
 		public: bool activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
-		
+		public: void abortActivation(void); //!< Immediate abort of any activation running
 
 
 		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
@@ -487,7 +492,9 @@ namespace CANOPEN {
 				ERROR_ACTIVATION_REGISTER,
 				ERROR_MISSING_HOME,
 				ERROR_COMMAND_DISABLED,
+				ERROR_COMMAND_ABORTED,
 			};
+		public: System::String^ getCompletedCodeString(void);
 
 		public: inline System::String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
 		public: inline status_options getInternalStatus(void) { return internal_status; }
@@ -497,8 +504,10 @@ namespace CANOPEN {
 		public: inline bool isODConfigured(void) { return od_initialized; }
 		public: inline bool isNanojConfigured(void) { return nanoj_initialized; }
 		public: inline bool isReady(void) { return ((internal_status == status_options::MOTOR_READY) && (request_command == MotorCommands::MOTOR_IDLE)); }
-		public: inline int getCurrentPosition(void) { return current_uposition; }
+		public: inline bool isZeroOk(void) { return home_initialized; }
 
+		public: inline int getCurrentPosition(void) { return current_uposition; }
+		public: inline MotorCompletedCodes getCommandCompletedCode(void) {	return command_completed_code;	}
 		
 
 		// Device Initialization __________________________________________________________________
@@ -601,6 +610,8 @@ namespace CANOPEN {
 
 
 		private: MotorCommands request_command; //!< Application request command code
+		private: bool abort_request; //!< This flag active causes an immediate command abort
+
 		private: MotorCommands current_command; //!< Current executing command code
 		private:MotorCompletedCodes command_completed_code;//!< Activation result
 		
@@ -629,7 +640,7 @@ namespace CANOPEN {
 		protected:	virtual MotorCompletedCodes automaticHomingRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
 		protected:	virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
 
-		protected:	virtual bool idleCallback(void) { return true; }
+		protected:	virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
 		protected:	virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
 
 

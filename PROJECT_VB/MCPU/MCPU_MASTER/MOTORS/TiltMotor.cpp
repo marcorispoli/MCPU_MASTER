@@ -214,7 +214,7 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool TiltMotor::idleCallback(void) {
+TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
     
     /*
     // With the brake alarm present, no more action can be executed
@@ -239,7 +239,7 @@ bool TiltMotor::idleCallback(void) {
     // Handle the Safety condition 
 
     */
-    return true;
+    return MotorCompletedCodes::COMMAND_PROCEED;
 
 }
 

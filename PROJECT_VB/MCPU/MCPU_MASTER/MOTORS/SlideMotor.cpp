@@ -73,10 +73,10 @@ void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool SlideMotor::idleCallback(void) {
+SlideMotor::MotorCompletedCodes SlideMotor::idleCallback(void) {
 
 
-    return true;
+    return MotorCompletedCodes::COMMAND_PROCEED;
 
 }
 

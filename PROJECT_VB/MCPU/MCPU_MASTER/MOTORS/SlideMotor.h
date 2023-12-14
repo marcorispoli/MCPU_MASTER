@@ -12,7 +12,7 @@ public:
 
 protected:
     bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
-    bool idleCallback(void) override;
+    MotorCompletedCodes idleCallback(void) override;
     void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    
     void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
     void manualPositioningCompletedCallback(MotorCompletedCodes error) override;

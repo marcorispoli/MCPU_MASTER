@@ -93,10 +93,10 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool ArmMotor::idleCallback(void) {
+ArmMotor::MotorCompletedCodes ArmMotor::idleCallback(void) {
 
    
-    return true;
+    return MotorCompletedCodes::COMMAND_PROCEED;
 
 }
 

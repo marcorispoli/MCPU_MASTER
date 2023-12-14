@@ -47,13 +47,13 @@
     <ClInclude Include="VSCAN\CanDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MOTORS\CanOpenMotor.h">
+    <ClInclude Include="MOTORS\CanOpenDriver\CanOpenMotor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MOTORS\TiltMotor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MOTORS\pd4_od.h">
+    <ClInclude Include="MOTORS\CanOpenDriver\pd4_od.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CONFIGURATION\ConfigFile.h">
@@ -185,6 +185,9 @@
     <ClInclude Include="WINDOWS\ServiceForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE_CALIBRATION\calib_panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -217,7 +220,7 @@
     <ClCompile Include="VSCAN\CanDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MOTORS\CanOpenMotor.cpp">
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenMotor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MOTORS\TiltMotor.cpp">
@@ -326,6 +329,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_main_panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenCiAProcedures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenNanoJ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenAutomaticPositioning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenHoming.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenManualPositioning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

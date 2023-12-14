@@ -72,7 +72,7 @@ protected:
 	
 	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
-	bool idleCallback(void) override;
+	MotorCompletedCodes idleCallback(void) override;
 
 	MotorCompletedCodes manualPositioningRunningCallback(void) override;
 };

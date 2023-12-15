@@ -1,4 +1,4 @@
-.TH "awsModule" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsModule" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -44,12 +44,12 @@ This module implements the details of the AWS protocol specification document\&.
 .PP
 The communication takes place with two ethernet channels:
 .IP "\(bu" 2
-Command channel: the channel where the AWS sends command to the Gantry;
+Command channel: the channel where the AWS sends command to the \fBGantry\fP;
 .IP "\(bu" 2
-Event channel: the channel where the Gantry sends Status change notify frame to the AWS software\&.
+Event channel: the channel where the \fBGantry\fP sends Status change notify frame to the AWS software\&.
 .PP
 .PP
-Both channels are Tcp/Ip based connections where the Gantry acts as Server of the communication with the following communication parameters:
+Both channels are Tcp/Ip based connections where the \fBGantry\fP acts as Server of the communication with the following communication parameters:
 .IP "\(bu" 2
 Command channel: IP = 127\&.0\&.0\&.1, PORT 10000;
 .IP "\(bu" 2
@@ -82,7 +82,7 @@ EVENT FRAME:
 
 .PP
 .PP
-Only for COMMANDS Gantry will acknowledge with three possible frames:
+Only for COMMANDS \fBGantry\fP will acknowledge with three possible frames:
 .IP "\(bu" 2
 OK frame: <ID % OK optional-params\&.\&.>, a command has been successfully executed;
 .IP "\(bu" 2

@@ -70,9 +70,9 @@ public:
     }
 
     static target_options getTargetPosition(void) {
-        if ((device->current_uposition < SCOUT_POSITION + 10) && (device->current_uposition > SCOUT_POSITION - 10)) return target_options::SCOUT;
-        if ((device->current_uposition < BP_R_POSITION + 10) && (device->current_uposition > BP_R_POSITION - 10)) return target_options::BP_R;
-        if ((device->current_uposition < BP_L_POSITION + 10) && (device->current_uposition > BP_L_POSITION - 10)) return target_options::BP_L;
+        if ((device->getCurrentEncoderUposition() < SCOUT_POSITION + 10) && (device->getCurrentEncoderUposition() > SCOUT_POSITION - 10)) return target_options::SCOUT;
+        if ((device->getCurrentEncoderUposition() < BP_R_POSITION + 10) && (device->getCurrentEncoderUposition() > BP_R_POSITION - 10)) return target_options::BP_R;
+        if ((device->getCurrentEncoderUposition() < BP_L_POSITION + 10) && (device->getCurrentEncoderUposition() > BP_L_POSITION - 10)) return target_options::BP_L;
 
         return target_options::UNDEF;
      }

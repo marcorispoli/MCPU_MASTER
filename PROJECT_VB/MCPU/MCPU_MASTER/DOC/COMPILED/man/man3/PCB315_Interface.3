@@ -1,4 +1,4 @@
-.TH "PCB315_Interface" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Interface" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,6 +27,9 @@ PCB315_Interface \- Application Interface
 .RI "\fBPCB315\fP Class constructor\&. "
 .in -1c
 .in +1c
+.ti -1c
+.RI "static \fBcomponent_options\fP \fBPCB315::getComponent\fP (void)"
+.br
 .ti -1c
 .RI "static unsigned char \fBPCB315::getStator\fP (void)"
 .br
@@ -166,6 +169,8 @@ Note: in case of fault, this value is 0
 The percent of the Bulb temperature
 .RE
 .PP
+
+.SS "static \fBcomponent_options\fP PCB315::getComponent (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "\fBPCB315::filterMaterialCodes\fP PCB315::getFilterFromTag (System::String^ filter_tag)\fC [static]\fP"
 

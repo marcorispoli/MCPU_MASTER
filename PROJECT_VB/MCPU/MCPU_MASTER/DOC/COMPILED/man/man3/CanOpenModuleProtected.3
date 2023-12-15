@@ -1,0 +1,569 @@
+.TH "CanOpenModuleProtected" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanOpenModuleProtected \- Protected Interface (Subclass reserved)
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getPreviousPosition\fP (void)"
+.br
+.RI "This function returns the previous position before the last activation execution\&. "
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::setNanoJPtr\fP (const unsigned char *ptr, int size)"
+.br
+.RI "This function assignes the binary pointer of the nano-j program to be uploaded during the configuration fase\&.  "
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::setEncoderInitialEvalue\fP (int val)"
+.br
+.RI "This function is used to assignes the inital value of the encoder at the startup  "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getCurrentEncoderEposition\fP (void)"
+.br
+.RI "This function returns the current encoder position in Encoder internal units  "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getCurrentEncoderUposition\fP (void)"
+.br
+.RI "This function returns the current encoder position in user units  "
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::setTargetRange\fP (int h, int l)"
+.br
+.RI "This function set the current acceptable position range\&.  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isEncoderInitialized\fP (void)"
+.br
+.RI "This function returns the current encoder zero setting status "
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::setEncoderInitStatus\fP (bool val)"
+.br
+.RI "This function allows the subclass to set the current zero setting status  "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::convert_Encoder_To_User\fP (int x)"
+.br
+.RI "This function translate internal encoder position to the unit position value  "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::convert_User_To_Encoder\fP (int x)"
+.br
+.RI "This function translate the user position to the encoder position  "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::convert_UserSec_To_Speed\fP (int x)"
+.br
+.RI "This function is used to transform the user defined speed or acceleration into the SPeed or Acceleration internal encoder units "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::blocking_writeOD\fP (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim, int val)"
+.br
+.RI "This function writes a SDO register in the target motor device; "
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::write_resetNode\fP (void)"
+.br
+.RI "This function sends a Reset Node command to the device\&. "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::blocking_readOD\fP (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim)"
+.br
+.RI "This function Reads a SDO register in the target motor device; "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::writeControlWord\fP (unsigned int mask, unsigned int val)"
+.br
+.RI "This function writes a part of the control word\&. "
+.ti -1c
+.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getErrorClass1001\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error string from the error of the register 1001\&. "
+.ti -1c
+.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getErrorClass1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Class string from the register 1003\&. "
+.ti -1c
+.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getErrorCode1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Code string from the register 1003\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticPositioningPreparationCallback\fP (void)"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticPositioningRunningCallback\fP (void)"
+.br
+.RI "This function is called during the command execution to terminate early the positioning\&. "
+.ti -1c
+.RI "virtual void \fBCANOPEN::CanOpenMotor::automaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP termination_code)"
+.br
+.RI "This function is called when the command is terminated\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::manualPositioningPreparationCallback\fP (void)"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::manualPositioningRunningCallback\fP (void)"
+.br
+.RI "This function is called during the command execution to terminate early the positioning\&. "
+.ti -1c
+.RI "virtual void \fBCANOPEN::CanOpenMotor::manualPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
+.br
+.RI "This function is called when the command is terminated\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticHomingPreparationCallback\fP (void)"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticHomingRunningCallback\fP (void)"
+.br
+.RI "This function is called during the command execution to terminate early the positioning\&. "
+.ti -1c
+.RI "virtual void \fBCANOPEN::CanOpenMotor::automaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
+.br
+.RI "This function is called when the command is terminated\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::idleCallback\fP (void)"
+.br
+.ti -1c
+.RI "virtual bool \fBCANOPEN::CanOpenMotor::initializeSpecificObjectDictionaryCallback\fP (void)"
+.br
+.RI "Override this function to initialize specific registers of the target Motor Device\&. "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getCommandId\fP (void)"
+.br
+.RI "This function returns the current command-id\&.  "
+.ti -1c
+.RI "\fBODRegister\fP ^ \fBCANOPEN::CanOpenMotor::getRxReg\fP (void)"
+.br
+.RI "Returns the pointer of the reception sdo register  "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+
+This section describes the API for subclass modules\&.
+.SH "Function Documentation"
+.PP 
+.SS "virtual void CANOPEN::CanOpenMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called when the command is terminated\&. 
+.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::automaticHomingPreparationCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::automaticHomingRunningCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called during the command execution to terminate early the positioning\&. 
+.SS "void CanOpenMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP completed_code)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called when the command is terminated\&. This function is called by the Base class at the command completion\&.
+.PP
+The function only calls the command_completion_event()\&.
+.PP
+The Subclass should override this function in order to implement specific behaviors\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIcompleted_code\fP 
+.RE
+.PP
+
+.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP CanOpenMotor::automaticPositioningPreparationCallback (void)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. This function is called by the Base class at the command preparation\&. 
+.PP
+The Subclass should override this function in order to prepare the activation with specif requirements (brake device activation, diagnostic checks)\&.
+.PP
+.IP "\(bu" 2
+The function shall return the \fBMotorCompletedCodes::COMMAND_PROCEED\fP code to let the command to continue;
+.IP "\(bu" 2
+The function shall return any other error code in case of command reject;
+.PP
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP CanOpenMotor::automaticPositioningRunningCallback (void)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called during the command execution to terminate early the positioning\&. This function is called by the Base class during the motor activation, every 50ms (approximatelly)\&.
+.PP
+The Subclass should override this function in order to monitor the positioning and eventually to stop it in case of specific conditions should be true\&.
+.PP
+.IP "\(bu" 2
+The function shall return the \fBMotorCompletedCodes::COMMAND_PROCEED\fP code to let the command to continue;
+.IP "\(bu" 2
+The function shall return any other error code in case of command abort;
+.PP
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool CanOpenMotor::blocking_readOD (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim)\fC [protected]\fP"
+
+.PP
+This function Reads a SDO register in the target motor device; The function sends to the CAN Bus the command to read the target register, then waits the answer\&. In case of no answer, tries 5 times before to fail\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of the register
+.br
+\fIsub\fP Sub index of the register
+.br
+\fIdim\fP Dimension code of the data register
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true in case of success
+.RE
+.PP
+
+.SS "bool CanOpenMotor::blocking_writeOD (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim, int val)\fC [protected]\fP"
+
+.PP
+This function writes a SDO register in the target motor device; The function sends to the CAN Bus the command to write the target register, then waits the answer\&. In case of no answer, tries 5 times before to fail\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Index of the register
+.br
+\fIsub\fP Sub index of the register
+.br
+\fIdim\fP Dimension code of the data register
+.br
+\fIval\fP Value to be written into register
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true in case of success
+.RE
+.PP
+
+.SS "int CanOpenMotor::convert_Encoder_To_User (int x)\fC [protected]\fP"
+
+.PP
+This function translate internal encoder position to the unit position value  This function convert the Encoder units to Application (user) units\&.
+.PP
+This function makes use of the rotation/Unit factor the subclass passes to the module constructor in order to define what will be the user position unit\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP the encoder internal position
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the user position 
+.RE
+.PP
+.PP
+This function is the reverse of the \fBconvert_User_To_Encoder()\fP function and it shall be used whenever the actual position should be read from the motor device\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The position in application units (user units)
+.RE
+.PP
+
+.SS "int CanOpenMotor::convert_User_To_Encoder (int x)\fC [protected]\fP"
+
+.PP
+This function translate the user position to the encoder position  This function allows to convert the User units to Encoder units\&.
+.PP
+This function makes use of the rotation/Unit factor the subclass passes to the module constructor in order to define what will be the user position unit\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP the user position
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the encoder position 
+.RE
+.PP
+.PP
+Whenever the application needs to write a Motor register with a position, the motor register needs the Encoder value\&. This function allows to use application units instead of Encoder unit\&.
+.PP
+The application sets the application-unit in the Constructor function, assigning the value of the (double) rot_per_unit parameter with the formula: rot_per_unit = Rounds/units\&.
+.PP
+For example, if the Application should make use of 1 unit corresponding to be 0\&.01°, and 1 unit should correspond to 10 rounds, the rot_per_unit = 10/1\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The position in Encoder units (motor units)
+.RE
+.PP
+
+.SS "int CanOpenMotor::convert_UserSec_To_Speed (int x)\fC [protected]\fP"
+
+.PP
+This function is used to transform the user defined speed or acceleration into the SPeed or Acceleration internal encoder units This function converts a speed expressed in Application units/second to Motor units/second\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP this is the user speed or acceleration (units/s or units/ss) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the encoder unit format
+.RE
+.PP
+.PP
+Always the speed or accelerations register shall be written, the units shall be expressed in motor units\&. This function is a convenient convertion function allowing to use more comprensible Application units\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The Speed or Acceleration ratio in motor units
+.RE
+.PP
+
+.SS "int CANOPEN::CanOpenMotor::getCommandId (void)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function returns the current command-id\&.  The command-id is passed by the application when requesting a command execution\&. The command-id is returned in the command_completed_event to the application\&.
+.PP
+\fBReturns\fP
+.RS 4
+the command_id internal code
+.RE
+.PP
+
+.SS "int CANOPEN::CanOpenMotor::getCurrentEncoderEposition (void)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function returns the current encoder position in Encoder internal units  
+.PP
+\fBReturns\fP
+.RS 4
+The current encoder position in Internal encoder units
+.RE
+.PP
+
+.SS "int CANOPEN::CanOpenMotor::getCurrentEncoderUposition (void)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function returns the current encoder position in user units  
+.PP
+\fBReturns\fP
+.RS 4
+The current encoder position in user units
+.RE
+.PP
+
+.SS "System::String CanOpenMotor::getErrorClass1001 (unsigned int val)\fC [protected]\fP"
+
+.PP
+This is a convenient function to decode a Error string from the error of the register 1001\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP Register 1001 error code
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "System::String CanOpenMotor::getErrorClass1003 (unsigned int val)\fC [protected]\fP"
+
+.PP
+This is a convenient function to decode a Error Class string from the register 1003\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "System::String CanOpenMotor::getErrorCode1003 (unsigned int val)\fC [protected]\fP"
+
+.PP
+This is a convenient function to decode a Error Code string from the register 1003\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "int CANOPEN::CanOpenMotor::getPreviousPosition (void)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function returns the previous position before the last activation execution\&. The function provides the application the method to manage variation in positions\&.
+.PP
+\fBReturns\fP
+.RS 4
+The previous valid position in user units
+.RE
+.PP
+
+.SS "\fBODRegister\fP ^ CANOPEN::CanOpenMotor::getRxReg (void)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Returns the pointer of the reception sdo register  
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::idleCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "virtual bool CANOPEN::CanOpenMotor::initializeSpecificObjectDictionaryCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this function to initialize specific registers of the target Motor Device\&. 
+.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "bool CANOPEN::CanOpenMotor::isEncoderInitialized (void)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function returns the current encoder zero setting status 
+.PP
+\fBReturns\fP
+.RS 4
+true if a valid encoder position is present
+.RE
+.PP
+
+.SS "virtual void CANOPEN::CanOpenMotor::manualPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called when the command is terminated\&. 
+.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, and \fBTiltMotor\fP\&.
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::manualPositioningPreparationCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::manualPositioningRunningCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called during the command execution to terminate early the positioning\&. 
+.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "void CANOPEN::CanOpenMotor::setEncoderInitialEvalue (int val)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function is used to assignes the inital value of the encoder at the startup  
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP 
+.RE
+.PP
+
+.SS "void CANOPEN::CanOpenMotor::setEncoderInitStatus (bool val)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function allows the subclass to set the current zero setting status  The device after startup reset the zero setting flag, until a zero setting procedure is executed\&.
+.PP
+Without a valid zero setting, any the activation command is rejected\&.
+.PP
+However the subclass can implement a strategy to recover the actual real position without executing a zero setting activation\&. In this case the subclass can set this flag allowing to execute further commands\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "void CANOPEN::CanOpenMotor::setNanoJPtr (const unsigned char * ptr, int size)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function assignes the binary pointer of the nano-j program to be uploaded during the configuration fase\&.  The subclass should set this pointer at the beginning i the subclass constructor in order to let the module to upload the program into the driver device\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIptr\fP this is the pointer of the program byte array
+.br
+\fIsize\fP this is the size of the program in bytes
+.RE
+.PP
+
+.SS "void CANOPEN::CanOpenMotor::setTargetRange (int h, int l)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+This function set the current acceptable position range\&.  The activation command is rejected if the target position should be out of the acceptable range\&.
+.PP
+As default, the acceptable range is 0 (no command can be executed)
+.PP
+The Subclass should set this range to define the specific activation range\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIh\fP 
+.br
+\fIl\fP 
+.RE
+.PP
+
+.SS "void CanOpenMotor::write_resetNode (void)\fC [protected]\fP"
+
+.PP
+This function sends a Reset Node command to the device\&. NOTE: after the reset, the Motor device not responds to the command and takes seconds before to be ready for a communication!
+.SS "bool CanOpenMotor::writeControlWord (unsigned int mask, unsigned int val)\fC [protected]\fP"
+
+.PP
+This function writes a part of the control word\&. The function uses a masj to filter what are the bits to be written with the value;
+.PP
+\fBParameters\fP
+.RS 4
+\fImask\fP Select the bit of the control word to be modified
+.br
+\fIval\fP Set the value in the selected bits of the control word
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

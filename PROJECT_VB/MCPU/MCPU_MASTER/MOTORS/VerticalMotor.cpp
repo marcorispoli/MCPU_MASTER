@@ -59,11 +59,11 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
         init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
 
-    this->home_initialized = homing_initialized;
-    this->encoder_initial_value = init_position;
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialEvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, false);
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, false);
     
 }
 
@@ -89,13 +89,13 @@ bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
 void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
     
     // Sets the current Vertical position
-    if (device->home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+    if (isEncoderInitialized()) {
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
     // if is an isocentric activation needs to notify the AWS
-    if(iso_activation_mode) device->command_completed_event(command_id, (int) error);
+    if(iso_activation_mode) device->command_completed_event(getCommandId(), (int)error);
     return;
 }
 
@@ -179,9 +179,9 @@ bool VerticalMotor::startHoming(void) {
 /// <returns></returns>
 void VerticalMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
     
-    if (device->home_initialized) {
+    if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
     }

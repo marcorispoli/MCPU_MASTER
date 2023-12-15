@@ -1,4 +1,4 @@
-.TH "PCB315_Internal" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Internal" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -62,6 +62,10 @@ PCB315_Internal \- Internal implementation section
 .RI "static bool \fBPCB315::tube_high_temp_alarm\fP = false"
 .br
 .RI "This is the current tube temperature alarm flag in case of fault detected\&. "
+.ti -1c
+.RI "static \fBcomponent_options\fP \fBPCB315::detected_component\fP = \fBcomponent_options::UNDEFINED\fP"
+.br
+.RI "This is the current detected component\&. "
 .ti -1c
 .RI "static \fBFilterSlotCodes\fP \fBPCB315::filterAssignment\fP (System::String^ assignment)"
 .br
@@ -193,6 +197,10 @@ This is the current filter automatically selected\&.
 
 .PP
 This is the current bulb temperature in percent of the maximum possible\&. 
+.SS "\fBcomponent_options\fP PCB315::detected_component = \fBcomponent_options::UNDEFINED\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current detected component\&. 
 .SS "bool PCB315::filter_fault\fC [static]\fP, \fC [private]\fP"
 
 .PP

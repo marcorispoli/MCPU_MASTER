@@ -1,4 +1,4 @@
-.TH "awsProtoEvents" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtoEvents" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -38,7 +38,7 @@ awsProtoEvents \- AWS Protocol Events
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status\&. "
 .ti -1c
-.RI "static void \fBawsProtocol::EVENT_XrayPushButton\fP (void)"
+.RI "static void \fBawsProtocol::EVENT_XrayPushButton\fP (bool status)"
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. "
 .ti -1c
@@ -67,7 +67,7 @@ This is the EVENT the gantry sends to AWS to request a projection abort\&.
 .SS "void awsProtocol::EVENT_Components (void)\fC [static]\fP"
 
 .PP
-This is the EVENT the gantry sends to AWS to notify about component data change\&. 
+This is the EVENT the gantry sends to AWS to notify about component data change\&. Vedere GET_Component 
 .SS "void awsProtocol::EVENT_Compressor (void)\fC [static]\fP"
 
 .PP
@@ -75,7 +75,18 @@ This is the EVENT the gantry sends to AWS to notify about compressor data change
 .SS "void awsProtocol::EVENT_Executed (int id, int error)\fC [static]\fP"
 
 .PP
-This is the event for command terminated notification\&. 
+This is the event for command terminated notification\&. This is the EVENT the \fBGantry\fP shall generate when a delayed command completes\&.
+.PP
+The Id == 0 codes are rserved for internal activations that shall not be acknowledge to the AWS softwrae\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP Id > 0 is the ID of the pending AWS command, Id==0 is an internal command termination Event
+.br
+\fIerror\fP In case of error condition, it is the error code
+.RE
+.PP
+
 .SS "static void awsProtocol::EVENT_exposurePulseCompleted (unsigned char npulse)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
@@ -105,7 +116,7 @@ Syntax:
 .RE
 .PP
 
-.SS "void awsProtocol::EVENT_XrayPushButton (void)\fC [static]\fP"
+.SS "void awsProtocol::EVENT_XrayPushButton (bool status)\fC [static]\fP"
 
 .PP
 This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. 

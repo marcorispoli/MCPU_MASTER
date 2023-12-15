@@ -1,8 +1,8 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenMotor.h" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.h" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenMotor.h
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.h
 .SH SYNOPSIS
 .br
 .PP
@@ -19,7 +19,6 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "class \fBCANOPEN::CanOpenMotor\fP"
 .br
-.RI "This is the Class implementing the CanOPEN Motor Device control protocol\&. "
 .in -1c
 .SS "Namespaces"
 
@@ -35,6 +34,21 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBSPEED_DENOMINATOR\fP   120"
 .br
 .RI "This is the Speed conversion denominator unit\&. "
+.ti -1c
+.RI "#define \fBVMM_CTRL_OD\fP   \fBOD_1F51_02\fP"
+.br
+.ti -1c
+.RI "#define \fBVMM_DATA_OD\fP   \fBOD_1F50_02\fP"
+.br
+.ti -1c
+.RI "#define \fBVMM_STATUS_OD\fP   \fBOD_1F57_02\fP"
+.br
+.ti -1c
+.RI "#define \fBDRIVER_POLLING_MS\fP   100"
+.br
+.ti -1c
+.RI "#define \fBSEND_TMO\fP   50"
+.br
 .in -1c
 .SS "Enumerations"
 
@@ -46,10 +60,20 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define DRIVER_POLLING_MS   100"
+
+.SS "#define SEND_TMO   50"
+
 .SS "#define SPEED_DENOMINATOR   120"
 
 .PP
 This is the Speed conversion denominator unit\&. 
+.SS "#define VMM_CTRL_OD   \fBOD_1F51_02\fP"
+
+.SS "#define VMM_DATA_OD   \fBOD_1F50_02\fP"
+
+.SS "#define VMM_STATUS_OD   \fBOD_1F57_02\fP"
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

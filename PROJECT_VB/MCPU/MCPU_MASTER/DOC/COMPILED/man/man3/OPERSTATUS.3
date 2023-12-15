@@ -1,4 +1,4 @@
-.TH "OPERSTATUS" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "OPERSTATUS" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -51,7 +51,7 @@ OPERSTATUS
 .RI "   \fBxray_status_t\fP \fBOPERSTATUS::xray_status\fP"
 .br
 .ti -1c
-.RI "   bool \fBOPERSTATUS::closed_door\fP"
+.RI "   \fBPCB301::door_options\fP \fBOPERSTATUS::door_status\fP"
 .br
 .ti -1c
 .RI "   unsigned char \fBOPERSTATUS::currentPanel\fP"
@@ -124,13 +124,13 @@ OPERSTATUS
 .PP 
 .SS "bool OPERSTATUS::alarm"
 
-.SS "bool OPERSTATUS::closed_door"
-
 .SS "\fBcollimatorStatus\fP OPERSTATUS::collimator"
 
 .SS "bool OPERSTATUS::compressor_release"
 
 .SS "unsigned char OPERSTATUS::currentPanel"
+
+.SS "\fBPCB301::door_options\fP OPERSTATUS::door_status"
 
 .SS "unsigned char OPERSTATUS::mag_factor"
 

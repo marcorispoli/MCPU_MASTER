@@ -1,4 +1,4 @@
-.TH "awsProtocol" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtocol" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -71,7 +71,7 @@ awsProtocol \- This is the class implementing the AWS Interface Module
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status\&. "
 .ti -1c
-.RI "static void \fBEVENT_XrayPushButton\fP (void)"
+.RI "static void \fBEVENT_XrayPushButton\fP (bool status)"
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. "
 .ti -1c
@@ -164,7 +164,7 @@ awsProtocol \- This is the class implementing the AWS Interface Module
 .ti -1c
 .RI "void \fBEXEC_CloseStudy\fP (void)"
 .br
-.RI "This command shall be sent by AWS to Close a current study and set the Gantry in IDLE operating status\&.  "
+.RI "This command shall be sent by AWS to Close a current study and set the \fBGantry\fP in IDLE operating status\&.  "
 .ti -1c
 .RI "void \fBSET_ProjectionList\fP (void)"
 .br

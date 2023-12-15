@@ -97,7 +97,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
 
     // Set the start bit (BIT4) in the control word register
     if (!writeControlWord(0x10, 0x10)) {
-        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
         return;
     }
 
@@ -121,7 +121,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
         // Reads the status to be sure that it is still Operation Enabled 
         if (!blocking_readOD(OD_6041_00)) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR READING STATUS REGISTER");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
             break;
         }
 

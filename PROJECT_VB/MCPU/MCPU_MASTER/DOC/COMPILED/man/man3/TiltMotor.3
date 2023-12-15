@@ -1,4 +1,4 @@
-.TH "TiltMotor" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "TiltMotor" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,11 +10,56 @@ TiltMotor
 \fC#include <TiltMotor\&.h>\fP
 .PP
 Inherits \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBtarget_options\fP { \fBSCOUT\fP = 0, \fBBP_R\fP, \fBBP_L\fP, \fBTOMO_H\fP, \fBTOMO_E\fP, \fBUNDEF\fP }"
+.br
+.in -1c
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBTiltMotor\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBstartHoming\fP (void)"
+.br
+.RI "This function activates the Automatic Homing procedure "
+.ti -1c
+.RI "static void \fBsetManualEnable\fP (bool status)"
+.br
+.RI "Enables / Disables the manual activation mode\&. "
+.ti -1c
+.RI "static bool \fBsetTarget\fP (\fBtarget_options\fP tg, int id)"
+.br
+.RI "This function sets a new target for the Trx\&. "
+.ti -1c
+.RI "static \fBtarget_options\fP \fBgetTargetPosition\fP (void)"
+.br
+.ti -1c
+.RI "static \fBtarget_options\fP \fBgetTargetCode\fP (System::String^ strtg)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetTargetName\fP (\fBtarget_options\fP tg)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal int \fBSCOUT_POSITION\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBBP_R_POSITION\fP = 1500"
+.br
+.ti -1c
+.RI "literal int \fBBP_L_POSITION\fP = \-1500"
 .br
 .in -1c
 .SS "Static Public Attributes"
@@ -23,15 +68,259 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .ti -1c
 .RI "static \fBTiltMotor\fP ^ \fBdevice\fP = gcnew \fBTiltMotor\fP()"
 .br
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBtarget_tags\fP = gcnew cli::array<System::String^> {'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'UNDEF'}"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
+.br
+.RI "The \fBTiltMotor\fP override this function in order to initialize specific motor registers "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBautomaticPositioningPreparationCallback\fP (void) override"
+.br
+.RI "The \fBBodyMotor\fP class override this function in order to deactivate the motor brake before to start the motor in the target direction\&. "
+.ti -1c
+.RI "void \fBautomaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "The \fBTiltMotor\fP class override this function in order to update the current position and the command termination "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBidleCallback\fP (void) override"
+.br
+.RI "The \fBTiltMotor\fP class override this function in order to handle the IDLE activities "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBautomaticHomingPreparationCallback\fP (void) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "The \fBTiltMotor\fP class override this function in order to handle the homing completion process\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBmanualPositioningPreparationCallback\fP (void) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "void \fBmanualPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "This function is called when the command is terminated\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBmanualPositioningRunningCallback\fP (void) override"
+.br
+.RI "The \fBBodyMotor\fP class override this function in order to handle the manual activation process\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBbrake_alarm\fP = false"
+.br
+.RI "This is the current brake malfunction alarm\&. "
+.ti -1c
+.RI "static bool \fBmanual_activation_enabled\fP = false"
+.br
+.RI "This is the flag activating the body manual activation\&. "
+.ti -1c
+.RI "static bool \fBmanual_cw_direction\fP = false"
+.br
+.RI "Sets true if the CW manual command is executing, false if the CCW manual activation is executing\&. "
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBTiltMotor::target_options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISCOUT \fP\fP
+TRX in scout position\&. 
+.TP
+\fB\fIBP_R \fP\fP
+TRX in \fBBiopsy\fP Right position\&. 
+.TP
+\fB\fIBP_L \fP\fP
+TRX in \fBBiopsy\fP Left position\&. 
+.TP
+\fB\fITOMO_H \fP\fP
+TRX in Tomo Home position\&. 
+.TP
+\fB\fITOMO_E \fP\fP
+TRX in Tomo End position\&. 
+.TP
+\fB\fIUNDEF \fP\fP
+TRX in not predefined target\&. 
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "TiltMotor::TiltMotor (void)"
 
+.SH "Member Function Documentation"
+.PP 
+.SS "void TiltMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBTiltMotor\fP class override this function in order to handle the homing completion process\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP TiltMotor::automaticHomingPreparationCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "void TiltMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBTiltMotor\fP class override this function in order to update the current position and the command termination 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror\fP 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP TiltMotor::automaticPositioningPreparationCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBBodyMotor\fP class override this function in order to deactivate the motor brake before to start the motor in the target direction\&. This function shall unlock the e\&.m brake to allow the rotation\&.
+.PP
+The function test the brake unlocked condition befor to enable the command execution\&.
+.PP
+In case of fault condition, a non resettable alarm is activated\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static \fBtarget_options\fP TiltMotor::getTargetCode (System::String^ strtg)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static System::String ^ TiltMotor::getTargetName (\fBtarget_options\fP tg)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBtarget_options\fP TiltMotor::getTargetPosition (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "\fBTiltMotor::MotorCompletedCodes\fP TiltMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBTiltMotor\fP class override this function in order to handle the IDLE activities 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool TiltMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBTiltMotor\fP override this function in order to initialize specific motor registers 
+.PP
+\fBReturns\fP
+.RS 4
+true if the initialization termines successfully
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "void TiltMotor::manualPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called when the command is terminated\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP TiltMotor::manualPositioningPreparationCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBTiltMotor::MotorCompletedCodes\fP TiltMotor::manualPositioningRunningCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBBodyMotor\fP class override this function in order to handle the manual activation process\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static void TiltMotor::setManualEnable (bool status)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Enables / Disables the manual activation mode\&. 
+.SS "static bool TiltMotor::setTarget (\fBtarget_options\fP tg, int id)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function sets a new target for the Trx\&. If the target_angle-current_angle exceeds sensitivity, the target_change_event() is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fItg\fP this is the target option code
+.br
+\fIid\fP this is the aws command identifier
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the target is successfully set
+.RE
+.PP
+
+.SS "bool TiltMotor::startHoming (void)\fC [static]\fP"
+
+.PP
+This function activates the Automatic Homing procedure 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
 .SH "Member Data Documentation"
 .PP 
+.SS "literal int TiltMotor::BP_L_POSITION = \-1500"
+
+.SS "literal int TiltMotor::BP_R_POSITION = 1500"
+
+.SS "bool TiltMotor::brake_alarm = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current brake malfunction alarm\&. 
 .SS "\fBTiltMotor\fP ^ TiltMotor::device = gcnew \fBTiltMotor\fP()\fC [static]\fP"
+
+.SS "bool TiltMotor::manual_activation_enabled = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the flag activating the body manual activation\&. 
+.SS "bool TiltMotor::manual_cw_direction = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Sets true if the CW manual command is executing, false if the CCW manual activation is executing\&. 
+.SS "literal int TiltMotor::SCOUT_POSITION = 0"
+
+.SS "const cli::array<System::String^> ^ TiltMotor::target_tags = gcnew cli::array<System::String^> {'SCOUT', 'BP_R', 'BP_L', 'TOMO_H', 'TOMO_E', 'UNDEF'}\fC [static]\fP"
 
 
 .SH "Author"

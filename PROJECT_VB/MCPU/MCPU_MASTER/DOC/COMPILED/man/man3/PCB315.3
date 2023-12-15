@@ -1,4 +1,4 @@
-.TH "PCB315" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,6 +22,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "enum class \fBfilterWorkingMode\fP { \fBfilterWorkingMode::FILTER_AUTO_MODE\fP = 0, \fBfilterWorkingMode::FILTER_MANUAL_MODE\fP, \fBfilterWorkingMode::FILTER_MIRROR_MODE\fP }"
 .br
 .RI "This enumeration class defines the possibles filter working modes "
+.ti -1c
+.RI "enum class \fBcomponent_options\fP { \fBLEAD_SCREEN\fP, \fBSPECIMEN\fP, \fBPROTECTION_2D\fP, \fBUNDEFINED\fP }"
+.br
+.RI "This is the enumeration class for the component mounted under the collimator\&.  "
 .in -1c
 .SS "Public Member Functions"
 
@@ -39,6 +43,9 @@ Inherits \fBCanDeviceProtocol\fP\&.
 
 .in +1c
 .in +1c
+.ti -1c
+.RI "static \fBcomponent_options\fP \fBgetComponent\fP (void)"
+.br
 .ti -1c
 .RI "static unsigned char \fBgetStator\fP (void)"
 .br
@@ -186,6 +193,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This is the current tube temperature alarm flag in case of fault detected\&. "
 .ti -1c
+.RI "static \fBcomponent_options\fP \fBdetected_component\fP = \fBcomponent_options::UNDEFINED\fP"
+.br
+.RI "This is the current detected component\&. "
+.ti -1c
 .RI "static \fBFilterSlotCodes\fP \fBfilterAssignment\fP (System::String^ assignment)"
 .br
 .RI "This function traslates the assignment parameter value (in string format) to a FilterSlotCodes related code\&. "
@@ -239,6 +250,21 @@ To be done\&.
 .TP
 \fB\fISET_LIGHT \fP\fP
 Activates/Deactivate the light\&. 
+.SS "enum class \fBPCB315::component_options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration class for the component mounted under the collimator\&.  The Componet is detected by the \fBPCB315\fP board\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILEAD_SCREEN \fP\fP
+.TP
+\fB\fISPECIMEN \fP\fP
+.TP
+\fB\fIPROTECTION_2D \fP\fP
+.TP
+\fB\fIUNDEFINED \fP\fP
 .SS "enum class \fBPCB315::FilterSlotCodes\fP\fC [strong]\fP, \fC [private]\fP"
 
 .PP

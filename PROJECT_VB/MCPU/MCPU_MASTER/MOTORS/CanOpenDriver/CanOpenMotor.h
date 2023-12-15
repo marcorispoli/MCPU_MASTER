@@ -5,8 +5,8 @@ using namespace System::Diagnostics;
 using namespace System::Threading;
 
 /// <summary>
-/// This is the module implementing the control 
-/// for motor device based on the CANOpen protocol.
+/// This is the based class module implementing the control of 
+/// motor devices based on the CANOpen protocol.
 /// 
 /// \defgroup CanOpenModule CanOPEN based motor devices 
 /// 
@@ -360,6 +360,10 @@ namespace CANOPEN {
 	
 	/// <summary>
 	/// This is the Class implementing the CanOPEN Motor Device control protocol.
+	///
+	/// \defgroup CanOpenBaseModule Motor Driver base class module
+	/// \ingroup CanOpenModule
+	/// </summary>
 	/// 
 	/// This class implements the full control of a  Motor device based on the CanOPEN protocol.
 	/// The class provides the following features:
@@ -434,131 +438,366 @@ namespace CANOPEN {
 	/// The module provides the following commands for the activation:
 	/// 
 	/// -  activateAutomaticPositioning(): starts the motor at the target position;
-	///  
+	/// -  activateAutomaticHoming(): starts automatic zero setting procedure;
+	/// -  activateManualPositioning(): starts the manual position procedure;
+	/// -  abortActivation(): aborts any pending activation;
 	/// 
-	//// \ingroup CanOpenModule
-	/// </summary>
+	//// 
+	/// 
 	ref class CanOpenMotor 
 	{
-		public:delegate void delegate_fault_callback(int code);
-		public:static event delegate_fault_callback^ fault_event; //!< Event generated at the command completion
+	public:
 
-
-		public:delegate void delegate_command_completed_callback(int id, int code);
-		public:static event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
-
-		protected: inline int getPreviousPosition(void) { return previous_uposition; }
+		/// <summary>
+		/// \defgroup CanOpenModuleApi Application Interface (API) 
+		/// \ingroup CanOpenBaseModule
+		/// 
+		/// This section describes the API for the Application usage.
+		/// 
+		/// </summary>
+		/// @{
 		
-		public:bool activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
-		public:bool activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
-		public: bool activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
-		public: void abortActivation(void); //!< Immediate abort of any activation running
+		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear); //!< This is the base class constructor
 
-
-		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear);
-
-		public:enum class  status_options {
-				MOTOR_NOT_CONNECTED = 0,
-				MOTOR_CONFIGURATION,
-				MOTOR_READY,
-				MOTOR_BUSY,
-				MOTOR_FAULT
-			};
-
-			/// <summary>
-			/// This enumeration class defines the Command codes
-			/// </summary>
-			public:enum class MotorCommands {
-				MOTOR_IDLE = 0,			//!< No command are presents				
-				MOTOR_HOMING,			//!< Homing procedure for automatic zero setting
-				MOTOR_AUTO_POSITIONING, //!< Motor Automatic activation to target
-				MOTOR_MANUAL_POSITIONING, //!< Motor Manual activation to target
-			};
-
-			public:enum class MotorCompletedCodes {
-				COMMAND_SUCCESS = 0,
-				COMMAND_PROCEED = 0,
-				COMMAND_MANUAL_TERMINATION,
-				MOTOR_ERRORS,
-				ERROR_OBSTACLE_DETECTED = MOTOR_ERRORS,
-				ERROR_MOTOR_BUSY,
-				ERROR_INITIALIZATION,
-				ERROR_UNEXPECTED_STATUS,
-				ERROR_LIMIT_SWITCH,
-				ERROR_BRAKE_DEVICE,
-				ERROR_INVALID_COMMAND_INITIAL_CONDITION,
-				ERROR_TIMOUT,
-				ERROR_INTERNAL_FAULT,
-				ERROR_ACTIVATION_REGISTER,
-				ERROR_MISSING_HOME,
-				ERROR_COMMAND_DISABLED,
-				ERROR_COMMAND_ABORTED,
-			};
-		public: System::String^ getCompletedCodeString(void);
-
-		public: inline System::String^ getInternalStatusStr(void) { return status_tags[(int)internal_status]; }
-		public: inline status_options getInternalStatus(void) { return internal_status; }
+		delegate void delegate_fault_callback(int code); //!< Delegate for the callback related to the Fault condition
+		static event delegate_fault_callback^ fault_event; //!< Event generated when a Driver fault condition is detected
 		
-		public: bool activateConfiguration(void);
-		public: inline bool isConfigurating(void) { return configuration_command; }
-		public: inline bool isODConfigured(void) { return od_initialized; }
-		public: inline bool isNanojConfigured(void) { return nanoj_initialized; }
-		public: inline bool isReady(void) { return ((internal_status == status_options::MOTOR_READY) && (request_command == MotorCommands::MOTOR_IDLE)); }
-		public: inline bool isZeroOk(void) { return home_initialized; }
+		delegate void delegate_command_completed_callback(int id, int code);//!< Delegate for the command completed event		
+		static event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
-		public: inline int getCurrentPosition(void) { return current_uposition; }
-		public: inline MotorCompletedCodes getCommandCompletedCode(void) {	return command_completed_code;	}
+		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
+		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
+		bool activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
+		void abortActivation(void); //!< Immediate abort of any activation running
+
+		/// <summary>
+		/// This enumeration class descibes the internal status condition
+		/// </summary>
+		enum class  status_options {
+				MOTOR_NOT_CONNECTED = 0,	//!< The Motor is not connected with the CAN bus
+				MOTOR_CONFIGURATION,		//!< The module is configuring the driver
+				MOTOR_READY,				//!< The driver is ready to execute an activation command
+				MOTOR_BUSY,					//!< The driver is executing an acivation command
+				MOTOR_FAULT					//!< The driver is in fault condition
+		};
 		
-
-		// Device Initialization __________________________________________________________________
 		
-		protected:bool			initializeObjectDictionary(void);		
-		protected:void			setNanoJPtr(const unsigned char* ptr, int size) { pNanoj = ptr; nanojSize = size; }
-		protected: bool			initResetEncoderCommand(int initial_position);
+		/// <summary>
+		/// This function returns the internal module status.
+		/// 
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>The internal Module status</returns>
+		inline status_options getInternalStatus(void) { return internal_status; }
 
-		// Device Status _________________________________________________________________________
+		/// <summary>
+		/// This function returns a description string of the internal motor status
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns></returns>
+		inline System::String^ getInternalStatusStr(void) {	return status_tags[(int)internal_status];}
+
+		/// <summary>
+		/// This enumeration class descibes  the Command codes
+		/// 
+		/// </summary>
+		enum class MotorCommands {
+			MOTOR_IDLE = 0,			//!< No command are presents				
+			MOTOR_HOMING,			//!< Homing procedure for automatic zero setting
+			MOTOR_AUTO_POSITIONING, //!< Motor Automatic activation to target
+			MOTOR_MANUAL_POSITIONING, //!< Motor Manual activation to target
+		};
+
+		/// <summary>
+		/// This enumeration class descibes the command complete codes
+		/// </summary>
+		/// The enumeration class provoides a set of codes 
+		/// used for different purposes:
+		/// + COMMAND_SUCCESS: it is used for the command completion status;
+		/// + COMMAND_PROCEED: it is used for the authorization in proceed with the command execution
+		/// + ERROR_: they are codes reserved for command completion error conditions
+		/// 
+		enum class MotorCompletedCodes {
+			COMMAND_SUCCESS = 0, //!< The Command is successsfully terminated 
+			COMMAND_PROCEED = 0, //!< The Command can proceed in the execution (reserved for subclass)
+			COMMAND_MANUAL_TERMINATION,//!< The Command has been manually terminated
+			MOTOR_ERRORS, //!< First of the reserved Error codes
+			ERROR_OBSTACLE_DETECTED = MOTOR_ERRORS, //!< The command has been terminated because of obstacle detected
+			ERROR_MOTOR_BUSY,//!< The command cannot be executed because of Busy condition
+			ERROR_INITIALIZATION,//!< The command has been aborted during the initialization
+			ERROR_UNEXPECTED_STATUS,//!< The command has been aborted due to an unexpected CiA status
+			ERROR_LIMIT_SWITCH,//!< The command has been aborted due to limit switch activation
+			ERROR_BRAKE_DEVICE,//!< The command has been aborted due to a brake device malfunction
+			ERROR_TIMOUT,//!< The command has been aborted due to timeout activation
+			ERROR_INTERNAL_FAULT,//!< The command has been aborted due to a driver fault
+			ERROR_ACCESS_REGISTER,//!< The command has been aborted due to an error in accessing a driver register
+			ERROR_MISSING_HOME,//!< The command has been aborted due to invalid homing (the encoder is not correctly initialized)
+			ERROR_COMMAND_DISABLED,//!< The command has been aborted because the activation is not enabled
+			ERROR_COMMAND_ABORTED,//!< The command has been aborted due to an Abort activation request
+		};		
+		System::String^ getCompletedCodeString(void); //!< This command returns a description string(translated) of the last termination code
+		
+		/// <summary>
+		/// This function returns the last command termination code
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns></returns>
+		inline MotorCompletedCodes getCommandCompletedCode(void) { return command_completed_code; }
+
+
+		bool activateConfiguration(void); //!< This function activates the Driver configuration fase
+		
+		/// <summary>
+		/// This function returns the current configuration fase status
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>true: the configuration is executing</returns>
+		inline bool isConfigurating(void) { return configuration_command; }
+
+		/// <summary>
+		/// This function returns the status of the Object Dictionary configuration status
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>true: the object dictionary has benn successfully configured</returns>
+		inline bool isODConfigured(void) { return od_initialized; }
+
+		/// <summary>
+		/// This function returns the status of the Nano-J programming
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>true: the program has been successfully uploaded (if required)</returns>
+		inline bool isNanojConfigured(void) { return nanoj_initialized; }
+
+		/// <summary>
+		/// This function returns the Ready status.
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>true: the driver is ready to execute an activation command</returns>
+		inline bool isReady(void) { return ((internal_status == status_options::MOTOR_READY) && (request_command == MotorCommands::MOTOR_IDLE)); }
+		
+		/// <summary>
+		/// This function returns the Encoder Zero setting status
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>true: the encoder has been correctly initialized</returns>
+		inline bool isZeroOk(void) { return home_initialized; }
+
+		/// <summary>
+		/// This function returns the current encoder position.
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>The encoder position in user units</returns>
+		inline int getCurrentPosition(void) { return current_uposition; }
+		
+		///@} End of the API section ________________________________________________________________________
+
+protected:		
+
+		/// <summary>
+		/// \defgroup CanOpenModuleProtected Protected Interface (Subclass reserved) 
+		/// \ingroup CanOpenBaseModule
+		/// 
+		/// This section describes the API for subclass modules.
+		/// 
+		/// </summary>
+		/// @{
+
+
+		/// <summary>
+		/// This function returns the previous position before the last activation execution.
+		/// 
+		/// </summary>
+		/// 
+		/// The function provides the application the method to manage
+		/// variation in positions.
+		/// 
+		/// <param name=""></param>
+		/// <returns>The previous valid position in user units</returns>
+		inline int getPreviousPosition(void) {return previous_uposition;	}
+			
+		/// <summary>
+		/// This function assignes the binary pointer of the nano-j program to be uploaded
+		/// during the configuration fase.
+		/// </summary>
+		/// 
+		/// The subclass should set this pointer at the beginning i the subclass constructor in order to 
+		/// let the module to upload the program into the driver device.
+		/// 
+		/// <param name="ptr">this is the pointer of the program byte array</param>
+		/// <param name="size">this is the size of the program in bytes</param>
+		void setNanoJPtr(const unsigned char* ptr, int size) { pNanoj = ptr; nanojSize = size; }
+		
+		/// <summary>
+		/// This function is used to assignes the inital value of the encoder at the startup
+		/// </summary>
+		/// <param name="val"></param>
+		inline void setEncoderInitialEvalue(int val) { encoder_initial_value = val; }
+
+		/// <summary>
+		/// This function returns the current encoder position in Encoder internal units
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>The current encoder position in Internal encoder units</returns>
+		inline int getCurrentEncoderEposition(void) { return current_eposition; }
+
+		/// <summary>
+		/// This function returns the current encoder position in user units
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>The current encoder position in user units</returns>
+		inline int getCurrentEncoderUposition(void) { return current_uposition; }
+
+		/// <summary>
+		/// This function set the current acceptable position range.
+		/// </summary>
+		/// 
+		/// The activation command is rejected if the target position should be 
+		/// out of the acceptable range.
+		/// 
+		/// As default, the acceptable range is 0 (no command can be executed)
+		/// 
+		/// The Subclass should set this range to define the specific activation
+		/// range.
+		/// 
+		/// <param name="h"></param>
+		/// <param name="l"></param>
+		void setTargetRange(int h, int l) { target_range_h = h; target_range_l = l; }
+
+		/// <summary>
+		/// This function returns the current encoder zero setting status
+		/// 
+		/// </summary>
+		/// 
+		/// <param name=""></param>
+		/// <returns>true if a valid encoder position is present</returns>
+		inline bool isEncoderInitialized(void) { return home_initialized; }
+
+		/// <summary>
+		/// This function allows the subclass to set the current zero setting status
+		/// </summary>
+		/// 
+		/// The device after startup reset the zero setting flag,
+		/// until a zero setting procedure is executed. 
+		/// 
+		/// Without a valid zero setting, any the activation command is rejected.
+		/// 
+		/// However the subclass can implement a strategy to recover the actual 
+		/// real position without executing a zero setting activation. In this case 
+		/// the subclass can set this flag allowing to execute further commands.
+		/// 
+		/// <param name=""></param>
+		/// <returns></returns>
+		inline void setEncoderInitStatus(bool val) { home_initialized = val; }
+
+		/// <summary>
+		/// This function translate internal encoder position to the unit position value
+		/// </summary>
+		/// 
+		/// This function makes use of the rotation/Unit factor 
+		/// the subclass passes to the module constructor in order to 
+		/// define what will be the user position unit.
+		/// 
+		/// <param name="x">the encoder internal position</param>
+		/// <returns> the user position </returns>
+		int convert_Encoder_To_User(int x);
+
+
+		/// <summary>
+		/// This function translate the user position to the encoder position 
+		/// </summary>
+		/// 
+		/// This function makes use of the rotation/Unit factor 
+		/// the subclass passes to the module constructor in order to 
+		/// define what will be the user position unit.
+		/// 
+		/// <param name="x">the user position</param>
+		/// <returns> the encoder position </returns>
+		int convert_User_To_Encoder(int x);
+
+		/// <summary>
+		/// This function is used to transform the user defined speed or acceleration 
+		/// into the SPeed or Acceleration internal encoder units
+		/// 
+		/// </summary>
+		/// <param name="x">this is the user speed or acceleration (units/s or units/ss) </param>
+		/// <returns>the encoder unit format</returns>
+		int convert_UserSec_To_Speed(int x);
+
+		bool blocking_writeOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim, int val);
+		void write_resetNode(void);
+		bool blocking_readOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim);
+		bool writeControlWord(unsigned int mask, unsigned int val);
+		System::String^ getErrorClass1001(unsigned int val);
+		System::String^ getErrorClass1003(unsigned int val);
+		System::String^ getErrorCode1003(unsigned int val);
+
+		virtual MotorCompletedCodes automaticPositioningPreparationCallback(void);  //!< This function is called just before to Power the motor phases
+		virtual MotorCompletedCodes automaticPositioningRunningCallback(void); //!< This function is called during the command execution to terminate early the positioning
+		virtual void automaticPositioningCompletedCallback(MotorCompletedCodes termination_code);  //!< This function is called when the command is terminated
+
+		virtual MotorCompletedCodes manualPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
+		virtual MotorCompletedCodes manualPositioningRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
+		virtual void manualPositioningCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
+
+		virtual MotorCompletedCodes automaticHomingPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
+		virtual MotorCompletedCodes automaticHomingRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
+		virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
+
+		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
+		virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
+
+		/// <summary>
+		/// This function returns the current command-id.
+		/// </summary>
+		/// 
+		/// The command-id is passed by the application when requesting a command execution.
+		/// The command-id is returned in the command_completed_event to the application.
+		/// 
+		/// <param name=""></param>
+		/// <returns>the command_id internal code</returns>
+		inline int getCommandId(void) { return command_id; }
+
+		/// <summary>
+		/// Returns the pointer of the reception sdo register
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns></returns>
+		inline ODRegister^ getRxReg(void) { return rxSdoRegister; }
+
+		///@} End of the protected section _____________________________________________________________
+
+
+		
+private:
+		unsigned char device_id;	//!< This is the target Device Id 
+		HANDLE rxSDOEvent;			//!< Event object signaled by the SDO receiving callback
+		bool sdo_rx_pending;		//!< A SDO reception fdata is pending 
+		bool nanoj_rx_pending;		//!< A SDO reception fdata is pending 
+		ODRegister^ rxSdoRegister;	//!< SDO receiving data
+		unsigned char rxNanojAck;	//!< Nanoj ack byte
+		bool rxNanojAckValid;		//!< Nano-j Ack vaild
 		static const cli::array<System::String^>^ status_tags = gcnew cli::array<System::String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
-		private:status_options internal_status;
-		protected: int encoder_initial_value; //! This is the value that shall be assigne to the encoder at the startup
-		protected: int current_eposition;		//!< Current Encoder position
-		protected: int current_uposition;		//!< Current User position 
-		protected: int previous_uposition;			//!< This is the last target position for non coordinate activations
-		private: int target_range_h;			//!< This is the acceptable target range (positive limit)
-		private: int target_range_l;			//!< This is the acceptable target range (negative limit)
-		protected: void setTargetRange(int h, int l) { target_range_h = h; target_range_l = l; }
 
-		protected: bool od_initialized;    //!< Object dictionary has been intialized
-		protected: bool nanoj_initialized; //!< Nano-J program has been intialized
-		protected: bool home_initialized;  //!< The device has executed the homing procedure
+		status_options internal_status; //!< This is the current internal motor status
+		int encoder_initial_value;		//! This is the value that shall be assigne to the encoder at the startup
+		int current_eposition;			//!< Current Encoder position
+		int current_uposition;			//!< Current User position 
+		int previous_uposition;			//!< This is the last target position for non coordinate activations
+		int target_range_h;				//!< This is the acceptable target range in user units (upper limit)
+		int target_range_l;				//!< This is the acceptable target range in user units (lower limit)
+		bool od_initialized;			//!< Object dictionary has been intialized
+		bool nanoj_initialized;			//!< Nano-J program has been intialized
+		bool home_initialized;			//!< The device has executed the homing procedure		
+		double rot_per_unit;			//!< This is the assigned Rotation/units convertion factor
+
 		
-		// Device Unit Definition ________________________________________________________________
-		private: double rot_per_unit; //!< This is Rotation/units
-		protected: int convert_Encoder_To_User(int x);
-		protected: int convert_User_To_Encoder(int x);
-		protected: int convert_UserSec_To_Speed(int x);
-
-		// CanOpen protocol section ______________________________________________________________
-		private: unsigned char device_id;
-		private: HANDLE rxSDOEvent;			//!< Event object signaled by the SDO receiving callback
-		private:bool sdo_rx_pending;		//!< A SDO reception fdata is pending 
-		private:bool nanoj_rx_pending;		//!< A SDO reception fdata is pending 
-		protected:ODRegister^ rxSdoRegister;	//!< SDO receiving data
-		private:unsigned char rxNanojAck;
-		private:bool rxNanojAckValid;
-
-		protected:bool blocking_writeOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim, int val);
-		private:void write_resetNode(void);
-		protected:bool blocking_readOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim);
-		private:bool writeControlWord(unsigned int mask, unsigned int val);
+		
 	
-		private:void thread_canopen_rx_sdo_callback(unsigned short canid, unsigned char* data, unsigned char len);
-		private: void thread_canopen_bootup_callback(unsigned short canid, unsigned char* data, unsigned char len);
-
-
 		// CanOPEN CiA status management __________________________________________________________________
-		private:Thread^ main_thread;
-		private:void mainWorker(void);
-
+		void thread_canopen_rx_sdo_callback(unsigned short canid, unsigned char* data, unsigned char len); //!< This is the CAN sdo reception callback
+		void thread_canopen_bootup_callback(unsigned short canid, unsigned char* data, unsigned char len); //!< This is the CAN boot reception callback
+		Thread^ main_thread;
+		void mainWorker(void);
 		enum class _CiA402Status {
 			CiA402_NotReadyToSwitchOn = 0,
 			CiA402_SwitchOnDisabled,
@@ -570,87 +809,64 @@ namespace CANOPEN {
 			CiA402_Fault,
 			CiA402_Undefined,
 		};
+		_CiA402Status CiA_current_status;     //!< CiA current detected status
 
-		private: _CiA402Status CiA_current_status;     //!< CiA current detected status
-		private: System::String^ getErrorClass1001(unsigned int val);
-		private: System::String^ getErrorClass1003(unsigned int val);
-		private: System::String^ getErrorCode1003(unsigned int val);
-
-		private: _CiA402Status getCiAStatus(int regval);
-		private: System::String^ getCiAStatusString(_CiA402Status status);
-		private: void CiA402_QuickStopActiveCallback(void);
-		private: void CiA402_SwitchOnDisabledCallback(void);
-		private: void CiA402_ReadyToSwitchOnCallback(void);
-		private: void CiA402_SwitchedOnCallback(void);
-		private: void CiA402_OperationEnabledCallback(void);
-		private: void CiA402_FaultCallback(void);
-		private: bool error_condition;
-		private: unsigned int error_class;
-		private: unsigned int error_code;
+		_CiA402Status getCiAStatus(int regval);
+		System::String^ getCiAStatusString(_CiA402Status status);
+		void CiA402_QuickStopActiveCallback(void);
+		void CiA402_SwitchOnDisabledCallback(void);
+		void CiA402_ReadyToSwitchOnCallback(void);
+		void CiA402_SwitchedOnCallback(void);
+		void CiA402_OperationEnabledCallback(void);
+		void CiA402_FaultCallback(void);
+		bool error_condition;
+		unsigned int error_class;
+		unsigned int error_code;
 
 		// Device Configuration _____________________________________________________________________________
-		private: bool initNanojDataRegister(void);
-		private: bool nanojWrite1024Block(int index, int size);
-		private: bool uploadNanojProgram(void);
-		private: bool configuration_command;
-		private: const unsigned char* pNanoj;
-		private: int nanojSize;
+		bool initResetEncoderCommand(int initial_position);
+		bool initializeObjectDictionary(void);
+		bool initNanojDataRegister(void);
+		bool nanojWrite1024Block(int index, int size);
+		bool uploadNanojProgram(void);
+		bool configuration_command;
+		const unsigned char* pNanoj;
+		int nanojSize;
 		
 
 		// Device Activation Management Section ____________________________________________________	
-		private:	void setCommandCompletedCode(MotorCompletedCodes error); //!< This function 	
-		private:	void updateCurrentPosition(void);
-		private:	void setActivationTimeout(int speed, int acc, int dec, int target);
-		private:	bool isTarget(void) { return ((current_uposition <= command_target + target_range_h) && (current_uposition >= command_target - target_range_h)); }
+		void setCommandCompletedCode(MotorCompletedCodes error); //!< This function 	
+		void updateCurrentPosition(void);
+		void setActivationTimeout(int speed, int acc, int dec, int target);
+		bool isTarget(void) { return ((current_uposition <= command_target + target_range_h) && (current_uposition >= command_target - target_range_h)); }
 
-		private:	void manageAutomaticPositioning(void);
-		private:	void manageAutomaticHoming(void);
-		private:	void manageManualPositioning(void);
+		void manageAutomaticPositioning(void);
+		void manageAutomaticHoming(void);
+		void manageManualPositioning(void);
 			   
 
 
-		private: MotorCommands request_command; //!< Application request command code
-		private: bool abort_request; //!< This flag active causes an immediate command abort
+		MotorCommands request_command; //!< Application request command code
+		bool abort_request; //!< This flag active causes an immediate command abort
 
-		private: MotorCommands current_command; //!< Current executing command code
-		private:MotorCompletedCodes command_completed_code;//!< Activation result
+		MotorCommands current_command; //!< Current executing command code
+		MotorCompletedCodes command_completed_code;//!< Activation result
 		
-		protected:int command_id;			//!< ID code of the requested command 
-		private:int command_target;			//!< Target position in user units
-		private:int command_acc;			//!< Acceleration in user/s2
-		private:int command_dec;			//!< Deceleration in user/s2
-		private:int command_speed;			//!< Speed in user/s
-		private:int command_ms_tmo;			//!< Timoeut activation in ms
-		private:bool command_stop;			//!< Request to stop the current activation
-		private:int command_homing_on_method;  //!< Homing method whith zero photocell starting in ON status
-		private:int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
+		int command_id;			//!< ID code of the requested command 
+		int command_target;			//!< Target position in user units
+		int command_acc;			//!< Acceleration in user/s2
+		int command_dec;			//!< Deceleration in user/s2
+		int command_speed;			//!< Speed in user/s
+		int command_ms_tmo;			//!< Timoeut activation in ms
+		bool command_stop;			//!< Request to stop the current activation
+		int command_homing_on_method;  //!< Homing method whith zero photocell starting in ON status
+		int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
 
-		// Subclass Overridable callbacks ____________________________________________________
-		
-		
-		protected:	virtual MotorCompletedCodes automaticPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
-		protected:	virtual MotorCompletedCodes automaticPositioningRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
-		protected:	virtual void automaticPositioningCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
-		
-		protected:	virtual MotorCompletedCodes manualPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
-		protected:	virtual MotorCompletedCodes manualPositioningRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
-		protected:	virtual void manualPositioningCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
-
-		protected:	virtual MotorCompletedCodes automaticHomingPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
-		protected:	virtual MotorCompletedCodes automaticHomingRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
-		protected:	virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
-
-		protected:	virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
-		protected:	virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
-
-
-		private:
-			bool read_sdo_tmo;
-			bool write_sdo_tmo;
-		
-	public:
-			unsigned int sent_messages;
-			unsigned int unreceived_messages;
+		// Diagnostic
+		bool read_sdo_tmo;
+		bool write_sdo_tmo;		
+		unsigned int sent_messages;
+		unsigned int unreceived_messages;
 			
 	};
 

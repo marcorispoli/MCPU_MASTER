@@ -310,9 +310,9 @@ public:
     static ArmMotor^ device = gcnew ArmMotor();
     
     // Exposure acceptable conditions
-    static bool isTarget(void) { return ((device->current_uposition >= selected_target - 1) && (device->current_uposition <= selected_target + 1));}
+    static bool isTarget(void) { return ((device->getCurrentEncoderUposition() >= selected_target - 1) && (device->getCurrentEncoderUposition() <= selected_target + 1)); }
     static bool isValidTarget(void) { return valid_target; }
-    static bool isInRange(void) { return ((device->current_uposition >= allowed_low) && (device->current_uposition <= allowed_high)); }
+    static bool isInRange(void) { return ((device->getCurrentEncoderUposition() >= allowed_low) && (device->getCurrentEncoderUposition() <= allowed_high)); }
     static bool isValidPosition(void) { return (valid_target && isInRange()); }
 
     // Arm activation section

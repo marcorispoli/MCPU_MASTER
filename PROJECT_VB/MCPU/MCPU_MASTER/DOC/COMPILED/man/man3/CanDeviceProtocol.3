@@ -1,4 +1,4 @@
-.TH "CanDeviceProtocol" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanDeviceProtocol" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,7 +25,7 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 
 .in +1c
 .ti -1c
-.RI "enum class \fBProtocolFrameCode\fP { \fBFRAME_READ_REVISION\fP = 1, \fBFRAME_READ_ERRORS\fP, \fBFRAME_READ_COMMAND\fP, \fBFRAME_READ_STATUS\fP, \fBFRAME_READ_DATA\fP, \fBFRAME_READ_PARAM\fP, \fBFRAME_WRITE_DATA\fP, \fBFRAME_WRITE_PARAM\fP, \fBFRAME_STORE_PARAMS\fP, \fBFRAME_COMMAND_EXEC\fP, \fBFRAME_DEVICE_RESET\fP }"
+.RI "enum class \fBProtocolFrameCode\fP { \fBFRAME_ERROR\fP = 0, \fBFRAME_READ_REVISION\fP, \fBFRAME_READ_ERRORS\fP, \fBFRAME_READ_COMMAND\fP, \fBFRAME_READ_STATUS\fP, \fBFRAME_READ_DATA\fP, \fBFRAME_READ_PARAM\fP, \fBFRAME_WRITE_DATA\fP, \fBFRAME_WRITE_PARAM\fP, \fBFRAME_STORE_PARAMS\fP, \fBFRAME_COMMAND_EXEC\fP, \fBFRAME_DEVICE_RESET\fP }"
 .br
 .RI "This is the command Code of the protocol frames "
 .ti -1c
@@ -100,6 +100,22 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "bool \fBisCommandError\fP (void)"
 .br
 .in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned int \fBsent_messages\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBunreceived_messages\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBperc_sent_messages\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBperc_unreceived_messages\fP"
+.br
+.in -1c
 .SS "Static Public Attributes"
 
 .in +1c
@@ -118,6 +134,16 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .br
 .ti -1c
 .RI "virtual bool \fBconfigurationLoop\fP (void)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBregister_access_fault\fP"
+.br
+.ti -1c
+.RI "int \fBregister_access_fault_counter\fP"
 .br
 .in -1c
 .SS "Private Member Functions"
@@ -286,6 +312,8 @@ This is the command Code of the protocol frames
 .PP
 \fBEnumerator\fP
 .in +1c
+.TP
+\fB\fIFRAME_ERROR \fP\fP
 .TP
 \fB\fIFRAME_READ_REVISION \fP\fP
 Read Revision register frame command code\&. 
@@ -465,6 +493,14 @@ A Device reset code has been received\&.
 
 .SS "Thread ^ CanDeviceProtocol::main_thread\fC [private]\fP"
 
+.SS "unsigned int CanDeviceProtocol::perc_sent_messages"
+
+.SS "unsigned int CanDeviceProtocol::perc_unreceived_messages"
+
+.SS "bool CanDeviceProtocol::register_access_fault\fC [protected]\fP"
+
+.SS "int CanDeviceProtocol::register_access_fault_counter\fC [protected]\fP"
+
 .SS "bool CanDeviceProtocol::rx_pending\fC [private]\fP"
 
 .PP
@@ -481,12 +517,16 @@ Received register\&.
 Event object signaled by the receiving callback\&. 
 .SS "bool CanDeviceProtocol::rxOk\fC [private]\fP"
 
+.SS "unsigned int CanDeviceProtocol::sent_messages"
+
 .SS "bool CanDeviceProtocol::tmo\fC [private]\fP"
 
 .SS "\fBCanDeviceRegister\fP ^ CanDeviceProtocol::tx_register\fC [private]\fP"
 
 .PP
 Received register\&. 
+.SS "unsigned int CanDeviceProtocol::unreceived_messages"
+
 
 .SH "Author"
 .PP 

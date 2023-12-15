@@ -1,0 +1,102 @@
+.TH "CanOpenBaseModule" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanOpenBaseModule \- Motor Driver base class module
+.PP
+ \- This is the Class implementing the CanOPEN Motor Device control protocol\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Modules"
+
+.in +1c
+.ti -1c
+.RI "\fBApplication Interface (API)\fP"
+.br
+.RI ""
+.ti -1c
+.RI "\fBProtected Interface (Subclass reserved)\fP"
+.br
+.RI ""
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the Class implementing the CanOPEN Motor Device control protocol\&. 
+
+This class implements the full control of a Motor device based on the CanOPEN protocol\&. The class provides the following features:
+.PP
+.IP "\(bu" 2
+Handles the register initialization and configuration;
+.IP "\(bu" 2
+Handles the nanoj program uploading and activation;
+.IP "\(bu" 2
+Handles the CiA status machine management;
+.IP "\(bu" 2
+Handles the Positioning commands;
+.PP
+.SH "Device initialization"
+.PP
+When the Application calls the activateConfiguration() or in case of remote device reset, the module starts the remote device configuration\&.
+.PP
+During this configuration fase the module:
+.IP "\(bu" 2
+Upload if present the Nano-J prgram;
+.IP "\(bu" 2
+Uploads the object registers with the application object register values\&.
+.PP
+.SS "Custom register initialization"
+.SH "CiA Status machine management"
+.PP
+The CanOPEN based device internal status changes in a set of standard predefined status called CiA_ Status machine\&.
+.PP
+Any status is characterized by a specific motor conditions\&. It is not possible to arbitrary change from any status to any status but a specific change status sequence shall be followed: the Module implements automatically all the steps to drive the internal status into the operating status: CiA_SwitchedOn status\&.
+.SH "Nano-J program handling"
+.PP
+The module allows to upload a special program running on the PD4/PD6 series of the nanotec motors\&. In order to upload a Nanoj program, the Application shall subclass this module declaring a vector of the program data pointer and passing it to the module in the Subclass constructor with the command setNanoJPtr();
+.PP
+During the initialization fase the program is then uploaded to the device\&.
+.PP
+Specific commands are provided to starts/stop the program into the remote device\&.
+.SH "User Units and Motor Units"
+.PP
+When the module shall Read or Write the activation registers like the encoder position, the target position register, the Speed register, the Acceleration register or deceleration register, the units are internal and depends by several internal registers\&.
+.PP
+To help the application in handling a more readable units, the user units, the module provides two functions to read/write the position registers and one function to set the Speed/Acceleration/Deceleration registers:
+.IP "\(bu" 2
+convert_Encoder_To_User(): converts the motor position units to User units;
+.IP "\(bu" 2
+convert_User_To_Encoder(): converts the User position units to motor position units;
+.IP "\(bu" 2
+convert_UserSec_To_Speed(): converts the user per seconds units to Motor unit per seconds;
+.PP
+.PP
+For example, if the Application should need to read the actual Motor position, the Application should read the Position Register and use the convert_Encoder_To_User(position-register-content) to get the information about the position in user units\&.
+.PP
+If the Application should set the activation speed register, it can assign to the register to the convert_UserSec_To_Speed(user-speed) value\&.
+.PP
+In order to defines the User units the Application shall pass a special parameter to the class constructor:
+.IP "\(bu" 2
+rot_to_unit: this is the number of motor round corresponding to 1 unit\&.
+.PP
+.PP
+This number clearly depends by the gearbox ratio from the motor axe and the activation point\&. 
+.br
+.SH "Activation Commands"
+.PP
+When the module is in the CiA_SwitchedOn status a motor activation can be performed\&. The module provides the following commands for the activation:
+.PP
+.IP "\(bu" 2
+activateAutomaticPositioning(): starts the motor at the target position;
+.IP "\(bu" 2
+activateAutomaticHoming(): starts automatic zero setting procedure;
+.IP "\(bu" 2
+activateManualPositioning(): starts the manual position procedure;
+.IP "\(bu" 2
+abortActivation(): aborts any pending activation; 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

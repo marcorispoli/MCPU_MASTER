@@ -35,11 +35,11 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
         init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
 
-    this->home_initialized = homing_initialized;
-    this->encoder_initial_value = init_position;
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialEvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING, false);
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING, false);
 
 }
 
@@ -53,13 +53,13 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
 void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
 
     // Sets the current Vertical position
-    if (home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+    if (isEncoderInitialized()) {
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
     // If requested, rise the command completed event
-    device->command_completed_event(command_id, (int) error);
+    device->command_completed_event(getCommandId(), (int)error);
 
     return;
 }
@@ -108,9 +108,9 @@ bool SlideMotor::startHoming(void) {
 /// <returns></returns>
 void SlideMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
 
-    if (device->home_initialized) {
+    if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
     }

@@ -183,11 +183,12 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
         init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
 
-    this->home_initialized = homing_initialized;
-    this->encoder_initial_value = init_position;
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialEvalue(init_position);
+    
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING, false);
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING, false);
   
 }
 
@@ -316,13 +317,13 @@ void TiltMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error)
     blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    if (device->home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+    if (isEncoderInitialized()) {
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
     // Notify the command termination event
-    device->command_completed_event(command_id, (int)error);
+    device->command_completed_event(getCommandId(), (int)error);
 
     return;
 }
@@ -354,9 +355,9 @@ void TiltMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
     blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    if (device->home_initialized) {
+    if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
     }

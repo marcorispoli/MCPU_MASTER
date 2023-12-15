@@ -1,4 +1,4 @@
-.TH "PCB304" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB304" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,6 +25,9 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This function returns the presence of the magnifier device "
 .ti -1c
+.RI "static System::String ^ \fBgetMagnifierfactorString\fP (void)"
+.br
+.ti -1c
 .RI "static void \fBsetGridOnField\fP (void)"
 .br
 .RI "This function set the Grid in Field\&. "
@@ -42,6 +45,12 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "If the grid has been set to \fBGenerator\fP Synch, the function returns true when the grid is ready to start\&. "
 .ti -1c
 .RI "static bool \fBisError\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPatientProtection\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPatientProtectionShifted\fP (void)"
 .br
 .in -1c
 .SS "Static Public Attributes"
@@ -62,9 +71,21 @@ Inherits \fBCanDeviceProtocol\fP\&.
 
 .in +1c
 .ti -1c
+.RI "static bool \fBpatient_protection_detected\fP = false"
+.br
+.RI "Is set if the patient protection should be detcted\&. "
+.ti -1c
+.RI "static bool \fBpatient_protection_shifted\fP = false"
+.br
+.RI "Is set if the patient protection should be shifted out of standard position\&. "
+.ti -1c
 .RI "static bool \fBmagnifier_device_detected\fP = false"
 .br
 .RI "Is set if the Magnifier device has been detected\&. "
+.ti -1c
+.RI "static System::String ^ \fBmagnifier_factor_string\fP = '1\&.0'"
+.br
+.RI "This is the current magnification factor detected in string format\&. "
 .ti -1c
 .RI "static bool \fBgrid_on_field\fP = false"
 .br
@@ -93,6 +114,8 @@ Inherits \fBCanDeviceProtocol\fP\&.
 
 .SH "Member Function Documentation"
 .PP 
+.SS "static System::String ^ PCB304::getMagnifierfactorString (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "static bool PCB304::isError (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static bool PCB304::isGridOnFieldReady (void)\fC [inline]\fP, \fC [static]\fP"
@@ -129,6 +152,10 @@ This function returns the presence of the magnifier device
 True if the Magnifier device has been detected 
 .RE
 .PP
+
+.SS "static bool PCB304::isPatientProtection (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool PCB304::isPatientProtectionShifted (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "void PCB304::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
@@ -179,6 +206,18 @@ This flag stands for grid ready to be activated by the generator\&.
 
 .PP
 Is set if the Magnifier device has been detected\&. 
+.SS "System::String ^ PCB304::magnifier_factor_string = '1\&.0'\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current magnification factor detected in string format\&. 
+.SS "bool PCB304::patient_protection_detected = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Is set if the patient protection should be detcted\&. 
+.SS "bool PCB304::patient_protection_shifted = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Is set if the patient protection should be shifted out of standard position\&. 
 .SS "bool PCB304::synch_grid = false\fC [static]\fP, \fC [private]\fP"
 
 .PP

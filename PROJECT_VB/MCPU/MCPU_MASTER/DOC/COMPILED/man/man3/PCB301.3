@@ -1,4 +1,4 @@
-.TH "PCB301" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB301" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,6 +10,19 @@ PCB301
 \fC#include <PCB301\&.h>\fP
 .PP
 Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBvertical_activation_options\fP { \fBVERTICAL_NO_ACTIVATION\fP = 0, \fBVERTICAL_UP_ACTIVATION\fP, \fBVERTICAL_DOWN_ACTIVATION\fP, \fBVERTICAL_INVALID_CODE\fP }"
+.br
+.ti -1c
+.RI "enum class \fBbody_activation_options\fP { \fBBODY_NO_ACTIVATION\fP = 0, \fBBODY_CW_ACTIVATION\fP, \fBBODY_CCW_ACTIVATION\fP, \fBBODY_INVALID_CODE\fP }"
+.br
+.ti -1c
+.RI "enum class \fBdoor_options\fP { \fBCLOSED_DOOR\fP = 0, \fBOPEN_DOOR\fP }"
+.br
+.in -1c
 .SS "Public Member Functions"
 
 .in +1c
@@ -28,6 +41,41 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static void \fBsetXrayEnable\fP (bool status)"
 .br
 .RI "This function sets the current status of the X-RAY enable signal\&. "
+.ti -1c
+.RI "static \fBvertical_activation_options\fP \fBgetVerticalActivationStatus\fP (void)"
+.br
+.RI "This function returns the current status of the Vertical activation hardware inputs "
+.ti -1c
+.RI "static \fBbody_activation_options\fP \fBgetBodyActivationStatus\fP (void)"
+.br
+.RI "This function returns the current status of the Body activation hardware inputs "
+.ti -1c
+.RI "static bool \fBgetPowerdown\fP (void)"
+.br
+.ti -1c
+.RI "static \fBdoor_options\fP \fBgetDoorStatus\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBgetBatteryEna\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBgetBatteryAlarm\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned char \fBgetVoltageBatt1\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned char \fBgetVoltageBatt2\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBgetXrayStat\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBgetXrayEventEna\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetXrayEventEna\fP (bool stat)"
+.br
 .in -1c
 .SS "Static Public Attributes"
 
@@ -54,14 +102,143 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static bool \fBxray_enable_status_output\fP = false"
 .br
 .RI "This is the current X-RAY enable status setting\&. "
+.ti -1c
+.RI "static \fBvertical_activation_options\fP \fBvertical_activation_status\fP = \fBvertical_activation_options::VERTICAL_NO_ACTIVATION\fP"
+.br
+.RI "This is the current status of the vertical activation request\&. "
+.ti -1c
+.RI "static \fBbody_activation_options\fP \fBbody_activation_status\fP = \fBbody_activation_options::BODY_NO_ACTIVATION\fP"
+.br
+.RI "This is the current status of the body activation request 
+.br
+ "
+.ti -1c
+.RI "static \fBdoor_options\fP \fBdoor_status\fP = \fBdoor_options::OPEN_DOOR\fP"
+.br
+.RI "This is the current status of the Study door\&. "
+.ti -1c
+.RI "static bool \fBpower_down_status\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBbattery_enabled_status\fP = false"
+.br
+.RI "Battery enabled system button status\&. "
+.ti -1c
+.RI "static bool \fBbatt1_low_alarm\fP = false"
+.br
+.RI "Low voltage of battery 1\&. "
+.ti -1c
+.RI "static bool \fBbatt2_low_alarm\fP = false"
+.br
+.RI "Low voltage of battery 2\&. "
+.ti -1c
+.RI "static unsigned char \fBvoltage_batt1\fP = 0"
+.br
+.RI "10 * voltage level of battery 1 "
+.ti -1c
+.RI "static unsigned char \fBvoltage_batt2\fP = 0"
+.br
+.RI "10 * voltage level of battery 2 "
+.ti -1c
+.RI "static bool \fBxray_push_button\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBxray_push_button_event_enable\fP = false"
+.br
+.RI "
+.PP
+.RS 4
+This is the current X-RAY status 
+.RE
+.PP
+"
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB301::body_activation_options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIBODY_NO_ACTIVATION \fP\fP
+.TP
+\fB\fIBODY_CW_ACTIVATION \fP\fP
+.TP
+\fB\fIBODY_CCW_ACTIVATION \fP\fP
+.TP
+\fB\fIBODY_INVALID_CODE \fP\fP
+.SS "enum class \fBPCB301::door_options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICLOSED_DOOR \fP\fP
+.TP
+\fB\fIOPEN_DOOR \fP\fP
+.SS "enum class \fBPCB301::vertical_activation_options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIVERTICAL_NO_ACTIVATION \fP\fP
+.TP
+\fB\fIVERTICAL_UP_ACTIVATION \fP\fP
+.TP
+\fB\fIVERTICAL_DOWN_ACTIVATION \fP\fP
+.TP
+\fB\fIVERTICAL_INVALID_CODE \fP\fP
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "PCB301::PCB301 ()\fC [inline]\fP"
 
 .SH "Member Function Documentation"
 .PP 
+.SS "static bool PCB301::getBatteryAlarm (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool PCB301::getBatteryEna (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBbody_activation_options\fP PCB301::getBodyActivationStatus (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the current status of the Body activation hardware inputs 
+.br
+ 
+.PP
+\fBReturns\fP
+.RS 4
+the current status request
+.RE
+.PP
+
+.SS "static \fBdoor_options\fP PCB301::getDoorStatus (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool PCB301::getPowerdown (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBvertical_activation_options\fP PCB301::getVerticalActivationStatus (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the current status of the Vertical activation hardware inputs 
+.br
+ 
+.PP
+\fBReturns\fP
+.RS 4
+the current status request
+.RE
+.PP
+
+.SS "static unsigned char PCB301::getVoltageBatt1 (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static unsigned char PCB301::getVoltageBatt2 (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool PCB301::getXrayEventEna (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool PCB301::getXrayStat (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "static bool PCB301::isXrayButton (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
@@ -92,14 +269,64 @@ This function sets the current status of the X-RAY enable signal\&.
 .RE
 .PP
 
+.SS "static void PCB301::setXrayEventEna (bool stat)\fC [inline]\fP, \fC [static]\fP"
+
 .SH "Member Data Documentation"
 .PP 
+.SS "bool PCB301::batt1_low_alarm = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Low voltage of battery 1\&. 
+.SS "bool PCB301::batt2_low_alarm = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Low voltage of battery 2\&. 
+.SS "bool PCB301::battery_enabled_status = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Battery enabled system button status\&. 
+.SS "\fBbody_activation_options\fP PCB301::body_activation_status = \fBbody_activation_options::BODY_NO_ACTIVATION\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current status of the body activation request 
+.br
+ 
 .SS "\fBPCB301\fP ^ PCB301::device = gcnew \fBPCB301\fP()\fC [static]\fP"
 
+.SS "\fBdoor_options\fP PCB301::door_status = \fBdoor_options::OPEN_DOOR\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current status of the Study door\&. 
+.SS "bool PCB301::power_down_status = false\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBvertical_activation_options\fP PCB301::vertical_activation_status = \fBvertical_activation_options::VERTICAL_NO_ACTIVATION\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current status of the vertical activation request\&. 
+.SS "unsigned char PCB301::voltage_batt1 = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+10 * voltage level of battery 1 
+.SS "unsigned char PCB301::voltage_batt2 = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+10 * voltage level of battery 2 
 .SS "bool PCB301::xray_enable_status_output = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
 This is the current X-RAY enable status setting\&. 
+.SS "bool PCB301::xray_push_button = false\fC [static]\fP, \fC [private]\fP"
+
+.SS "bool PCB301::xray_push_button_event_enable = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+
+.PP
+.RS 4
+This is the current X-RAY status 
+.RE
+.PP
+
 .SS "bool PCB301::xray_push_button_input = false\fC [static]\fP, \fC [private]\fP"
 
 .PP

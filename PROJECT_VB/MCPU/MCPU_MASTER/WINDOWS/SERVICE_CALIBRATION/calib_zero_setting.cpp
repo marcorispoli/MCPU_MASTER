@@ -18,6 +18,9 @@
 #define SLIDE_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\SlideOk.PNG")
 #define SLIDE_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\SlideNok.PNG")
 
+/// <summary>
+/// Thuis is the enumeration of the possible zero setting commands
+/// </summary>
 typedef enum {
 	NO_COMMAND = 0,
 	ZERO_BODY,

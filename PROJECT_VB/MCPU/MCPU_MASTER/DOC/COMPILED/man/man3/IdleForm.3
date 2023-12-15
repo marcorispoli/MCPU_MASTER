@@ -1,4 +1,4 @@
-.TH "IdleForm" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "IdleForm" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -63,6 +63,9 @@ Inherits System::Windows::Forms::Form\&.
 .ti -1c
 .RI "System::Void \fBerrorButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
 .br
+.ti -1c
+.RI "System::Void \fBserviceButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
 .in -1c
 .SS "Private Attributes"
 
@@ -84,6 +87,9 @@ Inherits System::Windows::Forms::Form\&.
 .br
 .ti -1c
 .RI "System::Windows::Forms::Panel ^ \fBerrorButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBserviceButton\fP"
 .br
 .ti -1c
 .RI "System::Windows::Forms::Panel ^ \fBmainPanel\fP"
@@ -145,6 +151,8 @@ Required method for Designer support - do not modify the contents of this method
 
 .SS "void IdleForm::open (void)"
 
+.SS "System::Void IdleForm::serviceButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
 .SS "void IdleForm::WndProc (System::Windows::Forms::Message% m)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .SH "Member Data Documentation"
@@ -178,6 +186,8 @@ Required designer variable\&.
 .SS "System::Windows::Forms::PictureBox ^ IdleForm::peripheralsConnected\fC [private]\fP"
 
 .SS "Object ^ IdleForm::pError\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ IdleForm::serviceButton\fC [private]\fP"
 
 .SS "System::Windows::Forms::Panel ^ IdleForm::tubeTempOk\fC [private]\fP"
 

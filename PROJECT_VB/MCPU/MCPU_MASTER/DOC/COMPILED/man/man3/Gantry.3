@@ -1,0 +1,205 @@
+.TH "Gantry" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Gantry
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoperating_status_options\fP { \fBGANTRY_STARTUP\fP = 0, \fBGANTRY_IDLE\fP, \fBGANTRY_OPERATING\fP, \fBGANTRY_SERVICE\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBGantry\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBinitialize\fP (void)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetPatientName\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetOpenStudy\fP (System::String^ patient)"
+.br
+.ti -1c
+.RI "static bool \fBsetCloseStudy\fP (void)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetOperatingStatusName\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisSERVICE\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisIDLE\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisOPERATING\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisSTARTUP\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetIdle\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetStartup\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetOperating\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetService\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBGantry\fP ^ \fBgantry_handle\fP = gcnew \fBGantry\fP()"
+.br
+.ti -1c
+.RI "static int \fBmonitor_X0\fP"
+.br
+.RI "Causes the \fBGantry\fP auto creation\&. "
+.ti -1c
+.RI "static int \fBmonitor_Y0\fP"
+.br
+.RI "Pointer to the Monitor Y0 position\&. "
+.ti -1c
+.RI "static System::String ^ \fBapplicationResourcePath\fP"
+.br
+.RI "This is the current application resource path\&. "
+.ti -1c
+.RI "static Object ^ \fBpIdleForm\fP"
+.br
+.RI "Pointer to the \fBIdleForm\fP\&. "
+.ti -1c
+.RI "static Object ^ \fBpOperatingForm\fP"
+.br
+.RI "Pointer to the \fBOperatingForm\fP\&. "
+.ti -1c
+.RI "static Object ^ \fBpServiceForm\fP"
+.br
+.RI "Pointer to the \fBServiceForm\fP\&. "
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBoperating_status_tags\fP = gcnew cli::array<System::String^> { 'GANTRY_STARTUP', 'GANTRY_IDLE', 'GANTRY_OPEN_STUDY', 'GANTRY_SERVICE', 'UNDEF' }"
+.br
+.RI "This is the option-tags static array\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoperating_status_options\fP \fBcurrent_operating_status\fP = \fBoperating_status_options::GANTRY_STARTUP\fP"
+.br
+.ti -1c
+.RI "static System::String ^ \fBpatient_name\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantry::operating_status_options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIGANTRY_STARTUP \fP\fP
+\fBGantry\fP is in the Startup operating mode\&. 
+.TP
+\fB\fIGANTRY_IDLE \fP\fP
+\fBGantry\fP is in the Idle operating mode\&. 
+.TP
+\fB\fIGANTRY_OPERATING \fP\fP
+\fBGantry\fP is in the Operating operating mode\&. 
+.TP
+\fB\fIGANTRY_SERVICE \fP\fP
+\fBGantry\fP is in the Service operating mode 
+.br
+ 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Gantry::Gantry ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static System::String ^ Gantry::getOperatingStatusName (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static System::String ^ Gantry::getPatientName (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void Gantry::initialize (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool Gantry::isIDLE (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool Gantry::isOPERATING (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool Gantry::isSERVICE (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool Gantry::isSTARTUP (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "bool Gantry::setCloseStudy (void)\fC [static]\fP"
+
+.SS "bool Gantry::setIdle (void)\fC [static]\fP"
+
+.SS "bool Gantry::setOpenStudy (System::String^ patient)\fC [static]\fP"
+
+.SS "bool Gantry::setOperating (void)\fC [static]\fP"
+
+.SS "bool Gantry::setService (void)\fC [static]\fP"
+
+.SS "void Gantry::setStartup (void)\fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::String ^ Gantry::applicationResourcePath\fC [static]\fP"
+
+.PP
+This is the current application resource path\&. 
+.SS "\fBoperating_status_options\fP Gantry::current_operating_status = \fBoperating_status_options::GANTRY_STARTUP\fP\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBGantry\fP ^ Gantry::gantry_handle = gcnew \fBGantry\fP()\fC [static]\fP"
+
+.SS "int Gantry::monitor_X0\fC [static]\fP"
+
+.PP
+Causes the \fBGantry\fP auto creation\&. Pointer to the Monitor X0 position 
+.SS "int Gantry::monitor_Y0\fC [static]\fP"
+
+.PP
+Pointer to the Monitor Y0 position\&. 
+.SS "const cli::array<System::String^> ^ Gantry::operating_status_tags = gcnew cli::array<System::String^> { 'GANTRY_STARTUP', 'GANTRY_IDLE', 'GANTRY_OPEN_STUDY', 'GANTRY_SERVICE', 'UNDEF' }\fC [static]\fP"
+
+.PP
+This is the option-tags static array\&. 
+.SS "System::String ^ Gantry::patient_name\fC [static]\fP, \fC [private]\fP"
+
+.SS "Object ^ Gantry::pIdleForm\fC [static]\fP"
+
+.PP
+Pointer to the \fBIdleForm\fP\&. 
+.SS "Object ^ Gantry::pOperatingForm\fC [static]\fP"
+
+.PP
+Pointer to the \fBOperatingForm\fP\&. 
+.SS "Object ^ Gantry::pServiceForm\fC [static]\fP"
+
+.PP
+Pointer to the \fBServiceForm\fP\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

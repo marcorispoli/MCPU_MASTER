@@ -1,4 +1,4 @@
-.TH "IDLESTATUS::batteryStatus" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "IDLESTATUS::batteryStatus" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,10 +13,7 @@ IDLESTATUS::batteryStatus
 .RI "bool \fBbattena\fP"
 .br
 .ti -1c
-.RI "bool \fBbatt1low\fP"
-.br
-.ti -1c
-.RI "bool \fBbatt2low\fP"
+.RI "bool \fBbattery_alarm\fP"
 .br
 .ti -1c
 .RI "unsigned char \fBvbatt1\fP"
@@ -27,11 +24,9 @@ IDLESTATUS::batteryStatus
 .in -1c
 .SH "Member Data Documentation"
 .PP 
-.SS "bool IDLESTATUS::batteryStatus::batt1low"
-
-.SS "bool IDLESTATUS::batteryStatus::batt2low"
-
 .SS "bool IDLESTATUS::batteryStatus::battena"
+
+.SS "bool IDLESTATUS::batteryStatus::battery_alarm"
 
 .SS "unsigned char IDLESTATUS::batteryStatus::vbatt1"
 

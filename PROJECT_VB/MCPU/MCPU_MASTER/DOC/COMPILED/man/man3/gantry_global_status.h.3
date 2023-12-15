@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/gantry_global_status.h" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,120 +6,19 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <math\&.h>\fP
-.br
-\fC#include 'ConfigFile\&.h'\fP
-.br
-\fC#include 'Notify\&.h'\fP
+\fC#include 'math\&.h'\fP
 .br
 
 .SS "Classes"
 
 .in +1c
 .ti -1c
-.RI "class \fBGlobalObjects\fP"
+.RI "class \fBGantry\fP"
 .br
 .ti -1c
-.RI "class \fBGantryStatusRegisters::enumType< T >\fP"
-.br
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PaddleOption\fP"
-.br
-.RI "This register handles the Paddles identifiable by the compressor device "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::XrayPushButtonRegister\fP"
-.br
-.RI "This class handles the Xray Push Button activation status and activities "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::TomoConfigRegister\fP"
-.br
-.RI "This class implements the Tomo configuration selection options\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::OperatingStatusRegister\fP"
-.br
-.RI "This is the Gantry operating status register definition\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::ComponentRegister\fP"
-.br
-.RI "This register handle the Component that can be used during the exposure "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CollimatorComponentRegister\fP"
-.br
-.RI "This register handles the component applicable to the collimator "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::CompressorRegister\fP"
-.br
-.RI "This is the register handling the compression force and thickness\&. "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
-.br
-.RI "This class handles the Trx motorization "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
-.br
-.RI "This class handles the Interface language "
-.ti -1c
-.RI "class \fBGantryStatusRegisters::PowerStatusRegister\fP"
-.br
-.ti -1c
-.RI "class \fBGantryStatusRegisters::SafetyStatusRegister\fP"
+.RI "class \fBBiopsy\fP"
 .br
 .in -1c
-.SS "Namespaces"
-
-.in +1c
-.ti -1c
-.RI "namespace \fBGantryStatusRegisters\fP"
-.br
-.RI "This is the class implementing the AWS Interface Module "
-.in -1c
-.SS "Macros"
-
-.in +1c
-.ti -1c
-.RI "#define \fBpIDLEFORM\fP   ((\fBIdleForm\fP^) \fBGlobalObjects::pIdleForm\fP)"
-.br
-.ti -1c
-.RI "#define \fBpOPERFORM\fP   ((\fBOperatingForm\fP^) \fBGlobalObjects::pOperatingForm\fP)"
-.br
-.ti -1c
-.RI "#define \fBpMSHIFT\fP   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
-.br
-.in -1c
-.SS "Functions"
-
-.in +1c
-.ti -1c
-.RI "delegate void \fBGantryStatusRegisters::delegate_void_callback\fP (void)"
-.br
-.RI "This is the delegate of the function with a void as parameter();\&. "
-.ti -1c
-.RI "delegate void \fBGantryStatusRegisters::delegate_string_callback\fP (String^ str)"
-.br
-.RI "This is the delegate of the function with a string as parameter();\&. "
-.ti -1c
-.RI "delegate void \fBGantryStatusRegisters::delegate_int_callback\fP (int i)"
-.br
-.RI "This is the delegate of the function with an integer as parameter();\&. "
-.ti -1c
-.RI "delegate void \fBGantryStatusRegisters::delegate_activation_completed\fP (unsigned short id, int error)"
-.br
-.RI "This is the delegate of the activation_completed_event();\&. "
-.ti -1c
-.RI "void \fBGantryStatusRegisters::dataLock\fP (void)"
-.br
-.ti -1c
-.RI "void \fBGantryStatusRegisters::dataUnlock\fP (void)"
-.br
-.in -1c
-.SH "Macro Definition Documentation"
-.PP 
-.SS "#define pIDLEFORM   ((\fBIdleForm\fP^) \fBGlobalObjects::pIdleForm\fP)"
-
-.SS "#define pMSHIFT   ((CanOpenMotor^) \fBGlobalObjects::pMotShift\fP)"
-
-.SS "#define pOPERFORM   ((\fBOperatingForm\fP^) \fBGlobalObjects::pOperatingForm\fP)"
-
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

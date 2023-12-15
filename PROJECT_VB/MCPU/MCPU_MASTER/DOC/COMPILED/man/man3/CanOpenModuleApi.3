@@ -1,0 +1,498 @@
+.TH "CanOpenModuleApi" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanOpenModuleApi \- Application Interface (API)
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCANOPEN::CanOpenMotor::status_options\fP { \fBCANOPEN::CanOpenMotor::status_options::MOTOR_NOT_CONNECTED\fP = 0, \fBCANOPEN::CanOpenMotor::status_options::MOTOR_CONFIGURATION\fP, \fBCANOPEN::CanOpenMotor::status_options::MOTOR_READY\fP, \fBCANOPEN::CanOpenMotor::status_options::MOTOR_BUSY\fP, \fBCANOPEN::CanOpenMotor::status_options::MOTOR_FAULT\fP }"
+.br
+.RI "This enumeration class descibes the internal status condition  "
+.ti -1c
+.RI "enum class \fBCANOPEN::CanOpenMotor::MotorCommands\fP { \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_IDLE\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_HOMING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_AUTO_POSITIONING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_MANUAL_POSITIONING\fP }"
+.br
+.RI "This enumeration class descibes the Command codes "
+.ti -1c
+.RI "enum class \fBCANOPEN::CanOpenMotor::MotorCompletedCodes\fP { \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_SUCCESS\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_PROCEED\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_MANUAL_TERMINATION\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::MOTOR_ERRORS\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_OBSTACLE_DETECTED\fP = MOTOR_ERRORS, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_MOTOR_BUSY\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_INITIALIZATION\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_UNEXPECTED_STATUS\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_LIMIT_SWITCH\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_BRAKE_DEVICE\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_TIMOUT\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_INTERNAL_FAULT\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_ACCESS_REGISTER\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_MISSING_HOME\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_COMMAND_DISABLED\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_COMMAND_ABORTED\fP }"
+.br
+.RI "This enumeration class descibes the command complete codes  "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCANOPEN::CanOpenMotor::CanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, double gear)"
+.br
+.RI "This is the base class constructor\&. "
+.ti -1c
+.RI "delegate void \fBCANOPEN::CanOpenMotor::delegate_fault_callback\fP (int code)"
+.br
+.RI "Delegate for the callback related to the Fault condition\&. "
+.ti -1c
+.RI "delegate void \fBCANOPEN::CanOpenMotor::delegate_command_completed_callback\fP (int id, int code)"
+.br
+.RI "Delegate for the command completed event 
+.br
+ "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec)"
+.br
+.RI "This function starts an automatic positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateAutomaticHoming\fP (int method_on, int method_off, int speed, int acc)"
+.br
+.RI "This function starts the automatic homing procedure\&. "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateManualPositioning\fP (int target, int speed, int acc, int dec)"
+.br
+.RI "This command activates the manual mootion 
+.br
+ "
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::abortActivation\fP (void)"
+.br
+.RI "Immediate abort of any activation running\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBCANOPEN::CanOpenMotor::getInternalStatus\fP (void)"
+.br
+.RI "This function returns the internal module status\&. "
+.ti -1c
+.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getInternalStatusStr\fP (void)"
+.br
+.RI "This function returns a description string of the internal motor status  "
+.ti -1c
+.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getCompletedCodeString\fP (void)"
+.br
+.RI "This command returns a description string(translated) of the last termination code\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::getCommandCompletedCode\fP (void)"
+.br
+.RI "This function returns the last command termination code  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateConfiguration\fP (void)"
+.br
+.RI "This function activates the Driver configuration fase\&. "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isConfigurating\fP (void)"
+.br
+.RI "This function returns the current configuration fase status  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isODConfigured\fP (void)"
+.br
+.RI "This function returns the status of the Object Dictionary configuration status  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isNanojConfigured\fP (void)"
+.br
+.RI "This function returns the status of the Nano-J programming  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isReady\fP (void)"
+.br
+.RI "This function returns the Ready status\&.  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isZeroOk\fP (void)"
+.br
+.RI "This function returns the Encoder Zero setting status  "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getCurrentPosition\fP (void)"
+.br
+.RI "This function returns the current encoder position\&.  "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_fault_callback\fP^ \fBCANOPEN::CanOpenMotor::fault_event\fP"
+.br
+.RI "Event generated when a Driver fault condition is detected\&. "
+.ti -1c
+.RI "static \fBdelegate_command_completed_callback\fP^ \fBCANOPEN::CanOpenMotor::command_completed_event\fP"
+.br
+.RI "Event generated at the command completion\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+
+This section describes the API for the Application usage\&.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBCANOPEN::CanOpenMotor::MotorCommands\fP\fC [strong]\fP"
+
+.PP
+This enumeration class descibes the Command codes 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMOTOR_IDLE \fP\fP
+No command are presents 
+.br
+ 
+.TP
+\fB\fIMOTOR_HOMING \fP\fP
+Homing procedure for automatic zero setting\&. 
+.TP
+\fB\fIMOTOR_AUTO_POSITIONING \fP\fP
+Motor Automatic activation to target\&. 
+.TP
+\fB\fIMOTOR_MANUAL_POSITIONING \fP\fP
+Motor Manual activation to target\&. 
+.SS "enum class \fBCANOPEN::CanOpenMotor::MotorCompletedCodes\fP\fC [strong]\fP"
+
+.PP
+This enumeration class descibes the command complete codes  The enumeration class provoides a set of codes used for different purposes:
+.IP "\(bu" 2
+COMMAND_SUCCESS: it is used for the command completion status;
+.IP "\(bu" 2
+COMMAND_PROCEED: it is used for the authorization in proceed with the command execution
+.IP "\(bu" 2
+ERROR_: they are codes reserved for command completion error conditions 
+.PP
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOMMAND_SUCCESS \fP\fP
+The Command is successsfully terminated\&. 
+.TP
+\fB\fICOMMAND_PROCEED \fP\fP
+The Command can proceed in the execution (reserved for subclass) 
+.TP
+\fB\fICOMMAND_MANUAL_TERMINATION \fP\fP
+The Command has been manually terminated\&. 
+.TP
+\fB\fIMOTOR_ERRORS \fP\fP
+First of the reserved Error codes\&. 
+.TP
+\fB\fIERROR_OBSTACLE_DETECTED \fP\fP
+The command has been terminated because of obstacle detected\&. 
+.TP
+\fB\fIERROR_MOTOR_BUSY \fP\fP
+The command cannot be executed because of Busy condition\&. 
+.TP
+\fB\fIERROR_INITIALIZATION \fP\fP
+The command has been aborted during the initialization\&. 
+.TP
+\fB\fIERROR_UNEXPECTED_STATUS \fP\fP
+The command has been aborted due to an unexpected CiA status\&. 
+.TP
+\fB\fIERROR_LIMIT_SWITCH \fP\fP
+The command has been aborted due to limit switch activation\&. 
+.TP
+\fB\fIERROR_BRAKE_DEVICE \fP\fP
+The command has been aborted due to a brake device malfunction\&. 
+.TP
+\fB\fIERROR_TIMOUT \fP\fP
+The command has been aborted due to timeout activation\&. 
+.TP
+\fB\fIERROR_INTERNAL_FAULT \fP\fP
+The command has been aborted due to a driver fault\&. 
+.TP
+\fB\fIERROR_ACCESS_REGISTER \fP\fP
+The command has been aborted due to an error in accessing a driver register\&. 
+.TP
+\fB\fIERROR_MISSING_HOME \fP\fP
+The command has been aborted due to invalid homing (the encoder is not correctly initialized) 
+.TP
+\fB\fIERROR_COMMAND_DISABLED \fP\fP
+The command has been aborted because the activation is not enabled\&. 
+.TP
+\fB\fIERROR_COMMAND_ABORTED \fP\fP
+The command has been aborted due to an Abort activation request\&. 
+.SS "enum class \fBCANOPEN::CanOpenMotor::status_options\fP\fC [strong]\fP"
+
+.PP
+This enumeration class descibes the internal status condition  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMOTOR_NOT_CONNECTED \fP\fP
+The Motor is not connected with the CAN bus\&. 
+.TP
+\fB\fIMOTOR_CONFIGURATION \fP\fP
+The module is configuring the driver\&. 
+.TP
+\fB\fIMOTOR_READY \fP\fP
+The driver is ready to execute an activation command\&. 
+.TP
+\fB\fIMOTOR_BUSY \fP\fP
+The driver is executing an acivation command\&. 
+.TP
+\fB\fIMOTOR_FAULT \fP\fP
+The driver is in fault condition\&. 
+.SH "Function Documentation"
+.PP 
+.SS "void CanOpenMotor::abortActivation (void)"
+
+.PP
+Immediate abort of any activation running\&. This command requests for an immediate activation abort\&. 
+.PP
+.IP "\(bu" 2
+If the motor is not active, the command has not effect\&.
+.IP "\(bu" 2
+If the motor is active, a quick stop procedure is activated\&.
+.PP
+
+.SS "bool CanOpenMotor::activateAutomaticHoming (int method_on, int method_off, int speed, int acc)"
+
+.PP
+This function starts the automatic homing procedure\&. 
+.SS "bool CanOpenMotor::activateAutomaticPositioning (int id, int target, int speed, int acc, int dec)"
+
+.PP
+This function starts an automatic positioning 
+.br
+ This is the API function to initiate an Automatic positioning\&. 
+.PP
+The Automatic positioning is a command to move the motor from the current position to a target defined position\&.
+.PP
+The following conditions shall be true in order to execute the command:
+.IP "\(bu" 2
+the motor shall be in Ready status condition (use \fBisReady()\fP to check it);
+.IP "\(bu" 2
+the encoder shall be initialized (use \fBisEncoderInitialized()\fP)
+.PP
+.PP
+The command return true if it can be executed\&. In case it should return false:
+.IP "\(bu" 2
+use \fBgetCommandCompletedCode()\fP to get the error reason;
+.PP
+.PP
+The Application (or the subclass) can monitor the command execution status:
+.IP "\(bu" 2
+polling the running status with the \fBisReady()\fP function;
+.IP "\(bu" 2
+handling the \fBcommand_completed_event()\fP callback;
+.PP
+.PP
+The Subclass may override the \fBautomaticPositioningCompletedCallback()\fP in order to handling differently the command termination event\&.
+.PP
+The command execution is based on thre different fases:
+.IP "\(bu" 2
+Command Preparation: the motor driver is in a non powered state;
+.IP "\(bu" 2
+Command Execution: the motor is powered and moving;
+.IP "\(bu" 2
+Command Termination: the activation is terminated (successfully or with error)\&.
+.PP
+.PP
+The Subclass can implement specific actions that may be executed in those phases,
+.br
+overriding the following functions:
+.IP "\(bu" 2
+\fBautomaticPositioningPreparationCallback()\fP: this is called during the preparation fase;
+.IP "\(bu" 2
+\fBautomaticPositioningRunningCallback()\fP: this is called during the running phase;
+.IP "\(bu" 2
+\fBautomaticPositioningCompletedCallback()\fP: this is called after the motor has been stopped;
+.PP
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP This is the ID code assigned by the application
+.br
+\fItarget\fP This is the target position in Application units
+.br
+\fIspeed\fP This is the speed in the Application units
+.br
+\fIacc\fP This is the Acceleration rate in Application units
+.br
+\fIdec\fP This is the Deceleration rate in Application units
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the command can be executed
+.RE
+.PP
+
+.SS "bool CanOpenMotor::activateConfiguration (void)"
+
+.PP
+This function activates the Driver configuration fase\&. This function activate motor configuration fase\&.
+.PP
+During the motor configuration fase, the device Object registers are written with the wanted values (see \fBinitializeObjectDictionary()\fP and \fBinitializeSpecificObjectDictionaryCallback()\fP);
+.PP
+If the implementation needs the Nanoj program, the applicaiton program is uploaded into the device\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool CanOpenMotor::activateManualPositioning (int target, int speed, int acc, int dec)"
+
+.PP
+This command activates the manual mootion 
+.br
+ 
+.SS "CanOpenMotor::CanOpenMotor (unsigned char devid, LPCWSTR motorname, double rounds_for_units)"
+
+.PP
+This is the base class constructor\&. This is the Class constructor\&.
+.PP
+The Base Class constructor:
+.IP "\(bu" 2
+Initializes all the internal variables;
+.IP "\(bu" 2
+initializes the CiA internal status;
+.IP "\(bu" 2
+Starts the working thread mainWorker
+.PP
+.PP
+As soon as the function returns, the working thread starts the communication with the motor device\&.
+.PP
+See the \fBmainWorker()\fP for details\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIdevid\fP This is the address of the Motor device
+.br
+\fImotorname\fP This is a string of the Motor name
+.br
+\fIrounds_for_units\fP This is the unit conversion rate
+.RE
+.PP
+
+.SS "delegate void CANOPEN::CanOpenMotor::delegate_command_completed_callback (int id, int code)"
+
+.PP
+Delegate for the command completed event 
+.br
+ 
+.SS "delegate void CANOPEN::CanOpenMotor::delegate_fault_callback (int code)"
+
+.PP
+Delegate for the callback related to the Fault condition\&. 
+.SS "\fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::getCommandCompletedCode (void)\fC [inline]\fP"
+
+.PP
+This function returns the last command termination code  
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "System::String CanOpenMotor::getCompletedCodeString (void)"
+
+.PP
+This command returns a description string(translated) of the last termination code\&. This procedure returns a language-translated string describing the last terminated command code\&.
+.PP
+\fBReturns\fP
+.RS 4
+String describing the last termninated command code
+.RE
+.PP
+
+.SS "int CANOPEN::CanOpenMotor::getCurrentPosition (void)\fC [inline]\fP"
+
+.PP
+This function returns the current encoder position\&.  
+.PP
+\fBReturns\fP
+.RS 4
+The encoder position in user units
+.RE
+.PP
+
+.SS "\fBstatus_options\fP CANOPEN::CanOpenMotor::getInternalStatus (void)\fC [inline]\fP"
+
+.PP
+This function returns the internal module status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The internal Module status
+.RE
+.PP
+
+.SS "System::String ^ CANOPEN::CanOpenMotor::getInternalStatusStr (void)\fC [inline]\fP"
+
+.PP
+This function returns a description string of the internal motor status  
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "bool CANOPEN::CanOpenMotor::isConfigurating (void)\fC [inline]\fP"
+
+.PP
+This function returns the current configuration fase status  
+.PP
+\fBReturns\fP
+.RS 4
+true: the configuration is executing
+.RE
+.PP
+
+.SS "bool CANOPEN::CanOpenMotor::isNanojConfigured (void)\fC [inline]\fP"
+
+.PP
+This function returns the status of the Nano-J programming  
+.PP
+\fBReturns\fP
+.RS 4
+true: the program has been successfully uploaded (if required)
+.RE
+.PP
+
+.SS "bool CANOPEN::CanOpenMotor::isODConfigured (void)\fC [inline]\fP"
+
+.PP
+This function returns the status of the Object Dictionary configuration status  
+.PP
+\fBReturns\fP
+.RS 4
+true: the object dictionary has benn successfully configured
+.RE
+.PP
+
+.SS "bool CANOPEN::CanOpenMotor::isReady (void)\fC [inline]\fP"
+
+.PP
+This function returns the Ready status\&.  
+.PP
+\fBReturns\fP
+.RS 4
+true: the driver is ready to execute an activation command
+.RE
+.PP
+
+.SS "bool CANOPEN::CanOpenMotor::isZeroOk (void)\fC [inline]\fP"
+
+.PP
+This function returns the Encoder Zero setting status  
+.PP
+\fBReturns\fP
+.RS 4
+true: the encoder has been correctly initialized
+.RE
+.PP
+
+.SH "Events"
+.PP 
+.SS "\fBdelegate_command_completed_callback\fP^ CANOPEN::CanOpenMotor::command_completed_event\fC [static]\fP"
+
+.PP
+Event generated at the command completion\&. 
+.SS "\fBdelegate_fault_callback\fP^ CANOPEN::CanOpenMotor::fault_event\fC [static]\fP"
+
+.PP
+Event generated when a Driver fault condition is detected\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

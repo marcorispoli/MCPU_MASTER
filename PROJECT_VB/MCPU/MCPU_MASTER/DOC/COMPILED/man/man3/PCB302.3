@@ -1,4 +1,4 @@
-.TH "PCB302" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB302" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -51,6 +51,14 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "static void \fBsetCompressorUnlock\fP (void)"
 .br
+.ti -1c
+.RI "static unsigned short \fBgetThickness\fP (void)"
+.br
+.RI "This function unlocks the compression\&. "
+.ti -1c
+.RI "static unsigned short \fBgetForce\fP (void)"
+.br
+.RI "This function returnrs the current thickness in mm\&. "
 .in -1c
 .SS "Static Public Attributes"
 
@@ -77,7 +85,16 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static \fBpaddleCodes\fP \fBdetected_paddle\fP"
 .br
 .RI "This is the current detected paddle\&. "
+.ti -1c
+.RI "static unsigned short \fBbreast_thickness\fP = 0"
+.br
+.RI "Compressed breast thickness in mm\&. "
+.ti -1c
+.RI "static unsigned short \fBcompression_force\fP = 0"
+.br
+.RI "Compression force in N\&. "
 .in -1c
+.SS "Additional Inherited Members"
 .SH "Member Enumeration Documentation"
 .PP 
 .SS "enum class \fBPCB302::paddleCodes\fP\fC [strong]\fP"
@@ -155,6 +172,10 @@ the format index or -1 if no format is available
 .RE
 .PP
 
+.SS "static unsigned short PCB302::getForce (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returnrs the current thickness in mm\&. 
 .SS "int PCB302::getPaddleCode (System::String^ tag)\fC [static]\fP"
 
 .PP
@@ -223,6 +244,10 @@ The name of the paddle or nullptr if the name is not found
 .RE
 .PP
 
+.SS "static unsigned short PCB302::getThickness (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function unlocks the compression\&. 
 .SS "void PCB302::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -231,6 +256,14 @@ Reimplemented from \fBCanDeviceProtocol\fP\&.
 
 .SH "Member Data Documentation"
 .PP 
+.SS "unsigned short PCB302::breast_thickness = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Compressed breast thickness in mm\&. 
+.SS "unsigned short PCB302::compression_force = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Compression force in N\&. 
 .SS "\fBpaddleCodes\fP PCB302::detected_paddle\fC [static]\fP, \fC [private]\fP"
 
 .PP

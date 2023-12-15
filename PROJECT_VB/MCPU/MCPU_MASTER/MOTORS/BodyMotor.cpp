@@ -38,12 +38,11 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
         homing_initialized = true;
         init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
- 
-    this->home_initialized = homing_initialized;
-    this->encoder_initial_value = init_position;
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialEvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING, false);
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING, false);
     
 }
 
@@ -94,7 +93,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     // Check if the BRAKE input is OFF. In case it should be ON, a relevant alarm shall be activated
     if (!blocking_readOD(OD_60FD_00)) return false; // Reads the Inpuyts
-    if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+    if (BRAKE_INPUT_MASK(getRxReg()->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test output off, off");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
@@ -104,7 +103,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     // Sets the OUTPUT2 ON and OUTPUT1 OFF and test again the Brake input
     if (!blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK)) return false;
     if (!blocking_readOD(OD_60FD_00)) return false; // Reads the Inpuyts
-    if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+    if (BRAKE_INPUT_MASK(getRxReg()->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test output off, on");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
@@ -119,7 +118,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     if (!blocking_readOD(OD_60FD_00)) return false; // Reads the Inputs
-    if (!BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+    if (!BRAKE_INPUT_MASK(getRxReg()->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test output on, on");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
@@ -132,7 +131,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     // Sets the OUTPUT2 ON and OUTPUT1 OFF and test again the Brake input
     if (!blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK)) return false;
     if (!blocking_readOD(OD_60FD_00)) return false; // Reads the Inpuyts
-    if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+    if (BRAKE_INPUT_MASK(getRxReg()->data)) {
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test last output off, off ");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, false);
@@ -164,8 +163,8 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     }
 
     // Check if the BRAKE input is OFF. In case it should be ON, a relevant alarm shall be activated
-    if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_ACTIVATION_REGISTER;
-    if (BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+    if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_ACCESS_REGISTER;
+    if (BRAKE_INPUT_MASK(getRxReg()->data)) {
 
         brake_alarm = true;
         Debug::WriteLine("BodyMotor: Failed test brake input in IDLE");
@@ -234,7 +233,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::automaticPositioningPreparationCall
 
     // Test if the brake is actually activated
     if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_BRAKE_DEVICE; // Reads the Inputs
-    if (!BRAKE_INPUT_MASK(rxSdoRegister->data)) {
+    if (!BRAKE_INPUT_MASK(getRxReg()->data)) {
 
         // Failed the brake power activation detected
         brake_alarm = true;
@@ -272,13 +271,13 @@ void BodyMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error)
     blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    if (device->home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+    if (isEncoderInitialized()) {
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
     // Notify the command termination event
-    device->command_completed_event(command_id, (int) error);
+    device->command_completed_event(getCommandId(), (int)error);
 
     return;
 }
@@ -310,9 +309,9 @@ void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
     blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    if (device->home_initialized) {
+    if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
     }

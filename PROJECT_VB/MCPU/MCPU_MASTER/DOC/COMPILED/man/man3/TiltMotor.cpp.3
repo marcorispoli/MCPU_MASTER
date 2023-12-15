@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/TiltMotor.cpp" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/TiltMotor.cpp" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,7 +6,17 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .SH SYNOPSIS
 .br
 .PP
+\fC#include 'CalibrationConfig\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
+.br
 \fC#include 'TiltMotor\&.h'\fP
+.br
+\fC#include 'PCB301\&.h'\fP
+.br
+\fC#include 'pd4_od\&.h'\fP
+.br
+\fC#include <thread>\fP
 .br
 
 .SS "Macros"
@@ -14,6 +24,30 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .in +1c
 .ti -1c
 .RI "#define \fBGEAR_RATIO\fP   (double) 352\&.2"
+.br
+.ti -1c
+.RI "#define \fBBRAKE_INPUT_MASK\fP(x)   (x & 0x00080000)"
+.br
+.RI "Not in the Special region [00II][0000]\&. "
+.ti -1c
+.RI "#define \fBOUPUT1_OUT_MASK\fP   0x00010000"
+.br
+.RI "Not in the Special region [00II][0000]\&. "
+.ti -1c
+.RI "#define \fBOUPUT2_OUT_MASK\fP   0x00020000"
+.br
+.RI "Not in the Special region [00II][0000]\&. "
+.ti -1c
+.RI "#define \fBMAX_ROTATION_ANGLE\fP   2700"
+.br
+.ti -1c
+.RI "#define \fBMIN_ROTATION_ANGLE\fP   \-2700"
+.br
+.ti -1c
+.RI "#define \fBHOMING_ON_METHOD\fP   19"
+.br
+.ti -1c
+.RI "#define \fBHOMING_OFF_METHOD\fP   20"
 .br
 .in -1c
 .SS "Variables"
@@ -25,8 +59,28 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define BRAKE_INPUT_MASK(x)   (x & 0x00080000)"
+
+.PP
+Not in the Special region [00II][0000]\&. 
 .SS "#define GEAR_RATIO   (double) 352\&.2"
 
+.SS "#define HOMING_OFF_METHOD   20"
+
+.SS "#define HOMING_ON_METHOD   19"
+
+.SS "#define MAX_ROTATION_ANGLE   2700"
+
+.SS "#define MIN_ROTATION_ANGLE   \-2700"
+
+.SS "#define OUPUT1_OUT_MASK   0x00010000"
+
+.PP
+Not in the Special region [00II][0000]\&. 
+.SS "#define OUPUT2_OUT_MASK   0x00020000"
+
+.PP
+Not in the Special region [00II][0000]\&. 
 .SH "Variable Documentation"
 .PP 
 .SS "const unsigned char nanojTrxProgram[]\fC [static]\fP"

@@ -1,4 +1,4 @@
-.TH "VerticalMotor" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "VerticalMotor" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -29,6 +29,10 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "static bool \fBstartHoming\fP (void)"
 .br
 .RI "This function activates the Automatic Homing procedure "
+.ti -1c
+.RI "static void \fBsetManualEnable\fP (bool status)"
+.br
+.RI "Enables / Disables the manual activation mode\&. "
 .in -1c
 .SS "Static Public Attributes"
 
@@ -51,13 +55,17 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .br
  "
 .ti -1c
-.RI "bool \fBidleCallback\fP (void) override"
-.br
-.RI "The \fBVerticalMotor\fP class override this function in order to handle the IDLE activities "
-.ti -1c
 .RI "void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
 .br
 .RI "The \fBVerticalMotor\fP class override this function in order to handle the homing completion process\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBidleCallback\fP (void) override"
+.br
+.RI "The \fBVerticalMotor\fP class override this function in order to handle the IDLE activities "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBmanualPositioningRunningCallback\fP (void) override"
+.br
+.RI "The \fBVerticalMotor\fP class override this function in order to handle the manual activation process\&. "
 .in -1c
 .SS "Static Private Attributes"
 
@@ -65,6 +73,14 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .ti -1c
 .RI "static bool \fBiso_activation_mode\fP = false"
 .br
+.ti -1c
+.RI "static bool \fBmanual_activation_enabled\fP = false"
+.br
+.RI "This is the flag activating the vertical manual activation\&. "
+.ti -1c
+.RI "static bool \fBmanual_up_direction\fP = false"
+.br
+.RI "Sets true if the Upward manual command is executing, false if the downward manual activation is executing\&. "
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Detailed Description"
@@ -108,14 +124,22 @@ Override the basic class to handle the Virtual isocentric function
 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "bool VerticalMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP VerticalMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 The \fBVerticalMotor\fP class override this function in order to handle the IDLE activities 
+.SH "Safety Management"
+.PP
+.SH "Manual Activation Feature"
+.PP
+The function polls the status of the hardware inputs of the \fBPCB301\fP board in order to detect a request for a manual activation\&.
+.PP
+If the request should change state from No Activation to Up or Down activation code, the manual activation procedure is started\&.
+.PP
+This procedure shall be enabled in order to be executed\&. (see \fBsetManualEnable()\fP )
 .PP
 \fBReturns\fP
 .RS 4
-
 .RE
 .PP
 
@@ -127,6 +151,23 @@ Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 Sets specific registers for the Arm activation\&. 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBVerticalMotor::MotorCompletedCodes\fP VerticalMotor::manualPositioningRunningCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBVerticalMotor\fP class override this function in order to handle the manual activation process\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static void VerticalMotor::setManualEnable (bool status)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Enables / Disables the manual activation mode\&. 
 .SS "bool VerticalMotor::startHoming (void)\fC [static]\fP"
 
 .PP
@@ -144,6 +185,14 @@ This function activates the Automatic Homing procedure
 
 .SS "bool VerticalMotor::iso_activation_mode = false\fC [static]\fP, \fC [private]\fP"
 
+.SS "bool VerticalMotor::manual_activation_enabled = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the flag activating the vertical manual activation\&. 
+.SS "bool VerticalMotor::manual_up_direction = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Sets true if the Upward manual command is executing, false if the downward manual activation is executing\&. 
 
 .SH "Author"
 .PP 

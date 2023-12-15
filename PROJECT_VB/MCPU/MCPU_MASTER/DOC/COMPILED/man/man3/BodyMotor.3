@@ -1,4 +1,4 @@
-.TH "BodyMotor" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "BodyMotor" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,6 +26,10 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "static bool \fBstartHoming\fP (void)"
 .br
 .RI "This function activates the Automatic Homing procedure "
+.ti -1c
+.RI "static void \fBsetManualEnable\fP (bool status)"
+.br
+.RI "Enables / Disables the manual activation mode\&. "
 .in -1c
 .SS "Static Public Attributes"
 
@@ -50,7 +54,7 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .br
 .RI "The \fBBodyMotor\fP class override this function in order to update the current position and the command termination "
 .ti -1c
-.RI "bool \fBidleCallback\fP (void) override"
+.RI "\fBMotorCompletedCodes\fP \fBidleCallback\fP (void) override"
 .br
 .RI "The \fBBodyMotor\fP class override this function in order to handle the IDLE activities "
 .ti -1c
@@ -61,6 +65,18 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
 .br
 .RI "The \fBBodyMotor\fP class override this function in order to handle the homing completion process\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBmanualPositioningPreparationCallback\fP (void) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "void \fBmanualPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.br
+.RI "This function is called when the command is terminated\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBmanualPositioningRunningCallback\fP (void) override"
+.br
+.RI "The \fBBodyMotor\fP class override this function in order to handle the manual activation process\&. "
 .in -1c
 .SS "Static Private Attributes"
 
@@ -69,6 +85,14 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "static bool \fBbrake_alarm\fP = false"
 .br
 .RI "This is the current brake malfunction alarm\&. "
+.ti -1c
+.RI "static bool \fBmanual_activation_enabled\fP = false"
+.br
+.RI "This is the flag activating the body manual activation\&. "
+.ti -1c
+.RI "static bool \fBmanual_cw_direction\fP = false"
+.br
+.RI "Sets true if the CW manual command is executing, false if the CCW manual activation is executing\&. "
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Detailed Description"
@@ -130,7 +154,7 @@ In case of fault condition, a non resettable alarm is activated\&.
 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "bool BodyMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP BodyMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 The \fBBodyMotor\fP class override this function in order to handle the IDLE activities 
@@ -182,6 +206,35 @@ true if the initialization termines successfully
 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "void BodyMotor::manualPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called when the command is terminated\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP BodyMotor::manualPositioningPreparationCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBBodyMotor::MotorCompletedCodes\fP BodyMotor::manualPositioningRunningCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBBodyMotor\fP class override this function in order to handle the manual activation process\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static void BodyMotor::setManualEnable (bool status)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Enables / Disables the manual activation mode\&. 
 .SS "bool BodyMotor::startHoming (void)\fC [static]\fP"
 
 .PP
@@ -201,6 +254,14 @@ This function activates the Automatic Homing procedure
 This is the current brake malfunction alarm\&. 
 .SS "\fBBodyMotor\fP ^ BodyMotor::device = gcnew \fBBodyMotor\fP()\fC [static]\fP"
 
+.SS "bool BodyMotor::manual_activation_enabled = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the flag activating the body manual activation\&. 
+.SS "bool BodyMotor::manual_cw_direction = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Sets true if the CW manual command is executing, false if the CCW manual activation is executing\&. 
 
 .SH "Author"
 .PP 

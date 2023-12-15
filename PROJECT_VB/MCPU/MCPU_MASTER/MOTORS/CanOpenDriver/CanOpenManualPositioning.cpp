@@ -96,7 +96,7 @@ void CanOpenMotor::manageManualPositioning(void) {
 
     // Set the start bit (BIT4) in the control word register
     if (!writeControlWord(POSITION_SETTING_START_MASK, POSITION_SETTING_START_VAL)) {
-        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
         return;
     }
 
@@ -114,7 +114,7 @@ void CanOpenMotor::manageManualPositioning(void) {
         // Reads the status to be sure that it is still Operation Enabled 
         if (!blocking_readOD(OD_6041_00)) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACTIVATION_REGISTER);
+            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
             break;
         }
 

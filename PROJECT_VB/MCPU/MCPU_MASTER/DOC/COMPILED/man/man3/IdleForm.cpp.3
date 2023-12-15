@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/IdleForm.cpp" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/IdleForm.cpp" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -30,6 +30,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include 'PCB326\&.h'\fP
 .br
+\fC#include 'VerticalMotor\&.h'\fP
+.br
+\fC#include 'BodyMotor\&.h'\fP
+.br
 \fC#include '\&.\&./gantry_global_status\&.h'\fP
 .br
 
@@ -54,40 +58,40 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .in +1c
 .ti -1c
-.RI "#define \fBBACKGROUND\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\IdleFormBackground\&.PNG')"
+.RI "#define \fBBACKGROUND\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\IdleFormBackground\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBXRAY_MODE\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
+.RI "#define \fBXRAY_MODE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBBATTERY_CONNECTED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnected\&.PNG')"
+.RI "#define \fBBATTERY_CONNECTED\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnected\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBBATTERY_CONNECTED_LOW\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnectedLow\&.PNG')"
+.RI "#define \fBBATTERY_CONNECTED_LOW\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnectedLow\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBBATTERY_POWERDOWN\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryPowerdownFull\&.PNG')"
+.RI "#define \fBBATTERY_POWERDOWN\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryPowerdownFull\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBAWS_CONNECTED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AwsConnected\&.PNG')"
+.RI "#define \fBAWS_CONNECTED\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AwsConnected\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBPERIPHERALS_CONNECTED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\PeripheralsConnected\&.PNG')"
+.RI "#define \fBPERIPHERALS_CONNECTED\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\PeripheralsConnected\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBDOOR_CLOSED\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\DoorClosed\&.PNG')"
+.RI "#define \fBDOOR_CLOSED\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\DoorClosed\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBTUBE_TEMP_OK\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempOk\&.PNG')"
+.RI "#define \fBTUBE_TEMP_OK\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\tubeTempOk\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBTUBE_TEMP_NOK\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempNok\&.PNG')"
+.RI "#define \fBTUBE_TEMP_NOK\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\tubeTempNok\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBERRORPANEL_ERRORICON\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
+.RI "#define \fBERRORPANEL_ERRORICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBERROR_BUTTON\fP   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
+.RI "#define \fBERROR_BUTTON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
 .br
 .in -1c
 .SS "Variables"
@@ -106,7 +110,7 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "   bool \fBIDLESTATUS::powerdown\fP"
 .br
 .ti -1c
-.RI "   bool \fBIDLESTATUS::closed_door\fP"
+.RI "   \fBPCB301::door_options\fP \fBIDLESTATUS::door_status\fP"
 .br
 .ti -1c
 .RI "   bool \fBIDLESTATUS::aws_connected\fP"
@@ -120,29 +124,29 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
-.SS "#define AWS_CONNECTED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AwsConnected\&.PNG')"
+.SS "#define AWS_CONNECTED   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AwsConnected\&.PNG')"
 
-.SS "#define BACKGROUND   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\IdleFormBackground\&.PNG')"
+.SS "#define BACKGROUND   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\IdleFormBackground\&.PNG')"
 
-.SS "#define BATTERY_CONNECTED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnected\&.PNG')"
+.SS "#define BATTERY_CONNECTED   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnected\&.PNG')"
 
-.SS "#define BATTERY_CONNECTED_LOW   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnectedLow\&.PNG')"
+.SS "#define BATTERY_CONNECTED_LOW   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnectedLow\&.PNG')"
 
-.SS "#define BATTERY_POWERDOWN   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryPowerdownFull\&.PNG')"
+.SS "#define BATTERY_POWERDOWN   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryPowerdownFull\&.PNG')"
 
-.SS "#define DOOR_CLOSED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\DoorClosed\&.PNG')"
+.SS "#define DOOR_CLOSED   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\DoorClosed\&.PNG')"
 
-.SS "#define ERROR_BUTTON   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
+.SS "#define ERROR_BUTTON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
 
-.SS "#define ERRORPANEL_ERRORICON   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
+.SS "#define ERRORPANEL_ERRORICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
 
-.SS "#define PERIPHERALS_CONNECTED   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\PeripheralsConnected\&.PNG')"
+.SS "#define PERIPHERALS_CONNECTED   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\PeripheralsConnected\&.PNG')"
 
-.SS "#define TUBE_TEMP_NOK   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempNok\&.PNG')"
+.SS "#define TUBE_TEMP_NOK   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\tubeTempNok\&.PNG')"
 
-.SS "#define TUBE_TEMP_OK   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\tubeTempOk\&.PNG')"
+.SS "#define TUBE_TEMP_OK   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\tubeTempOk\&.PNG')"
 
-.SS "#define XRAY_MODE   Image::FromFile(\fBGlobalObjects::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
+.SS "#define XRAY_MODE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
 
 .SH "Author"
 .PP 

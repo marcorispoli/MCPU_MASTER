@@ -28,11 +28,11 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDe
         init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
 
-    this->home_initialized = homing_initialized;
-    this->encoder_initial_value = init_position;
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialEvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!home_initialized) Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
 
 
 }
@@ -61,15 +61,15 @@ bool ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
 void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
 
     // Sets the current Vertical position
-    if (home_initialized) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+    if (isEncoderInitialized()) {
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
     // If the C-ARM activation is not a Isocentric mode (or is terminated in error) then the command termines here
     // end the command_completed event is generated 
     if ((!iso_activation_mode) || (error != MotorCompletedCodes::COMMAND_SUCCESS)) {
-        device->command_completed_event(command_id, (int) error);
+        command_completed_event(getCommandId(), (int)error);
         return;
     }
 
@@ -78,9 +78,9 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
     // The Vertical Arm position is espressed in millimeters
 
     double init_h = COMPRESSION_PLANE_MM * cos((double) getPreviousPosition() * 3.14159 / (double)18000);
-    double end_h = COMPRESSION_PLANE_MM * cos((double)current_uposition * 3.14159 / (double)18000);
+    double end_h = COMPRESSION_PLANE_MM * cos((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
     int delta_h =  (int) init_h - (int) end_h;
-    VerticalMotor::activateIsocentricCorrection(command_id, delta_h);
+    VerticalMotor::activateIsocentricCorrection(getCommandId(), delta_h);
     return;
 }
 
@@ -161,9 +161,9 @@ bool ArmMotor::startHoming(void) {
 /// <returns></returns>
 void ArmMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
    
-    if (device->home_initialized) {
+    if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->current_eposition.ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_ARM_MOTOR_HOMING);
     }

@@ -1,10 +1,10 @@
-.TH "CanOpenModule" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanOpenModule" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 CanOpenModule \- CanOPEN based motor devices
 .PP
- \- This is the module implementing the control for motor device based on the CANOpen protocol\&.  
+ \- This is the based class module implementing the control of motor devices based on the CANOpen protocol\&.  
 
 .SH SYNOPSIS
 .br
@@ -24,6 +24,10 @@ CanOpenModule \- CanOPEN based motor devices
 .RI "\fBVertical Module controller\fP"
 .br
 .RI "This module implements the Vertical activation requirements\&. "
+.ti -1c
+.RI "\fBMotor Driver base class module\fP"
+.br
+.RI "This is the Class implementing the CanOPEN Motor Device control protocol\&. "
 .in -1c
 .SS "Classes"
 
@@ -32,10 +36,6 @@ CanOpenModule \- CanOPEN based motor devices
 .RI "class \fBCANOPEN::ODRegister\fP"
 .br
 .RI "This is the class implementating the CanOPEN SDO object register\&. "
-.ti -1c
-.RI "class \fBCANOPEN::CanOpenMotor\fP"
-.br
-.RI "This is the Class implementing the CanOPEN Motor Device control protocol\&. "
 .in -1c
 .SS "Enumerations"
 
@@ -47,7 +47,7 @@ CanOpenModule \- CanOPEN based motor devices
 .in -1c
 .SH "Detailed Description"
 .PP 
-This is the module implementing the control for motor device based on the CANOpen protocol\&. 
+This is the based class module implementing the control of motor devices based on the CANOpen protocol\&. 
 
 
 .SH "Enumeration Type Documentation"

@@ -1,4 +1,4 @@
-.TH "MotorConfig" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "MotorConfig" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,7 +17,7 @@ MotorConfig \-
 .br
 .RI "This is the name of the configuration file\&. "
 .ti -1c
-.RI "literal int \fBFILE_REVISION\fP = 1"
+.RI "literal int \fBFILE_REVISION\fP = 2"
 .br
 .RI "This is the current revision code\&. "
 .ti -1c
@@ -25,27 +25,39 @@ MotorConfig \-
 .br
 .RI "This is the TAG of the Undefined position\&. "
 .ti -1c
-.RI "literal int \fBPARAM_POSITION\fP = 0"
+.RI "literal int \fBPARAM_CURRENT_POSITION\fP = 0"
 .br
 .RI "Parameter position for the last valid motor position\&. "
 .ti -1c
-.RI "literal int \fBPARAM_SPEED\fP = 1"
+.RI "literal int \fBPARAM_AUTO_SPEED\fP = 1"
 .br
-.RI "Parameter position for the motor speed\&. "
+.RI "Parameter position for the Automatic mode motor speed\&. "
 .ti -1c
-.RI "literal int \fBPARAM_ACC\fP = 2"
+.RI "literal int \fBPARAM_AUTO_ACC\fP = 2"
 .br
-.RI "Parameter position for the motor acceleration\&. "
+.RI "Parameter position for the Automatic mode motor acceleration\&. "
 .ti -1c
-.RI "literal int \fBPARAM_DEC\fP = 3"
+.RI "literal int \fBPARAM_AUTO_DEC\fP = 3"
 .br
-.RI "Parameter position for the motor deceleration\&. "
+.RI "Parameter position for the Automatic mode motor deceleration\&. "
 .ti -1c
-.RI "literal int \fBPARAM_HOME_SPEED\fP = 4"
+.RI "literal int \fBPARAM_MANUAL_SPEED\fP = 4"
+.br
+.RI "Parameter position for the Manual mode motor speed\&. "
+.ti -1c
+.RI "literal int \fBPARAM_MANUAL_ACC\fP = 5"
+.br
+.RI "Parameter position for the Manual mode motor acceleration\&. "
+.ti -1c
+.RI "literal int \fBPARAM_MANUAL_DEC\fP = 6"
+.br
+.RI "Parameter position for the Manual mode motor deceleration\&. "
+.ti -1c
+.RI "literal int \fBPARAM_HOME_SPEED\fP = 7"
 .br
 .RI "Parameter speed in home procedure\&. "
 .ti -1c
-.RI "literal int \fBPARAM_HOME_ACC\fP = 5"
+.RI "literal int \fBPARAM_HOME_ACC\fP = 8"
 .br
 .RI "Parameter acceleration in home procedure\&. "
 .ti -1c
@@ -60,21 +72,33 @@ MotorConfig \-
 .br
 .RI "The last valid Body Motor position (for initial zero setting) "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_BODY_SPEED_DEFAULT\fP = '50'"
+.RI "literal System::String ^ \fBPARAM_BODY_AUTO_SPEED_DEFAULT\fP = '50'"
 .br
-.RI "Body Speed in 0\&.1 degree/s\&. "
+.RI "Body Auto Speed in 0\&.1 degree/s\&. "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_BODY_ACC_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPARAM_BODY_AUTO_ACC_DEFAULT\fP = '10'"
 .br
-.RI "Body Acc in 0\&.1 degree/ss\&. "
+.RI "Body Auto Acc in 0\&.1 degree/ss\&. "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_BODY_DEC_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPARAM_BODY_AUTO_DEC_DEFAULT\fP = '10'"
 .br
-.RI "Body Dec in 0\&.1 degree/ss\&. "
+.RI "Body Auto Dec in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_BODY_MANUAL_SPEED_DEFAULT\fP = '50'"
+.br
+.RI "Body Manual Speed in 0\&.1 degree/s\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_BODY_MANUAL_ACC_DEFAULT\fP = '10'"
+.br
+.RI "Body Manual Acc in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_BODY_MANUAL_DEC_DEFAULT\fP = '10'"
+.br
+.RI "Body Manual Dec in 0\&.1 degree/ss\&. "
 .ti -1c
 .RI "literal System::String ^ \fBPARAM_BODY_HOME_SPEED_DEFAULT\fP = '30'"
 .br
-.RI "Body Homoe Speed in 0\&.1 degree/ss\&. "
+.RI "Body Home Speed in 0\&.1 degree/ss\&. "
 .ti -1c
 .RI "literal System::String ^ \fBPARAM_BODY_HOME_ACC_DEFAULT\fP = '10'"
 .br
@@ -91,17 +115,29 @@ MotorConfig \-
 .br
 .RI "The last valid encoder ARM Motor position (for initial zero setting) "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_ARM_SPEED_DEFAULT\fP = '1000'"
+.RI "literal System::String ^ \fBPARAM_ARM_AUTO_SPEED_DEFAULT\fP = '1000'"
 .br
-.RI "Arm Speed in 0\&.01 degree/s\&. "
+.RI "Arm Auto Speed in 0\&.01 degree/s\&. "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_ARM_ACC_DEFAULT\fP = '500'"
+.RI "literal System::String ^ \fBPARAM_ARM_AUTO_ACC_DEFAULT\fP = '500'"
 .br
-.RI "Arm Acc in 0\&.01 degree/ss\&. "
+.RI "Arm Auto Acc in 0\&.01 degree/ss\&. "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_ARM_DEC_DEFAULT\fP = '500'"
+.RI "literal System::String ^ \fBPARAM_ARM_AUTO_DEC_DEFAULT\fP = '500'"
 .br
-.RI "Arm Dec in 0\&.01 degree/ss\&. "
+.RI "Arm Auto Dec in 0\&.01 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_ARM_MANUAL_SPEED_DEFAULT\fP = '1000'"
+.br
+.RI "Arm Manual Speed in 0\&.01 degree/s\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_ARM_MANUAL_ACC_DEFAULT\fP = '500'"
+.br
+.RI "Arm Manual Acc in 0\&.01 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_ARM_MANUAL_DEC_DEFAULT\fP = '500'"
+.br
+.RI "Arm Manual Dec in 0\&.01 degree/ss\&. "
 .ti -1c
 .RI "literal System::String ^ \fBPARAM_ARM_HOME_SPEED_DEFAULT\fP = '5000'"
 .br
@@ -122,17 +158,29 @@ MotorConfig \-
 .br
 .RI "The last valid encoder VERTICAL Motor position (for initial zero setting) "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_VERTICAL_SPEED_DEFAULT\fP = '50'"
+.RI "literal System::String ^ \fBPARAM_VERTICAL_AUTO_SPEED_DEFAULT\fP = '50'"
 .br
-.RI "VERTICAL Speed in 1 mm/s\&. "
+.RI "VERTICAL Auto Speed in 1 mm/s\&. "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_VERTICAL_ACC_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPARAM_VERTICAL_AUTO_ACC_DEFAULT\fP = '10'"
 .br
-.RI "VERTICAL Acc in 1mm /ss\&. "
+.RI "VERTICAL Auto Acc in 1mm /ss\&. "
 .ti -1c
-.RI "literal System::String ^ \fBPARAM_VERTICAL_DEC_DEFAULT\fP = '10'"
+.RI "literal System::String ^ \fBPARAM_VERTICAL_AUTO_DEC_DEFAULT\fP = '10'"
 .br
-.RI "VERTICAL Dec in 1mm /ss\&. "
+.RI "VERTICAL Auto Dec in 1mm /ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_VERTICAL_MANUAL_SPEED_DEFAULT\fP = '50'"
+.br
+.RI "VERTICAL Manual Speed in 1 mm/s\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_VERTICAL_MANUAL_ACC_DEFAULT\fP = '10'"
+.br
+.RI "VERTICAL Manual Acc in 1mm /ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_VERTICAL_MANUAL_DEC_DEFAULT\fP = '10'"
+.br
+.RI "VERTICAL Manual Dec in 1mm /ss\&. "
 .ti -1c
 .RI "literal System::String ^ \fBPARAM_VERTICAL_HOME_SPEED_DEFAULT\fP = '50'"
 .br
@@ -141,6 +189,92 @@ MotorConfig \-
 .RI "literal System::String ^ \fBPARAM_VERTICAL_HOME_ACC_DEFAULT\fP = '10'"
 .br
 .RI "VERTICAL Home Acc in 1mm degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT\fP = 'TILT_CALIBRATION'"
+.br
+.RI "This is the TILT Motor parameter section\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_COMMENT\fP = 'TILT_CALIBRATION calibration data'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_CURRENT_POSITION_DEFAULT\fP = \fBMOTOR_UNDEFINED_POSITION\fP"
+.br
+.RI "The last valid encoder TILT Motor position (for initial zero setting) "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_AUTO_SPEED_DEFAULT\fP = '500'"
+.br
+.RI "TILT Auto Speed in 0\&.01 degree/s\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_AUTO_ACC_DEFAULT\fP = '500'"
+.br
+.RI "TILT Auto Acc in 0\&.01 degree /ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_AUTO_DEC_DEFAULT\fP = '500'"
+.br
+.RI "TILT Auto Dec in 0\&.01 degree /ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_MANUAL_SPEED_DEFAULT\fP = '100'"
+.br
+.RI "TILT Manual Speed in 0\&.01 degree mm/s\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_MANUAL_ACC_DEFAULT\fP = '100'"
+.br
+.RI "TILT Manual Acc in 0\&.01 degree /ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_MANUAL_DEC_DEFAULT\fP = '100'"
+.br
+.RI "TILT Manual Dec in 0\&.01 degree /ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_HOME_SPEED_DEFAULT\fP = '100'"
+.br
+.RI "TILT Home Speed in 0\&.01 degree degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_TILT_HOME_ACC_DEFAULT\fP = '100'"
+.br
+.RI "TILT Home Acc in 0\&.01 degree degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE\fP = 'SLIDE_CALIBRATION'"
+.br
+.RI "This is the SLIDE Motor parameter section\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_COMMENT\fP = 'SLIDE_CALIBRATION calibration data'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_CURRENT_POSITION_DEFAULT\fP = \fBMOTOR_UNDEFINED_POSITION\fP"
+.br
+.RI "The last valid encoder SLIDE Motor position (for initial zero setting) "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_AUTO_SPEED_DEFAULT\fP = '50'"
+.br
+.RI "SLIDE Auto Speed in 0\&.1 degree/s\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_AUTO_ACC_DEFAULT\fP = '20'"
+.br
+.RI "SLIDE Auto Acc in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_AUTO_DEC_DEFAULT\fP = '20'"
+.br
+.RI "SLIDE Auto Dec in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_MANUAL_SPEED_DEFAULT\fP = '50'"
+.br
+.RI "SLIDE Manual Speed in 0\&.1 degree/s\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_MANUAL_ACC_DEFAULT\fP = '20'"
+.br
+.RI "SLIDE Manual Acc in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_MANUAL_DEC_DEFAULT\fP = '20'"
+.br
+.RI "SLIDE Manual Dec in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_HOME_SPEED_DEFAULT\fP = '50'"
+.br
+.RI "SLIDE Home Speed in 0\&.1 degree/ss\&. "
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_SLIDE_HOME_ACC_DEFAULT\fP = '20'"
+.br
+.RI "SLIDE Home Acc in 0\&.1 degree/ss\&. "
 .in -1c
 .SS "Static Public Attributes"
 
@@ -158,7 +292,7 @@ This is the class implementing the Body Motor parameter configuration file\&.
 .PP 
 .SS "\fBConfigFile\fP ^ MotorConfig::Configuration\fC [static]\fP"
 
-.SS "literal int MotorConfig::FILE_REVISION = 1"
+.SS "literal int MotorConfig::FILE_REVISION = 2"
 
 .PP
 This is the current revision code\&. 
@@ -170,28 +304,28 @@ This is the name of the configuration file\&.
 
 .PP
 This is the TAG of the Undefined position\&. 
-.SS "literal int MotorConfig::PARAM_ACC = 2"
-
-.PP
-Parameter position for the motor acceleration\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_ARM = 'ARM_CALIBRATION'"
 
 .PP
 This is the ARM Motor parameter section\&. 
-.SS "literal System::String ^ MotorConfig::PARAM_ARM_ACC_DEFAULT = '500'"
+.SS "literal System::String ^ MotorConfig::PARAM_ARM_AUTO_ACC_DEFAULT = '500'"
 
 .PP
-Arm Acc in 0\&.01 degree/ss\&. 
+Arm Auto Acc in 0\&.01 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_ARM_AUTO_DEC_DEFAULT = '500'"
+
+.PP
+Arm Auto Dec in 0\&.01 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_ARM_AUTO_SPEED_DEFAULT = '1000'"
+
+.PP
+Arm Auto Speed in 0\&.01 degree/s\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_ARM_COMMENT = 'ARM_CALIBRATION calibration data'"
 
 .SS "literal System::String ^ MotorConfig::PARAM_ARM_CURRENT_POSITION_DEFAULT = \fBMOTOR_UNDEFINED_POSITION\fP"
 
 .PP
 The last valid encoder ARM Motor position (for initial zero setting) 
-.SS "literal System::String ^ MotorConfig::PARAM_ARM_DEC_DEFAULT = '500'"
-
-.PP
-Arm Dec in 0\&.01 degree/ss\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_ARM_HOME_ACC_DEFAULT = '100'"
 
 .PP
@@ -200,28 +334,52 @@ Arm Home Acc in 0\&.01 degree/ss\&.
 
 .PP
 Arm Home Speed in 0\&.01 degree/ss\&. 
-.SS "literal System::String ^ MotorConfig::PARAM_ARM_SPEED_DEFAULT = '1000'"
+.SS "literal System::String ^ MotorConfig::PARAM_ARM_MANUAL_ACC_DEFAULT = '500'"
 
 .PP
-Arm Speed in 0\&.01 degree/s\&. 
+Arm Manual Acc in 0\&.01 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_ARM_MANUAL_DEC_DEFAULT = '500'"
+
+.PP
+Arm Manual Dec in 0\&.01 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_ARM_MANUAL_SPEED_DEFAULT = '1000'"
+
+.PP
+Arm Manual Speed in 0\&.01 degree/s\&. 
+.SS "literal int MotorConfig::PARAM_AUTO_ACC = 2"
+
+.PP
+Parameter position for the Automatic mode motor acceleration\&. 
+.SS "literal int MotorConfig::PARAM_AUTO_DEC = 3"
+
+.PP
+Parameter position for the Automatic mode motor deceleration\&. 
+.SS "literal int MotorConfig::PARAM_AUTO_SPEED = 1"
+
+.PP
+Parameter position for the Automatic mode motor speed\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_BODY = 'BODY_CALIBRATION'"
 
 .PP
 This is the Body Motor parameter section\&. 
-.SS "literal System::String ^ MotorConfig::PARAM_BODY_ACC_DEFAULT = '10'"
+.SS "literal System::String ^ MotorConfig::PARAM_BODY_AUTO_ACC_DEFAULT = '10'"
 
 .PP
-Body Acc in 0\&.1 degree/ss\&. 
+Body Auto Acc in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_BODY_AUTO_DEC_DEFAULT = '10'"
+
+.PP
+Body Auto Dec in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_BODY_AUTO_SPEED_DEFAULT = '50'"
+
+.PP
+Body Auto Speed in 0\&.1 degree/s\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_BODY_COMMENT = 'BODY_CALIBRATION calibration data'"
 
 .SS "literal System::String ^ MotorConfig::PARAM_BODY_CURRENT_POSITION_DEFAULT = \fBMOTOR_UNDEFINED_POSITION\fP"
 
 .PP
 The last valid Body Motor position (for initial zero setting) 
-.SS "literal System::String ^ MotorConfig::PARAM_BODY_DEC_DEFAULT = '10'"
-
-.PP
-Body Dec in 0\&.1 degree/ss\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_BODY_HOME_ACC_DEFAULT = '10'"
 
 .PP
@@ -229,49 +387,149 @@ Body Home Acc in 0\&.1 degree/ss\&.
 .SS "literal System::String ^ MotorConfig::PARAM_BODY_HOME_SPEED_DEFAULT = '30'"
 
 .PP
-Body Homoe Speed in 0\&.1 degree/ss\&. 
-.SS "literal System::String ^ MotorConfig::PARAM_BODY_SPEED_DEFAULT = '50'"
+Body Home Speed in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_BODY_MANUAL_ACC_DEFAULT = '10'"
 
 .PP
-Body Speed in 0\&.1 degree/s\&. 
-.SS "literal int MotorConfig::PARAM_DEC = 3"
+Body Manual Acc in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_BODY_MANUAL_DEC_DEFAULT = '10'"
 
 .PP
-Parameter position for the motor deceleration\&. 
-.SS "literal int MotorConfig::PARAM_HOME_ACC = 5"
+Body Manual Dec in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_BODY_MANUAL_SPEED_DEFAULT = '50'"
 
 .PP
-Parameter acceleration in home procedure\&. 
-.SS "literal int MotorConfig::PARAM_HOME_SPEED = 4"
-
-.PP
-Parameter speed in home procedure\&. 
-.SS "literal int MotorConfig::PARAM_POSITION = 0"
+Body Manual Speed in 0\&.1 degree/s\&. 
+.SS "literal int MotorConfig::PARAM_CURRENT_POSITION = 0"
 
 .PP
 Parameter position for the last valid motor position\&. 
-.SS "literal int MotorConfig::PARAM_SPEED = 1"
+.SS "literal int MotorConfig::PARAM_HOME_ACC = 8"
 
 .PP
-Parameter position for the motor speed\&. 
+Parameter acceleration in home procedure\&. 
+.SS "literal int MotorConfig::PARAM_HOME_SPEED = 7"
+
+.PP
+Parameter speed in home procedure\&. 
+.SS "literal int MotorConfig::PARAM_MANUAL_ACC = 5"
+
+.PP
+Parameter position for the Manual mode motor acceleration\&. 
+.SS "literal int MotorConfig::PARAM_MANUAL_DEC = 6"
+
+.PP
+Parameter position for the Manual mode motor deceleration\&. 
+.SS "literal int MotorConfig::PARAM_MANUAL_SPEED = 4"
+
+.PP
+Parameter position for the Manual mode motor speed\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE = 'SLIDE_CALIBRATION'"
+
+.PP
+This is the SLIDE Motor parameter section\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_AUTO_ACC_DEFAULT = '20'"
+
+.PP
+SLIDE Auto Acc in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_AUTO_DEC_DEFAULT = '20'"
+
+.PP
+SLIDE Auto Dec in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_AUTO_SPEED_DEFAULT = '50'"
+
+.PP
+SLIDE Auto Speed in 0\&.1 degree/s\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_COMMENT = 'SLIDE_CALIBRATION calibration data'"
+
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_CURRENT_POSITION_DEFAULT = \fBMOTOR_UNDEFINED_POSITION\fP"
+
+.PP
+The last valid encoder SLIDE Motor position (for initial zero setting) 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_HOME_ACC_DEFAULT = '20'"
+
+.PP
+SLIDE Home Acc in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_HOME_SPEED_DEFAULT = '50'"
+
+.PP
+SLIDE Home Speed in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_MANUAL_ACC_DEFAULT = '20'"
+
+.PP
+SLIDE Manual Acc in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_MANUAL_DEC_DEFAULT = '20'"
+
+.PP
+SLIDE Manual Dec in 0\&.1 degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_SLIDE_MANUAL_SPEED_DEFAULT = '50'"
+
+.PP
+SLIDE Manual Speed in 0\&.1 degree/s\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT = 'TILT_CALIBRATION'"
+
+.PP
+This is the TILT Motor parameter section\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_AUTO_ACC_DEFAULT = '500'"
+
+.PP
+TILT Auto Acc in 0\&.01 degree /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_AUTO_DEC_DEFAULT = '500'"
+
+.PP
+TILT Auto Dec in 0\&.01 degree /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_AUTO_SPEED_DEFAULT = '500'"
+
+.PP
+TILT Auto Speed in 0\&.01 degree/s\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_COMMENT = 'TILT_CALIBRATION calibration data'"
+
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_CURRENT_POSITION_DEFAULT = \fBMOTOR_UNDEFINED_POSITION\fP"
+
+.PP
+The last valid encoder TILT Motor position (for initial zero setting) 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_HOME_ACC_DEFAULT = '100'"
+
+.PP
+TILT Home Acc in 0\&.01 degree degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_HOME_SPEED_DEFAULT = '100'"
+
+.PP
+TILT Home Speed in 0\&.01 degree degree/ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_MANUAL_ACC_DEFAULT = '100'"
+
+.PP
+TILT Manual Acc in 0\&.01 degree /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_MANUAL_DEC_DEFAULT = '100'"
+
+.PP
+TILT Manual Dec in 0\&.01 degree /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_TILT_MANUAL_SPEED_DEFAULT = '100'"
+
+.PP
+TILT Manual Speed in 0\&.01 degree mm/s\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_VERTICAL = 'VERTICAL_CALIBRATION'"
 
 .PP
 This is the VERTICAL Motor parameter section\&. 
-.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_ACC_DEFAULT = '10'"
+.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_AUTO_ACC_DEFAULT = '10'"
 
 .PP
-VERTICAL Acc in 1mm /ss\&. 
+VERTICAL Auto Acc in 1mm /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_AUTO_DEC_DEFAULT = '10'"
+
+.PP
+VERTICAL Auto Dec in 1mm /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_AUTO_SPEED_DEFAULT = '50'"
+
+.PP
+VERTICAL Auto Speed in 1 mm/s\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_COMMENT = 'VERTICAL_CALIBRATION calibration data'"
 
 .SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_CURRENT_POSITION_DEFAULT = \fBMOTOR_UNDEFINED_POSITION\fP"
 
 .PP
 The last valid encoder VERTICAL Motor position (for initial zero setting) 
-.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_DEC_DEFAULT = '10'"
-
-.PP
-VERTICAL Dec in 1mm /ss\&. 
 .SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_HOME_ACC_DEFAULT = '10'"
 
 .PP
@@ -280,10 +538,18 @@ VERTICAL Home Acc in 1mm degree/ss\&.
 
 .PP
 VERTICAL Home Speed in 1mm degree/ss\&. 
-.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_SPEED_DEFAULT = '50'"
+.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_MANUAL_ACC_DEFAULT = '10'"
 
 .PP
-VERTICAL Speed in 1 mm/s\&. 
+VERTICAL Manual Acc in 1mm /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_MANUAL_DEC_DEFAULT = '10'"
+
+.PP
+VERTICAL Manual Dec in 1mm /ss\&. 
+.SS "literal System::String ^ MotorConfig::PARAM_VERTICAL_MANUAL_SPEED_DEFAULT = '50'"
+
+.PP
+VERTICAL Manual Speed in 1 mm/s\&. 
 
 .SH "Author"
 .PP 

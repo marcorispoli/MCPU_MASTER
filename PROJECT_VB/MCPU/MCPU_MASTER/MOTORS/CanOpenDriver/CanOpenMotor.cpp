@@ -64,6 +64,17 @@ int CanOpenMotor::convert_UserSec_To_Speed(int x) {
 /// This is the Class constructor.
 /// 
 /// </summary>
+/// 
+/// The Base Class constructor:
+/// + Initializes all the internal variables;
+/// + initializes the CiA internal status;
+/// + Starts the working thread mainWorker
+/// 
+/// As soon as the function returns, the working thread 
+/// starts the communication with the motor device.
+/// 
+/// See the mainWorker() for details.
+/// 
 /// <param name="devid">This is the address of the Motor device</param>
 /// <param name="motorname">This is a string of the Motor name</param>
 /// <param name="rounds_for_units">This is the unit conversion rate</param>
@@ -379,15 +390,12 @@ bool CanOpenMotor::activateConfiguration(void) {
 /// - handles the motor exceptions.
 /// - handles the motor configuration.
 /// 
-/// The thread force the system to selected the SwitchedOn status if possible.
-/// When in SwitchedOn status, the activation command can be performed.
+/// The thread leads the motor driver to enter the CiA-SwitchedOn status if possible.
 /// 
-/// If the Motor should enter a Fault mode, the thread handles the fault condition 
-/// and as soon as the fault condition expires tries to report the current status to the SwitchedOn status.
+/// When the driver reaches the  CiA-SwitchedOn status, the motor activation commands can be performed.
 /// 
-/// The thread starts the device configuration in the following scenario:
-/// - Soon as possible after the application startup;
-/// - In case the device should reset (Boot-Up frame received);
+/// If the Motor should enter a CiA-Fault status, the thread handles the fault condition \n
+/// and as soon as the fault condition expires it tries to report the current status to the CiA-SwitchedOn status.
 /// 
 /// 
 /// </summary>
@@ -465,8 +473,6 @@ void CanOpenMotor::mainWorker(void) {
 }
 
 
-
-
 /// <summary>
 /// This is a convenient function to decode a Error string from the error 
 /// of the register 1001.
@@ -534,16 +540,16 @@ System::String^ CanOpenMotor::getErrorCode1003(unsigned int val) {
 }
 
 /// <summary>
-/// This is the function initializing the Motor register with common default values.
+/// 
+/// This function initializes the principals motor driver registers.
+/// </summary>
 /// 
 /// This function is called during the initialization fase in order to 
 /// set the internal register with default values, widely used for PD4 motors.
 /// 
-/// In case a subclassed module should personalize the default values, the module should 
-/// override the initializeSpecificObjectDictionaryCallback() in order to set those registers 
-/// to be changed.
+/// The function will call the initializeSpecificObjectDictionaryCallback() function:
+/// + The Subclass module should override this function to set specific registers.
 /// 
-/// </summary>
 /// <param name=""></param>
 /// <returns>true in case of success</returns>
 bool CanOpenMotor::initializeObjectDictionary(void) {
@@ -743,23 +749,30 @@ void CanOpenMotor::setActivationTimeout(int speed, int acc, int dec, int target)
 /// This function is internally used to set a command completion code.
 /// 
 /// </summary>
-/// <param name=LABEL_ERROR></param>
-
-void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes error) {
-    command_completed_code = error;
+/// 
+/// The function calls the command related callbacks:
+/// + automaticPositioningCompletedCallback: in case of Automatic positioning command termination
+/// + automaticHomingCompletedCallback: in case of a Homing command termination 
+/// + manualPositioningCompletedCallback: in case of manual command termination 
+/// 
+/// <param name=term_code>the termination code</param>
+void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
+    command_completed_code = term_code;
     MotorCommands cmd = current_command;
     current_command = MotorCommands::MOTOR_IDLE;
 
-    if (cmd == MotorCommands::MOTOR_AUTO_POSITIONING) automaticPositioningCompletedCallback(error);
-    else if(cmd == MotorCommands::MOTOR_HOMING) automaticHomingCompletedCallback(error);
-    else if (cmd == MotorCommands::MOTOR_MANUAL_POSITIONING) manualPositioningCompletedCallback(error);
-
+    if (cmd == MotorCommands::MOTOR_AUTO_POSITIONING) automaticPositioningCompletedCallback(term_code);
+    else if(cmd == MotorCommands::MOTOR_HOMING) automaticHomingCompletedCallback(term_code);
+    else if (cmd == MotorCommands::MOTOR_MANUAL_POSITIONING) manualPositioningCompletedCallback(term_code);
+    
     return;
 }
 
 
 /// <summary>
-/// This procedure returns a translated string describing the last terminated command code.
+/// This procedure returns a language-translated string 
+/// describing the last terminated command code.
+/// 
 /// </summary>
 /// <param name=""></param>
 /// <returns>String describing the last termninated command code</returns>
@@ -790,17 +803,15 @@ System::String^ CanOpenMotor::getCompletedCodeString(void) {
     case MotorCompletedCodes::ERROR_BRAKE_DEVICE:
         return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_BRAKE_DEVICE);
         break;
-    case MotorCompletedCodes::ERROR_INVALID_COMMAND_INITIAL_CONDITION:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_INVALID_COMMAND_INITIAL_CONDITION);
-        break;
+       
     case MotorCompletedCodes::ERROR_TIMOUT:
         return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_TIMOUT);
         break;
     case MotorCompletedCodes::ERROR_INTERNAL_FAULT:
         return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_INTERNAL_FAULT);
         break;
-    case MotorCompletedCodes::ERROR_ACTIVATION_REGISTER:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_ACTIVATION_REGISTER);
+    case MotorCompletedCodes::ERROR_ACCESS_REGISTER:
+        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_ACCESS_REGISTER);
         break;
     case MotorCompletedCodes::ERROR_MISSING_HOME:
         return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_MISSING_HOME);

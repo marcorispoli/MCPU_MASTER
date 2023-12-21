@@ -20,7 +20,7 @@ namespace CANOPEN {
 	#define VMM_DATA_OD OD_1F50_02
 	#define VMM_STATUS_OD OD_1F57_02
 	#define DRIVER_POLLING_MS 100
-	#define SEND_TMO          50 // ms waiting the reception
+	#define SEND_TMO          1000 // ms waiting the reception
 
 
 	/// <summary>
@@ -299,19 +299,10 @@ namespace CANOPEN {
 		bool validateSdo(unsigned char* frame) {
 			valid = false;
 
-			if (frame == nullptr) {
-				Debug::WriteLine("NULL");
-				return false;
-			}
-		
-			if (ODRegister::getIdx(frame) != index) {
-				Debug::WriteLine("INVALID INDEX");
-				return false;
-			}
-			if (ODRegister::getSub(frame) != subindex) {
-				Debug::WriteLine("INVALID SUB-INDEX");
-				return false;
-			}
+			if (frame == nullptr) return false;			
+			if (ODRegister::getIdx(frame) != index) return false;			
+			if (ODRegister::getSub(frame) != subindex) return false;
+			
 
 			unsigned char received_cmd = getCmd(frame);
 			if (received_cmd == (unsigned char)SDOCommandCodes::ERRACK) {
@@ -321,24 +312,14 @@ namespace CANOPEN {
 			}
 
 			if (cmd == SDOCommandCodes::RDCMD)  {
-				if (received_cmd != (unsigned char) SDOCommandCodes::RDANSW) {
-
-					System::String^ stringa = " ";
-					for (int i = 0; i < 8; i++) stringa += System::Convert::ToString(frame[i]) + " ";
-					Debug::WriteLine(stringa);
-					return false;
-				}
+				if (received_cmd != (unsigned char) SDOCommandCodes::RDANSW) return false;				
 				if (ODRegister::getDataDim(frame) != (unsigned char) data_dim) {
 					Debug::WriteLine("INVALID DATADIM");
 					return false;
-				}
-				
+				}				
 			}
 			else {
-				if (received_cmd != (unsigned char)SDOCommandCodes::WRANSW) {
-					Debug::WriteLine("WRANSW");
-					return false;
-				}
+				if (received_cmd != (unsigned char)SDOCommandCodes::WRANSW) return false;				
 			}
 
 			// The data is valid: fills the read SDO content into the register			
@@ -863,10 +844,29 @@ private:
 		int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
 
 		// Diagnostic
+		double txrx_time;
 		bool read_sdo_tmo;
 		bool write_sdo_tmo;		
-		unsigned int sent_messages;
-		unsigned int unreceived_messages;
+		unsigned long sent_messages;
+		unsigned long sent_5;
+		unsigned long sent_10;
+		unsigned long sent_15;
+		unsigned long sent_20;
+		unsigned long sent_25;
+		unsigned long sent_30;
+		unsigned long sent_xx;
+
+		double perc5;
+		double perc10;
+		double perc15;
+		double perc20;
+		double perc25;
+		double perc30;
+		double percXX;
+
+		double meanTime;
+		double percMeanTime;
+		unsigned long unreceived_messages;
 			
 	};
 

@@ -240,10 +240,30 @@ private:
 	unsigned char command_error;
 
 public:
-	unsigned int sent_messages;
-	unsigned int unreceived_messages;
-	unsigned int perc_sent_messages;
-	unsigned int perc_unreceived_messages;
+	
+	double txrx_time;
+	bool read_sdo_tmo;
+	bool write_sdo_tmo;
+	unsigned long sent_messages;
+	unsigned long sent_5;
+	unsigned long sent_10;
+	unsigned long sent_15;
+	unsigned long sent_20;
+	unsigned long sent_25;
+	unsigned long sent_30;
+	unsigned long sent_xx;
+
+	double perc5;
+	double perc10;
+	double perc15;
+	double perc20;
+	double perc25;
+	double perc30;
+	double percXX;
+
+	double meanTime;
+	double percMeanTime;
+	unsigned long unreceived_messages;
 
 };
 

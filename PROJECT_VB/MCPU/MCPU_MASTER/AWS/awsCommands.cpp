@@ -636,6 +636,13 @@ void   awsProtocol::SET_Language(void) {
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
    
+    // Vertical test
+    if (pDecodedFrame->parameters->Count == 1) {
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
+        VerticalMotor::activateIsocentricCorrection(10, pos);
+    }
+
+    return;
     // Body Homing
     VerticalMotor::startHoming();
     return;

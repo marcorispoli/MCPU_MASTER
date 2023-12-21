@@ -19,8 +19,6 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     
     sent_messages = 0;
     unreceived_messages = 0;
-    perc_sent_messages = 0;
-    perc_unreceived_messages = 0;
     register_access_fault = 0;
     register_access_fault_counter = 0;
 
@@ -58,15 +56,9 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
 
     // No more transaction with a register access fault activated
     if (register_access_fault) return ;
-    
-    if ( 
-        (!rx_pending) || // No data is expected 
-        (len < 8) // Only 8-byte frame is accepted
-        )
-    {        
-        return;
-    }
-    
+    if (len < 8) return;
+    if (!rx_pending) return;
+
 
     // Checks the canId address
     if (canid == device_id + 0x140) bootloader = false;
@@ -86,26 +78,17 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
     }
 
     // Wrong destination address
-    if (bootloader != tx_register->bootloader) {
-        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong destination (bootloader vs application)");
-        SetEvent(rxEvent);
-        return;
-    }
+    if (bootloader != tx_register->bootloader) return;
     
     // Wrong CRC
     if (!decode_ok) {
-        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong crc");
-        SetEvent(rxEvent);
+        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong crc");        
         return;
     }
 
     // Invalid sequence number
-    if (rx_register->b0 != tx_register->b0) {
-        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: invalid seq number");
-        SetEvent(rxEvent);
-        return;
-    }
-
+    if (rx_register->b0 != tx_register->b0)  return;
+    
     // Invalid register access
     if (rx_register->b1 == (unsigned char) ProtocolFrameCode::FRAME_ERROR) {
 
@@ -124,11 +107,8 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
     // Wrong Command match
     if ((!bootloader) && (rx_register->b1 != tx_register->b1)) {
         Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong command match");
-        SetEvent(rxEvent);
         return;
     }
-
-    
 
     // Checks that the received Object registers matches with the expected    
     rx_pending = false; 
@@ -149,9 +129,6 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     // No more transaction with a register access fault activated
     if (register_access_fault) return false;
 
-    sent_messages++;
-    perc_sent_messages++;
-
     if (bootl) {
         canid = device_id + 0x100;
         tx_register->set(d0, d1, d2, d3, d4, d5, d6, d7, bootl);
@@ -166,20 +143,15 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         buffer[7] = tx_register->crc;
     }
     
-    if(!tmo)  attempt++;
-    if (attempt > 2) {
-        if(!tmo) Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: TMO");
-        tmo = true;
-    }
-
     // Activates the transmission
     rxOk = false;
+    sent_messages++;
+    long start = clock();
     if (!CanDriver::multithread_send(canid, buffer, 8))   return false;
-
     rx_pending = true;
 
     // Waits to be signalled: waits for 100ms
-    dwWaitResult = WaitForSingleObject(rxEvent, 50);
+    dwWaitResult = WaitForSingleObject(rxEvent, 1000);
     rx_pending = false;
 
     // Checks if the Event has been signalled or it is a timeout event.
@@ -187,10 +159,51 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         unreceived_messages++;
         return false;
     }
-    
+    long stop = clock();
+    txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
 
-    attempt=0;
-    tmo = false;
+    if (txrx_time < 0.005)  sent_5++;
+    else if (txrx_time < 0.010)  sent_10++;
+    else if (txrx_time < 0.015)  sent_15++;
+    else if (txrx_time < 0.020)  sent_20++;
+    else if (txrx_time < 0.025)  sent_25++;
+    else if (txrx_time < 0.030)  sent_30++;
+    else if (txrx_time >= 0.030)  sent_xx++;
+    meanTime += txrx_time;
+
+    if (sent_messages == 1000) {
+        perc5 = (double)sent_5 * 100 / (double)sent_messages;
+        perc10 = (double)sent_10 * 100 / (double)sent_messages;
+        perc15 = (double)sent_15 * 100 / (double)sent_messages;
+        perc20 = (double)sent_20 * 100 / (double)sent_messages;
+        perc25 = (double)sent_25 * 100 / (double)sent_messages;
+        perc30 = (double)sent_30 * 100 / (double)sent_messages;
+        percXX = (double)sent_xx * 100 / (double)sent_messages;
+
+        percMeanTime = meanTime * 1000 / (double)sent_messages;
+
+        meanTime = 0;
+        sent_5 = 0;
+        sent_10 = 0;
+        sent_15 = 0;
+        sent_20 = 0;
+        sent_25 = 0;
+        sent_30 = 0;
+        sent_xx = 0;
+        sent_messages = 0;
+
+        System::String^ stringa = "Device Board <" + System::Convert::ToString(device_id);
+        stringa += ">: T:" + ((int)percMeanTime).ToString();
+        stringa += " [5]:" + ((int)perc5).ToString();
+        stringa += " [10]:" + ((int)perc10).ToString();
+        stringa += " [15]:" + ((int)perc15).ToString();
+        stringa += " [20]:" + ((int)perc20).ToString();
+        stringa += " [25]:" + ((int)perc25).ToString();
+        stringa += " [30]:" + ((int)perc30).ToString();
+        stringa += " [>30]:" + ((int)percXX).ToString();
+        Debug::WriteLine(stringa);
+    }
+
     return true;
     
 }
@@ -240,11 +253,6 @@ void CanDeviceProtocol::mainWorker(void) {
             if (configurationLoop()) {
                 Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Running");
                 internal_status = status_options::DEVICE_RUNNING;
-                sent_messages = 0;
-                unreceived_messages = 0;
-                perc_sent_messages = 0;
-                perc_unreceived_messages = 0;
-
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));            
             break;
@@ -271,16 +279,7 @@ void CanDeviceProtocol::mainWorker(void) {
 
 void CanDeviceProtocol::InternalRunningLoop(void) {
 
-    // Every 100 messages checks for a 1% error
-    if (perc_sent_messages > 100){
-        if (perc_unreceived_messages) {
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: % can errors -> " + perc_unreceived_messages.ToString() + " - Total Msg:" + sent_messages.ToString() + " Err Msg:" + unreceived_messages.ToString());
-        }
-        perc_sent_messages = 0;
-        perc_unreceived_messages = 0;
-    }
-
-
+   
     // Command execution sequence
     if (command_executing) {
         int timeout = command_tmo;

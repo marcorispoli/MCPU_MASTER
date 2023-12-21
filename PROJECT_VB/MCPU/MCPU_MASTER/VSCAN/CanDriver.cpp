@@ -13,11 +13,7 @@ using namespace System::Diagnostics;
 
 static VSCAN_HANDLE handle = 0;     //!< Handle of the driver
 static mutex send_mutex;
-static clock_t measure_time_stop;
-static steady_clock::time_point start;
-static steady_clock::time_point stop;
- std::chrono::duration<double> tempo;
- double dtempo;
+
 
 CanDriver::CanDriver() {
     
@@ -58,6 +54,7 @@ bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsi
     msg.Id = canId;
     msg.Size = len;
 
+   
     // Upload the data buffer into the sending buffer
     for (unsigned char i = 0; i < msg.Size; i++) {
         if (i < len) msg.Data[i] = data[i];
@@ -85,7 +82,7 @@ void CanDriver::threadWork(void) {
     #define _CAN_100K  5
     #define _CAN_50K   6
     #define _CAN_20K   7
-    #define VSCAN_NUM_MESSAGES 10
+    #define VSCAN_NUM_MESSAGES 100
 
     VSCAN_API_VERSION   version;    //!< System Driver Api Version
     VSCAN_HWPARAM       hwparam;    //!< System Driver Hardware Version
@@ -230,27 +227,24 @@ void CanDriver::threadWork(void) {
     can_connected = true;
 
     while (1) {
-        
-
-       //std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
-        
+      
         // Blocking Read command
         VSCAN_Read(handle, rxmsgs, VSCAN_NUM_MESSAGES, &rxmsg); 
         if (!rxmsg) continue;
         
+       
         for (int i = 0; i < (int)rxmsg; i++) {
-            rxCanId = rxmsgs[i].Id;    
+            rxCanId = rxmsgs[i].Id;                
             for (int j = 0; j < rxmsgs[i].Size; j++) rxCanData[j] = rxmsgs[i].Data[j];
-            
+           
 
             if ((rxCanId >= 0x100) && (rxCanId <= 0x17F)) {                
                 canrx_device_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }
+
             if ((rxCanId >= 0x580) && (rxCanId <= 0x5FF)) {
-                stop = std::chrono::steady_clock::now();
-                dtempo = (stop - start).count();
-                start = std::chrono::steady_clock::now();
+                                
                 canrx_canopen_sdo_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }

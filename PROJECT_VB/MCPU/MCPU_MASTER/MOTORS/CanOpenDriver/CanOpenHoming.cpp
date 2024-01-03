@@ -228,7 +228,7 @@ bool CanOpenMotor::initResetEncoderCommand(int initial_eposition) {
     updateCurrentPosition();
 
     // Already reset in this position
-    if (current_eposition == initial_eposition) {
+    if (current_uposition == initial_eposition) {
         Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + current_uposition.ToString());
         return true;
     }

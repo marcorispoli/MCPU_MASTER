@@ -170,7 +170,7 @@ static const unsigned char nanojTrxProgram[] = {
 
 };
 
-TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", GEAR_RATIO)
+TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", GEAR_RATIO, false)
 {
     setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
 
@@ -184,7 +184,7 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     }
 
     setEncoderInitStatus(homing_initialized);
-    setEncoderInitialEvalue(init_position);
+    setEncoderInitialUvalue(init_position);
     
 
     // Activate a warning condition is the motor should'n be initialized
@@ -318,7 +318,7 @@ void TiltMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error)
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
@@ -357,7 +357,7 @@ void TiltMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
 
     if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
     }

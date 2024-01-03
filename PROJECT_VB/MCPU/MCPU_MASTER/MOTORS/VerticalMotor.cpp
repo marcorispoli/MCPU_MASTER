@@ -14,39 +14,45 @@
 
 bool VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
 
-    
-    if (!blocking_writeOD(OD_3202_00, 0x41)) return false; 	// Motor Drive Submode Select: 6:BLDC 3:CurRed 2:Brake 1:VoS 0: 1=CLOSED_LOOP/O = OPEN_LOOP
+    // Polarity inversion to have positive activation to ward Up
+    //while (!blocking_writeOD(OD_607E_00, 0x80));	// b7:1-> inverse rotation
 
-    if (!blocking_writeOD(OD_2031_00, 5000)) return false;  // Peak current
-    if (!blocking_writeOD(OD_2032_00, 5000)) return false;  // Maximum Speed
+    while (!blocking_writeOD(OD_3202_00, 0x41)) ; 	// Motor Drive Submode Select: 6:BLDC 3:CurRed 2:Brake 1:VoS 0: 1=CLOSED_LOOP/O = OPEN_LOOP
+
+    while (!blocking_writeOD(OD_2031_00, 15000)) ;  // Peak current
+    while (!blocking_writeOD(OD_2032_00, 5000)) ;  // Maximum Speed
     
     // I2t Parameters
-    if (!blocking_writeOD(OD_203B_01, 50000)) return false;	// Nominal Current
-    if (!blocking_writeOD(OD_203B_02, 1000)) return false;	// Maximum Duration Of Peak Current
-    if (!blocking_writeOD(OD_203B_03, 0)) return false;	    // Threshold
-    if (!blocking_writeOD(OD_203B_04, 0)) return false;	    // CalcValue
-    if (!blocking_writeOD(OD_203B_05, 5000)) return false; // LimitedCurrent
-    if (!blocking_writeOD(OD_2056_00, 500)) return false;	// Limit Switch Tolerance Band
+    while (!blocking_writeOD(OD_203B_01, 50000)) ;	// Nominal Current
+    while (!blocking_writeOD(OD_203B_02, 2000)) ;	// Maximum Duration Of Peak Current
+    while (!blocking_writeOD(OD_203B_03, 0)) ;	    // Threshold
+    while (!blocking_writeOD(OD_203B_04, 0)) ;	    // CalcValue
+    while (!blocking_writeOD(OD_203B_05, 15000)); // LimitedCurrent
+    while (!blocking_writeOD(OD_2056_00, 500)) ;	// Limit Switch Tolerance Band
+
+    // Motor Drive Parameter Set
+    while (!blocking_writeOD(OD_3210_01, 10000)); // 50000 Position Loop, Proportional Gain (closed Loop)
+    while (!blocking_writeOD(OD_3210_02, 5));	 // 10  Position Loop, Integral Gain (closed Loop)
 
     // Max Absolute Acceleration and Deceleration
-    if (!blocking_writeOD(OD_60C5_00, 5000)) return false;  // Max Acceleration
-    if (!blocking_writeOD(OD_60C6_00, 5000)) return false;  // Max Deceleration
+    while (!blocking_writeOD(OD_60C5_00, 5000)) ;  // Max Acceleration
+    while (!blocking_writeOD(OD_60C6_00, 5000)) ;  // Max Deceleration
 
 
     // Software Position Limit
-    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_POSITION))) return false;	// Min Position Limit
-    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_POSITION))) return false;	// Max Position Limit
+    while (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_POSITION))) ;	// Min Position Limit
+    while (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_POSITION))) ;	// Max Position Limit
 
     // Set the input setting
-    if (!blocking_writeOD(OD_3240_01, 0x4)) return false; // Input control special: I3 = HOMING
-    if (!blocking_writeOD(OD_3240_02, 0)) return false;   // Function Inverted: not inverted
-    if (!blocking_writeOD(OD_3240_03, 0)) return false;   // Force Enable = false
-    if (!blocking_writeOD(OD_3240_06, 0)) return false;   // Input Range Select: threshold = 5V;
+    while (!blocking_writeOD(OD_3240_01, 0x4)) ; // Input control special: I3 = HOMING
+    while (!blocking_writeOD(OD_3240_02, 0)) ;   // Function Inverted: not inverted
+    while (!blocking_writeOD(OD_3240_03, 0)) ;   // Force Enable = false
+    while (!blocking_writeOD(OD_3240_06, 0)) ;   // Input Range Select: threshold = 5V;
 
     return true;
 }
 
-VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", ROT_PER_MM)
+VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", ROT_PER_MM, true)
 {
     // Sets +/- 5mm as the acceptable target range
     setTargetRange(5, 5);
@@ -60,7 +66,7 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
     }
 
     setEncoderInitStatus(homing_initialized);
-    setEncoderInitialEvalue(init_position);
+    setEncoderInitialUvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, false);
@@ -90,7 +96,7 @@ void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes er
     
     // Sets the current Vertical position
     if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
@@ -181,7 +187,7 @@ void VerticalMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) 
     
     if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
     }

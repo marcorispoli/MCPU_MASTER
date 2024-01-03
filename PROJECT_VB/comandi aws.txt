@@ -32,5 +32,5 @@
 
 < 10 %  EXEC_TestCommand 450 % >
 
-< 10 %  EXEC_TestCommand -400 % >
 
+< 10 %  EXEC_TestCommand -30 % >

@@ -438,7 +438,7 @@ namespace CANOPEN {
 		/// </summary>
 		/// @{
 		
-		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear); //!< This is the base class constructor
+		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear, bool reverse); //!< This is the base class constructor
 
 		delegate void delegate_fault_callback(int code); //!< Delegate for the callback related to the Fault condition
 		static event delegate_fault_callback^ fault_event; //!< Event generated when a Driver fault condition is detected
@@ -612,7 +612,7 @@ protected:
 		/// This function is used to assignes the inital value of the encoder at the startup
 		/// </summary>
 		/// <param name="val"></param>
-		inline void setEncoderInitialEvalue(int val) { encoder_initial_value = val; }
+		inline void setEncoderInitialUvalue(int val) { encoder_initial_value = convert_User_To_Encoder(val); }
 
 		/// <summary>
 		/// This function returns the current encoder position in Encoder internal units
@@ -763,6 +763,7 @@ private:
 		int encoder_initial_value;		//! This is the value that shall be assigne to the encoder at the startup
 		int current_eposition;			//!< Current Encoder position
 		int current_uposition;			//!< Current User position 
+		bool reverse_direction;			//!< Changes the polarity of the position
 		int previous_uposition;			//!< This is the last target position for non coordinate activations
 		int target_range_h;				//!< This is the acceptable target range in user units (upper limit)
 		int target_range_l;				//!< This is the acceptable target range in user units (lower limit)
@@ -818,7 +819,7 @@ private:
 		// Device Activation Management Section ____________________________________________________	
 		void setCommandCompletedCode(MotorCompletedCodes error); //!< This function 	
 		void updateCurrentPosition(void);
-		void setActivationTimeout(int speed, int acc, int dec, int target);
+		int getActivationTimeout(int speed, int acc, int dec, int target);
 		bool isTarget(void) { return ((current_uposition <= command_target + target_range_h) && (current_uposition >= command_target - target_range_h)); }
 
 		void manageAutomaticPositioning(void);
@@ -838,7 +839,7 @@ private:
 		int command_acc;			//!< Acceleration in user/s2
 		int command_dec;			//!< Deceleration in user/s2
 		int command_speed;			//!< Speed in user/s
-		int command_ms_tmo;			//!< Timoeut activation in ms
+		int command_ms_tmo;			//!< Timeout activation in ms
 		bool command_stop;			//!< Request to stop the current activation
 		int command_homing_on_method;  //!< Homing method whith zero photocell starting in ON status
 		int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status

@@ -25,7 +25,7 @@
 /// user unit ratio.
 /// 
 /// <param name=""></param>
-BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", ROT_PER_DEGREE)
+BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", ROT_PER_DEGREE, false)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(2, 2);
@@ -39,7 +39,7 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
         init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION]);
     }
     setEncoderInitStatus(homing_initialized);
-    setEncoderInitialEvalue(init_position);
+    setEncoderInitialUvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING, false);
@@ -272,7 +272,7 @@ void BodyMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error)
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
@@ -311,7 +311,7 @@ void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
 
     if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
     }

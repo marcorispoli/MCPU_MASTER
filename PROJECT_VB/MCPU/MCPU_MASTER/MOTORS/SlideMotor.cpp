@@ -23,7 +23,7 @@ bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
     return true;
 }
 
-SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", GEAR_RATIO)
+SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", GEAR_RATIO, false)
 {
     
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
@@ -36,7 +36,7 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
     }
 
     setEncoderInitStatus(homing_initialized);
-    setEncoderInitialEvalue(init_position);
+    setEncoderInitialUvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING, false);
@@ -54,7 +54,7 @@ void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error
 
     // Sets the current Vertical position
     if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
@@ -110,7 +110,7 @@ void SlideMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
 
     if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
     }

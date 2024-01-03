@@ -76,6 +76,9 @@
 "L00001", Notify::messages::LABEL_ERROR_WINDOW_PANEL, "Error Window Panel", "-",
 "L00002", Notify::messages::LABEL_PROJECTION_SELECTION_PANEL, "Projection Selection", "-",
 "L00003", Notify::messages::LABEL_ZERO_SETTING_PANEL_TITLE, "Zero Setting Panel", "-",
+"L00003", Notify::messages::LABEL_SERVICE_PANEL_TITLE, "Service Panel", "-",
+"L00003", Notify::messages::LABEL_CALIBRATION_PANEL_TITLE, "Calibration Panel", "-",
+
 "L00004", Notify::messages::LABEL_ERROR, "ERR", "-",
 "L00005", Notify::messages::LABEL_WARNING, "WRN", "-",
 "L00006", Notify::messages::LABEL_INFO, "INF", "-",

@@ -31,7 +31,9 @@ static std::mutex init_mutex;
 /// <param name="x"></param>
 /// <returns>The position in Encoder units (motor units)</returns>
 int CanOpenMotor::convert_User_To_Encoder(int x) {
-    return (int)((double) x * rot_per_unit * (double) 2000 );
+
+    if(reverse_direction)  return -1 * (int)((double)x * rot_per_unit * (double)2000);
+    else return (int)((double) x * rot_per_unit * (double) 2000 );
 }
 
 /// <summary>
@@ -45,7 +47,8 @@ int CanOpenMotor::convert_User_To_Encoder(int x) {
 /// <param name="x"></param>
 /// <returns>The position in application units (user units)</returns>
 int CanOpenMotor::convert_Encoder_To_User(int x) {
-    return (int)( (double) x / (rot_per_unit * (double) 2000) );
+    if (reverse_direction) return -1* (int)((double)x / (rot_per_unit * (double)2000));
+    else return (int)( (double) x / (rot_per_unit * (double) 2000) );
 }
 
 /// <summary>
@@ -81,7 +84,8 @@ int CanOpenMotor::convert_UserSec_To_Speed(int x) {
 /// <param name="devid">This is the address of the Motor device</param>
 /// <param name="motorname">This is a string of the Motor name</param>
 /// <param name="rounds_for_units">This is the unit conversion rate</param>
-CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds_for_units) {
+/// <param name="reverse">true if the position shall be reversed (+/-)</param>
+CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds_for_units, bool reverse) {
     
     internal_status = status_options::MOTOR_NOT_CONNECTED;
     configuration_command = false;
@@ -91,6 +95,7 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds
     nanojSize = 0;
     home_initialized = false;
     encoder_initial_value = 0;
+    reverse_direction = reverse;
 
     // For Can Diagnose
     read_sdo_tmo = false;
@@ -287,7 +292,7 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODR
         stringa += " [25]:" + ((int)perc25).ToString();
         stringa += " [30]:" + ((int)perc30).ToString();
         stringa += " [>30]:" + ((int)percXX).ToString();
-        Debug::WriteLine(stringa);
+        // Debug::WriteLine(stringa);
     }
 
     return true;
@@ -377,7 +382,7 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
         stringa += " [25]:" + ((int)perc25).ToString();
         stringa += " [30]:" + ((int)perc30).ToString();
         stringa += " [>30]:" + ((int)percXX).ToString();
-        Debug::WriteLine(stringa);
+        // Debug::WriteLine(stringa);
         
     }
 
@@ -700,7 +705,7 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(18000))) ;	// Max Position Limit
 
     // Polarity
-    while (!blocking_writeOD(OD_607E_00, 0)) ;	// b7:1-> inverse rotaion
+    while (!blocking_writeOD(OD_607E_00, 0)) ;	// b7:1-> inverse rotation
 
     // Position Encoder Resolution: EncInc/MotRev
     while (!blocking_writeOD(OD_608F_01, 2000)) ;	// Encoder Increments
@@ -767,7 +772,7 @@ void CanOpenMotor::updateCurrentPosition(void) {
 }
 
 /// <summary>
-/// This function sets aan activation timeout based on the activation parameters.
+/// This function returns  the activation timeout extimation, based on the speed and target parameters.
 /// 
 /// The Activation algorithm control the speed with a trapezioidal mode:
 /// - A constant acceleration until a target speed is reached;
@@ -782,7 +787,7 @@ void CanOpenMotor::updateCurrentPosition(void) {
 /// <param name="acc">The activation Acc in user units</param>
 /// <param name="dec">The activation Dec in user units</param>
 /// <param name="target">The target position in user units</param>
-void CanOpenMotor::setActivationTimeout(int speed, int acc, int dec, int target) {
+int CanOpenMotor::getActivationTimeout(int speed, int acc, int dec, int target) {
     double T;
 
     // The Acceleration rate is calculated with a weighted means of the Acc and Dec ratio;
@@ -802,7 +807,7 @@ void CanOpenMotor::setActivationTimeout(int speed, int acc, int dec, int target)
     }
 
     // The final timeout is aumented of 50% of the calculated travel time in milliseconds
-    command_ms_tmo = (int)(T * 1000 * 1.5);
+    return (int)(T * 1000 );
 
 }
 

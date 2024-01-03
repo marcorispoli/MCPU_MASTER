@@ -157,8 +157,8 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Get the actual encoder position 
     updateCurrentPosition();
 
-    // Set the timeout for the activation based on the actual speed and target
-    setActivationTimeout(command_speed, command_acc, command_dec, command_target);
+    // Gets the extimation about the transit time
+    command_ms_tmo = getActivationTimeout(command_speed, command_acc, command_dec, command_target);
 
     // Test if the actual position is already in target position
     if (isTarget()) {
@@ -170,7 +170,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) +
         "> INIT AUTO POSITIONING: From " + System::Convert::ToString(current_uposition) +
         " To " + System::Convert::ToString(command_target) +
-        " In " + System::Convert::ToString((int)((double)command_ms_tmo / 1.5)) + " (ms)");
+        " Expected In " + System::Convert::ToString((int)((double)command_ms_tmo)) + " (ms)");
 
 
     // Sets the Speed activation
@@ -231,11 +231,24 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     typedef std::chrono::high_resolution_clock clock;
     clock::time_point start = clock::now();
 
+    
+    // Every 1000 ms checks the distance from the target
+    command_ms_tmo = 5000;
+    bool timeout = false;
+    int delta_target = abs(current_uposition - command_target);
 
     while (true) {
         
         // Read the current position 
         updateCurrentPosition();
+
+        if (command_ms_tmo <= 0) {
+            if (abs(current_uposition - command_target) >= delta_target) timeout = true;
+            else {
+                delta_target = abs(current_uposition - command_target);
+                command_ms_tmo = 5000;
+            }
+        }
 
         // Test the abort request flag
         if (abort_request) {
@@ -263,9 +276,8 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         }
 
         
-
         // Test the Timeout condition
-        if ((command_ms_tmo <= 0) && (!isTarget())) {
+        if ((timeout) && (!isTarget())) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING TIMEOUT ERROR");
             setCommandCompletedCode(MotorCompletedCodes::ERROR_TIMOUT);
             break;
@@ -279,14 +291,17 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
             break;
         }
 
-        if (((statw & 0x1400) == 0x1400) || (current_uposition == command_target) || ((command_ms_tmo <= 0) && isTarget()) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
+        if (((statw & 0x1400) == 0x1400) || (current_uposition == command_target) || (timeout) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
             // Calculates the effective duration time
             typedef std::chrono::milliseconds milliseconds;
             milliseconds ms = std::chrono::duration_cast<milliseconds>(clock::now() - start);
 
-            if (((command_ms_tmo <= 0) && isTarget())) {
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (MANUALLY) - Time =  " + System::Convert::ToString(ms.count()));
+            if (timeout) {
+                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (TMO) - Time =  " + System::Convert::ToString(ms.count()) + " (ms)");
+            }
+            else if (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION) {
+                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (MANUAl) - Time =  " + System::Convert::ToString(ms.count()) + " (ms)");
             }
             else {
                 Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSIITONING COMPLETED actually In =  " + System::Convert::ToString(ms.count()) + " (ms)");
@@ -307,9 +322,10 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     } // End of main controlling loop
+    
 
     // Read the current position 
-    updateCurrentPosition();
+    updateCurrentPosition();   
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);

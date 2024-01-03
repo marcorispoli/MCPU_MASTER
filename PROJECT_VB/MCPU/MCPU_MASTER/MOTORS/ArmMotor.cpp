@@ -15,7 +15,7 @@
 #define HOMING_OFF_METHOD 20
 
 
-ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", ROT_PER_CDEGREE)
+ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", ROT_PER_CDEGREE, false)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(20, 20);
@@ -29,7 +29,7 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDe
     }
 
     setEncoderInitStatus(homing_initialized);
-    setEncoderInitialEvalue(init_position);
+    setEncoderInitialUvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
@@ -62,7 +62,7 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
 
     // Sets the current Vertical position
     if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
     }
 
@@ -163,7 +163,7 @@ void ArmMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
    
     if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_ARM_MOTOR_HOMING);
     }

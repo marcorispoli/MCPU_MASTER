@@ -201,7 +201,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         stringa += " [25]:" + ((int)perc25).ToString();
         stringa += " [30]:" + ((int)perc30).ToString();
         stringa += " [>30]:" + ((int)percXX).ToString();
-        Debug::WriteLine(stringa);
+       //  Debug::WriteLine(stringa);
     }
 
     return true;

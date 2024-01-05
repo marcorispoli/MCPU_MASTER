@@ -5,7 +5,7 @@ ref class SystemConfig
 {
 public:
     literal System::String^ FILENAME = "SystemInit.cnf";
-    literal int     FILE_REVISION = 1;
+    literal int     FILE_REVISION = 2;
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_INSTALLATION_NAME = "INSTALL_NAME";
@@ -46,7 +46,11 @@ public:
     literal System::String^    PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT = "10000";
     literal System::String^    PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = "10001";
 
-   
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_DEMO_MODE = "DEMO_MODE";
+    literal System::String^ PARAM_DEMO_MODE_COMMENT = "This is the Demo Mode activation ";
+    literal int             PARAM_DEMO_MODE_STATUS = 0;
+    literal System::String^ PARAM_DEMO_MODE_DEFAULT = "1";
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
@@ -73,6 +77,9 @@ public:
             PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT,           
             }),
 
+            CONFIG_FILE_ITEM(PARAM_DEMO_MODE, PARAM_DEMO_MODE_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_DEMO_MODE_DEFAULT,            
+            }),
             
         }
     );

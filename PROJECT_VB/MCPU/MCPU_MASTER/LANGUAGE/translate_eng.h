@@ -70,6 +70,8 @@
 "I00001", Notify::messages::INFO_BATTERY_DISABLED, "System Power Monitoring", "The backup batteries are detected Disabled!",
 "I00002", Notify::messages::INFO_PROJECTION_CONFIRMATION, "Projection Confirmation Action", "The C-ARM may be activated",
 "I00003", Notify::messages::INFO_PROJECTION_ABORT, "Abort Projection Request", "Proceed to Abort the current projection?",
+"I00004", Notify::messages::INFO_CARM_SHIFT_CONFIRMATION, "C-ARM Shift Activation", "Proceed with the C-ARM Shift activation?",
+
 
 /* -------- LABELS ---------------------------*/
 

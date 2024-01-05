@@ -11,7 +11,7 @@ public:
     
     Gantry();
     static Gantry^ gantry_handle = gcnew Gantry();
-    static void initialize(void) {}; //!< Causes the Gantry auto creation
+    static void initialize(void);
 
    
     // Monitor coordinates
@@ -49,10 +49,12 @@ public:
     static void setStartup(void);
     static bool setOperating(void);
     static bool setService(void);
+    static inline bool isDemo(void) { return demo_status; }
 
 private:
     static operating_status_options current_operating_status = operating_status_options::GANTRY_STARTUP;
     static System::String^ patient_name;
+    static bool demo_status = false;
 };
 
 

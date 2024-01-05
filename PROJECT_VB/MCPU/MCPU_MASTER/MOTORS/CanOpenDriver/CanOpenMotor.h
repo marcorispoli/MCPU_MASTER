@@ -441,10 +441,10 @@ namespace CANOPEN {
 		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear, bool reverse); //!< This is the base class constructor
 
 		delegate void delegate_fault_callback(int code); //!< Delegate for the callback related to the Fault condition
-		static event delegate_fault_callback^ fault_event; //!< Event generated when a Driver fault condition is detected
+		event delegate_fault_callback^ fault_event; //!< Event generated when a Driver fault condition is detected
 		
 		delegate void delegate_command_completed_callback(int id, int code);//!< Delegate for the command completed event		
-		static event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
+	    event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
 		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
 		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
@@ -570,6 +570,8 @@ namespace CANOPEN {
 		/// <returns>The encoder position in user units</returns>
 		inline int getCurrentPosition(void) { return current_uposition; }
 		
+		
+
 		///@} End of the API section ________________________________________________________________________
 
 protected:		

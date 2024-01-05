@@ -105,6 +105,9 @@ void IdleForm::initIdleStatus(void) {
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
+	if(Gantry::isDemo()) this->xrayMode->Hide();
+	else this->xrayMode->Show();
+
 	// Handle the Powerdown
 	IDLESTATUS::Registers.powerdown = PCB301::getPowerdown();
 
@@ -171,21 +174,11 @@ void IdleForm::initIdleStatus(void) {
 }
 
 void IdleForm::open(void) {
-	if (open_status) return;
-	open_status = true;
-	initIdleStatus();
-
-	
-	this->Show();
+	SendNotifyMessageA(window , WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
 }
 
 void IdleForm::close(void) {
-	if (!open_status) return;
-	open_status = false;
-	idleTimer->Stop();
-
-	((ErrorForm^)pError)->close();
-	this->Hide();
+	SendNotifyMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE	
 }
 
 void IdleForm::idleStatusManagement(void) {
@@ -291,9 +284,25 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 {
 	switch (m.Msg) {
 
-	case (WM_USER + 1): // onIdleTimeout
+	case (WINMSG_TIMER): // onIdleTimeout
 		
 		idleStatusManagement();
+		break;
+	case (WINMSG_OPEN): // on Open Event
+		if (open_status) return;
+		open_status = true;
+		initIdleStatus();
+		this->Show();
+		break;
+
+	case (WINMSG_CLOSE): // on Open Event
+		if (!open_status) return;
+		open_status = false;
+		idleTimer->Stop();
+
+		((ErrorForm^)pError)->close();
+		this->Hide();
+
 		break;
 	}
 

@@ -1,14 +1,18 @@
 <10%EXEC_OpenStudy "pippo caio sempronio"%>
+<10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
+<10%EXEC_ArmPosition RMLO 45 40 50%>
+<10%SET_ExposureMode MAN_2D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_DIS ARM_ENA%>
+<10%SET_ExposureData 0 25.5 100 Rh %>
+<10%SET_EnableXrayPush ON%>
+<10%SET_EnableXrayPush OFF%>
 <10%EXEC_CloseStudy %>
 
-<10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
-<10%EXEC_ArmPosition RMLO 90 80 100 %>
+
 <10%EXEC_ArmPosition LMLO -90 -100 -80 %>
 
 
 <10%EXEC_TrxPosition BP_R  %>
 <10%EXEC_AbortProjection %>
-<10%SET_ExposureMode MAN_2D LMAM2V2 CMP_KEEP COLLI_10x24 PROTECTION_ENA ARM_ENA%>
 <10%SET_ExposureMode MAN_2D LMAM2V2 CMP_KEEP COLLI_10x24 PROTECTION_ENA  ARM_DIS%>
 
 < 10 % SET_TomoConfig TOMO_1F N % >

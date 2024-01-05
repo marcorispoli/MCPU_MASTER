@@ -66,6 +66,12 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
         MotorConfig::Configuration->storeFile();
     }
 
+    if (error != MotorCompletedCodes::COMMAND_SUCCESS) {
+
+        // Invalidate the current target
+        valid_target = false;
+    }
+
     // If the C-ARM activation is not a Isocentric mode (or is terminated in error) then the command termines here
     // end the command_completed event is generated 
     if ((!iso_activation_mode) || (error != MotorCompletedCodes::COMMAND_SUCCESS)) {
@@ -80,7 +86,11 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
     double init_h = COMPRESSION_PLANE_MM * cos((double) getPreviousPosition() * 3.14159 / (double)18000);
     double end_h = COMPRESSION_PLANE_MM * cos((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
     int delta_h =  (int) init_h - (int) end_h;
-    VerticalMotor::activateIsocentricCorrection(getCommandId(), delta_h);
+    if (!VerticalMotor::activateIsocentricCorrection(getCommandId(), delta_h)) {
+        // The target is not invalidated because the rotation angle is still valid!
+        device->command_completed_event(getCommandId(), (int)MotorCompletedCodes::COMMAND_SUCCESS);
+        //command_completed_event(getCommandId(), (int) VerticalMotor::device->getCommandCompletedCode());
+    }
     return;
 }
 
@@ -103,26 +113,14 @@ ArmMotor::MotorCompletedCodes ArmMotor::idleCallback(void) {
 void ArmMotor::abortTarget(void) {
     if (!valid_target) return;
     valid_target = false;
-
     projections->clrProjection();
-    target_abort_event();
+    
 }
 
 bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id) {
 
     // Checks the validity of the requested projection
     if (!projections->isValidProjection(proj) ) return false;
-
-    // Assignes the projection
-    projections->setProjection(proj);
-
-    // Assignes the target data
-    allowed_low = low;
-    allowed_high = high;
-    valid_target = true;
-    selected_target = pos;
-
-    target_change_event(id, pos); // For the Window Form update state
 
     // Activate an Isocentric C-ARM rotation
     device->iso_activation_mode = true;
@@ -131,8 +129,21 @@ bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int i
     int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_SPEED]);
     int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_ACC]);
     int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_DEC]);
-    return device->activateAutomaticPositioning(id, pos, speed, acc, dec);
 
+    // Assignes the projection
+    if (device->activateAutomaticPositioning(id, pos * 100, speed, acc, dec)) {
+        projections->setProjection(proj);
+
+        // Assignes the target data
+        allowed_low = low * 100;
+        allowed_high = high * 100;
+        valid_target = true;
+        selected_target = pos;
+        return true;
+    }    
+
+    valid_target = false;
+    return false;
 }
 
 /// <summary>

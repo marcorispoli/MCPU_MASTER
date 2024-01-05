@@ -2,6 +2,7 @@
 #include "WINDOWS/IdleForm.h"
 #include "WINDOWS/OperatingForm.h"
 #include "WINDOWS/ServiceForm.h"
+#include "CONFIGURATION/SystemConfig.h"
 
 #include "Notify.h"
 #include <mutex>
@@ -41,6 +42,12 @@ Gantry::Gantry() {
     
 }
 
+void Gantry::initialize(void) {
+    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEMO_MODE)[SystemConfig::PARAM_DEMO_MODE_STATUS] == "1") {
+        demo_status = true;
+    }
+    else demo_status = false;
+}
 bool Gantry::setIdle() {
     if (current_operating_status == operating_status_options::GANTRY_IDLE) return true;
     if (current_operating_status == operating_status_options::GANTRY_OPERATING) ((OperatingForm^)pOperatingForm)->close();

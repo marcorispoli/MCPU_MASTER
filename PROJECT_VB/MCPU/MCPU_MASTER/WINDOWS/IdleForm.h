@@ -22,7 +22,10 @@ using namespace System::Drawing;
 
 public ref class IdleForm :  public System::Windows::Forms::Form
 {
-	
+#define WINMSG_TIMER WM_USER + 1
+#define WINMSG_OPEN WINMSG_TIMER + 1
+#define WINMSG_CLOSE WINMSG_OPEN + 1
+
 
 public:
 	public:System::Timers::Timer^ idleTimer;
@@ -54,7 +57,7 @@ public:
 	IdleForm(void)
 	{
 		InitializeComponent();
-		window = static_cast<HWND>(Handle.ToPointer());
+		window = static_cast<HWND>(Handle.ToPointer());		
 		formInitialization();
 
 	}
@@ -286,7 +289,7 @@ private:
 
 	private: System::Void onIdleTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{
-		SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+		SendNotifyMessageA(window, WINMSG_TIMER, 0, 0);
 	}
 
 private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);

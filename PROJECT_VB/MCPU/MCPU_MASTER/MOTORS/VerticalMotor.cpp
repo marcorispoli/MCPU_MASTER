@@ -101,7 +101,11 @@ void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes er
     }
 
     // if is an isocentric activation needs to notify the AWS
-    if(iso_activation_mode) device->command_completed_event(getCommandId(), (int)error);
+    if (iso_activation_mode) {
+        // Alwais answer with success for isocentric correction
+        // because a fail in the isocentric correction shall not prevent to proceed with the exposure.
+        device->command_completed_event(getCommandId(), (int)MotorCompletedCodes::COMMAND_SUCCESS);
+    }
     return;
 }
 

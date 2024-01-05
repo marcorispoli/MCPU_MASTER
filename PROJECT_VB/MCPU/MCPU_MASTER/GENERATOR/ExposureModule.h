@@ -47,7 +47,7 @@ public:
         inline double getKv() { return kV; }
         inline double getmAs() { return mAs; }
         inline PCB315::filterMaterialCodes getFilter() { return filter; }
-        inline bool getValidated() { return validated; }
+        inline bool isValid() { return validated; }
 
         PCB315::filterMaterialCodes filter; //!< This is the assigned filter 
         double kV; //!< This is the selected kV value

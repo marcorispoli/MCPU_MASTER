@@ -98,7 +98,20 @@ bool Generator::connectionTest(void) {
 
 }
 void Generator::threadWork(void) {
-   // while(true) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  
+
+    // Demo management
+    if (Gantry::isDemo()) {
+        Debug::WriteLine("Generator Demo Version!\n");
+
+        while (true) {           
+            setup_completed = true;
+            idle_status = true;
+            ready_for_exposure = false;
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
 
     while (true) {
         Debug::WriteLine("Try to connect the Smart Hub and Generator!\n");

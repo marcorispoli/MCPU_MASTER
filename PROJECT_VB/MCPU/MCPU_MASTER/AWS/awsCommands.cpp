@@ -190,7 +190,7 @@ void awsProtocol::EXEC_ArmPosition(void) {
         Convert::ToInt16(pDecodedFrame->parameters[3]) ,
         pDecodedFrame->parameters[0], // Projection code
         pDecodedFrame->ID)) {
-        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_TARGET_DATA"; ackNok(); return;
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return;
     }
 
     // Always deference the answer 
@@ -365,8 +365,8 @@ void   awsProtocol::SET_ExposureMode(void) {
         }
 
         // Gets the collimation format associated to the paddle code
-        int format = PCB302::getPaddleCollimationFormatIndex(paddle);
-        if (format <1) {
+        PCB303::ColliStandardSelections format = (PCB303::ColliStandardSelections) PCB302::getPaddleCollimationFormatIndex(paddle);
+        if (format == PCB303::ColliStandardSelections::COLLI_INVALID_FORMAT) {
             // The paddle is not associated to a valid format
             pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE;
             pDecodedFrame->errstr = "INVALID_COLLIMATION_FORMAT";
@@ -375,7 +375,7 @@ void   awsProtocol::SET_ExposureMode(void) {
         }
 
         // Activate the custom collimation mode
-        PCB303::setCustomCollimationMode((PCB303::ColliStandardSelections) format);
+        PCB303::setCustomCollimationMode(format);
     }
 
     // Patient protection usage 

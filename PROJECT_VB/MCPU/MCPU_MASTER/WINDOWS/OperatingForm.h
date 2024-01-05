@@ -19,101 +19,45 @@ using namespace System::Drawing;
 
 public ref class OperatingForm :  public System::Windows::Forms::Form
 {
+#define WINMSG_TIMER WM_USER + 1
+#define WINMSG_OPEN WINMSG_TIMER + 1
+#define WINMSG_CLOSE WINMSG_OPEN + 1
+
+
+public:
+	HWND window;
+	void open(void);
+	void close(void);
+	bool open_status;
+	Object^ pProj;
+	Object^ pAbort;
+	Object^ pError;
+	Object^ pShiftConf;
+	void suspend(void);
+	void resume(void);
+	void onAbortConfirmOk(void);
+	void onAbortConfirmCanc(void);
+	void onConfirmOk(void);
+	void onConfirmCanc(void);
+	void onShiftConfirmOk(void);
+	void onShiftConfirmCanc(void);
+
+	void initOperatingStatus(void);
+	void operatingStatusManagement(void);
+	void evaluateXrayStatus(void);
+	void evaluateErrorStatus(void);
+	void evaluateCompressorStatus(void);
+	void evaluateCompressorReleaseStatus(void);
+	void evaluateCollimatorStatus(void);
+	void evaluateMagStatus(void);
+	void evaluateDoorStatus(void);
+	void evaluateSlideStatus(void);
+	void evaluateProjectionStatus(void);
+	void onArmTargetChangedCallback(int id, int target);
 	
 
-public:
+public:System::Timers::Timer^ operatingTimer;
 
-	public:System::Timers::Timer^ operatingTimer;
-	
-private: System::Windows::Forms::Label^ labelDate;
-private: System::Windows::Forms::Label^ labelPatientName;
-
-private: System::Windows::Forms::Label^ labelTime;
-
-
-
-private: System::Windows::Forms::Panel^ magnifierStatus;
-
-private: System::Windows::Forms::Panel^ mainPanel;
-
-
-private: System::Windows::Forms::Panel^ residualExposures;
-
-private: System::Windows::Forms::Panel^ decompressionStatus;
-
-private: System::Windows::Forms::Panel^ xrayStat;
-private: System::Windows::Forms::Panel^ alarmButton;
-private: System::Windows::Forms::Panel^ lampButton;
-private: System::Windows::Forms::Panel^ projSelection;
-
-private: System::Windows::Forms::Panel^ forceStatus;
-
-
-private: System::Windows::Forms::Panel^ thicknessStatus;
-
-private: System::Windows::Forms::Panel^ paddleStatus;
-private: System::Windows::Forms::Panel^ doorStatus;
-
-
-private: System::Windows::Forms::Panel^ tubeStatus;
-
-private: System::Windows::Forms::Panel^ collimationStatus;
-private: System::Windows::Forms::Label^ labelXrayStatus;
-private: System::Windows::Forms::Label^ labelPaddle;
-private: System::Windows::Forms::Label^ labelForce;
-
-private: System::Windows::Forms::Label^ labelThickness;
-private: System::Windows::Forms::Label^ labelMag;
-private: System::Windows::Forms::Label^ labelTubeData;
-
-
-
-
-private: System::Windows::Forms::Label^ labelColli;
-
-
-
-public:
-
-public:
-	public:HWND window;
-private: System::Windows::Forms::Label^ angleText;
-private: System::Windows::Forms::Panel^ selectedIcon;
-public:
-
-public:
-	public:	void open(void);
-	public:	void close(void);
-	private: 
-		bool open_status;
-		Object^ pProj;
-		Object^ pAbort;
-		Object^ pError;
-
-		void formInitialization(void);
-
-		void onAbortConfirmOk(void);
-		void onAbortConfirmCanc(void);
-		void onConfirmOk(void);
-		void onConfirmCanc(void);
-
-		void initOperatingStatus(void);
-
-		void operatingStatusManagement(void);
-		void evaluateXrayStatus(void);
-		void evaluateErrorStatus(void);
-		void evaluateCompressorStatus(void);
-		void evaluateCollimatorStatus(void);
-		
-		void evaluateMagStatus(void);
-		void evaluateDoorStatus(void);
-
-
-		void onArmTargetChangedCallback(int id, int target);
-		void onArmAbortTargetCallback(void);
-		void onArmPositionChangeCallback(void);
-
-		
 public:
 	OperatingForm(void)
 	{
@@ -134,18 +78,64 @@ protected:
 			delete components;
 		}
 	}
+private: void formInitialization(void);
 
-protected:
+private: System::Windows::Forms::Panel^ mainPanel;
 
+// Head of window
+private: System::Windows::Forms::Label^ labelDate;
+private: System::Windows::Forms::Label^ labelPatientName;
+private: System::Windows::Forms::Label^ labelTime;
 
+// Xray Status Bar
+private: System::Windows::Forms::Panel^ xrayStat;
+private: System::Windows::Forms::Label^ labelXrayStatus;
+private: System::Windows::Forms::PictureBox^ demoIcon;
 
+// Projection selection panel
+private: System::Windows::Forms::Panel^ projSelection;
+private: System::Windows::Forms::Panel^ selectedIcon;
+private: System::Windows::Forms::Label^ angleText;
 
+// Collimation lamp activation
+private: System::Windows::Forms::Panel^ lampButton;
 
+// Slide selection
+private: System::Windows::Forms::Panel^ slideButton; 
 
+// Alarm button
+private: System::Windows::Forms::Panel^ alarmButton;
 
+// Collimation status
+private: System::Windows::Forms::Panel^ collimationStatus;
+private: System::Windows::Forms::Label^ labelColli;
 
+// Paddle Status
+private: System::Windows::Forms::Panel^ paddleStatus; 
+private: System::Windows::Forms::Label^ labelPaddle;
 
-protected:
+// Thickness measurment
+private: System::Windows::Forms::Panel^ thicknessStatus;
+private: System::Windows::Forms::Label^ labelThickness;
+
+// Force measurment
+private: System::Windows::Forms::Panel^ forceStatus; 
+private: System::Windows::Forms::Label^ labelForce;
+
+// Magnifier status
+private: System::Windows::Forms::Panel^ magnifierStatus;
+private: System::Windows::Forms::Label^ labelMag;
+
+// Release compression status
+private: System::Windows::Forms::Panel^ decompressionStatus;
+
+// Tube data 
+private: System::Windows::Forms::Panel^ tubeStatus;
+private: System::Windows::Forms::Label^ labelTubeData;
+
+// Door study status
+private: System::Windows::Forms::Panel^ doorStatus;
+
 private:
 	/// <summary>
 	/// Required designer variable.
@@ -166,6 +156,7 @@ private:
 		this->labelMag = (gcnew System::Windows::Forms::Label());
 		this->mainPanel = (gcnew System::Windows::Forms::Panel());
 		this->xrayStat = (gcnew System::Windows::Forms::Panel());
+		this->demoIcon = (gcnew System::Windows::Forms::PictureBox());
 		this->labelXrayStatus = (gcnew System::Windows::Forms::Label());
 		this->alarmButton = (gcnew System::Windows::Forms::Panel());
 		this->lampButton = (gcnew System::Windows::Forms::Panel());
@@ -181,13 +172,14 @@ private:
 		this->doorStatus = (gcnew System::Windows::Forms::Panel());
 		this->tubeStatus = (gcnew System::Windows::Forms::Panel());
 		this->labelTubeData = (gcnew System::Windows::Forms::Label());
+		this->slideButton = (gcnew System::Windows::Forms::Panel());
 		this->collimationStatus = (gcnew System::Windows::Forms::Panel());
 		this->labelColli = (gcnew System::Windows::Forms::Label());
-		this->residualExposures = (gcnew System::Windows::Forms::Panel());
 		this->decompressionStatus = (gcnew System::Windows::Forms::Panel());
 		this->magnifierStatus->SuspendLayout();
 		this->mainPanel->SuspendLayout();
 		this->xrayStat->SuspendLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->demoIcon))->BeginInit();
 		this->projSelection->SuspendLayout();
 		this->forceStatus->SuspendLayout();
 		this->thicknessStatus->SuspendLayout();
@@ -237,21 +229,22 @@ private:
 		// 
 		// magnifierStatus
 		// 
+		this->magnifierStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->magnifierStatus->Controls->Add(this->labelMag);
-		this->magnifierStatus->Location = System::Drawing::Point(22, 834);
+		this->magnifierStatus->Location = System::Drawing::Point(12, 872);
 		this->magnifierStatus->Name = L"magnifierStatus";
-		this->magnifierStatus->Size = System::Drawing::Size(170, 170);
-		this->magnifierStatus->TabIndex = 13;
+		this->magnifierStatus->Size = System::Drawing::Size(135, 135);
+		this->magnifierStatus->TabIndex = 0;
 		// 
 		// labelMag
 		// 
 		this->labelMag->BackColor = System::Drawing::Color::Transparent;
 		this->labelMag->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelMag->Location = System::Drawing::Point(5, 135);
+		this->labelMag->Location = System::Drawing::Point(0, 110);
 		this->labelMag->Name = L"labelMag";
-		this->labelMag->Size = System::Drawing::Size(160, 30);
-		this->labelMag->TabIndex = 2;
+		this->labelMag->Size = System::Drawing::Size(135, 25);
+		this->labelMag->TabIndex = 0;
 		this->labelMag->Text = L"MAG 1x";
 		this->labelMag->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
@@ -266,8 +259,8 @@ private:
 		this->mainPanel->Controls->Add(this->paddleStatus);
 		this->mainPanel->Controls->Add(this->doorStatus);
 		this->mainPanel->Controls->Add(this->tubeStatus);
+		this->mainPanel->Controls->Add(this->slideButton);
 		this->mainPanel->Controls->Add(this->collimationStatus);
-		this->mainPanel->Controls->Add(this->residualExposures);
 		this->mainPanel->Controls->Add(this->decompressionStatus);
 		this->mainPanel->Controls->Add(this->labelDate);
 		this->mainPanel->Controls->Add(this->magnifierStatus);
@@ -281,38 +274,52 @@ private:
 		// xrayStat
 		// 
 		this->xrayStat->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->xrayStat->Controls->Add(this->demoIcon);
 		this->xrayStat->Controls->Add(this->labelXrayStatus);
-		this->xrayStat->Location = System::Drawing::Point(22, 61);
+		this->xrayStat->Location = System::Drawing::Point(12, 52);
 		this->xrayStat->Name = L"xrayStat";
-		this->xrayStat->Size = System::Drawing::Size(554, 120);
+		this->xrayStat->Size = System::Drawing::Size(576, 123);
 		this->xrayStat->TabIndex = 23;
+		// 
+		// demoIcon
+		// 
+		this->demoIcon->BackColor = System::Drawing::Color::Red;
+		this->demoIcon->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->demoIcon->Location = System::Drawing::Point(220, 80);
+		this->demoIcon->Name = L"demoIcon";
+		this->demoIcon->Size = System::Drawing::Size(125, 40);
+		this->demoIcon->TabIndex = 0;
+		this->demoIcon->TabStop = false;
 		// 
 		// labelXrayStatus
 		// 
 		this->labelXrayStatus->BackColor = System::Drawing::Color::Transparent;
+		this->labelXrayStatus->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 		this->labelXrayStatus->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 26.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelXrayStatus->Location = System::Drawing::Point(19, 21);
+		this->labelXrayStatus->Location = System::Drawing::Point(18, 10);
 		this->labelXrayStatus->Name = L"labelXrayStatus";
-		this->labelXrayStatus->Size = System::Drawing::Size(514, 82);
-		this->labelXrayStatus->TabIndex = 0;
+		this->labelXrayStatus->Size = System::Drawing::Size(539, 99);
+		this->labelXrayStatus->TabIndex = 1;
 		this->labelXrayStatus->Text = L"STAND-BY";
 		this->labelXrayStatus->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// alarmButton
 		// 
-		this->alarmButton->Location = System::Drawing::Point(471, 329);
+		this->alarmButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->alarmButton->Location = System::Drawing::Point(404, 524);
 		this->alarmButton->Name = L"alarmButton";
-		this->alarmButton->Size = System::Drawing::Size(105, 105);
-		this->alarmButton->TabIndex = 22;
+		this->alarmButton->Size = System::Drawing::Size(184, 184);
+		this->alarmButton->TabIndex = 0;
 		this->alarmButton->Click += gcnew System::EventHandler(this, &OperatingForm::errorButton_Click);
 		// 
 		// lampButton
 		// 
-		this->lampButton->Location = System::Drawing::Point(471, 200);
+		this->lampButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->lampButton->Location = System::Drawing::Point(12, 524);
 		this->lampButton->Name = L"lampButton";
-		this->lampButton->Size = System::Drawing::Size(105, 105);
-		this->lampButton->TabIndex = 21;
+		this->lampButton->Size = System::Drawing::Size(184, 184);
+		this->lampButton->TabIndex = 0;
 		this->lampButton->Click += gcnew System::EventHandler(this, &OperatingForm::lampButton_Click);
 		// 
 		// projSelection
@@ -320,21 +327,21 @@ private:
 		this->projSelection->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->projSelection->Controls->Add(this->angleText);
 		this->projSelection->Controls->Add(this->selectedIcon);
-		this->projSelection->Location = System::Drawing::Point(22, 200);
+		this->projSelection->Location = System::Drawing::Point(12, 192);
 		this->projSelection->Name = L"projSelection";
-		this->projSelection->Size = System::Drawing::Size(430, 234);
+		this->projSelection->Size = System::Drawing::Size(576, 315);
 		this->projSelection->TabIndex = 20;
 		this->projSelection->Click += gcnew System::EventHandler(this, &OperatingForm::viewSelection_Click);
 		// 
 		// angleText
 		// 
 		this->angleText->BackColor = System::Drawing::Color::Transparent;
-		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 36, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 40, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->angleText->Location = System::Drawing::Point(10, 80);
+		this->angleText->Location = System::Drawing::Point(10, 87);
 		this->angleText->Margin = System::Windows::Forms::Padding(0);
 		this->angleText->Name = L"angleText";
-		this->angleText->Size = System::Drawing::Size(167, 74);
+		this->angleText->Size = System::Drawing::Size(216, 70);
 		this->angleText->TabIndex = 2;
 		this->angleText->Text = L"-180 °";
 		this->angleText->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
@@ -342,132 +349,142 @@ private:
 		// selectedIcon
 		// 
 		this->selectedIcon->BackColor = System::Drawing::Color::Transparent;
-		this->selectedIcon->Location = System::Drawing::Point(180, 17);
+		this->selectedIcon->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->selectedIcon->Location = System::Drawing::Point(285, 47);
 		this->selectedIcon->Name = L"selectedIcon";
-		this->selectedIcon->Size = System::Drawing::Size(230, 200);
+		this->selectedIcon->Size = System::Drawing::Size(270, 220);
 		this->selectedIcon->TabIndex = 0;
 		this->selectedIcon->Click += gcnew System::EventHandler(this, &OperatingForm::viewSelection_Click);
 		// 
 		// forceStatus
 		// 
+		this->forceStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->forceStatus->Controls->Add(this->labelForce);
-		this->forceStatus->Location = System::Drawing::Point(406, 454);
+		this->forceStatus->Location = System::Drawing::Point(453, 724);
 		this->forceStatus->Name = L"forceStatus";
-		this->forceStatus->Size = System::Drawing::Size(170, 170);
-		this->forceStatus->TabIndex = 19;
+		this->forceStatus->Size = System::Drawing::Size(135, 135);
+		this->forceStatus->TabIndex = 0;
 		// 
 		// labelForce
 		// 
 		this->labelForce->BackColor = System::Drawing::Color::Transparent;
 		this->labelForce->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelForce->Location = System::Drawing::Point(5, 135);
+		this->labelForce->Location = System::Drawing::Point(0, 110);
 		this->labelForce->Name = L"labelForce";
-		this->labelForce->Size = System::Drawing::Size(160, 30);
+		this->labelForce->Size = System::Drawing::Size(135, 25);
 		this->labelForce->TabIndex = 2;
 		this->labelForce->Text = L"15.0 (Kg)";
 		this->labelForce->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// thicknessStatus
 		// 
+		this->thicknessStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->thicknessStatus->Controls->Add(this->labelThickness);
-		this->thicknessStatus->Location = System::Drawing::Point(214, 454);
+		this->thicknessStatus->Location = System::Drawing::Point(306, 724);
 		this->thicknessStatus->Name = L"thicknessStatus";
-		this->thicknessStatus->Size = System::Drawing::Size(170, 170);
-		this->thicknessStatus->TabIndex = 18;
+		this->thicknessStatus->Size = System::Drawing::Size(135, 135);
+		this->thicknessStatus->TabIndex = 0;
 		// 
 		// labelThickness
 		// 
 		this->labelThickness->BackColor = System::Drawing::Color::Transparent;
 		this->labelThickness->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelThickness->Location = System::Drawing::Point(5, 135);
+		this->labelThickness->Location = System::Drawing::Point(0, 110);
 		this->labelThickness->Name = L"labelThickness";
-		this->labelThickness->Size = System::Drawing::Size(160, 30);
-		this->labelThickness->TabIndex = 2;
+		this->labelThickness->Size = System::Drawing::Size(135, 25);
+		this->labelThickness->TabIndex = 0;
 		this->labelThickness->Text = L"150 (mm)";
 		this->labelThickness->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// paddleStatus
 		// 
+		this->paddleStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->paddleStatus->Controls->Add(this->labelPaddle);
-		this->paddleStatus->Location = System::Drawing::Point(22, 454);
+		this->paddleStatus->Location = System::Drawing::Point(159, 724);
 		this->paddleStatus->Name = L"paddleStatus";
-		this->paddleStatus->Size = System::Drawing::Size(170, 170);
-		this->paddleStatus->TabIndex = 17;
+		this->paddleStatus->Size = System::Drawing::Size(135, 135);
+		this->paddleStatus->TabIndex = 0;
 		// 
 		// labelPaddle
 		// 
 		this->labelPaddle->BackColor = System::Drawing::Color::Transparent;
 		this->labelPaddle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelPaddle->Location = System::Drawing::Point(5, 135);
+		this->labelPaddle->Location = System::Drawing::Point(0, 110);
 		this->labelPaddle->Name = L"labelPaddle";
-		this->labelPaddle->Size = System::Drawing::Size(160, 30);
+		this->labelPaddle->Size = System::Drawing::Size(135, 25);
 		this->labelPaddle->TabIndex = 1;
 		this->labelPaddle->Text = L"PAD 24x30";
 		this->labelPaddle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// doorStatus
 		// 
-		this->doorStatus->Location = System::Drawing::Point(406, 644);
+		this->doorStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->doorStatus->Location = System::Drawing::Point(453, 872);
 		this->doorStatus->Name = L"doorStatus";
-		this->doorStatus->Size = System::Drawing::Size(170, 170);
-		this->doorStatus->TabIndex = 16;
+		this->doorStatus->Size = System::Drawing::Size(135, 135);
+		this->doorStatus->TabIndex = 0;
 		// 
 		// tubeStatus
 		// 
+		this->tubeStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->tubeStatus->Controls->Add(this->labelTubeData);
-		this->tubeStatus->Location = System::Drawing::Point(214, 644);
+		this->tubeStatus->Location = System::Drawing::Point(306, 872);
 		this->tubeStatus->Name = L"tubeStatus";
-		this->tubeStatus->Size = System::Drawing::Size(170, 170);
-		this->tubeStatus->TabIndex = 15;
+		this->tubeStatus->Size = System::Drawing::Size(135, 135);
+		this->tubeStatus->TabIndex = 0;
 		// 
 		// labelTubeData
 		// 
 		this->labelTubeData->BackColor = System::Drawing::Color::Transparent;
 		this->labelTubeData->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelTubeData->Location = System::Drawing::Point(68, 136);
+		this->labelTubeData->Location = System::Drawing::Point(0, 110);
 		this->labelTubeData->Name = L"labelTubeData";
-		this->labelTubeData->Size = System::Drawing::Size(99, 30);
-		this->labelTubeData->TabIndex = 2;
+		this->labelTubeData->Size = System::Drawing::Size(135, 25);
+		this->labelTubeData->TabIndex = 0;
 		this->labelTubeData->Text = L"100%";
 		this->labelTubeData->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
+		// slideButton
+		// 
+		this->slideButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->slideButton->Location = System::Drawing::Point(208, 524);
+		this->slideButton->Name = L"slideButton";
+		this->slideButton->Size = System::Drawing::Size(184, 184);
+		this->slideButton->TabIndex = 0;
+		this->slideButton->Click += gcnew System::EventHandler(this, &OperatingForm::ShiftSelection_Click);
+		// 
 		// collimationStatus
 		// 
+		this->collimationStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->collimationStatus->Controls->Add(this->labelColli);
-		this->collimationStatus->Location = System::Drawing::Point(22, 644);
+		this->collimationStatus->Location = System::Drawing::Point(12, 725);
 		this->collimationStatus->Name = L"collimationStatus";
-		this->collimationStatus->Size = System::Drawing::Size(170, 170);
-		this->collimationStatus->TabIndex = 14;
+		this->collimationStatus->Size = System::Drawing::Size(135, 135);
+		this->collimationStatus->TabIndex = 0;
 		// 
 		// labelColli
 		// 
 		this->labelColli->BackColor = System::Drawing::Color::Transparent;
 		this->labelColli->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelColli->Location = System::Drawing::Point(5, 135);
+		this->labelColli->Location = System::Drawing::Point(0, 110);
 		this->labelColli->Name = L"labelColli";
-		this->labelColli->Size = System::Drawing::Size(160, 30);
-		this->labelColli->TabIndex = 2;
+		this->labelColli->Size = System::Drawing::Size(135, 25);
+		this->labelColli->TabIndex = 0;
 		this->labelColli->Text = L"AUTO";
 		this->labelColli->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
-		// residualExposures
-		// 
-		this->residualExposures->Location = System::Drawing::Point(406, 834);
-		this->residualExposures->Name = L"residualExposures";
-		this->residualExposures->Size = System::Drawing::Size(170, 170);
-		this->residualExposures->TabIndex = 15;
-		// 
 		// decompressionStatus
 		// 
-		this->decompressionStatus->Location = System::Drawing::Point(214, 834);
+		this->decompressionStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->decompressionStatus->Location = System::Drawing::Point(159, 872);
 		this->decompressionStatus->Name = L"decompressionStatus";
-		this->decompressionStatus->Size = System::Drawing::Size(170, 170);
-		this->decompressionStatus->TabIndex = 14;
+		this->decompressionStatus->Size = System::Drawing::Size(135, 135);
+		this->decompressionStatus->TabIndex = 0;
 		// 
 		// OperatingForm
 		// 
@@ -483,6 +500,7 @@ private:
 		this->mainPanel->ResumeLayout(false);
 		this->mainPanel->PerformLayout();
 		this->xrayStat->ResumeLayout(false);
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->demoIcon))->EndInit();
 		this->projSelection->ResumeLayout(false);
 		this->forceStatus->ResumeLayout(false);
 		this->thicknessStatus->ResumeLayout(false);
@@ -498,13 +516,14 @@ private:
 
 	private: System::Void onOperatingTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{
-		SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+		SendNotifyMessageA(window, WINMSG_TIMER, 0, 0);
 	}
 
 
 	private: System::Void lampButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void viewSelection_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void ShiftSelection_Click(System::Object^ sender, System::EventArgs^ e);
 
 };
 

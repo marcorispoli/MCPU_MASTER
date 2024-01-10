@@ -178,8 +178,9 @@ using namespace CANOPEN;
 #define OD_6040_00_ENABLEOP_VAL                     0x000F
 #define OD_6040_00_DISABLEOP_MASK                   0x008F
 #define OD_6040_00_DISABLEOP_VAL                    0x0007
+#define OD_6040_00_QUICKSTOP_MASK                   0x0087
+#define OD_6040_00_QUICKSTOP_VAL                    0x0002
 
-#define OD_6040_00_QUICKSTOP                   0x0087, 0x0002
 #define OD_6040_00_DISVOLTAGE                  0x0082, 0x0000
 
 

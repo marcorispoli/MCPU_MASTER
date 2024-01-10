@@ -4,6 +4,9 @@
 <10%SET_ExposureMode MAN_2D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_DIS ARM_ENA%>
 <10%SET_ExposureData 0 25.5 100 Rh %>
 <10%SET_EnableXrayPush ON%>
+<10% EXEC_StartXraySequence %>
+
+
 <10%SET_EnableXrayPush OFF%>
 <10%EXEC_CloseStudy %>
 
@@ -34,7 +37,7 @@
 < 10 %  EXEC_TestCommand MO% >
 < 10 %  EXEC_TestCommand MIRROR% >
 
-< 10 %  EXEC_TestCommand 450 % >
+< 10 %  EXEC_TestCommand 0 % >
 
 
-< 10 %  EXEC_TestCommand -30 % >
+< 10 %  EXEC_TestCommand -300 % >

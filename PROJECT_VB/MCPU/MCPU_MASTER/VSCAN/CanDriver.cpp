@@ -253,6 +253,7 @@ void CanDriver::threadWork(void) {
                 continue;
             }
             if ((rxCanId >= 0x700) && (rxCanId <= 0x707)) {
+                Debug::WriteLine("BOOT MSG:" + (rxCanId-0x700));
                 canrx_canopen_bootup_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }

@@ -73,9 +73,11 @@ protected:
 	bool generatorSetup(void);
 	bool clearSystemMessages(void);
 	bool generatorIdle(void);
+	bool generatorDemoIdle(void);
 	bool generatorErrorMessagesLoop(void);
 	bool setExecutedPulse(ExposureModule::exposure_type_options xray_exposure_type);
-
+	bool setExecutedPulseDemo(ExposureModule::exposure_type_options xray_exposure_type);
+	
 	bool man_2d_exposure_procedure(void);
 	bool aec_2d_exposure_procedure(void);
 	bool man_ae_exposure_procedure(void);
@@ -84,6 +86,14 @@ protected:
 	bool aec_3d_exposure_procedure(void);
 	bool man_combo_exposure_procedure(void);
 	bool aec_combo_exposure_procedure(void);
+	bool man_2d_exposure_procedure_demo(void);
+	bool aec_2d_exposure_procedure_demo(void);
+	bool man_ae_exposure_procedure_demo(void);
+	bool aec_ae_exposure_procedure_demo(void);
+	bool man_3d_exposure_procedure_demo(void);
+	bool aec_3d_exposure_procedure_demo(void);
+	bool man_combo_exposure_procedure_demo(void);
+	bool aec_combo_exposure_procedure_demo(void);
 
 	static bool setup_completed = false; //!< The Setup process has been terminated
 	static bool idle_status = false;	  //!< The Generator is in IDLE mode

@@ -64,8 +64,8 @@ public:
 	static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
 private:
 	static bool iso_activation_mode = false;
-	static bool manual_activation_enabled = false; //!< This is the flag activating the vertical manual activation
-	static bool manual_up_direction = false; //!< Sets true if the Upward manual command is executing, false if the downward manual activation is executing
+	static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
+	static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation

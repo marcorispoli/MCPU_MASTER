@@ -214,6 +214,7 @@
     <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
     <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
     <ClCompile Include="DEVICES\PCB326.cpp" />
+    <ClCompile Include="GENERATOR\DEMO\GeneratorDemo.cpp" />
     <ClCompile Include="GENERATOR\Exposure2DModule.cpp" />
     <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureAEModule.cpp" />

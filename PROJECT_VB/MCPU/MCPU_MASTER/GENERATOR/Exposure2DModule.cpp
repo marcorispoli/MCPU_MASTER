@@ -18,7 +18,7 @@ bool Generator::man_2d_exposure_procedure(void) {
     xray_exposure_error = exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
 
     // Checks if the X-RAY push button is pressed
-    if (!PCB301::isXrayButton()) {
+    if (!PCB301::getXrayPushButtonStat()) {
         xray_exposure_error = exposure_completed_errors::XRAY_BUTTON_RELEASE;
         return false;
     }

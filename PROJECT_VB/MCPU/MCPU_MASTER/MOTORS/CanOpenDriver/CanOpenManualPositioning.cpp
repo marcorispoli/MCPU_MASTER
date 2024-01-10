@@ -34,6 +34,7 @@ bool CanOpenMotor::activateManualPositioning(int target, int speed, int acc, int
 
 void CanOpenMotor::manageManualPositioning(void) {
     bool error_condition;
+    MotorCompletedCodes termination_code;
 
     // Get the actual encoder position 
     updateCurrentPosition();
@@ -93,28 +94,36 @@ void CanOpenMotor::manageManualPositioning(void) {
     // Update the previous position
     previous_uposition = current_uposition;
 
+    // Unbrake 
+    if (!unbrakeCallback()) {
+        brakeCallback();
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_BRAKE_DEVICE);
+        return;
+    }
 
     // Set the start bit (BIT4) in the control word register
     if (!writeControlWord(POSITION_SETTING_START_MASK, POSITION_SETTING_START_VAL)) {
+        brakeCallback();
         setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
         return;
     }
 
 
     while (true) {
+
         // Test the abort request flag
         if (abort_request) {
             abort_request = false;
 
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_COMMAND_ABORTED);
+            termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
             break;
         }
 
         // Reads the status to be sure that it is still Operation Enabled 
         if (!blocking_readOD(OD_6041_00)) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
+            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
             break;
         }
 
@@ -123,7 +132,7 @@ void CanOpenMotor::manageManualPositioning(void) {
         // In case the status should be changed, the internal fault is activated
         if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_INTERNAL_FAULT);
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;            
             break;
         }
 
@@ -134,22 +143,27 @@ void CanOpenMotor::manageManualPositioning(void) {
         MotorCompletedCodes termination_condition = manualPositioningRunningCallback();
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
-            setCommandCompletedCode(termination_condition);
+            termination_code = termination_condition;
             break;
         }
 
+       
         if (((statw & 0x1400) == 0x1400) || (current_uposition == command_target) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING COMPLETED ");
-
-            setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+            termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
 
             // resets the OMS bit of the control word
             writeControlWord(0x0270, 0);
 
-            // set the cia Switched On status
-            writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
-
+            if (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION) {
+                // Quick Stop to slowly stop
+                writeControlWord(OD_6040_00_QUICKSTOP_MASK, OD_6040_00_QUICKSTOP_VAL);
+            }
+            else {
+                // Immediate stop set the cia Switched On status
+                writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
+            }
             break;
         }
 
@@ -163,13 +177,22 @@ void CanOpenMotor::manageManualPositioning(void) {
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
+    // Read the status word
+    while (true) {        
+        if (!blocking_readOD(OD_6041_00)) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            continue;
+        }
+        if (getCiAStatus(rxSdoRegister->data) != _CiA402Status::CiA402_QuickStopActive) break;
+    }
+    
+    // Activates the brakes
+    brakeCallback();
 
     // set the cia Switched On status
     writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
 
-    // Clears motor command
-    current_command = MotorCommands::MOTOR_IDLE;
-
+    setCommandCompletedCode(termination_code);
     return;
 
 }

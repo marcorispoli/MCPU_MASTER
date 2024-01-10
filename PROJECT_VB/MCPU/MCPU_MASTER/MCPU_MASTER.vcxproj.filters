@@ -346,6 +346,9 @@
     <ClCompile Include="MOTORS\CanOpenDriver\CanOpenManualPositioning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GENERATOR\DEMO\GeneratorDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">

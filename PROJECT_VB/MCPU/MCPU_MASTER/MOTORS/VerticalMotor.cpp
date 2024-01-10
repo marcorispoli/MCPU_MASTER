@@ -2,6 +2,7 @@
 #include "Notify.h"
 #include "VerticalMotor.h"
 #include "pd4_od.h"
+#include "gantry_global_status.h"
 #include "PCB301.h"
 
 
@@ -131,34 +132,41 @@ void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes er
 /// <param name=""></param>
 /// <returns></returns>
 CanOpenMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
-    static PCB301::vertical_activation_options vertical_request = PCB301::vertical_activation_options::VERTICAL_NO_ACTIVATION;
-
+    static bool manaul_activation_request = false;
     int speed, acc, dec;
 
     // Handle the Safety condition 
     
     // Handle a Manual activation mode
-    if (PCB301::getVerticalActivationStatus() != vertical_request) {
-        vertical_request = PCB301::getVerticalActivationStatus();
-        if (manual_activation_enabled) {
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_DEC]);
+    if (!manaul_activation_request) {
+        if ((Gantry::getVerticalManualActivationIncrease()) || (Gantry::getVerticalManualActivationDecrease())) {
+            manaul_activation_request = true;
 
-            switch (vertical_request) {
-            case PCB301::vertical_activation_options::VERTICAL_UP_ACTIVATION:
-                device->activateManualPositioning(MAX_POSITION, speed, acc, dec);
-                manual_up_direction = true;
-                break;
-            case PCB301::vertical_activation_options::VERTICAL_DOWN_ACTIVATION:
-                device->activateManualPositioning(MIN_POSITION, speed, acc, dec);
-                manual_up_direction = false;
-                break;
+            if (manual_activation_enabled) {
+                speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_SPEED]);
+                acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_ACC]);
+                dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_DEC]);
 
-            }
-        } // Enabled command
+                if (Gantry::getVerticalManualActivationIncrease()) {
+                    manual_increment_direction = true;
+                    device->activateManualPositioning(MAX_POSITION, speed, acc, dec);
+                }
+                else {
+                    manual_increment_direction = false;
+                    device->activateManualPositioning(MIN_POSITION, speed, acc, dec);
+                }
+            } // Enabled command
+        }
+
     }
-   
+    else {
+        if ((!Gantry::getBodyManualActivationIncrease()) && (!Gantry::getBodyManualActivationDecrease())) {
+            manaul_activation_request = false;
+        }
+    }
+
+
+
 
     // Allows to proceed with commands
     return MotorCompletedCodes::COMMAND_PROCEED;
@@ -222,10 +230,9 @@ VerticalMotor::MotorCompletedCodes  VerticalMotor::manualPositioningRunningCallb
     // Handle the safety
 
     // handle the manual hardware inputs
-    PCB301::vertical_activation_options vertical_request = PCB301::getVerticalActivationStatus();
-    if (vertical_request == PCB301::vertical_activation_options::VERTICAL_NO_ACTIVATION) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    else if( (manual_up_direction) && (vertical_request == PCB301::vertical_activation_options::VERTICAL_DOWN_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    else if ((!manual_up_direction) && (vertical_request == PCB301::vertical_activation_options::VERTICAL_UP_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    if ((!Gantry::getVerticalManualActivationIncrease()) && (!Gantry::getVerticalManualActivationDecrease())) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    if ((!Gantry::getVerticalManualActivationIncrease()) && (manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+    if ((!Gantry::getVerticalManualActivationDecrease()) && (!manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
 
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;

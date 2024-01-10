@@ -107,7 +107,8 @@ void Generator::threadWork(void) {
         while (true) {           
             setup_completed = true;
             idle_status = true;
-            ready_for_exposure = false;
+            ready_for_exposure = true;
+            generatorDemoIdle();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
@@ -480,9 +481,9 @@ bool Generator::generatorIdle(void) {
             else xray_complete_event(exposure_completed_options::XRAY_NO_DOSE);
 
             // Waits for the X-RAY button release
-            if (PCB301::isXrayButton()) {
+            if (PCB301::getXrayPushButtonStat()) {
                 Debug::WriteLine("GENERATOR EXPOSURE WAITING BUTTON RELEASE\n");
-                while (PCB301::isXrayButton()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                while (PCB301::getXrayPushButtonStat()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
             
             xray_processing = false;
@@ -614,7 +615,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
 bool Generator::startExposure(void) {
     
     if (!ready_for_exposure) return false; // Only in Stand-by mode can be initiated
-    if (!xray_processing) return false; // A X-RAY procedure is processing (busy condition)
+    if (xray_processing) return false; // A X-RAY procedure is processing (busy condition)
 
     // Test if the pulse 0 is actually valid
     if (!ExposureModule::getExposurePulse(0)->validated) return false;

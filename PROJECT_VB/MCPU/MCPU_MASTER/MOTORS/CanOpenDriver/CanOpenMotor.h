@@ -729,6 +729,9 @@ protected:
 		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
 		virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
 
+		virtual bool unbrakeCallback(void) { return true; } //!< Called whenever the optional brake device should be released
+		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated
+
 		/// <summary>
 		/// This function returns the current command-id.
 		/// </summary>

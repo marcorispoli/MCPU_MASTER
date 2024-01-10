@@ -635,7 +635,13 @@ void   awsProtocol::SET_Language(void) {
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
-   
+    // Body test
+    if (pDecodedFrame->parameters->Count == 1) {
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
+        BodyMotor::device->activateAutomaticPositioning(1, pos, 100, 20, 20);
+    }
+    return;
+
     // Vertical test
     if (pDecodedFrame->parameters->Count == 1) {
         int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
@@ -647,12 +653,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
     VerticalMotor::startHoming();
     return;
 
-    // Body test
-    if (pDecodedFrame->parameters->Count == 1) {
-        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
-        BodyMotor::device->activateAutomaticPositioning(1, pos, 50, 10, 10);
-    }
-    return;
+  
 
     // Filter test
     Debug::WriteLine("EXEC_TestCommand:FILTER");

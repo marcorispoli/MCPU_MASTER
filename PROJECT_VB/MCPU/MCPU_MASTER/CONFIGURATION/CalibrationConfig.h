@@ -128,7 +128,7 @@ ref class MotorConfig
 {
 public:
     literal System::String^ FILENAME = "MotorCalibration.cnf"; //!< This is the name of the configuration file
-    literal int     FILE_REVISION = 2;//!< This is the current revision code
+    literal int     FILE_REVISION = 1;//!< This is the current revision code
 
     literal System::String^ MOTOR_UNDEFINED_POSITION = "UNDEF";    //!< This is the TAG of the Undefined position 
     literal int PARAM_CURRENT_POSITION = 0;                        //!< Parameter position for the last valid motor position 
@@ -146,13 +146,13 @@ public:
     literal System::String^ PARAM_BODY = "BODY_CALIBRATION";                               //!< This is the Body Motor parameter section
     literal System::String^ PARAM_BODY_COMMENT = "BODY_CALIBRATION calibration data";
     literal System::String^ PARAM_BODY_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid Body Motor position (for initial zero setting)
-    literal System::String^ PARAM_BODY_AUTO_SPEED_DEFAULT = "50";                                  //!< Body Auto Speed in 0.1 degree/s
-    literal System::String^ PARAM_BODY_AUTO_ACC_DEFAULT = "10";                                    //!< Body Auto Acc in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_AUTO_DEC_DEFAULT = "10";                                    //!< Body Auto  Dec in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_MANUAL_SPEED_DEFAULT = "50";                                //!< Body Manual  Speed in 0.1 degree/s
-    literal System::String^ PARAM_BODY_MANUAL_ACC_DEFAULT = "10";                                  //!< Body Manual  Acc in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_MANUAL_DEC_DEFAULT = "10";                                  //!< Body Manual Dec in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_HOME_SPEED_DEFAULT = "30";                                  //!< Body Home Speed in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_AUTO_SPEED_DEFAULT = "100";                                  //!< Body Auto Speed in 0.1 degree/s
+    literal System::String^ PARAM_BODY_AUTO_ACC_DEFAULT = "20";                                    //!< Body Auto Acc in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_AUTO_DEC_DEFAULT = "20";                                    //!< Body Auto  Dec in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_MANUAL_SPEED_DEFAULT = "100";                                //!< Body Manual  Speed in 0.1 degree/s
+    literal System::String^ PARAM_BODY_MANUAL_ACC_DEFAULT = "20";                                  //!< Body Manual  Acc in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_MANUAL_DEC_DEFAULT = "20";                                  //!< Body Manual Dec in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_HOME_SPEED_DEFAULT = "50";                                  //!< Body Home Speed in 0.1 degree/ss
     literal System::String^ PARAM_BODY_HOME_ACC_DEFAULT = "10";                                    //!< Body Home Acc in 0.1 degree/ss
 
     //___________________________________________________________________________________________________//
@@ -172,13 +172,13 @@ public:
     literal System::String^ PARAM_VERTICAL = "VERTICAL_CALIBRATION";                                   //!< This is the VERTICAL Motor parameter section
     literal System::String^ PARAM_VERTICAL_COMMENT = "VERTICAL_CALIBRATION calibration data";
     literal System::String^ PARAM_VERTICAL_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder VERTICAL Motor position (for initial zero setting)
-    literal System::String^ PARAM_VERTICAL_AUTO_SPEED_DEFAULT = "50";                                  //!< VERTICAL Auto Speed in 1 mm/s
-    literal System::String^ PARAM_VERTICAL_AUTO_ACC_DEFAULT = "10";                                    //!< VERTICAL Auto Acc in 1mm /ss
+    literal System::String^ PARAM_VERTICAL_AUTO_SPEED_DEFAULT = "30";                                  //!< VERTICAL Auto Speed in 1 mm/s
+    literal System::String^ PARAM_VERTICAL_AUTO_ACC_DEFAULT = "20";                                    //!< VERTICAL Auto Acc in 1mm /ss
     literal System::String^ PARAM_VERTICAL_AUTO_DEC_DEFAULT = "10";                                    //!< VERTICAL Auto Dec in 1mm /ss
-    literal System::String^ PARAM_VERTICAL_MANUAL_SPEED_DEFAULT = "50";                                //!< VERTICAL Manual Speed in 1 mm/s
-    literal System::String^ PARAM_VERTICAL_MANUAL_ACC_DEFAULT = "10";                                  //!< VERTICAL Manual Acc in 1mm /ss
-    literal System::String^ PARAM_VERTICAL_MANUAL_DEC_DEFAULT = "10";                                  //!< VERTICAL Manual Dec in 1mm /ss
-    literal System::String^ PARAM_VERTICAL_HOME_SPEED_DEFAULT = "50";                                  //!< VERTICAL Home Speed in 1mm degree/ss
+    literal System::String^ PARAM_VERTICAL_MANUAL_SPEED_DEFAULT = "30";                                //!< VERTICAL Manual Speed in 1 mm/s
+    literal System::String^ PARAM_VERTICAL_MANUAL_ACC_DEFAULT = "20";                                  //!< VERTICAL Manual Acc in 1mm /ss
+    literal System::String^ PARAM_VERTICAL_MANUAL_DEC_DEFAULT = "60";                                  //!< VERTICAL Manual Dec in 1mm /ss
+    literal System::String^ PARAM_VERTICAL_HOME_SPEED_DEFAULT = "20";                                  //!< VERTICAL Home Speed in 1mm degree/ss
     literal System::String^ PARAM_VERTICAL_HOME_ACC_DEFAULT = "10";                                    //!< VERTICAL Home Acc in 1mm degree/ss
 
     //___________________________________________________________________________________________________//

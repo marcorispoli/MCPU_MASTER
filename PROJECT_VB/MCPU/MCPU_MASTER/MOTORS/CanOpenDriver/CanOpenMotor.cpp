@@ -674,7 +674,7 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_3700_00, (unsigned short)-1)) ; // -1 No reaction;0 Immediate stop; 1 Braking with "slow down ramp"; 2 Braking with "quick stop ramp"
 
     // Quick Stop Option Code
-    while (!blocking_writeOD(OD_605A_00, 2)) ;   // 0 Immediate stop  // 1 Braking with "slow down ramp"  // 2 Braking with "quick stop ramp"
+    while (!blocking_writeOD(OD_605A_00, 1)) ;   // 0 Immediate stop  // 1 Braking with "slow down ramp"  // 2 Braking with "quick stop ramp"
 
     // Shutdown Option Code
     while (!blocking_writeOD(OD_605B_00, 0)) ;   // 0 Immediate stop  // 1 Braking with "slow down ramp"

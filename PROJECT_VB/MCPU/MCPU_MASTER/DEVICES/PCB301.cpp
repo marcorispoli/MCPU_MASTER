@@ -41,35 +41,39 @@ void PCB301::runningLoop(void) {
     if (batt1_low_alarm || batt2_low_alarm) Notify::activate(Notify::messages::ERROR_BATTERY_LOW_ERROR, false);
     else Notify::deactivate(Notify::messages::ERROR_BATTERY_LOW_ERROR);
     
+
     // Monitor of the Study door input
-    if (PCB301_GET_SYSTEM_CLOSEDOOR(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6)) {
-        Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
+    if (Gantry::isDemo()) {
         door_status = door_options::CLOSED_DOOR;
+        Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
     }
     else {
-        door_status = door_options::OPEN_DOOR;
-        Notify::activate(Notify::messages::WARNING_DOOR_STUDY_OPEN, false);
+        if (PCB301_GET_SYSTEM_CLOSEDOOR(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6)) {
+            Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
+            door_status = door_options::CLOSED_DOOR;
+        }
+        else {
+            door_status = door_options::OPEN_DOOR;
+            Notify::activate(Notify::messages::WARNING_DOOR_STUDY_OPEN, false);
+        }
     }
         
-    // Handles the manual vertical activation request
-    bool up_stat = PCB301_GET_VERTICAL_UP(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    bool down_stat = PCB301_GET_VERTICAL_DOWN(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    // Handles the motor manual inputs
+    button_up_stat = PCB301_GET_BUTTON_VERTICAL_UP(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    button_down_stat = PCB301_GET_BUTTON_VERTICAL_DOWN(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    pedal_up_stat = PCB301_GET_PEDAL_VERTICAL_UP(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    pedal_down_stat = PCB301_GET_PEDAL_VERTICAL_DOWN(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
 
-    if (up_stat && down_stat) vertical_activation_status = vertical_activation_options::VERTICAL_INVALID_CODE;
-    else if ((up_stat) && (!down_stat)) vertical_activation_status = vertical_activation_options::VERTICAL_UP_ACTIVATION;
-    else if ((!up_stat) && (down_stat)) vertical_activation_status = vertical_activation_options::VERTICAL_DOWN_ACTIVATION;
-    else vertical_activation_status = vertical_activation_options::VERTICAL_NO_ACTIVATION;
+    button_body_cw = PCB301_GET_BUTTON_BODY_CW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    button_body_ccw = PCB301_GET_BUTTON_BODY_CCW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
 
-    // Handles the manual body activation request
-    bool cw_stat = PCB301_GET_BODY_CW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    bool ccw_stat = PCB301_GET_BODY_CCW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    button_arm_cw_stat = PCB301_GET_BUTTON_ARM_CW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    button_arm_ccw_stat = PCB301_GET_BUTTON_ARM_CCW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
 
-    if (cw_stat && ccw_stat) body_activation_status = body_activation_options::BODY_INVALID_CODE;
-    else if ((cw_stat) && (!ccw_stat)) body_activation_status = body_activation_options::BODY_CW_ACTIVATION;
-    else if ((!cw_stat) && (ccw_stat)) body_activation_status = body_activation_options::BODY_CCW_ACTIVATION;
-    else body_activation_status = body_activation_options::BODY_NO_ACTIVATION;
+    button_slide_up_stat = PCB301_GET_BUTTON_SLIDE_UP(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    button_slide_down_stat = PCB301_GET_BUTTON_SLIDE_DOWN(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
 
-    // handles the X-RAY puss button
+    // handles the X-RAY push button
     if ((PCB301_GET_XRAY_PUSH_BUTTON(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6) != xray_push_button)) {
         xray_push_button = PCB301_GET_XRAY_PUSH_BUTTON(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
         if(xray_push_button_event_enable) awsProtocol::EVENT_XrayPushButton(xray_push_button);
@@ -78,6 +82,7 @@ void PCB301::runningLoop(void) {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     //__________________________________________________________________________________________________________________ REGISTER BATTERY
+    
     while (!send(PCB301_GET_STATUS_BATTERY_REGISTER));
     voltage_batt1 = PCB301_GET_BATTERY_VBATT1(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
     voltage_batt2 = PCB301_GET_BATTERY_VBATT2(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);

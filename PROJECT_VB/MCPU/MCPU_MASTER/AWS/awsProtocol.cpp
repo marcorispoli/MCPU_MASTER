@@ -56,13 +56,12 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("EXEC_PowerOff", gcnew command_callback(this, &awsProtocol::EXEC_PowerOff));
     commandExec->Add("EXEC_TestCommand", gcnew command_callback(this, &awsProtocol::EXEC_TestCommand));
 
-    // Connects the Global register callbacks to the local Events    
-    Generator::xray_complete_event += gcnew Generator::delegate_xray_complete_callback(&awsProtocol::EVENT_XraySequenceCompleted);
-    ArmMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
-    VerticalMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
-    TiltMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
-    BodyMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
-    SlideMotor::command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);    
+    // Connects the Global register callbacks to the local Events        
+    ArmMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
+    VerticalMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
+    TiltMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
+    BodyMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
+    SlideMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
     ArmMotor::projection_request_event += gcnew ArmMotor::delegate_projection_request_callback(&awsProtocol::EVENT_SelectProjection);
     ArmMotor::abort_projection_request_event += gcnew ArmMotor::delegate_abort_projection_request_callback(&awsProtocol::EVENT_AbortProjection);
 

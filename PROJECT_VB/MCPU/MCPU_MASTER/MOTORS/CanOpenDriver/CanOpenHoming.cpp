@@ -27,6 +27,7 @@ bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int sp
 #define ZERO_INPUT_MASK(x) (x & 0x00040000) //!< Not in the Special region [00II][0000]
 void CanOpenMotor::manageAutomaticHoming(void) {
     bool error_condition;
+    MotorCompletedCodes termination_code;
     home_initialized = false;
 
 
@@ -43,6 +44,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     if (!blocking_writeOD(OD_6099_01, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to switch
     if (!blocking_writeOD(OD_6099_02, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to reference
     if (!blocking_writeOD(OD_609A_00, convert_UserSec_To_Speed(command_acc))) error_condition = true; // Sets the Rotation Acc    
+    
 
     // Read the status of the input zero to determines witch algorithm shall be used
     blocking_readOD(OD_60FD_00);
@@ -95,8 +97,16 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     // Update the previous position
     previous_uposition = current_uposition;
 
+    // Unbrake 
+    if (!unbrakeCallback()) {
+        brakeCallback();
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_BRAKE_DEVICE);
+        return;
+    }
+
     // Set the start bit (BIT4) in the control word register
     if (!writeControlWord(0x10, 0x10)) {
+        brakeCallback();
         setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
         return;
     }
@@ -106,6 +116,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     clock::time_point start = clock::now();
 
     command_ms_tmo = 60000; // Sets the timout to 60 seconds for all devices
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING INIT POSITION = " + current_uposition.ToString());
 
     while (true) {
 
@@ -114,14 +125,14 @@ void CanOpenMotor::manageAutomaticHoming(void) {
             abort_request = false;
 
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_COMMAND_ABORTED);
+            termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
             break;
         }
 
         // Reads the status to be sure that it is still Operation Enabled 
         if (!blocking_readOD(OD_6041_00)) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR READING STATUS REGISTER");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
+            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
             break;
         }
 
@@ -130,14 +141,14 @@ void CanOpenMotor::manageAutomaticHoming(void) {
         // In case the status should be changed, the internal fault is activated
         if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR POSSIBLE FAULT");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_INTERNAL_FAULT);
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
             break;
         }
 
         // Test the Timeout condition
         if (command_ms_tmo <= 0) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING TIMEOUT ERROR");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_TIMOUT);
+            termination_code = MotorCompletedCodes::ERROR_TIMOUT;
             break;
         }
 
@@ -145,7 +156,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
         MotorCompletedCodes termination_condition = automaticHomingRunningCallback();
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
-            setCommandCompletedCode(termination_condition);
+            termination_code = termination_condition;
             break;
         }
 
@@ -181,21 +192,13 @@ void CanOpenMotor::manageAutomaticHoming(void) {
             milliseconds ms = std::chrono::duration_cast<milliseconds>(clock::now() - start);
             home_initialized = true;
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING SUCCESSFULLY COMPLETED");
-
-            setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
-
-            // resets the OMS bit of the control word
-            writeControlWord(0x0270, 0);
-
-            // set the cia Switched On status
-            writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
-
+            termination_code = MotorCompletedCodes::COMMAND_SUCCESS;         
             break;
         }
 
         if (error) {
             Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR  FAULT");
-            setCommandCompletedCode(MotorCompletedCodes::ERROR_INTERNAL_FAULT);
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
             break;
 
         }
@@ -205,19 +208,30 @@ void CanOpenMotor::manageAutomaticHoming(void) {
 
     } // End of main controlling loop
 
+
     // Read the current position 
     updateCurrentPosition();
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING FINAL POSITION = " + current_uposition.ToString());
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
+    // Read the status word
+    while (true) {
+        if (!blocking_readOD(OD_6041_00)) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            continue;
+        }
+        if (getCiAStatus(rxSdoRegister->data) != _CiA402Status::CiA402_QuickStopActive) break;
+    }
+
+    // Activates the brakes
+    brakeCallback();
 
     // set the cia Switched On status
     writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
 
-    // Clears motor command
-    current_command = MotorCommands::MOTOR_IDLE;
-
+    setCommandCompletedCode(termination_code);
     return;
 
 }

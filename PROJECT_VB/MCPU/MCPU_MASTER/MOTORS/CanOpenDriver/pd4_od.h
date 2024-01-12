@@ -3,6 +3,17 @@
 
 using namespace CANOPEN;
 
+// _______________________ DIGITAL IO MASK ________________________________________
+
+#define PD4_MOTOR_DI1  0x00010000
+#define PD4_MOTOR_DI2  0x00020000
+#define PD4_MOTOR_DI3  0x00040000
+#define PD4_MOTOR_DI4  0x00080000
+#define PD4_MOTOR_DI5  0x00100000
+#define PD4_MOTOR_DI6  0x00200000
+
+#define PD4_MOTOR_DO1  0x00010000
+#define PD4_MOTOR_DO2  0x00020000
 
 // _______________________ ZERO SETTING OBJECTS ________________________________________
 
@@ -178,8 +189,9 @@ using namespace CANOPEN;
 #define OD_6040_00_ENABLEOP_VAL                     0x000F
 #define OD_6040_00_DISABLEOP_MASK                   0x008F
 #define OD_6040_00_DISABLEOP_VAL                    0x0007
+#define OD_6040_00_QUICKSTOP_MASK                   0x0087
+#define OD_6040_00_QUICKSTOP_VAL                    0x0002
 
-#define OD_6040_00_QUICKSTOP                   0x0087, 0x0002
 #define OD_6040_00_DISVOLTAGE                  0x0082, 0x0000
 
 

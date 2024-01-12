@@ -133,10 +133,10 @@ public:
 	static void EVENT_XrayPushButton(bool status);
 
 	/// This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated
-	static void EVENT_XraySequenceCompleted(Generator::exposure_completed_options code);
+	static void EVENT_XraySequenceCompleted(void);
 
 	/// This is the EVENT the gantry sends to AWS to notify about a x-ray  pulse termination
-	static void EVENT_exposurePulseCompleted(unsigned char npulse) {};
+	static void EVENT_exposurePulseCompleted(unsigned char npulse) ;
 	
 	static void EVENT_operatingStatusChange(void) {};
 

@@ -11,7 +11,7 @@ public:
     
     Gantry();
     static Gantry^ gantry_handle = gcnew Gantry();
-    static void initialize(void) {}; //!< Causes the Gantry auto creation
+    static void initialize(void);
 
    
     // Monitor coordinates
@@ -32,8 +32,28 @@ public:
     };
     static const cli::array<System::String^>^ operating_status_tags = gcnew cli::array<System::String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
 
+    enum class manual_rotation_options {
+        GANTRY_STANDARD_MANUAL_ROTATION = 0, //!< Arm rotation and Vertical activation with buttons and pedals
+        GANTRY_BODY_MANUAL_ROTATION,         //!< Pedals and Buttons for Body rotation
+        GANTRY_SLIDE_MANUAL_ROTATION,                 //!< Pedals and Buttons for Slide
+        GANTRY_TILT_MANUAL_ROTATION,                  //!< Pedals and Buttons for Slide
+        GANTRY_ARM_MANUAL_ROTATION,                   //!< Pedals and Buttons for Arm
+    };
 
+    static manual_rotation_options manual_rotation_mode = manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION;
+    void setManualRotationMode(manual_rotation_options mode) { manual_rotation_mode = mode; }
 
+    static bool getArmManualActivationIncrease(void); 
+    static bool getArmManualActivationDecrease(void);
+    static bool getBodyManualActivationIncrease(void);
+    static bool getBodyManualActivationDecrease(void);
+    static bool getVerticalManualActivationIncrease(void);
+    static bool getVerticalManualActivationDecrease(void);
+    static bool getSlideManualActivationIncrease(void);
+    static bool getSlideManualActivationDecrease(void);
+    static bool getTiltManualActivationIncrease(void);
+    static bool getTiltManualActivationDecrease(void);
+    
 
     static System::String^ getPatientName(void) { return patient_name; }
     static bool setOpenStudy(System::String^ patient);
@@ -49,10 +69,12 @@ public:
     static void setStartup(void);
     static bool setOperating(void);
     static bool setService(void);
+    static inline bool isDemo(void) { return demo_status; }
 
 private:
     static operating_status_options current_operating_status = operating_status_options::GANTRY_STARTUP;
     static System::String^ patient_name;
+    static bool demo_status = false;
 };
 
 

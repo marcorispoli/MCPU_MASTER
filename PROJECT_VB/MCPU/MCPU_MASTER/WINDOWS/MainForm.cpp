@@ -529,6 +529,11 @@ bool MainForm::Startup_MotorVertical(void) {
 }
 
 bool MainForm::Startup_Generator(void) {
+	if (Gantry::isDemo()) {
+		if (!Generator::isGeneratorSetupCompleted()) return false;
+		return true;
+	}
+
 	switch (startupSubFase) {
 
 	case 0: // Smart Hub Connection
@@ -596,7 +601,7 @@ void MainForm::StartupProcedure(void) {
 	case 8: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 9: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 10: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 11: if (Startup_MotorVertical()) { startupFase+=2; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 11: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 12: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
 	case 13: startupFase++; startupSubFase = 0;
 		break;

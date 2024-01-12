@@ -68,9 +68,12 @@ void ProjectionForm::formInitialization(void) {
 void ProjectionForm::open(void) {
 	if (open_status) return;
 	open_status = true;
+	
 	loadProjections();
 	this->ShowDialog(parent);
+	
 }
+
 void ProjectionForm::close(void) {
 	if (!open_status) return;
 	open_status = false;
@@ -162,20 +165,47 @@ void ProjectionForm::proj8_Click(System::Object^ sender, System::EventArgs^ e) {
 	((ConfirmationWindow^)pConf)->open();
 }
 
+/// <summary>
+/// This function assignes the projections into the projection list
+/// to the Icons in the page.
+/// 
+/// panelNumber is the index of the current icon-page.
+/// Every Icon Page is coposed of 8 icons.
+/// 
+/// </summary>
+/// <param name=""></param>
 void ProjectionForm::loadProjections(void) {
 	cli::array<Panel^>^  panels = gcnew array<Panel^> { proj1 , proj2, proj3, proj4, proj5 , proj6, proj7 , proj8};
 
 	//ArmMotor::ProjectionOptions^ projection = ArmMotor::getProjectionsList();
 	List<ProjectionOptions::options>^ list = ArmMotor::getProjectionsList()->getCurrentProjectionList();
 
-	// Number of panels
+	// The projection list should contain almost one item.
+	if (list->Count == 0) {
+		panelNumber = 0;
+		for (int i = 0; i < 8; i++) {
+			panels[i]->BackgroundImage = ProjectionOptions::getProjectionIcon(ProjectionOptions::options::UNDEF);
+			panels[i]->Enabled = false;
+			proj_name[i] = "";
+		}
+		return;
+	}
+
+	// Number of required panels
 	int pn = (list->Count - 1) / 8;
+
+	// Adjust the panel index in case it should exceed the maximum panel index
 	if (panelNumber > pn) panelNumber = pn;
 
-
+	
+	// Fills only the 8 items of the current panel
 	for (int i = 0, j = panelNumber * 8; i < 8; i++, j++) {
 		if (j < list->Count) {
-			System::String^ tag = ProjectionOptions::getProjectionName((ProjectionOptions::options) j);
+
+			// Gets the name of the j-projection in the projection list
+			System::String^ tag = ProjectionOptions::getProjectionName((ProjectionOptions::options) list[j]);
+
+			// Assignes the related icon
 			panels[i]->BackgroundImage = ProjectionOptions::getProjectionIcon(tag);
 			panels[i]->Enabled = true;
 			proj_name[i] = tag;
@@ -186,5 +216,5 @@ void ProjectionForm::loadProjections(void) {
 			proj_name[i] = "";
 		}
 	}
-
+	
 }

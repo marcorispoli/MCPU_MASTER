@@ -5,83 +5,115 @@
 #include <thread>
 
 
-void PCB301::runningLoop(void) {
+void PCB301::handleSystemStatusRegister(void) {
     
-    static bool study_door_closed = false;
-
-    bool bval, b1val;
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-    //__________________________________________________________________________________________________________________ REGISTER STATUS
-    while (!send(PCB301_GET_STATUS_SYSTEM_REGISTER)) ;
+    Register^ system_status_register = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_STATUS_REGISTER);
+    if (system_status_register == nullptr) return;
 
     // Power Down Condition Monitor
-    power_down_status = PCB301_GET_SYSTEM_POWERDOWN(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    if(power_down_status) Notify::activate(Notify::messages::ERROR_POWER_DOWN_ERROR, false);
-    else Notify::deactivate(Notify::messages::ERROR_POWER_DOWN_ERROR);
-    
+    if (PCB301_GET_SYSTEM_POWERDOWN(system_status_register) != power_down_status) {
+        power_down_status = PCB301_GET_SYSTEM_POWERDOWN(system_status_register);
+
+        if (power_down_status) Notify::activate(Notify::messages::ERROR_POWER_DOWN_ERROR, false);
+        else Notify::deactivate(Notify::messages::ERROR_POWER_DOWN_ERROR);
+    }
+
     // Monitor of the Battery Enable input
-    battery_enabled_status = PCB301_GET_SYSTEM_BATTENA(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    if (battery_enabled_status == false) Notify::activate(Notify::messages::INFO_BATTERY_DISABLED, false);
-    else Notify::deactivate(Notify::messages::INFO_BATTERY_DISABLED);
-             
+    if (PCB301_GET_SYSTEM_BATTENA(system_status_register) != battery_enabled_status) {
+        battery_enabled_status = PCB301_GET_SYSTEM_BATTENA(system_status_register);
+        if (battery_enabled_status == false) Notify::activate(Notify::messages::INFO_BATTERY_DISABLED, false);
+        else Notify::deactivate(Notify::messages::INFO_BATTERY_DISABLED);
+    }
+    
+   
     // Monitor of the Battery Low error condition
     if (battery_enabled_status == false) {
-        // If the Batteries are not enabled, the low level is not monitored
-        batt1_low_alarm = false;
-        batt2_low_alarm = false;
-    }
-    else {
-        batt1_low_alarm = PCB301_GET_SYSTEM_BATT1LOW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-        batt2_low_alarm = PCB301_GET_SYSTEM_BATT2LOW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    }
 
-    // Handles the battery alarm
-    if (batt1_low_alarm || batt2_low_alarm) Notify::activate(Notify::messages::ERROR_BATTERY_LOW_ERROR, false);
-    else Notify::deactivate(Notify::messages::ERROR_BATTERY_LOW_ERROR);
-    
-    // Monitor of the Study door input
-    if (PCB301_GET_SYSTEM_CLOSEDOOR(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6)) {
-        Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
-        door_status = door_options::CLOSED_DOOR;
-    }
-    else {
-        door_status = door_options::OPEN_DOOR;
-        Notify::activate(Notify::messages::WARNING_DOOR_STUDY_OPEN, false);
-    }
+        bool batt_alarm = batt1_low_alarm || batt2_low_alarm;
+        if (batt_alarm) {
+            batt1_low_alarm = false;
+            batt2_low_alarm = false;
+            Notify::deactivate(Notify::messages::ERROR_BATTERY_LOW_ERROR);
+        }
         
-    // Handles the manual vertical activation request
-    bool up_stat = PCB301_GET_VERTICAL_UP(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    bool down_stat = PCB301_GET_VERTICAL_DOWN(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-
-    if (up_stat && down_stat) vertical_activation_status = vertical_activation_options::VERTICAL_INVALID_CODE;
-    else if ((up_stat) && (!down_stat)) vertical_activation_status = vertical_activation_options::VERTICAL_UP_ACTIVATION;
-    else if ((!up_stat) && (down_stat)) vertical_activation_status = vertical_activation_options::VERTICAL_DOWN_ACTIVATION;
-    else vertical_activation_status = vertical_activation_options::VERTICAL_NO_ACTIVATION;
-
-    // Handles the manual body activation request
-    bool cw_stat = PCB301_GET_BODY_CW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    bool ccw_stat = PCB301_GET_BODY_CCW(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-
-    if (cw_stat && ccw_stat) body_activation_status = body_activation_options::BODY_INVALID_CODE;
-    else if ((cw_stat) && (!ccw_stat)) body_activation_status = body_activation_options::BODY_CW_ACTIVATION;
-    else if ((!cw_stat) && (ccw_stat)) body_activation_status = body_activation_options::BODY_CCW_ACTIVATION;
-    else body_activation_status = body_activation_options::BODY_NO_ACTIVATION;
-
-    // handles the X-RAY puss button
-    if ((PCB301_GET_XRAY_PUSH_BUTTON(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6) != xray_push_button)) {
-        xray_push_button = PCB301_GET_XRAY_PUSH_BUTTON(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-        if(xray_push_button_event_enable) awsProtocol::EVENT_XrayPushButton(xray_push_button);
     }
-
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    //__________________________________________________________________________________________________________________ REGISTER BATTERY
-    while (!send(PCB301_GET_STATUS_BATTERY_REGISTER));
-    voltage_batt1 = PCB301_GET_BATTERY_VBATT1(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
-    voltage_batt2 = PCB301_GET_BATTERY_VBATT2(getRxRegister()->b3, getRxRegister()->b4, getRxRegister()->b5, getRxRegister()->b6);
+    else {
+        bool batt_alarm = batt1_low_alarm || batt2_low_alarm;
+        batt1_low_alarm = PCB301_GET_SYSTEM_BATT1LOW(system_status_register);
+        batt2_low_alarm = PCB301_GET_SYSTEM_BATT2LOW(system_status_register);
+        if ((batt1_low_alarm || batt2_low_alarm) != batt_alarm) {
+            if(batt1_low_alarm || batt2_low_alarm) Notify::activate(Notify::messages::ERROR_BATTERY_LOW_ERROR, false);
+            else Notify::deactivate(Notify::messages::ERROR_BATTERY_LOW_ERROR);
+        }
+    }
     
 
+    // Monitor of the Study door input
+    if (Gantry::isDemo()) {
+        if (door_status != door_options::CLOSED_DOOR) {
+            door_status = door_options::CLOSED_DOOR;
+            Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
+        }
+        
+    }else {   
+        door_options door_closed_status;
+        if (PCB301_GET_SYSTEM_CLOSEDOOR(system_status_register)) door_closed_status = door_options::CLOSED_DOOR;
+        else door_closed_status = door_options::OPEN_DOOR;
+
+        if (door_closed_status != door_status) {
+            door_status = door_closed_status;
+            if (door_status == door_options::CLOSED_DOOR) Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
+            else Notify::activate(Notify::messages::WARNING_DOOR_STUDY_OPEN, false);
+        }
+    }
+
+    
+
+    // Handles the motor manual inputs
+    button_up_stat = PCB301_GET_BUTTON_VERTICAL_UP(system_status_register);
+    button_down_stat = PCB301_GET_BUTTON_VERTICAL_DOWN(system_status_register);
+    pedal_up_stat = PCB301_GET_PEDAL_VERTICAL_UP(system_status_register);
+    pedal_down_stat = PCB301_GET_PEDAL_VERTICAL_DOWN(system_status_register);
+
+    button_body_cw = PCB301_GET_BUTTON_BODY_CW(system_status_register);
+    button_body_ccw = PCB301_GET_BUTTON_BODY_CCW(system_status_register);
+
+    button_arm_cw_stat = PCB301_GET_BUTTON_ARM_CW(system_status_register);
+    button_arm_ccw_stat = PCB301_GET_BUTTON_ARM_CCW(system_status_register);
+
+    button_slide_up_stat = PCB301_GET_BUTTON_SLIDE_UP(system_status_register);
+    button_slide_down_stat = PCB301_GET_BUTTON_SLIDE_DOWN(system_status_register);
+
+    // handles the X-RAY push button
+    if ((PCB301_GET_XRAY_PUSH_BUTTON(system_status_register) != xray_push_button)) {
+        xray_push_button = PCB301_GET_XRAY_PUSH_BUTTON(system_status_register);
+        if (xray_push_button_event_enable) awsProtocol::EVENT_XrayPushButton(xray_push_button);
+    }
+
+}
+
+void PCB301::handleBatteryStatusRegister(void) {
+    Register^ battery_status_register = readStatusRegister((unsigned char) StatusRegisters::BATTERY_STATUS_REGISTER);
+    if (battery_status_register == nullptr) return;
+
+    voltage_batt1 = PCB301_GET_BATTERY_VBATT1(battery_status_register);
+    voltage_batt2 = PCB301_GET_BATTERY_VBATT2(battery_status_register);
+
+}
+
+void PCB301::runningLoop(void) {
+    static int count = 0;
+
+   
+
+    handleSystemStatusRegister();
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    handleBatteryStatusRegister();
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    // Refresh the Data register
+    writeDataRegister((unsigned char)DataRegisters::OUTPUTS_DATA_REGISTER, outputs_data_register);
+   
     return;
 }

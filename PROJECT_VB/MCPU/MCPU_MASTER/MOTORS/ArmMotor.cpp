@@ -15,7 +15,7 @@
 #define HOMING_OFF_METHOD 20
 
 
-ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", ROT_PER_CDEGREE)
+ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", ROT_PER_CDEGREE, false)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(20, 20);
@@ -29,7 +29,7 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDe
     }
 
     setEncoderInitStatus(homing_initialized);
-    setEncoderInitialEvalue(init_position);
+    setEncoderInitialUvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING, false);
@@ -62,8 +62,14 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
 
     // Sets the current Vertical position
     if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
+    }
+
+    if (error != MotorCompletedCodes::COMMAND_SUCCESS) {
+
+        // Invalidate the current target
+        valid_target = false;
     }
 
     // If the C-ARM activation is not a Isocentric mode (or is terminated in error) then the command termines here
@@ -80,7 +86,11 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
     double init_h = COMPRESSION_PLANE_MM * cos((double) getPreviousPosition() * 3.14159 / (double)18000);
     double end_h = COMPRESSION_PLANE_MM * cos((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
     int delta_h =  (int) init_h - (int) end_h;
-    VerticalMotor::activateIsocentricCorrection(getCommandId(), delta_h);
+    if (!VerticalMotor::activateIsocentricCorrection(getCommandId(), delta_h)) {
+        // The target is not invalidated because the rotation angle is still valid!
+        device->command_completed_event(getCommandId(), (int)MotorCompletedCodes::COMMAND_SUCCESS);
+        //command_completed_event(getCommandId(), (int) VerticalMotor::device->getCommandCompletedCode());
+    }
     return;
 }
 
@@ -103,26 +113,14 @@ ArmMotor::MotorCompletedCodes ArmMotor::idleCallback(void) {
 void ArmMotor::abortTarget(void) {
     if (!valid_target) return;
     valid_target = false;
-
     projections->clrProjection();
-    target_abort_event();
+    
 }
 
 bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id) {
 
     // Checks the validity of the requested projection
     if (!projections->isValidProjection(proj) ) return false;
-
-    // Assignes the projection
-    projections->setProjection(proj);
-
-    // Assignes the target data
-    allowed_low = low;
-    allowed_high = high;
-    valid_target = true;
-    selected_target = pos;
-
-    target_change_event(id, pos); // For the Window Form update state
 
     // Activate an Isocentric C-ARM rotation
     device->iso_activation_mode = true;
@@ -131,8 +129,21 @@ bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int i
     int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_SPEED]);
     int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_ACC]);
     int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_DEC]);
-    return device->activateAutomaticPositioning(id, pos, speed, acc, dec);
 
+    // Assignes the projection
+    if (device->activateAutomaticPositioning(id, pos * 100, speed, acc, dec)) {
+        projections->setProjection(proj);
+
+        // Assignes the target data
+        allowed_low = low * 100;
+        allowed_high = high * 100;
+        valid_target = true;
+        selected_target = pos;
+        return true;
+    }    
+
+    valid_target = false;
+    return false;
 }
 
 /// <summary>
@@ -163,7 +174,7 @@ void ArmMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
    
     if (isEncoderInitialized()) {
         // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderEposition().ToString());
+        MotorConfig::Configuration->setParam(MotorConfig::PARAM_ARM, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
         MotorConfig::Configuration->storeFile();
         Notify::deactivate(Notify::messages::ERROR_ARM_MOTOR_HOMING);
     }

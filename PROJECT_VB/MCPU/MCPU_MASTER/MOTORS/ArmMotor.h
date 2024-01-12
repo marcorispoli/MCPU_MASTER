@@ -278,6 +278,10 @@ public:
         return true;
     }
 
+    void clrList(void) {
+        projection_list->Clear();
+    }
+
     System::String^ getCurrentProjectionName(void) { return current_projection_name; }
     options getCurrentProjectionCode(void) { return current_projection_code; }
     Image^ getCurrentProjectionIcon(void) { return ProjectionsIcons[current_projection_name]; }
@@ -319,12 +323,7 @@ public:
     static bool startHoming(void);
     static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
 
-    delegate void delegate_target_change_callback(int id, int target_position);
-    static event delegate_target_change_callback^ target_change_event;
     static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
-
-    delegate void delegate_target_abort_callback(void);
-    static event delegate_target_abort_callback^ target_abort_event;
     static void abortTarget(void);
 
 

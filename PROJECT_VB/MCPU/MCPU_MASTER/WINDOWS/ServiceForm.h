@@ -20,68 +20,7 @@ using namespace System::Drawing;
 public ref class ServiceForm : public System::Windows::Forms::Form
 {
 public: static ServiceForm^ panel;
-private: System::Windows::Forms::Label^ zeroSettingPanelTitle;
-private: System::Windows::Forms::PictureBox^ zeroSettingAbortButton;
-
-
-
-	enum class panels {
-		PANEL_NOT_DEFINED = 0,
-		MAIN_SERVICE_PANEL,
-		CALIB_PANEL,
-		CALIB_ZEROSETTING_PANEL,
-		TOOL_ROTATION_PANEL,
-	};
-
-private: panels current_panel;
-private: void setActivePanel(ServiceForm::panels p);
-
-private: void initMainPanel(void);
-#include "calib_panel.h"
-
-	   
-public:
-public:System::Timers::Timer^ serviceTimer;
-private: System::Windows::Forms::Label^ labelDate;
-private: System::Windows::Forms::Label^ labelInstallation;
-private: System::Windows::Forms::Label^ labelTime;
-private: System::Windows::Forms::Button^ CancButton;
-private: System::Windows::Forms::Panel^ calibPanel;
-private: System::Windows::Forms::Panel^ calibZerosettingPanel;
-private: System::Windows::Forms::PictureBox^ zeroSettingSlide;
-private: System::Windows::Forms::RichTextBox^ zeroSettingLog;
-
-private: System::Windows::Forms::PictureBox^ zeroSettingTilt;
-private: System::Windows::Forms::PictureBox^ zeroSettingArm;
-private: System::Windows::Forms::PictureBox^ zeroSettingVertical;
-private: System::Windows::Forms::PictureBox^ zeroSettingBody;
-private: System::Windows::Forms::Button^ buttonCalibZeroSettingExit;
-private: System::Windows::Forms::PictureBox^ zeroSettingAll;
-
-private: System::Windows::Forms::Button^ calibPanelExit;
-
-private: System::Windows::Forms::PictureBox^ zeroSetting;
-private: System::Windows::Forms::PictureBox^ pictureBox3;
-private: System::Windows::Forms::Panel^ mainPanel;
-
-public:
-
-// Handles the Window status
-public:	void open(void);
-public:	void close(void);
-private: bool open_status;
-private:HWND window;
 private:void formInitialization(void);
-private:void initServiceStatus(void);
-private:void serviceStatusManagement(void);
-
-// Handles the system passwords
-private: static bool passwd_operator = false;
-private: static bool passwd_factory = false;
-private: static bool isPasswordOperator() {return passwd_operator;}
-private: static bool isPasswordFactory() { return passwd_factory; }
-
-	
 public:
 	ServiceForm(void)
 	{
@@ -103,15 +42,70 @@ protected:
 			delete components;
 		}
 	}
+
+public:System::Timers::Timer^ serviceTimer;
+
+	  // Handles the Window status
+public:	void open(void);
+public:	void close(void);
+public: bool open_status;
+public:HWND window;
+public:void initServiceStatus(void);
+public:void serviceStatusManagement(void);
+
+	   // Handles the system passwords
+public: static bool passwd_operator = false;
+public: static bool passwd_factory = false;
+public: static bool isPasswordOperator() { return passwd_operator; }
+public: static bool isPasswordFactory() { return passwd_factory; }
+
+public: enum class panels {
+	PANEL_NOT_DEFINED = 0,
+	MAIN_SERVICE_PANEL,
+	CALIB_PANEL,
+	CALIB_ZEROSETTING_PANEL,
+	TOOL_ROTATION_PANEL,
+};
+
+#define PANEL_WIDTH 600
+#define PANEL_HIGH 880
+#define PANEL_X 0
+#define PANEL_Y 50
+
+public: ServiceForm::panels current_panel;
+public: void setActivePanel(ServiceForm::panels p);
+
+public: void initServicePanel(void);
+public: void createServicePanel(void);
+public: void cancServicePanel(void);
+
+#include "calib_panel.h"
+
+
+private: System::Windows::Forms::Label^ serviceMenuTitle;
+private: System::Windows::Forms::Label^ labelDate;
+private: System::Windows::Forms::Label^ labelInstallation;
+private: System::Windows::Forms::Label^ labelTime;
+private: System::Windows::Forms::PictureBox^ serviceCanc;
+
+private: System::Windows::Forms::Panel^ servicePanel;
 private: System::Windows::Forms::PictureBox^ rotationTool;
 private: System::Windows::Forms::PictureBox^ systemSetup;
 private: System::Windows::Forms::PictureBox^ systemCalibration;
-protected:
 
-protected:
+private: System::Windows::Forms::Panel^ calibPanel;
+private: System::Windows::Forms::PictureBox^ zeroSetting;
+
+private: System::Windows::Forms::Panel^ calibZerosettingPanel;
+private: System::Windows::Forms::PictureBox^ zeroSettingSlide;
+private: System::Windows::Forms::PictureBox^ zeroSettingTilt;
+private: System::Windows::Forms::PictureBox^ zeroSettingArm;
+private: System::Windows::Forms::PictureBox^ zeroSettingVertical;
+private: System::Windows::Forms::PictureBox^ zeroSettingBody;
+private: System::Windows::Forms::PictureBox^ zeroSettingAll;
+private: System::Windows::Forms::RichTextBox^ zeroSettingLog;
 
 
-protected:
 private:
 	/// <summary>
 	/// Required designer variable.
@@ -131,36 +125,33 @@ private:
 		this->labelDate = (gcnew System::Windows::Forms::Label());
 		this->labelInstallation = (gcnew System::Windows::Forms::Label());
 		this->labelTime = (gcnew System::Windows::Forms::Label());
-		this->mainPanel = (gcnew System::Windows::Forms::Panel());
-		this->CancButton = (gcnew System::Windows::Forms::Button());
+		this->servicePanel = (gcnew System::Windows::Forms::Panel());
 		this->calibPanel = (gcnew System::Windows::Forms::Panel());
-		this->calibPanelExit = (gcnew System::Windows::Forms::Button());
 		this->zeroSetting = (gcnew System::Windows::Forms::PictureBox());
 		this->calibZerosettingPanel = (gcnew System::Windows::Forms::Panel());
-		this->zeroSettingAbortButton = (gcnew System::Windows::Forms::PictureBox());
-		this->zeroSettingPanelTitle = (gcnew System::Windows::Forms::Label());
 		this->zeroSettingLog = (gcnew System::Windows::Forms::RichTextBox());
 		this->zeroSettingSlide = (gcnew System::Windows::Forms::PictureBox());
 		this->zeroSettingTilt = (gcnew System::Windows::Forms::PictureBox());
 		this->zeroSettingArm = (gcnew System::Windows::Forms::PictureBox());
 		this->zeroSettingVertical = (gcnew System::Windows::Forms::PictureBox());
 		this->zeroSettingBody = (gcnew System::Windows::Forms::PictureBox());
-		this->buttonCalibZeroSettingExit = (gcnew System::Windows::Forms::Button());
 		this->zeroSettingAll = (gcnew System::Windows::Forms::PictureBox());
+		this->serviceCanc = (gcnew System::Windows::Forms::PictureBox());
+		this->serviceMenuTitle = (gcnew System::Windows::Forms::Label());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemSetup))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->BeginInit();
-		this->mainPanel->SuspendLayout();
+		this->servicePanel->SuspendLayout();
 		this->calibPanel->SuspendLayout();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->BeginInit();
 		this->calibZerosettingPanel->SuspendLayout();
-		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingAbortButton))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingSlide))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingTilt))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingArm))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingVertical))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingBody))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingAll))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->BeginInit();
 		this->SuspendLayout();
 		// 
 		// rotationTool
@@ -168,7 +159,7 @@ private:
 		this->rotationTool->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->rotationTool->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->rotationTool->Location = System::Drawing::Point(220, 127);
+		this->rotationTool->Location = System::Drawing::Point(216, 116);
 		this->rotationTool->Name = L"rotationTool";
 		this->rotationTool->Size = System::Drawing::Size(160, 160);
 		this->rotationTool->TabIndex = 1;
@@ -179,7 +170,7 @@ private:
 		this->systemSetup->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->systemSetup->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->systemSetup->Location = System::Drawing::Point(220, 337);
+		this->systemSetup->Location = System::Drawing::Point(216, 621);
 		this->systemSetup->Name = L"systemSetup";
 		this->systemSetup->Size = System::Drawing::Size(160, 160);
 		this->systemSetup->TabIndex = 2;
@@ -190,7 +181,7 @@ private:
 		this->systemCalibration->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
 			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->systemCalibration->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->systemCalibration->Location = System::Drawing::Point(220, 555);
+		this->systemCalibration->Location = System::Drawing::Point(216, 368);
 		this->systemCalibration->Name = L"systemCalibration";
 		this->systemCalibration->Size = System::Drawing::Size(160, 160);
 		this->systemCalibration->TabIndex = 3;
@@ -204,7 +195,7 @@ private:
 			static_cast<System::Byte>(0)));
 		this->labelDate->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
 			static_cast<System::Int32>(static_cast<System::Byte>(149)));
-		this->labelDate->Location = System::Drawing::Point(3, 980);
+		this->labelDate->Location = System::Drawing::Point(5, 984);
 		this->labelDate->Name = L"labelDate";
 		this->labelDate->Size = System::Drawing::Size(100, 24);
 		this->labelDate->TabIndex = 7;
@@ -216,12 +207,12 @@ private:
 			System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 		this->labelInstallation->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)),
 			static_cast<System::Int32>(static_cast<System::Byte>(149)), static_cast<System::Int32>(static_cast<System::Byte>(149)));
-		this->labelInstallation->Location = System::Drawing::Point(212, 980);
+		this->labelInstallation->Location = System::Drawing::Point(5, 956);
 		this->labelInstallation->Name = L"labelInstallation";
-		this->labelInstallation->Size = System::Drawing::Size(280, 24);
+		this->labelInstallation->Size = System::Drawing::Size(476, 24);
 		this->labelInstallation->TabIndex = 8;
 		this->labelInstallation->Text = L"IFO SAN GALLICANO";
-		this->labelInstallation->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->labelInstallation->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		// 
 		// labelTime
 		// 
@@ -230,134 +221,69 @@ private:
 			static_cast<System::Byte>(0)));
 		this->labelTime->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
 			static_cast<System::Int32>(static_cast<System::Byte>(149)));
-		this->labelTime->Location = System::Drawing::Point(109, 980);
+		this->labelTime->Location = System::Drawing::Point(111, 984);
 		this->labelTime->Name = L"labelTime";
 		this->labelTime->Size = System::Drawing::Size(88, 24);
 		this->labelTime->TabIndex = 9;
 		this->labelTime->Text = L"10:35 PM";
 		// 
-		// mainPanel
+		// servicePanel
 		// 
-		this->mainPanel->Controls->Add(this->CancButton);
-		this->mainPanel->Controls->Add(this->labelDate);
-		this->mainPanel->Controls->Add(this->labelInstallation);
-		this->mainPanel->Controls->Add(this->labelTime);
-		this->mainPanel->Controls->Add(this->rotationTool);
-		this->mainPanel->Controls->Add(this->systemSetup);
-		this->mainPanel->Controls->Add(this->systemCalibration);
-		this->mainPanel->Location = System::Drawing::Point(1000, 0);
-		this->mainPanel->Name = L"mainPanel";
-		this->mainPanel->Size = System::Drawing::Size(600, 1024);
-		this->mainPanel->TabIndex = 14;
-		// 
-		// CancButton
-		// 
-		this->CancButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
-			static_cast<System::Int32>(static_cast<System::Byte>(0)));
-		this->CancButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->CancButton->FlatAppearance->BorderColor = System::Drawing::Color::Black;
-		this->CancButton->FlatAppearance->BorderSize = 0;
-		this->CancButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-		this->CancButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-			static_cast<System::Byte>(0)));
-		this->CancButton->Location = System::Drawing::Point(498, 936);
-		this->CancButton->Name = L"CancButton";
-		this->CancButton->Size = System::Drawing::Size(99, 85);
-		this->CancButton->TabIndex = 18;
-		this->CancButton->UseVisualStyleBackColor = false;
-		this->CancButton->Click += gcnew System::EventHandler(this, &ServiceForm::cancButton_Click);
+		this->servicePanel->Controls->Add(this->rotationTool);
+		this->servicePanel->Controls->Add(this->systemSetup);
+		this->servicePanel->Controls->Add(this->systemCalibration);
+		this->servicePanel->Location = System::Drawing::Point(1000, 50);
+		this->servicePanel->Name = L"servicePanel";
+		this->servicePanel->Size = System::Drawing::Size(600, 880);
+		this->servicePanel->TabIndex = 14;
 		// 
 		// calibPanel
 		// 
-		this->calibPanel->Controls->Add(this->calibPanelExit);
 		this->calibPanel->Controls->Add(this->zeroSetting);
-		this->calibPanel->Location = System::Drawing::Point(1000, 0);
+		this->calibPanel->Location = System::Drawing::Point(1000, 50);
 		this->calibPanel->Name = L"calibPanel";
-		this->calibPanel->Size = System::Drawing::Size(600, 1024);
+		this->calibPanel->Size = System::Drawing::Size(600, 880);
 		this->calibPanel->TabIndex = 15;
-		// 
-		// calibPanelExit
-		// 
-		this->calibPanelExit->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
-			static_cast<System::Int32>(static_cast<System::Byte>(0)));
-		this->calibPanelExit->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->calibPanelExit->FlatAppearance->BorderColor = System::Drawing::Color::Black;
-		this->calibPanelExit->FlatAppearance->BorderSize = 0;
-		this->calibPanelExit->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-		this->calibPanelExit->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-			static_cast<System::Byte>(0)));
-		this->calibPanelExit->Location = System::Drawing::Point(498, 936);
-		this->calibPanelExit->Name = L"calibPanelExit";
-		this->calibPanelExit->Size = System::Drawing::Size(99, 85);
-		this->calibPanelExit->TabIndex = 18;
-		this->calibPanelExit->UseVisualStyleBackColor = false;
-		this->calibPanelExit->Click += gcnew System::EventHandler(this, &ServiceForm::calibPanelExit_Click);
 		// 
 		// zeroSetting
 		// 
 		this->zeroSetting->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSetting->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->zeroSetting->Location = System::Drawing::Point(232, 320);
+		this->zeroSetting->Location = System::Drawing::Point(40, 40);
 		this->zeroSetting->Name = L"zeroSetting";
-		this->zeroSetting->Size = System::Drawing::Size(160, 160);
+		this->zeroSetting->Size = System::Drawing::Size(165, 165);
 		this->zeroSetting->TabIndex = 1;
 		this->zeroSetting->TabStop = false;
 		this->zeroSetting->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSetting_Click);
 		// 
 		// calibZerosettingPanel
 		// 
-		this->calibZerosettingPanel->Controls->Add(this->zeroSettingAbortButton);
-		this->calibZerosettingPanel->Controls->Add(this->zeroSettingPanelTitle);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingLog);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingSlide);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingTilt);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingArm);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingVertical);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingBody);
-		this->calibZerosettingPanel->Controls->Add(this->buttonCalibZeroSettingExit);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingAll);
-		this->calibZerosettingPanel->Location = System::Drawing::Point(0, 0);
+		this->calibZerosettingPanel->Location = System::Drawing::Point(0, 50);
 		this->calibZerosettingPanel->Name = L"calibZerosettingPanel";
-		this->calibZerosettingPanel->Size = System::Drawing::Size(600, 1024);
+		this->calibZerosettingPanel->Size = System::Drawing::Size(600, 880);
 		this->calibZerosettingPanel->TabIndex = 16;
-		// 
-		// zeroSettingAbortButton
-		// 
-		this->zeroSettingAbortButton->BackColor = System::Drawing::Color::Red;
-		this->zeroSettingAbortButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->zeroSettingAbortButton->Location = System::Drawing::Point(44, 822);
-		this->zeroSettingAbortButton->Name = L"zeroSettingAbortButton";
-		this->zeroSettingAbortButton->Size = System::Drawing::Size(160, 74);
-		this->zeroSettingAbortButton->TabIndex = 26;
-		this->zeroSettingAbortButton->TabStop = false;
-		this->zeroSettingAbortButton->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingAbortButton_Click);
-		// 
-		// zeroSettingPanelTitle
-		// 
-		this->zeroSettingPanelTitle->BackColor = System::Drawing::Color::Transparent;
-		this->zeroSettingPanelTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 24, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-			static_cast<System::Byte>(0)));
-		this->zeroSettingPanelTitle->Location = System::Drawing::Point(15, 24);
-		this->zeroSettingPanelTitle->Name = L"zeroSettingPanelTitle";
-		this->zeroSettingPanelTitle->Size = System::Drawing::Size(570, 42);
-		this->zeroSettingPanelTitle->TabIndex = 25;
-		this->zeroSettingPanelTitle->Text = L"Title";
-		this->zeroSettingPanelTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// zeroSettingLog
 		// 
 		this->zeroSettingLog->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(207)),
 			static_cast<System::Int32>(static_cast<System::Byte>(208)));
-		this->zeroSettingLog->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+		this->zeroSettingLog->BorderStyle = System::Windows::Forms::BorderStyle::None;
 		this->zeroSettingLog->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->zeroSettingLog->Location = System::Drawing::Point(44, 547);
+		this->zeroSettingLog->Location = System::Drawing::Point(50, 430);
 		this->zeroSettingLog->Name = L"zeroSettingLog";
 		this->zeroSettingLog->ReadOnly = true;
 		this->zeroSettingLog->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
 		this->zeroSettingLog->ShortcutsEnabled = false;
-		this->zeroSettingLog->Size = System::Drawing::Size(510, 269);
+		this->zeroSettingLog->Size = System::Drawing::Size(500, 400);
 		this->zeroSettingLog->TabIndex = 24;
 		this->zeroSettingLog->Text = L"1";
 		// 
@@ -366,9 +292,9 @@ private:
 		this->zeroSettingSlide->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
 			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSettingSlide->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->zeroSettingSlide->Location = System::Drawing::Point(219, 348);
+		this->zeroSettingSlide->Location = System::Drawing::Point(220, 236);
 		this->zeroSettingSlide->Name = L"zeroSettingSlide";
-		this->zeroSettingSlide->Size = System::Drawing::Size(160, 160);
+		this->zeroSettingSlide->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingSlide->TabIndex = 23;
 		this->zeroSettingSlide->TabStop = false;
 		this->zeroSettingSlide->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingSlide_Click);
@@ -378,9 +304,9 @@ private:
 		this->zeroSettingTilt->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSettingTilt->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->zeroSettingTilt->Location = System::Drawing::Point(44, 348);
+		this->zeroSettingTilt->Location = System::Drawing::Point(410, 40);
 		this->zeroSettingTilt->Name = L"zeroSettingTilt";
-		this->zeroSettingTilt->Size = System::Drawing::Size(160, 160);
+		this->zeroSettingTilt->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingTilt->TabIndex = 22;
 		this->zeroSettingTilt->TabStop = false;
 		this->zeroSettingTilt->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingTilt_Click);
@@ -390,9 +316,9 @@ private:
 		this->zeroSettingArm->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSettingArm->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->zeroSettingArm->Location = System::Drawing::Point(394, 167);
+		this->zeroSettingArm->Location = System::Drawing::Point(220, 40);
 		this->zeroSettingArm->Name = L"zeroSettingArm";
-		this->zeroSettingArm->Size = System::Drawing::Size(160, 160);
+		this->zeroSettingArm->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingArm->TabIndex = 21;
 		this->zeroSettingArm->TabStop = false;
 		this->zeroSettingArm->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingArm_Click);
@@ -402,9 +328,9 @@ private:
 		this->zeroSettingVertical->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
 			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSettingVertical->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->zeroSettingVertical->Location = System::Drawing::Point(219, 167);
+		this->zeroSettingVertical->Location = System::Drawing::Point(30, 40);
 		this->zeroSettingVertical->Name = L"zeroSettingVertical";
-		this->zeroSettingVertical->Size = System::Drawing::Size(160, 160);
+		this->zeroSettingVertical->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingVertical->TabIndex = 20;
 		this->zeroSettingVertical->TabStop = false;
 		this->zeroSettingVertical->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingVertical_Click);
@@ -414,41 +340,49 @@ private:
 		this->zeroSettingBody->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSettingBody->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->zeroSettingBody->Location = System::Drawing::Point(44, 167);
+		this->zeroSettingBody->Location = System::Drawing::Point(30, 236);
 		this->zeroSettingBody->Name = L"zeroSettingBody";
-		this->zeroSettingBody->Size = System::Drawing::Size(160, 160);
+		this->zeroSettingBody->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingBody->TabIndex = 19;
 		this->zeroSettingBody->TabStop = false;
 		this->zeroSettingBody->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingBody_Click);
-		// 
-		// buttonCalibZeroSettingExit
-		// 
-		this->buttonCalibZeroSettingExit->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
-			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
-		this->buttonCalibZeroSettingExit->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->buttonCalibZeroSettingExit->FlatAppearance->BorderColor = System::Drawing::Color::Black;
-		this->buttonCalibZeroSettingExit->FlatAppearance->BorderSize = 0;
-		this->buttonCalibZeroSettingExit->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-		this->buttonCalibZeroSettingExit->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
-			System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-		this->buttonCalibZeroSettingExit->Location = System::Drawing::Point(498, 936);
-		this->buttonCalibZeroSettingExit->Name = L"buttonCalibZeroSettingExit";
-		this->buttonCalibZeroSettingExit->Size = System::Drawing::Size(99, 85);
-		this->buttonCalibZeroSettingExit->TabIndex = 18;
-		this->buttonCalibZeroSettingExit->UseVisualStyleBackColor = false;
-		this->buttonCalibZeroSettingExit->Click += gcnew System::EventHandler(this, &ServiceForm::buttonCalibZeroSettingExit_Click);
 		// 
 		// zeroSettingAll
 		// 
 		this->zeroSettingAll->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSettingAll->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->zeroSettingAll->Location = System::Drawing::Point(394, 348);
+		this->zeroSettingAll->Location = System::Drawing::Point(410, 236);
 		this->zeroSettingAll->Name = L"zeroSettingAll";
-		this->zeroSettingAll->Size = System::Drawing::Size(160, 160);
+		this->zeroSettingAll->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingAll->TabIndex = 1;
 		this->zeroSettingAll->TabStop = false;
 		this->zeroSettingAll->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingAll_Click);
+		// 
+		// serviceCanc
+		// 
+		this->serviceCanc->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+			static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->serviceCanc->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->serviceCanc->Location = System::Drawing::Point(498, 936);
+		this->serviceCanc->Name = L"serviceCanc";
+		this->serviceCanc->Size = System::Drawing::Size(99, 85);
+		this->serviceCanc->TabIndex = 19;
+		this->serviceCanc->TabStop = false;
+		this->serviceCanc->Click += gcnew System::EventHandler(this, &ServiceForm::cancButton_Click);
+		// 
+		// serviceMenuTitle
+		// 
+		this->serviceMenuTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular,
+			System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+		this->serviceMenuTitle->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)),
+			static_cast<System::Int32>(static_cast<System::Byte>(149)), static_cast<System::Int32>(static_cast<System::Byte>(149)));
+		this->serviceMenuTitle->Location = System::Drawing::Point(3, 9);
+		this->serviceMenuTitle->Name = L"serviceMenuTitle";
+		this->serviceMenuTitle->Size = System::Drawing::Size(594, 36);
+		this->serviceMenuTitle->TabIndex = 20;
+		this->serviceMenuTitle->Text = L"TITLE";
+		this->serviceMenuTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// ServiceForm
 		// 
@@ -456,28 +390,33 @@ private:
 			static_cast<System::Int32>(static_cast<System::Byte>(60)));
 		this->ClientSize = System::Drawing::Size(600, 1024);
 		this->ControlBox = false;
+		this->Controls->Add(this->serviceMenuTitle);
 		this->Controls->Add(this->calibZerosettingPanel);
+		this->Controls->Add(this->labelInstallation);
+		this->Controls->Add(this->labelDate);
+		this->Controls->Add(this->labelTime);
+		this->Controls->Add(this->serviceCanc);
 		this->Controls->Add(this->calibPanel);
-		this->Controls->Add(this->mainPanel);
+		this->Controls->Add(this->servicePanel);
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 		this->Name = L"ServiceForm";
 		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationTool))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemSetup))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->EndInit();
-		this->mainPanel->ResumeLayout(false);
-		this->mainPanel->PerformLayout();
+		this->servicePanel->ResumeLayout(false);
 		this->calibPanel->ResumeLayout(false);
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->EndInit();
 		this->calibZerosettingPanel->ResumeLayout(false);
-		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingAbortButton))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingSlide))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingTilt))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingArm))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingVertical))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingBody))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingAll))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->EndInit();
 		this->ResumeLayout(false);
+		this->PerformLayout();
 
 	}
 #pragma endregion
@@ -488,15 +427,13 @@ private:
 
 	private: System::Void cancButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void systemCalibration_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void calibPanelExit_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void zeroSetting_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void buttonCalibZeroSettingExit_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void zeroSettingBody_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void zeroSettingVertical_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void zeroSettingArm_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void zeroSettingTilt_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void zeroSettingSlide_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void zeroSettingAll_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void zeroSettingAbortButton_Click(System::Object^ sender, System::EventArgs^ e);
+	
 };
 

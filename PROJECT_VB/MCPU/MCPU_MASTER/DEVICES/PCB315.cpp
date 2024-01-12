@@ -145,10 +145,17 @@ bool PCB315::updateStatusRegister(void) {
     if (system_status_register == nullptr) return false;
         
     filter_status = (FilterSlotCodes) PCB315_GET_SYSTEM_FILTER(system_status_register);
-    stator_perc = PCB315_GET_SYSTEM_STATOR(system_status_register);
-    bulb_perc = PCB315_GET_SYSTEM_BULB(system_status_register);
     flags_status = PCB315_GET_SYSTEM_FLAGS(system_status_register);
 
+    if (Gantry::isDemo()) {
+        stator_perc = 0;
+        bulb_perc = 0;
+    }
+    else {
+        stator_perc = PCB315_GET_SYSTEM_STATOR(system_status_register);
+        bulb_perc = PCB315_GET_SYSTEM_BULB(system_status_register);
+    }
+    
     // Monitor the Out Of Position status
     if (current_filter_status != filter_status) {
         current_filter_status = filter_status;
@@ -158,12 +165,11 @@ bool PCB315::updateStatusRegister(void) {
         else Notify::deactivate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
     }
 
+    
     // If an error condition is signaled gets the error register 
-    if (PCB315_GET_ERROR_FLAG(flags_status)) {
+    if ((PCB315_GET_ERROR_FLAG(flags_status)) && (!Gantry::isDemo())) {
 
-        error_status = true;
-
-        // Reads the error register
+        error_status = true;        
         Register^ error_register = readErrorRegister();
         if (error_register != nullptr)
         {

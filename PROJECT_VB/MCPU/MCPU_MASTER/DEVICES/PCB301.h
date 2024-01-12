@@ -8,31 +8,52 @@
 /// </summary>
 ref class PCB301 :  public CanDeviceProtocol
 {
+
+	
+	
+	
+	/// <summary>
+	///		This is the Device STATUS Register implementation 
+	/// </summary>
+	private:enum class StatusRegisters {
+		SYSTEM_STATUS_REGISTER = 0, //!> This is the System Status register index
+		BATTERY_STATUS_REGISTER		//!> This is the Battery level Status register index
+	};
+	
+	#define PCB301_GET_SYSTEM_BATTENA(reg) (bool) (reg->d0 & 0x80)
+	#define PCB301_GET_SYSTEM_BATT1LOW(reg) (bool) (reg->d0 & 0x20)
+	#define PCB301_GET_SYSTEM_BATT2LOW(reg) (bool) (reg->d0 & 0x40)
+	#define PCB301_GET_SYSTEM_POWERDOWN(reg) (bool) (reg->d0 & 0x04)
+
+	#define PCB301_GET_BUTTON_VERTICAL_UP(reg) (bool) (reg->d1 & 0x1)
+	#define PCB301_GET_BUTTON_VERTICAL_DOWN(reg) (bool) (reg->d1 & 0x2)
+	#define PCB301_GET_BUTTON_SLIDE_UP(reg) (bool) (reg->d1 & 0x4)
+	#define PCB301_GET_BUTTON_SLIDE_DOWN(reg) (bool) (reg->d1 & 0x8)
+	#define PCB301_GET_BUTTON_ARM_CW(reg) (bool) (reg->d1 & 0x10)
+	#define PCB301_GET_BUTTON_ARM_CCW(reg) (bool) (reg->d1 & 0x20)
+	#define PCB301_GET_BUTTON_BODY_CW(reg) (bool) (reg->d1 & 0x40)
+	#define PCB301_GET_BUTTON_BODY_CCW(reg) (bool) (reg->d1 & 0x80)
+
+	#define PCB301_GET_PEDAL_VERTICAL_UP(reg) (bool) (reg->d3 & 0x1)
+	#define PCB301_GET_PEDAL_VERTICAL_DOWN(reg) (bool) (reg->d3 & 0x2)
+
+	#define PCB301_GET_XRAY_PUSH_BUTTON(reg) (bool) (reg->d2 & 0x08)
+	#define PCB301_GET_SYSTEM_CLOSEDOOR(reg) (bool) (reg->d2 & 0x10)
+
+
+	#define PCB301_GET_BATTERY_VBATT1(reg) (unsigned char) (reg->d0)
+	#define PCB301_GET_BATTERY_VBATT2(reg) (unsigned char) (reg->d1)
+
+	/// <summary>
+	///	 This is the Device DATA Register implementation 
+	/// </summary>
+	private:enum class DataRegisters {
+		OUTPUTS_DATA_REGISTER = 0, //!> This is the Outputs Data register index
+	};
+	#define PCB301_OUTPUTS_DATA_BUZZER_STAT(reg,stat)	reg->D1(stat, 0x2) 
+	#define PCB301_OUTPUTS_DATA_MANUAL_BUZZER(reg,stat)	reg->D1(stat, 0x4) 
+
 public:
-	
-	#define PCB301_GET_STATUS_SYSTEM_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
-	#define PCB301_GET_SYSTEM_BATTENA(d0,d1,d2,d3) (bool) (d0 & 0x80)
-	#define PCB301_GET_SYSTEM_BATT1LOW(d0,d1,d2,d3) (bool) (d0 & 0x20)
-	#define PCB301_GET_SYSTEM_BATT2LOW(d0,d1,d2,d3) (bool) (d0 & 0x40)
-	#define PCB301_GET_SYSTEM_POWERDOWN(d0,d1,d2,d3) (bool) (d0 & 0x04)
-	
-	#define PCB301_GET_VERTICAL_UP(d0,d1,d2,d3) (bool) (d1 & 0x1)
-	#define PCB301_GET_VERTICAL_DOWN(d0,d1,d2,d3) (bool) (d1 & 0x2)
-	#define PCB301_GET_SHIFT_UP(d0,d1,d2,d3) (bool) (d1 & 0x4)
-	#define PCB301_GET_SHIFT_DOWN(d0,d1,d2,d3) (bool) (d1 & 0x8)
-	#define PCB301_GET_ARM_CW(d0,d1,d2,d3) (bool) (d1 & 0x10)
-	#define PCB301_GET_ARM_CCW(d0,d1,d2,d3) (bool) (d1 & 0x20)
-	#define PCB301_GET_BODY_CW(d0,d1,d2,d3) (bool) (d1 & 0x40)
-	#define PCB301_GET_BODY_CCW(d0,d1,d2,d3) (bool) (d1 & 0x80)
-
-	#define PCB301_GET_XRAY_PUSH_BUTTON(d0,d1,d2,d3) (bool) (d2 & 0x08)
-	#define PCB301_GET_SYSTEM_CLOSEDOOR(d0,d1,d2,d3) (bool) (d2 & 0x10)
-
-
-	#define PCB301_GET_STATUS_BATTERY_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
-	#define PCB301_GET_BATTERY_VBATT1(d3,d4,d5,d6) (unsigned char) (d3)
-	#define PCB301_GET_BATTERY_VBATT2(d3,d4,d5,d6) (unsigned char) (d4)
-
 
 	PCB301(): CanDeviceProtocol(0x10, L"POWER_SERVICE")
 	{
@@ -40,15 +61,9 @@ public:
 	}
 	static PCB301^ device = gcnew PCB301();
 
-	protected: 	virtual void runningLoop(void) override;
+	
 
-	/// <summary>
-	/// This function returns the current activation status of the X-RAY push button
-	/// 
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns>True if the X-RAY push button should be activated</returns>
-	public: static inline bool isXrayButton(void) { return xray_push_button_input; }
+
 
 	/// <summary>
 	/// This function sets the current status of the X-RAY enable signal.
@@ -58,39 +73,11 @@ public:
 	/// <returns></returns>
 	public: static inline void setXrayEnable(bool status) { xray_enable_status_output = status; }
 
-	
-	public: enum class vertical_activation_options {
-		VERTICAL_NO_ACTIVATION = 0,
-		VERTICAL_UP_ACTIVATION,
-		VERTICAL_DOWN_ACTIVATION,
-		VERTICAL_INVALID_CODE,
-	};
-
-	public: enum class body_activation_options {
-		BODY_NO_ACTIVATION = 0,
-		BODY_CW_ACTIVATION,
-		BODY_CCW_ACTIVATION,
-		BODY_INVALID_CODE,
-	};
 
 	public: enum class door_options {
 		CLOSED_DOOR = 0,
 		OPEN_DOOR
 	};
-
-	/// <summary>
-	/// This function returns the current status of the Vertical activation hardware inputs
-	/// 
-	/// </summary>	
-	/// <returns>the current status request</returns>
-	public: static vertical_activation_options getVerticalActivationStatus(void) { return vertical_activation_status; }
-
-	/// <summary>
-	/// This function returns the current status of the Body activation hardware inputs
-	/// 
-	/// </summary>	
-	/// <returns>the current status request</returns>
-	public: static body_activation_options getBodyActivationStatus(void) { return body_activation_status; }
 
 	
 	public: static bool getPowerdown(void) { return power_down_status; }
@@ -100,18 +87,36 @@ public:
 	public: static unsigned char getVoltageBatt1(void) { return voltage_batt1; }
 	public: static unsigned char getVoltageBatt2(void) { return voltage_batt2; }
 	
-	public: static bool getXrayStat(void) { return xray_push_button; }
+	public: static bool getXrayPushButtonStat(void) { return xray_push_button; }
 	public: static bool getXrayEventEna(void) { return xray_push_button_event_enable; }
 	public: static void setXrayEventEna(bool stat) { xray_push_button_event_enable = stat; }
 
+public: 
 
+	inline static bool get_pedal_up_stat(void) { return pedal_up_stat; }
+	inline static bool get_pedal_down_stat(void) { return pedal_down_stat; }
+	inline static bool get_cmp_up_stat(void) { return cmp_up_stat; }
+	inline static bool get_cmp_down_stat(void) { return cmp_down_stat; }
+	inline static bool get_button_arm_cw_stat(void) { return button_arm_cw_stat; }
+	inline static bool get_button_arm_ccw_stat(void) { return button_arm_ccw_stat; }
+	inline static bool get_button_up_stat(void) { return button_up_stat; }
+	inline static bool get_button_down_stat(void) { return button_down_stat; }
+	inline static bool get_button_body_cw(void) { return button_body_cw; }
+	inline static bool get_button_body_ccw(void) { return button_body_ccw; }
+	inline static bool get_button_slide_up_stat(void) { return button_slide_up_stat; }
+	inline static bool get_button_slide_down_stat(void) { return button_slide_down_stat; }
 
+	inline static void set_manual_buzzer(bool stat) { PCB301_OUTPUTS_DATA_MANUAL_BUZZER(outputs_data_register,stat); }
+	inline static void set_activation_buzzer(bool stat) { PCB301_OUTPUTS_DATA_BUZZER_STAT(outputs_data_register, stat); }
+
+	
 
 private:
-	static bool xray_push_button_input   = false;	//!< This is the current X-RAY push button activation status
-	static bool xray_enable_status_output = false; //!< This is the current X-RAY enable status setting
-	static vertical_activation_options vertical_activation_status = vertical_activation_options::VERTICAL_NO_ACTIVATION;		//!< This is the current status of the vertical activation request
-	static body_activation_options body_activation_status = body_activation_options::BODY_NO_ACTIVATION;		//!< This is the current status of the body activation request	
+	
+
+	static Register^ outputs_data_register = gcnew Register(); 
+
+	static bool xray_enable_status_output = false; //!< This is the current X-RAY enable status setting	
 	static door_options door_status = door_options::OPEN_DOOR; //!< This is the current status of the Study door
 	
 	static bool power_down_status = false; // Powerdown Status
@@ -126,5 +131,25 @@ private:
 	// X-RAY push button handling
 	static bool xray_push_button = false; //!> This is the current X-RAY status 
 	static bool xray_push_button_event_enable = false; //!> This is the event genration flag
+
+	static bool pedal_up_stat = false;
+	static bool pedal_down_stat = false;
+	static bool cmp_up_stat = false;
+	static bool cmp_down_stat = false;
+	static bool button_arm_cw_stat = false;
+	static bool button_arm_ccw_stat = false;
+	static bool button_up_stat = false;
+	static bool button_down_stat = false;
+	static bool button_body_cw = false;
+	static bool button_body_ccw = false;
+	static bool button_slide_up_stat = false;
+	static bool button_slide_down_stat = false;
+
+protected: 	
+	    void runningLoop(void) override;
+
+private:
+		void handleSystemStatusRegister(void);
+		void handleBatteryStatusRegister(void);
 };
 

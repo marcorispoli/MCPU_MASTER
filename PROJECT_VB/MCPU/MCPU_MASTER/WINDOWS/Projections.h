@@ -23,51 +23,9 @@ public:
 	delegate void delegate_button_callback(void);
 	event delegate_button_callback^ button_canc_event;
 	event delegate_button_callback^ button_ok_event;
-
-
-public:HWND window;
-public: Object^ pConf;
-public: Form^ parent;
-
-
-private: System::Windows::Forms::Panel^ SelectionPanel;
-public:
-
-public:
-private: System::Windows::Forms::Panel^ proj8;
-private: System::Windows::Forms::Panel^ proj7;
-private: System::Windows::Forms::Panel^ proj6;
-private: System::Windows::Forms::Panel^ proj5;
-private: System::Windows::Forms::Panel^ proj4;
-private: System::Windows::Forms::Panel^ proj3;
-private: System::Windows::Forms::Panel^ proj2;
-private: System::Windows::Forms::Panel^ proj1;
-
-
-private: System::Windows::Forms::Label^ TitleText;
-
-
-private: System::Windows::Forms::Button^ CancButton;
-private: System::Windows::Forms::Button^ PrevButton;
-private: System::Windows::Forms::Button^ NextButton;
-
-
-
-
-
-
-
-
-private: System::Windows::Forms::Button^ OkButton;
-
-
-
-
-
-
-public:
-
-public:
+	HWND window;
+	Object^ pConf;
+	Form^ parent;
 	void open(void);
 	void close(void);
 	bool open_status;
@@ -77,30 +35,27 @@ public:
 	void loadProjections(void);
 	System::String^ selectedProjection;
 	cli::array<System::String^>^ proj_name;
-	
-
-	   enum class InfoType {
-		  INF_WIN = 0,
-		  WRN_WIN,
-		  ERR_WIN
-	  };
-	  InfoType wType;
-	  int panelNumber;
 
 
-	  void formInitialization(void);
-	  
-
-	  ProjectionForm(Form^ pp)
-	  {
-		  parent = pp;
-		  InitializeComponent();		  
-		  window = static_cast<HWND>(Handle.ToPointer());
-		  formInitialization();
+	enum class InfoType {
+		INF_WIN = 0,
+		WRN_WIN,
+		ERR_WIN
+	};
+	InfoType wType;
+	int panelNumber;
 
 
-	  }
+	ProjectionForm(Form^ pp)
+	{
+		parent = pp;
+		InitializeComponent();
+		window = static_cast<HWND>(Handle.ToPointer());
+		formInitialization();
 
+
+	}
+	void formInitialization(void);
 protected:
 	/// <summary>
 	/// Clean up any resources being used.
@@ -115,38 +70,20 @@ protected:
 	}
 
 
-
-protected:
-
-
-protected:
-
-protected:
-
-protected:
-
-protected:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+private: System::Windows::Forms::Panel^ SelectionPanel;
+private: System::Windows::Forms::Panel^ proj8;
+private: System::Windows::Forms::Panel^ proj7;
+private: System::Windows::Forms::Panel^ proj6;
+private: System::Windows::Forms::Panel^ proj5;
+private: System::Windows::Forms::Panel^ proj4;
+private: System::Windows::Forms::Panel^ proj3;
+private: System::Windows::Forms::Panel^ proj2;
+private: System::Windows::Forms::Panel^ proj1;
+private: System::Windows::Forms::Label^ TitleText;
+private: System::Windows::Forms::Button^ CancButton;
+private: System::Windows::Forms::Button^ PrevButton;
+private: System::Windows::Forms::Button^ NextButton;
+private: System::Windows::Forms::Button^ OkButton;
 private:
 	/// <summary>
 	/// Required designer variable.

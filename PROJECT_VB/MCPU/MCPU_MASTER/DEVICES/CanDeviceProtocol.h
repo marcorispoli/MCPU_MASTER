@@ -58,11 +58,34 @@ public:
 
 	ref class Register {
 	public:
+		
 		Register(unsigned char pd0, unsigned char pd1, unsigned char pd2, unsigned char pd3) {
 			d0 = pd0; d1 = pd1; d2 = pd2; d3 = pd3;
 		}
+		Register(void) {
+			d0 = d1 = d2 = d3 =0; 
+		}
 		unsigned char d0, d1, d2, d3;
+		
+		void D0(bool stat, unsigned char mask) {
+			if (stat) d0 |= mask;
+			else d0 &= ~mask;
+		}
+		void D1(bool stat, unsigned char mask) {
+			if (stat) d1 |= mask;
+			else d1 &= ~mask;
+		}
+		void D2(bool stat, unsigned char mask) {
+			if (stat) d2 |= mask;
+			else d2 &= ~mask;
+		}
+		void D3(bool stat, unsigned char mask) {
+			if (stat) d3 |= mask;
+			else d3 &= ~mask;
+		}
+
 	};
+		
 
 	ref class CanDeviceRegister {
 	public:
@@ -170,6 +193,7 @@ public:
 	Register^ readDataRegister(unsigned char index);
 	bool writeParamRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
 	bool writeDataRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
+	inline bool writeDataRegister(unsigned char idx, Register^ reg) { return writeDataRegister(idx, reg->d0, reg->d1, reg->d2, reg->d3); }
 
 
 
@@ -240,10 +264,30 @@ private:
 	unsigned char command_error;
 
 public:
-	unsigned int sent_messages;
-	unsigned int unreceived_messages;
-	unsigned int perc_sent_messages;
-	unsigned int perc_unreceived_messages;
+	
+	double txrx_time;
+	bool read_sdo_tmo;
+	bool write_sdo_tmo;
+	unsigned long sent_messages;
+	unsigned long sent_5;
+	unsigned long sent_10;
+	unsigned long sent_15;
+	unsigned long sent_20;
+	unsigned long sent_25;
+	unsigned long sent_30;
+	unsigned long sent_xx;
+
+	double perc5;
+	double perc10;
+	double perc15;
+	double perc20;
+	double perc25;
+	double perc30;
+	double percXX;
+
+	double meanTime;
+	double percMeanTime;
+	unsigned long unreceived_messages;
 
 };
 

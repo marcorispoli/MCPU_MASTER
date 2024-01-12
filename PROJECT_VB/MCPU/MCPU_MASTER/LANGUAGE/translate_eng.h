@@ -31,11 +31,13 @@
 "E00018", Notify::messages::ERROR_BULB_SENSOR_SHORT, "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be shorted",
 "E00019", Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, "Body Motor Monitoring", "The brake device is in Fault condition",
 "E00019", Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT, "Tilt Motor Monitoring", "The brake device is in Fault condition",
-"E00020", Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, "Vertical Motor Monitoring", "The encoder is not initialized.",
-"E00021", Notify::messages::ERROR_ARM_MOTOR_HOMING, "ARM Motor Monitoring", "The encoder is not initialized.",
-"E00022", Notify::messages::ERROR_SLIDE_MOTOR_HOMING, "Slide Motor Monitoring", "The encoder is not initialized.",
-"E00023", Notify::messages::ERROR_TILT_MOTOR_HOMING, "Tilt Motor Monitoring", "The encoder is not initialized.",
-"E00024", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized.",
+"E00020", Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, "Vertical Motor Monitoring", "The encoder is not initialized",
+"E00021", Notify::messages::ERROR_ARM_MOTOR_HOMING, "ARM Motor Monitoring", "The encoder is not initialized",
+"E00022", Notify::messages::ERROR_SLIDE_MOTOR_HOMING, "Slide Motor Monitoring", "The encoder is not initialized",
+"E00023", Notify::messages::ERROR_TILT_MOTOR_HOMING, "Tilt Motor Monitoring", "The encoder is not initialized",
+"E00024", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized",
+"E00025", Notify::messages::ERROR_BODY_LIMIT_SWITCH, "Body Motor Monitoring", "The limit switch is active",
+"E00025", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
 "E00900", Notify::messages::ERROR_X_RAY_BUTTON_RELEASED, "X-RAY Sequence Error", "X-Ray push button early released",
@@ -70,12 +72,17 @@
 "I00001", Notify::messages::INFO_BATTERY_DISABLED, "System Power Monitoring", "The backup batteries are detected Disabled!",
 "I00002", Notify::messages::INFO_PROJECTION_CONFIRMATION, "Projection Confirmation Action", "The C-ARM may be activated",
 "I00003", Notify::messages::INFO_PROJECTION_ABORT, "Abort Projection Request", "Proceed to Abort the current projection?",
+"I00004", Notify::messages::INFO_CARM_SHIFT_CONFIRMATION, "C-ARM Shift Activation", "Proceed with the C-ARM Shift activation?",
+
 
 /* -------- LABELS ---------------------------*/
 
 "L00001", Notify::messages::LABEL_ERROR_WINDOW_PANEL, "Error Window Panel", "-",
 "L00002", Notify::messages::LABEL_PROJECTION_SELECTION_PANEL, "Projection Selection", "-",
 "L00003", Notify::messages::LABEL_ZERO_SETTING_PANEL_TITLE, "Zero Setting Panel", "-",
+"L00003", Notify::messages::LABEL_SERVICE_PANEL_TITLE, "Service Panel", "-",
+"L00003", Notify::messages::LABEL_CALIBRATION_PANEL_TITLE, "Calibration Panel", "-",
+
 "L00004", Notify::messages::LABEL_ERROR, "ERR", "-",
 "L00005", Notify::messages::LABEL_WARNING, "WRN", "-",
 "L00006", Notify::messages::LABEL_INFO, "INF", "-",

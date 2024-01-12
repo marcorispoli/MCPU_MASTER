@@ -247,7 +247,30 @@ public: enum class ColliStandardSelections {
 
 	};
 	
-	
+public: static ColliStandardSelections getColliFormatIndexFromParam(System::String^ param) {
+	if (param == "COLLI_STANDARD1") return ColliStandardSelections::COLLI_STANDARD1;
+	else if (param == "COLLI_STANDARD2") return ColliStandardSelections::COLLI_STANDARD2;
+	else if (param == "COLLI_STANDARD3") return ColliStandardSelections::COLLI_STANDARD3;
+	else if (param == "COLLI_STANDARD4") return ColliStandardSelections::COLLI_STANDARD4;
+	else if (param == "COLLI_STANDARD5") return ColliStandardSelections::COLLI_STANDARD5;
+	else if (param == "COLLI_STANDARD6") return ColliStandardSelections::COLLI_STANDARD6;
+	else if (param == "COLLI_STANDARD7") return ColliStandardSelections::COLLI_STANDARD7;
+	else if (param == "COLLI_STANDARD8") return ColliStandardSelections::COLLI_STANDARD8;
+	else if (param == "COLLI_STANDARD9") return ColliStandardSelections::COLLI_STANDARD9;
+	else if (param == "COLLI_STANDARD10") return ColliStandardSelections::COLLI_STANDARD10;
+	else if (param == "COLLI_STANDARD11") return ColliStandardSelections::COLLI_STANDARD11;
+	else if (param == "COLLI_STANDARD12") return ColliStandardSelections::COLLI_STANDARD12;
+	else if (param == "COLLI_STANDARD13") return ColliStandardSelections::COLLI_STANDARD13;
+	else if (param == "COLLI_STANDARD14") return ColliStandardSelections::COLLI_STANDARD14;
+	else if (param == "COLLI_STANDARD15") return ColliStandardSelections::COLLI_STANDARD15;
+	else if (param == "COLLI_STANDARD16") return ColliStandardSelections::COLLI_STANDARD16;
+	else if (param == "COLLI_STANDARD17") return ColliStandardSelections::COLLI_STANDARD17;
+	else if (param == "COLLI_STANDARD18") return ColliStandardSelections::COLLI_STANDARD18;
+	else if (param == "COLLI_STANDARD19") return ColliStandardSelections::COLLI_STANDARD19;
+	else if (param == "COLLI_STANDARD20") return ColliStandardSelections::COLLI_STANDARD20;
+	else return ColliStandardSelections::COLLI_INVALID_FORMAT;
+
+}
 	/// This is the frame implementation to write the DATA_CALIBRATION_FB register
 	#define PCB303_WRITE_DATA_CALIBRATION_FB(front,back) (System::Byte) DataRegisters::DATA_CALIBRATION_FB,(System::Byte) (front&0xFF), (System::Byte) ((front>>8)&0xFF),(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF)
 	

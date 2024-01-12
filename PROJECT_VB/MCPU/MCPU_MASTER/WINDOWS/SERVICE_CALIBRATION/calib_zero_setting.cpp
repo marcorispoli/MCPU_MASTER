@@ -18,6 +18,8 @@
 #define SLIDE_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\SlideOk.PNG")
 #define SLIDE_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\SlideNok.PNG")
 
+#define CALIB_ZERO_SETTING_BACKGROUND System::Drawing::Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\CALIBRATION\\ZERO_SETTING\\ZeroSettingBackground.PNG")
+
 /// <summary>
 /// Thuis is the enumeration of the possible zero setting commands
 /// </summary>
@@ -34,31 +36,43 @@ typedef enum {
 static zero_commands current_zero_command = zero_commands::NO_COMMAND;
 static int command_delay = 30;
 
-void ServiceForm::initZeroSettingCalibrationPanel(void) {
+void ServiceForm::createZeroSettingPanel(void) {
+	calibZerosettingPanel->SetBounds(0, 0, PANEL_WIDTH, PANEL_HIGH);
+	calibZerosettingPanel->BackgroundImage = CALIB_ZERO_SETTING_BACKGROUND;
+	calibZerosettingPanel->Location = System::Drawing::Point(PANEL_X, PANEL_Y);
 
-	// Sets the geometry
 	zeroSettingArm->BackColor = Color::Transparent;
 	zeroSettingBody->BackColor = Color::Transparent;
 	zeroSettingSlide->BackColor = Color::Transparent;
 	zeroSettingTilt->BackColor = Color::Transparent;
 	zeroSettingVertical->BackColor = Color::Transparent;
 	zeroSettingAll->BackColor = Color::Transparent;
-	buttonCalibZeroSettingExit->BackColor = Color::Transparent;
 
-	zeroSettingPanelTitle->Text = Notify::TranslateLabel(Notify::messages::LABEL_ZERO_SETTING_PANEL_TITLE);
-	current_zero_command = zero_commands::NO_COMMAND;
-
-	zeroSettingAssigneImages();
-
-	zeroSettingLog->Clear();
-	
+	//
 	return;
 }
 
-System::Void ServiceForm::buttonCalibZeroSettingExit_Click(System::Object^ sender, System::EventArgs^ e) {
+void ServiceForm::initZeroSettingCalibrationPanel(void) {
+	serviceMenuTitle->Text = Notify::TranslateLabel(Notify::messages::LABEL_ZERO_SETTING_PANEL_TITLE);
+	current_zero_command = zero_commands::NO_COMMAND;
+	zeroSettingLog->Clear();	
+	return;
+}
+void  ServiceForm::cancZeroSettingPanel(void) {
+	if (current_zero_command != zero_commands::NO_COMMAND) {
+		switch (current_zero_command) {
+		case zero_commands::ZERO_BODY:BodyMotor::device->abortActivation(); break;
+		case zero_commands::ZERO_VERTICAL:VerticalMotor::device->abortActivation(); break;
+		case zero_commands::ZERO_TILT:TiltMotor::device->abortActivation(); break;
+		case zero_commands::ZERO_ARM:ArmMotor::device->abortActivation(); break;
+		case zero_commands::ZERO_SLIDE:SlideMotor::device->abortActivation(); break;
+		}
+		return;
+	}
 
 	setActivePanel(panels::CALIB_PANEL);
 }
+
 
 
 System::Void ServiceForm::zeroSettingBody_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -99,40 +113,6 @@ System::Void ServiceForm::zeroSettingAll_Click(System::Object^ sender, System::E
 
 }
 
-System::Void ServiceForm::zeroSettingAbortButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (current_zero_command == zero_commands::NO_COMMAND) return;
-
-	switch (current_zero_command) {
-	case zero_commands::ZERO_BODY:BodyMotor::device->abortActivation(); break;
-	case zero_commands::ZERO_VERTICAL:VerticalMotor::device->abortActivation(); break;
-	case zero_commands::ZERO_TILT:TiltMotor::device->abortActivation(); break;
-	case zero_commands::ZERO_ARM:ArmMotor::device->abortActivation(); break;
-	case zero_commands::ZERO_SLIDE:SlideMotor::device->abortActivation(); break;
-	}
-}
-
-
-
-void ServiceForm::zeroSettingAssigneImages(void) {
-
-	// Sets the current color of the images based on the actual zero homing condition
-	if (ArmMotor::device->isZeroOk()) zeroSettingArm->BackgroundImage = ARM_OK_IMAGE;
-	else zeroSettingArm->BackgroundImage = ARM_NOK_IMAGE;
-
-	if (BodyMotor::device->isZeroOk()) zeroSettingBody->BackgroundImage = BODY_OK_IMAGE;
-	else zeroSettingBody->BackgroundImage = BODY_NOK_IMAGE;
-
-	if (TiltMotor::device->isZeroOk()) zeroSettingTilt->BackgroundImage = TILT_OK_IMAGE;
-	else zeroSettingTilt->BackgroundImage = TILT_NOK_IMAGE;
-
-	if (VerticalMotor::device->isZeroOk()) zeroSettingVertical->BackgroundImage = VERTICAL_OK_IMAGE;
-	else zeroSettingVertical->BackgroundImage = VERTICAL_NOK_IMAGE;
-
-	if (SlideMotor::device->isZeroOk()) zeroSettingSlide->BackgroundImage = SLIDE_OK_IMAGE;
-	else zeroSettingSlide->BackgroundImage = SLIDE_NOK_IMAGE;
-
-	
-}
 
 using namespace System::Drawing;
 
@@ -177,7 +157,6 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		zeroSettingLog->Text += "BODY MOTOR:" + BodyMotor::device->getCompletedCodeString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
-		zeroSettingAssigneImages();		
 		finish = true;
 		break;
 
@@ -200,7 +179,6 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		zeroSettingLog->Text += "VERTICAL MOTOR:" + VerticalMotor::device->getCompletedCodeString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
-		zeroSettingAssigneImages();
 		finish = true;
 		break;
 	
@@ -223,7 +201,6 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		zeroSettingLog->Text += "TILT MOTOR:" + TiltMotor::device->getCompletedCodeString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
-		zeroSettingAssigneImages();
 		break;
 
 	case zero_commands::ZERO_SLIDE:
@@ -246,7 +223,6 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		zeroSettingLog->Text += "SLIDE MOTOR:" + SlideMotor::device->getCompletedCodeString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
-		zeroSettingAssigneImages();
 		break;
 
 	case zero_commands::ZERO_ARM:
@@ -269,7 +245,6 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		zeroSettingLog->Text += "ARM MOTOR:" + ArmMotor::device->getCompletedCodeString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
-		zeroSettingAssigneImages();
 		break;
 
 	}

@@ -103,24 +103,26 @@ public:
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override;
-	MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
 	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override;
-
+	MotorCompletedCodes automaticPositioningRunningCallback(void) override;
+	
 
 	MotorCompletedCodes idleCallback(void) override;
-
-	MotorCompletedCodes automaticHomingPreparationCallback(void) override;
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
-
-	MotorCompletedCodes manualPositioningPreparationCallback(void) override;
 	void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
 	MotorCompletedCodes manualPositioningRunningCallback(void) override;
 
-private:
-	static bool brake_alarm = false; //!< This is the current brake malfunction alarm
-	static bool manual_activation_enabled = false; //!< This is the flag activating the body manual activation
-	static bool manual_cw_direction = false; //!< Sets true if the CW manual command is executing, false if the CCW manual activation is executing
+	bool brakeCallback(void) override;
+	bool unbrakeCallback(void) override;
 
+private:
+	
+	static bool brake_alarm = false; //!< This is the current brake malfunction alarm
+	static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
+	static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
+
+	bool activateBrake(void);
+	bool deactivateBrake(void);
 };
 
 		

@@ -53,6 +53,7 @@ public:
     static bool getSlideManualActivationDecrease(void);
     static bool getTiltManualActivationIncrease(void);
     static bool getTiltManualActivationDecrease(void);
+    
 
     static System::String^ getPatientName(void) { return patient_name; }
     static bool setOpenStudy(System::String^ patient);

@@ -7,14 +7,15 @@
 #include <thread>
 
 
+
 #define ROT_PER_DEGREE ((double) 80 / (double) 3600) //!< Defines the position user units in 0.1 degree
 
-#define BRAKE_INPUT_MASK(x) (x & 0x00080000) //!< Not in the Special region [00II][0000]
-#define LIMIT_INPUT_MASK(x) (x & 0x00020000) //!< Not in the Special region [00II][0000]
-#define ZERO_INPUT_MASK(x) (x & 0x00040000) //!< Not in the Special region [00II][0000]
+#define BRAKE_INPUT_MASK(x) (x & PD4_MOTOR_DI4) //!< Not in the Special region [00II][0000]
+#define LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI2) //!< Not in the Special region [00II][0000]
+#define ZERO_INPUT_MASK(x) (x & PD4_MOTOR_DI3) //!< Not in the Special region [00II][0000]
 
-#define OUPUT1_OUT_MASK     0x00010000 //!< Not in the Special region [00II][0000]
-#define OUPUT2_OUT_MASK     0x00020000 //!< Not in the Special region [00II][0000]
+#define OUPUT1_OUT_MASK     PD4_MOTOR_DO1 //!< Not in the Special region [00II][0000]
+#define OUPUT2_OUT_MASK     PD4_MOTOR_DO2 //!< Not in the Special region [00II][0000]
 
 #define MAX_ROTATION_ANGLE  880
 #define MIN_ROTATION_ANGLE  -880
@@ -25,10 +26,17 @@
 /// This is the class constructor.
 /// </summary>
 /// 
-/// The Constructor initializes the base class and assignes the module can open address and 
-/// user unit ratio.
+/// The Constructor:
+/// - Initializes the CanOpenMotor base class:
+///     - Set the motor address;
+///     - Set The module name;
+///     - Set The unit conversion coefficient
+/// 
+/// - Set the target acceptable precision range;
+/// - Initializes the encoder initial position from the configuration file;
 /// 
 /// <param name=""></param>
+
 BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", ROT_PER_DEGREE, false)
 {
     // Sets +/- 0.2 ° as the acceptable target range
@@ -82,6 +90,10 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     // Motor Drive Parameter Set
     while (!blocking_writeOD(OD_3210_01, 10000)); // 50000 Position Loop, Proportional Gain (closed Loop)
     while (!blocking_writeOD(OD_3210_02, 5));	 // 10  Position Loop, Integral Gain (closed Loop)
+
+    // Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 50))); 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 50)));	// Max Position Range Limit
 
     // Software Position Limit
     if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
@@ -241,9 +253,6 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
         blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
         return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
     }
-
-    if(error_limit_switch) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
-    
     
     // Handle a Manual activation mode
     if (!manual_activation_request) {

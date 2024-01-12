@@ -74,34 +74,12 @@ protected:
 
 
 
-protected:
-
-
-protected:
-
-protected:
-
-protected:
-
-protected:
-
-
-
-
 
 private: System::Windows::Forms::Panel^ CancButton;
 private: System::Windows::Forms::Panel^ OkButton;
 
 private: System::Windows::Forms::Panel^ IconPanel;
 private: System::Windows::Forms::Panel^ ContentPanel;
-
-
-
-
-
-
-
-
 
 
 

@@ -4,6 +4,7 @@
 #include "gantry_global_status.h"
 #include "Projections.h"
 #include "ConfirmationWindow.h"
+#include "IconWindow.h"
 #include "ArmMotor.h"
 #include "SlideMotor.h"
 #include "ExposureModule.h"
@@ -13,6 +14,7 @@
 #include "../DEVICES/PCB301.h"
 #include "../DEVICES/PCB304.h"
 #include "../DEVICES/PCB326.h"
+
 
 #define PROJ_NOT_SELECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\NoProjectionSelected.PNG")
 #define PROJ_SELECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ProjectionSelected.PNG")
@@ -61,6 +63,8 @@
 #define RESIDUAL_EXPOSURE_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ExposureLeftNok.PNG")
 
 #define PROJ_INFO_ICON  Image::FromFile(Gantry::applicationResourcePath + "Icons\\info_64x64.PNG")
+#define XRAY_ICON  Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\xrayIcon.PNG")
+
 
 
 
@@ -197,7 +201,8 @@ void OperatingForm::formInitialization(void) {
 	((ConfirmationWindow^)pShiftConf)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onShiftConfirmOk);
 	
 	//________________________________________________________________________________________
-
+	pXray = gcnew IconWindow(this, XRAY_ICON);
+	
 
 	OPERSTATUS::Registers.alarm = false;
 	OPERSTATUS::Registers.warning = false;
@@ -306,7 +311,7 @@ void OperatingForm::initOperatingStatus(void) {
 	PCB315::setFilterAutoMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
 
 	// Start the startup session	
-	operatingTimer->Start();
+	operatingTimer->Start();		
 	resume();
 	
 }
@@ -373,6 +378,14 @@ void OperatingForm::evaluateXrayStatus(void) {
 			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
 		}
+	}
+
+	// Evaluate the Xray icon display activation during Exposure
+	static bool xray_running = true;
+	if (xray_running != ExposureModule::isXrayRunning()) {
+		xray_running = ExposureModule::isXrayRunning();
+		if (xray_running) ((IconWindow^)pXray)->open();
+		else ((IconWindow^)pXray)->close();
 	}
 
 }
@@ -582,7 +595,7 @@ void OperatingForm::evaluateSlideStatus(void) {
 }
 
 void OperatingForm::operatingStatusManagement(void) {
-	suspend();
+	
 	System::DateTime date;
 	date = System::DateTime::Now;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
@@ -596,7 +609,6 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateDoorStatus();
 	evaluateSlideStatus();
 	evaluateProjectionStatus();
-	resume();
 	
 }
 
@@ -611,8 +623,8 @@ void OperatingForm::WndProc(System::Windows::Forms::Message% m)
 	case (WINMSG_OPEN): // on Open Event
 		if (open_status) break;
 		open_status = true;
-		initOperatingStatus();
 		this->Show();
+		initOperatingStatus();
 		break;
 
 	case (WINMSG_CLOSE): // on Open Event
@@ -622,6 +634,7 @@ void OperatingForm::WndProc(System::Windows::Forms::Message% m)
 		((ProjectionForm^)pProj)->close();
 		((ErrorForm^)pError)->close();
 		((ConfirmationWindow^)pAbort)->close();
+		((IconWindow^)pXray)->close();
 		this->Hide();
 		break;		
 	}

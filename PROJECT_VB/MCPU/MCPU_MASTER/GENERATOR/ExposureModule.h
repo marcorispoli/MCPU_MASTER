@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include "PCB315.h"
 
+
 using namespace System::Collections::Generic;
 using namespace System::Threading;
 
@@ -126,8 +127,39 @@ public:
     };
     // static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "LMAM2V2", "FDIV2", "UNDEF"}; //!< This is the option-tags static array
 
-    
+    /// <summary>
+    /// This Enumeration class describes the possible results of an exposure.
+    /// 
+    /// + XRAY_SUCCESS: All the expected exposure's pulses has been successfully executed;
+    /// + XRAY_PARTIAL_DOSE: the exposure has been partially executed.
+    /// + XRAY_NO_DOSE: The exposure is early terminated without dose released to the patient.
+    /// + XRAY_EXECUTING: The X-RAY sequence is still running
+    /// 
+    /// </summary>
+    enum class exposure_completed_options {
+        XRAY_SUCCESS = 0, //!< XRAY sequence successfully completed
+        XRAY_PARTIAL_DOSE = 1,//!< XRAY sequence partially completed
+        XRAY_NO_DOSE = 2,//!< XRAY sequence aborted without dose       
+    };
 
+    /// <summary>
+    /// This class enumerates all the possible x-ray error reasons
+    /// 
+    /// </summary>
+    enum class exposure_completed_errors {
+        XRAY_NO_ERRORS = 0,			//!< No error code
+        XRAY_INVALID_PROCEDURE,		//!< A not valid procedure has been requested
+        XRAY_COMMUNICATION_ERROR,	//!< A generator command is failed
+        XRAY_GENERATOR_ERROR,		//!< The generator activated internal error messages
+        XRAY_BUTTON_RELEASE,		//!< The X-Ray Button has been released 
+        XRAY_FILAMENT_ERROR,		//!< The generator detected a Filament error
+        XRAY_KV_ERROR,				//!< The generator detected a kV error
+        XRAY_STARTER_ERROR,			//!< The generator detected an Anode Starter error condition
+        XRAY_GRID_ERROR,			//!< The Grid device is in error condition
+        XRAY_TIMEOUT_AEC,			//!< Timeout waiting the Main Pulse data after an AEC pre pulse
+    };
+
+    
     static void inline setExposureMode(exposure_type_options mode) { exposure_type = mode; }
     static exposure_type_options inline getExposureMode(void) { return exposure_type; }
 
@@ -157,7 +189,6 @@ public:
         return true;
     }
 
-
     static exposure_pulse^ getExposedPulse(unsigned char seq) {
         if (seq >= exposed->Length) return gcnew exposure_pulse();
         return  exposed[seq];        
@@ -167,6 +198,16 @@ public:
         if (seq >= pulse->Length) return gcnew exposure_pulse();
         return  pulse[seq];
     }
+
+    inline static bool isXrayCompleted() { return xray_completed; }
+    inline static bool isXrayRunning() { return !xray_completed; }
+    inline static void clearXrayCompleted() { xray_completed = false; }
+    inline static void setXrayCompletedFlag() { xray_completed = true; }
+
+    inline static exposure_completed_errors getExposureCompletedError(void) { return xray_exposure_error; }
+    inline static exposure_completed_options getExposureCompletedCode(void) { return xray_completed_code; }
+    inline static void setCompletedError(exposure_completed_errors err) { xray_exposure_error = err; }
+    inline static void setCompletedCode(exposure_completed_options code) { xray_completed_code = code; }
 
 private:
 
@@ -178,8 +219,14 @@ private:
     static compression_mode_option compressor_mode = compression_mode_option::CMP_KEEP;
     static patient_protection_option protection_mode = patient_protection_option::PROTECTION_ENA;
     static detector_model_option detector_model = detector_model_option::LMAM2V2;
-    
+    static exposure_type_options xray_exposure_type;
 
-    
+
+
+    // X-Ray completed section    
+    static bool xray_completed = true;
+    static exposure_completed_options xray_completed_code = exposure_completed_options::XRAY_NO_DOSE;
+    static exposure_completed_errors xray_exposure_error = exposure_completed_errors::XRAY_NO_ERRORS;
+
 };
 

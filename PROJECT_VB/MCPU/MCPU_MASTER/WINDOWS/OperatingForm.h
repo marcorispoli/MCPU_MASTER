@@ -29,6 +29,7 @@ public:
 	void open(void);
 	void close(void);
 	bool open_status;
+	Object^ pXray;
 	Object^ pProj;
 	Object^ pAbort;
 	Object^ pError;
@@ -86,6 +87,7 @@ private: System::Windows::Forms::Panel^ mainPanel;
 private: System::Windows::Forms::Label^ labelDate;
 private: System::Windows::Forms::Label^ labelPatientName;
 private: System::Windows::Forms::Label^ labelTime;
+
 
 // Xray Status Bar
 private: System::Windows::Forms::Panel^ xrayStat;
@@ -149,6 +151,7 @@ private:
 	/// </summary>
 	void InitializeComponent(void)
 	{
+		
 		this->labelDate = (gcnew System::Windows::Forms::Label());
 		this->labelPatientName = (gcnew System::Windows::Forms::Label());
 		this->labelTime = (gcnew System::Windows::Forms::Label());
@@ -186,7 +189,7 @@ private:
 		this->paddleStatus->SuspendLayout();
 		this->tubeStatus->SuspendLayout();
 		this->collimationStatus->SuspendLayout();
-		this->SuspendLayout();
+		this->SuspendLayout();		
 		// 
 		// labelDate
 		// 

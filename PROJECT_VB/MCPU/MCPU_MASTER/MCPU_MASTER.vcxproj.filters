@@ -188,6 +188,9 @@
     <ClInclude Include="WINDOWS\SERVICE_CALIBRATION\calib_panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WINDOWS\IconWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -347,6 +350,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GENERATOR\DEMO\GeneratorDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\IconWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

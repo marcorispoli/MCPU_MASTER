@@ -68,6 +68,14 @@ bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, i
     return true;
 }
 
+bool  CanOpenMotor::activateRelativePositioning(int id, int delta_target, int speed, int acc, int dec) {
+    
+    // Set the taret position
+    int target = getCurrentPosition() + delta_target;
+    return activateAutomaticPositioning(id, target, speed, acc, dec);
+}
+
+
 /// <summary>
 /// This function is called by the Base class at the command preparation. 
 /// </summary>
@@ -334,6 +342,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
 
     // Read the current position 
     updateCurrentPosition();   
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);

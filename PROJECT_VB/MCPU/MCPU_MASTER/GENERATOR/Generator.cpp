@@ -8,6 +8,7 @@
 #include "PCB302.h"
 #include "PCB304.h"
 #include "Notify.h"
+#include "awsProtocol.h"
 #include <thread>
 
 
@@ -382,9 +383,28 @@ bool Generator::clearSystemMessages(void) {
     return true;
 }
 
+bool Generator::startExposure(void) {
+
+    // test if the Exposure mode is correctly set
+    if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) return false;
+
+    // Test if the pulse 0 is actually valid
+    if (!ExposureModule::getExposurePulse(0)->validated) return false;
+
+    if (!idle_status) return false; // Only in Stand-by mode can be initiated
+    if (!ready_for_exposure) return false; // Only in Stand-by mode can be initiated
+    if (xray_processing) return false; // A X-RAY procedure is processing (busy condition)
+    xray_processing = true;
+    ExposureModule::clearXrayCompleted();
+    
+    // Invalidates the Pulse 0 because it is consumed.
+    ExposureModule::getExposurePulse(0)->validated = false;
+    return true;
+}
+
 bool Generator::generatorIdle(void) {
     static unsigned char generator_status = 0;
-
+    ExposureModule::exposure_completed_errors exposure_err_code;
 
     while (true) {
         
@@ -426,11 +446,7 @@ bool Generator::generatorIdle(void) {
         // If not in Standby cannot be processed a request for an exposure sequence
         if (generator_status != 2) continue;
 
-        // Evaluates if there is a request for the X-Ray exposure
-        bool procedure_ret_code = false;
-        bool dose_is_released =false;
-        xray_exposure_error = exposure_completed_errors::XRAY_NO_ERRORS;
-
+        
         if (xray_processing) {
             
             // Resets of the exposed pulses for all data-bank
@@ -439,30 +455,36 @@ bool Generator::generatorIdle(void) {
             // See the function Generator_ExposureManagement_RadPostExposure in CaDataDicGen_GenIndex.cpp file
             R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
 
+            // reset of the pulses
+            ExposureModule::setExposedPulse(0, gcnew ExposureModule::exposure_pulse());
+            ExposureModule::setExposedPulse(1, gcnew ExposureModule::exposure_pulse());
+            ExposureModule::setExposedPulse(2, gcnew ExposureModule::exposure_pulse());
+            ExposureModule::setExposedPulse(3, gcnew ExposureModule::exposure_pulse());
+
             // Every Xray procedure return True if the seqeunce is completed if success.
             // In case of false returned (error condition), the   xray_exposure_error is set properly
-            switch (xray_exposure_type) {
-            case ExposureModule::exposure_type_options::MAN_2D: procedure_ret_code = man_2d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_2D: procedure_ret_code = aec_2d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::MAN_3D: procedure_ret_code = man_3d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_3D: procedure_ret_code = aec_3d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::MAN_COMBO: procedure_ret_code = man_combo_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_COMBO: procedure_ret_code = aec_combo_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::MAN_AE: procedure_ret_code = man_ae_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_AE: procedure_ret_code = aec_ae_exposure_procedure(); break;
+            switch (ExposureModule::getExposureMode()) {
+            case ExposureModule::exposure_type_options::MAN_2D: exposure_err_code = man_2d_exposure_procedure(); break;
+            case ExposureModule::exposure_type_options::AEC_2D: exposure_err_code = aec_2d_exposure_procedure(); break;
+            case ExposureModule::exposure_type_options::MAN_3D: exposure_err_code = man_3d_exposure_procedure(); break;
+            case ExposureModule::exposure_type_options::AEC_3D: exposure_err_code = aec_3d_exposure_procedure(); break;
+            case ExposureModule::exposure_type_options::MAN_COMBO: exposure_err_code = man_combo_exposure_procedure(); break;
+            case ExposureModule::exposure_type_options::AEC_COMBO: exposure_err_code = aec_combo_exposure_procedure(); break;
+            case ExposureModule::exposure_type_options::MAN_AE: exposure_err_code = man_ae_exposure_procedure(); break;
+            case ExposureModule::exposure_type_options::AEC_AE: exposure_err_code = aec_ae_exposure_procedure(); break;
             default:         
-                procedure_ret_code = false;
-                xray_exposure_error = exposure_completed_errors::XRAY_INVALID_PROCEDURE;
+                exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
             }
 
-            // Fills the ExposureModule::exposed[] with the effettive pulse data retrived from the proper Databanks
-            // The function returns true if a dose has been released.
-            bool dose_is_released = setExecutedPulse(xray_exposure_type);
+            ExposureModule::setCompletedError(exposure_err_code);
 
-            // Debug Prints
-            if(procedure_ret_code)  Debug::WriteLine("GENERATOR EXPOSURE: Successfully completed \n");
-            else  if(!dose_is_released)    Debug::WriteLine("GENERATOR EXPOSURE ERROR (NO DOSE): Error code = " + xray_exposure_error.ToString() + "\n");
-            else  Debug::WriteLine("GENERATOR EXPOSURE ERROR (PARTIAL DOSE): Error code = " + xray_exposure_error.ToString() + "\n");
+            // The X-Ray procedure termines here: the complete event is generated
+            // In case of sequence not completed (partial or total) is App to the application 
+            // retrive the error code (xray_exposure_error).
+            if (exposure_err_code == ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS)  ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_SUCCESS);// xray_complete_event(exposure_completed_options::XRAY_SUCCESS);
+            else if (ExposureModule::getExposedPulse(0)->getmAs()) ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_PARTIAL_DOSE);
+            else ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_NO_DOSE);
+            Debug::WriteLine("GENERATOR EXPOSURE RESULT:" + ExposureModule::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
 
             // Removes the X-RAY ena signal 
             PCB301::setXrayEnable(false);
@@ -473,12 +495,8 @@ bool Generator::generatorIdle(void) {
             // Unlock the compressor if requested
             if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_RELEASE) PCB302::setCompressorUnlock();
             
-            // The X-Ray procedure termines here: the complete event is generated
-            // In case of sequence not completed (partial or total) is App to the application 
-            // retrive the error code (xray_exposure_error).
-            if(procedure_ret_code)  xray_complete_event(exposure_completed_options::XRAY_SUCCESS);
-            else if(dose_is_released) xray_complete_event(exposure_completed_options::XRAY_PARTIAL_DOSE);
-            else xray_complete_event(exposure_completed_options::XRAY_NO_DOSE);
+            // Notify the AWS about the XRAY completed event
+            awsProtocol::EVENT_XraySequenceCompleted();
 
             // Waits for the X-RAY button release
             if (PCB301::getXrayPushButtonStat()) {
@@ -487,73 +505,14 @@ bool Generator::generatorIdle(void) {
             }
             
             xray_processing = false;
+            ExposureModule::setXrayCompletedFlag(); // The Exposure is completed and the data are available
         }
+
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     return true;
 }
-
-/// <summary>
-/// This function assignes the kV and mAs of the Generator executed pulses 
-/// to the ExposureModule::exposed[] pulses.
-/// 
-/// The Generator sequence cumulates the exposure data of the partial
-/// pulses into the array of the data bank used.
-/// 
-/// Based on the exposure type, this function takes the proper Data Bank pulse data 
-/// and reverses its content into the ExposureModule pulse array.
-/// 
-/// </summary>
-/// <param name="xray_exposure_type"></param>
-/// <returns></returns>
-bool Generator::setExecutedPulse(ExposureModule::exposure_type_options xray_exposure_type) {
-    return false;
-    
-    ExposureModule::exposure_pulse^ exposure_pulse;
-    double kV;
-    double mAs;
-    PCB315::filterMaterialCodes filter;
-    bool is_released_dose = false;
-
-    // reset of the pulses
-    ExposureModule::setExposedPulse(0, gcnew ExposureModule::exposure_pulse()); 
-    ExposureModule::setExposedPulse(1, gcnew ExposureModule::exposure_pulse()); 
-    ExposureModule::setExposedPulse(2, gcnew ExposureModule::exposure_pulse()); 
-    ExposureModule::setExposedPulse(3, gcnew ExposureModule::exposure_pulse());
-    
-    switch (xray_exposure_type) {
-
-    case ExposureModule::exposure_type_options::MAN_2D:
-
-        // set the Pulse 0 with the R2CP::DB_Pulse databank
-
-        exposure_pulse = ExposureModule::getExposurePulse(0);
-        filter = exposure_pulse->getFilter();
-        kV = (double) R2CP::CaDataDicGen::GetInstance()->executed_pulses[R2CP::DB_Pulse].kV;
-        mAs = (double)R2CP::CaDataDicGen::GetInstance()->executed_pulses[R2CP::DB_Pulse].mAs;
-        if (mAs > 1) is_released_dose = true;
-        
-        ExposureModule::setExposedPulse(0, gcnew ExposureModule::exposure_pulse(kV, mAs, filter)); // This is the only used
-
-        break;
-    case ExposureModule::exposure_type_options::AEC_2D:
-
-        break;
-    case ExposureModule::exposure_type_options::MAN_3D:  break;
-    case ExposureModule::exposure_type_options::AEC_3D:  break;
-    case ExposureModule::exposure_type_options::MAN_COMBO:  break;
-    case ExposureModule::exposure_type_options::AEC_COMBO:  break;
-    case ExposureModule::exposure_type_options::MAN_AE:  break;
-    case ExposureModule::exposure_type_options::AEC_AE:  break;
-    default:
-        break;
-    }
-
-    return is_released_dose;
-    
-}
-
 
 bool Generator::generatorErrorMessagesLoop(void) {
 
@@ -610,24 +569,4 @@ bool Generator::generatorErrorMessagesLoop(void) {
         
         
     }
-}
-
-bool Generator::startExposure(void) {
-    
-    if (!ready_for_exposure) return false; // Only in Stand-by mode can be initiated
-    if (xray_processing) return false; // A X-RAY procedure is processing (busy condition)
-
-    // Test if the pulse 0 is actually valid
-    if (!ExposureModule::getExposurePulse(0)->validated) return false;
-
-    // test if the Exposure mode is correctly set
-    if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) return false;
-
-    // Sets the exposure type according with the requested by the ExposureModule
-    xray_exposure_type = ExposureModule::getExposureMode();
-    xray_exposure_error = exposure_completed_errors::XRAY_NO_ERRORS;
-    xray_processing = true;
-    
-
-    return true;
 }

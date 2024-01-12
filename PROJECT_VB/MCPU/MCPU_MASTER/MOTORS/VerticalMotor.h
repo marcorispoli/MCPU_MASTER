@@ -57,23 +57,25 @@ ref class VerticalMotor : public CANOPEN::CanOpenMotor
 public:
 	VerticalMotor(void);
 	
-	
 	static bool activateIsocentricCorrection(int id, int delta_target); //!< This command activates the isocentric correction
 	static VerticalMotor^ device = gcnew VerticalMotor();
 	static bool startHoming(void);
 	static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
 private:
-	static bool iso_activation_mode = false;
+
 	static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
 	static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
-	
+	bool testLimitSwitch(void); //!< True if the limit switch is engaged
+
+	MotorCompletedCodes automaticPositioningRunningCallback(void) override;
 	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 	MotorCompletedCodes idleCallback(void) override;
 
 	MotorCompletedCodes manualPositioningRunningCallback(void) override;
+	void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
 };
 

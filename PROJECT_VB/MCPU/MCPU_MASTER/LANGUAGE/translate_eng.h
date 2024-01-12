@@ -37,7 +37,7 @@
 "E00023", Notify::messages::ERROR_TILT_MOTOR_HOMING, "Tilt Motor Monitoring", "The encoder is not initialized",
 "E00024", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized",
 "E00025", Notify::messages::ERROR_BODY_LIMIT_SWITCH, "Body Motor Monitoring", "The limit switch is active",
-
+"E00025", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
 "E00900", Notify::messages::ERROR_X_RAY_BUTTON_RELEASED, "X-RAY Sequence Error", "X-Ray push button early released",

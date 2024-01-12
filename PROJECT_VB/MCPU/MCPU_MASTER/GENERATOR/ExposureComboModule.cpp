@@ -6,15 +6,13 @@ using namespace System::Diagnostics;
 using namespace System::Collections::Generic;
 
 
-bool Generator::man_combo_exposure_procedure(void) {
+ExposureModule::exposure_completed_errors Generator::man_combo_exposure_procedure(void) {
     // Set thecommunication error code as general case
-    xray_exposure_error = exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    return false;
+    return ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
 };
 
-bool Generator::aec_combo_exposure_procedure(void) {
+ExposureModule::exposure_completed_errors Generator::aec_combo_exposure_procedure(void) {
     // Set thecommunication error code as general case
-    xray_exposure_error = exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    return false;
+    return ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
 
 };

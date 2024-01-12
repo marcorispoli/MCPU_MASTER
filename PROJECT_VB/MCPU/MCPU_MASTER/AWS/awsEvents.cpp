@@ -133,21 +133,33 @@ void awsProtocol::EVENT_XrayPushButton(bool status) {
    
 }
 
-void awsProtocol::EVENT_XraySequenceCompleted(Generator::exposure_completed_options code) {
+void awsProtocol::EVENT_exposurePulseCompleted(unsigned char npulse) {
+    const std::lock_guard<std::mutex> lock(event_mutex);
+
+    device->event_counter++;
+   
+    String^ answer = "<" + device->event_counter.ToString() + " %EVENT_exposurePulseCompleted  " + npulse.ToString() + " %>";
+    device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+
+void awsProtocol::EVENT_XraySequenceCompleted(void) {
 
     const std::lock_guard<std::mutex> lock(event_mutex);
     String^ result;
-    if (code == Generator::exposure_completed_options::XRAY_SUCCESS) result = "OK";
-    else if (code == Generator::exposure_completed_options::XRAY_PARTIAL_DOSE) result = "PARTIAL";
+
+    ExposureModule::exposure_completed_options code = ExposureModule::getExposureCompletedCode();
+    if (code == ExposureModule::exposure_completed_options::XRAY_SUCCESS) result = "OK";
+    else if (code == ExposureModule::exposure_completed_options::XRAY_PARTIAL_DOSE) result = "PARTIAL";
     else  result = "NOK";
 
-   
+    ExposureModule::exposure_completed_errors error = ExposureModule::getExposureCompletedError();
+
     device->event_counter++;
     String^ answer;
 
     System::Globalization::CultureInfo^ myInfo = gcnew  System::Globalization::CultureInfo("en-US", false);
 
-    answer = "<" + device->event_counter.ToString() + " %EVENT_XraySequenceCompleted  " + result;
+    answer = "<" + device->event_counter.ToString() + " %EVENT_XraySequenceCompleted  " + result + " " + ((int)error).ToString();
     answer += " " + ExposureModule::getExposedPulse(0)->getKv().ToString(myInfo) + " " + ExposureModule::getExposedPulse(0)->getmAs().ToString(myInfo) + " " + PCB315::getTagFromFilter(ExposureModule::getExposedPulse(0)->getFilter());
     answer += " " + ExposureModule::getExposedPulse(1)->getKv().ToString(myInfo) + " " + ExposureModule::getExposedPulse(1)->getmAs().ToString(myInfo) + " " + PCB315::getTagFromFilter(ExposureModule::getExposedPulse(1)->getFilter());
     answer += " " + ExposureModule::getExposedPulse(2)->getKv().ToString(myInfo) + " " + ExposureModule::getExposedPulse(2)->getmAs().ToString(myInfo) + " " + PCB315::getTagFromFilter(ExposureModule::getExposedPulse(2)->getFilter());

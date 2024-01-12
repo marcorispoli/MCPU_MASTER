@@ -1,14 +1,33 @@
+
 <10%EXEC_OpenStudy "pippo caio sempronio"%>
 <10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
-<10%EXEC_ArmPosition RMLO 45 40 50%>
+<10%EXEC_ArmPosition LCC 0 -10 10%>
+
+---------------------MANUAL 2D WORKFLOW----------------------------------------
 <10%SET_ExposureMode MAN_2D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_DIS ARM_ENA%>
-<10%SET_ExposureData 0 25.5 100 Rh %>
+
+<10%SET_ExposureData 0 30 100 Rh %>
+	
 <10%SET_EnableXrayPush ON%>
 <10% EXEC_StartXraySequence %>
+-----------------------------------------------------------------------
+
+---------------------AEC 2D WORKFLOW----------------------------------------
+<10%SET_ExposureMode AEC_2D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_DIS ARM_ENA%>
+
+<10%SET_ExposureData 0 35 10 Rh %>
+	<10%SET_ExposureData 1 28 100 Rh %>
+
+<10%SET_EnableXrayPush ON%>
+<10% EXEC_StartXraySequence %>
+-----------------------------------------------------------------------
+
 
 
 <10%SET_EnableXrayPush OFF%>
 <10%EXEC_CloseStudy %>
+
+
 
 
 <10%EXEC_ArmPosition LMLO -90 -100 -80 %>

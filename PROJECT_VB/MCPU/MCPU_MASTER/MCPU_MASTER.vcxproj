@@ -189,6 +189,9 @@
     <ClInclude Include="WINDOWS\ErrorForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WINDOWS\IconWindow.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\IdleForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -253,6 +256,7 @@
     <ClCompile Include="MOTORS\TiltMotor.cpp" />
     <ClCompile Include="VSCAN\CanDriver.cpp" />
     <ClCompile Include="WINDOWS\ErrorForm.cpp" />
+    <ClCompile Include="WINDOWS\IconWindow.cpp" />
     <ClCompile Include="WINDOWS\IdleForm.cpp" />
     <ClCompile Include="WINDOWS\MainForm.cpp" />
     <ClCompile Include="WINDOWS\OperatingForm.cpp" />

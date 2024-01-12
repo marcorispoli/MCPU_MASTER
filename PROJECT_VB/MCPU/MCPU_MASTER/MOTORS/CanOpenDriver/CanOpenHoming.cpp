@@ -44,6 +44,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     if (!blocking_writeOD(OD_6099_01, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to switch
     if (!blocking_writeOD(OD_6099_02, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to reference
     if (!blocking_writeOD(OD_609A_00, convert_UserSec_To_Speed(command_acc))) error_condition = true; // Sets the Rotation Acc    
+    
 
     // Read the status of the input zero to determines witch algorithm shall be used
     blocking_readOD(OD_60FD_00);
@@ -115,6 +116,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     clock::time_point start = clock::now();
 
     command_ms_tmo = 60000; // Sets the timout to 60 seconds for all devices
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING INIT POSITION = " + current_uposition.ToString());
 
     while (true) {
 
@@ -206,8 +208,10 @@ void CanOpenMotor::manageAutomaticHoming(void) {
 
     } // End of main controlling loop
 
+
     // Read the current position 
     updateCurrentPosition();
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING FINAL POSITION = " + current_uposition.ToString());
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
@@ -238,7 +242,7 @@ bool CanOpenMotor::initResetEncoderCommand(int initial_eposition) {
     updateCurrentPosition();
 
     // Already reset in this position
-    if (current_uposition == initial_eposition) {
+    if (current_eposition == initial_eposition) {
         Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + current_uposition.ToString());
         return true;
     }

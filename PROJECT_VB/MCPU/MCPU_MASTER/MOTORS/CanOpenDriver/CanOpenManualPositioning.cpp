@@ -108,7 +108,6 @@ void CanOpenMotor::manageManualPositioning(void) {
         return;
     }
 
-
     while (true) {
 
         // Test the abort request flag
@@ -173,6 +172,7 @@ void CanOpenMotor::manageManualPositioning(void) {
 
     // Read the current position 
     updateCurrentPosition();
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);

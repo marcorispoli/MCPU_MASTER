@@ -58,11 +58,34 @@ public:
 
 	ref class Register {
 	public:
+		
 		Register(unsigned char pd0, unsigned char pd1, unsigned char pd2, unsigned char pd3) {
 			d0 = pd0; d1 = pd1; d2 = pd2; d3 = pd3;
 		}
+		Register(void) {
+			d0 = d1 = d2 = d3 =0; 
+		}
 		unsigned char d0, d1, d2, d3;
+		
+		void D0(bool stat, unsigned char mask) {
+			if (stat) d0 |= mask;
+			else d0 &= ~mask;
+		}
+		void D1(bool stat, unsigned char mask) {
+			if (stat) d1 |= mask;
+			else d1 &= ~mask;
+		}
+		void D2(bool stat, unsigned char mask) {
+			if (stat) d2 |= mask;
+			else d2 &= ~mask;
+		}
+		void D3(bool stat, unsigned char mask) {
+			if (stat) d3 |= mask;
+			else d3 &= ~mask;
+		}
+
 	};
+		
 
 	ref class CanDeviceRegister {
 	public:
@@ -170,6 +193,7 @@ public:
 	Register^ readDataRegister(unsigned char index);
 	bool writeParamRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
 	bool writeDataRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
+	inline bool writeDataRegister(unsigned char idx, Register^ reg) { return writeDataRegister(idx, reg->d0, reg->d1, reg->d2, reg->d3); }
 
 
 

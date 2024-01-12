@@ -446,6 +446,7 @@ namespace CANOPEN {
 		delegate void delegate_command_completed_callback(int id, int code);//!< Delegate for the command completed event		
 	    event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
+		bool  activateRelativePositioning(int id, int target, int speed, int acc, int dec); 	//!< This function starts an automatic relative positioning		
 		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
 		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
 		bool activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		

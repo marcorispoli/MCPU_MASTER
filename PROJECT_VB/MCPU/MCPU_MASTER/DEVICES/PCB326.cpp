@@ -1,8 +1,20 @@
 #include "PCB326.h"
-#include "../gantry_global_status.h"
+#include "Notify.h"
 #include <thread>
 
 void PCB326::runningLoop(void) {
+    static bool commerr = false;
+
+    // Test the communication status
+    if (commerr != isCommunicationError()) {
+        commerr = isCommunicationError();
+        if (isCommunicationError()) {
+            Notify::activate(Notify::messages::ERROR_PCB326_COMMUNICATION_ERROR);
+        }
+        else {
+            Notify::deactivate(Notify::messages::ERROR_PCB326_COMMUNICATION_ERROR);
+        }
+    }
 
     /*
     while (!send(GET_STATUS_SYSTEM_REGISTER));

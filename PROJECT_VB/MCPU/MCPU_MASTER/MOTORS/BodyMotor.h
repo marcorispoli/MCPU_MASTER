@@ -107,11 +107,14 @@ protected:
 	MotorCompletedCodes automaticPositioningRunningCallback(void) override;
 	
 
-	MotorCompletedCodes idleCallback(void) override;
+	
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 	void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
 	MotorCompletedCodes manualPositioningRunningCallback(void) override;
 
+	MotorCompletedCodes idleCallback(void) override;
+	void faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) override;
+	
 	bool brakeCallback(void) override;
 	bool unbrakeCallback(void) override;
 

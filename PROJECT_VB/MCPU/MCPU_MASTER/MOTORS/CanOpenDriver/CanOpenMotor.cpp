@@ -127,15 +127,7 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds
     nanoj_rx_pending = false;
     
 
-    // Add the callback handling the SDO reception
-    CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
-
-    // Add the bootup handler
-    CanDriver::canrx_canopen_bootup_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_bootup_callback);
-
-    // Assignes the initial Cia status to undefined
-    CiA_current_status = _CiA402Status::CiA402_Undefined;
-
+   
     // Set the current command to IDLE
     current_command = MotorCommands::MOTOR_IDLE;
     request_command = MotorCommands::MOTOR_IDLE;
@@ -471,9 +463,34 @@ bool CanOpenMotor::activateConfiguration(void) {
 /// </summary>
 /// <param name=""></param>
 void CanOpenMotor::mainWorker(void) {
-    
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: wait run command");
 
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MAIN THREAD STARTED");
+    while (!run) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    // Demo mode activation
+    if (demo_mode) {
+        internal_status = status_options::MOTOR_DEMO;
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
+
+        while (demo_mode) {
+            demoLoop();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+
+    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: RUNNING MODE STARTED");
+    
+    // Add the callback handling the SDO reception
+    CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
+
+    // Add the bootup handler
+    CanDriver::canrx_canopen_bootup_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_bootup_callback);
+
+    // Assignes the initial Cia status to undefined
+    CiA_current_status = _CiA402Status::CiA402_Undefined;
+
 
     while (1) {
         
@@ -835,65 +852,6 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
 }
 
 
-/// <summary>
-/// This procedure returns a language-translated string 
-/// describing the last terminated command code.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns>String describing the last termninated command code</returns>
-System::String^ CanOpenMotor::getCompletedCodeString(void) {
-    switch (command_completed_code) {
-
-    case MotorCompletedCodes::COMMAND_SUCCESS: 
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_COMMAND_SUCCESS);
-        break;
-    case MotorCompletedCodes::COMMAND_MANUAL_TERMINATION:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_COMMAND_MANUAL_TERMINATION);
-        break;
-    case MotorCompletedCodes::ERROR_OBSTACLE_DETECTED:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_OBSTACLE_DETECTED);
-        break;
-    case MotorCompletedCodes::ERROR_MOTOR_BUSY:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_MOTOR_BUSY);
-        break;
-    case MotorCompletedCodes::ERROR_INITIALIZATION:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_INITIALIZATION);
-        break;
-    case MotorCompletedCodes::ERROR_UNEXPECTED_STATUS:
-        Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_UNEXPECTED_STATUS);
-        break;
-    case MotorCompletedCodes::ERROR_LIMIT_SWITCH:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_LIMIT_SWITCH);
-        break;
-    case MotorCompletedCodes::ERROR_BRAKE_DEVICE:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_BRAKE_DEVICE);
-        break;
-       
-    case MotorCompletedCodes::ERROR_TIMOUT:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_TIMOUT);
-        break;
-    case MotorCompletedCodes::ERROR_INTERNAL_FAULT:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_INTERNAL_FAULT);
-        break;
-    case MotorCompletedCodes::ERROR_ACCESS_REGISTER:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_ACCESS_REGISTER);
-        break;
-    case MotorCompletedCodes::ERROR_MISSING_HOME:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_MISSING_HOME);
-        break;
-    case MotorCompletedCodes::ERROR_COMMAND_DISABLED:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_COMMAND_DISABLED);
-        break;
-    case MotorCompletedCodes::ERROR_COMMAND_ABORTED:
-        return Notify::TranslateLabel(Notify::messages::LABEL_MOTOR_ERROR_COMMAND_ABORTED);
-        break;
-
-        
-    }
-
-    return "";
-}
 
 /// <summary>
 /// This command requests for an immediate activation abort.

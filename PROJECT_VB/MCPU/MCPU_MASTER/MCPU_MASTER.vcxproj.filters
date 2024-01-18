@@ -191,6 +191,12 @@
     <ClInclude Include="WINDOWS\IconWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WINDOWS\infoPopup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\ValuePopup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -353,6 +359,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WINDOWS\IconWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\infoPopup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\ValuePopup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

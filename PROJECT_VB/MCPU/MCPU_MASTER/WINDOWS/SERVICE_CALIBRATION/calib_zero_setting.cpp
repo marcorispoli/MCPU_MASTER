@@ -144,7 +144,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 			command_delay = 0;
 
 			if (!BodyMotor::startHoming()) {
-				zeroSettingLog->Text = "BODY MOTOR:" + BodyMotor::device->getCompletedCodeString() + "\n";
+				zeroSettingLog->Text = "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
 				current_zero_command = zero_commands::NO_COMMAND;			
 				finish = true;
 				break;
@@ -154,7 +154,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		}
 
 		if (!BodyMotor::device->isReady()) break;
-		zeroSettingLog->Text += "BODY MOTOR:" + BodyMotor::device->getCompletedCodeString() + "\n";
+		zeroSettingLog->Text += "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
 		finish = true;
@@ -166,7 +166,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		if (command_delay == 1) {
 			command_delay = 0;
 			if (!VerticalMotor::startHoming()) {
-				zeroSettingLog->Text = "VERTICAL MOTOR:" + VerticalMotor::device->getCompletedCodeString() + "\n";
+				zeroSettingLog->Text = "VERTICAL MOTOR:" + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
 				current_zero_command = zero_commands::NO_COMMAND;
 				finish = true;
 				break;
@@ -176,7 +176,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		}
 
 		if (!VerticalMotor::device->isReady()) break;
-		zeroSettingLog->Text += "VERTICAL MOTOR:" + VerticalMotor::device->getCompletedCodeString() + "\n";
+		zeroSettingLog->Text += "VERTICAL MOTOR:" + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
 		finish = true;
@@ -188,7 +188,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 			command_delay = 0;
 
 			if (!TiltMotor::startHoming()) {
-				zeroSettingLog->Text = "TILT MOTOR:" + TiltMotor::device->getCompletedCodeString() + "\n";
+				zeroSettingLog->Text = "TILT MOTOR:" + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
 				current_zero_command = zero_commands::NO_COMMAND;
 				finish = true;
 				break;
@@ -198,7 +198,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		}
 
 		if (!TiltMotor::device->isReady()) break;
-		zeroSettingLog->Text += "TILT MOTOR:" + TiltMotor::device->getCompletedCodeString() + "\n";
+		zeroSettingLog->Text += "TILT MOTOR:" + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
 		break;
@@ -210,7 +210,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 			command_delay = 0;
 
 			if (!SlideMotor::startHoming()) {
-				zeroSettingLog->Text = "SLIDE MOTOR:" + SlideMotor::device->getCompletedCodeString() + "\n";
+				zeroSettingLog->Text = "SLIDE MOTOR:" + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
 				current_zero_command = zero_commands::NO_COMMAND;
 				finish = true;
 				break;
@@ -220,7 +220,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		}
 
 		if (!SlideMotor::device->isReady()) break;
-		zeroSettingLog->Text += "SLIDE MOTOR:" + SlideMotor::device->getCompletedCodeString() + "\n";
+		zeroSettingLog->Text += "SLIDE MOTOR:" + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
 		break;
@@ -232,7 +232,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 			command_delay = 0;
 
 			if (!ArmMotor::startHoming()) {
-				zeroSettingLog->Text = "ARM MOTOR:" + ArmMotor::device->getCompletedCodeString() + "\n";
+				zeroSettingLog->Text = "ARM MOTOR:" + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
 				current_zero_command = zero_commands::NO_COMMAND;
 				finish = true;
 				break;
@@ -242,7 +242,7 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 		}
 
 		if (!ArmMotor::device->isReady()) break;
-		zeroSettingLog->Text += "ARM MOTOR:" + ArmMotor::device->getCompletedCodeString() + "\n";
+		zeroSettingLog->Text += "ARM MOTOR:" + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
 
 		current_zero_command = zero_commands::NO_COMMAND;
 		break;

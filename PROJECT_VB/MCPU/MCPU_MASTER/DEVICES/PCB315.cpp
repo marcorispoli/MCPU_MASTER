@@ -15,7 +15,7 @@ void PCB315::manageFilterSelection(void) {
         // Activate the selectuion error if necessary
         if (!filter_select_error) {
             filter_select_error = true;
-            Notify::activate(Notify::messages::ERROR_FILTER_SELECTION_ERROR, false);
+            Notify::activate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);
         }
         return;
     }
@@ -161,7 +161,7 @@ bool PCB315::updateStatusRegister(void) {
         current_filter_status = filter_status;
 
         // Signals a warning if the filter is not in a valid position
-        if(filter_status == FilterSlotCodes::FILTER_OUT_OF_POSITION) Notify::activate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION, false);
+        if(filter_status == FilterSlotCodes::FILTER_OUT_OF_POSITION) Notify::activate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
         else Notify::deactivate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
     }
 
@@ -173,25 +173,25 @@ bool PCB315::updateStatusRegister(void) {
         Register^ error_register = readErrorRegister();
         if (error_register != nullptr)
         {
-            if (PCB315_ERROR_BULB_LOW(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_LOW, false);
+            if (PCB315_ERROR_BULB_LOW(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_LOW);
             else Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_LOW);
-            if (PCB315_ERROR_BULB_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_SHORT, false);
+            if (PCB315_ERROR_BULB_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_SHORT);
             else Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_SHORT);
            
 
-            if (PCB315_ERROR_STATOR_LOW(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_LOW, false);
+            if (PCB315_ERROR_STATOR_LOW(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_LOW);
             else Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_LOW);
-            if (PCB315_ERROR_STATOR_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_SHORT, false);
+            if (PCB315_ERROR_STATOR_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_SHORT);
             else Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_SHORT);
 
             // Evaluates the Warning related to the High tube temperature
             if (PCB315_ERROR_BULB_HIGH(error_register) || PCB315_ERROR_STATOR_HIGH(error_register)) {
                 tube_high_temp_alarm = true;
 
-                if (PCB315_ERROR_BULB_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_BULB_SENSOR_HIGH, false);
+                if (PCB315_ERROR_BULB_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
                 else Notify::deactivate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
 
-                if (PCB315_ERROR_STATOR_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_STATOR_SENSOR_HIGH, false);
+                if (PCB315_ERROR_STATOR_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
                 else Notify::deactivate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
 
             }
@@ -247,36 +247,26 @@ bool PCB315::updateStatusRegister(void) {
 /// 
 /// <param name=""></param>
 void PCB315::runningLoop(void) {
-    static bool comm_error = false;
-    static int comm_attempt = 0;
+    static bool commerr = false;
+
+    // Test the communication status
+    if (commerr != isCommunicationError()) {
+        commerr = isCommunicationError();
+        if (isCommunicationError()) {
+            Notify::activate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR);
+        }
+        else {
+            Notify::deactivate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR);
+        }
+    }
 
     // Updates the Status register
     if (updateStatusRegister()) {
-
         manageFilterSelection(); // manages the filter selection on the device
-
-        comm_attempt = 0;
-
-        // resets the communication error
-        if (comm_error) {
-            Notify::deactivate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR);
-            comm_error = false;
-        }
     }
-    else {
- 
-        // Communication issues section
-        // In case the Status register read should fails several times, an error condition is generated
-        if (comm_attempt > 10) {
-            if (!comm_error) {
-                comm_error = true;
-                Notify::activate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR, false);
-            }
-        }else comm_attempt++;
-    }
+
     
     std::this_thread::sleep_for(std::chrono::microseconds(10000));
-
     return;
 }
 
@@ -292,7 +282,7 @@ void PCB315::runningLoop(void) {
 void PCB315::resetLoop(void) {
 
     // Ths error is a one shot error: it is reset as soon as the operator open the error window
-    Notify::activate(Notify::messages::ERROR_PCB315_RESET, true);
+    Notify::instant(Notify::messages::ERROR_PCB315_RESET);
 }
 
 /// <summary>

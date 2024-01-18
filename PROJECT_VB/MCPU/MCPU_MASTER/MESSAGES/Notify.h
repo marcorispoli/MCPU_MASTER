@@ -1,9 +1,11 @@
 #pragma once
 
+#include "ErrorForm.h"
+#include "infoPopup.h"
 
 using namespace System::Collections::Generic;
 
-ref class Notify
+public ref class Notify
 {
 public:
 	
@@ -28,6 +30,8 @@ public:
 		ERROR_MOTOR_BUTTON_UD_FAULT,
 		ERROR_CONFIGURATION_FAULT,
 		ERROR_POWER_DOWN_ERROR,
+		ERROR_EMERGENCY_BUTTON,
+		ERROR_CABINET_SAFETY,
 		ERROR_BATTERY_LOW_ERROR,
 		ERROR_GENERATOR_ERROR_CONNECTION,
 		ERROR_COLLIMATION_SELECTION_ERROR,
@@ -45,6 +49,8 @@ public:
 		ERROR_SLIDE_MOTOR_HOMING,
 		ERROR_BODY_MOTOR_HOMING,
 		ERROR_BODY_LIMIT_SWITCH,
+		
+		
 
 		ERROR_X_RAY_BUTTON_RELEASED,
 		ERROR_X_RAY_LOW_ANODIC,
@@ -72,6 +78,11 @@ public:
 		WARNING_ANODE_TEMPERATURE_HIGH,
 		WARNING_FILTER_OUT_OF_POSITION,
 		WARNING_COLLIMATOR_OUT_OF_POSITION,
+		WARNING_BODY_DRIVER,
+		WARNING_VERTICAL_DRIVER,
+		WARNING_TILT_DRIVER,
+		WARNING_ARM_DRIVER,
+		WARNING_SLIDE_DRIVER,
 
 		// INFO MESSAGE SECTION
 		INFO_MESSAGES_SECTION,
@@ -79,6 +90,14 @@ public:
 		INFO_PROJECTION_CONFIRMATION,
 		INFO_PROJECTION_ABORT,
 		INFO_CARM_SHIFT_CONFIRMATION,
+		INFO_MOTOR_48V_SAFETY_LINE_OFF,
+		INFO_MOTOR_48V_POWER_SUPPLY_OFF,
+		INFO_BURNING_JUMPER_PRESENT,
+		INFO_POWER_LOCK,
+		INFO_ACTIVATION_MOTOR_MANUAL_DISABLE,
+		INFO_ACTIVATION_MOTOR_SAFETY_DISABLE,
+		INFO_ACTIVATION_MOTOR_ERROR_DISABLE,
+
 
 		// LABEL MESSAGE SECTION
 		LABEL_MESSAGES_SECTION,
@@ -107,6 +126,8 @@ public:
 		LABEL_MOTOR_ERROR_COMMAND_DISABLED,
 		LABEL_MOTOR_ERROR_COMMAND_ABORTED,
 
+		LABEL_CURRENT_COMPRESSION,
+
 		// Last declaration
 		NUM_MESSAGES,
 		LABEL_ERROR,
@@ -118,14 +139,11 @@ public:
 	ref class item{
 	public:
 		item() {
-			one_shot = false;
 			extra = nullptr;
 			disabled = false;
 			active = false;
 		}
 
-		
-		bool one_shot;
 		bool active;
 		bool disabled;
 		System::String^ extra;
@@ -164,18 +182,24 @@ public:
 	static bool isError(void) { return (error_counter != 0); }
 	static bool isWarning(void) { return (warning_counter != 0); }
 	static bool isInfo(void) { return (info_counter != 0); }
-	static bool isOneShot(void) { return one_shot; }
+	static bool isInstant(void) { return (instant_msg != messages::NO_MESSAGE); }
 
 	static void clrNewError(void) { last_message = messages::NO_MESSAGE; }
-	static void clrOneShotErrors(void);
+	static void clrInstant(void) { instant_msg = messages::NO_MESSAGE; }
+
 	static System::String^ getListOfErrors(void);
 	static System::String^ formatMsg(messages msg);
-
 	static inline messages getLastMessage(void) { return last_message; }
-	static void activate(messages msg, bool one_shot);
-	static void activate(messages msg, System::String^ extra, bool one_shot);
-	static void deactivate(messages msg);
+
 	static void disable(messages msg);
+	static void activate(messages msg);
+	static void activate(messages msg, System::String^ extra);
+	static void deactivate(messages msg);
+
+	static void instant(messages msg);
+	static void instant(messages msg, System::String^ extra);
+	static messages getInstant(void) { return instant_msg; }
+
 
 	Notify() {
 		message_list = gcnew List<item^>();
@@ -183,17 +207,42 @@ public:
 		for (int i = 0; i < (int)messages::NUM_MESSAGES; i++) {
 			message_list->Add(gcnew item());
 		}
+
+		errorWindow = gcnew ErrorForm();
+		infoPopupForm^ instantWindow = gcnew infoPopupForm();
+
 	}
 	static Notify^ device = gcnew Notify();
+
+
+	static void open_error(Form^ parent) {
+		errorWindow->open(parent);
+	}
+	static void close_error(void) {
+		errorWindow->close();
+	}
+
+	static void open_instant(Form^ parent) {
+		instantWindow->open(parent, (int) instant_msg, instant_extra);
+		instant_msg = messages::NO_MESSAGE;
+	}
+	static void close_instant(void) {
+		instantWindow->close();
+	}
+
 
 private:
 	static List<item^>^ message_list;
 	static messages last_message = messages::NO_MESSAGE;
-	
-	static bool one_shot = false;
+	static messages instant_msg = messages::NO_MESSAGE;
+	static System::String^ instant_extra;
+
 	static int error_counter = 0;
 	static int warning_counter = 0;
 	static int info_counter = 0;
+
+	static ErrorForm^ errorWindow;
+	static infoPopupForm^ instantWindow;
 
 
 };

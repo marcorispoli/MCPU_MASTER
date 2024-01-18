@@ -89,7 +89,7 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
     if (!handleCommandProcessedState(nullptr)) return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
 
     // Activate the X-RAY Enable Interface signal on the PCB301 board
-    PCB301::setXrayEnable(true);
+    PCB301::set_xray_ena(true);
 
     // Wait for the Exposure in progress
     bool exit_condition = false;

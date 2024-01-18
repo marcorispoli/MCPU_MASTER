@@ -16,28 +16,32 @@
 "E00012", Notify::messages::ERROR_PCB326_COMMUNICATION_ERROR, "PCB326 Communication", "The board no longer communicate with the MCPU",
 "E00013", Notify::messages::ERROR_XRAY_PUSH_FAULT, "Xray push button fault", "Xray push button locked On",
 "E00014", Notify::messages::ERROR_MOTOR_PEDALS_UD_FAULT, "Motor Pedals Fault", "Up/Down pedals locked On",
-"E00003", Notify::messages::ERROR_MOTOR_PEDALS_COMP_FAULT, "Motor Pedals Fault", "Compressor pedals locked On",
-"E00004", Notify::messages::ERROR_MOTOR_BUTTON_CARM_FAULT, "Motor Buttons Fault", "C-Arm rotation buttons locked On",
-"E00005", Notify::messages::ERROR_MOTOR_BUTTON_UD_FAULT, "Motor Buttons Fault", "Up/Down buttons locked On",
-"E00006", Notify::messages::ERROR_CONFIGURATION_FAULT, "Software Configuration Fault", "Wrong software or firmware revision detected",
-"E00009", Notify::messages::ERROR_POWER_DOWN_ERROR, "System Power Monitoring", "Power down condition detected!",
-"E00010", Notify::messages::ERROR_BATTERY_LOW_ERROR, "System Power Monitoring", "Battery voltage monitoring error! The battery voltage level is too low.",
-"E00012", Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION, "Generator Status", "Generator device not connected",
-"E00013", Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR, "Collimator Monitoring", "The Collimator selector seams to be blocked",
-"E00013", Notify::messages::ERROR_FILTER_SELECTION_ERROR, "Filter Monitoring", "The Filter selector seams to be blocked",
-"E00015", Notify::messages::ERROR_STATOR_SENSOR_LOW, "Tube Temperature Monitoring", "The Tube Stator sensor connection input seams to be broken",
-"E00016", Notify::messages::ERROR_STATOR_SENSOR_SHORT, "Tube Temperature Monitoring", "The Tube Stator sensor connection input seams to be shorted",
-"E00017", Notify::messages::ERROR_BULB_SENSOR_LOW, "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be broken",
-"E00018", Notify::messages::ERROR_BULB_SENSOR_SHORT, "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be shorted",
-"E00019", Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, "Body Motor Monitoring", "The brake device is in Fault condition",
-"E00019", Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT, "Tilt Motor Monitoring", "The brake device is in Fault condition",
-"E00020", Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, "Vertical Motor Monitoring", "The encoder is not initialized",
-"E00021", Notify::messages::ERROR_ARM_MOTOR_HOMING, "ARM Motor Monitoring", "The encoder is not initialized",
-"E00022", Notify::messages::ERROR_SLIDE_MOTOR_HOMING, "Slide Motor Monitoring", "The encoder is not initialized",
-"E00023", Notify::messages::ERROR_TILT_MOTOR_HOMING, "Tilt Motor Monitoring", "The encoder is not initialized",
-"E00024", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized",
-"E00025", Notify::messages::ERROR_BODY_LIMIT_SWITCH, "Body Motor Monitoring", "The limit switch is active",
-"E00025", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
+"E00015", Notify::messages::ERROR_MOTOR_PEDALS_COMP_FAULT, "Motor Pedals Fault", "Compressor pedals locked On",
+"E00016", Notify::messages::ERROR_MOTOR_BUTTON_CARM_FAULT, "Motor Buttons Fault", "C-Arm rotation buttons locked On",
+"E00017", Notify::messages::ERROR_MOTOR_BUTTON_UD_FAULT, "Motor Buttons Fault", "Up/Down buttons locked On",
+"E00018", Notify::messages::ERROR_CONFIGURATION_FAULT, "Software Configuration Fault", "Wrong software or firmware revision detected",
+"E00019", Notify::messages::ERROR_POWER_DOWN_ERROR, "System Power Monitoring", "Power down condition detected!",
+"E00020", Notify::messages::ERROR_EMERGENCY_BUTTON, "System Power Monitoring", "Emergency button activation detected!",
+"E00037", Notify::messages::ERROR_CABINET_SAFETY, "System Safety Monitoring", "Safety Cabinet activation detected!",
+"E00021", Notify::messages::ERROR_BATTERY_LOW_ERROR, "System Power Monitoring", "Battery voltage monitoring error! The battery voltage level is too low.",
+"E00022", Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION, "Generator Status", "Generator device not connected",
+"E00023", Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR, "Collimator Monitoring", "The Collimator selector seams to be blocked",
+"E00024", Notify::messages::ERROR_FILTER_SELECTION_ERROR, "Filter Monitoring", "The Filter selector seams to be blocked",
+"E00025", Notify::messages::ERROR_STATOR_SENSOR_LOW, "Tube Temperature Monitoring", "The Tube Stator sensor connection input seams to be broken",
+"E00026", Notify::messages::ERROR_STATOR_SENSOR_SHORT, "Tube Temperature Monitoring", "The Tube Stator sensor connection input seams to be shorted",
+"E00027", Notify::messages::ERROR_BULB_SENSOR_LOW, "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be broken",
+"E00028", Notify::messages::ERROR_BULB_SENSOR_SHORT, "Tube Temperature Monitoring", "The Tube Bulb sensor connection input seams to be shorted",
+"E00029", Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT, "Body Motor Monitoring", "The brake device is in Fault condition",
+"E00030", Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT, "Tilt Motor Monitoring", "The brake device is in Fault condition",
+"E00031", Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, "Vertical Motor Monitoring", "The encoder is not initialized",
+"E00032", Notify::messages::ERROR_ARM_MOTOR_HOMING, "ARM Motor Monitoring", "The encoder is not initialized",
+"E00033", Notify::messages::ERROR_SLIDE_MOTOR_HOMING, "Slide Motor Monitoring", "The encoder is not initialized",
+"E00034", Notify::messages::ERROR_TILT_MOTOR_HOMING, "Tilt Motor Monitoring", "The encoder is not initialized",
+"E00035", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized",
+"E00036", Notify::messages::ERROR_BODY_LIMIT_SWITCH, "Body Motor Monitoring", "The limit switch is active",
+"E00037", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
+
+
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
 "E00900", Notify::messages::ERROR_X_RAY_BUTTON_RELEASED, "X-RAY Sequence Error", "X-Ray push button early released",
@@ -67,12 +71,27 @@
 "W00017", Notify::messages::WARNING_FILTER_OUT_OF_POSITION, "Filter Monitoring", "The Filter selector is not in a valid position",
 "W00018", Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, "Collimator Monitoring", "An invalid collimation format is detected",
 
+"W00018", Notify::messages::WARNING_BODY_DRIVER, "Body Motor Monitoring", "The motor driver is in error condition",
+"W00018", Notify::messages::WARNING_VERTICAL_DRIVER, "Vertical Motor Monitoring", "The motor driver is in error condition",
+"W00018", Notify::messages::WARNING_TILT_DRIVER, "Tilt Motor Monitoring", "The motor driver is in error condition",
+"W00018", Notify::messages::WARNING_ARM_DRIVER, "Arm Motor Monitoring", "The motor driver is in error condition",
+"W00018", Notify::messages::WARNING_SLIDE_DRIVER, "Slide Motor Monitoring", "The motor driver is in error condition",
+
+
 /* -------- INFO ---------------------------*/
 
 "I00001", Notify::messages::INFO_BATTERY_DISABLED, "System Power Monitoring", "The backup batteries are detected Disabled!",
 "I00002", Notify::messages::INFO_PROJECTION_CONFIRMATION, "Projection Confirmation Action", "The C-ARM may be activated",
 "I00003", Notify::messages::INFO_PROJECTION_ABORT, "Abort Projection Request", "Proceed to Abort the current projection?",
 "I00004", Notify::messages::INFO_CARM_SHIFT_CONFIRMATION, "C-ARM Shift Activation", "Proceed with the C-ARM Shift activation?",
+"I00005", Notify::messages::INFO_MOTOR_48V_SAFETY_LINE_OFF, "Motor Power Supply Monitoring", "The safety line is off",
+"I00006", Notify::messages::INFO_MOTOR_48V_POWER_SUPPLY_OFF, "Motor Power Supply Monitoring", "The power supply is off",
+"I00007", Notify::messages::INFO_BURNING_JUMPER_PRESENT, "Power Service Monitoring", "The Burning Jumper is present",
+"I00008", Notify::messages::INFO_POWER_LOCK, "Power Service Monitoring", "The power supply lock is active",
+
+"I00009", Notify::messages::INFO_ACTIVATION_MOTOR_MANUAL_DISABLE, "Manual Motor Activation", "The manual activation is disabled in this contest",
+"I00010", Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE, "Manual Motor Activation", "The manual activation is disabled for safety",
+"I00011", Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE, "Manual Motor Activation", "The manual activation is disabled for pending errors",
 
 
 /* -------- LABELS ---------------------------*/
@@ -104,6 +123,8 @@
 "L00022", Notify::messages::LABEL_MOTOR_ERROR_MISSING_HOME, "Missing zero setting error", "-",
 "L00023", Notify::messages::LABEL_MOTOR_ERROR_COMMAND_DISABLED, "Motor activation disabled error", "-",
 "L00024", Notify::messages::LABEL_MOTOR_ERROR_COMMAND_ABORTED, "Motor activation aborted", "-",
+
+"L00025", Notify::messages::LABEL_CURRENT_COMPRESSION, "Current Compression", "-",
 
 
 

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "math.h"
+#include "ValuePopup.h"
+
+
 
 using namespace System::Collections::Generic;
 using namespace System::Drawing;
@@ -12,7 +15,17 @@ public:
     Gantry();
     static Gantry^ gantry_handle = gcnew Gantry();
     static void initialize(void);
-
+    static bool pcb301_demo = false;
+    static bool pcb302_demo = false;
+    static bool pcb303_demo = false;
+    static bool pcb304_demo = false;
+    static bool pcb315_demo = false;
+    static bool pcb326_demo = false;
+    static bool motor_vertical_demo = false;
+    static bool motor_tilt_demo = false;
+    static bool motor_arm_demo = false;
+    static bool motor_body_demo = false;
+    static bool motor_slide_demo = false;
    
     // Monitor coordinates
     static int monitor_X0;//!< Pointer to the Monitor X0 position
@@ -43,17 +56,10 @@ public:
     static manual_rotation_options manual_rotation_mode = manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION;
     void setManualRotationMode(manual_rotation_options mode) { manual_rotation_mode = mode; }
 
-    static bool getArmManualActivationIncrease(void); 
-    static bool getArmManualActivationDecrease(void);
-    static bool getBodyManualActivationIncrease(void);
-    static bool getBodyManualActivationDecrease(void);
-    static bool getVerticalManualActivationIncrease(void);
-    static bool getVerticalManualActivationDecrease(void);
-    static bool getSlideManualActivationIncrease(void);
-    static bool getSlideManualActivationDecrease(void);
-    static bool getTiltManualActivationIncrease(void);
-    static bool getTiltManualActivationDecrease(void);
-    
+    static bool getObstacleRotationStatus(int addr);
+    static bool getSafetyRotationStatus(int addr);
+    static bool getManualRotationIncrease(int addr);
+    static bool getManualRotationDecrease(int addr);
 
     static System::String^ getPatientName(void) { return patient_name; }
     static bool setOpenStudy(System::String^ patient);
@@ -70,11 +76,15 @@ public:
     static bool setOperating(void);
     static bool setService(void);
     static inline bool isDemo(void) { return demo_status; }
+    static inline ValuePopupForm^ getValuePopupWindow() { return valuePopupWindow; }
+    
 
 private:
     static operating_status_options current_operating_status = operating_status_options::GANTRY_STARTUP;
     static System::String^ patient_name;
     static bool demo_status = false;
+    static ValuePopupForm^ valuePopupWindow;
+    
 };
 
 
@@ -83,7 +93,7 @@ ref class Biopsy {
 public:
     static bool isBiopsy(void) { return biopsy_detected; }
     static bool biopsy_detected = false;
-
+    
 };
 
 

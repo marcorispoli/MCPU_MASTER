@@ -49,6 +49,7 @@ private: bool open_status;
 private:HWND window;
 private: Object^ pError;
 
+
 private:void formInitialization(void);
 private:void initIdleStatus(void);
 private:void idleStatusManagement(void);
@@ -227,6 +228,7 @@ private:
 		// errorButton
 		// 
 		this->errorButton->Location = System::Drawing::Point(30, 834);
+		this->errorButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->errorButton->Name = L"errorButton";
 		this->errorButton->Size = System::Drawing::Size(160, 160);
 		this->errorButton->TabIndex = 13;

@@ -11,7 +11,7 @@
 ///   
 /// # Motor Mechanical Assembly setup
 /// 
-/// + The Motor Rotation conversion ratio is 1g - 1mm: 1 motor round equals  1mm vertical position change;
+/// + The Motor Rotation conversion ratio is 1 round -> 1mm;
 /// + When the motor rotates clockwise, the ARM moves downward;
 /// 
 /// + Zero setting photocell: 
@@ -22,9 +22,6 @@
 ///		+ ON  (Light): the limit switch is not detected
 ///		+ OFF (Dark): the limit switch is detected
 /// 
-/// When the limit position photocell is engaged (OFF status), the actual limit position \n
-/// is determined evaluating the status of both Limit and Zero photocells as \n
-/// the following Truth table:
 /// 
 /// |Zero Photocell|Limit Photocell|Position|
 /// |:--|:--|:--|
@@ -46,6 +43,81 @@
 /// ## Digital Outputs
 /// Not used  
 /// 
+/// # General module Specification
+/// 
+/// ## Position control
+/// 
+/// + The position is set in mm/unit;
+/// + The speed is set in mm/sec;
+/// + The Acceleration and deceleration is set in mm/sec^2;
+/// + After the first system startup, the current position is invalidated:
+///		+ the Gantry shall execute a Service/Zero setting procedure to validate the actual position;
+/// + The current position will be further invalidated in the case the limit switch should be detected;
+/// + The current position is stored in the Motor Configuration File after any activation;
+/// + After a subsequent startup, the current position will be retrived from the Motor Configuration File without activate a zero settoing procedure;
+///
+/// ## Limit Switch detection
+/// 
+/// The module monitors the current limit switch photocell status.
+/// 
+/// In Idle status:
+/// - if the limit switch should be detected active, the current position will be invalidated 
+///   and a relevant alarm is generated. Further activation will be rejected until the zero setting procedure will 
+///	  be successfully  executed.
+/// 
+/// During the activation:
+/// - if the limit switch should be detected active, the activation is quickly aborted.
+///	  The position will be then invalidated (see Idle status)
+/// 
+/// ## Safety condition detection
+/// 
+/// The module handles the following safety conditions:
+/// - Obstacle detection: Gantry::getObstacleStatus();
+/// - Compression activation: Gantry::getCompressionStatus();
+/// - Open Cabinet: Gantry::getOpenCabinetStatus();
+/// 
+///		NOTE: All those conditions are under the control of the Gantry module ant this module makes use of 
+///		external functions to get the related status.
+/// 
+/// For all the previous conditions:
+/// - Any activation is rejected;
+/// - The motor activation is immediatelly aborted if the safety condition should be activated after the command activation.
+///  
+/// ## Manual Motor activation
+/// 
+/// + The module allows tio manually activate the motor Upwards or Downwards in the allowed activation range;
+/// + If the activation should reach the upper or lower position, the module softly stops the activation before to reach the Limit position;
+/// + The Gantry module determines what are the current system inputs combinations that determines the manual activation upwards or downwards;
+///		+ Gantry::manualMotorActivationIncrease(): causes the activation upward;
+/// 	+ Gantry::manualMotorActivationDecrease(): causes the activation downward;
+/// 
+/// See the Gantry module description for the input used in the different operating scenarios.
+/// 
+/// 
+///
+/// # Module Initialization 
+/// 
+/// + The module overrides the initializeSpecificObjectDictionaryCallback() in order to initialize
+/// specific registers of the Vertical Motor control.
+/// 
+/// # Manual Activation 
+/// 
+/// 
+/// The Module implements the manual activation, inheriting the Manual Activation feature from the CanOpenMotor Base Class.
+/// The module override the following callbacks:
+/// - manualPositioningRunningCallback(): 
+///	  during the manual activation the activation inputs, the limit swithc and the safety condition are monitored;
+/// - manualPositioningCompletedCallback(): at the command completion the encoder position is stored into the configuration file.
+/// 
+/// The Module 
+///  
+/// # Automatic activation
+/// 
+/// # Zero Setting 
+/// 
+/// # Safety 
+/// 
+/// 
 /// 
 
 /// <summary>
@@ -56,11 +128,12 @@ ref class VerticalMotor : public CANOPEN::CanOpenMotor
 {
 public:
 	VerticalMotor(void);
-	
-	static bool activateIsocentricCorrection(int id, int delta_target); //!< This command activates the isocentric correction
 	static VerticalMotor^ device = gcnew VerticalMotor();
+
+	static bool activateIsocentricCorrection(int id, int delta_target); //!< This command activates the isocentric correction
 	static bool startHoming(void);
 	static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
+
 private:
 
 	static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
@@ -73,7 +146,9 @@ protected:
 	MotorCompletedCodes automaticPositioningRunningCallback(void) override;
 	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
+	
 	MotorCompletedCodes idleCallback(void) override;
+	void faultCallback(bool errstat, bool data_changed,  unsigned int error_class, unsigned int error_code) override;
 
 	MotorCompletedCodes manualPositioningRunningCallback(void) override;
 	void manualPositioningCompletedCallback(MotorCompletedCodes error) override;

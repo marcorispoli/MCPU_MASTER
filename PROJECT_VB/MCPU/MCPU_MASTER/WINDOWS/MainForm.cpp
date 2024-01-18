@@ -82,11 +82,14 @@ void MainForm::MainFormInitialize(void) {
 	// Init of the Global operating status
 	Gantry::setStartup();
 
+	// Set the motor in safety condition
+	PCB301::set_motor_power_supply(false);
+	PCB301::set_motor_switch(false);
+
 	// Start the startup session
 	startupTimer = gcnew System::Timers::Timer(100);
 	startupTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &MainForm::onStartupTimeout);
 	startupTimer->Start();
-	
 	
 	
 }
@@ -134,10 +137,18 @@ bool MainForm::Startup_PCB301(void) {
 	case 0: // Creates the PCB301 process
 		labelPcb301Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb301 initialization ..\n";		
+		if (Gantry::pcb301_demo) PCB301::device->demoMode();
+		else PCB301::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
+		if (PCB301::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
+			labelPcb301Activity->Text = "RUNNING IN DEMO";
+			labelPcb301Activity->ForeColor = Color::LightGreen;
+			return true;
+		}
+
 		if (PCB301::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb301Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb301 firmware revision: ";
@@ -167,10 +178,18 @@ bool MainForm::Startup_PCB302(void) {
 	case 0: // Creates the PCB302 process
 		labelPcb302Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb302 initialization ..\n";		
+		if (Gantry::pcb302_demo) PCB302::device->demoMode();
+		else PCB302::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
+		if (PCB302::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
+			labelPcb302Activity->Text = "RUNNING IN DEMO";
+			labelPcb302Activity->ForeColor = Color::LightGreen;
+			return true;
+		}
+
 		if (PCB302::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb302Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb302 firmware revision: ";
@@ -200,10 +219,18 @@ bool MainForm::Startup_PCB303(void) {
 	case 0: // Creates the PCB303 process
 		labelPcb303Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb303 initialization ..\n";
+		if (Gantry::pcb303_demo) PCB303::device->demoMode();
+		else PCB303::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
+		if (PCB303::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
+			labelPcb303Activity->Text = "RUNNING IN DEMO";
+			labelPcb303Activity->ForeColor = Color::LightGreen;
+			return true;
+		}
+
 		if (PCB303::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb303Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb303 firmware revision: ";
@@ -233,10 +260,18 @@ bool MainForm::Startup_PCB304(void) {
 	case 0: // Creates the PCB304 process
 		labelPcb304Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb304 initialization ..\n";
+		if (Gantry::pcb304_demo) PCB304::device->demoMode();
+		else PCB304::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
+		if (PCB304::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
+			labelPcb304Activity->Text = "RUNNING IN DEMO";
+			labelPcb304Activity->ForeColor = Color::LightGreen;
+			return true;
+		}
+
 		if (PCB304::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb304Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb304 firmware revision: ";
@@ -266,10 +301,18 @@ bool MainForm::Startup_PCB315(void) {
 	case 0: // Creates the PCB315 process
 		labelPcb315Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb315 initialization ..\n";		
+		if (Gantry::pcb315_demo) PCB315::device->demoMode();
+		else PCB315::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
+		if (PCB315::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
+			labelPcb315Activity->Text = "RUNNING IN DEMO";
+			labelPcb315Activity->ForeColor = Color::LightGreen;
+			return true;
+		}
+
 		if (PCB315::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb315Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb315 firmware revision: ";
@@ -298,11 +341,19 @@ bool MainForm::Startup_PCB326(void) {
 
 	case 0: // Creates the PCB315 process
 		labelPcb326Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb326 initialization ..\n";		
+		StartupLogMessages->Text += "> pcb326 initialization ..\n";	
+		if (Gantry::pcb326_demo) PCB326::device->demoMode();
+		else PCB326::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
+		if (PCB326::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
+			labelPcb326Activity->Text = "RUNNING IN DEMO";
+			labelPcb326Activity->ForeColor = Color::LightGreen;
+			return true;
+		}
+
 		if (PCB326::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb326Activity->Text = "CONFIGURATION ..";
 			StartupLogMessages->Text += "> pcb326 firmware revision: ";
@@ -331,11 +382,17 @@ bool MainForm::Startup_MotorBody(void) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorBodyActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Body initialization ..\n";		
+		StartupLogMessages->Text += "> Motor Body initialization ..\n";	
+		if (Gantry::motor_body_demo) {
+			BodyMotor::device->demoMode();
+			labelMotorBodyActivity->Text = "DEMO MODE";
+			labelMotorBodyActivity->ForeColor = Color::LightGreen;
+			return true;
+		}else BodyMotor::device->runMode();
 		startupSubFase++;
 		break;
 
-	case 1: // Wait the connection and configuration
+	case 1: // Wait the connection and configuration		
 		if (!BodyMotor::device->activateConfiguration()) break;
 
 		labelMotorBodyActivity->Text = "CONFIGURATION ..";
@@ -372,6 +429,13 @@ bool MainForm::Startup_MotorTilt(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorTiltActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Tilt initialization ..\n";
+		if (Gantry::motor_tilt_demo) {
+			TiltMotor::device->demoMode();
+			labelMotorTiltActivity->Text = "DEMO MODE";
+			labelMotorTiltActivity->ForeColor = Color::LightGreen;
+			return true;
+		}
+		else TiltMotor::device->runMode();
 		startupSubFase++;
 		break;
 
@@ -413,6 +477,13 @@ bool MainForm::Startup_MotorArm(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorArmActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Arm initialization ..\n";
+		if (Gantry::motor_arm_demo) {
+			ArmMotor::device->demoMode();
+			labelMotorArmActivity->Text = "DEMO MODE";
+			labelMotorArmActivity->ForeColor = Color::LightGreen;
+			return true;
+		}
+		else ArmMotor::device->runMode();
 		startupSubFase++;
 		break;
 
@@ -452,7 +523,14 @@ bool MainForm::Startup_MotorShift(void) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorShiftActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Slide initialization ..\n";		
+		StartupLogMessages->Text += "> Motor Slide initialization ..\n";	
+		if (Gantry::motor_slide_demo) {
+			SlideMotor::device->demoMode();
+			labelMotorShiftActivity->Text = "DEMO MODE";
+			labelMotorShiftActivity->ForeColor = Color::LightGreen;
+			return true;
+		}
+		else SlideMotor::device->runMode();
 		startupSubFase++;
 		break;
 
@@ -494,6 +572,13 @@ bool MainForm::Startup_MotorVertical(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorUpDownActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Up/Down initialization ..\n";
+		if (Gantry::motor_vertical_demo) {
+			VerticalMotor::device->demoMode();
+			labelMotorUpDownActivity->Text = "DEMO MODE";
+			labelMotorUpDownActivity->ForeColor = Color::LightGreen;
+			return true;
+		}
+		else VerticalMotor::device->runMode();
 		startupSubFase++;
 		break;
 

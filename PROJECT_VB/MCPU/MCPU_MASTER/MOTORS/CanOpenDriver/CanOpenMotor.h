@@ -439,6 +439,8 @@ namespace CANOPEN {
 		/// @{
 		
 		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear, bool reverse); //!< This is the base class constructor
+		void runMode(void) { demo_mode = false; run = true; }
+		void demoMode(void) { demo_mode = true; run = true; }
 
 		delegate void delegate_fault_callback(int code); //!< Delegate for the callback related to the Fault condition
 		event delegate_fault_callback^ fault_event; //!< Event generated when a Driver fault condition is detected
@@ -460,7 +462,8 @@ namespace CANOPEN {
 				MOTOR_CONFIGURATION,		//!< The module is configuring the driver
 				MOTOR_READY,				//!< The driver is ready to execute an activation command
 				MOTOR_BUSY,					//!< The driver is executing an acivation command
-				MOTOR_FAULT					//!< The driver is in fault condition
+				MOTOR_FAULT,				//!< The driver is in fault condition
+				MOTOR_DEMO					//!< The module is running in DEMO mode
 		};
 		
 		
@@ -516,8 +519,8 @@ namespace CANOPEN {
 			ERROR_MISSING_HOME,//!< The command has been aborted due to invalid homing (the encoder is not correctly initialized)
 			ERROR_COMMAND_DISABLED,//!< The command has been aborted because the activation is not enabled
 			ERROR_COMMAND_ABORTED,//!< The command has been aborted due to an Abort activation request
+			ERROR_SAFETY //!< The command has been aborted due to safety conditions
 		};		
-		System::String^ getCompletedCodeString(void); //!< This command returns a description string(translated) of the last termination code
 		
 		/// <summary>
 		/// This function returns the last command termination code
@@ -525,7 +528,7 @@ namespace CANOPEN {
 		/// <param name=""></param>
 		/// <returns></returns>
 		inline MotorCompletedCodes getCommandCompletedCode(void) { return command_completed_code; }
-
+		
 
 		bool activateConfiguration(void); //!< This function activates the Driver configuration fase
 		
@@ -711,9 +714,9 @@ protected:
 		void write_resetNode(void);
 		bool blocking_readOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim);
 		bool writeControlWord(unsigned int mask, unsigned int val);
-		System::String^ getErrorClass1001(unsigned int val);
-		System::String^ getErrorClass1003(unsigned int val);
-		System::String^ getErrorCode1003(unsigned int val);
+		static System::String^ getErrorClass1001(unsigned int val);
+		static System::String^ getErrorClass1003(unsigned int val);
+		static System::String^ getErrorCode1003(unsigned int val);
 
 		virtual MotorCompletedCodes automaticPositioningPreparationCallback(void);  //!< This function is called just before to Power the motor phases
 		virtual MotorCompletedCodes automaticPositioningRunningCallback(void); //!< This function is called during the command execution to terminate early the positioning
@@ -728,10 +731,16 @@ protected:
 		virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
 
 		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
+		virtual void faultCallback(bool errstat, bool data_change, unsigned int error_class, unsigned int error_code) { return ; }
+
 		virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
 
 		virtual bool unbrakeCallback(void) { return true; } //!< Called whenever the optional brake device should be released
 		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated
+		
+		virtual void demoLoop(void) { return; };
+
+		inline void setCommandCompleted(MotorCompletedCodes error) { command_completed_code = error; }
 
 		/// <summary>
 		/// This function returns the current command-id.
@@ -756,6 +765,9 @@ protected:
 
 		
 private:
+		bool run;
+		bool demo_mode;
+
 		unsigned char device_id;	//!< This is the target Device Id 
 		HANDLE rxSDOEvent;			//!< Event object signaled by the SDO receiving callback
 		bool sdo_rx_pending;		//!< A SDO reception fdata is pending 
@@ -786,6 +798,7 @@ private:
 		void thread_canopen_bootup_callback(unsigned short canid, unsigned char* data, unsigned char len); //!< This is the CAN boot reception callback
 		Thread^ main_thread;
 		void mainWorker(void);
+
 		enum class _CiA402Status {
 			CiA402_NotReadyToSwitchOn = 0,
 			CiA402_SwitchOnDisabled,
@@ -810,6 +823,7 @@ private:
 		bool error_condition;
 		unsigned int error_class;
 		unsigned int error_code;
+		
 
 		// Device Configuration _____________________________________________________________________________
 		bool initResetEncoderCommand(int initial_position);

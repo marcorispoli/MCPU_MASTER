@@ -160,6 +160,7 @@ public:
 		WAITING_REVISION,					//!< The module is waiting for the revision acquisition
 		DEVICE_CONFIGURATION,				//!< The module is uploading the device parameters
 		DEVICE_RUNNING,						//!< The module is Running		
+		DEVICE_DEMO,						//!< Device in Demo mode
 		LEN,
 		UNDEF = LEN
 	};
@@ -172,7 +173,9 @@ public:
 	};
 	static const cli::array<System::String^>^ bootloader_status_tags = gcnew cli::array<System::String^> { "NOT PRESENT", "RUNNING", "PRESENT", "UNCKNOWN"}; 
 
-	CanDeviceProtocol(unsigned char devid, LPCWSTR devname);
+	CanDeviceProtocol(unsigned char devid, LPCWSTR devname); //! Standard constructor
+	void runMode(void) { demo_mode = false; run = true; }
+	void demoMode(void) { demo_mode = true; run = true; }
 
 	/// <summary>
 	/// This is the callback to be connected to the CAN reception event.
@@ -198,7 +201,8 @@ public:
 
 
 
-	inline bool isTmo(void) { return tmo; }
+	inline bool isCommunicationError(void) { return communication_error; }
+	inline bool isCommunicationOk(void) { return !communication_error; }
 
 	inline CanDeviceRegister^ getRxRegister(void) { return rx_register; }
 	inline status_options getStatus(void) { return internal_status; }
@@ -213,6 +217,7 @@ public:
 	
 protected:
 	virtual void runningLoop(void) ;
+	virtual void demoLoop(void) { return; };
 	virtual void resetLoop(void);
 	virtual bool configurationLoop(void);
 	bool register_access_fault;
@@ -228,6 +233,8 @@ private:
 
 	HWND hwnd;
 	unsigned short device_id;
+	bool demo_mode;
+	bool run;
 
 	static unsigned char rx_sequence;
 	HANDLE rxEvent; //!< Event object signaled by the receiving callback
@@ -247,7 +254,7 @@ private:
 	unsigned char app_sub;
 	unsigned char bootloader_status;
 
-	bool tmo;
+	bool communication_error;
 	bool rxOk;
 	int attempt;
 

@@ -32,7 +32,6 @@ public:
 	Object^ pXray;
 	Object^ pProj;
 	Object^ pAbort;
-	Object^ pError;
 	Object^ pShiftConf;
 	void suspend(void);
 	void resume(void);

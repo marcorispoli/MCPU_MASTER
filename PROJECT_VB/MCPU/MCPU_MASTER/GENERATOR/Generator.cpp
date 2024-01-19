@@ -117,9 +117,9 @@ void Generator::threadWork(void) {
 
     while (true) {
         Debug::WriteLine("Try to connect the Smart Hub and Generator!\n");
-        Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION, false);
-        Notify::activate(Notify::messages::WARNING_GENERATOR_INIT, false);
-        Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY, false);
+        Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
+        Notify::activate(Notify::messages::WARNING_GENERATOR_INIT);
+        Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY);
 
         R2CP_Eth->smartHubConnected = false;
         R2CP_Eth->generatorConnected = false;
@@ -429,7 +429,7 @@ bool Generator::generatorIdle(void) {
                 ready_for_exposure = true;
             }
             else {
-                Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY, false);
+                Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY);
                 ready_for_exposure = false;
             }
         }
@@ -487,7 +487,7 @@ bool Generator::generatorIdle(void) {
             Debug::WriteLine("GENERATOR EXPOSURE RESULT:" + ExposureModule::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
 
             // Removes the X-RAY ena signal 
-            PCB301::setXrayEnable(false);
+            PCB301::set_xray_ena(false);
 
             // De-synch the grid device
             PCB304::synchGridWithGenerator(false);
@@ -526,7 +526,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
         current_error_list_id += id.ToString() + " ";        
     }
     error_list_id = current_error_list_id;
-    Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id, false);
+    Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id);
     Debug::WriteLine("GENERATOR: system messages present:" + error_list_id + "\n");
 
     while (true) {
@@ -553,7 +553,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
         if (current_error_list_id != error_list_id) {
             error_list_id = current_error_list_id;
             Notify::deactivate(Notify::messages::WARNING_GENERATOR_MESSAGE);
-            Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id, false);
+            Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id);
             Debug::WriteLine("GENERATOR: system messages present:" + error_list_id + "\n");
         }
 

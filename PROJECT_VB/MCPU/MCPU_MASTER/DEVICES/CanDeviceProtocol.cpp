@@ -14,9 +14,12 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     device_reset = false;
     rx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
     tx_register = gcnew CanDeviceProtocol::CanDeviceRegister();
-    tmo = false;
     attempt = 0;
-    
+    communication_error = false;
+    run = false;
+    demo_mode = false;
+    command_executing = false;
+
     sent_messages = 0;
     unreceived_messages = 0;
     register_access_fault = 0;
@@ -34,12 +37,6 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     // Creates the receiving register
     rx_pending = false;
     rx_sequence = 1;
-
-    // Add the callback handling the  reception
-    CanDriver::canrx_device_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanDeviceProtocol::thread_can_rx_callback);
-
-    internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
-    command_executing = false;
 
 
     // Creates the Startup thread
@@ -157,8 +154,12 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     // Checks if the Event has been signalled or it is a timeout event.
     if ((dwWaitResult != WAIT_OBJECT_0) || (!rxOk)) {
         unreceived_messages++;
+        if (unreceived_messages > 5) communication_error = true;            
         return false;
     }
+    unreceived_messages = 0;
+    communication_error = false;
+
     long stop = clock();
     txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
 
@@ -210,12 +211,27 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
 
 
 void CanDeviceProtocol::mainWorker(void) {
+    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: thread started: wait run command");
+    while (!run) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 
+    // Demo mode activation
+    if (demo_mode) {
+        internal_status = status_options::DEVICE_DEMO;
+        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
+        while (demo_mode) {
+            demoLoop();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+    
+    // Add the callback handling the  reception
+    CanDriver::canrx_device_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanDeviceProtocol::thread_can_rx_callback);
+    internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
 
-    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Module started: Wait Can Driver Connection");
-
+    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run mode");
     while (1) {
-
         
         if (!CanDriver::isConnected()) internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
 
@@ -286,7 +302,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
 
         // Test if a command is currently running
         while (!send(GET_COMMAND_REGISTER)) {
-            if (isTmo()) {
+            if (isCommunicationError()) {
                 Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
                 command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
                 command_executing = false;
@@ -339,7 +355,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
             }
 
             while (!send(GET_COMMAND_REGISTER)) {
-                if (isTmo()) {
+                if (isCommunicationError()) {
                     Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
                     command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
                     command_executing = false;

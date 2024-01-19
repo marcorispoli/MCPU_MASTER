@@ -60,3 +60,6 @@
 
 
 < 10 %  EXEC_TestCommand -300 % >
+
+< 10 %  EXEC_TestCommand 9000 200 100 100 % >
+< 10 %  EXEC_TestCommand 0 1000 500 500 % >

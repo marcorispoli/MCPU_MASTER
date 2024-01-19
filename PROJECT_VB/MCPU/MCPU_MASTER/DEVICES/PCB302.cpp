@@ -82,27 +82,11 @@ int PCB302::getPaddleCollimationFormatIndex(unsigned char paddle_code) {
 /// <returns>the paddle code or -1 if the no paddle is found</returns>
 int PCB302::getPaddleCode(System::String^ tag) {
 	for (int i = 0; i < (int) paddleCodes::PADDLE_LEN; i++) {
-		if (tag == paddle_name[i]) return i;
+		if (tag == ((paddleCodes)i).ToString() ) return i;
 	}
 	return -1;
 }
 
-/// <summary>
-/// This function returns the name of the paddle
-/// 
-///		NOTE: If the paddle code shouldn't match with any paddle name available\n
-///		the function returns a NULLPTR. The Application shall check the result before to use it. 
-/// 
-/// </summary>
-/// <param name="paddle"> This is the paddle code</param>
-/// <returns>The name of the paddle or nullptr if the name is not found</returns>
-System::String^ PCB302::getPaddleName(paddleCodes paddle) {
-	for (int i = 0; i < (int) paddleCodes::PADDLE_LEN; i++) {
-		if ((int) paddle == i) return paddle_name[i];
-	}
-
-	return nullptr;
-}
 
 
 /// <summary>

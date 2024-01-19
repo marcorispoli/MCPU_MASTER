@@ -22,7 +22,7 @@ void ErrorForm::formInitialization(void) {
 	this->BackgroundImage = FORM_IMAGE;
 
 	// Title
-	TitleText->Text = Notify::TranslateLabel(Notify::messages::LABEL_ERROR_WINDOW_PANEL);
+	
 	TitleText->BackColor = Color::Transparent;
 
 	notifyIcon->BackColor = Color::Transparent;
@@ -48,10 +48,13 @@ void ErrorForm::close(void) {
 	this->Hide();
 }
 
-void ErrorForm::open(void) {
+void ErrorForm::open(Form^ parent_form) {
 	if(open_status) return;
+	parent = parent_form;
 	open_status = true;
 
+	TitleText->Text = Notify::TranslateLabel(Notify::messages::LABEL_ERROR_WINDOW_PANEL);
+	
 	// Stops the exit timer
 	errorPanelTimer->Stop();
 	errorPanelTimer->Start();
@@ -87,8 +90,6 @@ void ErrorForm::open(void) {
 	// Clears the index of the last occurred error
 	Notify::clrNewError();
 
-	// Refresh the Error queue removing the one_shot flagged errors
-	Notify::clrOneShotErrors();
 	this->ShowDialog(parent);
 	window = static_cast<HWND>(Handle.ToPointer());
 }

@@ -195,6 +195,9 @@
     <ClInclude Include="WINDOWS\IdleForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WINDOWS\infoPopup.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -208,6 +211,9 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="WINDOWS\SERVICE_CALIBRATION\calib_panel.h" />
+    <ClInclude Include="WINDOWS\ValuePopup.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -258,12 +264,14 @@
     <ClCompile Include="WINDOWS\ErrorForm.cpp" />
     <ClCompile Include="WINDOWS\IconWindow.cpp" />
     <ClCompile Include="WINDOWS\IdleForm.cpp" />
+    <ClCompile Include="WINDOWS\infoPopup.cpp" />
     <ClCompile Include="WINDOWS\MainForm.cpp" />
     <ClCompile Include="WINDOWS\OperatingForm.cpp" />
     <ClCompile Include="WINDOWS\Projections.cpp" />
     <ClCompile Include="WINDOWS\ServiceForm.cpp" />
     <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_main_panel.cpp" />
     <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_zero_setting.cpp" />
+    <ClCompile Include="WINDOWS\ValuePopup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
@@ -290,6 +298,9 @@
       <DependentUpon>WINDOWS\ErrorForm.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\IdleForm.resx" />
+    <EmbeddedResource Include="WINDOWS\infoPopup.resx">
+      <DependentUpon>WINDOWS\infoPopup.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\MainForm.resx" />
     <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />
     <EmbeddedResource Include="WINDOWS\Projections.resx">
@@ -297,6 +308,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\ServiceForm.resx">
       <DependentUpon>WINDOWS\ServiceForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\ValuePopup.resx">
+      <DependentUpon>WINDOWS\ValuePopup.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

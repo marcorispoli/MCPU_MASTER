@@ -147,7 +147,10 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
     case MotorCommands::MOTOR_HOMING:
         current_command = request_command;
         abort_request = false;
-        if (idle_returned_condition == MotorCompletedCodes::COMMAND_PROCEED) manageAutomaticHoming();
+        if (
+            (idle_returned_condition == MotorCompletedCodes::COMMAND_PROCEED) ||
+            (idle_returned_condition == MotorCompletedCodes::ERROR_LIMIT_SWITCH) 
+            )   manageAutomaticHoming();
         else setCommandCompletedCode(idle_returned_condition);
         
         request_command = MotorCommands::MOTOR_IDLE;
@@ -203,6 +206,7 @@ void CanOpenMotor::CiA402_OperationEnabledCallback(void) {
 void CanOpenMotor::CiA402_FaultCallback(void) {
     bool data_changed = false;
     unsigned int ctrlw;
+    
 
     if (CiA_current_status != _CiA402Status::CiA402_Fault) {
         CiA_current_status = _CiA402Status::CiA402_Fault;
@@ -225,14 +229,16 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
     if (error_class) {
         if(!error_condition) data_changed = true;
         error_condition = true;
-
-        if(data_changed){
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLASS = " + getErrorClass1001(error_class));
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CODE = " + getErrorCode1003(error_code));
-        }
         
+        if(data_changed){            
+            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLASS = " + getErrorClass1001(error_class));
+            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CODE = " + getErrorCode1003(error_code));            
+        }       
+        faultCallback( error_condition, data_changed, error_class, error_code);
         return;
     }
+
+    faultCallback(false, false, (unsigned int)0, (unsigned int)0);
 
     // Tries to reset the error condition
     if (!blocking_readOD(OD_6040_00)) return;
@@ -240,8 +246,7 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
     ctrlw |= 0x80;
     if (!blocking_writeOD(OD_6040_00, ctrlw)) return;
     ctrlw &= ~0x80;
-    if (!blocking_writeOD(OD_6040_00, ctrlw)) return;
-
+    if (!blocking_writeOD(OD_6040_00, ctrlw)) return;    
     return;
 }
 

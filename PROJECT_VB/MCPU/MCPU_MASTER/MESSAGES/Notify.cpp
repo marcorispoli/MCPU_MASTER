@@ -110,26 +110,36 @@ Notify::translate^ Notify::Translate(messages msg) {
 }
 
 
-void Notify::activate(messages msg, bool os) {
+void Notify::activate(messages msg) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
 	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
 	if (msg == messages::NO_MESSAGE) return;
 	if (message_list[(int) msg]->disabled) return;
-	if (message_list[(int)msg]->active) return;
+	if(message_list[(int)msg]->active) return;
 
-	message_list[(int)msg]->active = true;
-	message_list[(int)msg]->one_shot = os;
+	message_list[(int)msg]->active = true;	
 	message_list[(int)msg]->extra = nullptr;
-	if (!os) last_message = msg;
-	else one_shot = true;
-
+	last_message = msg;
+	
 	if (msg < messages::WARNING_MESSAGES_SECTION) error_counter++;
 	else if (msg < messages::INFO_MESSAGES_SECTION) warning_counter++;
 	else  info_counter++;
 
 }
 
-void Notify::activate(messages msg, System::String^ extra, bool os) {
+void Notify::instant(messages msg) {
+	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
+	if (msg == messages::NO_MESSAGE) return;
+	if (message_list[(int)msg]->disabled) return;
+	
+	instant_msg = msg;
+	instant_extra = nullptr;
+	return;
+
+}
+
+void Notify::activate(messages msg, System::String^ extra) {
 
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
 	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
@@ -137,17 +147,29 @@ void Notify::activate(messages msg, System::String^ extra, bool os) {
 	if (message_list[(int)msg]->disabled) return;
 	if (message_list[(int)msg]->active) return;
 
+
 	message_list[(int)msg]->active = true;
-	message_list[(int)msg]->one_shot = os;
 	message_list[(int)msg]->extra = extra;
-	if (!os) last_message = msg;
-	else one_shot = true;
+	last_message = msg;
+	
 
 	if (msg < messages::WARNING_MESSAGES_SECTION) error_counter++;
 	else if (msg < messages::INFO_MESSAGES_SECTION) warning_counter++;
 	else  info_counter++;
 	
 
+}
+
+void Notify::instant(messages msg, System::String^ extra) {
+
+	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
+	if (msg == messages::NO_MESSAGE) return;
+	if (message_list[(int)msg]->disabled) return;
+	
+	instant_msg = msg;
+	instant_extra = extra;
+	return;
 }
 
 
@@ -186,25 +208,6 @@ void Notify::disable(messages msg) {
 
 }
 
-
-
-void Notify::clrOneShotErrors(void) {
-	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
-	one_shot = false;
-
-	// Clears the one_shot errors from the list
-	for (int i = 0; i < (int)messages::NUM_MESSAGES; i++) {
-		if ((message_list[(int)last_message]->active) && (message_list[(int)last_message]->one_shot)) {
-			message_list[(int)last_message]->active = false;
-			message_list[(int)last_message]->extra = nullptr;
-
-			if (i < (int)messages::WARNING_MESSAGES_SECTION) error_counter--;
-			else if (i < (int)messages::INFO_MESSAGES_SECTION) warning_counter--;
-			else  info_counter--;
-		}
-	}
-
-}
 
 System::String^ Notify::formatMsg(messages msg) {
 	translate^ msgit = Translate(msg);

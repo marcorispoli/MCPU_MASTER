@@ -46,13 +46,13 @@ public:
 public:
 	
 	  void formInitialization(void);
-	  void open(void);
+	  void open(Form^ pp);
 	  void close(void);
 	  bool open_status;
 
-	  ErrorForm(Form^ pp)
+	  ErrorForm(void)
 	  {
-		  parent = pp;
+
 		  InitializeComponent();		  
 		  window = static_cast<HWND>(Handle.ToPointer());
 		  formInitialization();

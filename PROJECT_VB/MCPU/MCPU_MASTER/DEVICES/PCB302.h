@@ -24,7 +24,7 @@ public:
 	/// 
 	///  
 	/// </summary>
-public: enum class  paddleCodes {
+	enum class  paddleCodes {
 	PADDLE_PROSTHESIS, //!< Paddle PROSTHESIS format
 	PADDLE_BIOP2D, //!< Paddle BIOPSY 2D format
 	PADDLE_BIOP3D, //!< Paddle BIOPSY STEREO format
@@ -41,33 +41,22 @@ public: enum class  paddleCodes {
 	PADDLE_NOT_DETECTED = PADDLE_LEN
 	};
 
-private: static const cli::array<System::String^>^ paddle_name = gcnew cli::array<System::String^>  { 
-		"PADDLE_PROSTHESIS",
-		"PADDLE_BIOP2D", 
-		"PADDLE_BIOP3D", 
-		"PADDLE_TOMO", 
-		"PADDLE_24x30_CONTACT",
-		"PADDLE_18x24_C_CONTACT", 
-		"PADDLE_18x24_L_CONTACT", 
-		"PADDLE_18x24_R_CONTACT", 
-		"PADDLE_10x24_CONTACT", 
-		"PADDLE_9x21_MAG", 
-		"PADDLE_9x9_MAG", 
-		"PADDLE_D75_MAG"
-	}; //!< This is the option-tags static array
+	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
+	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
+	static inline bool isCompressing(void) { return compression_executing; }
 
 	
 protected: 	virtual void runningLoop(void) override;
 
 private: 
-	static paddleCodes detected_paddle; //!< This is the current detected paddle
-	static unsigned short breast_thickness = 0;  //!< Compressed breast thickness in mm
-	static unsigned short compression_force = 0; //!< Compression force in N
+	static paddleCodes detected_paddle;				//!< This is the current detected paddle
+	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm
+	static unsigned short compression_force = 0;	//!< Compression force in N
+	static bool compression_executing = false;		//!< A compression is executing
 
 public:
 	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
-	static int getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name
-	static System::String^ getPaddleName(paddleCodes paddle); //!< This function returns the name of the paddle
+	static int getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name	
 	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
 	static int getDetectedPaddleCollimationFormat(void); //!< This function returns he collimation format index associated to the detected paddle
 
@@ -75,9 +64,7 @@ public:
 // To be implemented
 	
 	static void setCompressorUnlock(void) {}; //!< This function unlocks the compression
-	static unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
-	static unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
-
+	
 };
 
 

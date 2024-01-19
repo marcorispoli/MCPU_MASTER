@@ -1,6 +1,6 @@
 #include "../AWS/awsProtocol.h"
 #include "idleForm.h"
-#include "ErrorForm.h"
+#include "ValuePopup.h"
 #include "operatingForm.h"
 #include "SystemConfig.h"
 #include "Notify.h"
@@ -11,6 +11,7 @@
 #include "PCB315.h"
 #include "PCB326.h"
 #include "VerticalMotor.h"
+#include "ArmMotor.h"
 #include "BodyMotor.h"
 #include "../gantry_global_status.h"
 
@@ -27,7 +28,17 @@
 #define TUBE_TEMP_OK Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\tubeTempOk.PNG")
 #define TUBE_TEMP_NOK Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\tubeTempNok.PNG")
 #define ERRORPANEL_ERRORICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\error_160x145.PNG")
-#define ERROR_BUTTON Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\AlarmOn.PNG")
+#define INFO_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\InfoIcon.PNG")
+#define WARNING_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\WarningOn.PNG")
+#define ERROR_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\AlarmOn.PNG")
+#define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\AlarmOff.PNG")
+
+#define COMPRESSING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\COMPRESSING_ICON.PNG")
+#define ARM_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\ARM_MOTOR_ICON.PNG")
+#define BODY_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\BODY_MOTOR_ICON.PNG")
+#define VERTICAL_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\VERTICAL_MOTOR_ICON.PNG")
+#define SLIDE_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\SLIDE_MOTOR_ICON.PNG")
+#define TILT_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\TILT_MOTOR_ICON.PNG")
 
 namespace IDLESTATUS {
 	typedef struct {
@@ -46,6 +57,7 @@ namespace IDLESTATUS {
 		unsigned char stator;
 		unsigned char bulb;
 		bool alarm;
+		
 
 	}tubeStatus;
 
@@ -58,6 +70,9 @@ namespace IDLESTATUS {
 		bool aws_connected;
 		bool peripherals_connected;
 		
+		bool alarm;
+		bool warning;
+		bool info;
 	}Registers;
 };
 
@@ -71,10 +86,6 @@ void IdleForm::formInitialization(void) {
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	mainPanel->BackgroundImage = BACKGROUND;
 
-	// Error Panel Setup ____________________________________________________________
-	pError = gcnew ErrorForm(this);
-	//________________________________________________________________________________________
-
 	this->xrayMode->BackgroundImage = XRAY_MODE;
 	this->xrayMode->Hide();
 
@@ -83,7 +94,10 @@ void IdleForm::formInitialization(void) {
 
 
 	// Error Button
-	errorButton->BackgroundImage = ERROR_BUTTON;
+	IDLESTATUS::Registers.alarm = false;
+	IDLESTATUS::Registers.warning = false;
+	IDLESTATUS::Registers.info = false;
+	errorButton->BackgroundImage = ERROR_BUTTON_OFF;
 	errorButton->Hide();
 
 	// Service Button
@@ -101,6 +115,8 @@ void IdleForm::formInitialization(void) {
 void IdleForm::initIdleStatus(void) {
 	System::DateTime date;
 	date = System::DateTime::Now;
+
+	Notify::clrInstant();
 
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
@@ -164,6 +180,9 @@ void IdleForm::initIdleStatus(void) {
 	// Sets the current Filter selector to manual mode
 	PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
 
+	// Activates the motors
+	PCB301::set_motor_power_supply(true);
+	PCB301::set_motor_switch(true);
 
 	// Start the startup session	
 	idleTimer->Start();	
@@ -181,7 +200,97 @@ void IdleForm::close(void) {
 	SendNotifyMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE	
 }
 
+
+void IdleForm::evaluatePopupPanels(void) {
+	#define TMO 50
+	static bool compression = false;
+	static bool arm = false;
+	static bool body = false;
+	static bool vertical  = false;
+	static int timer = 0;
+
+	if (PCB302::isCompressing()) {
+		timer = TMO;
+		if (!compression) {
+			compression = true;
+			arm = false;
+			body = false;
+			vertical = false;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
+		}
+
+		// Set the value to the current compression
+		Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
+		return;
+	}else compression = false;
+
+	if (ArmMotor::device->isRunning()) {
+		timer = TMO;
+		if (!arm) {
+			compression = false;
+			arm = true;
+			body = false;
+			vertical = false;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		float position = (float) ArmMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+
+	}else arm = false;
+
+	if (BodyMotor::device->isRunning()) {
+		timer = TMO;
+		if (!body) {
+			compression = false;
+			arm = false;
+			body = true;
+			vertical = false;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		float position = (float)BodyMotor::device->getCurrentPosition() / 10;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}else body = false;
+	
+	if (VerticalMotor::device->isRunning()) {
+		timer = TMO;
+		if (!vertical) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = true;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
+		}
+
+		// Set the value to the current compression
+		int position = (int) VerticalMotor::device->getCurrentPosition();
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else vertical = false;
+
+	// Keeps the popup alive for extra time
+	if (timer) {
+		timer--;
+		if(!timer) Gantry::getValuePopupWindow()->close();
+		return;
+	}
+
+	if (Notify::isInstant()) Notify::open_instant(this);
+
+}
+
 void IdleForm::idleStatusManagement(void) {
+	
 
 	System::DateTime date;
 	date = System::DateTime::Now;
@@ -243,12 +352,12 @@ void IdleForm::idleStatusManagement(void) {
 	// Handles the Device connection status
 	bool peripherals_connected = false;
 	if (
-		(!PCB301::device->isTmo()) && 
-		(!PCB302::device->isTmo()) &&
-		(!PCB303::device->isTmo()) &&
-		(!PCB304::device->isTmo()) &&
-		(!PCB315::device->isTmo())&&
-		(!PCB326::device->isTmo())
+		(!PCB301::device->isCommunicationError()) &&
+		(!PCB302::device->isCommunicationError()) &&
+		(!PCB303::device->isCommunicationError()) &&
+		(!PCB304::device->isCommunicationError()) &&
+		(!PCB315::device->isCommunicationError())&&
+		(!PCB326::device->isCommunicationError())
 		)	peripherals_connected = true;
 
 	if (IDLESTATUS::Registers.peripherals_connected != peripherals_connected) {
@@ -273,11 +382,50 @@ void IdleForm::idleStatusManagement(void) {
 	VerticalMotor::setManualEnable(true);
 	BodyMotor::setManualEnable(true);
 
-	if ((Notify::isError()) || (Notify::isWarning())) {
-		errorButton->Show();
+	// Error Button
+	if (Notify::isError()) {
+		IDLESTATUS::Registers.warning = false;
+		IDLESTATUS::Registers.info = false;
+		if (!IDLESTATUS::Registers.alarm) {
+			errorButton->BackgroundImage = ERROR_BUTTON_ON;
+			IDLESTATUS::Registers.alarm = true;
+			errorButton->Show();
+		}
 	}
-	else errorButton->Hide();
+	else if (Notify::isWarning()) {
+		IDLESTATUS::Registers.alarm = false;
+		IDLESTATUS::Registers.info = false;
+		if (!IDLESTATUS::Registers.warning) {
+			errorButton->BackgroundImage = WARNING_BUTTON_ON;
+			IDLESTATUS::Registers.warning = true;
+			errorButton->Show();
+		}
+	}
+	else if (Notify::isInfo()) {
+		IDLESTATUS::Registers.alarm = false;
+		IDLESTATUS::Registers.warning = false;
+		if (!IDLESTATUS::Registers.info) {
+			errorButton->BackgroundImage = INFO_BUTTON_ON;
+			IDLESTATUS::Registers.info = true;
+			errorButton->Show();
+		}
+	}
+	else {
+		if ((IDLESTATUS::Registers.warning) || (IDLESTATUS::Registers.alarm) || (IDLESTATUS::Registers.info)) {
+			IDLESTATUS::Registers.warning = false;
+			IDLESTATUS::Registers.alarm = false;
+			IDLESTATUS::Registers.info = false;
+			errorButton->BackgroundImage = ERROR_BUTTON_OFF;
+			errorButton->Hide();
+		}
 
+	}
+
+
+	// Popup panels 
+	evaluatePopupPanels();
+
+	
 }
 
 void IdleForm::WndProc(System::Windows::Forms::Message% m)
@@ -295,14 +443,13 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 		this->Show();
 		break;
 
-	case (WINMSG_CLOSE): // on Open Event
+	case (WINMSG_CLOSE): // on Close Event
 		if (!open_status) return;
 		open_status = false;
 		idleTimer->Stop();
-
-		((ErrorForm^)pError)->close();
+		Notify::close_error();
+		Notify::close_instant();
 		this->Hide();
-
 		break;
 	}
 
@@ -310,7 +457,7 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 }
 
 void IdleForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	((ErrorForm^)pError)->open();
+	Notify::open_error(this);
 }
 System::Void IdleForm::serviceButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	Gantry::setService();

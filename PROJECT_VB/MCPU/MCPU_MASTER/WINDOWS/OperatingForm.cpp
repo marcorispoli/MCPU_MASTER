@@ -31,6 +31,7 @@
 #define SLIDE_0_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\Slide0.PNG")
 #define SLIDE_10_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\Slide10.PNG")
 
+#define INFO_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\InfoIcon.PNG")
 #define WARNING_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\WarningOn.PNG")
 #define ERROR_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOn.PNG")
 #define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOff.PNG")
@@ -130,6 +131,7 @@ namespace OPERSTATUS {
 		unsigned char currentPanel;
 		bool alarm;
 		bool warning;
+		bool info;
 
 		unsigned char mag_factor;
 		bool compressor_release;
@@ -175,10 +177,7 @@ void OperatingForm::formInitialization(void) {
 
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	
-	// Error Panel Setup ____________________________________________________________
-	pError = gcnew ErrorForm(this);
-	//________________________________________________________________________________________
-
+	
 	// Projections Panel Setup ____________________________________________________________
 	pProj = gcnew ProjectionForm(this);
 	((ProjectionForm^)pProj)->button_canc_event += gcnew ProjectionForm::delegate_button_callback(this, &OperatingForm::onConfirmCanc);
@@ -310,9 +309,13 @@ void OperatingForm::initOperatingStatus(void) {
 	// Sets the current Filter selector to manual mode
 	PCB315::setFilterAutoMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
 
+	Notify::clrInstant();
+
 	// Start the startup session	
 	operatingTimer->Start();		
 	resume();
+
+	
 	
 }
 
@@ -394,7 +397,7 @@ void OperatingForm::evaluateErrorStatus(void) {
 
 	// Compression Mode Warning
 	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
-		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION, false);
+		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
 
 
@@ -404,7 +407,7 @@ void OperatingForm::evaluateErrorStatus(void) {
 	else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) patient_protection = true;
 
 	if ((ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) && (patient_protection))
-		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION, false);
+		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	else 
 		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	
@@ -412,50 +415,62 @@ void OperatingForm::evaluateErrorStatus(void) {
 	if (
 		(ExposureModule::getArmMode() != ExposureModule::arm_mode_option::ARM_DIS) &&
 		(!ArmMotor::device->isValidPosition())
-		) Notify::activate(Notify::messages::WARNING_ARM_POSITION_WARNING, false);
+		) Notify::activate(Notify::messages::WARNING_ARM_POSITION_WARNING);
 	else Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
 
 	// Paddle identification
 	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) &&
-		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE, false);
+		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE);
 	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
 
 	// Exposure Mode selection	
-	if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE, false);
+	if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 
 	// Valid Exposure Data present
-	if (!ExposureModule::getExposurePulse(0)->isValid()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA, false);
+	if (!ExposureModule::getExposurePulse(0)->isValid()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 
 	// Xray Push Button Enable
-	if (!PCB301::getXrayEventEna()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED, false);
+	if (!PCB301::getXrayEventEna()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 
 	// Error Button
 	if (Notify::isError()) {
 		OPERSTATUS::Registers.warning = false;
+		OPERSTATUS::Registers.info = false;
 		if (!OPERSTATUS::Registers.alarm) {
 			alarmButton->BackgroundImage = ERROR_BUTTON_ON;
 			OPERSTATUS::Registers.alarm = true;
 		}
 	}else if (Notify::isWarning()) {
 		OPERSTATUS::Registers.alarm = false;
+		OPERSTATUS::Registers.info = false;
 		if (!OPERSTATUS::Registers.warning) {
 			alarmButton->BackgroundImage = WARNING_BUTTON_ON;
 			OPERSTATUS::Registers.warning = true;
+		}
+	}else if (Notify::isInfo()) {
+		OPERSTATUS::Registers.alarm = false;
+		OPERSTATUS::Registers.warning = false;
+		if (!OPERSTATUS::Registers.info) {
+			alarmButton->BackgroundImage = INFO_BUTTON_ON;
+			OPERSTATUS::Registers.info = true;
 		}
 	}else {
 		if ((OPERSTATUS::Registers.warning) || (OPERSTATUS::Registers.alarm)) {
 			OPERSTATUS::Registers.warning = false;
 			OPERSTATUS::Registers.alarm = false;
+			OPERSTATUS::Registers.info = false;
 			alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
 		}
 
 	}
 
+	if (Notify::isInstant()) Notify::open_instant(this);
+
 	// One Shot events
-	if(Notify::isOneShot()) ((ErrorForm^)pError)->open();
+	//if(Notify::isOneShot()) ((ErrorForm^)pError)->open();
 
 	
 }
@@ -632,7 +647,8 @@ void OperatingForm::WndProc(System::Windows::Forms::Message% m)
 		open_status = false;
 		operatingTimer->Stop();
 		((ProjectionForm^)pProj)->close();
-		((ErrorForm^)pError)->close();
+		Notify::close_error();
+		Notify::close_instant();
 		((ConfirmationWindow^)pAbort)->close();
 		((IconWindow^)pXray)->close();
 		this->Hide();
@@ -644,7 +660,7 @@ void OperatingForm::WndProc(System::Windows::Forms::Message% m)
 }
 
 void OperatingForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	if(Notify::isError() || Notify::isWarning())	((ErrorForm^)pError)->open();
+	if(Notify::isError() || Notify::isWarning())	Notify::open_error(this);
 }
 
 void OperatingForm::viewSelection_Click(System::Object^ sender, System::EventArgs^ e) {

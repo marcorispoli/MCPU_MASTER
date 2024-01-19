@@ -538,7 +538,7 @@ void   awsProtocol::GET_Components(void) {
     lista->Add(PCB304::getMagnifierfactorString());
 
     // Compressor paddle
-    lista->Add(PCB302::getPaddleName(PCB302::getDetectedPaddleCode()));
+    lista->Add(PCB302::getDetectedPaddleCode().ToString());
 
     // Protection Type
     if(PCB304::isPatientProtection()) lista->Add("PROTECTION_3D");
@@ -635,6 +635,17 @@ void   awsProtocol::SET_Language(void) {
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
+    
+    // Arm test
+    if (pDecodedFrame->parameters->Count == 4) {
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
+        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+        ArmMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec);
+    }
+    return;
+
     // Body test
     if (pDecodedFrame->parameters->Count == 1) {
         int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);

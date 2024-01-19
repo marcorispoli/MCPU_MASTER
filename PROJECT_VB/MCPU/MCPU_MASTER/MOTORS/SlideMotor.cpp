@@ -39,7 +39,7 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
     setEncoderInitialUvalue(init_position);
 
     // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING, false);
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
 
 }
 
@@ -118,7 +118,7 @@ void SlideMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
         // Reset the position in the configuration file and reactivate the alarm
         MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
         MotorConfig::Configuration->storeFile();
-        Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING, false);
+        Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
     }
 
     // Notify the command termination event

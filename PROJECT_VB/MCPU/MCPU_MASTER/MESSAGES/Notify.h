@@ -126,7 +126,11 @@ public:
 		LABEL_MOTOR_ERROR_COMMAND_DISABLED,
 		LABEL_MOTOR_ERROR_COMMAND_ABORTED,
 
-		LABEL_CURRENT_COMPRESSION,
+		LABEL_COMPRESSION_ACTIVATED,
+		LABEL_ARM_ACTIVATED,
+		LABEL_BODY_ACTIVATED,
+		LABEL_VERTICAL_ACTIVATED,
+
 
 		// Last declaration
 		NUM_MESSAGES,
@@ -209,7 +213,7 @@ public:
 		}
 
 		errorWindow = gcnew ErrorForm();
-		infoPopupForm^ instantWindow = gcnew infoPopupForm();
+		instantWindow = gcnew infoPopupForm();
 
 	}
 	static Notify^ device = gcnew Notify();

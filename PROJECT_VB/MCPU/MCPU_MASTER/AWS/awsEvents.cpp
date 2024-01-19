@@ -87,7 +87,7 @@ void awsProtocol::EVENT_Components(void) {
     mag_factor = PCB304::getMagnifierfactorString();
 
     // Compressor paddle
-    paddle = PCB302::getPaddleName(PCB302::getDetectedPaddleCode());
+    paddle = PCB302::getDetectedPaddleCode().ToString();
 
     // Protection Type
     if (PCB304::isPatientProtection()) protection = "PROTECTION_3D";

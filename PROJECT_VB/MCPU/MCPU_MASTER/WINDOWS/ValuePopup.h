@@ -81,13 +81,12 @@ private: System::Void InitializeComponent() {
 	// 
 	// valueTitle
 	// 
-	this->valueTitle->AutoSize = true;
 	this->valueTitle->BackColor = System::Drawing::Color::Transparent;
-	this->valueTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 24, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+	this->valueTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 21.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(0)));
 	this->valueTitle->Location = System::Drawing::Point(147, 22);
 	this->valueTitle->Name = L"valueTitle";
-	this->valueTitle->Size = System::Drawing::Size(82, 37);
+	this->valueTitle->Size = System::Drawing::Size(354, 37);
 	this->valueTitle->TabIndex = 18;
 	this->valueTitle->Text = L"Title";
 	this->valueTitle->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
@@ -142,7 +141,6 @@ private: System::Void InitializeComponent() {
 	this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->valueIcon))->EndInit();
 	this->ResumeLayout(false);
-	this->PerformLayout();
 
 }
 

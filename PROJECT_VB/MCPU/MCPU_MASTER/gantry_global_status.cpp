@@ -54,9 +54,11 @@ void Gantry::initialize(void) {
     pcb304_demo = true;
     pcb302_demo = true;
     pcb326_demo = true;
-    motor_arm_demo = true;
+    motor_arm_demo = false;
     motor_tilt_demo = true;
     motor_slide_demo = true;
+    motor_body_demo = true;
+    motor_vertical_demo = true;
 
     // Creates the status Windows
     pIdleForm = gcnew IdleForm();

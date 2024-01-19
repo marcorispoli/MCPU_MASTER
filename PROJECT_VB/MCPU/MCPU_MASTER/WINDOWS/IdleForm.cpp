@@ -11,6 +11,7 @@
 #include "PCB315.h"
 #include "PCB326.h"
 #include "VerticalMotor.h"
+#include "ArmMotor.h"
 #include "BodyMotor.h"
 #include "../gantry_global_status.h"
 
@@ -33,6 +34,11 @@
 #define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\AlarmOff.PNG")
 
 #define COMPRESSING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\COMPRESSING_ICON.PNG")
+#define ARM_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\ARM_MOTOR_ICON.PNG")
+#define BODY_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\BODY_MOTOR_ICON.PNG")
+#define VERTICAL_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\VERTICAL_MOTOR_ICON.PNG")
+#define SLIDE_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\SLIDE_MOTOR_ICON.PNG")
+#define TILT_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\TILT_MOTOR_ICON.PNG")
 
 namespace IDLESTATUS {
 	typedef struct {
@@ -194,9 +200,97 @@ void IdleForm::close(void) {
 	SendNotifyMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE	
 }
 
+
+void IdleForm::evaluatePopupPanels(void) {
+	#define TMO 50
+	static bool compression = false;
+	static bool arm = false;
+	static bool body = false;
+	static bool vertical  = false;
+	static int timer = 0;
+
+	if (PCB302::isCompressing()) {
+		timer = TMO;
+		if (!compression) {
+			compression = true;
+			arm = false;
+			body = false;
+			vertical = false;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
+		}
+
+		// Set the value to the current compression
+		Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
+		return;
+	}else compression = false;
+
+	if (ArmMotor::device->isRunning()) {
+		timer = TMO;
+		if (!arm) {
+			compression = false;
+			arm = true;
+			body = false;
+			vertical = false;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		float position = (float) ArmMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+
+	}else arm = false;
+
+	if (BodyMotor::device->isRunning()) {
+		timer = TMO;
+		if (!body) {
+			compression = false;
+			arm = false;
+			body = true;
+			vertical = false;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		float position = (float)BodyMotor::device->getCurrentPosition() / 10;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}else body = false;
+	
+	if (VerticalMotor::device->isRunning()) {
+		timer = TMO;
+		if (!vertical) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = true;
+			Gantry::getValuePopupWindow()->close();
+			Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
+		}
+
+		// Set the value to the current compression
+		int position = (int) VerticalMotor::device->getCurrentPosition();
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else vertical = false;
+
+	// Keeps the popup alive for extra time
+	if (timer) {
+		timer--;
+		if(!timer) Gantry::getValuePopupWindow()->close();
+		return;
+	}
+
+	if (Notify::isInstant()) Notify::open_instant(this);
+
+}
+
 void IdleForm::idleStatusManagement(void) {
-	static bool test = true;
-	static int test_val = 0;
+	
 
 	System::DateTime date;
 	date = System::DateTime::Now;
@@ -329,16 +423,9 @@ void IdleForm::idleStatusManagement(void) {
 
 
 	// Popup panels 
+	evaluatePopupPanels();
 
-	if (Notify::isInstant()) Notify::open_instant(this);
-
-	if (test) {
-		test_val++;
-		if (Gantry::getValuePopupWindow()->open_status) {
-			Gantry::getValuePopupWindow()->content(test_val.ToString());
-		}else	Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_CURRENT_COMPRESSION), "(N)");
-
-	}
+	
 }
 
 void IdleForm::WndProc(System::Windows::Forms::Message% m)

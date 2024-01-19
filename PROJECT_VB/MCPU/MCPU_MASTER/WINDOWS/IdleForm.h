@@ -28,31 +28,35 @@ public ref class IdleForm :  public System::Windows::Forms::Form
 
 
 public:
-	public:System::Timers::Timer^ idleTimer;
+	System::Timers::Timer^ idleTimer;
+	
 
+public:
+	void idleStatusManagement(void);
+	void initIdleStatus(void);
+	void evaluatePopupPanels(void);
+	void open(void);
+	void close(void);
+	bool open_status;
+	   
+
+private:HWND window;
 private: System::Windows::Forms::Label^ labelDate;
 private: System::Windows::Forms::Label^ labelInstallation;
 private: System::Windows::Forms::Label^ labelTime;
 private: System::Windows::Forms::Label^ labelTubeData;
 private: System::Windows::Forms::Panel^ tubeTempOk;
-
 private: System::Windows::Forms::Panel^ errorButton;
 private: System::Windows::Forms::PictureBox^ serviceButton;
 private: System::Windows::Forms::Panel^ mainPanel;
-
-public:
-
-public:	void open(void);
-public:	void close(void);
-private: bool open_status;
-
-private:HWND window;
-private: Object^ pError;
-
+private: System::Windows::Forms::PictureBox^ xrayMode;
+private: System::Windows::Forms::PictureBox^ batteryConnected;
+private: System::Windows::Forms::PictureBox^ awsConnected;
+private: System::Windows::Forms::PictureBox^ peripheralsConnected;
+private: System::Windows::Forms::PictureBox^ doorClosed;
 
 private:void formInitialization(void);
-private:void initIdleStatus(void);
-private:void idleStatusManagement(void);
+
 	
 public:
 	IdleForm(void)
@@ -74,13 +78,6 @@ protected:
 			delete components;
 		}
 	}
-private: System::Windows::Forms::PictureBox^ xrayMode;
-protected:
-
-private: System::Windows::Forms::PictureBox^ batteryConnected;
-private: System::Windows::Forms::PictureBox^ awsConnected;
-private: System::Windows::Forms::PictureBox^ peripheralsConnected;
-private: System::Windows::Forms::PictureBox^ doorClosed;
 
 
 

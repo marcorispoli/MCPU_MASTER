@@ -554,12 +554,28 @@ namespace CANOPEN {
 		inline bool isNanojConfigured(void) { return nanoj_initialized; }
 
 		/// <summary>
-		/// This function returns the Ready status.
+		/// This function returns true if the module is ready to execute a command.
 		/// </summary>
+		/// 
+		/// If this function should return false, it doesn't mean that a command
+		/// is executing. See the isRunning() function for that purpose.
+		/// 
+		/// A false return code is related to an ointernal code not allowed to execute any command.
+		/// 
+		/// NOTE: in case of true condition, other external conditions may prevent the command to start execution.
+		/// 
 		/// <param name=""></param>
-		/// <returns>true: the driver is ready to execute an activation command</returns>
+		/// <returns>true: the driver is ready to execute a command</returns>
 		inline bool isReady(void) { return ((internal_status == status_options::MOTOR_READY) && (request_command == MotorCommands::MOTOR_IDLE)); }
 		
+		/// <summary>
+		/// This function return true if a command is executing.
+		/// 
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns>true: a command is executing</returns>
+		inline bool isRunning(void) { return (current_command != MotorCommands::MOTOR_IDLE); }
+
 		/// <summary>
 		/// This function returns the Encoder Zero setting status
 		/// </summary>

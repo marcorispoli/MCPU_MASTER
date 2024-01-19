@@ -15,7 +15,7 @@
 #define HOMING_OFF_METHOD 20
 
 
-ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", ROT_PER_CDEGREE, false)
+ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char) CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", ROT_PER_CDEGREE, true)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(20, 20);

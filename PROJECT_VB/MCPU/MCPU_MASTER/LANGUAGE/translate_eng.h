@@ -124,7 +124,10 @@
 "L00023", Notify::messages::LABEL_MOTOR_ERROR_COMMAND_DISABLED, "Motor activation disabled error", "-",
 "L00024", Notify::messages::LABEL_MOTOR_ERROR_COMMAND_ABORTED, "Motor activation aborted", "-",
 
-"L00025", Notify::messages::LABEL_CURRENT_COMPRESSION, "Current Compression", "-",
+"L00026", Notify::messages::LABEL_COMPRESSION_ACTIVATED, "Compression Activated", "-",
+"L00027", Notify::messages::LABEL_ARM_ACTIVATED, "Arm Motor Activated", "-",
+"L00028", Notify::messages::LABEL_BODY_ACTIVATED, "Body Motor Activated", "-",
+"L00028", Notify::messages::LABEL_VERTICAL_ACTIVATED, "Vertical Motor Activated", "-",
 
 
 

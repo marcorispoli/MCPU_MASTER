@@ -100,7 +100,7 @@ void PCB301::handleSystemStatusRegister(void) {
     
 
     // Monitor of the Study door input
-    if (Gantry::isDemo()) {
+    if (Gantry::isOperatingDemo()) {
         if (door_status != door_options::CLOSED_DOOR) {
             door_status = door_options::CLOSED_DOOR;
             Notify::deactivate(Notify::messages::WARNING_DOOR_STUDY_OPEN);
@@ -161,6 +161,16 @@ void PCB301::handleBatteryStatusRegister(void) {
 
 }
 
+void PCB301::toggleKeepalive(void) {
+    static bool stat = false;
+
+    if (stat) stat = false;
+    else stat = true;
+
+    PCB301_OUTPUTS_DATA_KEEP_ALIVE(outputs_data_register, stat);
+    
+
+}
 void PCB301::runningLoop(void) {
     static int count = 0;
     static bool commerr = false;
@@ -181,6 +191,9 @@ void PCB301::runningLoop(void) {
 
     handleBatteryStatusRegister();
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    // Toggles the keepalive bit to keep the board alive!
+    toggleKeepalive();
 
     // Refresh the Data register
     writeDataRegister((unsigned char)DataRegisters::OUTPUTS_DATA_REGISTER, outputs_data_register);

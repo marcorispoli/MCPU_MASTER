@@ -27,24 +27,40 @@ void ValuePopupForm::formInitialization(void) {
 void ValuePopupForm::close(void) {
 	if (!open_status) return;
 	open_status = false;
+	
+	// Be careful!!! In order to hide a Dialog the parent shall process the event queue.
+	// If a open() should be called after a close() may rise an error.
+	// So: don't use 
+	//	close(); 
+	//  open(); 
 
 	this->Hide();
 }
 
 void ValuePopupForm::open(Form^ parent_form, Image^ icon, System::String^ title, System::String^ unit) {	
 	if(open_status) return;
-	parent = parent_form;
 	open_status = true;
+	parent = parent_form;
+	window = static_cast<HWND>(Handle.ToPointer());
 
 	valueIcon->BackgroundImage = icon;
 	valueTitle->Text = title;
 	valueUnit->Text = unit;
-	valueContent->Text = "";
-
+	valueContent->Text = "";	
 	
+	// The thread stops here until the Dialog is closed (Hide())
 	this->ShowDialog(parent);
-	window = static_cast<HWND>(Handle.ToPointer());
+	
 }
+
+void ValuePopupForm::retitle(Image^ icon, System::String^ title, System::String^ unit) {
+	valueIcon->BackgroundImage = icon;
+	valueTitle->Text = title;
+	valueUnit->Text = unit;
+	valueContent->Text = "";
+}
+
+
 
 void ValuePopupForm::content(System::String^ val) {
 	valueContent->Text = val;

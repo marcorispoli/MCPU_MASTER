@@ -192,7 +192,26 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
   
 }
 
+void TiltMotor::resetCallback(void) {
 
+    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
+    bool homing_initialized = false;
+    int  init_position = 0;
+
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+        homing_initialized = true;
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION]);
+    }
+
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialUvalue(init_position);
+
+    // Activate a warning condition is the motor should'n be initialized
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
+
+    // Activates the configuration of the device
+    activateConfiguration();
+}
 /// <summary>
 /// The TiltMotor override this function in order to initialize specific motor registers
 /// 
@@ -244,66 +263,14 @@ TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
 
 }
 
-/// <summary>
-/// The BodyMotor class override this function in order to 
-/// deactivate the motor brake before to start the motor in the target direction.
-/// 
-/// </summary>
-/// 
-/// This function shall unlock the e.m brake to allow the rotation.
-/// 
-/// The function test the brake unlocked condition befor to 
-/// enable the command execution.
-/// 
-/// In case of fault condition, a non resettable alarm is activated.
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-CanOpenMotor::MotorCompletedCodes TiltMotor::automaticPositioningPreparationCallback(void) {
-
-    // Unlock the Brake device
-    /*
-    if (!blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK | OUPUT1_OUT_MASK)) {
-
-        // Failed to receive the command answer: in any case switch off the brake
-        blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK);
-        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
-    }
-    */
-
-    // wait a while before to proceed
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-    // Test if the brake is actually activated
-
-    /*
-    if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_BRAKE_DEVICE; // Reads the Inputs
-    if (!BRAKE_INPUT_MASK(rxSdoRegister->data)) {
-
-        // Failed the brake power activation detected
-        brake_alarm = true;
-        Debug::WriteLine("TiltMotor: Failed to unlock");
-        Notify::activate(Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT, false);
-
-        // Clear the OUTPUTS
-        blocking_writeOD(OD_60FE_01, 0);
-        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
-    }
-    */
-
-    // OK. Brake device correctly powered
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
 CanOpenMotor::MotorCompletedCodes TiltMotor::automaticHomingPreparationCallback(void) {
     return automaticPositioningPreparationCallback();
 }
 
-CanOpenMotor::MotorCompletedCodes TiltMotor::manualPositioningPreparationCallback(void) {
-    return automaticPositioningPreparationCallback();
+
+CanOpenMotor::MotorCompletedCodes  TiltMotor::automaticPositioningRunningCallback(void) {
+    return MotorCompletedCodes::COMMAND_PROCEED;
 }
-
-
 /// <summary>
 /// The TiltMotor class override this function in order to update the current position
 /// and the command termination
@@ -398,7 +365,7 @@ bool TiltMotor::startHoming(void) {
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-TiltMotor::MotorCompletedCodes  TiltMotor::manualPositioningRunningCallback(void) {
+CanOpenMotor::MotorCompletedCodes  TiltMotor::manualPositioningRunningCallback(void) {
 
     // Handles the enable condition
     if (!manual_activation_enabled) {
@@ -414,4 +381,34 @@ TiltMotor::MotorCompletedCodes  TiltMotor::manualPositioningRunningCallback(void
 
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// The function invalidate the current encoder position in the case, 
+/// during the activation, the software should be killed before to update the current encoder position.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+TiltMotor::MotorCompletedCodes TiltMotor::automaticPositioningPreparationCallback(void) {
+
+    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
+    // with the current valid position
+    MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// See the automaticPositioningPreparationCallback()
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+TiltMotor::MotorCompletedCodes TiltMotor::manualPositioningPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
 }

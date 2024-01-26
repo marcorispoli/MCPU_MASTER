@@ -53,6 +53,7 @@ public:
 	void evaluateDoorStatus(void);
 	void evaluateSlideStatus(void);
 	void evaluateProjectionStatus(void);
+	void evaluatePopupPanels(void);
 	void onArmTargetChangedCallback(int id, int target);
 	
 
@@ -338,7 +339,7 @@ private:
 		// angleText
 		// 
 		this->angleText->BackColor = System::Drawing::Color::Transparent;
-		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 40, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 50, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->angleText->Location = System::Drawing::Point(10, 87);
 		this->angleText->Margin = System::Windows::Forms::Padding(0);

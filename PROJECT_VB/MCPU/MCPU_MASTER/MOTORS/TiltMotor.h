@@ -89,8 +89,14 @@ public:
 
 protected:
     bool initializeSpecificObjectDictionaryCallback(void) override;
+
     MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
-    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override;
+    MotorCompletedCodes automaticPositioningRunningCallback(void) override;
+    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
+
+    MotorCompletedCodes manualPositioningPreparationCallback(void) override;
+    MotorCompletedCodes manualPositioningRunningCallback(void) override;
+    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
 
 
     MotorCompletedCodes idleCallback(void) override;
@@ -98,9 +104,9 @@ protected:
     MotorCompletedCodes automaticHomingPreparationCallback(void) override;
     void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 
-    MotorCompletedCodes manualPositioningPreparationCallback(void) override;
-    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
-    MotorCompletedCodes manualPositioningRunningCallback(void) override;
+    
+    void resetCallback(void) override;
+
 
 private:
     static bool brake_alarm = false; //!< This is the current brake malfunction alarm

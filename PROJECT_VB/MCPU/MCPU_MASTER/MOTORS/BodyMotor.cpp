@@ -58,6 +58,26 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     
 }
 
+void BodyMotor::resetCallback(void) {
+
+    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
+    bool homing_initialized = false;
+    int  init_position = 0;
+
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+        homing_initialized = true;
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION]);
+    }
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialUvalue(init_position);
+
+    // Activate a warning condition is the motor should'n be initialized
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
+
+    // Activates the configuration of the device
+    activateConfiguration();
+}
+
 /// <summary>
 /// The BodyMotor override this function in order to initialize specific motor registers
 /// 
@@ -460,4 +480,35 @@ void BodyMotor::faultCallback(bool errstat, bool data_changed, unsigned int erro
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
     if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
 
+}
+
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// The function invalidate the current encoder position in the case, 
+/// during the activation, the software should be killed before to update the current encoder position.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+BodyMotor::MotorCompletedCodes BodyMotor::automaticPositioningPreparationCallback(void) {
+
+    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
+    // with the current valid position
+    MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// See the automaticPositioningPreparationCallback()
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+BodyMotor::MotorCompletedCodes BodyMotor::manualPositioningPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
 }

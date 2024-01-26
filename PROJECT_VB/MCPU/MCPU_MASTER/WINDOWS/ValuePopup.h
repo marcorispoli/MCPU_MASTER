@@ -35,6 +35,7 @@ public:
 	
 	  void formInitialization(void);
 	  void open(Form^ parent_form, Image^ icon, System::String^ title, System::String^ unit);
+	  void retitle(Image^ icon, System::String^ title, System::String^ unit);
 	  void close(void);
 	  void content(System::String^ val);
 	  bool open_status;

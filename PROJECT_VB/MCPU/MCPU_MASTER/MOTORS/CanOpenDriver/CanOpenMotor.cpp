@@ -199,9 +199,9 @@ void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned
 
     // Checks the canId address
     if (canid != device_id + 0x700) return; // This frame is not a SDO or is not addressed to this device!
-
     od_initialized = false;
     home_initialized = false;
+    resetCallback();
 }
 
 /// <summary>
@@ -420,27 +420,6 @@ bool CanOpenMotor::writeControlWord(unsigned int mask, unsigned int val) {
     return true;
 }
 
-/// <summary>
-/// This function activate motor configuration fase.
-/// 
-/// During the motor configuration fase, the device Object registers 
-/// are written with the wanted values (see initializeObjectDictionary() and initializeSpecificObjectDictionaryCallback());
-/// 
-/// If the implementation needs the Nanoj program, the applicaiton program is uploaded into the device.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-bool CanOpenMotor::activateConfiguration(void) {
-    // Executes the configuration but only in two status
-    if ((internal_status == status_options::MOTOR_READY) || (internal_status == status_options::MOTOR_FAULT))
-    {
-        configuration_command = true;
-        return true;
-    }
-
-    return false;
-}
 
 
 /// <summary>
@@ -471,7 +450,7 @@ void CanOpenMotor::mainWorker(void) {
 
     // Demo mode activation
     if (demo_mode) {
-        internal_status = status_options::MOTOR_DEMO;
+        internal_status = status_options::MOTOR_READY;
         Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
 
         while (demo_mode) {
@@ -513,7 +492,7 @@ void CanOpenMotor::mainWorker(void) {
         }
 
         // Activate  the configuration: both object dictionary registers and nanoj program (if present) shall be uploaded
-        if (configuration_command) {            
+        if ((configuration_command) && ((internal_status == status_options::MOTOR_READY) || (internal_status == status_options::MOTOR_FAULT))) {
             internal_status = status_options::MOTOR_CONFIGURATION;
 
             // If the nanoj program is not present (pNanoj = nullptr)  the nanoj_initialized flag  shall be set to true !
@@ -525,11 +504,10 @@ void CanOpenMotor::mainWorker(void) {
 
             // Assignes the initial value to the encoder
             for (int i = 0; i < 5; i++) { if (initResetEncoderCommand(encoder_initial_value)) break; }
-            
-            previous_uposition = current_uposition;
-        }
-        
 
+            previous_uposition = current_uposition;
+
+        }
 
         // Identifies what is the current ciA status of the motor 
         switch (getCiAStatus(rxSdoRegister->data)) {
@@ -864,3 +842,56 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
 void CanOpenMotor::abortActivation(void) {
     abort_request = true;
 }
+
+void CanOpenMotor::demoLoop(void) {
+    MotorCompletedCodes idle_returned_condition;
+    int _100ms_time;
+    int unit_step;
+
+    // The subclass can add extra commands in IDLE and enable the command execution
+    //idle_returned_condition = idleCallback();
+
+    // Initiate a requested command
+    switch (request_command) {
+    case MotorCommands::MOTOR_AUTO_POSITIONING:
+        current_command = request_command;
+        abort_request = false;
+
+        previous_uposition = current_uposition;
+        _100ms_time = ((command_target - current_uposition ) * 10) / command_speed;
+        unit_step = (command_target - current_uposition) / abs(_100ms_time);
+
+        for (int i = 0; i < abs(_100ms_time); i++) {
+            current_uposition += unit_step;
+            current_eposition = convert_User_To_Encoder(current_uposition);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        // Loop Demo Automatic Positioning 
+        current_uposition = command_target;
+        current_eposition = convert_User_To_Encoder(command_target);        
+        setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+        request_command = MotorCommands::MOTOR_IDLE;
+        break;
+
+    case MotorCommands::MOTOR_MANUAL_POSITIONING:
+        current_command = request_command;
+        abort_request = false;
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_COMMAND_DEMO);
+        request_command = MotorCommands::MOTOR_IDLE;
+        break;
+
+    case MotorCommands::MOTOR_HOMING:
+        current_command = request_command;
+        abort_request = false;
+        home_initialized = true;
+        current_uposition = current_eposition = 0;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+        request_command = MotorCommands::MOTOR_IDLE;
+        break;
+    
+    }
+
+    return;
+};

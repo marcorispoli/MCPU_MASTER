@@ -47,17 +47,21 @@
 /// <returns>true if the command can be executed</returns>
 bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec) {
 
-    // Only withthe homing executed or initialized can be activated
-    if (!home_initialized) {
-        command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
-        return false;
+    // If the driver is in demo executes the demo activation
+    if (!demo_mode) {
+        // Only withthe homing executed or initialized can be activated
+        if (!home_initialized) {
+            command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
+            return false;
+        }
+
+        // Command already in execution
+        if (!isReady()) {
+            command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+            return false;
+        }
     }
 
-    // Command already in execution
-    if (!isReady()) {
-        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
-        return false;
-    }
 
     command_id = id;
     command_target = target;

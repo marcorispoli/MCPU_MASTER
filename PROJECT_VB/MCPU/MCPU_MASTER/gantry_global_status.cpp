@@ -41,24 +41,44 @@ Gantry::Gantry() {
     
 }
 
-void Gantry::initialize(void) {
-    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEMO_MODE)[SystemConfig::PARAM_DEMO_MODE_STATUS] == "1") {
-        demo_status = true;
-    }
-    else demo_status = false;
 
+void Gantry::initialize(void) {
+    
+    // Set the Demo mode for all processes
+    operating_demo_status = false;
+    pcb301_demo = false;
+    pcb302_demo = false;
+    pcb303_demo = false;
+    pcb304_demo = false;
+    pcb315_demo = false;
+    pcb326_demo = false;
+    motor_arm_demo = false;
+    motor_tilt_demo = false;
+    motor_slide_demo = false;
+    motor_body_demo = false;
+    motor_vertical_demo = false;
+    generator_demo = false;
+
+    // Initializes the Operating Demo status
+    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEMO_MODE)[SystemConfig::PARAM_DEMO_MODE_STATUS] == "1")
+        operating_demo_status = true;
+
+    // Force some process to be in demo status when the operating is in demo
+    if (operating_demo_status) {
+        pcb303_demo = true;
+        pcb304_demo = true;
+        pcb315_demo = true;
+        pcb326_demo = true;
+        generator_demo = true;
+    }
+
+    pcb302_demo = true;
+    motor_tilt_demo = true;
+    motor_slide_demo = true;
+    motor_arm_demo = true;
 
     // Set the current language for messages and GUI
     Notify::setLanguage("ENG");
-
-    pcb304_demo = true;
-    pcb302_demo = true;
-    pcb326_demo = true;
-    motor_arm_demo = false;
-    motor_tilt_demo = true;
-    motor_slide_demo = true;
-    motor_body_demo = true;
-    motor_vertical_demo = true;
 
     // Creates the status Windows
     pIdleForm = gcnew IdleForm();

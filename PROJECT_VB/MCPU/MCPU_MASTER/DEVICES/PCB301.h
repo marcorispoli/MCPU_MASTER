@@ -71,6 +71,7 @@ ref class PCB301 :  public CanDeviceProtocol
 
 	#define PCB301_OUTPUTS_DATA_BUZZER_STAT(reg,stat)	reg->D1(stat, 0x2) 
 	#define PCB301_OUTPUTS_DATA_MANUAL_BUZZER(reg,stat)	reg->D1(stat, 0x4) 
+	#define PCB301_OUTPUTS_DATA_KEEP_ALIVE(reg,stat)	reg->D3(stat, 0x80) 
 
 public:
 
@@ -185,5 +186,6 @@ protected:
 private:
 		void handleSystemStatusRegister(void);
 		void handleBatteryStatusRegister(void);
+		void toggleKeepalive(void);
 };
 

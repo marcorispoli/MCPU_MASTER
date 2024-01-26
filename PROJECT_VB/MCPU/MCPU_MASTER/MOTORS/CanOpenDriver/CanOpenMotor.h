@@ -462,8 +462,7 @@ namespace CANOPEN {
 				MOTOR_CONFIGURATION,		//!< The module is configuring the driver
 				MOTOR_READY,				//!< The driver is ready to execute an activation command
 				MOTOR_BUSY,					//!< The driver is executing an acivation command
-				MOTOR_FAULT,				//!< The driver is in fault condition
-				MOTOR_DEMO					//!< The module is running in DEMO mode
+				MOTOR_FAULT,				//!< The driver is in fault condition				
 		};
 		
 		
@@ -519,6 +518,7 @@ namespace CANOPEN {
 			ERROR_MISSING_HOME,//!< The command has been aborted due to invalid homing (the encoder is not correctly initialized)
 			ERROR_COMMAND_DISABLED,//!< The command has been aborted because the activation is not enabled
 			ERROR_COMMAND_ABORTED,//!< The command has been aborted due to an Abort activation request
+			ERROR_COMMAND_DEMO,//!< The command cannot be executed in demo
 			ERROR_SAFETY //!< The command has been aborted due to safety conditions
 		};		
 		
@@ -529,8 +529,17 @@ namespace CANOPEN {
 		/// <returns></returns>
 		inline MotorCompletedCodes getCommandCompletedCode(void) { return command_completed_code; }
 		
-
-		bool activateConfiguration(void); //!< This function activates the Driver configuration fase
+		/// <summary>
+		/// This function activates the Driver configuration fase
+		/// </summary>
+		/// The Driver configuration will take place only when the 
+		/// driver is in internal status READY or FAULT
+		/// <param name=""></param>
+		/// <returns>true always</returns>
+		bool activateConfiguration(void) {
+			configuration_command = true; 
+			return true;
+		} 
 		
 		/// <summary>
 		/// This function returns the current configuration fase status
@@ -734,6 +743,7 @@ protected:
 		static System::String^ getErrorClass1003(unsigned int val);
 		static System::String^ getErrorCode1003(unsigned int val);
 
+
 		virtual MotorCompletedCodes automaticPositioningPreparationCallback(void);  //!< This function is called just before to Power the motor phases
 		virtual MotorCompletedCodes automaticPositioningRunningCallback(void); //!< This function is called during the command execution to terminate early the positioning
 		virtual void automaticPositioningCompletedCallback(MotorCompletedCodes termination_code);  //!< This function is called when the command is terminated
@@ -748,13 +758,14 @@ protected:
 
 		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
 		virtual void faultCallback(bool errstat, bool data_change, unsigned int error_class, unsigned int error_code) { return ; }
+		virtual void resetCallback(void) { return ; } //!< Called whenever the boot message is received from the device
 
 		virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
 
 		virtual bool unbrakeCallback(void) { return true; } //!< Called whenever the optional brake device should be released
 		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated
 		
-		virtual void demoLoop(void) { return; };
+		virtual void demoLoop(void);
 
 		inline void setCommandCompleted(MotorCompletedCodes error) { command_completed_code = error; }
 
@@ -794,6 +805,7 @@ private:
 		static const cli::array<System::String^>^ status_tags = gcnew cli::array<System::String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
 
 		status_options internal_status; //!< This is the current internal motor status
+		
 		int encoder_initial_value;		//! This is the value that shall be assigne to the encoder at the startup
 		int current_eposition;			//!< Current Encoder position
 		int current_uposition;			//!< Current User position 

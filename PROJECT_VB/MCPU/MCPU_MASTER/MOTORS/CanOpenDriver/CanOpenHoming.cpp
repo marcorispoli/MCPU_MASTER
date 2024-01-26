@@ -8,11 +8,12 @@
 
 
 bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int speed, int acc) {
-
-    // Command already in execution
-    if (!isReady()) {
-        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
-        return false;
+    if (!demo_mode) {
+        // Command already in execution
+        if (!isReady()) {
+            command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+            return false;
+        }
     }
 
     command_homing_on_method = method_on;
@@ -20,7 +21,6 @@ bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int sp
     command_acc = acc;
     command_speed = speed;
     request_command = MotorCommands::MOTOR_HOMING;
-
     return true;
 }
 
@@ -29,9 +29,8 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     bool error_condition;
     MotorCompletedCodes termination_code;
     home_initialized = false;
-
-
-
+    
+    
     // Sets the Speed activation
     error_condition = false;
 

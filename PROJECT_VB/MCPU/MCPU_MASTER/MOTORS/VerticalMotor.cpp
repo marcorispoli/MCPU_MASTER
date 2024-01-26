@@ -117,6 +117,27 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
     
 }
 
+void VerticalMotor::resetCallback(void) {
+
+    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
+    bool homing_initialized = false;
+    int  init_position = 0;
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+        homing_initialized = true;
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION]);
+    }
+
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialUvalue(init_position);
+
+    // Activate a warning condition is the motor should'n be initialized
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
+
+    // Activates the configuration of the device
+    activateConfiguration();
+}
+
+
 /// <summary>
 /// This function activates the Isocentric correction procedure.
 /// </summary>
@@ -353,10 +374,6 @@ VerticalMotor::MotorCompletedCodes  VerticalMotor::manualPositioningRunningCallb
     // Test the limit switch to early stop the activation
     if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
 
-    // Handle the limit switches
-
-    // Handle the safety
-
     // handle the manual hardware inputs
     bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
@@ -401,4 +418,34 @@ void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int 
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
     if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
 
+}
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// The function invalidate the current encoder position in the case, 
+/// during the activation, the software should be killed before to update the current encoder position.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+VerticalMotor::MotorCompletedCodes VerticalMotor::automaticPositioningPreparationCallback(void) {
+
+    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
+    // with the current valid position
+    MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// See the automaticPositioningPreparationCallback()
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+VerticalMotor::MotorCompletedCodes VerticalMotor::manualPositioningPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
 }

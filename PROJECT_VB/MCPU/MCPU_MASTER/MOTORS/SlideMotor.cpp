@@ -43,6 +43,27 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
 
 }
 
+void SlideMotor::resetCallback(void) {
+
+    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
+    bool homing_initialized = false;
+    int  init_position = 0;
+
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+        homing_initialized = true;
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_CURRENT_POSITION]);
+    }
+
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialUvalue(init_position);
+
+    // Activate a warning condition is the motor should'n be initialized
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
+
+    // Activates the configuration of the device
+    activateConfiguration();
+}
+
 
 /// <summary>
 /// The SlideMotor class override this function in order to 
@@ -135,6 +156,10 @@ void SlideMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
     return;
 }
 
+SlideMotor::MotorCompletedCodes  SlideMotor::automaticPositioningRunningCallback(void) {
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
 /// <summary>
 /// The ArmMotor class override this function in order to handle the manual activation process.
 /// 
@@ -162,4 +187,35 @@ SlideMotor::MotorCompletedCodes  SlideMotor::manualPositioningRunningCallback(vo
     */
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// The function invalidate the current encoder position in the case, 
+/// during the activation, the software should be killed before to update the current encoder position.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+SlideMotor::MotorCompletedCodes SlideMotor::automaticPositioningPreparationCallback(void) {
+
+    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
+    // with the current valid position
+    MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// See the automaticPositioningPreparationCallback()
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+SlideMotor::MotorCompletedCodes SlideMotor::manualPositioningPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
 }

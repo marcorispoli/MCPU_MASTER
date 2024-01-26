@@ -121,7 +121,7 @@ void IdleForm::initIdleStatus(void) {
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-	if(Gantry::isDemo()) this->xrayMode->Hide();
+	if(Gantry::isOperatingDemo()) this->xrayMode->Hide();
 	else this->xrayMode->Show();
 
 	// Handle the Powerdown
@@ -202,12 +202,13 @@ void IdleForm::close(void) {
 
 
 void IdleForm::evaluatePopupPanels(void) {
-	#define TMO 50
+	#define TMO 20
 	static bool compression = false;
 	static bool arm = false;
 	static bool body = false;
 	static bool vertical  = false;
 	static int timer = 0;
+
 
 	if (PCB302::isCompressing()) {
 		timer = TMO;
@@ -216,8 +217,8 @@ void IdleForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = false;
 			vertical = false;
-			Gantry::getValuePopupWindow()->close();
-			Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
+			if(Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
+			else Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
 		}
 
 		// Set the value to the current compression
@@ -232,8 +233,9 @@ void IdleForm::evaluatePopupPanels(void) {
 			arm = true;
 			body = false;
 			vertical = false;
-			Gantry::getValuePopupWindow()->close();
-			Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+			else Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+			
 		}
 
 		// Set the value to the current compression
@@ -250,8 +252,8 @@ void IdleForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = true;
 			vertical = false;
-			Gantry::getValuePopupWindow()->close();
-			Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
+			else Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
 		}
 
 		// Set the value to the current compression
@@ -267,8 +269,8 @@ void IdleForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = false;
 			vertical = true;
-			Gantry::getValuePopupWindow()->close();
-			Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
+			else Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
 		}
 
 		// Set the value to the current compression
@@ -422,10 +424,10 @@ void IdleForm::idleStatusManagement(void) {
 	}
 
 
-	// Popup panels 
+	// Popup panels at the end of the timer thread:
+	// if a panel should be open this thread stops to the ShowDialog() 
 	evaluatePopupPanels();
 
-	
 }
 
 void IdleForm::WndProc(System::Windows::Forms::Message% m)

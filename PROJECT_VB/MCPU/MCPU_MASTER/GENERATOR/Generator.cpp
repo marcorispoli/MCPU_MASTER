@@ -102,7 +102,7 @@ void Generator::threadWork(void) {
   
 
     // Demo management
-    if (Gantry::isDemo()) {
+    if (Gantry::isGeneratorDemo()) {
         Debug::WriteLine("Generator Demo Version!\n");
 
         while (true) {           

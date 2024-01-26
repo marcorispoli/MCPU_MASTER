@@ -101,7 +101,6 @@ bool MainForm::Startup_CanDriver(void) {
 	case 0: // Creates the Can Driver Object
 		StartupLogMessages->Text += "> can driver initialization ..\n";
 		labelCanDriverActivity->Text = "Connection ..";
-		//GlobalObjects::pCan = gcnew CanDriver();
 		startupSubFase++;
 		break;
 
@@ -137,7 +136,7 @@ bool MainForm::Startup_PCB301(void) {
 	case 0: // Creates the PCB301 process
 		labelPcb301Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb301 initialization ..\n";		
-		if (Gantry::pcb301_demo) PCB301::device->demoMode();
+		if (Gantry::isPcb301Demo()) PCB301::device->demoMode();
 		else PCB301::device->runMode();
 		startupSubFase++;
 		break;
@@ -178,7 +177,7 @@ bool MainForm::Startup_PCB302(void) {
 	case 0: // Creates the PCB302 process
 		labelPcb302Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb302 initialization ..\n";		
-		if (Gantry::pcb302_demo) PCB302::device->demoMode();
+		if (Gantry::isPcb302Demo()) PCB302::device->demoMode();
 		else PCB302::device->runMode();
 		startupSubFase++;
 		break;
@@ -219,7 +218,7 @@ bool MainForm::Startup_PCB303(void) {
 	case 0: // Creates the PCB303 process
 		labelPcb303Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb303 initialization ..\n";
-		if (Gantry::pcb303_demo) PCB303::device->demoMode();
+		if (Gantry::isPcb303Demo()) PCB303::device->demoMode();
 		else PCB303::device->runMode();
 		startupSubFase++;
 		break;
@@ -260,7 +259,7 @@ bool MainForm::Startup_PCB304(void) {
 	case 0: // Creates the PCB304 process
 		labelPcb304Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb304 initialization ..\n";
-		if (Gantry::pcb304_demo) PCB304::device->demoMode();
+		if (Gantry::isPcb304Demo()) PCB304::device->demoMode();
 		else PCB304::device->runMode();
 		startupSubFase++;
 		break;
@@ -301,7 +300,7 @@ bool MainForm::Startup_PCB315(void) {
 	case 0: // Creates the PCB315 process
 		labelPcb315Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb315 initialization ..\n";		
-		if (Gantry::pcb315_demo) PCB315::device->demoMode();
+		if (Gantry::isPcb315Demo()) PCB315::device->demoMode();
 		else PCB315::device->runMode();
 		startupSubFase++;
 		break;
@@ -342,7 +341,7 @@ bool MainForm::Startup_PCB326(void) {
 	case 0: // Creates the PCB315 process
 		labelPcb326Activity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> pcb326 initialization ..\n";	
-		if (Gantry::pcb326_demo) PCB326::device->demoMode();
+		if (Gantry::isPcb326Demo()) PCB326::device->demoMode();
 		else PCB326::device->runMode();
 		startupSubFase++;
 		break;
@@ -383,7 +382,7 @@ bool MainForm::Startup_MotorBody(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorBodyActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Body initialization ..\n";	
-		if (Gantry::motor_body_demo) {
+		if (Gantry::isMotorBodyDemo()) {
 			BodyMotor::device->demoMode();
 			labelMotorBodyActivity->Text = "DEMO MODE";
 			labelMotorBodyActivity->ForeColor = Color::LightGreen;
@@ -429,7 +428,7 @@ bool MainForm::Startup_MotorTilt(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorTiltActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Tilt initialization ..\n";
-		if (Gantry::motor_tilt_demo) {
+		if (Gantry::isMotorTiltDemo()) {
 			TiltMotor::device->demoMode();
 			labelMotorTiltActivity->Text = "DEMO MODE";
 			labelMotorTiltActivity->ForeColor = Color::LightGreen;
@@ -477,7 +476,7 @@ bool MainForm::Startup_MotorArm(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorArmActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Arm initialization ..\n";
-		if (Gantry::motor_arm_demo) {
+		if (Gantry::isMotorArmDemo()) {
 			ArmMotor::device->demoMode();
 			labelMotorArmActivity->Text = "DEMO MODE";
 			labelMotorArmActivity->ForeColor = Color::LightGreen;
@@ -524,7 +523,7 @@ bool MainForm::Startup_MotorShift(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorShiftActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Slide initialization ..\n";	
-		if (Gantry::motor_slide_demo) {
+		if (Gantry::isMotorSlideDemo()) {
 			SlideMotor::device->demoMode();
 			labelMotorShiftActivity->Text = "DEMO MODE";
 			labelMotorShiftActivity->ForeColor = Color::LightGreen;
@@ -572,7 +571,7 @@ bool MainForm::Startup_MotorVertical(void) {
 	case 0: // Creates the Body Motor controller process
 		labelMotorUpDownActivity->Text = "CONNECTION ..";
 		StartupLogMessages->Text += "> Motor Up/Down initialization ..\n";
-		if (Gantry::motor_vertical_demo) {
+		if (Gantry::isMotorVerticalDemo()) {
 			VerticalMotor::device->demoMode();
 			labelMotorUpDownActivity->Text = "DEMO MODE";
 			labelMotorUpDownActivity->ForeColor = Color::LightGreen;
@@ -614,7 +613,7 @@ bool MainForm::Startup_MotorVertical(void) {
 }
 
 bool MainForm::Startup_Generator(void) {
-	if (Gantry::isDemo()) {
+	if (Gantry::isGeneratorDemo()) {
 		if (!Generator::isGeneratorSetupCompleted()) return false;
 		return true;
 	}

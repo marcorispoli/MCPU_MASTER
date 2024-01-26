@@ -15,17 +15,9 @@ public:
     Gantry();
     static Gantry^ gantry_handle = gcnew Gantry();
     static void initialize(void);
-    static bool pcb301_demo = false;
-    static bool pcb302_demo = false;
-    static bool pcb303_demo = false;
-    static bool pcb304_demo = false;
-    static bool pcb315_demo = false;
-    static bool pcb326_demo = false;
-    static bool motor_vertical_demo = false;
-    static bool motor_tilt_demo = false;
-    static bool motor_arm_demo = false;
-    static bool motor_body_demo = false;
-    static bool motor_slide_demo = false;
+
+    
+
    
     // Monitor coordinates
     static int monitor_X0;//!< Pointer to the Monitor X0 position
@@ -75,15 +67,43 @@ public:
     static void setStartup(void);
     static bool setOperating(void);
     static bool setService(void);
-    static inline bool isDemo(void) { return demo_status; }
     static inline ValuePopupForm^ getValuePopupWindow() { return valuePopupWindow; }
     
+    static inline bool isOperatingDemo(void) { return operating_demo_status; }
+    static inline bool isPcb301Demo(void) { return pcb301_demo; }
+    static inline bool isPcb302Demo(void) { return pcb302_demo; }
+    static inline bool isPcb303Demo(void) { return pcb303_demo; }
+    static inline bool isPcb304Demo(void) { return pcb304_demo; }
+    static inline bool isPcb315Demo(void) { return pcb315_demo; }
+    static inline bool isPcb326Demo(void) { return pcb326_demo; }
+    static inline bool isMotorTiltDemo(void) { return motor_tilt_demo; }
+    static inline bool isMotorArmDemo(void) { return motor_arm_demo; }
+    static inline bool isMotorBodyDemo(void) { return motor_body_demo; }
+    static inline bool isMotorVerticalDemo(void) { return motor_vertical_demo; }
+    static inline bool isMotorSlideDemo(void) { return motor_slide_demo; }
+    static inline bool isGeneratorDemo(void) { return generator_demo; }
+
+
 
 private:
     static operating_status_options current_operating_status = operating_status_options::GANTRY_STARTUP;
-    static System::String^ patient_name;
-    static bool demo_status = false;
     static ValuePopupForm^ valuePopupWindow;
+    static System::String^ patient_name;
+    
+    static bool operating_demo_status = false;
+    static bool pcb301_demo = false;
+    static bool pcb302_demo = false;
+    static bool pcb303_demo = false;
+    static bool pcb304_demo = false;
+    static bool pcb315_demo = false;
+    static bool pcb326_demo = false;
+    static bool motor_vertical_demo = false;
+    static bool motor_tilt_demo = false;
+    static bool motor_arm_demo = false;
+    static bool motor_body_demo = false;
+    static bool motor_slide_demo = false;
+    static bool generator_demo = false;
+
     
 };
 

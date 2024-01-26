@@ -13,11 +13,18 @@ public:
 protected:
     bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
     MotorCompletedCodes idleCallback(void) override;
-    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    
-    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
-    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
-    
+
+    MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
+    MotorCompletedCodes automaticPositioningRunningCallback(void) override;
+    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
+
+    MotorCompletedCodes manualPositioningPreparationCallback(void) override;
     MotorCompletedCodes manualPositioningRunningCallback(void) override;
+    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+
+    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
+
+    void resetCallback(void) override;
 
 private:
     static bool manual_activation_enabled = false; //!< This is the flag activating the body manual activation

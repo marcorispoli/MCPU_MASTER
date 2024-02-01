@@ -1,18 +1,12 @@
 
 #include "PCB303.h"
 #include "PCB302.h"
+#include "./DEMO/PCB302_Demo.h"
 #include "CalibrationConfig.h"
 
 #include <thread>
 
-void PCB302::runningLoop(void) {
 
-    while (!send(PCB302_GET_STATUS_SYSTEM_REGISTER));
-
-    std::this_thread::sleep_for(std::chrono::microseconds(10000));
-
-    return;
-}
 /// <summary>
 /// This function returns the index of the collimation format associated at the paddle.
 /// 
@@ -80,11 +74,12 @@ int PCB302::getPaddleCollimationFormatIndex(unsigned char paddle_code) {
 /// </summary>
 /// <param name="tag">name of the paddle</param>
 /// <returns>the paddle code or -1 if the no paddle is found</returns>
-int PCB302::getPaddleCode(System::String^ tag) {
+PCB302::paddleCodes PCB302::getPaddleCode(System::String^ tag) {
 	for (int i = 0; i < (int) paddleCodes::PADDLE_LEN; i++) {
-		if (tag == ((paddleCodes)i).ToString() ) return i;
+		if (tag == ((paddleCodes)i).ToString() ) return (paddleCodes) i;
 	}
-	return -1;
+
+	return paddleCodes::PADDLE_NOT_DETECTED;
 }
 
 
@@ -108,3 +103,42 @@ PCB302::paddleCodes PCB302::getDetectedPaddleCode(void) {
 int PCB302::getDetectedPaddleCollimationFormat(void) {
 	return getPaddleCollimationFormatIndex((int) detected_paddle);
 }; 
+
+
+void PCB302::runningLoop(void) {
+
+	while (!send(PCB302_GET_STATUS_SYSTEM_REGISTER));
+
+	std::this_thread::sleep_for(std::chrono::microseconds(10000));
+
+	return;
+}
+
+void PCB302::demoLoop(void) {
+	if (!DemoPcb302::Configuration->loadFile()) {
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
+		return;
+	}
+	std::this_thread::sleep_for(std::chrono::microseconds(100));
+
+	detected_paddle = getPaddleCode(DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_PADDLE_STAT)[0]);
+	if (detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) {
+		compression_force = 0;
+		breast_thickness = 0;
+		compression_executing = false;
+		return;
+	}
+
+	compression_force = System::Convert::ToUInt16(DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_FORCE)[0]);
+	if (!compression_force) {
+		breast_thickness = 0;
+		compression_executing = false;
+	}
+
+	breast_thickness = System::Convert::ToUInt16(DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_THICKNESS)[0]);
+	
+	if (DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_COMPRESSING)[0] == "1") compression_executing = true;
+	else compression_executing = false;
+
+	return;
+}

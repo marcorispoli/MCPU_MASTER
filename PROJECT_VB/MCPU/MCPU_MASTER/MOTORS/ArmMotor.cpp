@@ -205,7 +205,7 @@ bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int i
     int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_DEC]);
 
     // Assignes the projection
-    if (device->activateAutomaticPositioning(id, pos * 100, speed, acc, dec)) {
+    if (device->activateAutomaticPositioning(id, pos * 100, speed, acc, dec,true)) {
         projections->setProjection(proj);
 
         // Assignes the target data

@@ -1,7 +1,9 @@
 #include "SlideMotor.h"
 #include "Notify.h"
+#include "pd4_od.h"
 
-#define GEAR_RATIO (double) 352.2
+// User Units are in 0.1°
+#define GEAR_RATIO ((double) 1 / (double) 29.1) // 1 turn == 0.291° 
 
 #define MAX_ROTATION_ANGLE 900
 #define MIN_ROTATION_ANGLE 0
@@ -18,6 +20,18 @@
 /// <returns>true if the initialization termines successfully</returns>
 
 bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
+
+    // Motor Drive Parameter Set
+    while (!blocking_writeOD(OD_3210_01, 10000)); // 50000 Position Loop, Proportional Gain (closed Loop)
+    while (!blocking_writeOD(OD_3210_02, 5));	 // 10  Position Loop, Integral Gain (closed Loop)
+
+    // Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 50))); 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 50)));	// Max Position Range Limit
+
+    // Software Position Limit
+    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
+    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return false;	// Max Position Limit
 
 
     return true;

@@ -4,6 +4,7 @@
 #include "PCB301.h"
 #include "PCB302.h"
 #include "PCB304.h"
+#include "TiltMotor.h"
 #include "Notify.h"
 #include "awsProtocol.h"
 #include <thread>
@@ -60,10 +61,9 @@ bool Generator::generatorDemoIdle(void) {
             // Unlock the compressor if requested
             if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_RELEASE) PCB302::setCompressorUnlock();
 
-            
-
             // Notify the AWS about the XRAY completed event
             awsProtocol::EVENT_XraySequenceCompleted();
+            ExposureModule::enableXrayPushButtonEvent(false);
 
             // Waits for the X-RAY button release
             if (PCB301::getXrayPushButtonStat()) {
@@ -186,7 +186,61 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure_d
 
 ExposureModule::exposure_completed_errors Generator::man_ae_exposure_procedure_demo(void) { return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR; }
 ExposureModule::exposure_completed_errors Generator::aec_ae_exposure_procedure_demo(void) { return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR; }
-ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure_demo(void) { return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR; }
+
+ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure_demo(void) { 
+    ExposureModule::exposure_pulse^ exposure_pulse;
+    double kV;
+    double mAs;
+    PCB315::filterMaterialCodes filter;
+
+    Debug::WriteLine("DEMO EXPOSURE 3D MANUAL STARTED\n");
+
+    // Position the Tube in HOME
+    while(!TiltMotor::device->isReady()){ 
+        if (!PCB301::getXrayPushButtonStat()) return ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
+    }
+    if(!TiltMotor::setTarget(TiltMotor::target_options::TOMO_H, 0)) return ExposureModule::exposure_completed_errors::XRAY_POSITIONING_ERROR;
+
+    while (!TiltMotor::device->isReady()) { 
+        if (!PCB301::getXrayPushButtonStat()) return ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
+    }
+
+    // Simulation of the preparation:
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    // Starts the Tomo scan 
+    if(!TiltMotor::setTarget(TiltMotor::target_options::TOMO_E, 0)) return ExposureModule::exposure_completed_errors::XRAY_POSITIONING_ERROR;
+     
+    int deltat = 1000 / ExposureModule::getTomoExposure()->tomo_fps;
+    if (deltat > 200) deltat -= 200;
+    else deltat = 100;
+
+    for (int i = 0; i < ExposureModule::getTomoExposure()->tomo_samples; i++) {
+        
+        // Xray push button test
+        if (!PCB301::getXrayPushButtonStat())  return ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
+
+        PCB301::set_activation_buzzer(true);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        PCB301::set_activation_buzzer(false);
+        std::this_thread::sleep_for(std::chrono::milliseconds(deltat));
+    }
+
+
+    exposure_pulse = ExposureModule::getExposurePulse(0);
+    filter = exposure_pulse->getFilter();
+    kV = exposure_pulse->getKv();
+    mAs = exposure_pulse->getmAs();
+    ExposureModule::setExposedPulse(0, gcnew ExposureModule::exposure_pulse(kV, mAs, filter)); // This is the only used
+
+    // Exposure completed
+    Debug::WriteLine("DEMO EXPOSURE 3D MANUAL: COMPLETED\n");
+
+    return ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;
+}
+
 ExposureModule::exposure_completed_errors Generator::aec_3d_exposure_procedure_demo(void) { return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR; }
 ExposureModule::exposure_completed_errors Generator::man_combo_exposure_procedure_demo(void) { return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR; }
 ExposureModule::exposure_completed_errors Generator::aec_combo_exposure_procedure_demo(void) { return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR; }

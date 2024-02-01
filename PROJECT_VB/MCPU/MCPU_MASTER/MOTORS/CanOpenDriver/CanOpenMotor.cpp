@@ -420,6 +420,30 @@ bool CanOpenMotor::writeControlWord(unsigned int mask, unsigned int val) {
     return true;
 }
 
+/// <summary>
+/// This function reads the control word.
+/// 
+/// </summary>
+/// <param name="ctrlw">This is the pointer to the variable where the control word will be copied in</param>
+/// <returns>true if the register is successfully read</returns>
+bool CanOpenMotor::readControlWord(unsigned int* ctrlw) {    
+    if (!blocking_readOD(OD_6040_00)) return false;
+    *ctrlw = (unsigned int) rxSdoRegister->data;
+    return true;
+}
+
+/// <summary>
+/// This function starts the motor rotation.
+/// </summary>
+/// 
+/// The function activates the BIT-4 of the control word: 
+/// this bit starts the motor rotation for the Positioning Mode.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+bool CanOpenMotor::startRotation(void) {
+    return writeControlWord(POSITION_SETTING_START_MASK, POSITION_SETTING_START_VAL);
+}
 
 
 /// <summary>
@@ -858,13 +882,17 @@ void CanOpenMotor::demoLoop(void) {
         abort_request = false;
 
         previous_uposition = current_uposition;
-        _100ms_time = ((command_target - current_uposition ) * 10) / command_speed;
-        unit_step = (command_target - current_uposition) / abs(_100ms_time);
 
-        for (int i = 0; i < abs(_100ms_time); i++) {
-            current_uposition += unit_step;
-            current_eposition = convert_User_To_Encoder(current_uposition);
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        
+        _100ms_time = ((command_target - current_uposition ) * 10) / command_speed;
+        if (_100ms_time) {
+            unit_step = (command_target - current_uposition) / abs(_100ms_time);
+            
+            for (int i = 0; i < abs(_100ms_time); i++) {
+                current_uposition += unit_step;
+                current_eposition = convert_User_To_Encoder(current_uposition);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
         }
 
         // Loop Demo Automatic Positioning 

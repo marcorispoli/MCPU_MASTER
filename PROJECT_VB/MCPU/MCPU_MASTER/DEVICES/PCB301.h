@@ -105,10 +105,6 @@ public:
 	static unsigned char getVoltageBatt2(void) { return voltage_batt2; }
 	
 	static bool getXrayPushButtonStat(void) { return xray_push_button; }
-	static bool getXrayEventEna(void) { return xray_push_button_event_enable; }
-	static void setXrayEventEna(bool stat) { xray_push_button_event_enable = stat; }
-
- 
 
 	inline static bool get_pedal_up_stat(void) { return pedal_up_stat; }
 	inline static bool get_pedal_down_stat(void) { return pedal_down_stat; }
@@ -141,8 +137,6 @@ private:
 	
 
 	static Register^ outputs_data_register = gcnew Register(); 
-
-	static bool xray_enable_status_output = false; //!< This is the current X-RAY enable status setting	
 	static door_options door_status = door_options::OPEN_DOOR; //!< This is the current status of the Study door
 	
 	static bool power_down_status = false;			//!< Current Powerdown Status 
@@ -165,8 +159,7 @@ private:
 
 	// X-RAY push button handling
 	static bool xray_push_button = false; //!> This is the current X-RAY status 
-	static bool xray_push_button_event_enable = false; //!> This is the event genration flag
-
+	
 	static bool pedal_up_stat = false;
 	static bool pedal_down_stat = false;
 	static bool cmp_up_stat = false;
@@ -182,10 +175,13 @@ private:
 
 protected: 	
 	    void runningLoop(void) override;
+		void demoLoop(void) override;
 
 private:
 		void handleSystemStatusRegister(void);
 		void handleBatteryStatusRegister(void);
 		void toggleKeepalive(void);
+
+		void evaluateEvents(void);
 };
 

@@ -218,3 +218,80 @@ bool CanOpenMotor::uploadNanojProgram(void) {
     return true;
 
 }
+
+/// <summary>
+/// This function runs the Nano-J program on the Motor Device
+/// </summary>
+/// 
+/// If the Nanoj-Program has been uploaded into the device 
+/// this function tries to run it. 
+/// 
+/// If a program is already in execution the function tries to stop it and restart again.
+/// 
+/// In case of error in running the program the function fails.
+/// 
+/// <param name=""></param>
+/// <returns>true if the program successfully starts</returns>
+bool CanOpenMotor::startNanoj(void) {
+    
+    // Read the status to check if there is a running program
+    if (blocking_readOD(OD_2301_00)) {
+        if (rxSdoRegister->data & 0x1) {
+            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM IS ALREADY RUNNING");
+
+            blocking_writeOD(OD_2300_00, 0); // Stops the running program
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+            blocking_readOD(OD_2301_00);
+            if (rxSdoRegister->data & 0x1) {
+                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED TO STOP THE NANOJ PROGRAM!");
+                return false; // Failed to stop the program
+            }
+        }
+    }
+        
+    // Activate the program
+    if (!blocking_writeOD(OD_2300_00, 1)) return false;
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+    // Waits the activation
+    for (int i = 0; i < 10; i++) {
+        if (blocking_readOD(OD_2301_00)) {
+            if (rxSdoRegister->data & 0x1) {
+                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM STARTED");
+                return true;
+            } 
+
+            if (rxSdoRegister->data & 0x4) {
+                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM START FAILED!");
+                blocking_readOD(OD_2302_00);
+                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM ERROR CODE:" + rxSdoRegister->data.ToString());
+                return false;
+            }
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    return false;
+}
+
+/// <summary>
+/// This function stops a running Nano-J program.
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns>true if the program is successfully stopped</returns>
+bool CanOpenMotor::stopNanoj(void) {
+
+    blocking_writeOD(OD_2300_00, 0); // Stops the running program
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+    blocking_readOD(OD_2301_00);
+    if (rxSdoRegister->data & 0x1) {
+        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED TO STOP THE NANOJ PROGRAM!");
+        return false; // Failed to stop the program
+    }
+
+    return true;
+}

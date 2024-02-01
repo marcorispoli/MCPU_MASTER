@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "PCB315.h"
+#include "CalibrationConfig.h"
 
 
 using namespace System::Collections::Generic;
@@ -10,6 +11,46 @@ ref class ExposureModule
 {
 public:
 	
+    ref class tomo_data {
+    public:
+
+        tomo_data(void) {
+            valid = false;
+        }
+
+        System::String^ configName; //!< Name of the selected configuration;
+        bool valid; //!< A valid selection is present
+        int tomo_home;
+        int tomo_end;
+        int tomo_skip;
+        int tomo_samples;
+        int tomo_speed;
+        int tomo_acc;
+        int tomo_dec;
+        int tomo_fps;
+
+        void invalidate(void) { valid = false; }
+
+        bool set(System::String^ cfg) {
+            for (int i = 0; i < (int)TomoConfig::tomo_id::TOMO_ID_NUM; i++) {
+                if (cfg == ((TomoConfig::tomo_id)i).ToString()) {
+                    valid = true;
+                    tomo_home = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_HOME]);
+                    tomo_end = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_END]);
+                    tomo_skip = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_SKIP]);
+                    tomo_samples = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_SAMPLES]);
+                    tomo_speed = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_SPEED]);
+                    tomo_acc = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_ACC]);
+                    tomo_dec = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_DEC]);
+                    tomo_fps = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_FPS]);                    
+                    return true;
+                }
+            }
+            valid = false;
+            return false;
+        }
+    };
+
     ref class exposure_pulse 
     {
     public:
@@ -157,6 +198,7 @@ public:
         XRAY_STARTER_ERROR,			//!< The generator detected an Anode Starter error condition
         XRAY_GRID_ERROR,			//!< The Grid device is in error condition
         XRAY_TIMEOUT_AEC,			//!< Timeout waiting the Main Pulse data after an AEC pre pulse
+        XRAY_POSITIONING_ERROR,     //!< Error in ARM or Tilt positioning
     };
 
     
@@ -208,6 +250,24 @@ public:
     inline static exposure_completed_options getExposureCompletedCode(void) { return xray_completed_code; }
     inline static void setCompletedError(exposure_completed_errors err) { xray_exposure_error = err; }
     inline static void setCompletedCode(exposure_completed_options code) { xray_completed_code = code; }
+    inline static tomo_data^ getTomoExposure(void) { return tomo_exposure; }
+    inline static void enableXrayPushButtonEvent(bool  stat) { xray_event_ena = stat; }
+    inline static bool getXrayPushButtonEvent(void) { return xray_event_ena; }
+
+    static void reset(void) {
+        pulse = gcnew array<exposure_pulse^> {gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };
+        exposed = gcnew array<exposure_pulse^> {gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };
+        exposure_type = exposure_type_options::EXP_NOT_DEFINED;
+        arm_mode = arm_mode_option::ARM_ENA;
+        compressor_mode = compression_mode_option::CMP_KEEP;
+        protection_mode = patient_protection_option::PROTECTION_ENA;
+        xray_exposure_type = exposure_type_options::EXP_NOT_DEFINED;
+        tomo_exposure = gcnew tomo_data;
+        xray_completed = true;
+        xray_exposure_error = exposure_completed_errors::XRAY_NO_ERRORS;
+        xray_completed_code = exposure_completed_options::XRAY_NO_DOSE;
+        xray_event_ena = false;
+    }
 
 private:
 
@@ -219,9 +279,9 @@ private:
     static compression_mode_option compressor_mode = compression_mode_option::CMP_KEEP;
     static patient_protection_option protection_mode = patient_protection_option::PROTECTION_ENA;
     static detector_model_option detector_model = detector_model_option::LMAM2V2;
-    static exposure_type_options xray_exposure_type;
-
-
+    static exposure_type_options xray_exposure_type = exposure_type_options::EXP_NOT_DEFINED;
+    static tomo_data^ tomo_exposure = gcnew tomo_data;
+    static bool xray_event_ena = false;
 
     // X-Ray completed section    
     static bool xray_completed = true;

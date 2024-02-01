@@ -234,6 +234,8 @@ public:
 		instantWindow->close();
 	}
 
+	inline static bool isInstantOpen(void) { return instantWindow->open_status; }
+	inline static bool isErrorOpen(void) { return errorWindow->open_status; }
 
 private:
 	static List<item^>^ message_list;

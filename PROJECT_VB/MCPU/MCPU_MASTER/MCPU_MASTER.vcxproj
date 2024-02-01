@@ -140,6 +140,8 @@
     <ClInclude Include="CONFIGURATION\CalibrationConfig.h" />
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
     <ClInclude Include="CONFIGURATION\SystemConfig.h" />
+    <ClInclude Include="DEVICES\DEMO\PCB301_Demo.h" />
+    <ClInclude Include="DEVICES\DEMO\PCB302_Demo.h" />
     <ClInclude Include="DEVICES\PCB326.h" />
     <ClInclude Include="GENERATOR\ExposureModule.h" />
     <ClInclude Include="MOTORS\ArmMotor.h" />

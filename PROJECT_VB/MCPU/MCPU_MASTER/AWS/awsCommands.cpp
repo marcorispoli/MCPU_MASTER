@@ -5,6 +5,7 @@
 #include "VerticalMotor.h"
 #include "TiltMotor.h"
 #include "BodyMotor.h"
+#include "SlideMotor.h"
 #include "PCB301.h"
 #include "PCB302.h"
 #include "PCB303.h"
@@ -291,13 +292,11 @@ void awsProtocol::EXEC_TrxPosition(void) {
 void awsProtocol::SET_TomoConfig(void) {
     Debug::WriteLine("SET_TomoConfig COMMAND MANAGEMENT");
 
-    if (pDecodedFrame->parameters->Count != 2) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
-    // Parameter 0: Tomo config file id;
-    // Parameter 1: Sequence id;
-    //if (!TomoConfigRegister::select(pDecodedFrame->parameters[0], pDecodedFrame->parameters[1])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_CONFID_SEQID"; ackNok(); return; }
-
+    // Parameter 0: Tomo configiguration selection;
+    if(!ExposureModule::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
     ackOk();
 
     return;
@@ -355,8 +354,8 @@ void   awsProtocol::SET_ExposureMode(void) {
         // The AWS sets a format related to a given Paddle 
         
         // Gets the code of the paddle to be used as collimation format
-        int paddle = PCB302::getPaddleCode(pDecodedFrame->parameters[3]);
-        if (paddle == -1){  
+        PCB302::paddleCodes paddle = PCB302::getPaddleCode(pDecodedFrame->parameters[3]);
+        if (paddle == PCB302::paddleCodes::PADDLE_NOT_DETECTED){
             // The Paddle is not a valid paddle
             pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE;
             pDecodedFrame->errstr = "INVALID_PADDLE"; 
@@ -365,7 +364,7 @@ void   awsProtocol::SET_ExposureMode(void) {
         }
 
         // Gets the collimation format associated to the paddle code
-        PCB303::ColliStandardSelections format = (PCB303::ColliStandardSelections) PCB302::getPaddleCollimationFormatIndex(paddle);
+        PCB303::ColliStandardSelections format = (PCB303::ColliStandardSelections) PCB302::getPaddleCollimationFormatIndex((int) paddle);
         if (format == PCB303::ColliStandardSelections::COLLI_INVALID_FORMAT) {
             // The paddle is not associated to a valid format
             pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE;
@@ -432,8 +431,8 @@ void   awsProtocol::SET_EnableXrayPush(void) {
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     
-    if (pDecodedFrame->parameters[0] == "ON") PCB301::setXrayEventEna(true);
-    else PCB301::setXrayEventEna(false);
+    if (pDecodedFrame->parameters[0] == "ON") ExposureModule::enableXrayPushButtonEvent(true);
+    else  ExposureModule::enableXrayPushButtonEvent(false);
 
     ackOk();
 
@@ -568,7 +567,7 @@ void   awsProtocol::GET_Trx(void) {
     // Create the list of the results
     List<String^>^ lista = gcnew List<String^>;
 
-    lista->Add(TiltMotor::getTargetName(TiltMotor::getTargetPosition()));
+    lista->Add(TiltMotor::getTargetPosition().ToString());
     lista->Add(TiltMotor::device->getCurrentPosition().ToString());
 
 
@@ -636,106 +635,30 @@ void   awsProtocol::SET_Language(void) {
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
     
-    // Arm test
-    if (pDecodedFrame->parameters->Count == 4) {
-        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
-        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
-        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
-        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
-        ArmMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec);
-    }
-    return;
 
-    // Body test
-    if (pDecodedFrame->parameters->Count == 1) {
-        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
-        BodyMotor::device->activateAutomaticPositioning(1, pos, 100, 20, 20);
-    }
-    return;
-
-    // Vertical test
-    if (pDecodedFrame->parameters->Count == 1) {
-        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[0]);
-        VerticalMotor::activateIsocentricCorrection(10, pos);
-    }
-
-    return;
-    // Body Homing
-    VerticalMotor::startHoming();
-    return;
-
-  
-
-    // Filter test
-    Debug::WriteLine("EXEC_TestCommand:FILTER");
-    if (pDecodedFrame->parameters->Count == 1) {
-        if (pDecodedFrame->parameters[0] == "AG") {
-            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_AG);
+    if (pDecodedFrame->parameters->Count == 5) {
+        if (pDecodedFrame->parameters[0] == "TILT") {
+            Debug::WriteLine("TEST ON TILT MOTOR");
+            int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+            int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+            int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+            int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+            TiltMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec,true);
+        }else if (pDecodedFrame->parameters[0] == "TOMO") {
+            Debug::WriteLine("TEST ON TOMO TILT MOTOR");
+            int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+            int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+            int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+            int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+            TiltMotor::activateTomoScan(pos, speed, acc, dec);
         }
-        else if (pDecodedFrame->parameters[0] == "AL") {
-            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_AL);
-        }
-        else if (pDecodedFrame->parameters[0] == "CU") {
-            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_CU);
-        }
-        else if (pDecodedFrame->parameters[0] == "RH") {
-            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_RH);
-        }
-        else if (pDecodedFrame->parameters[0] == "MO") {
-            PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_MO);
-        }
-        else if (pDecodedFrame->parameters[0] == "MIRROR") {
-            PCB315::setMirrorMode(true);
-        }
-
-
-    }
-    return;
-
-    // Collimator test
-    Debug::WriteLine("EXEC_TestCommand: COLLIMATION");
-    if (pDecodedFrame->parameters->Count == 1) {
-        if (pDecodedFrame->parameters[0] == "OPEN") {
-            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            PCB303::setOpenCollimationMode();
-            ackOk();
-            return;
-        }else if(pDecodedFrame->parameters[0] == "AUTO") {
-            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            PCB303::setAutoCollimationMode();
-            ackOk();
-            return;
-        }else if (pDecodedFrame->parameters[0] == "STANDARD1") {
-            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD1);            
-            ackOk();
-            return;
-        }else if (pDecodedFrame->parameters[0] == "STANDARD2") {
-            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD2);
-            ackOk();
-            return;
-        }else if (pDecodedFrame->parameters[0] == "STANDARD3") {
-            Debug::WriteLine("COLLI OPEN COMMAND MANAGEMENT");
-            PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD3);
-            ackOk();
-            return;
-        }
-
-        
-        
-    }
-    else
-    {
-        if (pDecodedFrame->parameters[0] == "CALIB") {
-            unsigned short front = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
-            unsigned short back = System::Convert::ToUInt16(pDecodedFrame->parameters[2]);
-            unsigned short left = System::Convert::ToUInt16(pDecodedFrame->parameters[3]);
-            unsigned short right = System::Convert::ToUInt16(pDecodedFrame->parameters[4]);            
-            unsigned short trap = System::Convert::ToUInt16(pDecodedFrame->parameters[5]);
-            PCB303::setCalibrationCollimationMode(gcnew PCB303::formatBlades(front, back, left, right, trap));
-            ackOk();
-            return;
+        else {
+            Debug::WriteLine("TEST ON BODY MOTOR");
+            int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+            int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+            int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+            int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+            SlideMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec,true);
         }
     }
 

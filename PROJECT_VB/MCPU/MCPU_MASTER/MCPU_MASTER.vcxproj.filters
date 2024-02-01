@@ -197,6 +197,12 @@
     <ClInclude Include="WINDOWS\ValuePopup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DEVICES\DEMO\PCB301_Demo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DEVICES\DEMO\PCB302_Demo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">

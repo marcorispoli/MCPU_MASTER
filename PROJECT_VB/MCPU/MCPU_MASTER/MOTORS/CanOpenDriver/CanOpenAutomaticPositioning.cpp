@@ -44,8 +44,9 @@
 /// <param name="speed">This is the speed in the Application units</param>
 /// <param name="acc">This is the Acceleration rate in Application units</param>
 /// <param name="dec">This is the Deceleration rate in Application units</param>
+/// <param name="autostart">set to true to automatically start the activation (bit4 of control word) </param>
 /// <returns>true if the command can be executed</returns>
-bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec) {
+bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool autostart) {
 
     // If the driver is in demo executes the demo activation
     if (!demo_mode) {
@@ -69,6 +70,8 @@ bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, i
     command_dec = dec;
     command_speed = speed;
     request_command = MotorCommands::MOTOR_AUTO_POSITIONING;
+    autostart_mode = autostart;
+
     return true;
 }
 
@@ -76,7 +79,7 @@ bool  CanOpenMotor::activateRelativePositioning(int id, int delta_target, int sp
     
     // Set the taret position
     int target = getCurrentPosition() + delta_target;
-    return activateAutomaticPositioning(id, target, speed, acc, dec);
+    return activateAutomaticPositioning(id, target, speed, acc, dec, true);
 }
 
 
@@ -166,6 +169,8 @@ void CanOpenMotor::automaticPositioningCompletedCallback(MotorCompletedCodes com
 void CanOpenMotor::manageAutomaticPositioning(void) {
     MotorCompletedCodes termination_code;
     bool error_condition;
+    bool motor_started = false;
+    unsigned int ctrlw;
 
     // Get the actual encoder position 
     updateCurrentPosition();
@@ -240,35 +245,51 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         return;
     }
 
-    // Set the start bit (BIT4) in the control word register
-    if (!writeControlWord(POSITION_SETTING_START_MASK, POSITION_SETTING_START_VAL)) {
-        brakeCallback();
-        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
-        return;
+    // Set the start bit (BIT4) in the control word register for autostart mode
+    if (autostart_mode) {
+        if(!startRotation()){
+            brakeCallback();
+            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
+            return;
+        }
     }
-
-    // Measuring the actuation time
-    typedef std::chrono::high_resolution_clock clock;
-    clock::time_point start = clock::now();
-
     
     // Every 1000 ms checks the distance from the target
     command_ms_tmo = 5000;
     bool timeout = false;
     int delta_target = abs(current_uposition - command_target);
+    
+    // Measuring the actuation time
+    typedef std::chrono::high_resolution_clock clock;
+    clock::time_point start ;
 
     while (true) {
-        
         // Read the current position 
         updateCurrentPosition();
 
-        if (command_ms_tmo <= 0) {
-            if (abs(current_uposition - command_target) >= delta_target) timeout = true;
-            else {
-                delta_target = abs(current_uposition - command_target);
-                command_ms_tmo = 5000;
+        if (!motor_started) {
+            command_ms_tmo = 5000;
+            delta_target = abs(current_uposition - command_target);
+            timeout = false;
+
+            if (readControlWord(&ctrlw)) {
+                if (ctrlw & 0x0010) {
+                    motor_started = true;
+                    start = clock::now();      
+                    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ROTATION STARTED!");
+                }
+           }
+        }
+        else {
+            if (command_ms_tmo <= 0) {
+                if (abs(current_uposition - command_target) >= delta_target) timeout = true;
+                else {
+                    delta_target = abs(current_uposition - command_target);
+                    command_ms_tmo = 5000;
+                }
             }
         }
+
 
         // Test the abort request flag
         if (abort_request) {

@@ -497,6 +497,7 @@ bool Generator::generatorIdle(void) {
             
             // Notify the AWS about the XRAY completed event
             awsProtocol::EVENT_XraySequenceCompleted();
+            ExposureModule::enableXrayPushButtonEvent(false);
 
             // Waits for the X-RAY button release
             if (PCB301::getXrayPushButtonStat()) {

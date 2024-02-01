@@ -45,7 +45,7 @@ public:
 	void initOperatingStatus(void);
 	void operatingStatusManagement(void);
 	void evaluateXrayStatus(void);
-	void evaluateErrorStatus(void);
+	void evaluateReadyWarnings(bool reset);
 	void evaluateCompressorStatus(void);
 	void evaluateCompressorReleaseStatus(void);
 	void evaluateCollimatorStatus(void);

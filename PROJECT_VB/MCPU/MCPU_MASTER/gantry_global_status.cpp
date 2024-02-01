@@ -9,7 +9,7 @@
 #include "PCB301.h"
 #include "PCB302.h"
 #include "CanOpenMotor.h"
-
+#include "Exposuremodule.h"
 
 using namespace System;
 using namespace System::Diagnostics;
@@ -72,10 +72,20 @@ void Gantry::initialize(void) {
         generator_demo = true;
     }
 
+    operating_demo_status = true;
+    pcb301_demo = true;
     pcb302_demo = true;
-    motor_tilt_demo = true;
-    motor_slide_demo = true;
+    pcb303_demo = true;
+    pcb304_demo = true;
+    pcb315_demo = true;
+    pcb326_demo = true;
     motor_arm_demo = true;
+    motor_tilt_demo = false;
+    motor_slide_demo = true;
+    motor_body_demo = true;
+    motor_vertical_demo = true;
+    generator_demo = true;
+
 
     // Set the current language for messages and GUI
     Notify::setLanguage("ENG");
@@ -130,12 +140,11 @@ bool Gantry::setOpenStudy(System::String^ patient) {
 
 bool Gantry::setCloseStudy(void) {    
     patient_name = "";
+    ExposureModule::reset();// Reset all the modalities
+    ((OperatingForm^)pOperatingForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
+
     return setIdle();
 }
-
-
-
-
 
 
 bool Gantry::getObstacleRotationStatus(int addr) { 

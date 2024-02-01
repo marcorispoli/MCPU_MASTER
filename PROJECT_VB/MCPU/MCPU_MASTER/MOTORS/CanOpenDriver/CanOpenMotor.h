@@ -449,10 +449,10 @@ namespace CANOPEN {
 	    event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
 		bool  activateRelativePositioning(int id, int target, int speed, int acc, int dec); 	//!< This function starts an automatic relative positioning		
-		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
+		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool autostart);	//!< This function starts an automatic positioning		
 		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
-		bool activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
-		void abortActivation(void); //!< Immediate abort of any activation running
+		bool  activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
+		void  abortActivation(void); //!< Immediate abort of any activation running
 
 		/// <summary>
 		/// This enumeration class descibes the internal status condition
@@ -519,7 +519,8 @@ namespace CANOPEN {
 			ERROR_COMMAND_DISABLED,//!< The command has been aborted because the activation is not enabled
 			ERROR_COMMAND_ABORTED,//!< The command has been aborted due to an Abort activation request
 			ERROR_COMMAND_DEMO,//!< The command cannot be executed in demo
-			ERROR_SAFETY //!< The command has been aborted due to safety conditions
+			ERROR_SAFETY, //!< The command has been aborted due to safety conditions
+			ERROR_STARTING_NANOJ //!< The Nano-J command failed to start
 		};		
 		
 		/// <summary>
@@ -739,6 +740,12 @@ protected:
 		void write_resetNode(void);
 		bool blocking_readOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim);
 		bool writeControlWord(unsigned int mask, unsigned int val);
+		bool readControlWord(unsigned int* ctrlw);
+		bool startRotation(void);
+		bool startNanoj(void);
+		bool stopNanoj(void);
+			
+
 		static System::String^ getErrorClass1001(unsigned int val);
 		static System::String^ getErrorClass1003(unsigned int val);
 		static System::String^ getErrorCode1003(unsigned int val);
@@ -891,7 +898,9 @@ private:
 		bool command_stop;			//!< Request to stop the current activation
 		int command_homing_on_method;  //!< Homing method whith zero photocell starting in ON status
 		int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
-
+		
+		bool autostart_mode; //!< Set to tru if the activation ommand is automatically started
+		
 		// Diagnostic
 		double txrx_time;
 		bool read_sdo_tmo;

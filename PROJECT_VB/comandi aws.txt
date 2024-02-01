@@ -24,7 +24,33 @@
 <10%SET_EnableXrayPush ON%>
 <10% EXEC_StartXraySequence %>
 -----------------------------------------------------------------------
+---------------------MANUAL 3D WORKFLOW----------------------------------------
+<10%EXEC_OpenStudy "pippo caio sempronio"%>
+<10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
+<10%EXEC_ArmPosition LCC 0 -10 10%>
 
+<10% SET_TomoConfig TOMO1F_WIDE%>
+<10%SET_ExposureMode MAN_3D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_DIS ARM_ENA%>
+
+<10%SET_ExposureData 0 30 100 Rh %>
+	
+<10%SET_EnableXrayPush ON%>
+<10% EXEC_StartXraySequence %>
+
+<10%EXEC_CloseStudy %>
+-----------------------------------------------------------------------
+
+<10% SET_TomoConfig TOMO1F_WIDE%>
+<10% SET_TomoConfig TOMO1F_INTERMEDIATE%>
+<10% SET_TomoConfig TOMO3F_WIDE%>
+<10% SET_TomoConfig TOMO4F_WIDE%>
+<10% SET_TomoConfig TOMO5F_WIDE%>
+
+<10% EXEC_TrxPosition TOMO_H%>
+<10% EXEC_TrxPosition BP_L%>
+<10% EXEC_TrxPosition BP_R%>
+<10% EXEC_TrxPosition SCOUT%>
+<10% GET_Trx %>
 
 
 <10%SET_EnableXrayPush OFF%>

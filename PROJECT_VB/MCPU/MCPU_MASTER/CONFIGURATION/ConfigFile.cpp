@@ -103,25 +103,33 @@ bool ConfigFile::loadFile(void){
         for (int j = 0; j < data[i]->defaults->Length; j++) data[i]->values[j] = (System::String^)data[i]->defaults[j];
     }
 
-    StreamReader^ din = File::OpenText(filename);
+    // Prevent to faith against a runtime attempt
+    StreamReader^ din;
+    try {
+        din = File::OpenText(filename);
 
-    System::String^ str;
-    int count = 0;
-    while ((str = din->ReadLine()) != nullptr)
-    {
-        count++;
-        decodeLine(str);
+        System::String^ str;
+        int count = 0;
+        while ((str = din->ReadLine()) != nullptr)
+        {
+            count++;
+            decodeLine(str);
 
-        if (loaded_revision != revision) {
-            warning = true;
-            warning_string += "configuration file revision changed.\n";
-            din->Close();
-            return revisionChangeCallback();
+            if (loaded_revision != revision) {
+                warning = true;
+                warning_string += "configuration file revision changed.\n";
+                din->Close();
+                return revisionChangeCallback();
+            }
+
         }
-        
+
+        din->Close();
+    }
+    catch (...) {
+        return false;
     }
 
-    din->Close();
     return true;
 }
 

@@ -40,13 +40,43 @@ public:
 	PADDLE_LEN,
 	PADDLE_NOT_DETECTED = PADDLE_LEN
 	};
+	static const cli::array<System::String^>^ paddle_names = gcnew cli::array<System::String^> { 
+		"PROSTHESIS", 
+		"BIOP2D", 
+		"BIOP3D", 
+		"TOMO",
+		"24x30",
+		"18x24C",
+		"18x24L",
+		"18x24R",
+		"10x24 CNT",
+		"9x21 MAG",
+		"9x9 MAG",
+		"D75 MAG",
+	};
+	static System::String^ getPaddleName(paddleCodes paddle) {
+		if (paddle == paddleCodes::PADDLE_NOT_DETECTED) return "";
+		for (int i = 0; i < (int)paddleCodes::PADDLE_LEN; i++) {
+			if ((int)paddle == i) return paddle_names[i];
+		}
+		return "";
+	}
 
 	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
 	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
 	static inline bool isCompressing(void) { return compression_executing; }
+	static void setCompressorUnlock(void) {}; //!< This function unlocks the compression
 
+public:
+	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
+	static paddleCodes getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name	
+	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
+	static int getDetectedPaddleCollimationFormat(void); //!< This function returns he collimation format index associated to the detected paddle
 	
-protected: 	virtual void runningLoop(void) override;
+
+protected: 	
+	void runningLoop(void) override;
+	void demoLoop(void) override;
 
 private: 
 	static paddleCodes detected_paddle;				//!< This is the current detected paddle
@@ -54,16 +84,11 @@ private:
 	static unsigned short compression_force = 0;	//!< Compression force in N
 	static bool compression_executing = false;		//!< A compression is executing
 
-public:
-	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
-	static int getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name	
-	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
-	static int getDetectedPaddleCollimationFormat(void); //!< This function returns he collimation format index associated to the detected paddle
 
 //_________________________________________________________________________// 
 // To be implemented
 	
-	static void setCompressorUnlock(void) {}; //!< This function unlocks the compression
+	
 	
 };
 

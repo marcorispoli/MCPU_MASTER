@@ -97,6 +97,8 @@ public:
 	/// </summary>
 	/// <param name="code"></param>
 	static inline bool isConnected(void) {
+		if (!device->command_server) return false;
+		if (!device->event_server) return false;
 		return (device->command_server->isConnected() && device->event_server->isConnected());
 	}
 

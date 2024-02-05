@@ -16,7 +16,7 @@
 #include "../DEVICES/PCB301.h"
 #include "../DEVICES/PCB304.h"
 #include "../DEVICES/PCB326.h"
-
+#include "awsProtocol.h"
 
 
 #define PROJ_NOT_SELECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\NoProjectionSelected.PNG")
@@ -39,9 +39,9 @@
 #define ERROR_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOn.PNG")
 #define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOff.PNG")
 
-#define COMPRESSOR_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CompressionNotEnabled.PNG")
-#define COMPRESSOR_ENABLE_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ActivePaddleDetected.PNG")
-#define COMPRESSOR_NOT_DETECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\PaddleNotPresent.PNG")
+#define PADDLE_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CompressionNotEnabled.PNG")
+#define PADDLE_ENABLE_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ActivePaddleDetected.PNG")
+#define PADDLE_NOT_DETECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\PaddleNotPresent.PNG")
 
 #define THICKNESS_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ThicknessDisabled.PNG")
 #define THICKNESS_ENABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ThicknessEnabled.PNG")
@@ -80,13 +80,6 @@
 
 namespace OPERSTATUS {
 
-	typedef enum {		
-		XRAY_STATUS_NOT_READY = 1,
-		XRAY_STATUS_READY
-	}xray_status_t;
-
-
-
 	typedef enum {
 		SLIDE_0 = 0,
 		SLIDE_10 = 10
@@ -114,16 +107,14 @@ namespace OPERSTATUS {
 	static struct {
 		
 		collimatorStatus collimator;
-		xray_status_t xray_status;
-
+		
 		PCB301::door_options door_status;		
 		unsigned char currentPanel;
 		bool alarm;
 		bool warning;
 		bool info;
 
-		unsigned char mag_factor;
-		bool compressor_release;
+		unsigned char mag_factor;		
 		bool projectionSelected;
 		slide_t slide_status;
 
@@ -201,15 +192,13 @@ void OperatingForm::formInitialization(void) {
 	OPERSTATUS::Registers.projectionSelected = false;
 	
 	
-	// Sets the Xray status
-	OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;	
-	xrayStat->BackColor = this->BackColor;
-	xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
-	
+	// Sets the Xray status	
+	xrayStat->BackColor = this->BackColor;	
 	labelXrayStatus->BackColor = Color::Transparent;
 	labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
 	
 
+	// Demo icon
 	demoIcon->BackColor = Color::Transparent;
 	demoIcon->BackgroundImage = DEMO_IMAGE;
 	
@@ -241,8 +230,7 @@ void OperatingForm::formInitialization(void) {
 	OPERSTATUS::Registers.mag_factor = 10;
 	magnifierStatus->BackgroundImage = MAGFACTOR_IMAGE;
 
-	// Decompression status
-	OPERSTATUS::Registers.compressor_release = false;
+	// Decompression status	
 	decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 
 	// Slide status
@@ -297,11 +285,12 @@ void OperatingForm::initOperatingStatus(void) {
 }
 
 void OperatingForm::open(void) {
-	SendNotifyMessageA(window, WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
+	//SendNotifyMessageA(window, WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
+	SendMessageA(window, WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
 }
 
 void OperatingForm::close(void) {
-	SendNotifyMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE
+	SendMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE
 	
 }
 
@@ -344,21 +333,27 @@ void OperatingForm::evaluateProjectionStatus(void) {
 }
 
 void OperatingForm::evaluateXrayStatus(void) {
+	static int ready_stat = 255;
+	int stat;
 
-	if (Notify::isError() || Notify::isWarning()) {
-		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_NOT_READY){
-			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;
-			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
-			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
-		}
-	}
-	else {
-		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_READY){
-			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_READY;
-			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
+	if (Notify::isError()) stat = 1;
+	else if (Notify::isWarning()) stat = 2;
+	else stat = 0;
+
+	if (ready_stat != stat) {
+		ready_stat = stat;
+
+		if (stat == 0) {
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
+			awsProtocol::EVENT_ReadyForExposure(true, (unsigned short)0);
+		}
+		else {
+			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+			if (stat == 1) awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);
+			else  awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
 		}
 	}
+
 
 	// Evaluate the Xray icon display activation during Exposure
 	static bool xray_running = true;
@@ -431,134 +426,162 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 
 	
 }
-void OperatingForm::evaluateCompressorStatus(void) {
-	static bool paddle_detected = false;
-	static bool force_detected = false;
-	static bool thick_detected = false;
-	static bool init = true;
-	
-	if (init) {
-		init = false;
-		paddle_detected = false;
-		force_detected = false;
-		thick_detected = false;
 
-		paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
-		thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
-		forceStatus->BackgroundImage = FORCE_DISABLED_NOT_COMPRESSED_IMAGE;
-		labelPaddle->Hide();
-		labelThickness->Hide();
-		labelForce->Hide();
-		return;
+#define PADDLE_DISABLED 1
+#define PADDLE_NOT_DETECT 2
+#define PADDLE_DETECTED 3
+
+#define THICKNESS_DISABLED 1
+#define THICKNESS_ENABLED 2
+
+#define FORCE_DISABLED_NOT_COMPRESSED 1
+#define FORCE_DISABLED_COMPRESSED 2
+#define FORCE_ENABLED_NOT_COMPRESSED 3
+#define FORCE_ENABLED_COMPRESSED 4
+
+void OperatingForm::evaluateCompressorStatus(void) {
+	
+	static int paddle_status = 255;
+	static int thick_status = 255;
+	static int force_status = 255;
+	int cur_paddle;
+	int cur_thick;
+	int cur_force;
+	PCB302::paddleCodes paddle;
+	int force, thick;
+
+	// used to send the EVENT_Compressor() to AWS
+	static int event_force = 0;
+	static int event_thickness = 0;
+	static int event_compressor_timer = 0;
+	
+	force = PCB302::getForce();
+	thick = PCB302::getThickness();
+	paddle = PCB302::getDetectedPaddleCode();
+	
+	// Evaluates if the force or the thickness is changed:
+	// the evaluation is performed every 1 seconds about.	
+	if (!event_compressor_timer) {
+		event_compressor_timer = 10;
+		bool event_compressor = false;
+
+		if (abs(force - event_force) > 5) {
+			event_force = force;
+			event_compressor = true;
+		}
+		if (abs(thick - event_thickness) > 2) {
+			event_thickness = thick;
+			event_compressor = true;
+		}
+
+		// Signals to AWS the change event
+		if (event_compressor) awsProtocol::EVENT_Compressor();
 	}
-	
-	
-	if (PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)
-	{
-		if (paddle_detected) {
-			paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
-			thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
-			forceStatus->BackgroundImage = FORCE_DISABLED_NOT_COMPRESSED_IMAGE;
+	else event_compressor_timer--;
+
+	if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_DISABLE) {
+		cur_paddle = PADDLE_DISABLED;
+		cur_thick = THICKNESS_DISABLED;
+
+		labelPaddle->Hide();
+
+		if (force) {
+			labelForce->Show();
+			labelForce->Text = force.ToString() + " N";
+			cur_force = FORCE_DISABLED_COMPRESSED;
+		}
+		else {
+			labelForce->Hide();
+			cur_force = FORCE_DISABLED_NOT_COMPRESSED;
+		}
+
+		if (thick) {
+			labelThickness->Text = thick.ToString() + " mm";
+			labelThickness->Show();
+		}
+		else {
+			labelThickness->Hide();
+		}
+	}
+	else {
+		if (paddle == PCB302::paddleCodes::PADDLE_NOT_DETECTED) {
+			cur_paddle = PADDLE_NOT_DETECT;
+			cur_thick = THICKNESS_DISABLED;
+			cur_force = FORCE_DISABLED_NOT_COMPRESSED;
+
 			labelPaddle->Hide();
 			labelThickness->Hide();
 			labelForce->Hide();
-			paddle_detected = false;
-		}
-		
-		return;
-	}
-
-	int thick = PCB302::getThickness();
-	int force = PCB302::getForce();
-
-
-	if (!paddle_detected) {
-		paddle_detected = true;
-		paddleStatus->BackgroundImage = COMPRESSOR_ENABLE_IMAGE;
-		labelPaddle->Show();
-		
-
-		if (force) force_detected = true;
-		else force_detected = false;
-
-		if (thick) thick_detected = true;
-		else thick_detected = false;
-
-		if (force_detected) {
-			forceStatus->BackgroundImage = FORCE_ENABLED_COMPRESSED_IMAGE;
-			labelForce->Show();
-			labelForce->Text = force.ToString() + " N";
 		}
 		else {
-			forceStatus->BackgroundImage = FORCE_ENABLED_NOT_COMPRESSED_IMAGE;
-			labelForce->Hide();
-		}
-		
-		thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
+			cur_paddle = PADDLE_DETECTED;
+			cur_thick = THICKNESS_ENABLED;
+			if (force) cur_force = FORCE_ENABLED_COMPRESSED;
+			else cur_force = FORCE_ENABLED_NOT_COMPRESSED;
 
-		if (thick_detected) {			
-			labelThickness->Show();
-			labelThickness->Text = thick.ToString() + " mm";
-		}
-		else {
-			labelThickness->Hide();
-		}
-		return;
-	}
+			labelPaddle->Show();
+			labelPaddle->Text = PCB302::getPaddleName(paddle);
 
-	labelPaddle->Text = PCB302::getPaddleName(PCB302::getDetectedPaddleCode());
+			if (force) {
+				labelForce->Show();
+				labelForce->Text = force.ToString() + " N";
+				cur_force = FORCE_ENABLED_COMPRESSED;
+			}
+			else {
+				labelForce->Hide();
+				cur_force = FORCE_ENABLED_NOT_COMPRESSED;
+			}
 
-	if (force) {
-		if (!force_detected) {
-			force_detected = true;
-			forceStatus->BackgroundImage = FORCE_ENABLED_COMPRESSED_IMAGE;
-			labelForce->Show();
-
-		}
-		labelForce->Text = force.ToString() + " N";
-	}
-	else {
-		if (force_detected) {
-			force_detected = false;
-			forceStatus->BackgroundImage = FORCE_ENABLED_NOT_COMPRESSED_IMAGE;
-			labelForce->Hide();
+			if (thick) {
+				labelThickness->Text = thick.ToString() + " mm";
+				labelThickness->Show();
+			}
+			else {
+				labelThickness->Hide();
+			}
 		}
 	}
 
-	if (thick) {
-		labelThickness->Show();
-		labelThickness->Text = thick.ToString() + " mm";
+	if (cur_paddle != paddle_status) {
+		paddle_status = cur_paddle;
+		if (paddle_status == PADDLE_DISABLED) paddleStatus->BackgroundImage = PADDLE_DISABLED_IMAGE;
+		else if (paddle_status == PADDLE_NOT_DETECT) paddleStatus->BackgroundImage = PADDLE_NOT_DETECTED_IMAGE;
+		else paddleStatus->BackgroundImage = PADDLE_ENABLE_IMAGE;
 	}
-	else {
-		labelThickness->Hide();
+
+	if (cur_force != force_status) {
+		force_status = cur_force;
+		if (force_status == FORCE_DISABLED_NOT_COMPRESSED) forceStatus->BackgroundImage = FORCE_DISABLED_NOT_COMPRESSED_IMAGE;
+		else if (force_status == FORCE_DISABLED_COMPRESSED) forceStatus->BackgroundImage = FORCE_DISABLED_COMPRESSED_IMAGE;
+		else if (force_status == FORCE_ENABLED_NOT_COMPRESSED) forceStatus->BackgroundImage = FORCE_ENABLED_NOT_COMPRESSED_IMAGE;
+		else  forceStatus->BackgroundImage = FORCE_ENABLED_COMPRESSED_IMAGE;
 	}
+
+	if (cur_thick != thick_status) {
+		thick_status = cur_thick;
+		if (thick_status == THICKNESS_DISABLED) thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
+		else thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
+	}
+
 	
-
 
 }
 
 void OperatingForm::evaluateCompressorReleaseStatus(void) {
-
+	static  ExposureModule::compression_mode_option cmpmode = ExposureModule::compression_mode_option::CMP_DISABLE;
+	static bool init = true;
+	if (init) {
+		init = false;
+		decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
+		return;
+	}
 	
-	if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_DISABLE) {
-		
-		if (OPERSTATUS::Registers.compressor_release) {
-			OPERSTATUS::Registers.compressor_release = false;
-			decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
-		}
+	if (cmpmode == ExposureModule::getCompressorMode()) return;
+	cmpmode = ExposureModule::getCompressorMode();
 
-		
-	}
-	else {
-
-		if (!OPERSTATUS::Registers.compressor_release) {
-			OPERSTATUS::Registers.compressor_release = true;
-			decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
-		}
-
-	}
-
-
+	if (cmpmode == ExposureModule::compression_mode_option::CMP_RELEASE) decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
+	else decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
+	
 }
 void OperatingForm::evaluateCollimatorStatus(void) {
 	
@@ -619,8 +642,7 @@ void OperatingForm::operatingStatusManagement(void) {
 	date = System::DateTime::Now;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-	evaluateXrayStatus();
-	evaluateReadyWarnings(false);
+	
 	evaluateCompressorStatus();
 	evaluateCompressorReleaseStatus();
 	evaluateCollimatorStatus();
@@ -628,8 +650,13 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateDoorStatus();
 	evaluateSlideStatus();
 	evaluateProjectionStatus();
+
+	// This shall be posed at the end of the management
+	evaluateReadyWarnings(false);
+	evaluateXrayStatus(); 
+
 	evaluatePopupPanels();
-	
+
 }
 
 void OperatingForm::WndProc(System::Windows::Forms::Message% m)

@@ -2,6 +2,7 @@
 /* -------- ERRORS ---------------------------*/
 
 
+"E00001", Notify::messages::ERROR_AWS_INITIALIZATION, "AWS Communication", "Fatal error in opening the socket. Check the network parameters.",
 "E00001", Notify::messages::ERROR_PCB301_RESET, "PCB301 Communication", "The Board has been reset",
 "E00002", Notify::messages::ERROR_PCB302_RESET, "PCB302 Communication", "The Board has been reset",
 "E00003", Notify::messages::ERROR_PCB303_RESET, "PCB303 Communication", "The Board has been reset",

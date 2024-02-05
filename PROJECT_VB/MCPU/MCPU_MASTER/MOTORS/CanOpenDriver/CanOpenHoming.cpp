@@ -3,7 +3,7 @@
 #include "CanOpenMotor.h"
 #include "pd4_od.h"
 #include <thread>
-
+#include "Log.h"
 
 
 
@@ -57,7 +57,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
 
 
     if (error_condition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO HOMING PREPARATION");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO HOMING PREPARATION");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
@@ -80,7 +80,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     }
 
     if (error_condition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO HOMING OPERATION ENABLE SETTING");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO HOMING OPERATION ENABLE SETTING");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
@@ -115,7 +115,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     clock::time_point start = clock::now();
 
     command_ms_tmo = 60000; // Sets the timout to 60 seconds for all devices
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING INIT POSITION = " + current_uposition.ToString());
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING INIT POSITION = " + current_uposition.ToString());
 
     while (true) {
 
@@ -123,14 +123,14 @@ void CanOpenMotor::manageAutomaticHoming(void) {
         if (abort_request) {
             abort_request = false;
 
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
             termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
             break;
         }
 
         // Reads the status to be sure that it is still Operation Enabled 
         if (!blocking_readOD(OD_6041_00)) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR READING STATUS REGISTER");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR READING STATUS REGISTER");
             termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
             break;
         }
@@ -139,14 +139,14 @@ void CanOpenMotor::manageAutomaticHoming(void) {
 
         // In case the status should be changed, the internal fault is activated
         if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR POSSIBLE FAULT");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR POSSIBLE FAULT");
             termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
             break;
         }
 
         // Test the Timeout condition
         if (command_ms_tmo <= 0) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING TIMEOUT ERROR");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING TIMEOUT ERROR");
             termination_code = MotorCompletedCodes::ERROR_TIMOUT;
             break;
         }
@@ -154,7 +154,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
         // The Application can early terminate the activation
         MotorCompletedCodes termination_condition = automaticHomingRunningCallback();
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
             break;
         }
@@ -190,13 +190,13 @@ void CanOpenMotor::manageAutomaticHoming(void) {
             typedef std::chrono::milliseconds milliseconds;
             milliseconds ms = std::chrono::duration_cast<milliseconds>(clock::now() - start);
             home_initialized = true;
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING SUCCESSFULLY COMPLETED");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING SUCCESSFULLY COMPLETED");
             termination_code = MotorCompletedCodes::COMMAND_SUCCESS;         
             break;
         }
 
         if (error) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR  FAULT");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC HOMING ERROR  FAULT");
             termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
             break;
 
@@ -210,7 +210,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
 
     // Read the current position 
     updateCurrentPosition();
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING FINAL POSITION = " + current_uposition.ToString());
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">:  HOMING FINAL POSITION = " + current_uposition.ToString());
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
@@ -242,32 +242,32 @@ bool CanOpenMotor::initResetEncoderCommand(int initial_eposition) {
 
     // Already reset in this position
     if (current_eposition == initial_eposition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + current_uposition.ToString());
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + current_uposition.ToString());
         return true;
     }
 
     // Write the Homing method to 35: current position method
     if (!blocking_writeOD(OD_6098_00, 35)) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6098");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6098");
         return false;
     }
 
     // Write the Position offset register
     if (!blocking_writeOD(OD_607C_00, initial_eposition)) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 607C");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 607C");
         return false;
     }
 
 
     // Write the operating mode to HOMING
     if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_HOMING)) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO HOMING");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO HOMING");
         return false;
     }
 
     // Set the start bit (BIT4) in the control word register
     if (!writeControlWord(0x10, 0x10)) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING CW BIT 4");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING CW BIT 4");
         return false;
     }
 
@@ -275,24 +275,24 @@ bool CanOpenMotor::initResetEncoderCommand(int initial_eposition) {
 
     // Clear the start bit (BIT4) in the control word register
     if (!writeControlWord(0x10, 0)) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLEARING CW BIT 4");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLEARING CW BIT 4");
         return false;
     }
 
     // Write the operating mode to PROFILE POSITIONING
     if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_POSITIONING)) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO POSITIONING");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO POSITIONING");
         return false;
     }
 
     updateCurrentPosition();
     if (current_eposition != initial_eposition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER NOT IN THE INITIAL ASSIGNED VALUE");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER NOT IN THE INITIAL ASSIGNED VALUE");
         return false;
     }
 
 
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + current_uposition.ToString());
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + current_uposition.ToString());
     return true;
 
 

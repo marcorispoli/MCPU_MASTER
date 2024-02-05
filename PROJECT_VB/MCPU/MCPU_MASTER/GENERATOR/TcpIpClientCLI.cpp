@@ -2,6 +2,7 @@
 #include <thread>
 #include "TcpIpClientCLI.h"
 #include "mutex"
+#include "Log.h"
 
 static std::mutex send_mutex;
 
@@ -50,7 +51,7 @@ void TcpClientCLI::threadWork(void) {
 
 	
 	while (true) {
-		Debug::WriteLine("Try to connect server to: " + ipserver + "\n");		
+		LogClass::logInFile("Try to connect server to: " + ipserver + "\n");		
 		connection_status = false;
 
 		// Try to connect with the server
@@ -69,7 +70,7 @@ void TcpClientCLI::threadWork(void) {
 		// The server is now connected
 		connection_status = true;
 		connection_event(true);
-		Debug::WriteLine("Client connected to: " + ipserver + "\n");
+		LogClass::logInFile("Client connected to: " + ipserver + "\n");
 
 		// Connection loop
 		while (true) {
@@ -79,7 +80,7 @@ void TcpClientCLI::threadWork(void) {
 				rc = clientSocket->Receive(rxBuffer);// From(rxBuffer, castFromEndPoint);
 
 				if (rc == 0) {
-					Debug::WriteLine("Client disconnected from: " + ipserver + "\n");
+					LogClass::logInFile("Client disconnected from: " + ipserver + "\n");
 					clientSocket->Close();					
 					connection_status = false;
 					connection_event(false);
@@ -90,7 +91,7 @@ void TcpClientCLI::threadWork(void) {
 				rxData(rxBuffer, rc);
 			}
 			catch (SocketException^ err) {
-				Debug::WriteLine("Client disconnected from: " + ipserver + "\n");
+				LogClass::logInFile("Client disconnected from: " + ipserver + "\n");
 				clientSocket->Close();				
 				connection_status = false;
 				connection_event(false);

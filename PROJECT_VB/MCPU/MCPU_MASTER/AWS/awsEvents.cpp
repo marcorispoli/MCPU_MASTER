@@ -30,6 +30,8 @@ static std::mutex event_mutex;
 /// <param name="projname">This is the Tag of the requested projection</param>
 void awsProtocol::EVENT_SelectProjection(String^ projname) {
     const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
+
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_SelectProjection  " + projname + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
@@ -37,6 +39,7 @@ void awsProtocol::EVENT_SelectProjection(String^ projname) {
 
 void awsProtocol::EVENT_AbortProjection(void) {
     const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_AbortProjection %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
@@ -44,6 +47,7 @@ void awsProtocol::EVENT_AbortProjection(void) {
 
 void awsProtocol::EVENT_GantryStatus(void) {
     const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
     String^ status = Gantry::getOperatingStatusName();
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_GantryStatus  " + status + " %>";
@@ -52,6 +56,7 @@ void awsProtocol::EVENT_GantryStatus(void) {
 
 void awsProtocol::EVENT_Compressor(void) {
     const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
     unsigned short thick = PCB302::getThickness();
     unsigned short force = PCB302::getForce();
 
@@ -65,6 +70,7 @@ void awsProtocol::EVENT_Compressor(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::EVENT_Components(void) {
+    if (!device->event_server) return;
     const std::lock_guard<std::mutex> lock(event_mutex);
     System::String^ potter_type;
     System::String^ mag_factor;
@@ -106,6 +112,7 @@ void awsProtocol::EVENT_Components(void) {
 
 void awsProtocol::EVENT_ReadyForExposure(bool ready, unsigned short code) {
     const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
     device->event_counter++;
     String^ answer;
     if (ready) {
@@ -120,21 +127,22 @@ void awsProtocol::EVENT_ReadyForExposure(bool ready, unsigned short code) {
 
 void awsProtocol::EVENT_XrayPushButton(bool status) {
     const std::lock_guard<std::mutex> lock(event_mutex);
-
+    if (!device->event_server) return;
     
-        device->event_counter++;
-        System::String^ strstat;
-        if (status) strstat = "ON";
-        else strstat = "OFF";
+    device->event_counter++;
+    System::String^ strstat;
+    if (status) strstat = "ON";
+    else strstat = "OFF";
 
-        String^ answer = "<" + device->event_counter.ToString() + " %EVENT_XrayPushButton  " + strstat + " %>";
-        device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    String^ answer = "<" + device->event_counter.ToString() + " %EVENT_XrayPushButton  " + strstat + " %>";
+    device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
     
    
 }
 
 void awsProtocol::EVENT_exposurePulseCompleted(unsigned char npulse) {
     const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
 
     device->event_counter++;
    
@@ -143,8 +151,8 @@ void awsProtocol::EVENT_exposurePulseCompleted(unsigned char npulse) {
 }
 
 void awsProtocol::EVENT_XraySequenceCompleted(void) {
-
     const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
     String^ result;
 
     ExposureModule::exposure_completed_options code = ExposureModule::getExposureCompletedCode();

@@ -5,7 +5,7 @@ ref class SystemConfig
 {
 public:
     literal System::String^ FILENAME = "SystemInit.cnf";
-    literal int     FILE_REVISION = 2;
+    literal int     FILE_REVISION = 1;
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_INSTALLATION_NAME = "INSTALL_NAME";
@@ -52,6 +52,15 @@ public:
     literal int             PARAM_DEMO_MODE_STATUS = 0;
     literal System::String^ PARAM_DEMO_MODE_DEFAULT = "1";
 
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_LOG_DIRECTORY = "LOG_DIRECTORY";
+    literal System::String^ PPARAM_LOG_DIRECTORY_COMMENT = "The directory reserved for logs ";
+    literal int PARAM_DIR = 0;
+    literal int PARAM_ENA = 1;
+    literal System::String^ PARAM_LOG_DIRECTORY_DEFAULT = "\\GANTRY_LOGS";
+    literal System::String^ PARAM_LOG_ENA_DEFAULT = "ON";
+
+
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
@@ -79,6 +88,11 @@ public:
 
             CONFIG_FILE_ITEM(PARAM_DEMO_MODE, PARAM_DEMO_MODE_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_DEMO_MODE_DEFAULT,            
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_LOG_DIRECTORY, PPARAM_LOG_DIRECTORY_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_LOG_DIRECTORY_DEFAULT,
+            PARAM_LOG_ENA_DEFAULT,
             }),
             
         }

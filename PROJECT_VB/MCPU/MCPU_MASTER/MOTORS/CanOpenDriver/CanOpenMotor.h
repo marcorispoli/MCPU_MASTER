@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "Log.h"
 
 using namespace System::Diagnostics;
 using namespace System::Threading;
@@ -306,15 +307,15 @@ namespace CANOPEN {
 
 			unsigned char received_cmd = getCmd(frame);
 			if (received_cmd == (unsigned char)SDOCommandCodes::ERRACK) {
-				if(cmd == SDOCommandCodes::RDCMD) Debug::WriteLine("READ: " + getError(frame));
-				else Debug::WriteLine("WRITE: " + getError(frame));
+				if(cmd == SDOCommandCodes::RDCMD) LogClass::logInFile("READ: " + getError(frame));
+				else LogClass::logInFile("WRITE: " + getError(frame));
 				return false;
 			}
 
 			if (cmd == SDOCommandCodes::RDCMD)  {
 				if (received_cmd != (unsigned char) SDOCommandCodes::RDANSW) return false;				
 				if (ODRegister::getDataDim(frame) != (unsigned char) data_dim) {
-					Debug::WriteLine("INVALID DATADIM");
+					LogClass::logInFile("INVALID DATADIM");
 					return false;
 				}				
 			}

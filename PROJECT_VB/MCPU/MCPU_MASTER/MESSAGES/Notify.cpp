@@ -112,6 +112,7 @@ Notify::translate^ Notify::Translate(messages msg) {
 
 void Notify::activate(messages msg) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+
 	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
 	if (msg == messages::NO_MESSAGE) return;
 	if (message_list[(int) msg]->disabled) return;
@@ -129,6 +130,7 @@ void Notify::activate(messages msg) {
 
 void Notify::instant(messages msg) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+
 	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
 	if (msg == messages::NO_MESSAGE) return;
 	if (message_list[(int)msg]->disabled) return;
@@ -140,8 +142,8 @@ void Notify::instant(messages msg) {
 }
 
 void Notify::activate(messages msg, System::String^ extra) {
-
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+
 	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
 	if (msg == messages::NO_MESSAGE) return;
 	if (message_list[(int)msg]->disabled) return;
@@ -161,8 +163,8 @@ void Notify::activate(messages msg, System::String^ extra) {
 }
 
 void Notify::instant(messages msg, System::String^ extra) {
-
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+
 	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
 	if (msg == messages::NO_MESSAGE) return;
 	if (message_list[(int)msg]->disabled) return;
@@ -175,6 +177,7 @@ void Notify::instant(messages msg, System::String^ extra) {
 
 void Notify::deactivate(messages msg) {
 	const std::lock_guard<std::mutex> lock(gantry_errors_mutex);
+
 	if (msg >= messages::LABEL_MESSAGES_SECTION) return;
 	if (msg == messages::NO_MESSAGE) return;
 	if (!message_list[(int)msg]->active) return;

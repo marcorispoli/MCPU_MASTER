@@ -5,6 +5,8 @@
 #include "pd4_od.h"
 #include "..\gantry_global_status.h"
 #include <thread>
+#include "Log.h"
+
 
 
 
@@ -147,7 +149,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     if (brake_activated) {
         brake_alarm = true;
-        Debug::WriteLine("BodyMotor: Failed test output off, off");
+        LogClass::logInFile("BodyMotor: Failed test output off, off");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
         
         // Clear the OUTPUTS
@@ -156,13 +158,13 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     }
 
     if (!activateBrake()) {
-        Debug::WriteLine("BodyMotor: Failed test output on, on");
+        LogClass::logInFile("BodyMotor: Failed test output on, on");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
         return true;
     }
 
     if (!deactivateBrake()) {
-        Debug::WriteLine("BodyMotor: Failed test output off, on");
+        LogClass::logInFile("BodyMotor: Failed test output off, on");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);        
     }
 
@@ -244,7 +246,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     
     if (BRAKE_INPUT_MASK(getRxReg()->data)) {        
         brake_alarm = true;
-        Debug::WriteLine("BodyMotor: Failed test brake input in IDLE");
+        LogClass::logInFile("BodyMotor: Failed test brake input in IDLE");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
         blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
         return MotorCompletedCodes::ERROR_BRAKE_DEVICE;        
@@ -455,7 +457,7 @@ bool BodyMotor::unbrakeCallback(void) {
 
     // Unlock the Brake device
     if (!activateBrake()) {
-        Debug::WriteLine("BodyMotor: Activation failed to unlock the brake device");
+        LogClass::logInFile("BodyMotor: Activation failed to unlock the brake device");
         return false;
     }
 

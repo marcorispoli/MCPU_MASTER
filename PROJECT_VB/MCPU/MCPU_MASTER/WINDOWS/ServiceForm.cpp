@@ -134,7 +134,7 @@ void ServiceForm::WndProc(System::Windows::Forms::Message% m)
 System::Void ServiceForm::onServiceTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 {
 	
-	SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+	SendMessageA(window, WM_USER + 1, 0, 0);
 }
 
 // ____________________________ MAIN PANEL ACTIVATION __________________________________ //

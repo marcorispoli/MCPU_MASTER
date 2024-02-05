@@ -3,6 +3,7 @@
 #include "CanOpenMotor.h"
 #include "pd4_od.h"
 #include <thread>
+#include "Log.h"
 
 
 
@@ -60,7 +61,7 @@ System::String^ CanOpenMotor::getCiAStatusString(_CiA402Status status) {
 void CanOpenMotor::CiA402_SwitchOnDisabledCallback(void) {
     if (CiA_current_status != _CiA402Status::CiA402_SwitchOnDisabled) {
         CiA_current_status = _CiA402Status::CiA402_SwitchOnDisabled;
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: SWITCH-ON DISABLED STATUS");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: SWITCH-ON DISABLED STATUS");
     }
 
     // Try to enter the CiA402_ReadyToSwitchOn
@@ -77,7 +78,7 @@ void CanOpenMotor::CiA402_QuickStopActiveCallback(void) {
 
     if (CiA_current_status != _CiA402Status::CiA402_QuickStopActive) {
         CiA_current_status = _CiA402Status::CiA402_QuickStopActive;
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: QUICK STOP ACTIVE STATUS");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: QUICK STOP ACTIVE STATUS");
     }
 
     // Try to enter the CiA402_ReadyToSwitchOn
@@ -96,7 +97,7 @@ void CanOpenMotor::CiA402_ReadyToSwitchOnCallback(void) {
 
     if (CiA_current_status != _CiA402Status::CiA402_ReadyToSwitchOn) {
         CiA_current_status = _CiA402Status::CiA402_ReadyToSwitchOn;
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: READY TO SWITCH-ON STATUS");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: READY TO SWITCH-ON STATUS");
     }
 
     // Try to enter the CiA402_SwitchedOn
@@ -117,7 +118,7 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
 
     if (CiA_current_status != _CiA402Status::CiA402_SwitchedOn) {
         CiA_current_status = _CiA402Status::CiA402_SwitchedOn;
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: SWITCHED-ON STATUS");        
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: SWITCHED-ON STATUS");        
 
         
     }
@@ -179,7 +180,7 @@ void CanOpenMotor::CiA402_OperationEnabledCallback(void) {
     
     if (CiA_current_status != _CiA402Status::CiA402_OperationEnabled) {
         CiA_current_status = _CiA402Status::CiA402_OperationEnabled;
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: OPERATION ENABLED STATUS");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: OPERATION ENABLED STATUS");
     }
 
     // The Motor cannot remain in this state without a command execution
@@ -210,7 +211,7 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
 
     if (CiA_current_status != _CiA402Status::CiA402_Fault) {
         CiA_current_status = _CiA402Status::CiA402_Fault;
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: FAULT STATUS");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: FAULT STATUS");
     }
 
     // If a command execution is present the command shall be aborted!
@@ -231,8 +232,8 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
         error_condition = true;
         
         if(data_changed){            
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLASS = " + getErrorClass1001(error_class));
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CODE = " + getErrorCode1003(error_code));            
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLASS = " + getErrorClass1001(error_class));
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CODE = " + getErrorCode1003(error_code));            
         }       
         faultCallback( error_condition, data_changed, error_class, error_code);
         return;

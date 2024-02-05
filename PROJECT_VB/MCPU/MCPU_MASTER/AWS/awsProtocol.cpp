@@ -12,6 +12,9 @@
 #include "ExposureModule.h"
 #include "Generator.h"
 #include "SystemConfig.h"
+#include "Notify.h"
+#include "Log.h"
+
 
 
 
@@ -25,8 +28,16 @@ awsProtocol::awsProtocol(void) {
     pDecodedFrame = gcnew aws_decoded_frame_t;
 
     // Creates the TcpIp based Servers
-    command_server = gcnew TcpIpServerCLI(ip, cp);
-    event_server = gcnew TcpIpServerCLI(ip, ep);
+    try {
+        command_server = gcnew TcpIpServerCLI(ip, cp);
+        event_server = gcnew TcpIpServerCLI(ip, ep);
+    }
+    catch (...) {
+        LogClass::logInFile("awsProtocol: fatal exception in opening the Sockets");
+        Notify::activate(Notify::messages::ERROR_AWS_INITIALIZATION);
+        return ;
+    }
+    
     event_counter = 1;
 
     // Connect the reception Events 
@@ -150,7 +161,7 @@ int awsProtocol::decodeFrame(cli::array<Byte>^ buffer, int size, aws_decoded_fra
 
     // Decode with Unicode the byte array into a string
     String^ sFrame = System::Text::UTF8Encoding::UTF8->GetString(buffer, 0, size);
-
+    
     // Finds the init character: '<'
     for (i = 0; i < sFrame->Length; i++) if (sFrame[i] == L'<') break;
 
@@ -206,6 +217,7 @@ int awsProtocol::decodeFrame(cli::array<Byte>^ buffer, int size, aws_decoded_fra
         if (sFrame[i] == L' ') continue;
         if (sFrame[i] == L'>') {
             pDecoded->valid = true;
+            LogClass::logInFile("RX-AWS: " + sFrame + "\n");
             return 0;
         }
 
@@ -222,8 +234,7 @@ int awsProtocol::decodeFrame(cli::array<Byte>^ buffer, int size, aws_decoded_fra
 /// <param name="buffer">This is the received byte array</param>
 /// <param name="rc">This is the length of the received buffer</param>
 void awsProtocol::command_rx_handler(cli::array<Byte>^ buffer, int rc) {
-    Debug::WriteLine("Command channel: Buffer Received!\n");
-
+  
     // Decodes the content of the received frame
     pDecodedFrame->errcode = decodeFrame(buffer, rc, pDecodedFrame);
     if (!pDecodedFrame->valid) return;
@@ -254,7 +265,7 @@ void awsProtocol::command_rx_handler(cli::array<Byte>^ buffer, int rc) {
 /// <param name="buffer">This is the received byte array</param>
 /// <param name="rc">This is the length of the received buffer</param>
 void awsProtocol::event_rx_handler(cli::array<Byte>^ receivbufeBuffer, int rc) {
-    Debug::WriteLine("Event channel: Buffer Received!\n");
+    LogClass::logInFile("Event channel: Buffer Received!\n");
 }
 
 
@@ -266,6 +277,7 @@ void awsProtocol::event_rx_handler(cli::array<Byte>^ receivbufeBuffer, int rc) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::ackNa(void) {
+    if (!command_server) return;
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %NA %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
     return;
@@ -278,6 +290,7 @@ void awsProtocol::ackNa(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::ackOk(void) {
+    if (!command_server) return;
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %OK %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
 }
@@ -289,6 +302,8 @@ void awsProtocol::ackOk(void) {
 /// </summary>
 /// <param name="params">This is a list of optionals parameters</param>
 void awsProtocol::ackOk(List<String^>^ params) {
+    if (!command_server) return;
+
     if (params == nullptr) {
         ackOk();
         return;
@@ -313,6 +328,7 @@ void awsProtocol::ackOk(List<String^>^ params) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::ackNok(void) {
+    if (!command_server) return;
 
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %NOK " + pDecodedFrame->errcode.ToString() + " " + pDecodedFrame->errstr + " %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
@@ -324,6 +340,7 @@ void awsProtocol::ackNok(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::ackExecuting(void) {
+    if (!command_server) return;
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %EXECUTING %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
     return;
@@ -335,6 +352,7 @@ void awsProtocol::ackExecuting(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::eventExecutedOk(unsigned short id) {
+    if (!event_server) return;
     event_counter++;
     String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " OK %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
@@ -346,6 +364,8 @@ void awsProtocol::eventExecutedOk(unsigned short id) {
 /// </summary>
 /// <param name="params">This is a list of optionals parameters</param>
 void awsProtocol::eventExecutedOk(unsigned short id, List<String^>^ params) {
+    if (!event_server) return;
+
     event_counter++;
     if (params == nullptr) {
         eventExecutedOk(id);
@@ -370,6 +390,8 @@ void awsProtocol::eventExecutedOk(unsigned short id, List<String^>^ params) {
 /// </summary>
 /// <param name="errcode">This is the error code notified to the AWS</param>
 void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode) {
+    if (!event_server) return;
+
     event_counter++;
     String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " NOK " + errcode.ToString() + " %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
@@ -383,6 +405,7 @@ void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode) {
 /// <param name="errcode">This is the error code notified to the AWS</param>
 /// <param name="errorstr">This is an error string describing the error event</param>
 void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode, String^ errorstr) {
+    if (!event_server) return;
     event_counter++;
     String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " NOK " + errcode.ToString() + " " + errorstr + " %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));

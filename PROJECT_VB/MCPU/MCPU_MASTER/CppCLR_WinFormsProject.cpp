@@ -2,6 +2,7 @@
 #include "Notify.h"
 #include "MainForm.h"
 #include "SystemConfig.h"
+#include "Log.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -13,8 +14,6 @@ int main()
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-
-
 	Gantry::initialize();
 
 	//Notify::disable(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
@@ -23,7 +22,8 @@ int main()
 	Notify::disable(Notify::messages::ERROR_TILT_MOTOR_HOMING);
 
 
-	
+	LogClass::logInFile("PROGRAM INITIALIZATION");
+
 	Application::Run(gcnew CppCLRWinFormsProject::MainForm());
 	return 0;
 }

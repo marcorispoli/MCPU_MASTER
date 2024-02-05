@@ -1,5 +1,7 @@
 #pragma once
 #include <Windows.h>
+#include "Log.h"
+
 /// <summary>
 /// \defgroup ErrorGUI_Module Error Window Management Module
 /// \ingroup GUI_Module Gantry GUI modules
@@ -211,9 +213,9 @@ private: System::Void InitializeComponent() {
 	private: System::Void onErrorTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{
 		
-		if (!SendNotifyMessageA(window, WM_USER + 1, 0, 0)) {
+		if (!SendMessageA(window, WM_USER + 1, 0, 0)) {
 			int val = GetLastError();
-			System::Diagnostics::Debug::WriteLine("CAN OPEN ATTEMPT: " + System::Convert::ToString(val));
+			LogClass::logInFile("CAN OPEN ATTEMPT: " + System::Convert::ToString(val));
 		}
 	}
 

@@ -5,6 +5,7 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
+#include "Log.h"
 
 
 using namespace CANOPEN;
@@ -284,7 +285,7 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODR
         stringa += " [25]:" + ((int)perc25).ToString();
         stringa += " [30]:" + ((int)perc30).ToString();
         stringa += " [>30]:" + ((int)percXX).ToString();
-        // Debug::WriteLine(stringa);
+        // LogClass::logInFile(stringa);
     }
 
     return true;
@@ -374,7 +375,7 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
         stringa += " [25]:" + ((int)perc25).ToString();
         stringa += " [30]:" + ((int)perc30).ToString();
         stringa += " [>30]:" + ((int)percXX).ToString();
-        // Debug::WriteLine(stringa);
+        // LogClass::logInFile(stringa);
         
     }
 
@@ -466,7 +467,7 @@ bool CanOpenMotor::startRotation(void) {
 /// </summary>
 /// <param name=""></param>
 void CanOpenMotor::mainWorker(void) {
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: wait run command");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: wait run command");
 
     while (!run) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -475,7 +476,7 @@ void CanOpenMotor::mainWorker(void) {
     // Demo mode activation
     if (demo_mode) {
         internal_status = status_options::MOTOR_READY;
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
 
         while (demo_mode) {
             demoLoop();
@@ -483,7 +484,7 @@ void CanOpenMotor::mainWorker(void) {
         }
     }
 
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: RUNNING MODE STARTED");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: RUNNING MODE STARTED");
     
     // Add the callback handling the SDO reception
     CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
@@ -642,7 +643,7 @@ System::String^ CanOpenMotor::getErrorCode1003(unsigned int val) {
 /// <returns>true in case of success</returns>
 bool CanOpenMotor::initializeObjectDictionary(void) {
     const std::lock_guard<std::mutex> lock(init_mutex);
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZATION");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZATION");
 
     
     while(!blocking_writeOD(OD_4013_01,1)) ; // Hardware configuration : 1 = EXTERNAL VCC LOGIC ON
@@ -749,11 +750,11 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     // Read the Object dictionary flag initialization
     while (!blocking_readOD(CONFIG_USER_PARAM)) ; // Reads the user parameter containing the stored nanoj checksum
     if (rxSdoRegister->data == 0x1A1B) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZED");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZED");
         return true;
     }
     
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: STORING DATA IN FLASH");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: STORING DATA IN FLASH");
     
     // Save the Flag in the User Param register and store the User param space
     blocking_writeOD(CONFIG_USER_PARAM, 0x1A1B);
@@ -768,8 +769,8 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
         if((blocking_readOD(OD_1010_01)) && (rxSdoRegister->data == 1)) break;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
-    if (i) Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: OBJECT DICTIONARY STORED IN FLASH");
-    else Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED STORING OD IN FLASH");    
+    if (i) LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: OBJECT DICTIONARY STORED IN FLASH");
+    else LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED STORING OD IN FLASH");    
     return true;
 }
 

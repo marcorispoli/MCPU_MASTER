@@ -10,6 +10,9 @@
 #include "PCB302.h"
 #include "CanOpenMotor.h"
 #include "Exposuremodule.h"
+#include "awsProtocol.h"
+#include "Log.h"
+
 
 using namespace System;
 using namespace System::Diagnostics;
@@ -34,7 +37,7 @@ Gantry::Gantry() {
                 monitor_Y0 = Screen::AllScreens[i]->Bounds.Top;                
             }
         }
-        Debug::WriteLine("SELECTED MONITOR: X0 = " + monitor_X0.ToString() + ", Y0 = " + monitor_Y0.ToString());
+        LogClass::logInFile("SELECTED MONITOR: X0 = " + monitor_X0.ToString() + ", Y0 = " + monitor_Y0.ToString());
          
 
         
@@ -80,7 +83,7 @@ void Gantry::initialize(void) {
     pcb315_demo = true;
     pcb326_demo = true;
     motor_arm_demo = true;
-    motor_tilt_demo = false;
+    motor_tilt_demo = true;
     motor_slide_demo = true;
     motor_body_demo = true;
     motor_vertical_demo = true;
@@ -104,6 +107,7 @@ bool Gantry::setIdle() {
 
     current_operating_status = operating_status_options::GANTRY_IDLE;
     ((IdleForm^)pIdleForm)->open();
+    awsProtocol::EVENT_GantryStatus();
     return true;
 }
 
@@ -114,6 +118,7 @@ bool Gantry::setOperating() {
 
     current_operating_status = operating_status_options::GANTRY_OPERATING;
     ((OperatingForm^)pOperatingForm)->open();
+    awsProtocol::EVENT_GantryStatus();
     return true;
 }
 
@@ -125,12 +130,14 @@ bool Gantry::setService() {
 
     current_operating_status = operating_status_options::GANTRY_SERVICE;
     ((ServiceForm^)pServiceForm)->open();
+    awsProtocol::EVENT_GantryStatus();
     return true;
 }
 
 
 void Gantry::setStartup(void) {
     current_operating_status = operating_status_options::GANTRY_STARTUP;
+    
 }
 
 bool Gantry::setOpenStudy(System::String^ patient) {    

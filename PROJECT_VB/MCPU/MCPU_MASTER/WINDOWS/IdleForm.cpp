@@ -193,11 +193,11 @@ void IdleForm::initIdleStatus(void) {
 }
 
 void IdleForm::open(void) {
-	SendNotifyMessageA(window , WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
+	SendMessageA(window , WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
 }
 
 void IdleForm::close(void) {
-	SendNotifyMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE	
+	SendMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE	
 }
 
 

@@ -5,6 +5,7 @@
 #include "pd4_od.h"
 #include "..\gantry_global_status.h"
 #include <thread>
+#include "Log.h"
 
 
 // The User units are 0.01°
@@ -314,7 +315,7 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     // Test unlock brake
     if (!unlockBrake()) {
-        Debug::WriteLine("TiltMotor: Failed test unlock brake");
+        LogClass::logInFile("TiltMotor: Failed test unlock brake");
         Notify::activate(Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT);
         brake_alarm = true;
         return true;
@@ -322,7 +323,7 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     // Test lock brake
     if (!lockBrake()) {
-        Debug::WriteLine("TiltMotor: Failed test lock brake");
+        LogClass::logInFile("TiltMotor: Failed test lock brake");
         Notify::activate(Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT);
         brake_alarm = true;
         return true;
@@ -438,7 +439,7 @@ bool TiltMotor::unbrakeCallback(void) {
 return true;
     // Unlock the Brake device
     if (!unlockBrake()) {
-        Debug::WriteLine("TiltMotor: Activation failed to unlock the brake device");
+        LogClass::logInFile("TiltMotor: Activation failed to unlock the brake device");
         return false;
     }
 
@@ -480,7 +481,7 @@ return MotorCompletedCodes::COMMAND_PROCEED;
         if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_ACCESS_REGISTER;
         if (UNLOCK_BRAKE_INPUT_MASK(getRxReg()->data)) {
             brake_alarm = true;
-            Debug::WriteLine("TiltMotor: brake detected unlocked in IDLE");
+            LogClass::logInFile("TiltMotor: brake detected unlocked in IDLE");
             ret_code = MotorCompletedCodes::ERROR_BRAKE_DEVICE;
         }
     }

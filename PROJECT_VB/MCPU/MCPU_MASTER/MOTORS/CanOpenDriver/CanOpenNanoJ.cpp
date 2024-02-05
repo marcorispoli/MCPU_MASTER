@@ -3,6 +3,7 @@
 #include "CanOpenMotor.h"
 #include "pd4_od.h"
 #include <thread>
+#include "Log.h"
 
 
 
@@ -129,11 +130,11 @@ bool CanOpenMotor::uploadNanojProgram(void) {
     // Read the stored checksum to check if the program needs to be updated
     if (!blocking_readOD(NANOJ_USER_PARAM)) return false; // Reads the user parameter containing the stored nanoj checksum
     if (rxSdoRegister->data == vmmchk) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM ALREADY PROGRAMMED");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM ALREADY PROGRAMMED");
         return true;
     }
 
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAMMING PROCESS");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAMMING PROCESS");
 
     // WMM FLASH DELETE
     if (!blocking_writeOD(VMM_CTRL_OD, VMM_DELETE)) return false;
@@ -146,12 +147,12 @@ bool CanOpenMotor::uploadNanojProgram(void) {
     while (!blocking_readOD(VMM_STATUS_OD)) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NODE RESET COMPLETED");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NODE RESET COMPLETED");
 
     // Read the VMM status  register
     if (!blocking_readOD(VMM_STATUS_OD)) return false;
     if (rxSdoRegister->data != 0) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: VMM FLASH IN ERROR CONDITION");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: VMM FLASH IN ERROR CONDITION");
         return false;
     }
 
@@ -170,11 +171,11 @@ bool CanOpenMotor::uploadNanojProgram(void) {
 
         // Write a 1024 block
         if (!nanojWrite1024Block(1024 * index, block_size)) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR TRANSFERRING BLOCK ");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR TRANSFERRING BLOCK ");
             return false;
         }
 
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: STORE BLOCK [" + index.ToString() + "]");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: STORE BLOCK [" + index.ToString() + "]");
 
 
         // Store Data ram in Flash
@@ -191,7 +192,7 @@ bool CanOpenMotor::uploadNanojProgram(void) {
         // Read the VMM status  register
         if (!blocking_readOD(VMM_STATUS_OD)) return false;
         if (rxSdoRegister->data != 0) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: VMM FLASH IN ERROR CONDITION");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: VMM FLASH IN ERROR CONDITION");
             return false;
         }
 
@@ -201,7 +202,7 @@ bool CanOpenMotor::uploadNanojProgram(void) {
     }
 
     // Store the checksum
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: STORE CHECKSUM");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: STORE CHECKSUM");
     if (!blocking_writeOD(NANOJ_USER_PARAM, vmmchk)) return false;
 
     if (!blocking_writeOD(SAVE_USER_PARAM, 1)) return false;
@@ -214,7 +215,7 @@ bool CanOpenMotor::uploadNanojProgram(void) {
     if (i == 0) return false;
 
 
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM SUCCESSFULLY COMPLETED");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM SUCCESSFULLY COMPLETED");
     return true;
 
 }
@@ -237,14 +238,14 @@ bool CanOpenMotor::startNanoj(void) {
     // Read the status to check if there is a running program
     if (blocking_readOD(OD_2301_00)) {
         if (rxSdoRegister->data & 0x1) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM IS ALREADY RUNNING");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM IS ALREADY RUNNING");
 
             blocking_writeOD(OD_2300_00, 0); // Stops the running program
             std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
             blocking_readOD(OD_2301_00);
             if (rxSdoRegister->data & 0x1) {
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED TO STOP THE NANOJ PROGRAM!");
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED TO STOP THE NANOJ PROGRAM!");
                 return false; // Failed to stop the program
             }
         }
@@ -258,14 +259,14 @@ bool CanOpenMotor::startNanoj(void) {
     for (int i = 0; i < 10; i++) {
         if (blocking_readOD(OD_2301_00)) {
             if (rxSdoRegister->data & 0x1) {
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM STARTED");
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM STARTED");
                 return true;
             } 
 
             if (rxSdoRegister->data & 0x4) {
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM START FAILED!");
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM START FAILED!");
                 blocking_readOD(OD_2302_00);
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM ERROR CODE:" + rxSdoRegister->data.ToString());
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: NANOJ PROGRAM ERROR CODE:" + rxSdoRegister->data.ToString());
                 return false;
             }
         }
@@ -289,7 +290,7 @@ bool CanOpenMotor::stopNanoj(void) {
 
     blocking_readOD(OD_2301_00);
     if (rxSdoRegister->data & 0x1) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED TO STOP THE NANOJ PROGRAM!");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED TO STOP THE NANOJ PROGRAM!");
         return false; // Failed to stop the program
     }
 

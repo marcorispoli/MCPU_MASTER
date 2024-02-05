@@ -3,7 +3,7 @@
 #include "CanOpenMotor.h"
 #include "pd4_od.h"
 #include <thread>
-
+#include "Log.h"
 
 bool CanOpenMotor::activateManualPositioning(int target, int speed, int acc, int dec) {
 
@@ -47,7 +47,7 @@ void CanOpenMotor::manageManualPositioning(void) {
 
     // Test if the actual position is already in target position
     if (isTarget()) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING COMPLETED (ALREADY IN POSITION)");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING COMPLETED (ALREADY IN POSITION)");
         setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
         return;
     }
@@ -62,7 +62,7 @@ void CanOpenMotor::manageManualPositioning(void) {
     if (!blocking_writeOD(OD_6060_00, 1)) error_condition = true;// Set the Activation mode to Profile Positioning Mode
     if (!writeControlWord(POSITION_SETTING_CTRL_INIT_MASK, POSITION_SETTING_CTRL_INIT_VAL)) error_condition = true;// Sets the Position control bits in the control word
     if (error_condition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN MANUAL POSITIONING PREPARATION");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN MANUAL POSITIONING PREPARATION");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
@@ -85,7 +85,7 @@ void CanOpenMotor::manageManualPositioning(void) {
     }
 
     if (error_condition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN MANUAL POSITIONING OPERATION ENABLE SETTING");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN MANUAL POSITIONING OPERATION ENABLE SETTING");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
@@ -120,14 +120,14 @@ void CanOpenMotor::manageManualPositioning(void) {
         if (abort_request) {
             abort_request = false;
 
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
             termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
             break;
         }
 
         // Reads the status to be sure that it is still Operation Enabled 
         if (!blocking_readOD(OD_6041_00)) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
             termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
             break;
         }
@@ -136,7 +136,7 @@ void CanOpenMotor::manageManualPositioning(void) {
 
         // In case the status should be changed, the internal fault is activated
         if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
             termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;            
             break;
         }
@@ -147,7 +147,7 @@ void CanOpenMotor::manageManualPositioning(void) {
         // The Application can early terminate the activation
         MotorCompletedCodes termination_condition = manualPositioningRunningCallback();
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
             break;
         }
@@ -155,7 +155,7 @@ void CanOpenMotor::manageManualPositioning(void) {
        
         if (((statw & 0x1400) == 0x1400) || (current_uposition == command_target) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING COMPLETED ");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING COMPLETED ");
             termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
 
             // resets the OMS bit of the control word
@@ -178,7 +178,7 @@ void CanOpenMotor::manageManualPositioning(void) {
 
     // Read the current position 
     updateCurrentPosition();
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);

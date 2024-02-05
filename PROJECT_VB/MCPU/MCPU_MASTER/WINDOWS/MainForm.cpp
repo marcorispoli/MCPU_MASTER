@@ -20,10 +20,15 @@
 #include "PCB315.h"
 #include "PCB326.h"
 #include "Generator.h"
+#include "Log.h"
+
 
 
 using namespace CppCLRWinFormsProject;
 using namespace CANOPEN;
+
+#define STARTUP_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\Cybele.PNG")
+
 
 void MainForm::MainFormInitialize(void) {
 
@@ -32,31 +37,30 @@ void MainForm::MainFormInitialize(void) {
 	this->Top = Gantry::monitor_Y0;
 	
 
-	// Clear the messages area
-	StartupLogMessages->Clear();
-	StartupErrorMessages->Clear();
-
 	// Debug on the System Configuration File
 	if (SystemConfig::Configuration->isWarning()) {
-		Debug::WriteLine("SYSTEM CONFIGURATION FILE:" + SystemConfig::Configuration->getWarningString());
+		LogClass::logInFile("SYSTEM CONFIGURATION FILE:" + SystemConfig::Configuration->getWarningString());
 	}
 
 	// Initialize the Package field 
 	if (SystemConfig::Configuration->isWarning()) {
-		StartupLogMessages->Text += "> " + SystemConfig::Configuration->getWarningString();
+		LogClass::logInFile( "> " + SystemConfig::Configuration->getWarningString());
 	}
 
-	groupBoxPackage->Text = "PACKAGE ID: " + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_ID];
-	labelFW301->Text = "FW301 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW301];
-	labelFW302->Text = "FW302 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW302];
-	labelFW303->Text = "FW303 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW303];
-	labelFW304->Text = "FW304 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW304];
-	labelFW315->Text = "FW315 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW315];
-	labelFW326->Text = "FW326 REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW326];
-	labelCanDriver->Text = "CAN REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWCAN];
-	labelGeneratorRevision->Text = "SFHD REVISION:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWGEN];
+	// Program Icon
+	startupIcon->BackgroundImage = STARTUP_IMAGE;
 
+	infoPanel->Text = "STARTUP PACKAGE ID: " + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_ID];
+	LogClass::logInFile("Package Installed: ID" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_ID]);
+	LogClass::logInFile("FW301 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW301]);
+	LogClass::logInFile("FW302 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW302]);
+	LogClass::logInFile("FW303 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW303]);
+	LogClass::logInFile("FW304 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW304]);
+	LogClass::logInFile("FW315 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW315]);
+	LogClass::logInFile("FW-CAN Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWCAN]);
+	LogClass::logInFile("FW-GENERATOR Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWGEN]);
 
+	
 	// Initialize the Activities
 	labelPcb301Activity->Text = "Waiting ..";
 	labelPcb302Activity->Text = "Waiting ..";
@@ -94,12 +98,14 @@ void MainForm::MainFormInitialize(void) {
 	
 }
 
+
+
 bool MainForm::Startup_CanDriver(void) {
+	System::String^ string;
 
 	switch (startupSubFase) {
 
 	case 0: // Creates the Can Driver Object
-		StartupLogMessages->Text += "> can driver initialization ..\n";
 		labelCanDriverActivity->Text = "Connection ..";
 		startupSubFase++;
 		break;
@@ -107,18 +113,18 @@ bool MainForm::Startup_CanDriver(void) {
 	case 1:
 		if (CanDriver::isError()) {
 			labelCanDriverActivity->Text = "STARTUP ERROR!";
-			StartupErrorMessages->Text += "> can driver error: " + CanDriver::getErrorString();
+			LogClass::logInFile("can driver error : " + CanDriver::getErrorString());
 			startupError = true;
 			break;
 		}
 
 		if (CanDriver::isConnected()) {
 			labelCanDriverActivity->Text = "CONNECTED AND RUNNING";
-			StartupLogMessages->Text += "> can driver revision: ";
-			StartupLogMessages->Text += " API:" + CanDriver::apirev_maj.ToString() + "." + CanDriver::apirev_min.ToString();
-			StartupLogMessages->Text += " SW:" + CanDriver::swrev_maj.ToString() + "." + CanDriver::swrev_min.ToString();
-			StartupLogMessages->Text += " HW:" + CanDriver::hwrev_maj.ToString() + "." + CanDriver::hwrev_min.ToString();
-			StartupLogMessages->Text += "\n";
+			string =  "can driver revision: ";
+			string += " API:" + CanDriver::apirev_maj.ToString() + "." + CanDriver::apirev_min.ToString();
+			string += " SW:" + CanDriver::swrev_maj.ToString() + "." + CanDriver::swrev_min.ToString();
+			string += " HW:" + CanDriver::hwrev_maj.ToString() + "." + CanDriver::hwrev_min.ToString();			
+			LogClass::logInFile(string);
 			labelCanDriverActivity->ForeColor = Color::LightGreen;
 			return true; // Completed
 		}
@@ -131,11 +137,14 @@ bool MainForm::Startup_CanDriver(void) {
 }
 
 bool MainForm::Startup_PCB301(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the PCB301 process
 		labelPcb301Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb301 initialization ..\n";		
+		string =  "pcb301 initialization ..";
+		LogClass::logInFile(string);
 		if (Gantry::isPcb301Demo()) PCB301::device->demoMode();
 		else PCB301::device->runMode();
 		startupSubFase++;
@@ -150,10 +159,10 @@ bool MainForm::Startup_PCB301(void) {
 
 		if (PCB301::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb301Activity->Text = "CONFIGURATION ..";
-			StartupLogMessages->Text += "> pcb301 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + PCB301::device->getBootStatus() + ", REV:" + PCB301::device->getBootRevision();
-			StartupLogMessages->Text += " APP:" + PCB301::device->getAppRevision();
-			StartupLogMessages->Text += "\n";
+			string =  "pcb301 firmware revision: ";
+			string += " BOOT:" + PCB301::device->getBootStatus() + ", REV:" + PCB301::device->getBootRevision();
+			string += " APP:" + PCB301::device->getAppRevision();
+			LogClass::logInFile(string);
 			startupSubFase++;
 		}
 		break;
@@ -171,12 +180,17 @@ bool MainForm::Startup_PCB301(void) {
 	return false;
 }
 
+
 bool MainForm::Startup_PCB302(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the PCB302 process
 		labelPcb302Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb302 initialization ..\n";		
+		string = "pcb302 initialization ..\n";		
+		LogClass::logInFile(string);
+
 		if (Gantry::isPcb302Demo()) PCB302::device->demoMode();
 		else PCB302::device->runMode();
 		startupSubFase++;
@@ -191,10 +205,10 @@ bool MainForm::Startup_PCB302(void) {
 
 		if (PCB302::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb302Activity->Text = "CONFIGURATION ..";
-			StartupLogMessages->Text += "> pcb302 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + PCB302::device->getBootStatus() + ", REV:" + PCB302::device->getBootRevision();
-			StartupLogMessages->Text += " APP:" + PCB302::device->getAppRevision();
-			StartupLogMessages->Text += "\n";
+			string = "pcb302 firmware revision: ";
+			string += " BOOT:" + PCB302::device->getBootStatus() + ", REV:" + PCB302::device->getBootRevision();
+			string += " APP:" + PCB302::device->getAppRevision();
+			LogClass::logInFile(string);
 			startupSubFase++;
 		}
 		break;
@@ -213,11 +227,14 @@ bool MainForm::Startup_PCB302(void) {
 }
 
 bool MainForm::Startup_PCB303(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the PCB303 process
 		labelPcb303Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb303 initialization ..\n";
+		string = "pcb303 initialization ..";
+		LogClass::logInFile(string);
 		if (Gantry::isPcb303Demo()) PCB303::device->demoMode();
 		else PCB303::device->runMode();
 		startupSubFase++;
@@ -232,10 +249,10 @@ bool MainForm::Startup_PCB303(void) {
 
 		if (PCB303::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb303Activity->Text = "CONFIGURATION ..";
-			StartupLogMessages->Text += "> pcb303 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + PCB303::device->getBootStatus() + ", REV:" + PCB303::device->getBootRevision();
-			StartupLogMessages->Text += " APP:" + PCB303::device->getAppRevision();
-			StartupLogMessages->Text += "\n";
+			string = "pcb303 firmware revision: ";
+			string += " BOOT:" + PCB303::device->getBootStatus() + ", REV:" + PCB303::device->getBootRevision();
+			string += " APP:" + PCB303::device->getAppRevision();
+			LogClass::logInFile(string);
 			startupSubFase++;
 		}
 		break;
@@ -254,11 +271,14 @@ bool MainForm::Startup_PCB303(void) {
 }
 
 bool MainForm::Startup_PCB304(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the PCB304 process
 		labelPcb304Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb304 initialization ..\n";
+		string = "pcb304 initialization ..";
+		LogClass::logInFile(string);
 		if (Gantry::isPcb304Demo()) PCB304::device->demoMode();
 		else PCB304::device->runMode();
 		startupSubFase++;
@@ -273,10 +293,10 @@ bool MainForm::Startup_PCB304(void) {
 
 		if (PCB304::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb304Activity->Text = "CONFIGURATION ..";
-			StartupLogMessages->Text += "> pcb304 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + PCB304::device->getBootStatus() + ", REV:" + PCB304::device->getBootRevision();
-			StartupLogMessages->Text += " APP:" + PCB304::device->getAppRevision();
-			StartupLogMessages->Text += "\n";
+			string = "pcb304 firmware revision: ";
+			string += " BOOT:" + PCB304::device->getBootStatus() + ", REV:" + PCB304::device->getBootRevision();
+			string += " APP:" + PCB304::device->getAppRevision();
+			LogClass::logInFile(string);
 			startupSubFase++;
 		}
 		break;
@@ -295,11 +315,14 @@ bool MainForm::Startup_PCB304(void) {
 }
 
 bool MainForm::Startup_PCB315(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the PCB315 process
 		labelPcb315Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb315 initialization ..\n";		
+		string = "pcb315 initialization ..";		
+		LogClass::logInFile(string);
 		if (Gantry::isPcb315Demo()) PCB315::device->demoMode();
 		else PCB315::device->runMode();
 		startupSubFase++;
@@ -314,10 +337,10 @@ bool MainForm::Startup_PCB315(void) {
 
 		if (PCB315::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb315Activity->Text = "CONFIGURATION ..";
-			StartupLogMessages->Text += "> pcb315 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + PCB315::device->getBootStatus() + ", REV:" + PCB315::device->getBootRevision();
-			StartupLogMessages->Text += " APP:" + PCB315::device->getAppRevision();
-			StartupLogMessages->Text += "\n";
+			string = "pcb315 firmware revision: ";
+			string += " BOOT:" + PCB315::device->getBootStatus() + ", REV:" + PCB315::device->getBootRevision();
+			string += " APP:" + PCB315::device->getAppRevision();
+			LogClass::logInFile(string);
 			startupSubFase++;
 		}
 		break;
@@ -336,11 +359,15 @@ bool MainForm::Startup_PCB315(void) {
 }
 
 bool MainForm::Startup_PCB326(void) {
+	System::String^ string;
+	
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the PCB315 process
 		labelPcb326Activity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> pcb326 initialization ..\n";	
+		string = "pcb326 initialization ..";	
+		LogClass::logInFile(string);
 		if (Gantry::isPcb326Demo()) PCB326::device->demoMode();
 		else PCB326::device->runMode();
 		startupSubFase++;
@@ -355,10 +382,10 @@ bool MainForm::Startup_PCB326(void) {
 
 		if (PCB326::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb326Activity->Text = "CONFIGURATION ..";
-			StartupLogMessages->Text += "> pcb326 firmware revision: ";
-			StartupLogMessages->Text += " BOOT:" + PCB326::device->getBootStatus() + ", REV:" + PCB326::device->getBootRevision();
-			StartupLogMessages->Text += " APP:" + PCB326::device->getAppRevision();
-			StartupLogMessages->Text += "\n";
+			string = "pcb326 firmware revision: ";
+			string += " BOOT:" + PCB326::device->getBootStatus() + ", REV:" + PCB326::device->getBootRevision();
+			string += " APP:" + PCB326::device->getAppRevision();
+			LogClass::logInFile(string);
 			startupSubFase++;
 		}
 		break;
@@ -377,11 +404,15 @@ bool MainForm::Startup_PCB326(void) {
 }
 
 bool MainForm::Startup_MotorBody(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorBodyActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Body initialization ..\n";	
+		string = "Motor Body initialization ..";	
+		LogClass::logInFile(string);
+
 		if (Gantry::isMotorBodyDemo()) {
 			BodyMotor::device->demoMode();
 			labelMotorBodyActivity->Text = "DEMO MODE";
@@ -395,8 +426,8 @@ bool MainForm::Startup_MotorBody(void) {
 		if (!BodyMotor::device->activateConfiguration()) break;
 
 		labelMotorBodyActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> motor body status:" + BodyMotor::device->getInternalStatusStr();
-		StartupLogMessages->Text += "\n";
+		string = "motor body status:" + BodyMotor::device->getInternalStatusStr();
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
@@ -406,9 +437,10 @@ bool MainForm::Startup_MotorBody(void) {
 			startupError = true;
 			labelMotorBodyActivity->Text = "CONFIGURATION ERROR";
 			labelMotorBodyActivity->ForeColor = Color::Red;
-
-			if (!BodyMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Body Object Dictionary initialization Failed\n";
-			if (!BodyMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Body Nanoj initialization Failed\n";
+			string = "";
+			if (!BodyMotor::device->isODConfigured()) string += "Motor Body Object Dictionary initialization Failed\n";
+			if (!BodyMotor::device->isNanojConfigured()) string += "Motor Body Nanoj initialization Failed\n";
+			LogClass::logInFile(string);
 			return true;
 		}
 		
@@ -423,11 +455,15 @@ bool MainForm::Startup_MotorBody(void) {
 }
 
 bool MainForm::Startup_MotorTilt(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorTiltActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Tilt initialization ..\n";
+		string = "Motor Tilt initialization ..";
+		LogClass::logInFile(string);
+
 		if (Gantry::isMotorTiltDemo()) {
 			TiltMotor::device->demoMode();
 			labelMotorTiltActivity->Text = "DEMO MODE";
@@ -442,8 +478,8 @@ bool MainForm::Startup_MotorTilt(void) {
 		if (!TiltMotor::device->activateConfiguration()) break;
 
 		labelMotorTiltActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Tilt status:" + TiltMotor::device->getInternalStatusStr();
-		StartupLogMessages->Text += "\n";
+		string = "Motor Tilt status:" + TiltMotor::device->getInternalStatusStr();
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
@@ -453,9 +489,10 @@ bool MainForm::Startup_MotorTilt(void) {
 			startupError = true;
 			labelMotorTiltActivity->Text = "CONFIGURATION ERROR";
 			labelMotorTiltActivity->ForeColor = Color::Red;
-
-			if(!TiltMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Tilt Object Dictionary initialization Failed\n";
-			if (!TiltMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Tilt Nanoj initialization Failed\n";
+			string = "";
+			if(!TiltMotor::device->isODConfigured()) string += "Motor Tilt Object Dictionary initialization Failed\n";
+			if (!TiltMotor::device->isNanojConfigured()) string += "Motor Tilt Nanoj initialization Failed\n";
+			LogClass::logInFile(string);
 			return true;
 		}
 
@@ -471,11 +508,15 @@ bool MainForm::Startup_MotorTilt(void) {
 
 
 bool MainForm::Startup_MotorArm(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorArmActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Arm initialization ..\n";
+		string = "Motor Arm initialization ..";
+		LogClass::logInFile(string);
+
 		if (Gantry::isMotorArmDemo()) {
 			ArmMotor::device->demoMode();
 			labelMotorArmActivity->Text = "DEMO MODE";
@@ -490,8 +531,8 @@ bool MainForm::Startup_MotorArm(void) {
 		if (!ArmMotor::device->activateConfiguration()) break;
 
 		labelMotorArmActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Arm status:" + ArmMotor::device->getInternalStatusStr();
-		StartupLogMessages->Text += "\n";
+		string = "Motor Arm status:" + ArmMotor::device->getInternalStatusStr();
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
@@ -501,9 +542,10 @@ bool MainForm::Startup_MotorArm(void) {
 			startupError = true;
 			labelMotorArmActivity->Text = "CONFIGURATION ERROR";
 			labelMotorArmActivity->ForeColor = Color::Red;
-
-			if (!ArmMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Arm Object Dictionary initialization Failed\n";
-			if (!ArmMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Arm Nanoj initialization Failed\n";
+			string = "";
+			if (!ArmMotor::device->isODConfigured()) string += "Motor Arm Object Dictionary initialization Failed\n";
+			if (!ArmMotor::device->isNanojConfigured()) string += " Motor Arm Nanoj initialization Failed\n";
+			LogClass::logInFile(string);
 			return true;
 		}
 
@@ -518,11 +560,14 @@ bool MainForm::Startup_MotorArm(void) {
 }
 
 bool MainForm::Startup_MotorShift(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorShiftActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Slide initialization ..\n";	
+		string = "Motor Slide initialization ..";	
+		LogClass::logInFile(string);
 		if (Gantry::isMotorSlideDemo()) {
 			SlideMotor::device->demoMode();
 			labelMotorShiftActivity->Text = "DEMO MODE";
@@ -538,8 +583,8 @@ bool MainForm::Startup_MotorShift(void) {
 		
 
 		labelMotorShiftActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Slide status:" + SlideMotor::device->getInternalStatusStr();
-		StartupLogMessages->Text += "\n";
+		string = "Motor Slide status:" + SlideMotor::device->getInternalStatusStr();
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
@@ -549,9 +594,11 @@ bool MainForm::Startup_MotorShift(void) {
 			startupError = true;
 			labelMotorShiftActivity->Text = "CONFIGURATION ERROR";
 			labelMotorShiftActivity->ForeColor = Color::Red;
+			string = "";
+			if (!SlideMotor::device->isODConfigured()) string += "Motor Slide Object Dictionary initialization Failed\n";
+			if (!SlideMotor::device->isNanojConfigured()) string += "Motor Slide Nanoj initialization Failed\n";
+			LogClass::logInFile(string);
 
-			if (!SlideMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor Slide Object Dictionary initialization Failed\n";
-			if (!SlideMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor Slide Nanoj initialization Failed\n";
 			return true;
 		}
 
@@ -565,12 +612,17 @@ bool MainForm::Startup_MotorShift(void) {
 	return false;
 }
 
+
 bool MainForm::Startup_MotorVertical(void) {
+	System::String^ string;
+
 	switch (startupSubFase) {
 
 	case 0: // Creates the Body Motor controller process
 		labelMotorUpDownActivity->Text = "CONNECTION ..";
-		StartupLogMessages->Text += "> Motor Up/Down initialization ..\n";
+		string = "Motor Vertical initialization ..\n";
+		LogClass::logInFile(string);
+
 		if (Gantry::isMotorVerticalDemo()) {
 			VerticalMotor::device->demoMode();
 			labelMotorUpDownActivity->Text = "DEMO MODE";
@@ -585,8 +637,8 @@ bool MainForm::Startup_MotorVertical(void) {
 		if (!VerticalMotor::device->activateConfiguration()) break;
 
 		labelMotorUpDownActivity->Text = "CONFIGURATION ..";
-		StartupLogMessages->Text += "> Motor Up/Down status:" + VerticalMotor::device->getInternalStatusStr();
-		StartupLogMessages->Text += "\n";
+		string = "Motor Vertical status:" + VerticalMotor::device->getInternalStatusStr();
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
@@ -596,9 +648,10 @@ bool MainForm::Startup_MotorVertical(void) {
 			startupError = true;
 			labelMotorUpDownActivity->Text = "CONFIGURATION ERROR";
 			labelMotorUpDownActivity->ForeColor = Color::Red;
-
-			if (!VerticalMotor::device->isODConfigured()) StartupErrorMessages->Text += "> Motor UpDown Object Dictionary initialization Failed\n";
-			if (!VerticalMotor::device->isNanojConfigured()) StartupErrorMessages->Text += "> Motor UpDown Nanoj initialization Failed\n";
+			string = "";
+			if (!VerticalMotor::device->isODConfigured()) string += "Motor Vertical Object Dictionary initialization Failed\n";
+			if (!VerticalMotor::device->isNanojConfigured()) string += "Motor Vertical Nanoj initialization Failed\n";
+			LogClass::logInFile(string);
 			return true;
 		}
 
@@ -612,7 +665,10 @@ bool MainForm::Startup_MotorVertical(void) {
 	return false;
 }
 
+
 bool MainForm::Startup_Generator(void) {
+	System::String^ string;
+
 	if (Gantry::isGeneratorDemo()) {
 		if (!Generator::isGeneratorSetupCompleted()) return false;
 		return true;
@@ -622,7 +678,8 @@ bool MainForm::Startup_Generator(void) {
 
 	case 0: // Smart Hub Connection
 		labelShActivity->Text = "WAIT SMART HUB CONNECTION..";
-		StartupLogMessages->Text += "> Generator: connection with SH ..\n";
+		string = "Generator: connection with SH ..\n";
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
@@ -632,21 +689,24 @@ bool MainForm::Startup_Generator(void) {
 		labelShActivity->ForeColor = Color::LightGreen;
 
 		labelGeneratorActivity->Text = "WAIT GENERATOR CONNECTION..";
-		StartupLogMessages->Text += "> Generator: connection with generator ..\n";
+		string = "Generator: connection with generator ..";
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
 	case 2: // Wait Generator setup
 		if (!Generator::isGeneratorConnected()) break;
 		labelGeneratorActivity->Text = "WAIT GENERATOR SETUP..";
-		StartupLogMessages->Text += "> Generator: setup protocol ..\n";
+		string = "Generator: setup protocol ..";
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
 	case 3: // Wait Clear System Messages
 		if (!Generator::isGeneratorSetupCompleted()) break;
 		labelGeneratorActivity->Text = "WAIT GENERATOR IDLE..";
-		StartupLogMessages->Text += "> Generator: configuration ..\n";
+		string = "Generator: configuration ..";
+		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 

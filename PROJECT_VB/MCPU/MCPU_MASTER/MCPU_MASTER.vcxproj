@@ -122,7 +122,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE_CALIBRATION;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -144,6 +144,7 @@
     <ClInclude Include="DEVICES\DEMO\PCB302_Demo.h" />
     <ClInclude Include="DEVICES\PCB326.h" />
     <ClInclude Include="GENERATOR\ExposureModule.h" />
+    <ClInclude Include="MESSAGES\Log.h" />
     <ClInclude Include="MOTORS\ArmMotor.h" />
     <ClInclude Include="MOTORS\BodyMotor.h" />
     <ClInclude Include="MOTORS\SlideMotor.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureAEModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />
+    <ClCompile Include="MESSAGES\Log.cpp" />
     <ClCompile Include="MOTORS\ArmMotor.cpp" />
     <ClCompile Include="MOTORS\BodyMotor.cpp" />
     <ClCompile Include="MOTORS\CanOpenDriver\CanOpenAutomaticPositioning.cpp" />

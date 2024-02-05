@@ -203,6 +203,9 @@
     <ClInclude Include="DEVICES\DEMO\PCB302_Demo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MESSAGES\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -371,6 +374,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WINDOWS\ValuePopup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MESSAGES\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

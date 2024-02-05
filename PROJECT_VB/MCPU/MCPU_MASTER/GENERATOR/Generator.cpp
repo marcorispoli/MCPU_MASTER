@@ -10,6 +10,8 @@
 #include "Notify.h"
 #include "awsProtocol.h"
 #include <thread>
+#include "Log.h"
+
 
 
 typedef short (*pSendR2CP_callback)(unsigned char*, unsigned short) ; //!< This is the type used to pass the reception callback to the R2CP module
@@ -103,7 +105,7 @@ void Generator::threadWork(void) {
 
     // Demo management
     if (Gantry::isGeneratorDemo()) {
-        Debug::WriteLine("Generator Demo Version!\n");
+        LogClass::logInFile("Generator Demo Version!\n");
 
         while (true) {           
             setup_completed = true;
@@ -116,7 +118,7 @@ void Generator::threadWork(void) {
     }
 
     while (true) {
-        Debug::WriteLine("Try to connect the Smart Hub and Generator!\n");
+        LogClass::logInFile("Try to connect the Smart Hub and Generator!\n");
         Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
         Notify::activate(Notify::messages::WARNING_GENERATOR_INIT);
         Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY);
@@ -154,19 +156,19 @@ void Generator::threadWork(void) {
         }
        
         Notify::deactivate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
-        Debug::WriteLine("Generator Connected!\n");
+        LogClass::logInFile("Generator Connected!\n");
         
         // Inits of the generator
         if(!generatorInitialization()) continue;
-        Debug::WriteLine("Generator Initialized!\n");
+        LogClass::logInFile("Generator Initialized!\n");
 
         // Clear the system messages
         if (!clearSystemMessages()) continue;
-        Debug::WriteLine("System Message erased!\n");
+        LogClass::logInFile("System Message erased!\n");
 
         // Generator setup
         if (!generatorSetup()) continue;
-        Debug::WriteLine("Generator Setup Completed!\n");
+        LogClass::logInFile("Generator Setup Completed!\n");
         setup_completed = true;
 
         
@@ -174,9 +176,9 @@ void Generator::threadWork(void) {
         // Disables the Rx Message
         R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(true);
         handleCommandProcessedState(nullptr);
-        Debug::WriteLine("Generator Rx Disabled!\n");
+        LogClass::logInFile("Generator Rx Disabled!\n");
 
-        Debug::WriteLine("Generator In Idle\n");
+        LogClass::logInFile("Generator In Idle\n");
         idle_status = true;
         Notify::deactivate(Notify::messages::WARNING_GENERATOR_INIT);
 
@@ -195,7 +197,7 @@ bool  Generator::handleCommandProcessedState(unsigned char* cd) {
 
         if (!cp_timeout) {
             cp_timeout = 100;
-            Debug::WriteLine("CommandProcessedError: Timeout");
+            LogClass::logInFile("CommandProcessedError: Timeout");
             return false;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -206,7 +208,7 @@ bool  Generator::handleCommandProcessedState(unsigned char* cd) {
     if (cd) *cd = code;
 
     if (code) {       
-        Debug::WriteLine("CommandProcessedError:" + gcnew String(R2CP_Eth->getCommandProcessedString().c_str()));
+        LogClass::logInFile("CommandProcessedError:" + gcnew String(R2CP_Eth->getCommandProcessedString().c_str()));
         return false;
     }
     
@@ -237,7 +239,7 @@ bool Generator::generatorInitialization(void) {
     }
     
     // Get the current generator status
-    Debug::WriteLine("Wait the generator initialization process\n");
+    LogClass::logInFile("Wait the generator initialization process\n");
 
     while (true) {
         R2CP::CaDataDicGen::GetInstance()->Generator_Get_StatusV6();
@@ -252,105 +254,105 @@ bool Generator::generatorInitialization(void) {
 
 
 bool Generator::generatorSetup(void) {
-    Debug::WriteLine("GENERATOR: Setup procedure\n");
+    LogClass::logInFile("GENERATOR: Setup procedure\n");
     if (!connectionTest()) return false;
 
     // Setup the 2D Test (no grid)  procedure
-    Debug::WriteLine("GENERATOR: Setup 2D test no grid procedure \n");
+    LogClass::logInFile("GENERATOR: Setup 2D test no grid procedure \n");
     R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Test, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 2D Test (with grid)  procedure
-    Debug::WriteLine("GENERATOR: Setup 2D test with grid procedure \n");
+    LogClass::logInFile("GENERATOR: Setup 2D test with grid procedure \n");
     R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Test_with_grid, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 2D Mammography  procedure
-    Debug::WriteLine("GENERATOR: Setup 2D Mammography no AEC procedure \n");
+    LogClass::logInFile("GENERATOR: Setup 2D Mammography no AEC procedure \n");
     R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Mammography_2D, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 2D Mammography with AEC  procedure
-    Debug::WriteLine("GENERATOR: Setup 2D Mammography with AEC procedure \n");
+    LogClass::logInFile("GENERATOR: Setup 2D Mammography with AEC procedure \n");
     R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Aec_Mammography_2D, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 3D Mammography procedure
-    Debug::WriteLine("GENERATOR: Setup 3D Mammography  procedure \n");
+    LogClass::logInFile("GENERATOR: Setup 3D Mammography  procedure \n");
     R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Mammography_3D, 25);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 3D Mammography procedure
-    Debug::WriteLine("GENERATOR: Setup 3D Mammography  with AEC procedure \n");
+    LogClass::logInFile("GENERATOR: Setup 3D Mammography  with AEC procedure \n");
     R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Aec_Mammography_3D, 25);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the Databank for pre pulse
-    Debug::WriteLine("GENERATOR: Setup Databank for Pre pulse \n");
+    LogClass::logInFile("GENERATOR: Setup Databank for Pre pulse \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pre, 1, 20, 10, 5000);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the Databank for pulse
-    Debug::WriteLine("GENERATOR: Setup Databank for Pulse \n");
+    LogClass::logInFile("GENERATOR: Setup Databank for Pulse \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, 1, 20, 10, 5000);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 3D Databank for Tomo skip pulses
-    Debug::WriteLine("GENERATOR: Setup Databank for Tomo Skip pulses \n");
+    LogClass::logInFile("GENERATOR: Setup Databank for Tomo Skip pulses \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 1 of the Standard test procedure
-    Debug::WriteLine("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Test \n");
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Test \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Test, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 1 of the Standard test with grid procedure
-    Debug::WriteLine("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Test_with_grid \n");
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Test_with_grid \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Test_with_grid, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 1 of the Standard Mammography procedure
-    Debug::WriteLine("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Mammography_2D \n");
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Mammography_2D \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Mammography_2D, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pre-pulse Databank to the Index 1 of the Standard Mammography with AEC procedure
-    Debug::WriteLine("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_Aec_Mammography_2D \n");
+    LogClass::logInFile("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_Aec_Mammography_2D \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pre, R2CP::ProcId_Aec_Mammography_2D, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 2 of the Standard Mammography with AEC procedure
-    Debug::WriteLine("GENERATOR: Assignes Pulse Databank to Index 2 of the  ProcId_Aec_Mammography_2D \n");
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 2 of the  ProcId_Aec_Mammography_2D \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Aec_Mammography_2D, 2);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 1 of the Standard 3D Mammography procedure
-    Debug::WriteLine("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Mammography_3D \n");
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Mammography_3D \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Mammography_3D, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Skip-Pulse Databank to the Standard 3D Mammography procedure
-    Debug::WriteLine("GENERATOR: Assignes Skip Databank to the  ProcId_Standard_Mammography_3D \n");
+    LogClass::logInFile("GENERATOR: Assignes Skip Databank to the  ProcId_Standard_Mammography_3D \n");
    // R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::DB_SkipPulse, R2CP::ProcId_Standard_Mammography_3D);
    // if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pre-pulse Databank to the Index 1 of the Standard 3D Mammography with AEC procedure
-    Debug::WriteLine("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_Aec_Mammography_3D \n");
+    LogClass::logInFile("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_Aec_Mammography_3D \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pre, R2CP::ProcId_Aec_Mammography_3D, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 2 of the Standard 3D Mammography with AEC procedure
-    Debug::WriteLine("GENERATOR: Assignes Pulse Databank to Index 2 of the  ProcId_Aec_Mammography_3D \n");
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 2 of the  ProcId_Aec_Mammography_3D \n");
     R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Aec_Mammography_3D, 2);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Skip-Pulse Databank to the  Standard 3D Mammography with AEC procedure
-    Debug::WriteLine("GENERATOR: Assignes Skip Databank to the  ProcId_Aec_Mammography_3D \n");
+    LogClass::logInFile("GENERATOR: Assignes Skip Databank to the  ProcId_Aec_Mammography_3D \n");
    // R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::DB_SkipPulse, R2CP::ProcId_Aec_Mammography_3D);
    // if (!handleCommandProcessedState(nullptr)) return false;
 
-    Debug::WriteLine("GENERATOR: Setup successfully terminated \n");
+    LogClass::logInFile("GENERATOR: Setup successfully terminated \n");
     return true;
 }
 
@@ -366,7 +368,7 @@ bool Generator::clearSystemMessages(void) {
     // Reset all the errors
     for (int i = 0; i < R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size(); i++) {
         unsigned int id = R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList[i];
-        Debug::WriteLine("GENERATOR: removing message: " + id.ToString() + "\n");
+        LogClass::logInFile("GENERATOR: removing message: " + id.ToString() + "\n");
         R2CP::CaDataDicGen::GetInstance()->SystemMessages_Clear_Message(id);
         if (!handleCommandProcessedState(nullptr)) return false;
     }
@@ -377,8 +379,8 @@ bool Generator::clearSystemMessages(void) {
 
     // Test if the messages have been removed
     if (R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size()) {
-        Debug::WriteLine("GENERATOR: system messages still present! \n");        
-    }else Debug::WriteLine("GENERATOR: No more system messages are present! \n");
+        LogClass::logInFile("GENERATOR: system messages still present! \n");        
+    }else LogClass::logInFile("GENERATOR: No more system messages are present! \n");
 
     return true;
 }
@@ -422,7 +424,7 @@ bool Generator::generatorIdle(void) {
 
         if (generator_status != R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus) {
             generator_status = R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus;
-            Debug::WriteLine("GENERATOR: Current generator status: " + generator_status.ToString() + "\n");
+            LogClass::logInFile("GENERATOR: Current generator status: " + generator_status.ToString() + "\n");
 
             if (generator_status == 2) {
                 Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
@@ -484,7 +486,7 @@ bool Generator::generatorIdle(void) {
             if (exposure_err_code == ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS)  ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_SUCCESS);// xray_complete_event(exposure_completed_options::XRAY_SUCCESS);
             else if (ExposureModule::getExposedPulse(0)->getmAs()) ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_PARTIAL_DOSE);
             else ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_NO_DOSE);
-            Debug::WriteLine("GENERATOR EXPOSURE RESULT:" + ExposureModule::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
+            LogClass::logInFile("GENERATOR EXPOSURE RESULT:" + ExposureModule::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
 
             // Removes the X-RAY ena signal 
             PCB301::set_xray_ena(false);
@@ -501,7 +503,7 @@ bool Generator::generatorIdle(void) {
 
             // Waits for the X-RAY button release
             if (PCB301::getXrayPushButtonStat()) {
-                Debug::WriteLine("GENERATOR EXPOSURE WAITING BUTTON RELEASE\n");
+                LogClass::logInFile("GENERATOR EXPOSURE WAITING BUTTON RELEASE\n");
                 while (PCB301::getXrayPushButtonStat()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
             
@@ -528,7 +530,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
     }
     error_list_id = current_error_list_id;
     Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id);
-    Debug::WriteLine("GENERATOR: system messages present:" + error_list_id + "\n");
+    LogClass::logInFile("GENERATOR: system messages present:" + error_list_id + "\n");
 
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -540,7 +542,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
 
         if (R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size() == 0) {
             Notify::deactivate(Notify::messages::WARNING_GENERATOR_MESSAGE);
-            Debug::WriteLine("GENERATOR: system messages removed \n");
+            LogClass::logInFile("GENERATOR: system messages removed \n");
             return true;
         }
         
@@ -555,7 +557,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
             error_list_id = current_error_list_id;
             Notify::deactivate(Notify::messages::WARNING_GENERATOR_MESSAGE);
             Notify::activate(Notify::messages::WARNING_GENERATOR_MESSAGE, current_error_list_id);
-            Debug::WriteLine("GENERATOR: system messages present:" + error_list_id + "\n");
+            LogClass::logInFile("GENERATOR: system messages present:" + error_list_id + "\n");
         }
 
         

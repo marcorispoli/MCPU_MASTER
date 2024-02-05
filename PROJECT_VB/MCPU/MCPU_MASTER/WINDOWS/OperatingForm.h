@@ -151,7 +151,6 @@ private:
 	/// </summary>
 	void InitializeComponent(void)
 	{
-		
 		this->labelDate = (gcnew System::Windows::Forms::Label());
 		this->labelPatientName = (gcnew System::Windows::Forms::Label());
 		this->labelTime = (gcnew System::Windows::Forms::Label());
@@ -189,7 +188,7 @@ private:
 		this->paddleStatus->SuspendLayout();
 		this->tubeStatus->SuspendLayout();
 		this->collimationStatus->SuspendLayout();
-		this->SuspendLayout();		
+		this->SuspendLayout();
 		// 
 		// labelDate
 		// 
@@ -339,15 +338,16 @@ private:
 		// angleText
 		// 
 		this->angleText->BackColor = System::Drawing::Color::Transparent;
-		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 50, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 50.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->angleText->Location = System::Drawing::Point(10, 87);
+		this->angleText->ImageAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		this->angleText->Location = System::Drawing::Point(101, 176);
 		this->angleText->Margin = System::Windows::Forms::Padding(0);
 		this->angleText->Name = L"angleText";
-		this->angleText->Size = System::Drawing::Size(216, 70);
+		this->angleText->Size = System::Drawing::Size(198, 91);
 		this->angleText->TabIndex = 2;
-		this->angleText->Text = L"-180 °";
-		this->angleText->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->angleText->Text = L"-180°";
+		this->angleText->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		// 
 		// selectedIcon
 		// 
@@ -519,7 +519,7 @@ private:
 
 	private: System::Void onOperatingTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{
-		SendNotifyMessageA(window, WINMSG_TIMER, 0, 0);
+		SendMessageA(window, WINMSG_TIMER, 0, 0);
 	}
 
 

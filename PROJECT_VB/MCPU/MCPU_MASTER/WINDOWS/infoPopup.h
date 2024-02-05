@@ -179,12 +179,12 @@ private: System::Void InitializeComponent() {
 
 	private: System::Void onInfoTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{		
-		SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+		SendMessageA(window, WM_USER + 1, 0, 0);
 	}
 
 
 private: System::Void cancButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	SendNotifyMessageA(window, WM_USER + 1, 0, 0);
+	SendMessageA(window, WM_USER + 1, 0, 0);
 }
 };
 

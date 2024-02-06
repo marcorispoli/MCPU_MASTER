@@ -325,6 +325,7 @@ public:
 
     static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
     static void abortTarget(void);
+    static bool serviceAutoPosition(int pos);
 
 
 public:

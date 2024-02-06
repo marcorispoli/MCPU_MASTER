@@ -869,7 +869,7 @@ void CanOpenMotor::abortActivation(void) {
 }
 
 void CanOpenMotor::demoLoop(void) {
-    MotorCompletedCodes idle_returned_condition;
+    MotorCompletedCodes termination_code;
     int _100ms_time;
     int unit_step;
 
@@ -879,6 +879,7 @@ void CanOpenMotor::demoLoop(void) {
     // Initiate a requested command
     switch (request_command) {
     case MotorCommands::MOTOR_AUTO_POSITIONING:
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: START DEMO AUTO POSITIONING");
         current_command = request_command;
         abort_request = false;
 
@@ -888,19 +889,32 @@ void CanOpenMotor::demoLoop(void) {
         _100ms_time = ((command_target - current_uposition ) * 10) / command_speed;
         if (_100ms_time) {
             unit_step = (command_target - current_uposition) / abs(_100ms_time);
-            
+
+            termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
             for (int i = 0; i < abs(_100ms_time); i++) {
                 current_uposition += unit_step;
                 current_eposition = convert_User_To_Encoder(current_uposition);
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+                // Test the abort request flag
+                if (abort_request) {
+                    abort_request = false;
+
+                    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
+                    termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
+                    break;
+                }
             }
         }
 
-        // Loop Demo Automatic Positioning 
-        current_uposition = command_target;
-        current_eposition = convert_User_To_Encoder(command_target);        
-        setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+        if (termination_code == MotorCompletedCodes::COMMAND_SUCCESS) {
+            current_uposition = command_target;
+        }        
+        current_eposition = convert_User_To_Encoder(current_uposition);
+        
+        setCommandCompletedCode(termination_code);
         request_command = MotorCommands::MOTOR_IDLE;
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING COMPLETED TO ANGLE:" + current_uposition.ToString());
         break;
 
     case MotorCommands::MOTOR_MANUAL_POSITIONING:

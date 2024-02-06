@@ -317,6 +317,7 @@ void awsProtocol::ackOk(List<String^>^ params) {
 
     answer += " %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
     return;
 }
 
@@ -332,6 +333,7 @@ void awsProtocol::ackNok(void) {
 
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %NOK " + pDecodedFrame->errcode.ToString() + " " + pDecodedFrame->errstr + " %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
     return;
 }
 

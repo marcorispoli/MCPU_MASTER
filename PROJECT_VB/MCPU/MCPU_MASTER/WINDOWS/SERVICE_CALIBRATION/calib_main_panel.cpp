@@ -13,6 +13,9 @@ void ServiceForm::createCalibrationPanel(void) {
 
 	zeroSetting->BackColor = Color::Transparent;
 
+	// Creates the sub panels
+	createZeroSettingPanel();
+
 	return;
 }
 void ServiceForm::cancCalibrationPanel(void) {

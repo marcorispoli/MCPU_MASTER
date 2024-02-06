@@ -32,10 +32,11 @@ void ServiceForm::formInitialization(void) {
 	labelInstallation->Text = SystemConfig::Configuration->getParam(SystemConfig::PARAM_INSTALLATION_NAME)[SystemConfig::PARAM_INSTALLATION_NAME_TOP];
 	serviceCanc->BackColor = Color::Transparent;
 	
-	// Panels creation
+	// Service Panels creation
+	// Every panel creates its own sub-panels
 	createServicePanel();	
 	createCalibrationPanel();
-	createZeroSettingPanel();
+	createToolsPanel();
 
 
 	serviceTimer = gcnew System::Timers::Timer(100);
@@ -80,10 +81,15 @@ void ServiceForm::setActivePanel(ServiceForm::panels p) {
 	if (p == current_panel) return;
 	current_panel = p;
 
-	// ides all the panels
+	// Hides all the panels
 	servicePanel->Hide();
+	
+	// Calib panels set
 	calibPanel->Hide();
 	calibZerosettingPanel->Hide();
+
+	// Tools panel set
+	rotationToolPanel->Hide();
 
 	// Stops the timer: each individual panel starts its timer version 
 	serviceTimer->Stop();
@@ -100,6 +106,10 @@ void ServiceForm::setActivePanel(ServiceForm::panels p) {
 		initZeroSettingCalibrationPanel();
 		calibZerosettingPanel->Show();
 	}
+	else if (p == panels::TOOL_ROTATION_PANEL) {
+		initRotationToolPanel();
+		rotationToolPanel->Show();
+	}
 }
 
 void ServiceForm::serviceStatusManagement(void) {
@@ -113,6 +123,7 @@ void ServiceForm::serviceStatusManagement(void) {
 
 	switch (current_panel) {
 		case panels::CALIB_ZEROSETTING_PANEL: zeroSettingPanelTimer(); break;
+		case panels::TOOL_ROTATION_PANEL: rotationToolPanelTimer(); break;
 	}
 	
 }
@@ -162,6 +173,10 @@ System::Void  ServiceForm::systemCalibration_Click(System::Object^ sender, Syste
 	setActivePanel(panels::CALIB_PANEL);
 }
 
+System::Void  ServiceForm::systemRotation_Click(System::Object^ sender, System::EventArgs^ e) {
+	setActivePanel(panels::TOOL_ROTATION_PANEL);
+}
+
 
 
 // Canc button common management
@@ -170,7 +185,7 @@ void ServiceForm::cancButton_Click(System::Object^ sender, System::EventArgs^ e)
 		case panels::MAIN_SERVICE_PANEL: cancServicePanel(); break;
 		case panels::CALIB_PANEL: cancCalibrationPanel(); break;
 		case panels::CALIB_ZEROSETTING_PANEL: cancZeroSettingPanel(); break;
-		//case panels::TOOL_ROTATION_PANEL: cancMainPanel(); break;
+		case panels::TOOL_ROTATION_PANEL: cancRotationToolPanel(); break;
 
 	}
 

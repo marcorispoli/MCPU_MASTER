@@ -94,6 +94,7 @@ public:
     static bool startHoming(void);
     static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
     static bool activateTomoScan(int pos, int speed, int acc, int dec);
+    static bool serviceAutoPosition(int pos);
 
     literal int SCOUT_POSITION = 0;     //!< This is the Scout angle position
     literal int BP_R_POSITION = 1500;   //!< This is the Biopsy Right position

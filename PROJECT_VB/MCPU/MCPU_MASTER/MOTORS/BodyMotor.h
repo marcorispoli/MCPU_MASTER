@@ -100,6 +100,7 @@ public:
 	static BodyMotor^ device = gcnew BodyMotor();
 	static bool startHoming(void);
 	static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
+	static bool serviceAutoPosition(int pos);
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override;

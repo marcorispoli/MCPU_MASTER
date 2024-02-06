@@ -220,6 +220,18 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     current_target = target_options::UNDEF;
 }
 
+bool TiltMotor::serviceAutoPosition(int pos) {
+
+    // Activate the command
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
+
+    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+
+}
+
+
 /// <summary>
 /// This function activates the Tomo Scan rotation mode.
 /// </summary>

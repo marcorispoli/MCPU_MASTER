@@ -57,6 +57,18 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
 
 }
 
+bool SlideMotor::serviceAutoPosition(int pos) {
+
+    // Activate the command
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_DEC]);
+
+    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+
+}
+
+
 void SlideMotor::resetCallback(void) {
 
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary

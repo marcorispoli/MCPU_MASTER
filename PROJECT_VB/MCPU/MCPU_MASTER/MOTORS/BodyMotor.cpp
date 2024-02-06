@@ -60,6 +60,18 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     
 }
 
+bool BodyMotor::serviceAutoPosition(int pos) {
+
+    // Activate the command
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_DEC]);
+
+    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+
+}
+
+
 void BodyMotor::resetCallback(void) {
 
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary

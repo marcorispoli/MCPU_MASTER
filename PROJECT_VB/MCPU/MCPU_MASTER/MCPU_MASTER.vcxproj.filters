@@ -206,6 +206,9 @@
     <ClInclude Include="MESSAGES\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE_TOOLS\tools_panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -377,6 +380,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MESSAGES\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\SERVICE_TOOLS\tools_main_panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\SERVICE_TOOLS\tools_rotation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

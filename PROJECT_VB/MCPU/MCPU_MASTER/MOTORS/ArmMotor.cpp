@@ -220,6 +220,19 @@ bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int i
     return false;
 }
 
+bool ArmMotor::serviceAutoPosition(int pos) {
+    device->iso_activation_mode = false;
+
+    // Activate the command
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_AUTO_DEC]);
+    valid_target = false;
+    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+
+}
+
+
 /// <summary>
 /// This function activates the Automatic Homing procedure
 /// 

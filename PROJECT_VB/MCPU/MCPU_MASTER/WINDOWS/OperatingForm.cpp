@@ -173,8 +173,8 @@ void OperatingForm::formInitialization(void) {
 	//________________________________________________________________________________________
 	
 	// Confirmation Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_CARM_SHIFT_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_CARM_SHIFT_CONFIRMATION);
-	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_CARM_SHIFT_CONFIRMATION);
+	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
+	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
 	pShiftConf = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
 	((ConfirmationWindow^)pShiftConf)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onShiftConfirmCanc);
 	((ConfirmationWindow^)pShiftConf)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onShiftConfirmOk);

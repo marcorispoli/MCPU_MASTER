@@ -579,6 +579,15 @@ namespace CANOPEN {
 		/// <returns>true: the driver is ready to execute a command</returns>
 		inline bool isReady(void) { return ((internal_status == status_options::MOTOR_READY) && (request_command == MotorCommands::MOTOR_IDLE)); }
 
+		/// <summary>
+		/// This function return true if an executing command is pending
+		/// </summary>
+		/// 
+		/// The function shall be used to know if the motor is activated or a comnmand
+		/// is pending (but not yet started)
+		/// 
+		/// <param name=""></param>
+		/// <returns></returns>
 		inline bool isBusy(void) { return (request_command != MotorCommands::MOTOR_IDLE); }
 		
 		/// <summary>

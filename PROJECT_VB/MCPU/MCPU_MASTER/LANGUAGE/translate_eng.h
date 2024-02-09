@@ -137,6 +137,8 @@
 "L00028", Notify::messages::LABEL_BODY_ACTIVATED, "Body Motor Activated", "-",
 "L00028", Notify::messages::LABEL_VERTICAL_ACTIVATED, "Vertical Motor Activated", "-",
 
+"L00028", Notify::messages::LABEL_SLIDE_ACTIVATED, "Slide Motor Activated", "-",
+"L00028", Notify::messages::LABEL_TILT_ACTIVATED, "Tilt Motor Activated", "-",
 
 
 

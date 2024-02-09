@@ -1,11 +1,13 @@
 #include "SlideMotor.h"
 #include "Notify.h"
 #include "pd4_od.h"
+#include "VerticalMotor.h"
+#include "math.h"
 
-// User Units are in 0.1°
+// User Units are in 0.01°
 #define GEAR_RATIO ((double) 1 / (double) 29.1) // 1 turn == 0.291° 
 
-#define MAX_ROTATION_ANGLE 900
+#define MAX_ROTATION_ANGLE 9000
 #define MIN_ROTATION_ANGLE 0
 #define HOMING_ON_METHOD 19
 #define HOMING_OFF_METHOD 20
@@ -23,11 +25,12 @@ bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     // Motor Drive Parameter Set
     while (!blocking_writeOD(OD_3210_01, 10000)); // 50000 Position Loop, Proportional Gain (closed Loop)
-    while (!blocking_writeOD(OD_3210_02, 5));	 // 10  Position Loop, Integral Gain (closed Loop)
+    while (!blocking_writeOD(OD_3210_02, 10));	 // 10  Position Loop, Integral Gain (closed Loop)
+
 
     // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 50))); 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 50)));	// Max Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 200))); 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 200)));	// Max Position Range Limit
 
     // Software Position Limit
     if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
@@ -59,12 +62,27 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
 
 bool SlideMotor::serviceAutoPosition(int pos) {
 
+    device->iso_activation_mode = false;
+
     // Activate the command
     int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_SPEED]);
     int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_ACC]);
     int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_DEC]);
 
     return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+
+}
+
+bool SlideMotor::isoAutoPosition(int pos) {
+    
+    device->iso_activation_mode = true;
+
+    // Activate the command
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_DEC]);
+
+    return device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
 
 }
 
@@ -105,8 +123,30 @@ void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error
         MotorConfig::Configuration->storeFile();
     }
 
-    // If requested, rise the command completed event
-    device->command_completed_event(getCommandId(), (int)error);
+
+    // If Slide activation is not a Isocentric mode (or is terminated in error) then the command termines here
+    // end the command_completed event is generated 
+    if ((!iso_activation_mode) || (error != MotorCompletedCodes::COMMAND_SUCCESS)) {
+        command_completed_event(getCommandId(), (int)error);
+        return;
+    }
+
+    // Activates the Vertical Motor for the isocentric correction
+    // The Slide position is expressed in cents of degrees;
+    // The Vertical Arm position is espressed in millimeters
+    double L = 412; // millimeters from the rotation center
+    double A = 30 * 3.14159  / 180; // Alfa of the potter at the 0 slide degree
+
+    init_angolo = A + ( (double)getPreviousPosition() * 3.14159 / (double)18000);
+    last_angolo = A + ((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
+    H0 = L * cos(init_angolo);
+    H1 = L * cos(last_angolo);
+    
+    if (!VerticalMotor::activateIsocentricCorrection(getCommandId(), (H1-H0))) {
+        // The target is not invalidated because the rotation angle is still valid!
+        device->command_completed_event(getCommandId(), (int)MotorCompletedCodes::COMMAND_SUCCESS);
+        //command_completed_event(getCommandId(), (int) VerticalMotor::device->getCommandCompletedCode());
+    }
 
     return;
 }

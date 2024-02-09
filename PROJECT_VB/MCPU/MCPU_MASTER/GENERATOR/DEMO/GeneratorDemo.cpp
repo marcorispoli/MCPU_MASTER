@@ -5,6 +5,7 @@
 #include "PCB302.h"
 #include "PCB304.h"
 #include "TiltMotor.h"
+#include "ArmMotor.h"
 #include "Notify.h"
 #include "awsProtocol.h"
 #include <thread>
@@ -62,10 +63,15 @@ bool Generator::generatorDemoIdle(void) {
 
             // Unlock the compressor if requested
             if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_RELEASE) PCB302::setCompressorUnlock();
-
+             
             // Notify the AWS about the XRAY completed event
             awsProtocol::EVENT_XraySequenceCompleted();
+           
+            // Disable the Xray Button
             ExposureModule::enableXrayPushButtonEvent(false);
+
+            // Invalidate the current projection
+            ArmMotor::abortTarget();
 
             // Waits for the X-RAY button release
             if (PCB301::getXrayPushButtonStat()) {

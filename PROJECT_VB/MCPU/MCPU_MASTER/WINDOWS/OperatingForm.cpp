@@ -9,6 +9,7 @@
 #include "ArmMotor.h"
 #include "BodyMotor.h"
 #include "SlideMotor.h"
+#include "TiltMotor.h"
 #include "ExposureModule.h"
 #include "../DEVICES/PCB315.h"
 #include "../DEVICES/PCB303.h"
@@ -80,10 +81,6 @@
 
 namespace OPERSTATUS {
 
-	typedef enum {
-		SLIDE_0 = 0,
-		SLIDE_10 = 10
-	}slide_t;
 
 
 	typedef struct {
@@ -115,8 +112,7 @@ namespace OPERSTATUS {
 		bool info;
 
 		unsigned char mag_factor;		
-		bool projectionSelected;
-		slide_t slide_status;
+		
 
 	}Registers;
 };
@@ -189,7 +185,6 @@ void OperatingForm::formInitialization(void) {
 	// Sets the Projection selection button
 	projSelection->BackgroundImage = PROJ_NOT_SELECTED_IMAGE;
 	selectedIcon->Hide();
-	OPERSTATUS::Registers.projectionSelected = false;
 	
 	
 	// Sets the Xray status	
@@ -233,9 +228,8 @@ void OperatingForm::formInitialization(void) {
 	// Decompression status	
 	decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 
-	// Slide status
-	OPERSTATUS::Registers.slide_status = OPERSTATUS::SLIDE_0;
-	slideButton->BackgroundImage = SLIDE_0_IMAGE;
+	// Slide status	
+	slideButton->BackgroundImage = SLIDE_10_IMAGE;
 
 	operatingTimer = gcnew System::Timers::Timer(100);
 	operatingTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &OperatingForm::onOperatingTimeout);
@@ -300,11 +294,9 @@ void OperatingForm::onArmTargetChangedCallback(int id, int target){
 
 	if (ArmMotor::device->isValidTarget()) {		
 		selectedIcon->BackgroundImage = ArmMotor::getProjectionsList()->getCurrentProjectionIcon();
-		selectedIcon->Show();
-		OPERSTATUS::Registers.projectionSelected = true;
+		selectedIcon->Show();		
 	}
 	else {
-		OPERSTATUS::Registers.projectionSelected = false;
 		selectedIcon->Hide();
 	}
 
@@ -312,22 +304,22 @@ void OperatingForm::onArmTargetChangedCallback(int id, int target){
 
 
 void OperatingForm::evaluateProjectionStatus(void) {
+	static ProjectionOptions::options projection = ProjectionOptions::options::RESERVED_FOR_INIT;
 
-	if (ArmMotor::device->isValidTarget()) {
-		if (!OPERSTATUS::Registers.projectionSelected) {
+	if (projection != ArmMotor::getSelectedProjectionCode()) {
+		projection = ArmMotor::getSelectedProjectionCode();
+
+		if (projection == ProjectionOptions::options::UNDEF) {
+			projSelection->BackgroundImage = PROJ_NOT_SELECTED_IMAGE;
+			selectedIcon->Hide();
+		}
+		else {
 			projSelection->BackgroundImage = PROJ_SELECTED_IMAGE;
 			selectedIcon->BackgroundImage = ArmMotor::getProjectionsList()->getCurrentProjectionIcon();
 			selectedIcon->Show();
-			OPERSTATUS::Registers.projectionSelected = true;
-		}		
+		}
 	}
-	else {
-		if (OPERSTATUS::Registers.projectionSelected) {
-			projSelection->BackgroundImage = PROJ_NOT_SELECTED_IMAGE;
-			OPERSTATUS::Registers.projectionSelected = false;
-			selectedIcon->Hide();
-		}	
-	}
+
 
 	angleText->Text = (((float)ArmMotor::device->getCurrentPosition()) / 100).ToString() + "°";
 }
@@ -359,8 +351,12 @@ void OperatingForm::evaluateXrayStatus(void) {
 	static bool xray_running = true;
 	if (xray_running != ExposureModule::isXrayRunning()) {
 		xray_running = ExposureModule::isXrayRunning();
-		if (xray_running) ((IconWindow^)pXray)->open();
-		else ((IconWindow^)pXray)->close();
+		if (xray_running) {
+			((IconWindow^)pXray)->open();
+		}
+		else {
+			((IconWindow^)pXray)->close();
+		}
 	}
 
 }
@@ -632,6 +628,18 @@ void OperatingForm::evaluateDoorStatus(void) {
 }
 
 void OperatingForm::evaluateSlideStatus(void) {
+	static int stat = 255;
+
+	int cur_stat;
+	if (SlideMotor::device->getCurrentPosition() < 500) cur_stat = 0;
+	else cur_stat = 1;
+	
+	if (stat != cur_stat) {
+		stat = cur_stat;
+
+		if(stat == 0)  slideButton->BackgroundImage = SLIDE_0_IMAGE;
+		else slideButton->BackgroundImage = SLIDE_10_IMAGE;
+	}
 
 	
 }
@@ -696,13 +704,19 @@ void OperatingForm::errorButton_Click(System::Object^ sender, System::EventArgs^
 }
 
 void OperatingForm::viewSelection_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (!OPERSTATUS::Registers.projectionSelected)	((ProjectionForm^)pProj)->open();
+	if (!ArmMotor::device->isValidTarget())	((ProjectionForm^)pProj)->open();
 	else {
 		((ConfirmationWindow^)pAbort)->setContentBackground(selectedIcon->BackgroundImage);
 		((ConfirmationWindow^)pAbort)->open();
 	}
 }
+
+
 void OperatingForm::ShiftSelection_Click(System::Object^ sender, System::EventArgs^ e) {
+	
+	// If a motorization is activated returns 
+	if (Gantry::isMotorsActive()) return;
+
 	((ConfirmationWindow^)pShiftConf)->setContentBackground(slideButton->BackgroundImage);
 	((ConfirmationWindow^)pShiftConf)->open();
 }
@@ -726,18 +740,9 @@ void OperatingForm::onConfirmCanc(void) {
 void OperatingForm::onShiftConfirmOk(void) {
 	((ConfirmationWindow^)pShiftConf)->close();
 
-	if (OPERSTATUS::Registers.slide_status == OPERSTATUS::SLIDE_0) {
-		OPERSTATUS::Registers.slide_status = OPERSTATUS::SLIDE_10;
-		slideButton->BackgroundImage = SLIDE_10_IMAGE;
-		//SlideMotor::activateAutomaticPositioning()
-	}
-	else {
-		OPERSTATUS::Registers.slide_status = OPERSTATUS::SLIDE_0;
-		slideButton->BackgroundImage = SLIDE_0_IMAGE;
-		//SlideMotor::activateAutomaticPositioning()
-	}
+	if (SlideMotor::device->getCurrentPosition() < 500) SlideMotor::isoAutoPosition(1000);
+	else SlideMotor::isoAutoPosition(0);
 	
-
 }
 void OperatingForm::onShiftConfirmCanc(void) {
 	((ConfirmationWindow^)pShiftConf)->close();
@@ -758,7 +763,10 @@ void OperatingForm::evaluatePopupPanels(void) {
 	static bool compression = false;
 	static bool arm = false;
 	static bool body = false;
+	static bool slide = false;
 	static bool vertical = false;
+	static bool tilt = false;
+
 	static int timer = 0;
 
 	// With a panel already open do not continue;
@@ -808,6 +816,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = false;
 			vertical = false;
+			slide = false;
+			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
 			else Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
 		}
@@ -825,6 +835,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			arm = true;
 			body = false;
 			vertical = false;
+			slide = false;
+			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
 			else Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
 
@@ -845,6 +857,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = true;
 			vertical = false;
+			slide = false;
+			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
 			else Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
 		}
@@ -863,6 +877,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = false;
 			vertical = true;
+			slide = false;
+			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
 			else Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
 		}
@@ -873,6 +889,46 @@ void OperatingForm::evaluatePopupPanels(void) {
 		return;
 	}
 	else vertical = false;
+
+	if (SlideMotor::device->isRunning()) {
+		timer = TMO;
+		if (!slide) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = true;
+			tilt = false;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
+			else Gantry::getValuePopupWindow()->open(this, SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		int position = (int)SlideMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else slide = false;
+
+	if (TiltMotor::device->isRunning()) {
+		timer = TMO;
+		if (!tilt) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = false;
+			tilt = true;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
+			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
+		}
+
+		// Set the value to the current compression
+		int position = (int)TiltMotor::device->getCurrentPosition();
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else tilt = false;
 
 	// Keeps the popup alive for extra time
 	if (timer) {

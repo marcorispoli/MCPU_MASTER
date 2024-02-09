@@ -338,13 +338,13 @@ private:
 		// angleText
 		// 
 		this->angleText->BackColor = System::Drawing::Color::Transparent;
-		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 50.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 80.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->angleText->ImageAlign = System::Drawing::ContentAlignment::MiddleLeft;
-		this->angleText->Location = System::Drawing::Point(101, 176);
+		this->angleText->Location = System::Drawing::Point(101, 164);
 		this->angleText->Margin = System::Windows::Forms::Padding(0);
 		this->angleText->Name = L"angleText";
-		this->angleText->Size = System::Drawing::Size(198, 91);
+		this->angleText->Size = System::Drawing::Size(210, 105);
 		this->angleText->TabIndex = 2;
 		this->angleText->Text = L"-180°";
 		this->angleText->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;

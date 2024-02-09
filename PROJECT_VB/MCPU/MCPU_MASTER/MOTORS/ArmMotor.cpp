@@ -1,6 +1,6 @@
 #include "CalibrationConfig.h"
 #include "ArmMotor.h"
-#include "verticalMotor.h"
+#include "VerticalMotor.h"
 #include "Notify.h"
 #include "../gantry_global_status.h"
 

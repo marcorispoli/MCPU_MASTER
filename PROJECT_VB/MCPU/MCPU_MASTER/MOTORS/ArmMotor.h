@@ -215,7 +215,8 @@ public:
         RSIOM,
 
         LEN,
-        UNDEF = LEN
+        UNDEF = LEN,
+        RESERVED_FOR_INIT
     };
 
     static const cli::array<System::String^>^ tags = gcnew cli::array<System::String^> {
@@ -331,7 +332,8 @@ public:
 public:
     static inline ProjectionOptions^ getProjectionsList() { return projections; }
     static System::String^ getSelectedProjection(void) { return projections->getCurrentProjectionName(); }
-    
+    static ProjectionOptions::options getSelectedProjectionCode(void) { return projections->getCurrentProjectionCode(); }
+
     delegate void delegate_abort_projection_request_callback(void);
     static event delegate_abort_projection_request_callback^ abort_projection_request_event;
     static void abortProjectionRequest(void) { if (valid_target) abort_projection_request_event(); };

@@ -83,7 +83,8 @@ public:
     static inline bool isMotorSlideDemo(void) { return motor_slide_demo; }
     static inline bool isGeneratorDemo(void) { return generator_demo; }
 
-
+    // Motor Activation
+    static inline bool isMotorsActive(void);
 
 private:
     static operating_status_options current_operating_status = operating_status_options::GANTRY_STARTUP;

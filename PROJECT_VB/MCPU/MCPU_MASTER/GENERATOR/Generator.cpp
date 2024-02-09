@@ -9,6 +9,7 @@
 #include "PCB304.h"
 #include "Notify.h"
 #include "awsProtocol.h"
+#include "ArmMotor.h"
 #include <thread>
 #include "Log.h"
 
@@ -499,7 +500,12 @@ bool Generator::generatorIdle(void) {
             
             // Notify the AWS about the XRAY completed event
             awsProtocol::EVENT_XraySequenceCompleted();
+
+            // Disable the Xray Button
             ExposureModule::enableXrayPushButtonEvent(false);
+
+            // Invalidate the current projection
+            ArmMotor::abortTarget();
 
             // Waits for the X-RAY button release
             if (PCB301::getXrayPushButtonStat()) {

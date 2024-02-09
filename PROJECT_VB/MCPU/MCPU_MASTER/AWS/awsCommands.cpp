@@ -167,7 +167,8 @@ void awsProtocol::SET_ProjectionList(void) {
 /// |:--|:--|:--|
 /// |return_errors::AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
 /// |return_errors::AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 4)|
-/// |return_errors::AWS_RET_DEVICE_BUSY|"ARM_BUSY"|The ARM is currently executing a rotation|
+/// |return_errors::AWS_RET_DEVICE_BUSY|"MOTORS_BUSY"|One of the motors is running|
+/// |return_errors::AWS_RET_DEVICE_BUSY|"ARM_NOT_READY"|The ARM is not ready to execute an activation|
 /// |return_errors::AWS_RET_DATA_NOT_ALLOWED | "WRONG_PROJECTION" | The projection name is not valid or it isn't in the list of selectable projections |
 /// |return_errors::AWS_RET_INVALID_PARAMETER_VALUE |  "WRONG_TARGET_DATA" | One of the angle parameter is not correct or out of range |
 ///
@@ -178,7 +179,8 @@ void awsProtocol::SET_ProjectionList(void) {
 void awsProtocol::EXEC_ArmPosition(void) {
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if ((!ArmMotor::device->isReady())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_BUSY"; ackNok(); return; }
+    if(Gantry::isMotorsActive()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "MOTORS_BUSY"; ackNok(); return; }
+    if ((!ArmMotor::device->isReady())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_NOT_READY"; ackNok(); return; }
     if (!ArmMotor::getProjectionsList()->isValidProjection(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
 
     if (!ArmMotor::setTarget(
@@ -255,7 +257,8 @@ void awsProtocol::EXEC_AbortProjection(void) {
 /// |:--|:--|:--|
 /// |return_errors::AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
 /// |return_errors::AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
-/// |return_errors::AWS_RET_DEVICE_BUSY|"TRX_BUSY"|The TRX is currently executing a rotation|
+/// |return_errors::AWS_RET_DEVICE_BUSY|"MOTORS_BUSY"|One of the motors is running|
+/// |return_errors::AWS_RET_DEVICE_BUSY|"TRX_NOT_READY"|The TRX is not ready to execute an activation|
 /// |return_errors::AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_TARGET" | One of the angle parameter is not correct or out of range |
 /// |return_errors::AWS_RET_DEVICE_ERROR |  "DEVICE_ERROR" | The Tilt Device cannot activate the command for an internal reason |
 /// 
@@ -265,7 +268,8 @@ void awsProtocol::EXEC_AbortProjection(void) {
 void awsProtocol::EXEC_TrxPosition(void) {
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!TiltMotor::device->isReady()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "TRX_BUSY"; ackNok(); return; }
+    if (Gantry::isMotorsActive()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "MOTORS_BUSY"; ackNok(); return; }
+    if (!TiltMotor::device->isReady()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "TRX_NOT_READY"; ackNok(); return; }
     TiltMotor::target_options target = TiltMotor::getTargetCode(pDecodedFrame->parameters[0]);
     if(target == TiltMotor::target_options::UNDEF) { pDecodedFrame->errcode = (int) return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_TARGET"; ackNok(); return; }
     if (!TiltMotor::setTarget(target, pDecodedFrame->ID)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return; }
@@ -610,6 +614,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
             int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
             int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
             TiltMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec,true);
+
         }else if (pDecodedFrame->parameters[0] == "TOMO") {
             LogClass::logInFile("TEST ON TOMO TILT MOTOR");
             int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
@@ -619,7 +624,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
             TiltMotor::activateTomoScan(pos, speed, acc, dec);
         }
         else {
-            LogClass::logInFile("TEST ON BODY MOTOR");
+            LogClass::logInFile("TEST ON SLIDE MOTOR");
             int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
             int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
             int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);

@@ -12,6 +12,12 @@
 #include "Exposuremodule.h"
 #include "awsProtocol.h"
 #include "Log.h"
+#include "ArmMotor.h"
+#include "TiltMotor.h"
+#include "SlideMotor.h"
+#include "BodyMotor.h"
+#include "VerticalMotor.h"
+
 
 
 using namespace System;
@@ -76,14 +82,14 @@ void Gantry::initialize(void) {
     }
 
     operating_demo_status = true;
-    pcb301_demo = false;
+    pcb301_demo = true;
     pcb302_demo = true;
     pcb303_demo = true;
     pcb304_demo = true;
     pcb315_demo = true;
     pcb326_demo = true;
     motor_arm_demo = true;
-    motor_tilt_demo = false;
+    motor_tilt_demo = true;
     motor_slide_demo = true;
     motor_body_demo = true;
     motor_vertical_demo = true;
@@ -299,3 +305,13 @@ bool Gantry::getManualRotationDecrease(int addr) {
 
 }
 
+
+bool Gantry::isMotorsActive(void) {
+    return (
+        ArmMotor::device->isBusy() ||
+        TiltMotor::device->isBusy() ||
+        BodyMotor::device->isBusy() ||
+        SlideMotor::device->isBusy() ||
+        VerticalMotor::device->isBusy()
+        );
+}

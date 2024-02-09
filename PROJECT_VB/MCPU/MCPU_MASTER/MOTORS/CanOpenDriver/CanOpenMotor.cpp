@@ -914,7 +914,7 @@ void CanOpenMotor::demoLoop(void) {
         
         setCommandCompletedCode(termination_code);
         request_command = MotorCommands::MOTOR_IDLE;
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING COMPLETED TO ANGLE:" + current_uposition.ToString());
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING COMPLETED TO TARGET:" + current_uposition.ToString());
         break;
 
     case MotorCommands::MOTOR_MANUAL_POSITIONING:

@@ -1,7 +1,7 @@
 
 <10%EXEC_OpenStudy "Studio per Demo ECR"%>
 <10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
-<10%EXEC_ArmPosition LCC 0 -10 10%>
+<10%EXEC_ArmPosition LMLO 0 -10 10%>
 
 
 <10%EXEC_OpenStudy "Studio per Demo ECR"%>
@@ -96,6 +96,7 @@
 
 < 10 %  EXEC_TestCommand -300 % >
 
-< 10 %  EXEC_TestCommand 9000 200 100 100 % >
+< 10 %  EXEC_TestCommand TILT 15000 200 100 100 % >
+< 10 %  EXEC_TestCommand TILT 0 200 100 100 % >
 < 10 %  EXEC_TestCommand 9000 200 100 100 % >
 

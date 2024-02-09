@@ -24,6 +24,7 @@
 #define HOMING_ON_METHOD 19
 #define HOMING_OFF_METHOD 20
 
+// #define _DISABLE_BRAKES_
 
 /*      Versione con attesa iniziale del segnale EXP WIN
  *      ad un livello IDLE e inizializzazione a zero degli
@@ -370,7 +371,9 @@ bool TiltMotor::startHoming(void) {
 /// <returns></returns>
 bool TiltMotor::unlockBrake(void) {
 
+#ifdef _DISABLE_BRAKES_
 return true;
+#endif
 
     // Sets the OUTPUT 1 properly
     if (!blocking_writeOD(OD_60FE_01, UNLOCK_BRAKE_OUT_MASK)) {
@@ -402,7 +405,10 @@ return true;
 /// <returns></returns>
 bool  TiltMotor::lockBrake(void) {
 
-return true;
+#ifdef _DISABLE_BRAKES_
+    return true;
+#endif
+
     // Sets the OUTPUT 1 properly   
     if (!blocking_writeOD(OD_60FE_01, LOCK_BRAKE_OUT_MASK)) {        
         return false;
@@ -432,7 +438,9 @@ return true;
 /// <param name=""></param>
 /// <returns>true if the brake correctly locks</returns>
 bool TiltMotor::brakeCallback(void) {
-return true;
+#ifdef _DISABLE_BRAKES_
+    return true;
+#endif
     return lockBrake();
 }
 
@@ -448,7 +456,10 @@ return true;
 /// <param name=""></param>
 /// <returns>true if the brake device is correctly unlocked</returns>
 bool TiltMotor::unbrakeCallback(void) {
-return true;
+#ifdef _DISABLE_BRAKES_
+    return true;
+#endif
+
     // Unlock the Brake device
     if (!unlockBrake()) {
         LogClass::logInFile("TiltMotor: Activation failed to unlock the brake device");
@@ -476,7 +487,9 @@ TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
     int speed, acc, dec;
 
-return MotorCompletedCodes::COMMAND_PROCEED;
+#ifdef _DISABLE_BRAKES_
+    return MotorCompletedCodes::COMMAND_PROCEED;
+#endif
 
     // With the brake alarm present, no more action can be executed
     if (brake_alarm) {

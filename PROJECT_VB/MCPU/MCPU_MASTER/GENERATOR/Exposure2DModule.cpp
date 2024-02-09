@@ -5,6 +5,7 @@
 #include "PCB304.h"
 #include "PCB301.h"
 #include <thread>
+#include "Log.h"
 
 using namespace System::Diagnostics;
 using namespace System::Collections::Generic;
@@ -57,17 +58,17 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
     // Starter activation: requires a special command from Sedecal
 
     // Load Data Bank For pulse
-    Debug::WriteLine("GENERATOR MAN 2D EXPOSURE: Setup Databank for Pulse");
+    LogClass::logInFile("GENERATOR MAN 2D EXPOSURE: Setup Databank for Pulse");
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, ExposureModule::getExposurePulse(0)->kV, ExposureModule::getExposurePulse(0)->mAs, 5000);
     if (!handleCommandProcessedState(nullptr)) return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
 
     // Procedure activation
-    Debug::WriteLine("GENERATOR MAN 2D EXPOSURE: procedure activation");
+    LogClass::logInFile("GENERATOR MAN 2D EXPOSURE: procedure activation");
     R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DProcedurePulse(detector_synch, grid_synch);
     if (!handleCommandProcessedState(nullptr)) return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
 
     // Checks if a system message should be present before to proceed
-    Debug::WriteLine("GENERATOR MAN 2D EXPOSURE: check internal error messages");
+    LogClass::logInFile("GENERATOR MAN 2D EXPOSURE: check internal error messages");
     for (int i = 0; i < R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size(); i++) {
         unsigned int id = R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList[i];
         R2CP::CaDataDicGen::GetInstance()->SystemMessages_Clear_Message(id);
@@ -84,7 +85,7 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
     }
 
     // Disables the safety disable RX message
-    Debug::WriteLine("GENERATOR MAN 2D EXPOSURE: reset the Disable-RX message");
+    LogClass::logInFile("GENERATOR MAN 2D EXPOSURE: reset the Disable-RX message");
     R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(false);
     if (!handleCommandProcessedState(nullptr)) return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
 
@@ -110,14 +111,14 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
         switch (current_status) {
         case R2CP::Stat_Standby: continue;
         case R2CP::Stat_Error:
-            Debug::WriteLine("GENERATOR PREPARATION ERROR: Internal error condition");
+            LogClass::logInFile("GENERATOR PREPARATION ERROR: Internal error condition");
             return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
 
         case R2CP::Stat_WaitFootRelease:
         case R2CP::Stat_GoigToShutdown:
         case R2CP::Stat_Service:
         case R2CP::Stat_Initialization:
-            Debug::WriteLine("GENERATOR PREPARATION ERROR: Wrong generator status");
+            LogClass::logInFile("GENERATOR PREPARATION ERROR: Wrong generator status");
             return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
 
         // The Generator is in preparation: proceed with the sequence
@@ -160,7 +161,7 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
         case R2CP::Stat_GoigToShutdown:
         case R2CP::Stat_Service:
         case R2CP::Stat_Initialization:
-            Debug::WriteLine("GENERATOR EXECUTION ERROR: Wrong generator status");
+            LogClass::logInFile("GENERATOR EXECUTION ERROR: Wrong generator status");
             return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
 
         default:

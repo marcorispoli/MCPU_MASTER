@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "Log.h"
 
 using namespace System::Diagnostics;
 using namespace System::Threading;
@@ -306,15 +307,15 @@ namespace CANOPEN {
 
 			unsigned char received_cmd = getCmd(frame);
 			if (received_cmd == (unsigned char)SDOCommandCodes::ERRACK) {
-				if(cmd == SDOCommandCodes::RDCMD) Debug::WriteLine("READ: " + getError(frame));
-				else Debug::WriteLine("WRITE: " + getError(frame));
+				if(cmd == SDOCommandCodes::RDCMD) LogClass::logInFile("READ: " + getError(frame));
+				else LogClass::logInFile("WRITE: " + getError(frame));
 				return false;
 			}
 
 			if (cmd == SDOCommandCodes::RDCMD)  {
 				if (received_cmd != (unsigned char) SDOCommandCodes::RDANSW) return false;				
 				if (ODRegister::getDataDim(frame) != (unsigned char) data_dim) {
-					Debug::WriteLine("INVALID DATADIM");
+					LogClass::logInFile("INVALID DATADIM");
 					return false;
 				}				
 			}
@@ -449,10 +450,10 @@ namespace CANOPEN {
 	    event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
 		bool  activateRelativePositioning(int id, int target, int speed, int acc, int dec); 	//!< This function starts an automatic relative positioning		
-		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec);	//!< This function starts an automatic positioning		
+		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool autostart);	//!< This function starts an automatic positioning		
 		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
-		bool activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
-		void abortActivation(void); //!< Immediate abort of any activation running
+		bool  activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
+		void  abortActivation(void); //!< Immediate abort of any activation running
 
 		/// <summary>
 		/// This enumeration class descibes the internal status condition
@@ -462,8 +463,7 @@ namespace CANOPEN {
 				MOTOR_CONFIGURATION,		//!< The module is configuring the driver
 				MOTOR_READY,				//!< The driver is ready to execute an activation command
 				MOTOR_BUSY,					//!< The driver is executing an acivation command
-				MOTOR_FAULT,				//!< The driver is in fault condition
-				MOTOR_DEMO					//!< The module is running in DEMO mode
+				MOTOR_FAULT,				//!< The driver is in fault condition				
 		};
 		
 		
@@ -519,7 +519,9 @@ namespace CANOPEN {
 			ERROR_MISSING_HOME,//!< The command has been aborted due to invalid homing (the encoder is not correctly initialized)
 			ERROR_COMMAND_DISABLED,//!< The command has been aborted because the activation is not enabled
 			ERROR_COMMAND_ABORTED,//!< The command has been aborted due to an Abort activation request
-			ERROR_SAFETY //!< The command has been aborted due to safety conditions
+			ERROR_COMMAND_DEMO,//!< The command cannot be executed in demo
+			ERROR_SAFETY, //!< The command has been aborted due to safety conditions
+			ERROR_STARTING_NANOJ //!< The Nano-J command failed to start
 		};		
 		
 		/// <summary>
@@ -529,8 +531,17 @@ namespace CANOPEN {
 		/// <returns></returns>
 		inline MotorCompletedCodes getCommandCompletedCode(void) { return command_completed_code; }
 		
-
-		bool activateConfiguration(void); //!< This function activates the Driver configuration fase
+		/// <summary>
+		/// This function activates the Driver configuration fase
+		/// </summary>
+		/// The Driver configuration will take place only when the 
+		/// driver is in internal status READY or FAULT
+		/// <param name=""></param>
+		/// <returns>true always</returns>
+		bool activateConfiguration(void) {
+			configuration_command = true; 
+			return true;
+		} 
 		
 		/// <summary>
 		/// This function returns the current configuration fase status
@@ -567,6 +578,17 @@ namespace CANOPEN {
 		/// <param name=""></param>
 		/// <returns>true: the driver is ready to execute a command</returns>
 		inline bool isReady(void) { return ((internal_status == status_options::MOTOR_READY) && (request_command == MotorCommands::MOTOR_IDLE)); }
+
+		/// <summary>
+		/// This function return true if an executing command is pending
+		/// </summary>
+		/// 
+		/// The function shall be used to know if the motor is activated or a comnmand
+		/// is pending (but not yet started)
+		/// 
+		/// <param name=""></param>
+		/// <returns></returns>
+		inline bool isBusy(void) { return (request_command != MotorCommands::MOTOR_IDLE); }
 		
 		/// <summary>
 		/// This function return true if a command is executing.
@@ -730,9 +752,16 @@ protected:
 		void write_resetNode(void);
 		bool blocking_readOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim);
 		bool writeControlWord(unsigned int mask, unsigned int val);
+		bool readControlWord(unsigned int* ctrlw);
+		bool startRotation(void);
+		bool startNanoj(void);
+		bool stopNanoj(void);
+			
+
 		static System::String^ getErrorClass1001(unsigned int val);
 		static System::String^ getErrorClass1003(unsigned int val);
 		static System::String^ getErrorCode1003(unsigned int val);
+
 
 		virtual MotorCompletedCodes automaticPositioningPreparationCallback(void);  //!< This function is called just before to Power the motor phases
 		virtual MotorCompletedCodes automaticPositioningRunningCallback(void); //!< This function is called during the command execution to terminate early the positioning
@@ -748,13 +777,14 @@ protected:
 
 		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
 		virtual void faultCallback(bool errstat, bool data_change, unsigned int error_class, unsigned int error_code) { return ; }
+		virtual void resetCallback(void) { return ; } //!< Called whenever the boot message is received from the device
 
 		virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
 
 		virtual bool unbrakeCallback(void) { return true; } //!< Called whenever the optional brake device should be released
 		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated
 		
-		virtual void demoLoop(void) { return; };
+		virtual void demoLoop(void);
 
 		inline void setCommandCompleted(MotorCompletedCodes error) { command_completed_code = error; }
 
@@ -794,6 +824,7 @@ private:
 		static const cli::array<System::String^>^ status_tags = gcnew cli::array<System::String^> { "NOT CONNECTED", "CONFIGURATION", "READY", "BUSY", "FAULT"};
 
 		status_options internal_status; //!< This is the current internal motor status
+		
 		int encoder_initial_value;		//! This is the value that shall be assigne to the encoder at the startup
 		int current_eposition;			//!< Current Encoder position
 		int current_uposition;			//!< Current User position 
@@ -879,7 +910,9 @@ private:
 		bool command_stop;			//!< Request to stop the current activation
 		int command_homing_on_method;  //!< Homing method whith zero photocell starting in ON status
 		int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
-
+		
+		bool autostart_mode; //!< Set to tru if the activation ommand is automatically started
+		
 		// Diagnostic
 		double txrx_time;
 		bool read_sdo_tmo;

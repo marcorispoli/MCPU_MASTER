@@ -1,6 +1,7 @@
 #include "CanDriver.h"
 #include "CanDeviceProtocol.h"
 #include <thread>
+#include "Log.h"
 
 using namespace System::Diagnostics;
 using namespace System::Collections::Generic;
@@ -79,7 +80,7 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
     
     // Wrong CRC
     if (!decode_ok) {
-        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong crc");        
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: wrong crc");        
         return;
     }
 
@@ -91,10 +92,10 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
 
         if (register_access_fault_counter > 10) {
             register_access_fault = true;
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: FATAL!! invalid register access. Stop communication");
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: FATAL!! invalid register access. Stop communication");
         } else {
             register_access_fault_counter++;
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: invalid register access");
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: invalid register access");
         }
 
         SetEvent(rxEvent);
@@ -103,7 +104,7 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
 
     // Wrong Command match
     if ((!bootloader) && (rx_register->b1 != tx_register->b1)) {
-        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: wrong command match");
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: wrong command match");
         return;
     }
 
@@ -202,7 +203,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         stringa += " [25]:" + ((int)perc25).ToString();
         stringa += " [30]:" + ((int)perc30).ToString();
         stringa += " [>30]:" + ((int)percXX).ToString();
-       //  Debug::WriteLine(stringa);
+       //  LogClass::logInFile(stringa);
     }
 
     return true;
@@ -211,7 +212,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
 
 
 void CanDeviceProtocol::mainWorker(void) {
-    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: thread started: wait run command");
+    LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: thread started: wait run command");
     while (!run) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
@@ -219,7 +220,7 @@ void CanDeviceProtocol::mainWorker(void) {
     // Demo mode activation
     if (demo_mode) {
         internal_status = status_options::DEVICE_DEMO;
-        Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
         while (demo_mode) {
             demoLoop();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -230,7 +231,7 @@ void CanDeviceProtocol::mainWorker(void) {
     CanDriver::canrx_device_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanDeviceProtocol::thread_can_rx_callback);
     internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
 
-    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run mode");
+    LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run mode");
     while (1) {
         
         if (!CanDriver::isConnected()) internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
@@ -240,7 +241,7 @@ void CanDeviceProtocol::mainWorker(void) {
         case status_options::WAITING_CAN_DRIVER_CONNECTION: // Waits for the CAN DRIVER connection
             if (CanDriver::isConnected()) {
                 internal_status = status_options::WAITING_REVISION;
-                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Wait Revision");
+                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Wait Revision");
             }else{
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             }            
@@ -257,7 +258,7 @@ void CanDeviceProtocol::mainWorker(void) {
                 app_min = rx_register->b6;
                 app_sub = rx_register->b7;
                 internal_status = status_options::DEVICE_CONFIGURATION;
-                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Configuration");
+                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Configuration");
                 break;
             }
 
@@ -267,7 +268,7 @@ void CanDeviceProtocol::mainWorker(void) {
 
         case status_options::DEVICE_CONFIGURATION: // Waits for the device configuration
             if (configurationLoop()) {
-                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Running");
+                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Running");
                 internal_status = status_options::DEVICE_RUNNING;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));            
@@ -276,7 +277,7 @@ void CanDeviceProtocol::mainWorker(void) {
         case status_options::DEVICE_RUNNING: // Device running
             // If the device should reset
             if (device_reset) {
-                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Reset Detected");
+                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Reset Detected");
                 device_reset = false;
                 internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
                 resetLoop();
@@ -303,7 +304,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
         // Test if a command is currently running
         while (!send(GET_COMMAND_REGISTER)) {
             if (isCommunicationError()) {
-                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
+                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
                 command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
                 command_executing = false;
                 return;
@@ -312,7 +313,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
 
 
         if (getRxRegister()->b3 == (System::Byte) CommandRegisterStatus::COMMAND_EXECUTING) {
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Busy");
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Busy");
             command_error = (System::Byte) CommandRegisterErrors::COMMAND_ERROR_BUSY;
             command_executing = false;
             return;
@@ -320,7 +321,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
 
         // Sends the command code
         if (!send(0, 10, command_code, command_d0, command_d1, command_d2, command_d3, 0, false)) {
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Not Executed");
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Not Executed");
             command_error = (System::Byte)CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED;
             command_executing = false;
             return;
@@ -328,7 +329,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
         
         // Gets the command returning code
         if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_ERROR) {
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Error");
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Error");
             command_error = getRxRegister()->b6;
             command_executing = false;
             return;
@@ -336,7 +337,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
 
         // Command is immediate
         if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_TERMINATED) {
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Immediate Executed");
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Immediate Executed");
             command_error = (System::Byte) CommandRegisterErrors::COMMAND_NO_ERROR;
             command_ris0 = getRxRegister()->b4;
             command_ris1 = getRxRegister()->b5;
@@ -348,7 +349,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
         while (true) {
             timeout--;
             if (!timeout) {
-                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Timeout");
+                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Timeout");
                 command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
                 command_executing = false;
                 return;
@@ -356,7 +357,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
 
             while (!send(GET_COMMAND_REGISTER)) {
                 if (isCommunicationError()) {
-                    Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
+                    LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
                     command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
                     command_executing = false;
                     return;
@@ -371,7 +372,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
             }
 
             if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_TERMINATED) {
-                Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Successfully Terminated");
+                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Successfully Terminated");
                 command_error = (System::Byte)CommandRegisterErrors::COMMAND_NO_ERROR;
                 command_ris0 = getRxRegister()->b4;
                 command_ris1 = getRxRegister()->b5;
@@ -380,7 +381,7 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
             }
 
             // Error condition
-            Debug::WriteLine("Device Board <" + System::Convert::ToString(device_id) + ">: Command Terminated in Error");
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Terminated in Error");
             command_error = getRxRegister()->b6;
             command_executing = false;
             return;

@@ -288,7 +288,7 @@ private:
 
 	private: System::Void onIdleTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e)
 	{
-		SendNotifyMessageA(window, WINMSG_TIMER, 0, 0);
+		SendMessageA(window, WINMSG_TIMER, 0, 0);
 	}
 
 private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);

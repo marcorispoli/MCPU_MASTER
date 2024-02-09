@@ -9,6 +9,15 @@
 #include "PCB301.h"
 #include "PCB302.h"
 #include "CanOpenMotor.h"
+#include "Exposuremodule.h"
+#include "awsProtocol.h"
+#include "Log.h"
+#include "ArmMotor.h"
+#include "TiltMotor.h"
+#include "SlideMotor.h"
+#include "BodyMotor.h"
+#include "VerticalMotor.h"
+
 
 
 using namespace System;
@@ -34,31 +43,61 @@ Gantry::Gantry() {
                 monitor_Y0 = Screen::AllScreens[i]->Bounds.Top;                
             }
         }
-        Debug::WriteLine("SELECTED MONITOR: X0 = " + monitor_X0.ToString() + ", Y0 = " + monitor_Y0.ToString());
+        LogClass::logInFile("SELECTED MONITOR: X0 = " + monitor_X0.ToString() + ", Y0 = " + monitor_Y0.ToString());
          
 
         
     
 }
 
+
 void Gantry::initialize(void) {
-    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEMO_MODE)[SystemConfig::PARAM_DEMO_MODE_STATUS] == "1") {
-        demo_status = true;
-    }
-    else demo_status = false;
-
-
-    // Set the current language for messages and GUI
-    Notify::setLanguage("ENG");
-
-    pcb304_demo = true;
-    pcb302_demo = true;
-    pcb326_demo = true;
+    
+    // Set the Demo mode for all processes
+    operating_demo_status = false;
+    pcb301_demo = false;
+    pcb302_demo = false;
+    pcb303_demo = false;
+    pcb304_demo = false;
+    pcb315_demo = false;
+    pcb326_demo = false;
     motor_arm_demo = false;
+    motor_tilt_demo = false;
+    motor_slide_demo = false;
+    motor_body_demo = false;
+    motor_vertical_demo = false;
+    generator_demo = false;
+
+    // Initializes the Operating Demo status
+    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEMO_MODE)[SystemConfig::PARAM_DEMO_MODE_STATUS] == "1")
+        operating_demo_status = true;
+
+    // Force some process to be in demo status when the operating is in demo
+    if (operating_demo_status) {
+        pcb303_demo = true;
+        pcb304_demo = true;
+        pcb315_demo = true;
+        pcb326_demo = true;
+        generator_demo = true;
+    }
+
+    operating_demo_status = true;
+    pcb301_demo = true;
+    pcb302_demo = true;
+    pcb303_demo = true;
+    pcb304_demo = true;
+    pcb315_demo = true;
+    pcb326_demo = true;
+    motor_arm_demo = true;
     motor_tilt_demo = true;
     motor_slide_demo = true;
     motor_body_demo = true;
     motor_vertical_demo = true;
+    generator_demo = true;
+
+
+    // Set the current language for messages and GUI
+    Notify::setLanguage("ENG");
 
     // Creates the status Windows
     pIdleForm = gcnew IdleForm();
@@ -74,6 +113,7 @@ bool Gantry::setIdle() {
 
     current_operating_status = operating_status_options::GANTRY_IDLE;
     ((IdleForm^)pIdleForm)->open();
+    awsProtocol::EVENT_GantryStatus();
     return true;
 }
 
@@ -84,6 +124,7 @@ bool Gantry::setOperating() {
 
     current_operating_status = operating_status_options::GANTRY_OPERATING;
     ((OperatingForm^)pOperatingForm)->open();
+    awsProtocol::EVENT_GantryStatus();
     return true;
 }
 
@@ -95,12 +136,14 @@ bool Gantry::setService() {
 
     current_operating_status = operating_status_options::GANTRY_SERVICE;
     ((ServiceForm^)pServiceForm)->open();
+    awsProtocol::EVENT_GantryStatus();
     return true;
 }
 
 
 void Gantry::setStartup(void) {
     current_operating_status = operating_status_options::GANTRY_STARTUP;
+    
 }
 
 bool Gantry::setOpenStudy(System::String^ patient) {    
@@ -110,12 +153,11 @@ bool Gantry::setOpenStudy(System::String^ patient) {
 
 bool Gantry::setCloseStudy(void) {    
     patient_name = "";
+    ExposureModule::reset();// Reset all the modalities
+    ((OperatingForm^)pOperatingForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
+
     return setIdle();
 }
-
-
-
-
 
 
 bool Gantry::getObstacleRotationStatus(int addr) { 
@@ -263,3 +305,13 @@ bool Gantry::getManualRotationDecrease(int addr) {
 
 }
 
+
+bool Gantry::isMotorsActive(void) {
+    return (
+        ArmMotor::device->isBusy() ||
+        TiltMotor::device->isBusy() ||
+        BodyMotor::device->isBusy() ||
+        SlideMotor::device->isBusy() ||
+        VerticalMotor::device->isBusy()
+        );
+}

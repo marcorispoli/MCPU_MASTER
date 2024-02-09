@@ -3,6 +3,8 @@
 #include "CanOpenMotor.h"
 #include "pd4_od.h"
 #include <thread>
+#include "Log.h"
+
 
 
 /// <summary>
@@ -44,20 +46,25 @@
 /// <param name="speed">This is the speed in the Application units</param>
 /// <param name="acc">This is the Acceleration rate in Application units</param>
 /// <param name="dec">This is the Deceleration rate in Application units</param>
+/// <param name="autostart">set to true to automatically start the activation (bit4 of control word) </param>
 /// <returns>true if the command can be executed</returns>
-bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec) {
+bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool autostart) {
 
-    // Only withthe homing executed or initialized can be activated
-    if (!home_initialized) {
-        command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
-        return false;
+    // If the driver is in demo executes the demo activation
+    if (!demo_mode) {
+        // Only withthe homing executed or initialized can be activated
+        if (!home_initialized) {
+            command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
+            return false;
+        }
+
+        // Command already in execution
+        if (!isReady()) {
+            command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+            return false;
+        }
     }
 
-    // Command already in execution
-    if (!isReady()) {
-        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
-        return false;
-    }
 
     command_id = id;
     command_target = target;
@@ -65,6 +72,8 @@ bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, i
     command_dec = dec;
     command_speed = speed;
     request_command = MotorCommands::MOTOR_AUTO_POSITIONING;
+    autostart_mode = autostart;
+
     return true;
 }
 
@@ -72,7 +81,7 @@ bool  CanOpenMotor::activateRelativePositioning(int id, int delta_target, int sp
     
     // Set the taret position
     int target = getCurrentPosition() + delta_target;
-    return activateAutomaticPositioning(id, target, speed, acc, dec);
+    return activateAutomaticPositioning(id, target, speed, acc, dec, true);
 }
 
 
@@ -162,6 +171,8 @@ void CanOpenMotor::automaticPositioningCompletedCallback(MotorCompletedCodes com
 void CanOpenMotor::manageAutomaticPositioning(void) {
     MotorCompletedCodes termination_code;
     bool error_condition;
+    bool motor_started = false;
+    unsigned int ctrlw;
 
     // Get the actual encoder position 
     updateCurrentPosition();
@@ -171,12 +182,12 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
 
     // Test if the actual position is already in target position
     if (isTarget()) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (ALREADY IN POSITION)");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (ALREADY IN POSITION)");
         setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
         return;
     }
 
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) +
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) +
         "> INIT AUTO POSITIONING: From " + System::Convert::ToString(current_uposition) +
         " To " + System::Convert::ToString(command_target) +
         " Expected In " + System::Convert::ToString((int)((double)command_ms_tmo)) + " (ms)");
@@ -191,7 +202,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     if (!blocking_writeOD(OD_6060_00, 1)) error_condition = true;// Set the Activation mode to Profile Positioning Mode
     if (!writeControlWord(POSITION_SETTING_CTRL_INIT_MASK, POSITION_SETTING_CTRL_INIT_VAL)) error_condition = true;// Sets the Position control bits in the control word
     if (error_condition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO POSITIONING PREPARATION");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO POSITIONING PREPARATION");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
@@ -214,7 +225,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     }
 
     if (error_condition) {
-        Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO POSITIONING OPERATION ENABLE SETTING");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO POSITIONING OPERATION ENABLE SETTING");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
@@ -236,48 +247,64 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         return;
     }
 
-    // Set the start bit (BIT4) in the control word register
-    if (!writeControlWord(POSITION_SETTING_START_MASK, POSITION_SETTING_START_VAL)) {
-        brakeCallback();
-        setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
-        return;
+    // Set the start bit (BIT4) in the control word register for autostart mode
+    if (autostart_mode) {
+        if(!startRotation()){
+            brakeCallback();
+            setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
+            return;
+        }
     }
-
-    // Measuring the actuation time
-    typedef std::chrono::high_resolution_clock clock;
-    clock::time_point start = clock::now();
-
     
     // Every 1000 ms checks the distance from the target
     command_ms_tmo = 5000;
     bool timeout = false;
     int delta_target = abs(current_uposition - command_target);
+    
+    // Measuring the actuation time
+    typedef std::chrono::high_resolution_clock clock;
+    clock::time_point start ;
 
     while (true) {
-        
         // Read the current position 
         updateCurrentPosition();
 
-        if (command_ms_tmo <= 0) {
-            if (abs(current_uposition - command_target) >= delta_target) timeout = true;
-            else {
-                delta_target = abs(current_uposition - command_target);
-                command_ms_tmo = 5000;
+        if (!motor_started) {
+            command_ms_tmo = 5000;
+            delta_target = abs(current_uposition - command_target);
+            timeout = false;
+
+            if (readControlWord(&ctrlw)) {
+                if (ctrlw & 0x0010) {
+                    motor_started = true;
+                    start = clock::now();      
+                    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ROTATION STARTED!");
+                }
+           }
+        }
+        else {
+            if (command_ms_tmo <= 0) {
+                if (abs(current_uposition - command_target) >= delta_target) timeout = true;
+                else {
+                    delta_target = abs(current_uposition - command_target);
+                    command_ms_tmo = 5000;
+                }
             }
         }
+
 
         // Test the abort request flag
         if (abort_request) {
             abort_request = false;
 
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
             termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
             break;
         }
 
         // Reads the status to be sure that it is still Operation Enabled 
         if (!blocking_readOD(OD_6041_00)) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR READING STATUS REGISTER");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR READING STATUS REGISTER");
             termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;            
             break;
         }
@@ -286,14 +313,14 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
 
         // In case the status should be changed, the internal fault is activated
         if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR POSSIBLE FAULT");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR POSSIBLE FAULT");
             termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
             break;
         }
 
         // Test the Timeout condition
         if ((timeout) && (!isTarget())) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING TIMEOUT ERROR");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING TIMEOUT ERROR");
             termination_code = MotorCompletedCodes::ERROR_TIMOUT;
             break;
         }
@@ -301,7 +328,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         // The Application can early terminate the activation
         MotorCompletedCodes termination_condition = automaticPositioningRunningCallback();
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
-            Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
             break;
         }
@@ -313,13 +340,13 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
             milliseconds ms = std::chrono::duration_cast<milliseconds>(clock::now() - start);
 
             if (timeout) {
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (TMO) - Time =  " + System::Convert::ToString(ms.count()) + " (ms)");
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (TMO) - Time =  " + System::Convert::ToString(ms.count()) + " (ms)");
             }
             else if (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION) {
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (MANUAl) - Time =  " + System::Convert::ToString(ms.count()) + " (ms)");
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (MANUAl) - Time =  " + System::Convert::ToString(ms.count()) + " (ms)");
             }
             else {
-                Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSIITONING COMPLETED actually In =  " + System::Convert::ToString(ms.count()) + " (ms)");
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSIITONING COMPLETED actually In =  " + System::Convert::ToString(ms.count()) + " (ms)");
             }
 
             termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
@@ -342,7 +369,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
 
     // Read the current position 
     updateCurrentPosition();   
-    Debug::WriteLine("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
 
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);

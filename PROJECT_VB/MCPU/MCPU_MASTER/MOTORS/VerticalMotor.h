@@ -143,14 +143,22 @@ protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
 	bool testLimitSwitch(void); //!< True if the limit switch is engaged
 
+	MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
 	MotorCompletedCodes automaticPositioningRunningCallback(void) override;
 	void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
+
+	MotorCompletedCodes manualPositioningPreparationCallback(void) override;
+	MotorCompletedCodes manualPositioningRunningCallback(void) override;
+	void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+
 	void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 	
 	MotorCompletedCodes idleCallback(void) override;
 	void faultCallback(bool errstat, bool data_changed,  unsigned int error_class, unsigned int error_code) override;
 
-	MotorCompletedCodes manualPositioningRunningCallback(void) override;
-	void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+	void resetCallback(void) override;
+
+
+
 };
 

@@ -5,6 +5,8 @@
 #include "pd4_od.h"
 #include "..\gantry_global_status.h"
 #include <thread>
+#include "Log.h"
+
 
 
 
@@ -56,6 +58,38 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
     
+}
+
+bool BodyMotor::serviceAutoPosition(int pos) {
+
+    // Activate the command
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_ACC]);
+    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_DEC]);
+
+    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+
+}
+
+
+void BodyMotor::resetCallback(void) {
+
+    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
+    bool homing_initialized = false;
+    int  init_position = 0;
+
+    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+        homing_initialized = true;
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION]);
+    }
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialUvalue(init_position);
+
+    // Activate a warning condition is the motor should'n be initialized
+    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
+
+    // Activates the configuration of the device
+    activateConfiguration();
 }
 
 /// <summary>
@@ -127,7 +161,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     if (brake_activated) {
         brake_alarm = true;
-        Debug::WriteLine("BodyMotor: Failed test output off, off");
+        LogClass::logInFile("BodyMotor: Failed test output off, off");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
         
         // Clear the OUTPUTS
@@ -136,13 +170,13 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     }
 
     if (!activateBrake()) {
-        Debug::WriteLine("BodyMotor: Failed test output on, on");
+        LogClass::logInFile("BodyMotor: Failed test output on, on");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
         return true;
     }
 
     if (!deactivateBrake()) {
-        Debug::WriteLine("BodyMotor: Failed test output off, on");
+        LogClass::logInFile("BodyMotor: Failed test output off, on");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);        
     }
 
@@ -224,7 +258,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     
     if (BRAKE_INPUT_MASK(getRxReg()->data)) {        
         brake_alarm = true;
-        Debug::WriteLine("BodyMotor: Failed test brake input in IDLE");
+        LogClass::logInFile("BodyMotor: Failed test brake input in IDLE");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
         blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
         return MotorCompletedCodes::ERROR_BRAKE_DEVICE;        
@@ -435,7 +469,7 @@ bool BodyMotor::unbrakeCallback(void) {
 
     // Unlock the Brake device
     if (!activateBrake()) {
-        Debug::WriteLine("BodyMotor: Activation failed to unlock the brake device");
+        LogClass::logInFile("BodyMotor: Activation failed to unlock the brake device");
         return false;
     }
 
@@ -460,4 +494,35 @@ void BodyMotor::faultCallback(bool errstat, bool data_changed, unsigned int erro
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
     if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
 
+}
+
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// The function invalidate the current encoder position in the case, 
+/// during the activation, the software should be killed before to update the current encoder position.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+BodyMotor::MotorCompletedCodes BodyMotor::automaticPositioningPreparationCallback(void) {
+
+    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
+    // with the current valid position
+    MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    return MotorCompletedCodes::COMMAND_PROCEED;
+}
+
+/// <summary>
+/// This function is called at the beginning of the automatic activation
+/// </summary>
+/// 
+/// See the automaticPositioningPreparationCallback()
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+BodyMotor::MotorCompletedCodes BodyMotor::manualPositioningPreparationCallback(void) {
+    return automaticPositioningPreparationCallback();
 }

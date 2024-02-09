@@ -4,6 +4,7 @@
 #include <thread>
 #include <mutex>
 #include "vs_can_api.h"
+#include "Log.h"
 
 
 using namespace std;
@@ -63,7 +64,7 @@ bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsi
 
     // Prova ad inviare il dati
     if (VSCAN_Write(handle, &msg, 1, &written) != VSCAN_ERR_OK) {
-        Debug::WriteLine("Can Driver Failed to Send ");
+        LogClass::logInFile("Can Driver Failed to Send ");
         return false;
     }
     VSCAN_Flush(handle);
@@ -99,8 +100,9 @@ void CanDriver::threadWork(void) {
 
     status = VSCAN_Ioctl(NULL, VSCAN_IOCTL_SET_DEBUG, VSCAN_DEBUG_NONE);
     for (int i = 0; i < 5; i++) {
-        Debug::WriteLine("CAN OPEN ATTEMPT: " + System::Convert::ToString(i));
-        handle = VSCAN_Open(VSCAN_FIRST_FOUND, VSCAN_MODE_NORMAL);
+        LogClass::logInFile("CAN OPEN ATTEMPT: " + System::Convert::ToString(i));
+        //handle = VSCAN_Open(VSCAN_FIRST_FOUND, VSCAN_MODE_NORMAL);
+        handle = VSCAN_Open("COM20", VSCAN_MODE_NORMAL);
         if (handle > 0) break;
     }
 
@@ -109,11 +111,11 @@ void CanDriver::threadWork(void) {
         ErrorString = "Can Driver Error: unable to open the driver.\n";
         VSCAN_GetErrorString((VSCAN_STATUS)handle, cstring, 32);
         ErrorString += "Driver error: "+ gcnew System::String(cstring) + "\n";
-        Debug::WriteLine("CAN DRIVER: NORMAL MODE: " + System::Convert::ToString(cstring));
+        LogClass::logInFile("CAN DRIVER: NORMAL MODE: " + System::Convert::ToString(cstring));
         return ;
     }
 
-    Debug::WriteLine("DRIVER OPEN");
+    LogClass::logInFile("DRIVER OPEN");
 
 
     // Get the APi release code
@@ -123,12 +125,12 @@ void CanDriver::threadWork(void) {
         ErrorString = "Can Driver Error: unable to get the API revision.\n";
         VSCAN_GetErrorString(status, cstring, 32);
         ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
-        Debug::WriteLine("Get Api Version Command: " + System::Convert::ToString(cstring));
+        LogClass::logInFile("Get Api Version Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
     printf("VSCAN API:  - %d.%d.%d", version.Major, version.Minor, version.SubMinor);
-    Debug::WriteLine("VSCAN API: " + System::Convert::ToString(version.Major) + "." + System::Convert::ToString(version.Minor) + "." + System::Convert::ToString(version.SubMinor));
+    LogClass::logInFile("VSCAN API: " + System::Convert::ToString(version.Major) + "." + System::Convert::ToString(version.Minor) + "." + System::Convert::ToString(version.SubMinor));
 
     // Get Hardware release code
     status = VSCAN_Ioctl(handle, VSCAN_IOCTL_GET_HWPARAM, &hwparam);
@@ -137,7 +139,7 @@ void CanDriver::threadWork(void) {
         ErrorString = "Can Driver Error: unable to get the HW revision.\n";
         VSCAN_GetErrorString(status, cstring, 32);
         ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
-        Debug::WriteLine("Get Hw Param Command: " + System::Convert::ToString(cstring));
+        LogClass::logInFile("Get Hw Param Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
@@ -150,7 +152,7 @@ void CanDriver::threadWork(void) {
     swrev_min = hwparam.SwVersion & 0x0F;
 
    
-    Debug::WriteLine("VSCAN HARDWARE:  SN=" + System::Convert::ToString(hwparam.SerialNr) +
+    LogClass::logInFile("VSCAN HARDWARE:  SN=" + System::Convert::ToString(hwparam.SerialNr) +
         " HwREV=" + System::Convert::ToString(hwrev_maj) + "." + System::Convert::ToString(hwrev_min) +
         " SwREV=" + System::Convert::ToString(swrev_maj) + "." + System::Convert::ToString(swrev_min) +
         " TYPE=" + System::Convert::ToString(hwparam.HwType));
@@ -177,7 +179,7 @@ void CanDriver::threadWork(void) {
         ErrorString = "Can Driver Error: unable to set the Baud Rate.\n";
         VSCAN_GetErrorString(status, cstring, 32);
         ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
-        Debug::WriteLine("Set Baudrate Command: " + System::Convert::ToString(cstring));
+        LogClass::logInFile("Set Baudrate Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
@@ -189,7 +191,7 @@ void CanDriver::threadWork(void) {
         ErrorString = "Can Driver Error: unable to set the Fiter mode.\n";
         VSCAN_GetErrorString(status, cstring, 32);
         ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
-        Debug::WriteLine("VSCAN_IOCTL_SET_FILTER_MODE Command: " + System::Convert::ToString(cstring));
+        LogClass::logInFile("VSCAN_IOCTL_SET_FILTER_MODE Command: " + System::Convert::ToString(cstring));
         return ;
     }
     // receive all frames on the CAN bus (default)
@@ -204,7 +206,7 @@ void CanDriver::threadWork(void) {
         ErrorString = "Can Driver Error: unable to set the Acceptance filter Mask.\n";
         VSCAN_GetErrorString(status, cstring, 32);
         ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
-        Debug::WriteLine("Set Code And Mask Command: " + System::Convert::ToString(cstring));
+        LogClass::logInFile("Set Code And Mask Command: " + System::Convert::ToString(cstring));
         return ;
     }
 
@@ -217,13 +219,13 @@ void CanDriver::threadWork(void) {
         ErrorString = "Can Driver Error: unable to set the Acceptance filter Code.\n";
         VSCAN_GetErrorString(status, cstring, 32);
         ErrorString += "Driver error: " + gcnew System::String(cstring) + "\n";
-        Debug::WriteLine("VSCAN_IOCTL_SET_FILTER Command: " + System::Convert::ToString(cstring));
+        LogClass::logInFile("VSCAN_IOCTL_SET_FILTER Command: " + System::Convert::ToString(cstring));
         return ;
     }
     
     VSCAN_Ioctl(handle, VSCAN_IOCTL_SET_BLOCKING_READ, VSCAN_IOCTL_ON);
     
-    Debug::WriteLine("VSCAN DRIVER READY");
+    LogClass::logInFile("VSCAN DRIVER READY");
     can_connected = true;
 
     while (1) {
@@ -253,7 +255,7 @@ void CanDriver::threadWork(void) {
                 continue;
             }
             if ((rxCanId >= 0x700) && (rxCanId <= 0x707)) {
-                Debug::WriteLine("BOOT MSG:" + (rxCanId-0x700));
+                LogClass::logInFile("BOOT MSG:" + (rxCanId-0x700));
                 canrx_canopen_bootup_event(rxCanId, rxCanData, rxmsgs[i].Size);                
                 continue;
             }

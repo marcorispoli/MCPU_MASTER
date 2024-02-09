@@ -42,10 +42,54 @@ protected:
 			delete components;
 		}
 	}
+private: System::Windows::Forms::Panel^ rotationToolPanel;
+private: System::Windows::Forms::PictureBox^ rotationToolArmButton;
+private: System::Windows::Forms::PictureBox^ rotationToolManualButton;
+
+
+
+private: System::Windows::Forms::PictureBox^ rotationToolSlideButton;
+
+protected:
+
+
+
+
+
+
+
+private: System::Windows::Forms::PictureBox^ rotationToolBodyButton;
+
+
+private: System::Windows::Forms::PictureBox^ rotationToolTiltButton;
+private: System::Windows::Forms::Panel^ rotationToolView;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectionIcon;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle9;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle8;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle7;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle6;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle5;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle4;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle3;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle2;
+private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle1;
+
+
+
+
+
+
+
+
+
+
+Object^ pConfirmation; // Used in the case a confirmation should needed
+private: System::Windows::Forms::Label^ rotationToolTargetAngle;
+
 
 public:System::Timers::Timer^ serviceTimer;
 
-	  // Handles the Window status
+// Handles the Window status
 public:	void open(void);
 public:	void close(void);
 public: bool open_status;
@@ -64,6 +108,7 @@ public: enum class panels {
 	MAIN_SERVICE_PANEL,
 	CALIB_PANEL,
 	CALIB_ZEROSETTING_PANEL,
+	TOOLS_PANEL,
 	TOOL_ROTATION_PANEL,
 };
 
@@ -80,6 +125,7 @@ public: void createServicePanel(void);
 public: void cancServicePanel(void);
 
 #include "calib_panel.h"
+#include "tools_panel.h"
 
 
 private: System::Windows::Forms::Label^ serviceMenuTitle;
@@ -138,6 +184,24 @@ private:
 		this->zeroSettingAll = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceCanc = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceMenuTitle = (gcnew System::Windows::Forms::Label());
+		this->rotationToolPanel = (gcnew System::Windows::Forms::Panel());
+		this->rotationToolView = (gcnew System::Windows::Forms::Panel());
+		this->rotationToolManualButton = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolTargetAngle = (gcnew System::Windows::Forms::Label());
+		this->rotationToolSelectAngle9 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle8 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle7 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle6 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle5 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle4 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle3 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle2 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectAngle1 = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSelectionIcon = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolSlideButton = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolBodyButton = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolTiltButton = (gcnew System::Windows::Forms::PictureBox());
+		this->rotationToolArmButton = (gcnew System::Windows::Forms::PictureBox());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemSetup))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->BeginInit();
@@ -152,6 +216,23 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingBody))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingAll))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->BeginInit();
+		this->rotationToolPanel->SuspendLayout();
+		this->rotationToolView->SuspendLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolManualButton))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle9))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle8))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle7))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle6))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle5))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle4))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle3))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle2))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle1))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectionIcon))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSlideButton))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolBodyButton))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolTiltButton))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolArmButton))->BeginInit();
 		this->SuspendLayout();
 		// 
 		// rotationTool
@@ -164,6 +245,7 @@ private:
 		this->rotationTool->Size = System::Drawing::Size(160, 160);
 		this->rotationTool->TabIndex = 1;
 		this->rotationTool->TabStop = false;
+		this->rotationTool->Click += gcnew System::EventHandler(this, &ServiceForm::systemRotation_Click);
 		// 
 		// systemSetup
 		// 
@@ -266,7 +348,7 @@ private:
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingVertical);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingBody);
 		this->calibZerosettingPanel->Controls->Add(this->zeroSettingAll);
-		this->calibZerosettingPanel->Location = System::Drawing::Point(0, 50);
+		this->calibZerosettingPanel->Location = System::Drawing::Point(1000, 50);
 		this->calibZerosettingPanel->Name = L"calibZerosettingPanel";
 		this->calibZerosettingPanel->Size = System::Drawing::Size(600, 880);
 		this->calibZerosettingPanel->TabIndex = 16;
@@ -345,7 +427,7 @@ private:
 		this->zeroSettingBody->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingBody->TabIndex = 19;
 		this->zeroSettingBody->TabStop = false;
-		this->zeroSettingBody->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingBody_Click);
+		this->zeroSettingBody->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_arm_Click);
 		// 
 		// zeroSettingAll
 		// 
@@ -384,12 +466,236 @@ private:
 		this->serviceMenuTitle->Text = L"TITLE";
 		this->serviceMenuTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
+		// rotationToolPanel
+		// 
+		this->rotationToolPanel->Controls->Add(this->rotationToolView);
+		this->rotationToolPanel->Controls->Add(this->rotationToolSlideButton);
+		this->rotationToolPanel->Controls->Add(this->rotationToolBodyButton);
+		this->rotationToolPanel->Controls->Add(this->rotationToolTiltButton);
+		this->rotationToolPanel->Controls->Add(this->rotationToolArmButton);
+		this->rotationToolPanel->Location = System::Drawing::Point(0, 50);
+		this->rotationToolPanel->Name = L"rotationToolPanel";
+		this->rotationToolPanel->Size = System::Drawing::Size(600, 880);
+		this->rotationToolPanel->TabIndex = 21;
+		// 
+		// rotationToolView
+		// 
+		this->rotationToolView->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->rotationToolView->Controls->Add(this->rotationToolManualButton);
+		this->rotationToolView->Controls->Add(this->rotationToolTargetAngle);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle9);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle8);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle7);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle6);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle5);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle4);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle3);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle2);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectAngle1);
+		this->rotationToolView->Controls->Add(this->rotationToolSelectionIcon);
+		this->rotationToolView->Location = System::Drawing::Point(75, 391);
+		this->rotationToolView->Name = L"rotationToolView";
+		this->rotationToolView->Size = System::Drawing::Size(513, 450);
+		this->rotationToolView->TabIndex = 29;
+		// 
+		// rotationToolManualButton
+		// 
+		this->rotationToolManualButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolManualButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolManualButton->Location = System::Drawing::Point(430, 12);
+		this->rotationToolManualButton->Name = L"rotationToolManualButton";
+		this->rotationToolManualButton->Size = System::Drawing::Size(70, 70);
+		this->rotationToolManualButton->TabIndex = 28;
+		this->rotationToolManualButton->TabStop = false;
+		this->rotationToolManualButton->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_manual_Click);
+		// 
+		// rotationToolTargetAngle
+		// 
+		this->rotationToolTargetAngle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 72, System::Drawing::FontStyle::Bold,
+			System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+		this->rotationToolTargetAngle->ForeColor = System::Drawing::Color::Black;
+		this->rotationToolTargetAngle->Location = System::Drawing::Point(237, 344);
+		this->rotationToolTargetAngle->Name = L"rotationToolTargetAngle";
+		this->rotationToolTargetAngle->Size = System::Drawing::Size(193, 80);
+		this->rotationToolTargetAngle->TabIndex = 39;
+		this->rotationToolTargetAngle->Text = L"180°";
+		this->rotationToolTargetAngle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		// 
+		// rotationToolSelectAngle9
+		// 
+		this->rotationToolSelectAngle9->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle9->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle9->Location = System::Drawing::Point(335, 243);
+		this->rotationToolSelectAngle9->Name = L"rotationToolSelectAngle9";
+		this->rotationToolSelectAngle9->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle9->TabIndex = 38;
+		this->rotationToolSelectAngle9->TabStop = false;
+		this->rotationToolSelectAngle9->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_9_Click);
+		// 
+		// rotationToolSelectAngle8
+		// 
+		this->rotationToolSelectAngle8->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle8->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle8->Location = System::Drawing::Point(130, 344);
+		this->rotationToolSelectAngle8->Name = L"rotationToolSelectAngle8";
+		this->rotationToolSelectAngle8->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle8->TabIndex = 37;
+		this->rotationToolSelectAngle8->TabStop = false;
+		this->rotationToolSelectAngle8->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_8_Click);
+		// 
+		// rotationToolSelectAngle7
+		// 
+		this->rotationToolSelectAngle7->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle7->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle7->Location = System::Drawing::Point(231, 243);
+		this->rotationToolSelectAngle7->Name = L"rotationToolSelectAngle7";
+		this->rotationToolSelectAngle7->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle7->TabIndex = 36;
+		this->rotationToolSelectAngle7->TabStop = false;
+		this->rotationToolSelectAngle7->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_7_Click);
+		// 
+		// rotationToolSelectAngle6
+		// 
+		this->rotationToolSelectAngle6->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle6->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle6->Location = System::Drawing::Point(130, 243);
+		this->rotationToolSelectAngle6->Name = L"rotationToolSelectAngle6";
+		this->rotationToolSelectAngle6->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle6->TabIndex = 35;
+		this->rotationToolSelectAngle6->TabStop = false;
+		this->rotationToolSelectAngle6->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_6_Click);
+		// 
+		// rotationToolSelectAngle5
+		// 
+		this->rotationToolSelectAngle5->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle5->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle5->Location = System::Drawing::Point(29, 243);
+		this->rotationToolSelectAngle5->Name = L"rotationToolSelectAngle5";
+		this->rotationToolSelectAngle5->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle5->TabIndex = 34;
+		this->rotationToolSelectAngle5->TabStop = false;
+		this->rotationToolSelectAngle5->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_5_Click);
+		// 
+		// rotationToolSelectAngle4
+		// 
+		this->rotationToolSelectAngle4->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle4->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle4->Location = System::Drawing::Point(332, 142);
+		this->rotationToolSelectAngle4->Name = L"rotationToolSelectAngle4";
+		this->rotationToolSelectAngle4->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle4->TabIndex = 33;
+		this->rotationToolSelectAngle4->TabStop = false;
+		this->rotationToolSelectAngle4->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_4_Click);
+		// 
+		// rotationToolSelectAngle3
+		// 
+		this->rotationToolSelectAngle3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle3->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle3->Location = System::Drawing::Point(231, 142);
+		this->rotationToolSelectAngle3->Name = L"rotationToolSelectAngle3";
+		this->rotationToolSelectAngle3->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle3->TabIndex = 32;
+		this->rotationToolSelectAngle3->TabStop = false;
+		this->rotationToolSelectAngle3->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_3_Click);
+		// 
+		// rotationToolSelectAngle2
+		// 
+		this->rotationToolSelectAngle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle2->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle2->Location = System::Drawing::Point(130, 142);
+		this->rotationToolSelectAngle2->Name = L"rotationToolSelectAngle2";
+		this->rotationToolSelectAngle2->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle2->TabIndex = 31;
+		this->rotationToolSelectAngle2->TabStop = false;
+		this->rotationToolSelectAngle2->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_2_Click);
+		// 
+		// rotationToolSelectAngle1
+		// 
+		this->rotationToolSelectAngle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectAngle1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectAngle1->Location = System::Drawing::Point(29, 142);
+		this->rotationToolSelectAngle1->Name = L"rotationToolSelectAngle1";
+		this->rotationToolSelectAngle1->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectAngle1->TabIndex = 30;
+		this->rotationToolSelectAngle1->TabStop = false;
+		this->rotationToolSelectAngle1->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_selection_angle_1_Click);
+		// 
+		// rotationToolSelectionIcon
+		// 
+		this->rotationToolSelectionIcon->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSelectionIcon->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSelectionIcon->Location = System::Drawing::Point(29, 27);
+		this->rotationToolSelectionIcon->Name = L"rotationToolSelectionIcon";
+		this->rotationToolSelectionIcon->Size = System::Drawing::Size(95, 95);
+		this->rotationToolSelectionIcon->TabIndex = 29;
+		this->rotationToolSelectionIcon->TabStop = false;
+		// 
+		// rotationToolSlideButton
+		// 
+		this->rotationToolSlideButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolSlideButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolSlideButton->Location = System::Drawing::Point(325, 214);
+		this->rotationToolSlideButton->Name = L"rotationToolSlideButton";
+		this->rotationToolSlideButton->Size = System::Drawing::Size(160, 160);
+		this->rotationToolSlideButton->TabIndex = 27;
+		this->rotationToolSlideButton->TabStop = false;
+		this->rotationToolSlideButton->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_slide_Click);
+		// 
+		// rotationToolBodyButton
+		// 
+		this->rotationToolBodyButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolBodyButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolBodyButton->Location = System::Drawing::Point(103, 214);
+		this->rotationToolBodyButton->Name = L"rotationToolBodyButton";
+		this->rotationToolBodyButton->Size = System::Drawing::Size(160, 160);
+		this->rotationToolBodyButton->TabIndex = 26;
+		this->rotationToolBodyButton->TabStop = false;
+		this->rotationToolBodyButton->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_body_Click);
+		// 
+		// rotationToolTiltButton
+		// 
+		this->rotationToolTiltButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolTiltButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolTiltButton->Location = System::Drawing::Point(325, 23);
+		this->rotationToolTiltButton->Name = L"rotationToolTiltButton";
+		this->rotationToolTiltButton->Size = System::Drawing::Size(160, 160);
+		this->rotationToolTiltButton->TabIndex = 25;
+		this->rotationToolTiltButton->TabStop = false;
+		this->rotationToolTiltButton->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_tilt_Click);
+		// 
+		// rotationToolArmButton
+		// 
+		this->rotationToolArmButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+			static_cast<System::Int32>(static_cast<System::Byte>(128)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->rotationToolArmButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->rotationToolArmButton->Location = System::Drawing::Point(103, 23);
+		this->rotationToolArmButton->Name = L"rotationToolArmButton";
+		this->rotationToolArmButton->Size = System::Drawing::Size(160, 160);
+		this->rotationToolArmButton->TabIndex = 20;
+		this->rotationToolArmButton->TabStop = false;
+		this->rotationToolArmButton->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_arm_Click);
+		// 
 		// ServiceForm
 		// 
 		this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 			static_cast<System::Int32>(static_cast<System::Byte>(60)));
 		this->ClientSize = System::Drawing::Size(600, 1024);
 		this->ControlBox = false;
+		this->Controls->Add(this->rotationToolPanel);
 		this->Controls->Add(this->serviceMenuTitle);
 		this->Controls->Add(this->calibZerosettingPanel);
 		this->Controls->Add(this->labelInstallation);
@@ -415,6 +721,23 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingBody))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingAll))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->EndInit();
+		this->rotationToolPanel->ResumeLayout(false);
+		this->rotationToolView->ResumeLayout(false);
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolManualButton))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle9))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle8))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle7))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle6))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle5))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle4))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle3))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle2))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectAngle1))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSelectionIcon))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolSlideButton))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolBodyButton))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolTiltButton))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolArmButton))->EndInit();
 		this->ResumeLayout(false);
 		this->PerformLayout();
 
@@ -423,17 +746,38 @@ private:
 
 	protected:  virtual void WndProc(System::Windows::Forms::Message% m) override;
 
+	// Service Panel Buttons
 	private: System::Void onServiceTimeout(Object^ source, System::Timers::ElapsedEventArgs^ e);
-
 	private: System::Void cancButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void systemCalibration_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void systemRotation_Click(System::Object^ sender, System::EventArgs^ e);
+
+	// Calibration Panel
 	private: System::Void zeroSetting_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void zeroSettingBody_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void zeroSettingVertical_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void zeroSettingArm_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void zeroSettingTilt_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void zeroSettingSlide_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void zeroSettingAll_Click(System::Object^ sender, System::EventArgs^ e);
+		
+		// Calibration - Zero Setting Panel
+		private: System::Void zeroSettingBody_Click(System::Object^ sender, System::EventArgs^ e);
+		private: System::Void zeroSettingVertical_Click(System::Object^ sender, System::EventArgs^ e);
+		private: System::Void zeroSettingArm_Click(System::Object^ sender, System::EventArgs^ e);
+		private: System::Void zeroSettingTilt_Click(System::Object^ sender, System::EventArgs^ e);
+		private: System::Void zeroSettingSlide_Click(System::Object^ sender, System::EventArgs^ e);
+		private: System::Void zeroSettingAll_Click(System::Object^ sender, System::EventArgs^ e);
 	
+	// Rotation Tool Button callbacks
+	private: System::Void rotationTool_body_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_tilt_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_arm_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_slide_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_manual_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_1_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_2_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_3_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_4_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_5_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_6_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_7_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_8_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void rotationTool_selection_angle_9_Click(System::Object^ sender, System::EventArgs^ e);
+
 };
 

@@ -1,4 +1,6 @@
 #include "TcpIpServerCLI.h"
+#include "Log.h"
+
 
 using namespace System::Net::Sockets;
 using namespace System::Net;
@@ -83,22 +85,27 @@ void TcpIpServerCLI::threadWork(void) {
 	while (true) {
 		serverSocket->Listen(5);
 		clientSocket = serverSocket->Accept();
-		Debug::WriteLine("Client Connected!\n");
+		LogClass::logInFile("Client Connected!\n");
 		connection_status = true;
 
 		// Notifies the connection status
 		connection_event(true);
 		
 		while (true) {
-			rx_rc = clientSocket->Receive(rxBuffer);
-			if (rx_rc == 0) break; // Shutdown
-			rxData_event(rxBuffer, rx_rc);
+			try{
+				rx_rc = clientSocket->Receive(rxBuffer);
+				if (rx_rc == 0) break; // Shutdown
+				rxData_event(rxBuffer, rx_rc);
+			 }
+			catch (...) {
+				break;
+			}
 
 		}
 		connection_status = false;
 
 		// The Client closed the connection
-		Debug::WriteLine("Client Shutdown!\n");
+		LogClass::logInFile("Client Shutdown!\n");
 		clientSocket->Shutdown(SocketShutdown::Send);
 		clientSocket->Close();
 		

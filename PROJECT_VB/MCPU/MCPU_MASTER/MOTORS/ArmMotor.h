@@ -215,7 +215,8 @@ public:
         RSIOM,
 
         LEN,
-        UNDEF = LEN
+        UNDEF = LEN,
+        RESERVED_FOR_INIT
     };
 
     static const cli::array<System::String^>^ tags = gcnew cli::array<System::String^> {
@@ -325,12 +326,14 @@ public:
 
     static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
     static void abortTarget(void);
+    static bool serviceAutoPosition(int pos);
 
 
 public:
     static inline ProjectionOptions^ getProjectionsList() { return projections; }
     static System::String^ getSelectedProjection(void) { return projections->getCurrentProjectionName(); }
-    
+    static ProjectionOptions::options getSelectedProjectionCode(void) { return projections->getCurrentProjectionCode(); }
+
     delegate void delegate_abort_projection_request_callback(void);
     static event delegate_abort_projection_request_callback^ abort_projection_request_event;
     static void abortProjectionRequest(void) { if (valid_target) abort_projection_request_event(); };
@@ -342,15 +345,25 @@ public:
     }
 
 protected:
-    bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
-    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    
-    MotorCompletedCodes idleCallback(void) override;
-    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
 
-    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+    bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
+    
+
+    MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
+    MotorCompletedCodes automaticPositioningRunningCallback(void) override;
+    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
+
+    MotorCompletedCodes manualPositioningPreparationCallback(void) override;
     MotorCompletedCodes manualPositioningRunningCallback(void) override;
+    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
+    
+    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
+
+    MotorCompletedCodes idleCallback(void) override;
+    void faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) override;
+    void resetCallback(void) override;
 
 private:
     static ProjectionOptions^ projections = gcnew ProjectionOptions;  //!< This is the current selected projection
@@ -359,8 +372,8 @@ private:
     static bool        valid_target = false;       //!< True if the target is a valid target
     static int         selected_target;            //!< Automatic selected target  
 
-    static bool manual_activation_enabled = false; //!< This is the flag activating the body manual activation
-    static bool manual_cw_direction = false; //!< Sets true if the CW manual command is executing, false if the CCW manual activation is executing
+    static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
+    static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
 
 };
 

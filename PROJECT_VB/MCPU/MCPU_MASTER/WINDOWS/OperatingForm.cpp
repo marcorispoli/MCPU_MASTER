@@ -5,8 +5,11 @@
 #include "Projections.h"
 #include "ConfirmationWindow.h"
 #include "IconWindow.h"
+#include "VerticalMotor.h"
 #include "ArmMotor.h"
+#include "BodyMotor.h"
 #include "SlideMotor.h"
+#include "TiltMotor.h"
 #include "ExposureModule.h"
 #include "../DEVICES/PCB315.h"
 #include "../DEVICES/PCB303.h"
@@ -14,6 +17,7 @@
 #include "../DEVICES/PCB301.h"
 #include "../DEVICES/PCB304.h"
 #include "../DEVICES/PCB326.h"
+#include "awsProtocol.h"
 
 
 #define PROJ_NOT_SELECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\NoProjectionSelected.PNG")
@@ -36,16 +40,17 @@
 #define ERROR_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOn.PNG")
 #define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\AlarmOff.PNG")
 
-#define COMPRESSOR_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CompressionNotEnabled.PNG")
-#define COMPRESSOR_ENABLE_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ActivePaddleDetected.PNG")
-#define COMPRESSOR_NOT_DETECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\PaddleNotPresent.PNG")
+#define PADDLE_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CompressionNotEnabled.PNG")
+#define PADDLE_ENABLE_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ActivePaddleDetected.PNG")
+#define PADDLE_NOT_DETECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\PaddleNotPresent.PNG")
 
 #define THICKNESS_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ThicknessDisabled.PNG")
 #define THICKNESS_ENABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ThicknessEnabled.PNG")
 
 #define FORCE_DISABLED_NOT_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceDisabledNotCompressed.PNG")
 #define FORCE_DISABLED_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceDisabledCompressed.PNG")
-#define FORCE_ENABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceEnabledCompressed.PNG")
+#define FORCE_ENABLED_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceEnabledCompressed.PNG")
+#define FORCE_ENABLED_NOT_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\ForceEnabledNotCompressed.PNG")
 
 #define COLLIMATION_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\CollimationMode.PNG")
 
@@ -66,37 +71,16 @@
 #define PROJ_INFO_ICON  Image::FromFile(Gantry::applicationResourcePath + "Icons\\info_64x64.PNG")
 #define XRAY_ICON  Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\xrayIcon.PNG")
 
-
+#define COMPRESSING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\COMPRESSING_ICON.PNG")
+#define ARM_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\ARM_MOTOR_ICON.PNG")
+#define BODY_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\BODY_MOTOR_ICON.PNG")
+#define VERTICAL_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\VERTICAL_MOTOR_ICON.PNG")
+#define SLIDE_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\SLIDE_MOTOR_ICON.PNG")
+#define TILT_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\TILT_MOTOR_ICON.PNG")
 
 
 namespace OPERSTATUS {
 
-	typedef enum {		
-		XRAY_STATUS_NOT_READY = 1,
-		XRAY_STATUS_READY
-	}xray_status_t;
-
-	typedef enum {
-		COMPRESSOR_DISABLED = 1,
-		COMPRESSOR_NOT_DETECTED,
-		COMPRESSOR_DETECTED
-	}compressor_mode_t;
-
-	typedef enum {
-		THICKNESS_DISABLED = 1,
-		THICKNESS_ENABLED,
-	}thickness_mode_t;
-
-	typedef enum {
-		FORCE_DISABLED_NOT_COMPRESSED = 1,
-		FORCE_DISABLED_COMPRESSED,
-		FORCE_ENABLED,
-	}force_mode_t;
-
-	typedef enum {
-		SLIDE_0 = 0,
-		SLIDE_10 = 10
-	}slide_t;
 
 
 	typedef struct {
@@ -108,12 +92,7 @@ namespace OPERSTATUS {
 		bool			light_on;
 	}collimatorStatus;
 
-	typedef struct {
-		compressor_mode_t	compressor_mode;
-		thickness_mode_t	thickness_mode;
-		force_mode_t		force_mode;
-	}paddleStatus;
-
+	
 	
 
 	typedef struct {
@@ -123,20 +102,17 @@ namespace OPERSTATUS {
 	}exposureStatus;
 
 	static struct {
-		paddleStatus paddle;
+		
 		collimatorStatus collimator;
-		xray_status_t xray_status;
-
+		
 		PCB301::door_options door_status;		
 		unsigned char currentPanel;
 		bool alarm;
 		bool warning;
 		bool info;
 
-		unsigned char mag_factor;
-		bool compressor_release;
-		bool projectionSelected;
-		slide_t slide_status;
+		unsigned char mag_factor;		
+		
 
 	}Registers;
 };
@@ -193,8 +169,8 @@ void OperatingForm::formInitialization(void) {
 	//________________________________________________________________________________________
 	
 	// Confirmation Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_CARM_SHIFT_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_CARM_SHIFT_CONFIRMATION);
-	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_CARM_SHIFT_CONFIRMATION);
+	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
+	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
 	pShiftConf = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
 	((ConfirmationWindow^)pShiftConf)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onShiftConfirmCanc);
 	((ConfirmationWindow^)pShiftConf)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onShiftConfirmOk);
@@ -209,18 +185,15 @@ void OperatingForm::formInitialization(void) {
 	// Sets the Projection selection button
 	projSelection->BackgroundImage = PROJ_NOT_SELECTED_IMAGE;
 	selectedIcon->Hide();
-	OPERSTATUS::Registers.projectionSelected = false;
 	
 	
-	// Sets the Xray status
-	OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;	
-	xrayStat->BackColor = this->BackColor;
-	xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
-	
+	// Sets the Xray status	
+	xrayStat->BackColor = this->BackColor;	
 	labelXrayStatus->BackColor = Color::Transparent;
 	labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
 	
 
+	// Demo icon
 	demoIcon->BackColor = Color::Transparent;
 	demoIcon->BackgroundImage = DEMO_IMAGE;
 	
@@ -232,18 +205,6 @@ void OperatingForm::formInitialization(void) {
 	// Error Button
 	OPERSTATUS::Registers.alarm = false;
 	alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
-
-
-	// Compressor Disabled
-	OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_DISABLED;
-	paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
-
-	// Thickness Disabled
-	OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_DISABLED;
-	thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
-
-	OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_DISABLED_COMPRESSED;
-	forceStatus->BackgroundImage = FORCE_DISABLED_COMPRESSED_IMAGE;
 
 
 	// Collimator Status option
@@ -264,13 +225,11 @@ void OperatingForm::formInitialization(void) {
 	OPERSTATUS::Registers.mag_factor = 10;
 	magnifierStatus->BackgroundImage = MAGFACTOR_IMAGE;
 
-	// Decompression status
-	OPERSTATUS::Registers.compressor_release = false;
+	// Decompression status	
 	decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 
-	// Slide status
-	OPERSTATUS::Registers.slide_status = OPERSTATUS::SLIDE_0;
-	slideButton->BackgroundImage = SLIDE_0_IMAGE;
+	// Slide status	
+	slideButton->BackgroundImage = SLIDE_10_IMAGE;
 
 	operatingTimer = gcnew System::Timers::Timer(100);
 	operatingTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &OperatingForm::onOperatingTimeout);
@@ -320,11 +279,12 @@ void OperatingForm::initOperatingStatus(void) {
 }
 
 void OperatingForm::open(void) {
-	SendNotifyMessageA(window, WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
+	//SendNotifyMessageA(window, WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
+	SendMessageA(window, WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
 }
 
 void OperatingForm::close(void) {
-	SendNotifyMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE
+	SendMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE
 	
 }
 
@@ -334,11 +294,9 @@ void OperatingForm::onArmTargetChangedCallback(int id, int target){
 
 	if (ArmMotor::device->isValidTarget()) {		
 		selectedIcon->BackgroundImage = ArmMotor::getProjectionsList()->getCurrentProjectionIcon();
-		selectedIcon->Show();
-		OPERSTATUS::Registers.projectionSelected = true;
+		selectedIcon->Show();		
 	}
 	else {
-		OPERSTATUS::Registers.projectionSelected = false;
 		selectedIcon->Hide();
 	}
 
@@ -346,53 +304,76 @@ void OperatingForm::onArmTargetChangedCallback(int id, int target){
 
 
 void OperatingForm::evaluateProjectionStatus(void) {
+	static ProjectionOptions::options projection = ProjectionOptions::options::RESERVED_FOR_INIT;
 
-	if (ArmMotor::device->isValidTarget()) {
-		if (!OPERSTATUS::Registers.projectionSelected) {
+	if (projection != ArmMotor::getSelectedProjectionCode()) {
+		projection = ArmMotor::getSelectedProjectionCode();
+
+		if (projection == ProjectionOptions::options::UNDEF) {
+			projSelection->BackgroundImage = PROJ_NOT_SELECTED_IMAGE;
+			selectedIcon->Hide();
+		}
+		else {
 			projSelection->BackgroundImage = PROJ_SELECTED_IMAGE;
 			selectedIcon->BackgroundImage = ArmMotor::getProjectionsList()->getCurrentProjectionIcon();
 			selectedIcon->Show();
-			OPERSTATUS::Registers.projectionSelected = true;
-		}		
+		}
 	}
-	else {
-		if (OPERSTATUS::Registers.projectionSelected) {
-			projSelection->BackgroundImage = PROJ_NOT_SELECTED_IMAGE;
-			OPERSTATUS::Registers.projectionSelected = false;
-			selectedIcon->Hide();
-		}	
-	}
+
 
 	angleText->Text = (((float)ArmMotor::device->getCurrentPosition()) / 100).ToString() + "°";
 }
 
 void OperatingForm::evaluateXrayStatus(void) {
+	static int ready_stat = 255;
+	int stat;
 
-	if (Notify::isError() || Notify::isWarning()) {
-		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_NOT_READY){
-			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_NOT_READY;
-			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
-			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
-		}
-	}
-	else {
-		if (OPERSTATUS::Registers.xray_status != OPERSTATUS::XRAY_STATUS_READY){
-			OPERSTATUS::Registers.xray_status = OPERSTATUS::XRAY_STATUS_READY;
-			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
+	if (Notify::isError()) stat = 1;
+	else if (Notify::isWarning()) stat = 2;
+	else stat = 0;
+
+	if (ready_stat != stat) {
+		ready_stat = stat;
+
+		if (stat == 0) {
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
+			awsProtocol::EVENT_ReadyForExposure(true, (unsigned short)0);
+		}
+		else {
+			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+			if (stat == 1) awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);
+			else  awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
 		}
 	}
+
 
 	// Evaluate the Xray icon display activation during Exposure
 	static bool xray_running = true;
 	if (xray_running != ExposureModule::isXrayRunning()) {
 		xray_running = ExposureModule::isXrayRunning();
-		if (xray_running) ((IconWindow^)pXray)->open();
-		else ((IconWindow^)pXray)->close();
+		if (xray_running) {
+			((IconWindow^)pXray)->open();
+		}
+		else {
+			((IconWindow^)pXray)->close();
+		}
 	}
 
 }
-void OperatingForm::evaluateErrorStatus(void) {
+void OperatingForm::evaluateReadyWarnings(bool reset) {
+
+	// Clears all the warnings
+	if (reset) {
+		Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
+		Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
+		Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
+		Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
+		return;
+	}
+
 	static bool cmp_force_error = false;
 
 	// Compression Mode Warning
@@ -423,138 +404,180 @@ void OperatingForm::evaluateErrorStatus(void) {
 		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE);
 	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
 
+	
 	// Exposure Mode selection	
 	if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
+	
 
 	// Valid Exposure Data present
 	if (!ExposureModule::getExposurePulse(0)->isValid()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 
+	
 	// Xray Push Button Enable
-	if (!PCB301::getXrayEventEna()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
+	if (!ExposureModule::getXrayPushButtonEvent()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 
-	// Error Button
-	if (Notify::isError()) {
-		OPERSTATUS::Registers.warning = false;
-		OPERSTATUS::Registers.info = false;
-		if (!OPERSTATUS::Registers.alarm) {
-			alarmButton->BackgroundImage = ERROR_BUTTON_ON;
-			OPERSTATUS::Registers.alarm = true;
-		}
-	}else if (Notify::isWarning()) {
-		OPERSTATUS::Registers.alarm = false;
-		OPERSTATUS::Registers.info = false;
-		if (!OPERSTATUS::Registers.warning) {
-			alarmButton->BackgroundImage = WARNING_BUTTON_ON;
-			OPERSTATUS::Registers.warning = true;
-		}
-	}else if (Notify::isInfo()) {
-		OPERSTATUS::Registers.alarm = false;
-		OPERSTATUS::Registers.warning = false;
-		if (!OPERSTATUS::Registers.info) {
-			alarmButton->BackgroundImage = INFO_BUTTON_ON;
-			OPERSTATUS::Registers.info = true;
-		}
-	}else {
-		if ((OPERSTATUS::Registers.warning) || (OPERSTATUS::Registers.alarm)) {
-			OPERSTATUS::Registers.warning = false;
-			OPERSTATUS::Registers.alarm = false;
-			OPERSTATUS::Registers.info = false;
-			alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
-		}
-
-	}
-
-	if (Notify::isInstant()) Notify::open_instant(this);
-
-	// One Shot events
-	//if(Notify::isOneShot()) ((ErrorForm^)pError)->open();
 
 	
 }
+
+#define PADDLE_DISABLED 1
+#define PADDLE_NOT_DETECT 2
+#define PADDLE_DETECTED 3
+
+#define THICKNESS_DISABLED 1
+#define THICKNESS_ENABLED 2
+
+#define FORCE_DISABLED_NOT_COMPRESSED 1
+#define FORCE_DISABLED_COMPRESSED 2
+#define FORCE_ENABLED_NOT_COMPRESSED 3
+#define FORCE_ENABLED_COMPRESSED 4
+
 void OperatingForm::evaluateCompressorStatus(void) {
-
 	
-	if (PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)
-	{
-		// Compressor Not Detected
-		if (OPERSTATUS::Registers.paddle.compressor_mode != OPERSTATUS::COMPRESSOR_NOT_DETECTED) {
-			OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_NOT_DETECTED;
-			paddleStatus->BackgroundImage = COMPRESSOR_NOT_DETECTED_IMAGE;
-		}		
+	static int paddle_status = 255;
+	static int thick_status = 255;
+	static int force_status = 255;
+	int cur_paddle;
+	int cur_thick;
+	int cur_force;
+	PCB302::paddleCodes paddle;
+	int force, thick;
 
-		// Thickness Disabled
-		if (OPERSTATUS::Registers.paddle.thickness_mode != OPERSTATUS::THICKNESS_DISABLED) {
-			OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_DISABLED;
-			thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
+	// used to send the EVENT_Compressor() to AWS
+	static int event_force = 0;
+	static int event_thickness = 0;
+	static int event_compressor_timer = 0;
+	
+	force = PCB302::getForce();
+	thick = PCB302::getThickness();
+	paddle = PCB302::getDetectedPaddleCode();
+	
+	// Evaluates if the force or the thickness is changed:
+	// the evaluation is performed every 1 seconds about.	
+	if (!event_compressor_timer) {
+		event_compressor_timer = 10;
+		bool event_compressor = false;
+
+		if (abs(force - event_force) > 5) {
+			event_force = force;
+			event_compressor = true;
 		}
-			
-		// Force Disabled Not Compressed
-		if (OPERSTATUS::Registers.paddle.force_mode != OPERSTATUS::FORCE_DISABLED_NOT_COMPRESSED) {
-			OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_DISABLED_NOT_COMPRESSED;
-			forceStatus->BackgroundImage = FORCE_DISABLED_NOT_COMPRESSED_IMAGE;
+		if (abs(thick - event_thickness) > 2) {
+			event_thickness = thick;
+			event_compressor = true;
 		}
-			
-		// The Lables shall not be showed because no data can be calculated
+
+		// Signals to AWS the change event
+		if (event_compressor) awsProtocol::EVENT_Compressor();
+	}
+	else event_compressor_timer--;
+
+	if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_DISABLE) {
+		cur_paddle = PADDLE_DISABLED;
+		cur_thick = THICKNESS_DISABLED;
+
 		labelPaddle->Hide();
-		labelThickness->Hide();
-		labelForce->Hide();
+
+		if (force) {
+			labelForce->Show();
+			labelForce->Text = force.ToString() + " N";
+			cur_force = FORCE_DISABLED_COMPRESSED;
+		}
+		else {
+			labelForce->Hide();
+			cur_force = FORCE_DISABLED_NOT_COMPRESSED;
+		}
+
+		if (thick) {
+			labelThickness->Text = thick.ToString() + " mm";
+			labelThickness->Show();
+		}
+		else {
+			labelThickness->Hide();
+		}
 	}
 	else {
+		if (paddle == PCB302::paddleCodes::PADDLE_NOT_DETECTED) {
+			cur_paddle = PADDLE_NOT_DETECT;
+			cur_thick = THICKNESS_DISABLED;
+			cur_force = FORCE_DISABLED_NOT_COMPRESSED;
 
-		// Paddle Status
-		if (OPERSTATUS::Registers.paddle.compressor_mode != OPERSTATUS::COMPRESSOR_DETECTED) {
-			OPERSTATUS::Registers.paddle.compressor_mode = OPERSTATUS::COMPRESSOR_DETECTED;
-			paddleStatus->BackgroundImage = COMPRESSOR_ENABLE_IMAGE;
+			labelPaddle->Hide();
+			labelThickness->Hide();
+			labelForce->Hide();
 		}
-			
-		// Thickness Enabled
-		if (OPERSTATUS::Registers.paddle.thickness_mode != OPERSTATUS::THICKNESS_ENABLED) {
-			OPERSTATUS::Registers.paddle.thickness_mode = OPERSTATUS::THICKNESS_ENABLED;
-			thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
-		}
-			
-		// Force Active
-		if (OPERSTATUS::Registers.paddle.force_mode != OPERSTATUS::FORCE_ENABLED) {
-			OPERSTATUS::Registers.paddle.force_mode = OPERSTATUS::FORCE_ENABLED;
-			forceStatus->BackgroundImage = FORCE_ENABLED_IMAGE;
-		}
+		else {
+			cur_paddle = PADDLE_DETECTED;
+			cur_thick = THICKNESS_ENABLED;
+			if (force) cur_force = FORCE_ENABLED_COMPRESSED;
+			else cur_force = FORCE_ENABLED_NOT_COMPRESSED;
 
-		// The Lables shall not be showed because no data can be calculated
-		labelPaddle->Show();
-		labelThickness->Show();
-		labelForce->Show();
-			
+			labelPaddle->Show();
+			labelPaddle->Text = PCB302::getPaddleName(paddle);
+
+			if (force) {
+				labelForce->Show();
+				labelForce->Text = force.ToString() + " N";
+				cur_force = FORCE_ENABLED_COMPRESSED;
+			}
+			else {
+				labelForce->Hide();
+				cur_force = FORCE_ENABLED_NOT_COMPRESSED;
+			}
+
+			if (thick) {
+				labelThickness->Text = thick.ToString() + " mm";
+				labelThickness->Show();
+			}
+			else {
+				labelThickness->Hide();
+			}
+		}
 	}
-	
 
+	if (cur_paddle != paddle_status) {
+		paddle_status = cur_paddle;
+		if (paddle_status == PADDLE_DISABLED) paddleStatus->BackgroundImage = PADDLE_DISABLED_IMAGE;
+		else if (paddle_status == PADDLE_NOT_DETECT) paddleStatus->BackgroundImage = PADDLE_NOT_DETECTED_IMAGE;
+		else paddleStatus->BackgroundImage = PADDLE_ENABLE_IMAGE;
+	}
+
+	if (cur_force != force_status) {
+		force_status = cur_force;
+		if (force_status == FORCE_DISABLED_NOT_COMPRESSED) forceStatus->BackgroundImage = FORCE_DISABLED_NOT_COMPRESSED_IMAGE;
+		else if (force_status == FORCE_DISABLED_COMPRESSED) forceStatus->BackgroundImage = FORCE_DISABLED_COMPRESSED_IMAGE;
+		else if (force_status == FORCE_ENABLED_NOT_COMPRESSED) forceStatus->BackgroundImage = FORCE_ENABLED_NOT_COMPRESSED_IMAGE;
+		else  forceStatus->BackgroundImage = FORCE_ENABLED_COMPRESSED_IMAGE;
+	}
+
+	if (cur_thick != thick_status) {
+		thick_status = cur_thick;
+		if (thick_status == THICKNESS_DISABLED) thicknessStatus->BackgroundImage = THICKNESS_DISABLED_IMAGE;
+		else thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
+	}
+
+	
 
 }
 
 void OperatingForm::evaluateCompressorReleaseStatus(void) {
-
+	static  ExposureModule::compression_mode_option cmpmode = ExposureModule::compression_mode_option::CMP_DISABLE;
+	static bool init = true;
+	if (init) {
+		init = false;
+		decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
+		return;
+	}
 	
-	if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_DISABLE) {
-		
-		if (OPERSTATUS::Registers.compressor_release) {
-			OPERSTATUS::Registers.compressor_release = false;
-			decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
-		}
+	if (cmpmode == ExposureModule::getCompressorMode()) return;
+	cmpmode = ExposureModule::getCompressorMode();
 
-		
-	}
-	else {
-
-		if (!OPERSTATUS::Registers.compressor_release) {
-			OPERSTATUS::Registers.compressor_release = true;
-			decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
-		}
-
-	}
-
-
+	if (cmpmode == ExposureModule::compression_mode_option::CMP_RELEASE) decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
+	else decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
+	
 }
 void OperatingForm::evaluateCollimatorStatus(void) {
 	
@@ -605,6 +628,18 @@ void OperatingForm::evaluateDoorStatus(void) {
 }
 
 void OperatingForm::evaluateSlideStatus(void) {
+	static int stat = 255;
+
+	int cur_stat;
+	if (SlideMotor::device->getCurrentPosition() < 500) cur_stat = 0;
+	else cur_stat = 1;
+	
+	if (stat != cur_stat) {
+		stat = cur_stat;
+
+		if(stat == 0)  slideButton->BackgroundImage = SLIDE_0_IMAGE;
+		else slideButton->BackgroundImage = SLIDE_10_IMAGE;
+	}
 
 	
 }
@@ -615,8 +650,7 @@ void OperatingForm::operatingStatusManagement(void) {
 	date = System::DateTime::Now;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-	evaluateXrayStatus();
-	evaluateErrorStatus();
+	
 	evaluateCompressorStatus();
 	evaluateCompressorReleaseStatus();
 	evaluateCollimatorStatus();
@@ -624,7 +658,13 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateDoorStatus();
 	evaluateSlideStatus();
 	evaluateProjectionStatus();
-	
+
+	// This shall be posed at the end of the management
+	evaluateReadyWarnings(false);
+	evaluateXrayStatus(); 
+
+	evaluatePopupPanels();
+
 }
 
 void OperatingForm::WndProc(System::Windows::Forms::Message% m)
@@ -664,13 +704,19 @@ void OperatingForm::errorButton_Click(System::Object^ sender, System::EventArgs^
 }
 
 void OperatingForm::viewSelection_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (!OPERSTATUS::Registers.projectionSelected)	((ProjectionForm^)pProj)->open();
+	if (!ArmMotor::device->isValidTarget())	((ProjectionForm^)pProj)->open();
 	else {
 		((ConfirmationWindow^)pAbort)->setContentBackground(selectedIcon->BackgroundImage);
 		((ConfirmationWindow^)pAbort)->open();
 	}
 }
+
+
 void OperatingForm::ShiftSelection_Click(System::Object^ sender, System::EventArgs^ e) {
+	
+	// If a motorization is activated returns 
+	if (Gantry::isMotorsActive()) return;
+
 	((ConfirmationWindow^)pShiftConf)->setContentBackground(slideButton->BackgroundImage);
 	((ConfirmationWindow^)pShiftConf)->open();
 }
@@ -694,18 +740,9 @@ void OperatingForm::onConfirmCanc(void) {
 void OperatingForm::onShiftConfirmOk(void) {
 	((ConfirmationWindow^)pShiftConf)->close();
 
-	if (OPERSTATUS::Registers.slide_status == OPERSTATUS::SLIDE_0) {
-		OPERSTATUS::Registers.slide_status = OPERSTATUS::SLIDE_10;
-		slideButton->BackgroundImage = SLIDE_10_IMAGE;
-		//SlideMotor::activateAutomaticPositioning()
-	}
-	else {
-		OPERSTATUS::Registers.slide_status = OPERSTATUS::SLIDE_0;
-		slideButton->BackgroundImage = SLIDE_0_IMAGE;
-		//SlideMotor::activateAutomaticPositioning()
-	}
+	if (SlideMotor::device->getCurrentPosition() < 500) SlideMotor::isoAutoPosition(1000);
+	else SlideMotor::isoAutoPosition(0);
 	
-
 }
 void OperatingForm::onShiftConfirmCanc(void) {
 	((ConfirmationWindow^)pShiftConf)->close();
@@ -718,4 +755,188 @@ void OperatingForm::onAbortConfirmOk(void) {
 }
 void OperatingForm::onAbortConfirmCanc(void) {
 	((ConfirmationWindow^)pAbort)->close();
+}
+
+
+void OperatingForm::evaluatePopupPanels(void) {
+#define TMO 20
+	static bool compression = false;
+	static bool arm = false;
+	static bool body = false;
+	static bool slide = false;
+	static bool vertical = false;
+	static bool tilt = false;
+
+	static int timer = 0;
+
+	// With a panel already open do not continue;
+	if (Notify::isInstantOpen()) return;
+	if (Notify::isErrorOpen()) return;
+
+	// Error Button
+	if (Notify::isError()) {
+		OPERSTATUS::Registers.warning = false;
+		OPERSTATUS::Registers.info = false;
+		if (!OPERSTATUS::Registers.alarm) {
+			alarmButton->BackgroundImage = ERROR_BUTTON_ON;
+			OPERSTATUS::Registers.alarm = true;
+		}
+	}
+	else if (Notify::isWarning()) {
+		OPERSTATUS::Registers.alarm = false;
+		OPERSTATUS::Registers.info = false;
+		if (!OPERSTATUS::Registers.warning) {
+			alarmButton->BackgroundImage = WARNING_BUTTON_ON;
+			OPERSTATUS::Registers.warning = true;
+		}
+	}
+	else if (Notify::isInfo()) {
+		OPERSTATUS::Registers.alarm = false;
+		OPERSTATUS::Registers.warning = false;
+		if (!OPERSTATUS::Registers.info) {
+			alarmButton->BackgroundImage = INFO_BUTTON_ON;
+			OPERSTATUS::Registers.info = true;
+		}
+	}
+	else {
+		if ((OPERSTATUS::Registers.warning) || (OPERSTATUS::Registers.alarm)) {
+			OPERSTATUS::Registers.warning = false;
+			OPERSTATUS::Registers.alarm = false;
+			OPERSTATUS::Registers.info = false;
+			alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
+		}
+
+	}
+
+	
+	if (PCB302::isCompressing()) {
+		timer = TMO;
+		if (!compression) {
+			compression = true;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = false;
+			tilt = false;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
+			else Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
+		}
+
+		// Set the value to the current compression
+		Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
+		return;
+	}
+	else compression = false;
+
+	if (ArmMotor::device->isRunning()) {
+		timer = TMO;
+		if (!arm) {
+			compression = false;
+			arm = true;
+			body = false;
+			vertical = false;
+			slide = false;
+			tilt = false;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+			else Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+
+		}
+
+		// Set the value to the current compression
+		float position = (float)ArmMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+
+	}
+	else arm = false;
+
+	if (BodyMotor::device->isRunning()) {
+		timer = TMO;
+		if (!body) {
+			compression = false;
+			arm = false;
+			body = true;
+			vertical = false;
+			slide = false;
+			tilt = false;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
+			else Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		float position = (float)BodyMotor::device->getCurrentPosition() / 10;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else body = false;
+
+	if (VerticalMotor::device->isRunning()) {
+		timer = TMO;
+		if (!vertical) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = true;
+			slide = false;
+			tilt = false;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
+			else Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
+		}
+
+		// Set the value to the current compression
+		int position = (int)VerticalMotor::device->getCurrentPosition();
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else vertical = false;
+
+	if (SlideMotor::device->isRunning()) {
+		timer = TMO;
+		if (!slide) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = true;
+			tilt = false;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
+			else Gantry::getValuePopupWindow()->open(this, SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		int position = (int)SlideMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else slide = false;
+
+	if (TiltMotor::device->isRunning()) {
+		timer = TMO;
+		if (!tilt) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = false;
+			tilt = true;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
+			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
+		}
+
+		// Set the value to the current compression
+		int position = (int)TiltMotor::device->getCurrentPosition();
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else tilt = false;
+
+	// Keeps the popup alive for extra time
+	if (timer) {
+		timer--;
+		if (!timer) Gantry::getValuePopupWindow()->close();
+		return;
+	}
+
+	if (Notify::isInstant()) Notify::open_instant(this);
+
 }

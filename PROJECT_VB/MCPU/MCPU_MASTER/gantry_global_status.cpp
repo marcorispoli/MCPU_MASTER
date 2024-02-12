@@ -87,7 +87,7 @@ void Gantry::initialize(void) {
     pcb303_demo = true;
     pcb304_demo = true;
     pcb315_demo = true;
-    pcb326_demo = true;
+    pcb326_demo = false;
     motor_arm_demo = true;
     motor_tilt_demo = true;
     motor_slide_demo = true;

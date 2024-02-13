@@ -114,11 +114,17 @@ public:
     
 
     /// <summary>
-    /// This function sets a new target for the Trx.
-    /// 
-    /// If the target_angle-current_angle exceeds sensitivity, the target_change_event() is generated.
+    /// This function executes a TRX activation to a predefined target.
     /// 
     /// </summary>
+    /// 
+    /// The allowed target for this command are:
+    /// - SCOUT: this is 0°;
+    /// - BP_R: (biopsy right) this is +15°;
+    /// - BP_L: (biopsy left) this is -15°;
+    /// - TOMO_H: (tomo home) it depends by the current tomo configuration selected;
+    /// - TOMO_E: (tomo end) it depends by the current tomo configuration selected;
+    /// 
     /// <param name="tg">this is the target option code</param>
     /// <param name="id">this is the aws command identifier</param>
     /// <returns>true if the target is successfully set</returns>
@@ -175,7 +181,38 @@ public:
         return device->activateAutomaticPositioning(id, angle, speed, acc, dec,true);
     }
 
-    static inline target_options getTargetPosition(void) { return current_target; }
+    /// <summary>
+    /// This function returns true if the current TRX angle is into the +/- 1° range.
+    /// </summary>
+    /// 
+    /// The SCOUT position is a safer position for the Gantry rotations (ARM MOTOR, SLIDE MOTOR).
+    /// 
+    ///     NOTE: If the TRX should not be in SCOUT the ARM and the SLIDE motors cannot be activated!
+    ///  
+    /// If the TRX encoder shouldn't be initialized (not zero setting performed) 
+    /// the result is always false!.
+    /// 
+    /// <param name=""></param>
+    /// <returns></returns>
+    static bool isScoutPosition(void) {
+        if (!device->isEncoderInitialized()) return false;
+        return ((device->getCurrentPosition() < 100) && (device->getCurrentPosition() > -100));
+    }
+
+    /// <summary>
+    /// This function returns the current TRX target position.
+    /// </summary>
+    /// 
+    /// NOTE: The target position is not the Encoder angle.
+    /// the target shall be set with the setTarget() function.
+    /// 
+    /// <param name=""></param>
+    /// <returns></returns>
+    static inline target_options getTargetPosition(void) { 
+        if (!device->isEncoderInitialized()) return target_options::UNDEF;
+        return current_target; 
+    }
+
     static target_options getTargetCode(System::String^ strtg) {
         for (int i = 0; i < (int) target_options::UNDEF; i++) {
             if (((target_options) i).ToString() == strtg) return (target_options)i;

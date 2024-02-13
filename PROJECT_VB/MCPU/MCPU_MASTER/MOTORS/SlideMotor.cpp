@@ -2,6 +2,7 @@
 #include "Notify.h"
 #include "pd4_od.h"
 #include "VerticalMotor.h"
+#include "TiltMotor.h"
 #include "math.h"
 
 // User Units are in 0.01°
@@ -61,6 +62,11 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
 }
 
 bool SlideMotor::serviceAutoPosition(int pos) {
+    if ((!TiltMotor::isScoutPosition())) {
+        LogClass::logInFile("SlideMotor::serviceAutoPosition() - command: error, tilt not in scout ");
+        return false;
+
+    }
 
     device->iso_activation_mode = false;
 
@@ -74,7 +80,12 @@ bool SlideMotor::serviceAutoPosition(int pos) {
 }
 
 bool SlideMotor::isoAutoPosition(int pos) {
-    
+    if ((!TiltMotor::isScoutPosition())) {
+        LogClass::logInFile("SlideMotor::isoAutoPosition() - command: error, tilt not in scout ");
+        return false;
+
+    }
+
     device->iso_activation_mode = true;
 
     // Activate the command

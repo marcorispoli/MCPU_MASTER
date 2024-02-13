@@ -85,11 +85,12 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
     }
 
     // Invalid sequence number
-    if (rx_register->b0 != tx_register->b0)  return;
+    if(bootloader && (rx_register->b0 != 0xFF) && (rx_register->b0 != tx_register->b0) ) return;
+    if (!bootloader && (rx_register->b0 != tx_register->b0)) return;
+
     
     // Invalid register access
-    if (rx_register->b1 == (unsigned char) ProtocolFrameCode::FRAME_ERROR) {
-
+    if ( (bootloader && (rx_register->b0 == 0xFF)) || (!bootloader && (rx_register->b1 == 0)) ){
         if (register_access_fault_counter > 10) {
             register_access_fault = true;
             LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: FATAL!! invalid register access. Stop communication");

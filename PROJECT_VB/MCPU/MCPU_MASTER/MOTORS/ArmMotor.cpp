@@ -1,6 +1,7 @@
 #include "CalibrationConfig.h"
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
+#include "TiltMotor.h"
 #include "Notify.h"
 #include "../gantry_global_status.h"
 
@@ -192,6 +193,11 @@ void ArmMotor::abortTarget(void) {
 }
 
 bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id) {
+    if ((!TiltMotor::isScoutPosition())) {
+        LogClass::logInFile("ArmMotor::setTarget() - command: error, tilt not in scout ");
+        return false;
+
+    }
 
     // Checks the validity of the requested projection
     if (!projections->isValidProjection(proj) ) return false;
@@ -221,6 +227,11 @@ bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int i
 }
 
 bool ArmMotor::serviceAutoPosition(int pos) {
+    if ((!TiltMotor::isScoutPosition())) {
+        LogClass::logInFile("ArmMotor::serviceAutoPosition() - command: error, tilt not in scout ");
+        return false;
+
+    }
     device->iso_activation_mode = false;
 
     // Activate the command

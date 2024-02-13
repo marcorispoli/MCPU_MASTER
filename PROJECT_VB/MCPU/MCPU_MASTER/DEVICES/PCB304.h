@@ -9,9 +9,33 @@ ref class PCB304 : public CanDeviceProtocol
 {
 public:
 
-#define PCB304_GET_STATUS_SYSTEM_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
+	/// <summary>
+	///		This is the Device STATUS Register implementation 
+	/// </summary>
+	enum class StatusRegisters {
+		SYSTEM_STATUS_REGISTER = 0, //!> This is the System Status register index		
+	};
 
+	//#define PCB326_GET_SYSTEM_CS1_STATUS(reg)			(bool)	(reg->d0 & 0x01)
+	
+	/// <summary>
+	///	 This is the Device DATA Register implementation 
+	/// </summary>
+	enum class DataRegisters {
+		DISPLAY_DATA_REGISTER = 0, //!> This is the Display Data register index
+	};
 
+	#define PCB304_DISPLAY_ON(reg,stat)	reg->D0(stat, 0x1)
+	#define PCB304_DISPLAY_BLINK(reg,stat)	reg->D0(stat, 0x2)
+	#define PCB304_DISPLAY_REVERSE(reg,stat)	reg->D0(stat, 0x4)
+	#define PCB304_DISPLAY_KEEPALIVE(reg,stat)	reg->D0(stat, 0x8)
+	#define PCB304_DISPLAY_DOT_POSITION(reg,val)	reg->d0 |= ((unsigned char) val << 4)
+
+	#define PCB304_DISPLAY_INTENSITY(reg,val)	reg->d1 = ((unsigned char) val & 0xF)
+	#define PCB304_DISPLAY_CONTENT_LOW(reg, val)	reg->d2 = (unsigned char) (*((unsigned short*)&val)) 
+	#define PCB304_DISPLAY_CONTENT_HIGH(reg, val)	reg->d3 = (unsigned char) ((*((unsigned short*)&val)) >> 8) 
+
+	
 
 	PCB304() : CanDeviceProtocol(0x14, L"POTTER_DEVICE")
 	{
@@ -78,7 +102,19 @@ public:
 
 	inline static bool isPatientProtection(void) { return patient_protection_detected; }
 	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
+	
+	static void setDisplay(bool on_off) {
+		display_on = on_off;
+		return;
+	}
 
+	static void setDisplay(short val, unsigned char decimals, bool blink, unsigned char intensity) {
+		display_on = true;
+		display_blink = blink;
+		display_val = val;
+		display_decimals = decimals;
+		display_intensity = intensity;
+	}
 
 protected: 	virtual void runningLoop(void) override;
 
@@ -93,5 +129,12 @@ private:
 	static bool grid_sync_ready = false; //!< This flag stands for grid ready to be activated by the generator
 	static bool error = false; //!< The 2D grid is in error condition
 
+	// Remote display control
+	static bool display_on = false;
+	static bool display_blink = false;
+	static short display_val = 0;	
+	static unsigned char display_decimals = 0;	
+	static unsigned char display_intensity = 0;
+	static Register^ display_data_register = gcnew Register();
 };
 

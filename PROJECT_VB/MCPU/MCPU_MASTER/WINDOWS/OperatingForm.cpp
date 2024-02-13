@@ -658,11 +658,13 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateDoorStatus();
 	evaluateSlideStatus();
 	evaluateProjectionStatus();
+	evaluateDigitDisplays();
+
 
 	// This shall be posed at the end of the management
 	evaluateReadyWarnings(false);
 	evaluateXrayStatus(); 
-
+	
 	evaluatePopupPanels();
 
 }
@@ -758,6 +760,64 @@ void OperatingForm::onAbortConfirmCanc(void) {
 }
 
 
+void OperatingForm::evaluateDigitDisplays(void) {
+
+	// If a compression force is detected the display shall be activated!
+	short dspval;
+	unsigned char digits, intensity, blink;
+	
+	if (PCB302::getForce()) {
+		blink = false;
+		intensity = 0;
+
+		if (PCB302::isCompressing()) intensity = 0xf;
+		else intensity = 0;
+
+		// newtons
+		digits = 0;		
+		dspval = PCB302::getForce();
+		if (dspval < 30) blink = true;
+		else blink = false;
+		PCB304::setDisplay(dspval, digits, blink, intensity);
+		return;
+	}
+	
+	if (ArmMotor::device->isRunning()) {
+		blink = false;
+		intensity = 0xf;
+
+		// Degrees
+		digits = 0;
+		dspval = (ArmMotor::device->getCurrentPosition() / 100);
+		PCB304::setDisplay(dspval, digits, blink, intensity);
+		return;
+	}
+
+	if (BodyMotor::device->isRunning()) {
+		blink = false;
+		intensity = 0xf;
+
+		// Degrees
+		digits = 0;
+		dspval = (BodyMotor::device->getCurrentPosition() / 10);
+		PCB304::setDisplay(dspval, digits, blink, intensity);
+		return;
+	}
+
+	if (SlideMotor::device->isRunning()) {
+		blink = false;
+		intensity = 0xf;
+
+		// Degrees
+		digits = 0;
+		dspval = (SlideMotor::device->getCurrentPosition() / 100);
+		PCB304::setDisplay(dspval, digits, blink, intensity);
+		return;
+	}
+
+	PCB304::setDisplay(false);
+}
+
 void OperatingForm::evaluatePopupPanels(void) {
 #define TMO 20
 	static bool compression = false;
@@ -843,7 +903,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 		}
 
 		// Set the value to the current compression
-		float position = (float)ArmMotor::device->getCurrentPosition() / 100;
+		int position = ArmMotor::device->getCurrentPosition() / 100;
 		Gantry::getValuePopupWindow()->content(position.ToString());
 		return;
 
@@ -870,6 +930,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 	}
 	else body = false;
 
+	/*
 	if (VerticalMotor::device->isRunning()) {
 		timer = TMO;
 		if (!vertical) {
@@ -889,6 +950,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 		return;
 	}
 	else vertical = false;
+	*/
 
 	if (SlideMotor::device->isRunning()) {
 		timer = TMO;

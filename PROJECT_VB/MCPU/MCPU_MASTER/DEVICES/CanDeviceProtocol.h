@@ -195,6 +195,8 @@ public:
 	Register^ readStatusRegister(unsigned char index);
 	Register^ readDataRegister(unsigned char index);
 	bool writeParamRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
+	inline bool writeParamRegister(unsigned char idx, Register^ reg) { return writeParamRegister(idx, reg->d0, reg->d1, reg->d2, reg->d3); }
+
 	bool writeDataRegister(unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3);
 	inline bool writeDataRegister(unsigned char idx, Register^ reg) { return writeDataRegister(idx, reg->d0, reg->d1, reg->d2, reg->d3); }
 

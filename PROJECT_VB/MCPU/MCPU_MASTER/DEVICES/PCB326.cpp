@@ -2,11 +2,13 @@
 #include "Notify.h"
 #include "Log.h"
 #include <thread>
+#include "CalibrationConfig.h"
 
 void PCB326::handleSystemStatusRegister(void) {
-    static bool cs1 = false;
+    
     static bool rst = false;
     static bool cfg = false;
+    static bool cal = false;
     static bool run = false;
 
 
@@ -14,28 +16,48 @@ void PCB326::handleSystemStatusRegister(void) {
     if (system_status_register == nullptr) return;
 
     if (PCB326_GET_SYSTEM_RUN_STATUS(system_status_register)) {
-        if (cs1 != PCB326_GET_SYSTEM_CS1_STATUS(system_status_register)) {
-            cs1 = PCB326_GET_SYSTEM_CS1_STATUS(system_status_register);
+        if (cs_status != PCB326_GET_SYSTEM_CS_STATUS(system_status_register)) {
+            cs_status = PCB326_GET_SYSTEM_CS_STATUS(system_status_register);
 
-            if (cs1) LogClass::logInFile("PCB326: CS1 ACTIVATED!");
-            else LogClass::logInFile("PCB326: CS1 CLEARED!");
+            System::String^ stringa = "PCB326:";
+            if(cs_status == 0) stringa = "PCB326:  NO SENSORS ACTIVATED";
+            else{
+                stringa = "PCB326: ACTIVE SENSORS >";
+                if (cs_status & 0x1) stringa += " CS1=ON";
+                if (cs_status & 0x2) stringa += " CS2=ON";
+                if (cs_status & 0x4) stringa += " CS3=ON";
+                if (cs_status & 0x8) stringa += " CS4=ON";
+                if (cs_status & 0x10) stringa += " CS5=ON";
+                if (cs_status & 0x20) stringa += " CS6=ON";
+                if (cs_status & 0x40) stringa += " CS7=ON";
+                if (cs_status & 0x80) stringa += " CS8=ON";
+                LogClass::logInFile(stringa);
+            }            
         }
     }
-    else cs1 = false;
-
-
+    else {
+        cs_status = 0;
+    }
+   
     if (rst != PCB326_GET_SYSTEM_RESET_STATUS(system_status_register)) {
         rst = PCB326_GET_SYSTEM_RESET_STATUS(system_status_register);
 
         if (rst) LogClass::logInFile("PCB326: RESET ACTIVATED!");
-        else LogClass::logInFile("PCB326: RESET CLEARED!");
+        else LogClass::logInFile("PCB326: RESET COMPLETED!");
     }
 
     if (cfg != PCB326_GET_SYSTEM_CONFIG_STATUS(system_status_register)) {
         cfg = PCB326_GET_SYSTEM_CONFIG_STATUS(system_status_register);
 
         if (cfg) LogClass::logInFile("PCB326: CONFIG ACTIVATED!");
-        else LogClass::logInFile("PCB326: CONFIG CLEARED!");
+        else LogClass::logInFile("PCB326: CONFIG COMPLETED!");
+    }
+
+    if (cal != PCB326_GET_SYSTEM_CALIB_STATUS(system_status_register)) {
+        cal = PCB326_GET_SYSTEM_CALIB_STATUS(system_status_register);
+
+        if (cal) LogClass::logInFile("PCB326: CALIB ACTIVATED!");
+        else LogClass::logInFile("PCB326: CALIB COMPLETED!");
     }
 
     
@@ -53,33 +75,21 @@ void PCB326::handleSystemStatusRegister(void) {
 /// <returns>true if the configuration success</returns>
 bool PCB326::configurationLoop(void) {
 
-    // Resets the device
-    PCB326_OUTPUTS_RESET(outputs_data_register, true);
-    writeDataRegister((unsigned char)DataRegisters::OUTPUTS_DATA_REGISTER, outputs_data_register);
-    
-    LogClass::logInFile("PCB326: RESETTING!");
+    selected_gen_sens = (GeneralSensOption) System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_GAIN]);
+    selected_sensor_sens = (SensorSensOption) System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_SENSITIVITY]);
+    selected_recalib_time = (RecalibrationOption) System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_RECAL_TIME]);
+    selected_sensor_ena = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_SENS_ENA]);
 
-    Register^ system_status_register; 
-    while (true) {
-        system_status_register = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_STATUS_REGISTER);
-        if (PCB326_GET_SYSTEM_RESET_STATUS(system_status_register)) break;
-    }    
+    // Upload the Sensitivity parameter
+    writeParamRegister((unsigned char)ParamRegisters::SENSITIVITY_PARAMETER_REGISTER, setSensitivitRegister(selected_gen_sens, selected_sensor_sens, selected_recalib_time, selected_sensor_ena));
 
-    // Configure ..
-    LogClass::logInFile("PCB326: CONFIGURING!");
+    // Executes the reset and re-configuraiton of the CP1188 as soon as the device is in running 
+    current_command = CommandRegister::RESET_COMMAND;
 
-    // Clear the reset
-    PCB326_OUTPUTS_RESET(outputs_data_register, false);
-    writeDataRegister((unsigned char)DataRegisters::OUTPUTS_DATA_REGISTER, outputs_data_register);
-
-    while (true) {
-        system_status_register = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_STATUS_REGISTER);
-        if (PCB326_GET_SYSTEM_RUN_STATUS(system_status_register)) break;
-    }
-
-    LogClass::logInFile("PCB326: RUN!");
+    LogClass::logInFile("PCB326: CONFIGURED");
     return true;
 }
+
 
 void PCB326::runningLoop(void) {
     static bool commerr = false;
@@ -95,6 +105,37 @@ void PCB326::runningLoop(void) {
         }
     }
     
+    // verifies if the command can be executed
+    if (current_command != CommandRegister::NO_COMMAND) {
+
+        switch (current_command) {
+        case CommandRegister::RESET_COMMAND:            
+            if (resetCommand()) {
+                current_command = CommandRegister::NO_COMMAND;
+                LogClass::logInFile("PCB326: RESET COMMAND EXECUTED");
+            }
+            break;
+
+        case CommandRegister::CONFIG_COMMAND:
+            writeParamRegister((unsigned char)ParamRegisters::SENSITIVITY_PARAMETER_REGISTER, setSensitivitRegister(selected_gen_sens, selected_sensor_sens, selected_recalib_time, selected_sensor_ena));
+
+            if (configCommand()) {
+                current_command = CommandRegister::NO_COMMAND;
+                LogClass::logInFile("PCB326: CONFIG COMMAND EXECUTED");
+            }
+            break;
+
+        case CommandRegister::CALIBRATE_COMMAND:
+            if (calibrateCommand()) {
+                current_command = CommandRegister::NO_COMMAND;
+                LogClass::logInFile("PCB326: CALIBRATE COMMAND EXECUTED");
+            }
+            break;
+
+        }
+    }
+
+    // Reads the status register
     handleSystemStatusRegister();
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 

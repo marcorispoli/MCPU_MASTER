@@ -113,9 +113,9 @@
 "L00004", Notify::messages::LABEL_ERROR, "ERR", "-",
 "L00005", Notify::messages::LABEL_WARNING, "WRN", "-",
 "L00006", Notify::messages::LABEL_INFO, "INF", "-",
-"L00007", Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE, "STAND-BY", "-",
-"L00008", Notify::messages::LABEL_READY_FOR_EXPOSURE, "READY", "-",
-"L00009", Notify::messages::LABEL_X_RAY_ON, "X-RAY ON", "-",
+"L00007", Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE, "Standby", "-",
+"L00008", Notify::messages::LABEL_READY_FOR_EXPOSURE, "Ready", "-",
+"L00009", Notify::messages::LABEL_X_RAY_ON, "X-Ray", "-",
 
 "L00010", Notify::messages::LABEL_MOTOR_COMMAND_SUCCESS, "Command successfully completed", "-",
 "L00011", Notify::messages::LABEL_MOTOR_COMMAND_MANUAL_TERMINATION, "Command manually terminated", "-",

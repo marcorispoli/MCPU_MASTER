@@ -1,6 +1,6 @@
 #pragma once
 #include "ConfigFile.h"
-
+#include "PCB326.h"
 
 /// <summary>
 /// \defgroup ModuleParam System Parameter Module
@@ -128,7 +128,7 @@ ref class MotorConfig
 {
 public:
     literal System::String^ FILENAME = "MotorCalibration.cnf"; //!< This is the name of the configuration file
-    literal int     FILE_REVISION = 1;//!< This is the current revision code
+    literal int     FILE_REVISION = 2;//!< This is the current revision code
 
     literal System::String^ MOTOR_UNDEFINED_POSITION = "UNDEF";    //!< This is the TAG of the Undefined position 
     literal int PARAM_CURRENT_POSITION = 0;                        //!< Parameter position for the last valid motor position 
@@ -141,6 +141,17 @@ public:
     literal int PARAM_HOME_SPEED = 7;                              //!< Parameter speed in home procedure
     literal int PARAM_HOME_ACC = 8;                                //!< Parameter acceleration in home procedure
     
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_OBSTACLE = "OBSTACLE_CALIBRATION";                               //!< This is the Obstacle calibration parameter
+    literal System::String^ PARAM_OBSTACLE_COMMENT = "OBSTACLE_CALIBRATION calibration data";
+    literal System::String^ PARAM_OBSTACLE_GAIN_DEFAULT = "0"; //!< 0:3 This is the general sensors gain
+    literal System::String^ PARAM_OBSTACLE_SENSITIVITY_DEFAULT = "6"; //!< 0:7 This is the sensors gain with 0 = max sensitivity
+    literal System::String^ PARAM_OBSTACLE_RECAL_TIME_DEFAULT = "0"; //!< 0:15 This is detection time causing the recalibration
+    literal System::String^ PARAM_OBSTACLE_SENS_ENA_DEFAULT = "1";   //!< 0:255 This is a bit field sensor enable
+    literal int PARAM_OBSTACLE_GAIN = 0;
+    literal int PARAM_OBSTACLE_SENSITIVITY = 1;
+    literal int PARAM_OBSTACLE_RECAL_TIME = 2;
+    literal int PARAM_OBSTACLE_SENS_ENA = 3;
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_BODY = "BODY_CALIBRATION";                               //!< This is the Body Motor parameter section
@@ -207,10 +218,16 @@ public:
     literal System::String^ PARAM_SLIDE_HOME_SPEED_DEFAULT = "50";                                 //!< SLIDE Home Speed in 0.1 degree/ss
     literal System::String^ PARAM_SLIDE_HOME_ACC_DEFAULT = "20";                                    //!< SLIDE Home Acc in 0.1 degree/ss
 
-
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
+            CONFIG_FILE_ITEM(PARAM_OBSTACLE, PARAM_OBSTACLE_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_OBSTACLE_GAIN_DEFAULT,
+            PARAM_OBSTACLE_SENSITIVITY_DEFAULT,
+            PARAM_OBSTACLE_RECAL_TIME_DEFAULT,
+            PARAM_OBSTACLE_SENS_ENA_DEFAULT,            
+            }),
+
             CONFIG_FILE_ITEM(PARAM_BODY, PARAM_BODY_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_BODY_CURRENT_POSITION_DEFAULT,
             PARAM_BODY_AUTO_SPEED_DEFAULT,

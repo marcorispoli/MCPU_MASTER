@@ -1,4 +1,5 @@
 #include "CanDriver.h"
+#include "gantry_global_status.h"
 #include "Notify.h"
 #include "CanOpenMotor.h"
 #include "pd4_od.h"
@@ -851,6 +852,9 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
     else if(cmd == MotorCommands::MOTOR_HOMING) automaticHomingCompletedCallback(term_code);
     else if (cmd == MotorCommands::MOTOR_MANUAL_POSITIONING) manualPositioningCompletedCallback(term_code);
     
+    if (command_completed_code != MotorCompletedCodes::COMMAND_SUCCESS) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + "ERROR >"+ command_completed_code.ToString());
+    }
     return;
 }
 
@@ -895,6 +899,11 @@ void CanOpenMotor::demoLoop(void) {
                 current_uposition += unit_step;
                 current_eposition = convert_User_To_Encoder(current_uposition);
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+                if (Gantry::getObstacleRotationStatus(device_id)) {
+                    termination_code = MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
+                    break;
+                }
 
                 // Test the abort request flag
                 if (abort_request) {

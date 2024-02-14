@@ -85,11 +85,11 @@ void Gantry::initialize(void) {
     pcb301_demo = true;
     pcb302_demo = true;
     pcb303_demo = true;
-    pcb304_demo = false;
+    pcb304_demo = true;
     pcb315_demo = true;
     pcb326_demo = true;
     motor_arm_demo = true;
-    motor_tilt_demo = true;
+    motor_tilt_demo = false;
     motor_slide_demo = true;
     motor_body_demo = true;
     motor_vertical_demo = true;
@@ -163,12 +163,17 @@ bool Gantry::setCloseStudy(void) {
 bool Gantry::getObstacleRotationStatus(int addr) { 
     switch ((CANOPEN::MotorDeviceAddresses)addr) {
     case CANOPEN::MotorDeviceAddresses::ARM_ID:
+        return PCB326::isSensorActive(SENS_CS1 | SENS_CS2);
         break;
+
     case CANOPEN::MotorDeviceAddresses::TILT_ID:
         break;
     case CANOPEN::MotorDeviceAddresses::BODY_ID:
+        return PCB326::isSensorActive(SENS_CS1 | SENS_CS2 | SENS_CS3 | SENS_CS4);
         break;
+
     case CANOPEN::MotorDeviceAddresses::SLIDE_ID:
+        return PCB326::isSensorActive(SENS_CS3 | SENS_CS4);
         break;
     case CANOPEN::MotorDeviceAddresses::VERTICAL_ID:
         break;

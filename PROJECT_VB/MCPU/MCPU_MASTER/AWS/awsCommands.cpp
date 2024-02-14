@@ -607,34 +607,62 @@ void   awsProtocol::SET_Language(void) {
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::EXEC_TestCommand(void) {
-    
+    if (pDecodedFrame->parameters[0] == "TILT") {
+        LogClass::logInFile("TEST ON TILT MOTOR");
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+        TiltMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
 
-    if (pDecodedFrame->parameters->Count == 5) {
-        if (pDecodedFrame->parameters[0] == "TILT") {
-            LogClass::logInFile("TEST ON TILT MOTOR");
-            int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
-            int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
-            int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
-            int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
-            TiltMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec,true);
-
-        }else if (pDecodedFrame->parameters[0] == "TOMO") {
-            LogClass::logInFile("TEST ON TOMO TILT MOTOR");
-            int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
-            int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
-            int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
-            int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
-            TiltMotor::activateTomoScan(pos, speed, acc, dec);
-        }
-        else {
-            LogClass::logInFile("TEST ON SLIDE MOTOR");
-            int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
-            int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
-            int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
-            int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
-            SlideMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec,true);
-        }
     }
+    else if (pDecodedFrame->parameters[0] == "TOMO") {
+        LogClass::logInFile("TEST ON TOMO TILT MOTOR");
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+        TiltMotor::activateTomoScan(pos, speed, acc, dec);
+    }
+    else if (pDecodedFrame->parameters[0] == "SLIDE") {
+        LogClass::logInFile("TEST ON SLIDE MOTOR");
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+        SlideMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
+    }
+    else if (pDecodedFrame->parameters[0] == "ARM") {
+        LogClass::logInFile("TEST ON ARM MOTOR");
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+        ArmMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
+    }
+    else if (pDecodedFrame->parameters[0] == "BODY") {
+        LogClass::logInFile("TEST ON BODY MOTOR");
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+        BodyMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
+    }
+    else if (pDecodedFrame->parameters[0] == "OBSTACLE") {
+        if (pDecodedFrame->parameters[1] == "CONFIG") {
+            int gain = System::Convert::ToByte(pDecodedFrame->parameters[2]);
+            int sens = System::Convert::ToByte(pDecodedFrame->parameters[3]);
+            int recal = System::Convert::ToByte(pDecodedFrame->parameters[4]);
+            int ena = System::Convert::ToByte(pDecodedFrame->parameters[5]);
+
+            if (!PCB326::executeObstacleConfig((PCB326::GeneralSensOption)gain, (PCB326::SensorSensOption)sens, (PCB326::RecalibrationOption)recal, ena)) {
+                LogClass::logInFile("TEST ON OBSTACLE CONFIGURATION FAILED!");
+            }else LogClass::logInFile("TEST ON OBSTACLE CONFIGURATION EXECUTING!");
+        }
+
+    }
+
+    
 
     return;
 }

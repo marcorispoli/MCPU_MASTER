@@ -244,7 +244,7 @@ private:
 		this->labelMag->BackColor = System::Drawing::Color::Transparent;
 		this->labelMag->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelMag->Location = System::Drawing::Point(0, 110);
+		this->labelMag->Location = System::Drawing::Point(0, 105);
 		this->labelMag->Name = L"labelMag";
 		this->labelMag->Size = System::Drawing::Size(135, 25);
 		this->labelMag->TabIndex = 0;
@@ -339,16 +339,16 @@ private:
 		// angleText
 		// 
 		this->angleText->BackColor = System::Drawing::Color::Transparent;
-		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 65.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+		this->angleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->angleText->ImageAlign = System::Drawing::ContentAlignment::MiddleLeft;
-		this->angleText->Location = System::Drawing::Point(101, 170);
+		this->angleText->Location = System::Drawing::Point(0, 0);
 		this->angleText->Margin = System::Windows::Forms::Padding(0);
 		this->angleText->Name = L"angleText";
-		this->angleText->Size = System::Drawing::Size(222, 99);
+		this->angleText->Size = System::Drawing::Size(277, 315);
 		this->angleText->TabIndex = 2;
 		this->angleText->Text = L"-180°";
-		this->angleText->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		this->angleText->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
 		// selectedIcon
 		// 
@@ -374,7 +374,7 @@ private:
 		this->labelForce->BackColor = System::Drawing::Color::Transparent;
 		this->labelForce->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelForce->Location = System::Drawing::Point(0, 110);
+		this->labelForce->Location = System::Drawing::Point(0, 105);
 		this->labelForce->Name = L"labelForce";
 		this->labelForce->Size = System::Drawing::Size(135, 25);
 		this->labelForce->TabIndex = 2;
@@ -395,7 +395,7 @@ private:
 		this->labelThickness->BackColor = System::Drawing::Color::Transparent;
 		this->labelThickness->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelThickness->Location = System::Drawing::Point(0, 110);
+		this->labelThickness->Location = System::Drawing::Point(0, 105);
 		this->labelThickness->Name = L"labelThickness";
 		this->labelThickness->Size = System::Drawing::Size(135, 25);
 		this->labelThickness->TabIndex = 0;
@@ -416,7 +416,7 @@ private:
 		this->labelPaddle->BackColor = System::Drawing::Color::Transparent;
 		this->labelPaddle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelPaddle->Location = System::Drawing::Point(0, 110);
+		this->labelPaddle->Location = System::Drawing::Point(0, 105);
 		this->labelPaddle->Name = L"labelPaddle";
 		this->labelPaddle->Size = System::Drawing::Size(135, 25);
 		this->labelPaddle->TabIndex = 1;
@@ -445,7 +445,7 @@ private:
 		this->labelTubeData->BackColor = System::Drawing::Color::Transparent;
 		this->labelTubeData->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelTubeData->Location = System::Drawing::Point(0, 110);
+		this->labelTubeData->Location = System::Drawing::Point(0, 105);
 		this->labelTubeData->Name = L"labelTubeData";
 		this->labelTubeData->Size = System::Drawing::Size(135, 25);
 		this->labelTubeData->TabIndex = 0;
@@ -475,7 +475,7 @@ private:
 		this->labelColli->BackColor = System::Drawing::Color::Transparent;
 		this->labelColli->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->labelColli->Location = System::Drawing::Point(0, 110);
+		this->labelColli->Location = System::Drawing::Point(0, 105);
 		this->labelColli->Name = L"labelColli";
 		this->labelColli->Size = System::Drawing::Size(135, 25);
 		this->labelColli->TabIndex = 0;

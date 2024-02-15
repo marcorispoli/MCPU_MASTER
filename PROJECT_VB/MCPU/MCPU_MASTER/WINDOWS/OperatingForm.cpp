@@ -270,6 +270,9 @@ void OperatingForm::initOperatingStatus(void) {
 
 	Notify::clrInstant();
 
+	// Activate the Operating Status  manual modes
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION);
+
 	// Start the startup session	
 	operatingTimer->Start();		
 	resume();
@@ -740,23 +743,20 @@ void OperatingForm::onConfirmCanc(void) {
 }
 
 void OperatingForm::onShiftConfirmOk(void) {
-	((ConfirmationWindow^)pShiftConf)->close();
 
 	if (SlideMotor::device->getCurrentPosition() < 500) SlideMotor::isoAutoPosition(1000);
 	else SlideMotor::isoAutoPosition(0);
 	
 }
 void OperatingForm::onShiftConfirmCanc(void) {
-	((ConfirmationWindow^)pShiftConf)->close();
+	
 }
 
-void OperatingForm::onAbortConfirmOk(void) {
-	((ConfirmationWindow^)pAbort)->close();
+void OperatingForm::onAbortConfirmOk(void) {	
 	ArmMotor::abortProjectionRequest();
 
 }
 void OperatingForm::onAbortConfirmCanc(void) {
-	((ConfirmationWindow^)pAbort)->close();
 }
 
 

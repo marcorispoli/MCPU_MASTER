@@ -85,11 +85,11 @@ void Gantry::initialize(void) {
     pcb301_demo = true;
     pcb302_demo = true;
     pcb303_demo = true;
-    pcb304_demo = true;
+    pcb304_demo = false;
     pcb315_demo = true;
     pcb326_demo = true;
     motor_arm_demo = true;
-    motor_tilt_demo = false;
+    motor_tilt_demo = true;
     motor_slide_demo = true;
     motor_body_demo = true;
     motor_vertical_demo = true;
@@ -159,6 +159,11 @@ bool Gantry::setCloseStudy(void) {
     return setIdle();
 }
 
+ void Gantry::setManualRotationMode(manual_rotation_options mode) {
+    manual_rotation_mode = mode;
+    if (manual_rotation_mode == manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED) PCB301::set_manual_rot_ena_led(false);
+    else PCB301::set_manual_rot_ena_led(true);
+}
 
 bool Gantry::getObstacleRotationStatus(int addr) { 
     switch ((CANOPEN::MotorDeviceAddresses)addr) {
@@ -182,70 +187,73 @@ bool Gantry::getObstacleRotationStatus(int addr) {
     return false;
 
 }
-bool Gantry::getSafetyRotationStatus(int addr) { 
+
+Gantry::safety_rotation_conditions Gantry::getSafetyRotationStatus(int addr) {
 
     // High priority over all 
-    if (PCB301::getCabinetSafety()) return true;
-    //if (PCB301::getPowerdown()) return true;
-    //if (PCB301::getEmergency()) return true;
-    
-    if ((CANOPEN::MotorDeviceAddresses) addr == CANOPEN::MotorDeviceAddresses::TILT_ID) {
+    if (PCB301::getCabinetSafety()) return safety_rotation_conditions::GANTRY_SAFETY_CABINET;    // No activation with the cabinet open
+    if (PCB301::getPowerdown()) return safety_rotation_conditions::GANTRY_SAFETY_POWER_DOWN;        // No activation in power down condition
+    if (PCB301::getEmergency()) return safety_rotation_conditions::GANTRY_SAFETY_EMERGENCY_BUTTON;        // No activation in Emergency condition
 
-    }
-    else {
-        if (PCB302::getForce()) return true;
-        if (PCB301::getCompressionStatus()) return true;
-        if (!PCB301::getMotorSwitch()) return true;
-    }
+    // The TILT activation can be performed now
+    if ((CANOPEN::MotorDeviceAddresses)addr == CANOPEN::MotorDeviceAddresses::TILT_ID) return safety_rotation_conditions::GANTRY_SAFETY_OK;
 
-    return false;
+    // The rest of motorizations it is requested more conditions
+
+    if (PCB302::getForce()) return safety_rotation_conditions::GANTRY_SAFETY_COMPRESSION; // No activation with the compression force detected
+    if (PCB301::getCompressionStatus()) return safety_rotation_conditions::GANTRY_SAFETY_COMPRESSION; // No activation with the hardware compression input activated
+    if (!PCB301::getMotorSwitch()) return safety_rotation_conditions::GANTRY_SAFETY_POWER_SUPPLY;// No activation with the hardware safety switch disabled;
+
+    // Ok safety
+    return safety_rotation_conditions::GANTRY_SAFETY_OK;
 
 }
 
 bool Gantry::getManualRotationIncrease(int addr) {
+    if (manual_rotation_mode == manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED) return false;
+    if (manual_rotation_mode == manual_rotation_options::GANTRY_IDLE_MANUAL_ROTATION) return false;
+
+
     switch ((CANOPEN::MotorDeviceAddresses)addr) {
     case CANOPEN::MotorDeviceAddresses::ARM_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_arm_cw_stat()) return true;
-        }
-        else if (manual_rotation_mode == manual_rotation_options::GANTRY_ARM_MANUAL_ROTATION) {
+        }else if (manual_rotation_mode == manual_rotation_options::GANTRY_ARM_MANUAL_ROTATION) {
             if (PCB301::get_button_arm_cw_stat()) return true;
             if (PCB301::get_button_up_stat()) return true;
             if (PCB301::get_pedal_up_stat()) return true;
         }
-
         break;
+
     case CANOPEN::MotorDeviceAddresses::TILT_ID:
         if (manual_rotation_mode == manual_rotation_options::GANTRY_TILT_MANUAL_ROTATION) {
             if (PCB301::get_button_arm_cw_stat()) return true;
+            if (PCB301::get_pedal_up_stat()) return true;
         }
+        break;
 
-        break;
     case CANOPEN::MotorDeviceAddresses::BODY_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_body_cw()) return true;
-        }
-        else if (manual_rotation_mode == manual_rotation_options::GANTRY_BODY_MANUAL_ROTATION) {
+        }else if (manual_rotation_mode == manual_rotation_options::GANTRY_BODY_MANUAL_ROTATION) {
             if (PCB301::get_button_body_cw()) return true;
-            if (PCB301::get_button_up_stat()) return true;
             if (PCB301::get_pedal_up_stat()) return true;
             if (PCB301::get_button_arm_cw_stat()) return true;
         }
         break;
+
     case CANOPEN::MotorDeviceAddresses::SLIDE_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_slide_up_stat()) return true;
-        }
-        else if (manual_rotation_mode == manual_rotation_options::GANTRY_SLIDE_MANUAL_ROTATION) {
+        }else if (manual_rotation_mode == manual_rotation_options::GANTRY_SLIDE_MANUAL_ROTATION) {
             if (PCB301::get_button_slide_up_stat()) return true;
             if (PCB301::get_button_up_stat()) return true;
             if (PCB301::get_pedal_up_stat()) return true;
-            if (PCB301::get_button_arm_cw_stat()) return true;
         }
 
         break;
     case CANOPEN::MotorDeviceAddresses::VERTICAL_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_up_stat()) return true;
             if (PCB301::get_pedal_up_stat()) return true;
         }
@@ -258,12 +266,13 @@ bool Gantry::getManualRotationIncrease(int addr) {
 }
 
 bool Gantry::getManualRotationDecrease(int addr) { 
+    if (manual_rotation_mode == manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED) return false;
+
     switch ((CANOPEN::MotorDeviceAddresses)addr) {
     case CANOPEN::MotorDeviceAddresses::ARM_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_arm_ccw_stat()) return true;
-        }
-        else if (manual_rotation_mode == manual_rotation_options::GANTRY_ARM_MANUAL_ROTATION) {
+        }else if (manual_rotation_mode == manual_rotation_options::GANTRY_ARM_MANUAL_ROTATION) {
             if (PCB301::get_button_arm_ccw_stat()) return true;
             if (PCB301::get_button_down_stat()) return true;
             if (PCB301::get_pedal_down_stat()) return true;
@@ -273,33 +282,32 @@ bool Gantry::getManualRotationDecrease(int addr) {
     case CANOPEN::MotorDeviceAddresses::TILT_ID:
         if (manual_rotation_mode == manual_rotation_options::GANTRY_TILT_MANUAL_ROTATION) {
             if (PCB301::get_button_arm_ccw_stat()) return true;
+            if (PCB301::get_pedal_down_stat()) return true;
         }
         break;
     case CANOPEN::MotorDeviceAddresses::BODY_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_body_ccw()) return true;
         }
         else if (manual_rotation_mode == manual_rotation_options::GANTRY_BODY_MANUAL_ROTATION) {
             if (PCB301::get_button_body_ccw()) return true;
             if (PCB301::get_button_down_stat()) return true;
-            if (PCB301::get_pedal_down_stat()) return true;
-            if (PCB301::get_button_arm_ccw_stat()) return true;
+            if (PCB301::get_pedal_down_stat()) return true;            
         }
         break;
     case CANOPEN::MotorDeviceAddresses::SLIDE_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_slide_down_stat()) return true;
         }
         else if (manual_rotation_mode == manual_rotation_options::GANTRY_SLIDE_MANUAL_ROTATION) {
             if (PCB301::get_button_slide_down_stat()) return true;
             if (PCB301::get_button_down_stat()) return true;
-            if (PCB301::get_pedal_down_stat()) return true;
-            if (PCB301::get_button_arm_ccw_stat()) return true;
+            if (PCB301::get_pedal_down_stat()) return true;            
         }
 
         break;
     case CANOPEN::MotorDeviceAddresses::VERTICAL_ID:
-        if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION) {
+        if (manual_rotation_mode == manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION) {
             if (PCB301::get_button_down_stat()) return true;
             if (PCB301::get_pedal_down_stat()) return true;
         }

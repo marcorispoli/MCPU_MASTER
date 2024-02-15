@@ -86,7 +86,9 @@ bool ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
 ArmMotor::MotorCompletedCodes  ArmMotor::automaticPositioningRunningCallback(void) {
 
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::ARM_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
         return MotorCompletedCodes::ERROR_SAFETY;
     }
 
@@ -153,18 +155,22 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
 ArmMotor::MotorCompletedCodes ArmMotor::idleCallback(void) {
     int speed, acc, dec;
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
-
+   
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::ARM_ID)) {
-        ret_code = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        ret_code = MotorCompletedCodes::ERROR_SAFETY;
     }
+
 
     // Handle a Manual activation mode
     bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::ARM_ID);
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::ARM_ID);
     if (man_increase || man_decrease) {
-        if (!manual_activation_enabled) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_MANUAL_DISABLE);
-        else if (ret_code == MotorCompletedCodes::ERROR_SAFETY) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
+        if (ret_code == MotorCompletedCodes::ERROR_SAFETY) {
+            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+            Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
+        }
         else if (ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
         else {
             speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_MANUAL_SPEED]);
@@ -299,11 +305,12 @@ void ArmMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
 ArmMotor::MotorCompletedCodes  ArmMotor::manualPositioningRunningCallback(void) {
 
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::ARM_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
         return MotorCompletedCodes::ERROR_SAFETY;
     }
 
-    
     // handle the manual hardware inputs
     bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::ARM_ID);
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::ARM_ID);

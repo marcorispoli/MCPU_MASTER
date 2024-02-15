@@ -84,12 +84,10 @@ void ProjectionForm::close(void) {
 
 
 void ProjectionForm::onConfirmOk(void) {
-	((ConfirmationWindow^)pConf)->close();
 	button_ok_event();
 	this->close();
 }
-void ProjectionForm::onConfirmCanc(void) {
-	((ConfirmationWindow^)pConf)->close();		
+void ProjectionForm::onConfirmCanc(void) {	
 }
 
 

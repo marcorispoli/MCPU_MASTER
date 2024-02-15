@@ -1,6 +1,7 @@
 #include "CalibrationConfig.h"
 #include "Notify.h"
 #include "BodyMotor.h"
+#include "CanOpenMotor.h"
 #include "PCB301.h"
 #include "pd4_od.h"
 #include "..\gantry_global_status.h"
@@ -67,7 +68,7 @@ bool BodyMotor::serviceAutoPosition(int pos) {
     int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_ACC]);
     int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_DEC]);
 
-    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+    return device->activateAutomaticPositioning(0, pos * 10, speed, acc, dec, true);
 
 }
 
@@ -241,54 +242,59 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     int speed, acc, dec;
     bool brake_unlocking_status, limit_status;
     
+    if (!device->demo_mode) {
 
-    // With the brake alarm present, no more action can be executed
-    if (brake_alarm) {
-        
-        // Keeps the alarm ON
-        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
 
-        // Alarm condition
-        blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
-    }
+        // With the brake alarm present, no more action can be executed
+        if (brake_alarm) {
 
-    // reads the Motor GPIO inputs
-    if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_ACCESS_REGISTER;
-    
-    if (BRAKE_INPUT_MASK(getRxReg()->data)) {        
-        brake_alarm = true;
-        LogClass::logInFile("BodyMotor: Failed test brake input in IDLE");
-        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
-        blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-        return MotorCompletedCodes::ERROR_BRAKE_DEVICE;        
-    }
+            // Keeps the alarm ON
+            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
 
-    // Test the limit switch activation
-    if (LIMIT_INPUT_MASK(getRxReg()->data)) limit_status = true; // Photocell in Light condition: limit swicth activated
-    else limit_status = false;
-
-    // If a limit switch should be engaged then the activation shall be disabled
-    if (limit_status != error_limit_switch) {
-        error_limit_switch = limit_status;
-        if (error_limit_switch) {
-            Notify::activate(Notify::messages::ERROR_BODY_LIMIT_SWITCH);
-            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
-
-            // Remove the zero condition
-            if (isEncoderInitialized()) {
-                setEncoderInitStatus(false);
-                MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-                MotorConfig::Configuration->storeFile();
-            }
+            // Alarm condition
+            blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
+            return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
         }
-        else  Notify::deactivate(Notify::messages::ERROR_BODY_LIMIT_SWITCH);
-    }
 
-    if(error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
-    
+        // reads the Motor GPIO inputs
+        if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_ACCESS_REGISTER;
+
+        if (BRAKE_INPUT_MASK(getRxReg()->data)) {
+            brake_alarm = true;
+            LogClass::logInFile("BodyMotor: Failed test brake input in IDLE");
+            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
+            blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
+            return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
+        }
+
+        // Test the limit switch activation
+        if (LIMIT_INPUT_MASK(getRxReg()->data)) limit_status = true; // Photocell in Light condition: limit swicth activated
+        else limit_status = false;
+
+        // If a limit switch should be engaged then the activation shall be disabled
+        if (limit_status != error_limit_switch) {
+            error_limit_switch = limit_status;
+            if (error_limit_switch) {
+                Notify::activate(Notify::messages::ERROR_BODY_LIMIT_SWITCH);
+                Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
+
+                // Remove the zero condition
+                if (isEncoderInitialized()) {
+                    setEncoderInitStatus(false);
+                    MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+                    MotorConfig::Configuration->storeFile();
+                }
+            }
+            else  Notify::deactivate(Notify::messages::ERROR_BODY_LIMIT_SWITCH);
+        }
+
+        if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    } // demo_mode
+
+
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::BODY_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
         ret_code = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
     }
 
@@ -296,9 +302,10 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
     if (man_increase || man_decrease) {
-        if (!manual_activation_enabled) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_MANUAL_DISABLE);
-        else if (ret_code == MotorCompletedCodes::ERROR_SAFETY) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
-        else if (ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+        if (ret_code == MotorCompletedCodes::ERROR_SAFETY) {
+            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+            Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
+        } else if (ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
         else {
             speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_SPEED]);
             acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_ACC]);
@@ -330,7 +337,9 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
 BodyMotor::MotorCompletedCodes  BodyMotor::automaticPositioningRunningCallback(void) {
     
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::BODY_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
         return MotorCompletedCodes::ERROR_SAFETY;
     }
 
@@ -339,6 +348,7 @@ BodyMotor::MotorCompletedCodes  BodyMotor::automaticPositioningRunningCallback(v
         return MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
     }
 
+    if(device->demo_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
 
     // Checks for the limit switch activation     
     if (blocking_readOD(OD_60FD_00)) {
@@ -414,7 +424,9 @@ void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
 bool BodyMotor::startHoming(void) {
 
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::BODY_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device->device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device->device_id.ToString() + ">: safety condition error > " + safety.ToString());
         device->setCommandCompleted(CanOpenMotor::MotorCompletedCodes::ERROR_SAFETY);
         return false;
     }
@@ -436,16 +448,19 @@ bool BodyMotor::startHoming(void) {
 BodyMotor::MotorCompletedCodes  BodyMotor::manualPositioningRunningCallback(void) {
 
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::BODY_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
         return MotorCompletedCodes::ERROR_SAFETY;
     }
 
-    // Checks for the limit switch activation     
-    if (blocking_readOD(OD_60FD_00)) {
-        // Limit switch activation
-        if (LIMIT_INPUT_MASK(getRxReg()->data)) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    if (!demo_mode) {
+        // Checks for the limit switch activation     
+        if (blocking_readOD(OD_60FD_00)) {
+            // Limit switch activation
+            if (LIMIT_INPUT_MASK(getRxReg()->data)) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+        }
     }
-
 
     // Handle the safety
 

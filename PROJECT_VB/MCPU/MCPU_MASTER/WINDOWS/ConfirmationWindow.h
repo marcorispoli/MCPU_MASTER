@@ -203,10 +203,12 @@ private: System::Void InitializeComponent() {
 
 
 private: System::Void CancButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	close();
 	button_canc_event();
 	
 }
 private: System::Void OkButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	close();
 	button_ok_event();
 	
 }

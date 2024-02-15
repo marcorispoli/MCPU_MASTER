@@ -7,12 +7,7 @@
 
 bool CanOpenMotor::activateManualPositioning(int target, int speed, int acc, int dec) {
 
-    // Not in Demo mode
-    if (demo_mode) {
-        command_completed_code = MotorCompletedCodes::ERROR_COMMAND_DEMO;
-        return false;
-    }
-
+    
     // Only with the homing executed or initialized can be activated
     if (!home_initialized) {
         command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;

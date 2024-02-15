@@ -10,6 +10,7 @@ public: void initRotationToolPanel(void);
 public: void cancRotationToolPanel(void);
 public: void rotationToolPanelTimer(void);
 public: void rotationTool_select_item(System::Windows::Forms::PictureBox^ item);
+public: void rotationTooCreateInfoPanel(unsigned char reason);
 public: void rotationToolSelectionArmOkCallback(void); 
 public: void rotationToolSelectionTiltOkCallback(void);
 public: void rotationToolSelectionBodyOkCallback(void);

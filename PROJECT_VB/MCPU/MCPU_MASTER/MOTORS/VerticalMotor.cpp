@@ -158,12 +158,14 @@ void VerticalMotor::resetCallback(void) {
 /// <returns></returns>
 bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
 {   
+    
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device->device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device->device_id.ToString() + ">: safety condition error > " + safety.ToString());
         device->setCommandCompleted(CanOpenMotor::MotorCompletedCodes::ERROR_SAFETY);
         return false;
     }
-
     
     // Activate the automatic positioning for isocentric correction
     int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_AUTO_SPEED]);
@@ -227,38 +229,45 @@ CanOpenMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
     int speed, acc, dec;
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
 
-    // If a limit switch should be engaged then the activation shall be disabled
-    limit_status = testLimitSwitch();
-    if (limit_status != error_limit_switch) {
-        error_limit_switch = limit_status;
-        if (error_limit_switch) {
-            Notify::activate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
-            Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
+    if (!demo_mode) {
+        // If a limit switch should be engaged then the activation shall be disabled
+        limit_status = testLimitSwitch();
+        if (limit_status != error_limit_switch) {
+            error_limit_switch = limit_status;
+            if (error_limit_switch) {
+                Notify::activate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
+                Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
 
-            // Remove the zero condition
-            if (isEncoderInitialized()) {
-                setEncoderInitStatus(false);
-                MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-                MotorConfig::Configuration->storeFile();
+                // Remove the zero condition
+                if (isEncoderInitialized()) {
+                    setEncoderInitStatus(false);
+                    MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+                    MotorConfig::Configuration->storeFile();
+                }
+
             }
-           
+            else  Notify::deactivate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
         }
-        else  Notify::deactivate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
+        if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
     }
-    if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
 
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
         ret_code = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
     }
+
+   
 
     // Handle a Manual activation mode
     bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
     if (man_increase || man_decrease) {
-        if (!manual_activation_enabled) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_MANUAL_DISABLE);
-        else if(ret_code == MotorCompletedCodes::ERROR_SAFETY) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
-        else if(ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+        if (ret_code == MotorCompletedCodes::ERROR_SAFETY) {
+            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+            Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
+        }
+        else if (ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
         else {
             speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_SPEED]);
             acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_ACC]);
@@ -293,7 +302,9 @@ CanOpenMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
 bool VerticalMotor::startHoming(void) {
     
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device->device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device->device_id.ToString() + ">: safety condition error > " + safety.ToString());
         device->setCommandCompleted(CanOpenMotor::MotorCompletedCodes::ERROR_SAFETY);
         return false;
     }
@@ -317,7 +328,9 @@ bool VerticalMotor::startHoming(void) {
 VerticalMotor::MotorCompletedCodes  VerticalMotor::automaticPositioningRunningCallback(void) {
 
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID)) {        
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
         return MotorCompletedCodes::ERROR_SAFETY;
     }
 
@@ -326,8 +339,11 @@ VerticalMotor::MotorCompletedCodes  VerticalMotor::automaticPositioningRunningCa
         return MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
     }
 
-    // Test the limit switch to early stop the activation
-    if(testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    if(!demo_mode){
+        // Test the limit switch to early stop the activation
+        if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+
+    }
 
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
@@ -367,12 +383,16 @@ VerticalMotor::MotorCompletedCodes  VerticalMotor::manualPositioningRunningCallb
    
  
     // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getSafetyRotationStatus((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID)) {
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
         return MotorCompletedCodes::ERROR_SAFETY;
     }
 
-    // Test the limit switch to early stop the activation
-    if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    if (!demo_mode) {
+        // Test the limit switch to early stop the activation
+        if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    }
 
     // handle the manual hardware inputs
     bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);

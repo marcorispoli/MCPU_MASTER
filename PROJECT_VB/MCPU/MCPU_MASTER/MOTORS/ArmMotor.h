@@ -322,8 +322,7 @@ public:
 
     // Arm activation section
     static bool startHoming(void);
-    static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
-
+    
     static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
     static void abortTarget(void);
     static bool serviceAutoPosition(int pos);
@@ -371,8 +370,6 @@ private:
     static int         allowed_high = 0;           //!< Higher acceptable angle (°)
     static bool        valid_target = false;       //!< True if the target is a valid target
     static int         selected_target;            //!< Automatic selected target  
-
-    static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
     static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
 
 };

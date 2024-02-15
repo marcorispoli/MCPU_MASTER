@@ -4,6 +4,7 @@
 #include "Notify.h"
 #include "awsProtocol.h"
 #include "../gantry_global_status.h"
+#include "Log.h"
 #include <thread>
 
 void PCB301::evaluateEvents(void) {
@@ -148,16 +149,38 @@ void PCB301::handleSystemStatusRegister(void) {
 
 
     // Handles the motor manual inputs
-    button_up_stat = PCB301_GET_BUTTON_VERTICAL_UP(system_status_register);
-    button_down_stat = PCB301_GET_BUTTON_VERTICAL_DOWN(system_status_register);
+    if (button_up_stat != PCB301_GET_BUTTON_VERTICAL_UP(system_status_register)) {
+        button_up_stat = PCB301_GET_BUTTON_VERTICAL_UP(system_status_register);
+        if (button_up_stat) LogClass::logInFile("PCB301: MANUAL BUTTON UP ACTIVATED");
+        else LogClass::logInFile("PCB301: MANUAL BUTTON UP CLEARED");
+    }
+
+    if (button_down_stat != PCB301_GET_BUTTON_VERTICAL_DOWN(system_status_register)) {
+        button_down_stat = PCB301_GET_BUTTON_VERTICAL_DOWN(system_status_register);
+        if (button_down_stat) LogClass::logInFile("PCB301: MANUAL BUTTON DOWN ACTIVATED");
+        else LogClass::logInFile("PCB301: MANUAL BUTTON DOWN CLEARED");
+    }
+
+    if (button_arm_cw_stat != PCB301_GET_BUTTON_ARM_CW(system_status_register)) {
+        button_arm_cw_stat = PCB301_GET_BUTTON_ARM_CW(system_status_register);
+        if (button_arm_cw_stat) LogClass::logInFile("PCB301: MANUAL CW ACTIVATED");
+        else LogClass::logInFile("PCB301: MANUAL CW CLEARED");
+    }
+
+    if (button_arm_ccw_stat != PCB301_GET_BUTTON_ARM_CCW(system_status_register)) {
+        button_arm_ccw_stat = PCB301_GET_BUTTON_ARM_CCW(system_status_register);
+        if (button_arm_ccw_stat) LogClass::logInFile("PCB301: MANUAL CCW ACTIVATED");
+        else LogClass::logInFile("PCB301: MANUAL CCW CLEARED");
+    }
+    
+
     pedal_up_stat = PCB301_GET_PEDAL_VERTICAL_UP(system_status_register);
     pedal_down_stat = PCB301_GET_PEDAL_VERTICAL_DOWN(system_status_register);
 
     button_body_cw = PCB301_GET_BUTTON_BODY_CW(system_status_register);
     button_body_ccw = PCB301_GET_BUTTON_BODY_CCW(system_status_register);
 
-    button_arm_cw_stat = PCB301_GET_BUTTON_ARM_CW(system_status_register);
-    button_arm_ccw_stat = PCB301_GET_BUTTON_ARM_CCW(system_status_register);
+    
 
     button_slide_up_stat = PCB301_GET_BUTTON_SLIDE_UP(system_status_register);
     button_slide_down_stat = PCB301_GET_BUTTON_SLIDE_DOWN(system_status_register);
@@ -208,7 +231,8 @@ void PCB301::runningLoop(void) {
 
     // Toggles the keepalive bit to keep the board alive!
     toggleKeepalive();
-
+    
+    
     // Refresh the Data register
     writeDataRegister((unsigned char)DataRegisters::OUTPUTS_DATA_REGISTER, outputs_data_register);
    

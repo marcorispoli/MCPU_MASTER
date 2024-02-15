@@ -91,8 +91,7 @@ public:
 	TiltMotor(void);
 
 	static TiltMotor^ device = gcnew TiltMotor(); //!< This is the pointer to the Base Class functions
-    static bool startHoming(void);
-    static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
+    static bool startHoming(void);   
     static bool activateTomoScan(int pos, int speed, int acc, int dec);
     static bool serviceAutoPosition(int pos);
 
@@ -112,74 +111,7 @@ public:
         UNDEF       //!< TRX in not predefined target
     };    
     
-
-    /// <summary>
-    /// This function executes a TRX activation to a predefined target.
-    /// 
-    /// </summary>
-    /// 
-    /// The allowed target for this command are:
-    /// - SCOUT: this is 0°;
-    /// - BP_R: (biopsy right) this is +15°;
-    /// - BP_L: (biopsy left) this is -15°;
-    /// - TOMO_H: (tomo home) it depends by the current tomo configuration selected;
-    /// - TOMO_E: (tomo end) it depends by the current tomo configuration selected;
-    /// 
-    /// <param name="tg">this is the target option code</param>
-    /// <param name="id">this is the aws command identifier</param>
-    /// <returns>true if the target is successfully set</returns>
-    static bool setTarget(target_options tg, int id) {
-        int angle = 0;
-        int speed, acc, dec;
-
-        pending_target = target_options::UNDEF;
-
-        switch (tg) {
-        case target_options::SCOUT:            
-            angle = 0;
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
-            break;
-
-        case target_options::BP_R:
-            angle = 1500;
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
-            break;
-        case target_options::BP_L:
-            angle = -1500;
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
-            break;
-
-        case target_options::TOMO_H:
-            if (!ExposureModule::getTomoExposure()->valid) return false;
-            angle = ExposureModule::getTomoExposure()->tomo_home;
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
-            break;
-
-        case target_options::TOMO_E:
-            if (!ExposureModule::getTomoExposure()->valid) return false;
-            angle = ExposureModule::getTomoExposure()->tomo_end;
-            speed = ExposureModule::getTomoExposure()->tomo_speed;
-            acc = ExposureModule::getTomoExposure()->tomo_acc;
-            dec = ExposureModule::getTomoExposure()->tomo_dec;
-            break;
-
-        default:
-            return false;
-
-        }
-
-        // Activate the command        
-        pending_target = tg;
-        return device->activateAutomaticPositioning(id, angle, speed, acc, dec,true);
-    }
+    static bool setTarget(target_options tg, int id);
 
     /// <summary>
     /// This function returns true if the current TRX angle is into the +/- 1° range.
@@ -246,7 +178,6 @@ protected:
 
 private:
     static bool brake_alarm = false; //!< This is the current brake malfunction alarm
-    static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
     static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
     static bool tomo_scan = false;
     static target_options current_target = target_options::UNDEF;

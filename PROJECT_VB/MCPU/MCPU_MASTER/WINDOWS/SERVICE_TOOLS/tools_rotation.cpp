@@ -33,6 +33,16 @@ static int command_delay = 30;
 static bool manual_mode = false;
 static int selected_target;
 
+#define INFO_REASON_BODY_ACTIVATION 0
+#define INFO_REASON_TILT_ACTIVATION 1
+#define INFO_REASON_ARM_ACTIVATION 2
+#define INFO_REASON_SLIDE_ACTIVATION 3
+#define INFO_REASON_BODY_ERROR 4
+#define INFO_REASON_TILT_ERROR 5
+#define INFO_REASON_ARM_ERROR 6
+#define INFO_REASON_SLIDE_ERROR 7
+
+
 #define ARM_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\TOOLS\\ROTATION\\Arm.PNG")
 #define ARM_SELECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\TOOLS\\ROTATION\\ArmSelected.PNG")
 #define BODY_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\TOOLS\\ROTATION\\Body.PNG")
@@ -97,6 +107,9 @@ void ServiceForm::initRotationToolPanel(void) {
 	rotationToolSlideButton->BackgroundImage = SLIDE_IMAGE;
 	
 	manual_mode = false;
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+
+
 	rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
 	rotationToolSelectionIcon->Hide();
 	rotationToolTargetAngle->Hide();
@@ -105,6 +118,7 @@ void ServiceForm::initRotationToolPanel(void) {
 	serviceTimer->Start();
 	return;
 }
+
 void  ServiceForm::cancRotationToolPanel(void) {
 	
 	if (current_rotation_command != rotation_commands::NO_COMMAND) {
@@ -114,22 +128,108 @@ void  ServiceForm::cancRotationToolPanel(void) {
 		case rotation_commands::ARM:ArmMotor::device->abortActivation(); break;
 		case rotation_commands::SLIDE:SlideMotor::device->abortActivation(); break;
 		}
+
+		// Reset of the current selection
+		current_rotation_command = rotation_commands::NO_COMMAND;
+		rotationTool_select_item(nullptr);
 		return;
 	}
+
+	// Disables the manual rotations
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
 	serviceTimer->Stop();
 	setActivePanel(panels::MAIN_SERVICE_PANEL);
 }
 
+System::Void ServiceForm::rotationTool_arm_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (current_rotation_command != rotation_commands::NO_COMMAND) return;
+	rotationToolView->Hide();
+	rotationTool_select_item(nullptr);
 
+	this->rotationToolView->Location = System::Drawing::Point(75, 391);
+	this->rotationToolView->Size = System::Drawing::Size(513, 450);
+	this->rotationToolManualButton->Location = System::Drawing::Point(430, 12);
+	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
+	rotationToolTargetAngle->Location = System::Drawing::Point((450 - 250) / 2, (450 - 100) / 2);
+
+	// Arm Button
+	current_rotation_selected = rotation_tool_selection::ARM_SELECTED;
+	rotationToolArmButton->BackgroundImage = ARM_SELECTED_IMAGE;
+	rotationToolBodyButton->BackgroundImage = BODY_IMAGE;
+	rotationToolTiltButton->BackgroundImage = TILT_IMAGE;
+	rotationToolSlideButton->BackgroundImage = SLIDE_IMAGE;
+
+
+	// Manual Mode disbaled
+	manual_mode = false;
+	rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
+	
+
+	// RotationToolView setup
+	rotationToolView->BackgroundImage = ARM_VIEW_IMAGE;
+
+	rotationToolTargetAngle->Show();
+
+
+	rotationToolSelectAngle1->Show(); // 0°
+	rotationToolSelectAngle1->Tag = "0";
+	rotationToolSelectAngle1->Location = System::Drawing::Point(175, 8);
+
+	rotationToolSelectAngle2->Show(); // 45°
+	rotationToolSelectAngle2->Tag = "45";
+	rotationToolSelectAngle2->Location = System::Drawing::Point(296, 55);
+
+	rotationToolSelectAngle3->Show(); // 90°
+	rotationToolSelectAngle3->Tag = "90";
+	rotationToolSelectAngle3->Location = System::Drawing::Point(349, 176);
+
+	rotationToolSelectAngle4->Show(); // 135°
+	rotationToolSelectAngle4->Tag = "135";
+	rotationToolSelectAngle4->Location = System::Drawing::Point(301, 297);
+
+	rotationToolSelectAngle5->Show(); // 180°
+	rotationToolSelectAngle5->Tag = "180";
+	rotationToolSelectAngle5->Location = System::Drawing::Point(181, 350);
+
+	rotationToolSelectAngle6->Show(); // -135°
+	rotationToolSelectAngle6->Tag = "-135";
+	rotationToolSelectAngle6->Location = System::Drawing::Point(60, 302);
+
+	rotationToolSelectAngle7->Show(); // -90°
+	rotationToolSelectAngle7->Tag = "-90";
+	rotationToolSelectAngle7->Location = System::Drawing::Point(7, 182);
+
+	rotationToolSelectAngle8->Show(); // -45°
+	rotationToolSelectAngle8->Tag = "-45";
+	rotationToolSelectAngle8->Location = System::Drawing::Point(55, 60);
+
+	rotationToolSelectAngle9->Hide();
+	rotationToolView->Show();
+
+	rotationTooCreateInfoPanel(INFO_REASON_ARM_ACTIVATION);
+
+}
 
 System::Void ServiceForm::rotationTool_body_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_rotation_command != rotation_commands::NO_COMMAND) return;
+	rotationToolView->Hide();
+	rotationTool_select_item(nullptr);
+
+	this->rotationToolView->Location = System::Drawing::Point(75, 391);
+	this->rotationToolView->Size = System::Drawing::Size(513, 450);
+	this->rotationToolManualButton->Location = System::Drawing::Point(430, 12);
+	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
+	rotationToolTargetAngle->Location = System::Drawing::Point((450 - 250) / 2, (450 - 100) / 2);
 
 	// Body Button
 	current_rotation_selected = rotation_tool_selection::BODY_SELECTED;
+	rotationToolArmButton->BackgroundImage = ARM_IMAGE;
+	rotationToolBodyButton->BackgroundImage = BODY_SELECTED_IMAGE;
+	rotationToolTiltButton->BackgroundImage = TILT_IMAGE;
+	rotationToolSlideButton->BackgroundImage = SLIDE_IMAGE;
 
-	// Manual Mode disbaled
+	// Manual Mode disabled
 	manual_mode = false;
 	rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
 	
@@ -139,118 +239,58 @@ System::Void ServiceForm::rotationTool_body_Click(System::Object^ sender, System
 
 	rotationToolTargetAngle->Show();
 
-	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
-	rotationToolTargetAngle->Location = System::Drawing::Point((450 - 250) / 2, (450 - 100) / 2);
-	
 
-	rotationToolSelectAngle1->Show(); // 0°
-	rotationToolSelectAngle1->Tag = "0";
-	rotationToolSelectAngle1->Location = System::Drawing::Point(174, 8);
+	rotationToolSelectAngle5->Show(); // 0°
+	rotationToolSelectAngle5->Tag = "0";
+	rotationToolSelectAngle5->Location = System::Drawing::Point(181, 350);
 
-	rotationToolSelectAngle2->Show(); // 45°
-	rotationToolSelectAngle2->Tag = "45";
-	rotationToolSelectAngle2->Location = System::Drawing::Point(295, 56);
+	rotationToolSelectAngle4->Show(); // 45°
+	rotationToolSelectAngle4->Tag = "45";
+	rotationToolSelectAngle4->Location = System::Drawing::Point(301, 297);
 
 	rotationToolSelectAngle3->Show(); // 90°
 	rotationToolSelectAngle3->Tag = "90";
-	rotationToolSelectAngle3->Location = System::Drawing::Point(347, 175);
+	rotationToolSelectAngle3->Location = System::Drawing::Point(349, 176);
 
-	rotationToolSelectAngle4->Show(); // -45°
-	rotationToolSelectAngle4->Tag = "-45";
-	rotationToolSelectAngle4->Location = System::Drawing::Point(55, 60);
-
-
-	rotationToolSelectAngle5->Show(); // -90°
-	rotationToolSelectAngle5->Tag = "-90";
-	rotationToolSelectAngle5->Location = System::Drawing::Point(7, 181);
-
-	rotationToolSelectAngle6->Hide();
-	rotationToolView->Show();
-	rotationToolSelectAngle7->Hide();
-	rotationToolView->Show();
-	rotationToolSelectAngle8->Hide();
-	rotationToolView->Show();
-	rotationToolSelectAngle9->Hide();
-	rotationToolView->Show();
-
-	// Confirmation Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_BODY_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_BODY_ACTIVATION_CONFIRMATION);
-	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_BODY_ACTIVATION_CONFIRMATION);
-	pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
-	((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
-	((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionBodyOkCallback);
-
-
-}
-System::Void ServiceForm::rotationTool_arm_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (current_rotation_command != rotation_commands::NO_COMMAND) return;
-
-	// Arm Button
-	current_rotation_selected = rotation_tool_selection::ARM_SELECTED;
-	rotationToolArmButton->BackgroundImage = ARM_SELECTED_IMAGE;
-
-	// Manual Mode disbaled
-	manual_mode = false;
-	rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
-
-	// RotationToolView setup
-	if(manual_mode)	rotationToolView->BackgroundImage = ARM_VIEW_MANUAL_IMAGE;
-	else rotationToolView->BackgroundImage = ARM_VIEW_IMAGE;
-
-	rotationToolTargetAngle->Show();
-
-	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
-	rotationToolTargetAngle->Location = System::Drawing::Point((450-250)/2, (450-100)/2);
-	
-
-	rotationToolSelectAngle1->Show(); // 0°
-	rotationToolSelectAngle1->Tag = "0";
-	rotationToolSelectAngle1->Location = System::Drawing::Point(174, 8);
-
-	rotationToolSelectAngle2->Show(); // 45°
-	rotationToolSelectAngle2->Tag = "45";
-	rotationToolSelectAngle2->Location = System::Drawing::Point(295, 56);
-
-	rotationToolSelectAngle3->Show(); // 90°
-	rotationToolSelectAngle3->Tag = "90";
-	rotationToolSelectAngle3->Location = System::Drawing::Point(347, 175);
-
-	rotationToolSelectAngle4->Show(); // 135°
-	rotationToolSelectAngle4->Tag = "135";
-	rotationToolSelectAngle4->Location = System::Drawing::Point(300, 296);
-
-	rotationToolSelectAngle5->Show(); // 180°
-	rotationToolSelectAngle5->Tag = "180";
-	rotationToolSelectAngle5->Location = System::Drawing::Point(181, 349);
-
-	rotationToolSelectAngle6->Show(); // -135°
-	rotationToolSelectAngle6->Tag = "-135";
-	rotationToolSelectAngle6->Location = System::Drawing::Point(59, 301);
+	rotationToolSelectAngle6->Show(); // -45°
+	rotationToolSelectAngle6->Tag = "-45";
+	rotationToolSelectAngle6->Location = System::Drawing::Point(60, 302);
 
 	rotationToolSelectAngle7->Show(); // -90°
 	rotationToolSelectAngle7->Tag = "-90";
-	rotationToolSelectAngle7->Location = System::Drawing::Point(7, 181);
+	rotationToolSelectAngle7->Location = System::Drawing::Point(7, 182);
 
-	rotationToolSelectAngle8->Show(); // -45°
-	rotationToolSelectAngle8->Tag = "-45";
-	rotationToolSelectAngle8->Location = System::Drawing::Point(55, 60);
-
+	
+	
+	rotationToolSelectAngle1->Hide();
+	rotationToolSelectAngle2->Hide();
+	rotationToolSelectAngle8->Hide();
 	rotationToolSelectAngle9->Hide();
 	rotationToolView->Show();
 
-	// Confirmation Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_ARM_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_ARM_ACTIVATION_CONFIRMATION);
-	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_ARM_ACTIVATION_CONFIRMATION);
-	pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
-	((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
-	((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionArmOkCallback);
-
-	
+	rotationTooCreateInfoPanel(INFO_REASON_BODY_ACTIVATION);
 }
+
 
 System::Void ServiceForm::rotationTool_tilt_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_rotation_command != rotation_commands::NO_COMMAND) return;
+	rotationToolView->Hide();
+	rotationTool_select_item(nullptr);
+
+	this->rotationToolView->Location = System::Drawing::Point((600-543)/2, 391);
+	this->rotationToolView->Size = System::Drawing::Size(543, 451);
+
+	this->rotationToolManualButton->Location = System::Drawing::Point(430, 50);
+	
+	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
+	rotationToolTargetAngle->Location = System::Drawing::Point((543 - 250) / 2, 80 + (450 - 100) / 2);
+	
 	current_rotation_selected = rotation_tool_selection::TILT_SELECTED;
+	rotationToolArmButton->BackgroundImage = ARM_IMAGE;
+	rotationToolBodyButton->BackgroundImage = BODY_IMAGE;
+	rotationToolTiltButton->BackgroundImage = TILT_SELECTED_IMAGE;
+	rotationToolSlideButton->BackgroundImage = SLIDE_IMAGE;
+
 	manual_mode = false;
 	
 	// RotationToolView setup
@@ -259,29 +299,26 @@ System::Void ServiceForm::rotationTool_tilt_Click(System::Object^ sender, System
 
 	rotationToolTargetAngle->Show();
 
-	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
-	rotationToolTargetAngle->Location = System::Drawing::Point((450 - 250) / 2, (450 - 100) / 2);
 	
-
 	rotationToolSelectAngle1->Show(); // 0°
 	rotationToolSelectAngle1->Tag = "0";
-	rotationToolSelectAngle1->Location = System::Drawing::Point(174, 8);
+	rotationToolSelectAngle1->Location = System::Drawing::Point(227, 132);
 
 	rotationToolSelectAngle2->Show(); // 15°
 	rotationToolSelectAngle2->Tag = "15";
-	rotationToolSelectAngle2->Location = System::Drawing::Point(295, 56);
+	rotationToolSelectAngle2->Location = System::Drawing::Point(350, 158);
 
 	rotationToolSelectAngle3->Show(); // 25°
 	rotationToolSelectAngle3->Tag = "25";
-	rotationToolSelectAngle3->Location = System::Drawing::Point(347, 175);
+	rotationToolSelectAngle3->Location = System::Drawing::Point(442, 222);
 
 	rotationToolSelectAngle4->Show(); // -15°
 	rotationToolSelectAngle4->Tag = "-15";
-	rotationToolSelectAngle4->Location = System::Drawing::Point(300, 296);
+	rotationToolSelectAngle4->Location = System::Drawing::Point(108, 158);
 
 	rotationToolSelectAngle5->Show(); // -25°
 	rotationToolSelectAngle5->Tag = "-25";
-	rotationToolSelectAngle5->Location = System::Drawing::Point(181, 349);
+	rotationToolSelectAngle5->Location = System::Drawing::Point(6, 221);
 
 	rotationToolSelectAngle6->Hide(); 
 	rotationToolSelectAngle7->Hide(); 
@@ -290,18 +327,30 @@ System::Void ServiceForm::rotationTool_tilt_Click(System::Object^ sender, System
 
 	rotationToolView->Show();
 
-	// Confirmation Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_TILT_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_TILT_ACTIVATION_CONFIRMATION);
-	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_TILT_ACTIVATION_CONFIRMATION);
-	pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
-	((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
-	((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionTiltOkCallback);
-
+	rotationTooCreateInfoPanel(INFO_REASON_TILT_ACTIVATION);
 
 }
 System::Void ServiceForm::rotationTool_slide_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_rotation_command != rotation_commands::NO_COMMAND) return;
+	rotationToolView->Hide();
+	rotationTool_select_item(nullptr);
+	
 	current_rotation_selected = rotation_tool_selection::SLIDE_SELECTED;
+	
+	this->rotationToolView->Location = System::Drawing::Point((600 - 543) / 2, 391);
+	this->rotationToolView->Size = System::Drawing::Size(543, 451);
+
+	this->rotationToolManualButton->Location = System::Drawing::Point(430, 50);
+
+	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
+	rotationToolTargetAngle->Location = System::Drawing::Point(30 + (543 - 250) / 2, ((450 - 100) / 2) - 40 );
+	
+	rotationToolArmButton->BackgroundImage = ARM_IMAGE;
+	rotationToolBodyButton->BackgroundImage = BODY_IMAGE;
+	rotationToolTiltButton->BackgroundImage = TILT_IMAGE;
+	rotationToolSlideButton->BackgroundImage = SLIDE_SELECTED_IMAGE;
+
+
 	manual_mode = false;
 	
 	// RotationToolView setup
@@ -310,24 +359,20 @@ System::Void ServiceForm::rotationTool_slide_Click(System::Object^ sender, Syste
 
 	rotationToolTargetAngle->Show();
 
-	rotationToolTargetAngle->SetBounds(0, 0, 250, 100);
-	rotationToolTargetAngle->Location = System::Drawing::Point((450 - 250) / 2, (450 - 100) / 2);
-
-
 	rotationToolSelectAngle1->Show(); // 0°
 	rotationToolSelectAngle1->Tag = "0";
-	rotationToolSelectAngle1->Location = System::Drawing::Point(174, 8);
+	rotationToolSelectAngle1->Location = System::Drawing::Point(27, 41);
 
 	rotationToolSelectAngle2->Show(); // 10°
 	rotationToolSelectAngle2->Tag = "10";
-	rotationToolSelectAngle2->Location = System::Drawing::Point(295, 56);
+	rotationToolSelectAngle2->Location = System::Drawing::Point(53, 152);
 
 	rotationToolSelectAngle3->Show(); // 90°
 	rotationToolSelectAngle3->Tag = "90";
-	rotationToolSelectAngle3->Location = System::Drawing::Point(347, 175);
+	rotationToolSelectAngle3->Location = System::Drawing::Point(350, 336);
 
-	rotationToolSelectAngle4->Hide(); // -15°
-	rotationToolSelectAngle5->Hide(); // -25°
+	rotationToolSelectAngle4->Hide(); 
+	rotationToolSelectAngle5->Hide(); 
 	rotationToolSelectAngle6->Hide();
 	rotationToolSelectAngle7->Hide();
 	rotationToolSelectAngle8->Hide();
@@ -336,15 +381,81 @@ System::Void ServiceForm::rotationTool_slide_Click(System::Object^ sender, Syste
 	rotationToolView->Show();
 
 	// Confirmation Panel Setup ____________________________________________________________
-	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
-	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
-	pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
-	((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
-	((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionSlideOkCallback);
+	rotationTooCreateInfoPanel(INFO_REASON_SLIDE_ACTIVATION);
 
 
 }
 
+void ServiceForm::rotationTooCreateInfoPanel(unsigned char reason) {
+	System::String^ confInfoTitle;
+	System::String^ confInfoContent;
+	ConfirmationWindow^ errInfo;
+
+	switch (reason) {
+	case INFO_REASON_BODY_ACTIVATION:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_BODY_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_BODY_ACTIVATION_CONFIRMATION);
+		confInfoContent = Notify::TranslateContent(Notify::messages::INFO_BODY_ACTIVATION_CONFIRMATION);
+		pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
+		((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
+		((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionBodyOkCallback);
+
+		break;
+	case INFO_REASON_BODY_ERROR:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_BODY_ACTIVATION_FAILED) + "] " + Notify::TranslateTitle(Notify::messages::INFO_BODY_ACTIVATION_FAILED);
+		confInfoContent = Notify::TranslateContent(Notify::messages::INFO_BODY_ACTIVATION_FAILED);
+		errInfo = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::ERR_WIN, confInfoTitle, confInfoContent);
+		errInfo->open();
+
+		break;
+	case INFO_REASON_ARM_ACTIVATION:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_ARM_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_ARM_ACTIVATION_CONFIRMATION);
+	    confInfoContent = Notify::TranslateContent(Notify::messages::INFO_ARM_ACTIVATION_CONFIRMATION);
+		pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
+		((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
+		((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionArmOkCallback);
+
+		break;
+	case INFO_REASON_ARM_ERROR:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_ARM_ACTIVATION_FAILED) + "] " + Notify::TranslateTitle(Notify::messages::INFO_ARM_ACTIVATION_FAILED);
+		confInfoContent = Notify::TranslateContent(Notify::messages::INFO_ARM_ACTIVATION_FAILED);
+		errInfo = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::ERR_WIN, confInfoTitle, confInfoContent);
+		errInfo->open();
+
+		break;
+	case INFO_REASON_TILT_ACTIVATION:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_TILT_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_TILT_ACTIVATION_CONFIRMATION);
+		confInfoContent = Notify::TranslateContent(Notify::messages::INFO_TILT_ACTIVATION_CONFIRMATION);
+		pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
+		((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
+		((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionTiltOkCallback);
+
+		break;
+	case INFO_REASON_TILT_ERROR:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_TILT_ACTIVATION_FAILED) + "] " + Notify::TranslateTitle(Notify::messages::INFO_TILT_ACTIVATION_FAILED);
+		confInfoContent = Notify::TranslateContent(Notify::messages::INFO_TILT_ACTIVATION_FAILED);
+		errInfo = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::ERR_WIN, confInfoTitle, confInfoContent);
+		errInfo->open();
+
+		break;
+	case INFO_REASON_SLIDE_ACTIVATION:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
+		confInfoContent = Notify::TranslateContent(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
+
+		pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
+		((ConfirmationWindow^)pConfirmation)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionCancCallback);
+		((ConfirmationWindow^)pConfirmation)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &ServiceForm::rotationToolSelectionSlideOkCallback);
+
+		break;
+	case INFO_REASON_SLIDE_ERROR:
+		confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_SLIDE_ACTIVATION_FAILED) + "] " + Notify::TranslateTitle(Notify::messages::INFO_SLIDE_ACTIVATION_FAILED);
+		confInfoContent = Notify::TranslateContent(Notify::messages::INFO_SLIDE_ACTIVATION_FAILED);
+		errInfo = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::ERR_WIN, confInfoTitle, confInfoContent);
+		errInfo->open();
+		break;
+
+	}
+	
+}
 
 System::Void ServiceForm::rotationTool_manual_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_rotation_command != rotation_commands::NO_COMMAND) return;
@@ -353,29 +464,44 @@ System::Void ServiceForm::rotationTool_manual_Click(System::Object^ sender, Syst
 
 	// Set the manual button icon
 	if(manual_mode) rotationToolManualButton->BackgroundImage = MANUAL_SELECTED_IMAGE;
-	else rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
+	else {
+		rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
+		Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+	}
 
 	// Resets the selection
 	rotationTool_select_item(nullptr);
 
 	// Activates the proper View Background
 	if (current_rotation_selected == rotation_tool_selection::TILT_SELECTED) {
-		if (manual_mode)	rotationToolView->BackgroundImage = TILT_VIEW_MANUAL_IMAGE;
+		if (manual_mode) {
+			Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_TILT_MANUAL_ROTATION);
+			rotationToolView->BackgroundImage = TILT_VIEW_MANUAL_IMAGE;
+		}
 		else rotationToolView->BackgroundImage = TILT_VIEW_IMAGE;
 
 	}
 	else if (current_rotation_selected == rotation_tool_selection::ARM_SELECTED) {
-		if (manual_mode)	rotationToolView->BackgroundImage = ARM_VIEW_MANUAL_IMAGE;
+		if (manual_mode) {
+			Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_ARM_MANUAL_ROTATION);
+			rotationToolView->BackgroundImage = ARM_VIEW_MANUAL_IMAGE;
+		}
 		else rotationToolView->BackgroundImage = ARM_VIEW_IMAGE;
 
 	}
 	else if (current_rotation_selected == rotation_tool_selection::BODY_SELECTED) {
-		if (manual_mode)	rotationToolView->BackgroundImage = BODY_VIEW_MANUAL_IMAGE;
+		if (manual_mode) {
+			Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_BODY_MANUAL_ROTATION);
+			rotationToolView->BackgroundImage = BODY_VIEW_MANUAL_IMAGE;
+		}
 		else rotationToolView->BackgroundImage = BODY_VIEW_IMAGE;
 
 	}
 	else if (current_rotation_selected == rotation_tool_selection::SLIDE_SELECTED) {
-		if (manual_mode)	rotationToolView->BackgroundImage = SLIDE_VIEW_MANUAL_IMAGE;
+		if (manual_mode) {
+			Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_SLIDE_MANUAL_ROTATION);
+			rotationToolView->BackgroundImage = SLIDE_VIEW_MANUAL_IMAGE;
+		}
 		else rotationToolView->BackgroundImage = SLIDE_VIEW_IMAGE;
 
 	}
@@ -383,12 +509,10 @@ System::Void ServiceForm::rotationTool_manual_Click(System::Object^ sender, Syst
 
 
 void ServiceForm::rotationToolSelectionCancCallback(void) {
-	((ConfirmationWindow^)pConfirmation)->close();
 	rotationTool_select_item(nullptr);
 }
 
 void ServiceForm::rotationToolSelectionArmOkCallback(void) {
-	((ConfirmationWindow^)pConfirmation)->close();
 
 	// Busy condition
 	if (current_rotation_command) return;
@@ -396,10 +520,13 @@ void ServiceForm::rotationToolSelectionArmOkCallback(void) {
 	if (ArmMotor::serviceAutoPosition(selected_target)) {
 		current_rotation_command = rotation_commands::ARM;
 	}
+	else {
+		rotationTool_select_item(nullptr);
+		rotationTooCreateInfoPanel(INFO_REASON_ARM_ERROR);
+	}
 }
 
-void ServiceForm::rotationToolSelectionTiltOkCallback(void) {
-	((ConfirmationWindow^)pConfirmation)->close();
+void ServiceForm::rotationToolSelectionTiltOkCallback(void) {	
 	
 	// Busy condition
 	if (current_rotation_command) return;
@@ -407,10 +534,13 @@ void ServiceForm::rotationToolSelectionTiltOkCallback(void) {
 	if (TiltMotor::serviceAutoPosition(selected_target)) {
 		current_rotation_command = rotation_commands::TILT;
 	}
+	else {
+		rotationTool_select_item(nullptr);
+		rotationTooCreateInfoPanel(INFO_REASON_TILT_ERROR);
+	}
 }
 
-void ServiceForm::rotationToolSelectionBodyOkCallback(void) {
-	((ConfirmationWindow^)pConfirmation)->close();
+void ServiceForm::rotationToolSelectionBodyOkCallback(void) {	
 
 	// Busy condition
 	if (current_rotation_command) return;
@@ -418,35 +548,33 @@ void ServiceForm::rotationToolSelectionBodyOkCallback(void) {
 	if (BodyMotor::serviceAutoPosition(selected_target)) {
 		current_rotation_command = rotation_commands::BODY;
 	}
+	else {
+		rotationTool_select_item(nullptr);
+		rotationTooCreateInfoPanel(INFO_REASON_BODY_ERROR);
+	}
 }
 
 void ServiceForm::rotationToolSelectionSlideOkCallback(void) {
-	((ConfirmationWindow^)pConfirmation)->close();
-
+	
 	// Busy condition
 	if (current_rotation_command) return;
 
 	if (SlideMotor::serviceAutoPosition(selected_target)) {
 		current_rotation_command = rotation_commands::SLIDE;
 	}
+	else {
+		rotationTool_select_item(nullptr);
+		rotationTooCreateInfoPanel(INFO_REASON_SLIDE_ERROR);
+	}
 }
 
 void ServiceForm::rotationTool_select_item(System::Windows::Forms::PictureBox^ item) {
+	
 	if (current_rotation_command != rotation_commands::NO_COMMAND) return;
 
 	// Initialize the internal static pointer
 	if ((item == nullptr) ||(manual_mode)) {
 		
-		rotationToolSelectAngle1->Text = ""; // Not selected
-		rotationToolSelectAngle2->Text = ""; // Not selected
-		rotationToolSelectAngle3->Text = ""; // Not selected
-		rotationToolSelectAngle4->Text = ""; // Not selected
-		rotationToolSelectAngle5->Text = ""; // Not selected
-		rotationToolSelectAngle6->Text = ""; // Not selected
-		rotationToolSelectAngle7->Text = ""; // Not selected
-		rotationToolSelectAngle8->Text = ""; // Not selected
-		rotationToolSelectAngle9->Text = ""; // Not selected
-
 		rotationToolSelectAngle1->BackgroundImage = nullptr;
 		rotationToolSelectAngle2->BackgroundImage = nullptr;
 		rotationToolSelectAngle3->BackgroundImage = nullptr;
@@ -461,8 +589,8 @@ void ServiceForm::rotationTool_select_item(System::Windows::Forms::PictureBox^ i
 	}
 		
 	// The item is already selected
-	if (item->Text != "") return;
-	item->Text = "S";	
+	if (item->BackgroundImage != nullptr) return;
+		
 
 	// Selects the angle
 	rotationToolSelectAngle1->BackgroundImage = nullptr;
@@ -526,14 +654,14 @@ void ServiceForm::rotationToolPanelTimer(void) {
 	
 	
 	if (current_rotation_selected == rotation_tool_selection::ARM_SELECTED) {
-		rotationToolTargetAngle->Text = ((float)ArmMotor::device->getCurrentPosition() / 100).ToString();
+		rotationToolTargetAngle->Text = (ArmMotor::device->getCurrentPosition() / 100).ToString();
 	}
 	else if (current_rotation_selected == rotation_tool_selection::TILT_SELECTED) {
-		rotationToolTargetAngle->Text = ((float)TiltMotor::device->getCurrentPosition() / 100).ToString();
+		rotationToolTargetAngle->Text = (TiltMotor::device->getCurrentPosition() / 100).ToString();
 	}else if (current_rotation_selected == rotation_tool_selection::BODY_SELECTED) {
-		rotationToolTargetAngle->Text = ((float)BodyMotor::device->getCurrentPosition() / 10).ToString();
+		rotationToolTargetAngle->Text = (BodyMotor::device->getCurrentPosition() / 10).ToString();
 	}else if (current_rotation_selected == rotation_tool_selection::SLIDE_SELECTED) {
-		rotationToolTargetAngle->Text = ((float)SlideMotor::device->getCurrentPosition() / 10).ToString();
+		rotationToolTargetAngle->Text = (SlideMotor::device->getCurrentPosition() / 100).ToString();
 	}
 	
 	// Command completion

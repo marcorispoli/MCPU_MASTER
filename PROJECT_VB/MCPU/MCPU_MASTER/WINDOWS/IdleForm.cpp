@@ -184,6 +184,9 @@ void IdleForm::initIdleStatus(void) {
 	PCB301::set_motor_power_supply(true);
 	PCB301::set_motor_switch(true);
 
+	// Activate the Idle manual modes
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+
 	// Start the startup session	
 	idleTimer->Start();	
 
@@ -380,9 +383,6 @@ void IdleForm::idleStatusManagement(void) {
 		if (IDLESTATUS::Registers.tube.alarm) tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;
 		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
 	}
-
-	VerticalMotor::setManualEnable(true);
-	BodyMotor::setManualEnable(true);
 
 	// Error Button
 	if (Notify::isError()) {

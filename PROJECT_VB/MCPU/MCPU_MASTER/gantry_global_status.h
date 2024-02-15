@@ -38,18 +38,29 @@ public:
     static const cli::array<System::String^>^ operating_status_tags = gcnew cli::array<System::String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
 
     enum class manual_rotation_options {
-        GANTRY_STANDARD_MANUAL_ROTATION = 0, //!< Arm rotation and Vertical activation with buttons and pedals
-        GANTRY_BODY_MANUAL_ROTATION,         //!< Pedals and Buttons for Body rotation
-        GANTRY_SLIDE_MANUAL_ROTATION,                 //!< Pedals and Buttons for Slide
-        GANTRY_TILT_MANUAL_ROTATION,                  //!< Pedals and Buttons for Slide
-        GANTRY_ARM_MANUAL_ROTATION,                   //!< Pedals and Buttons for Arm
+        GANTRY_MANUAL_ROTATION_DISABLED = 0,    //!< The Manual rotation is globally disabled
+        GANTRY_IDLE_MANUAL_ROTATION,        //!< Arm rotation and Vertical activation with buttons and pedals
+        GANTRY_OPERATING_STATUS_MANUAL_ROTATION,        //!< Arm rotation and Vertical activation with buttons and pedals
+        GANTRY_BODY_MANUAL_ROTATION,            //!< Pedals and Buttons for Body rotation
+        GANTRY_SLIDE_MANUAL_ROTATION,           //!< Pedals and Buttons for Slide
+        GANTRY_TILT_MANUAL_ROTATION,            //!< Pedals and Buttons for Slide
+        GANTRY_ARM_MANUAL_ROTATION,             //!< Pedals and Buttons for Arm
     };
 
-    static manual_rotation_options manual_rotation_mode = manual_rotation_options::GANTRY_STANDARD_MANUAL_ROTATION;
-    void setManualRotationMode(manual_rotation_options mode) { manual_rotation_mode = mode; }
+    enum class safety_rotation_conditions {
+        GANTRY_SAFETY_OK,                       //!< No safety issues are detected
+        GANTRY_SAFETY_EMERGENCY_BUTTON,         //!< The Emergency push button is detected
+        GANTRY_SAFETY_POWER_DOWN,               //!< The Power down is detected
+        GANTRY_SAFETY_COMPRESSION,              //!< The Compression is present
+        GANTRY_SAFETY_CABINET,                  //!< The Cabinet is open
+        GANTRY_SAFETY_POWER_SUPPLY,                  //!< The Cabinet is open
+    };
+
+    static manual_rotation_options manual_rotation_mode = manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED;
+    static void setManualRotationMode(manual_rotation_options mode);
 
     static bool getObstacleRotationStatus(int addr);
-    static bool getSafetyRotationStatus(int addr);
+    static safety_rotation_conditions getSafetyRotationStatus(int addr);
     static bool getManualRotationIncrease(int addr);
     static bool getManualRotationDecrease(int addr);
 

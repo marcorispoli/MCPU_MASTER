@@ -90,14 +90,20 @@
 "I00006", Notify::messages::INFO_ARM_ACTIVATION_CONFIRMATION, "Motor Arm Activation", "Proceed with the Arm activation?",
 "I00007", Notify::messages::INFO_TILT_ACTIVATION_CONFIRMATION, "Motor Tilt Activation", "Proceed with the Tilt activation?",
 
-"I00008", Notify::messages::INFO_MOTOR_48V_SAFETY_LINE_OFF, "Motor Power Supply Monitoring", "The safety line is off",
-"I00009", Notify::messages::INFO_MOTOR_48V_POWER_SUPPLY_OFF, "Motor Power Supply Monitoring", "The power supply is off",
-"I00010", Notify::messages::INFO_BURNING_JUMPER_PRESENT, "Power Service Monitoring", "The Burning Jumper is present",
-"I00011", Notify::messages::INFO_POWER_LOCK, "Power Service Monitoring", "The power supply lock is active",
+"I00008", Notify::messages::INFO_SLIDE_ACTIVATION_FAILED, "Motor Slide Activation", "Invalid activation conditions",
+"I00009", Notify::messages::INFO_BODY_ACTIVATION_FAILED, "Motor Body Activation", "Invalid activation conditions",
+"I00010", Notify::messages::INFO_ARM_ACTIVATION_FAILED, "Motor Arm Activation", "Invalid activation conditions",
+"I00011", Notify::messages::INFO_TILT_ACTIVATION_FAILED, "Motor Tilt Activation", "Invalid activation conditions",
 
-"I00012", Notify::messages::INFO_ACTIVATION_MOTOR_MANUAL_DISABLE, "Manual Motor Activation", "The manual activation is disabled in this contest",
-"I00013", Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE, "Manual Motor Activation", "The manual activation is disabled for safety",
-"I00014", Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE, "Manual Motor Activation", "The manual activation is disabled for pending errors",
+
+"I00012", Notify::messages::INFO_MOTOR_48V_SAFETY_LINE_OFF, "Motor Power Supply Monitoring", "The safety line is off",
+"I00013", Notify::messages::INFO_MOTOR_48V_POWER_SUPPLY_OFF, "Motor Power Supply Monitoring", "The power supply is off",
+"I00014", Notify::messages::INFO_BURNING_JUMPER_PRESENT, "Power Service Monitoring", "The Burning Jumper is present",
+"I00015", Notify::messages::INFO_POWER_LOCK, "Power Service Monitoring", "The power supply lock is active",
+
+"I00016", Notify::messages::INFO_ACTIVATION_MOTOR_MANUAL_DISABLE, "Manual Motor Activation", "The manual activation is disabled in this contest",
+"I00017", Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE, "Manual Motor Activation", "The manual activation is disabled for safety",
+"I00018", Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE, "Manual Motor Activation", "The manual activation is disabled for pending errors",
 
 
 /* -------- LABELS ---------------------------*/

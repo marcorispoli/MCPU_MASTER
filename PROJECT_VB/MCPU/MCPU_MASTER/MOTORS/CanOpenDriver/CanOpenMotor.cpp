@@ -873,20 +873,41 @@ void CanOpenMotor::abortActivation(void) {
 }
 
 void CanOpenMotor::demoLoop(void) {
-    MotorCompletedCodes termination_code;
+    MotorCompletedCodes returned_code, termination_code;
     int _100ms_time;
     int unit_step;
+    bool error_safety = false;
 
-    // The subclass can add extra commands in IDLE and enable the command execution
-    //idle_returned_condition = idleCallback();
-
+    returned_code = idleCallback();
+    
     // Initiate a requested command
     switch (request_command) {
     case MotorCommands::MOTOR_AUTO_POSITIONING:
+
+        // Idle status prevents to proceed
+        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING FAILED DUE TO IDLE");
+            current_eposition = convert_User_To_Encoder(current_uposition);
+            setCommandCompletedCode(returned_code);
+            request_command = MotorCommands::MOTOR_IDLE;
+            return;
+            
+        }
+         
+        // Preparation
+        returned_code = automaticPositioningPreparationCallback();
+        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING PREPARATION FAILED!");
+            current_eposition = convert_User_To_Encoder(current_uposition);
+            setCommandCompletedCode(returned_code);
+            request_command = MotorCommands::MOTOR_IDLE;
+            return;
+        }
+
+        // Starts
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: START DEMO AUTO POSITIONING");
         current_command = request_command;
         abort_request = false;
-
         previous_uposition = current_uposition;
 
         
@@ -899,12 +920,7 @@ void CanOpenMotor::demoLoop(void) {
                 current_uposition += unit_step;
                 current_eposition = convert_User_To_Encoder(current_uposition);
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-                if (Gantry::getObstacleRotationStatus(device_id)) {
-                    termination_code = MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
-                    break;
-                }
-
+                
                 // Test the abort request flag
                 if (abort_request) {
                     abort_request = false;
@@ -913,6 +929,10 @@ void CanOpenMotor::demoLoop(void) {
                     termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
                     break;
                 }
+
+                termination_code = automaticPositioningRunningCallback();
+                if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
+
             }
         }
 
@@ -927,10 +947,60 @@ void CanOpenMotor::demoLoop(void) {
         break;
 
     case MotorCommands::MOTOR_MANUAL_POSITIONING:
+        
+        // Idle status prevents to proceed
+        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING FAILED DUE TO IDLE");
+            current_eposition = convert_User_To_Encoder(current_uposition);
+            setCommandCompletedCode(returned_code);
+            request_command = MotorCommands::MOTOR_IDLE;
+            return;
+        }
+
+        // Preparation
+        returned_code = manualPositioningPreparationCallback();
+        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING PREPARATION FAILED!");
+            current_eposition = convert_User_To_Encoder(current_uposition);
+            setCommandCompletedCode(returned_code);
+            request_command = MotorCommands::MOTOR_IDLE;
+            return;
+        }
+
+
+        // Starts
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: START DEMO MANUAL POSITIONING");
         current_command = request_command;
         abort_request = false;
-        setCommandCompletedCode(MotorCompletedCodes::ERROR_COMMAND_DEMO);
+        previous_uposition = current_uposition;
+
+
+        _100ms_time = ((command_target - current_uposition) * 10) / command_speed;
+        if (_100ms_time) {
+            unit_step = (command_target - current_uposition) / abs(_100ms_time);
+
+            termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
+            
+            for (int i = 0; i < abs(_100ms_time); i++) {
+                current_uposition += unit_step;
+                current_eposition = convert_User_To_Encoder(current_uposition);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            
+                termination_code = manualPositioningRunningCallback();
+                if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
+
+            }
+        }
+
+        if (termination_code == MotorCompletedCodes::COMMAND_SUCCESS) {
+            current_uposition = command_target;
+        }
+        current_eposition = convert_User_To_Encoder(current_uposition);
+
+        setCommandCompletedCode(termination_code);
         request_command = MotorCommands::MOTOR_IDLE;
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING COMPLETED TO TARGET:" + current_uposition.ToString());
         break;
 
     case MotorCommands::MOTOR_HOMING:

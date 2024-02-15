@@ -71,6 +71,7 @@ ref class PCB301 :  public CanDeviceProtocol
 
 	#define PCB301_OUTPUTS_DATA_BUZZER_STAT(reg,stat)	reg->D1(stat, 0x2) 
 	#define PCB301_OUTPUTS_DATA_MANUAL_BUZZER(reg,stat)	reg->D1(stat, 0x4) 
+	#define PCB301_OUTPUTS_DATA_MAN_ROT_LED(reg,stat)	reg->D3(stat, 0x20) 
 	#define PCB301_OUTPUTS_DATA_KEEP_ALIVE(reg,stat)	reg->D3(stat, 0x80) 
 
 public:
@@ -130,6 +131,7 @@ public:
 
 	inline static void set_manual_buzzer(bool stat) { PCB301_OUTPUTS_DATA_MANUAL_BUZZER(outputs_data_register,stat); }
 	inline static void set_activation_buzzer(bool stat) { PCB301_OUTPUTS_DATA_BUZZER_STAT(outputs_data_register, stat); }
+	inline static void set_manual_rot_ena_led(bool stat) { PCB301_OUTPUTS_DATA_MAN_ROT_LED(outputs_data_register, stat); }
 
 	
 

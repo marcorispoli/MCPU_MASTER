@@ -512,9 +512,11 @@ private:
 		// 
 		// rotationToolTargetAngle
 		// 
+		this->rotationToolTargetAngle->BackColor = System::Drawing::Color::Black;
 		this->rotationToolTargetAngle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 72, System::Drawing::FontStyle::Bold,
 			System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-		this->rotationToolTargetAngle->ForeColor = System::Drawing::Color::Black;
+		this->rotationToolTargetAngle->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(236)),
+			static_cast<System::Int32>(static_cast<System::Byte>(187)), static_cast<System::Int32>(static_cast<System::Byte>(187)));
 		this->rotationToolTargetAngle->Location = System::Drawing::Point(237, 344);
 		this->rotationToolTargetAngle->Name = L"rotationToolTargetAngle";
 		this->rotationToolTargetAngle->Size = System::Drawing::Size(193, 80);

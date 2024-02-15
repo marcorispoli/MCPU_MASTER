@@ -809,12 +809,15 @@ protected:
 		///@} End of the protected section _____________________________________________________________
 
 
-		
+protected:
+	bool demo_mode;
+	unsigned char device_id;	//!< This is the target Device Id 
+
 private:
 		bool run;
-		bool demo_mode;
+		
 
-		unsigned char device_id;	//!< This is the target Device Id 
+		
 		HANDLE rxSDOEvent;			//!< Event object signaled by the SDO receiving callback
 		bool sdo_rx_pending;		//!< A SDO reception fdata is pending 
 		bool nanoj_rx_pending;		//!< A SDO reception fdata is pending 

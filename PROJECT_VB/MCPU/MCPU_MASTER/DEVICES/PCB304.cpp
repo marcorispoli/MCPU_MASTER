@@ -6,6 +6,7 @@
 
 void PCB304::runningLoop(void) {
     static bool commerr = false;
+    static bool keepalive = false;
  
     // Test the communication status
     if (commerr != isCommunicationError()) {
@@ -18,11 +19,13 @@ void PCB304::runningLoop(void) {
         }
     }
 
-
    
-    // Display setting
-    PCB304_DISPLAY_KEEPALIVE(display_data_register, true); // Always true to prevent the auto display off of the device
+    // Always toggles the keepalive to keep the display ON
+    if(keepalive)   PCB304_DISPLAY_KEEPALIVE(display_data_register, true); 
+    else  PCB304_DISPLAY_KEEPALIVE(display_data_register, false); 
+    keepalive = !keepalive;
 
+    // Sets the display outputs
     PCB304_DISPLAY_ON(display_data_register, display_on);
     PCB304_DISPLAY_BLINK(display_data_register, display_blink);
     PCB304_DISPLAY_DOT_POSITION(display_data_register, display_decimals);

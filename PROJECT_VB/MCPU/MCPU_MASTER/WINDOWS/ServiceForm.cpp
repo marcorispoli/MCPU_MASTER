@@ -55,6 +55,9 @@ void ServiceForm::initServiceStatus(void) {
 	current_panel = panels::PANEL_NOT_DEFINED;
 	setActivePanel(panels::MAIN_SERVICE_PANEL);
 
+	// Activate the Operating Status  manual modes
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+
 	// Start the startup session	
 	serviceTimer->Start();	
 	

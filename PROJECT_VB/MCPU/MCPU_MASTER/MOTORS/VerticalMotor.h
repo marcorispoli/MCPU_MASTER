@@ -132,11 +132,9 @@ public:
 
 	static bool activateIsocentricCorrection(int id, int delta_target); //!< This command activates the isocentric correction
 	static bool startHoming(void);
-	static inline void setManualEnable(bool status) { manual_activation_enabled = status; } //!< Enables / Disables the manual activation mode
-
+	
 private:
 
-	static bool manual_activation_enabled = true; //!< This is the flag to enable the manual activation
 	static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
 
 protected:

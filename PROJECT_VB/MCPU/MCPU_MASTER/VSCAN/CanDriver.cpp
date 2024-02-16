@@ -19,20 +19,31 @@ static mutex send_mutex;
 CanDriver::CanDriver() {
     
     
-
+    can_connected = false;
     error = false;
     ErrorString ="";
 
     warning = false;
     WarningString = "";
 
-    // Start the reception thread
-    running_thread = gcnew Thread(gcnew ThreadStart(this, &CanDriver::threadWork));
-    running_thread->Name = "Can Driver Thread";
-    running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
-    running_thread->Start();
-
+    
    
+}
+
+void CanDriver::startSimulatorMode(void) {
+    can_connected = true;
+
+    LogClass::logInFile("CAN DRIVER STARTED IN SIMULATION MODE");
+}
+
+void CanDriver::startNormalMode(void) {
+
+    // Start the reception thread
+    driver->running_thread = gcnew Thread(gcnew ThreadStart(driver, &CanDriver::threadWork));
+    driver->running_thread->Name = "Can Driver Thread";
+    driver->running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
+    driver->running_thread->Start();
+
 }
 
 /*

@@ -198,9 +198,14 @@ static const unsigned char nanojTrxProgram[] = {
 /// 
 /// 
 /// <param name=""></param>
-TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", GEAR_RATIO, false)
+TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, GEAR_RATIO, false)
 {
     setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
+
+    // Sets +/- 0.02 ° as the acceptable target range
+    setTargetRange(2, 2);
+    max_position = MAX_ROTATION_ANGLE;
+    min_position = MIN_ROTATION_ANGLE;
 
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
     bool homing_initialized = false;
@@ -218,9 +223,16 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
   
+    idle_positioning = false;
     tomo_scan = false;
     pending_target = target_options::UNDEF;
     current_target = target_options::UNDEF;
+}
+
+bool TiltMotor::setIdlePosition(void) {
+    idle_positioning = true;
+    pending_target = target_options::SCOUT;
+    return device->activateAutomaticPositioning(0, 0, true);
 }
 
 /// <summary>
@@ -241,28 +253,19 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
 bool TiltMotor::setTarget(target_options tg, int id) {
     int angle = 0;
     int speed, acc, dec;
-
+    idle_positioning = false;
     pending_target = target_options::UNDEF;
 
     switch (tg) {
     case target_options::SCOUT:
-        angle = 0;
-        speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-        acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-        dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
+        angle = 0;        
         break;
 
     case target_options::BP_R:
-        angle = 1500;
-        speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-        acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-        dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
+        angle = 1500;        
         break;
     case target_options::BP_L:
-        angle = -1500;
-        speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-        acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-        dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
+        angle = -1500;        
         break;
 
     case target_options::TOMO_H:
@@ -270,13 +273,9 @@ bool TiltMotor::setTarget(target_options tg, int id) {
         if ((!SlideMotor::isAllowedPosition())) {
             LogClass::logInFile("TiltMotor::serviceAutoPosition() - command: error, slide not in allowed position ");
             return false;
-        }
-        
+        }        
 
-        angle = ExposureModule::getTomoExposure()->tomo_home;
-        speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-        acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-        dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
+        angle = ExposureModule::getTomoExposure()->tomo_home;        
         break;
 
     case target_options::TOMO_E:
@@ -290,6 +289,8 @@ bool TiltMotor::setTarget(target_options tg, int id) {
         speed = ExposureModule::getTomoExposure()->tomo_speed;
         acc = ExposureModule::getTomoExposure()->tomo_acc;
         dec = ExposureModule::getTomoExposure()->tomo_dec;
+        pending_target = tg;
+        return device->activateAutomaticPositioning(id, angle, speed, acc, dec, true);
         break;
 
     default:
@@ -299,11 +300,11 @@ bool TiltMotor::setTarget(target_options tg, int id) {
 
     // Activate the command        
     pending_target = tg;
-    return device->activateAutomaticPositioning(id, angle, speed, acc, dec, true);
+    return device->activateAutomaticPositioning(id, angle,  true);
 }
 
 bool TiltMotor::serviceAutoPosition(int pos) {
-    
+    idle_positioning = false;
     // Test on the Slide position
     if ((pos > 15) || (pos < -15)) {
 
@@ -313,12 +314,7 @@ bool TiltMotor::serviceAutoPosition(int pos) {
         }
     }
 
-    // Activate the command
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_ACC]);
-    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_AUTO_DEC]);
-
-    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+    return device->activateAutomaticPositioning(0, pos * 100, true);
 
 }
 
@@ -337,7 +333,8 @@ bool TiltMotor::serviceAutoPosition(int pos) {
 /// <param name="dec">Deceleration in user units</param>
 /// <returns>true if the command successfully started</returns>
 bool TiltMotor::activateTomoScan(int pos, int speed, int acc, int dec) { 
-    
+    idle_positioning = false;
+
     // never allowed when slide is out of position
     if ((!SlideMotor::isAllowedPosition())) {
         LogClass::logInFile("activateTomoScan::serviceAutoPosition() - command: error, slide not in allowed position ");
@@ -360,23 +357,6 @@ bool TiltMotor::activateTomoScan(int pos, int speed, int acc, int dec) {
 /// <param name=""></param>
 void TiltMotor::resetCallback(void) {
 
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
-
-    // Activates the configuration of the device
-    activateConfiguration();
     pending_target = target_options::UNDEF;
     current_target = target_options::UNDEF;
 }
@@ -502,9 +482,6 @@ return true;
 /// <returns></returns>
 bool  TiltMotor::lockBrake(void) {
 
-#ifdef _DISABLE_BRAKES_
-    return true;
-#endif
 
     // Sets the OUTPUT 1 properly   
     if (!blocking_writeOD(OD_60FE_01, LOCK_BRAKE_OUT_MASK)) {        
@@ -535,9 +512,7 @@ bool  TiltMotor::lockBrake(void) {
 /// <param name=""></param>
 /// <returns>true if the brake correctly locks</returns>
 bool TiltMotor::brakeCallback(void) {
-#ifdef _DISABLE_BRAKES_
-    return true;
-#endif
+
     return lockBrake();
 }
 
@@ -553,9 +528,7 @@ bool TiltMotor::brakeCallback(void) {
 /// <param name=""></param>
 /// <returns>true if the brake device is correctly unlocked</returns>
 bool TiltMotor::unbrakeCallback(void) {
-#ifdef _DISABLE_BRAKES_
-    return true;
-#endif
+
 
     // Unlock the Brake device
     if (!unlockBrake()) {
@@ -582,9 +555,9 @@ bool TiltMotor::unbrakeCallback(void) {
 /// <returns>MotorCompletedCodes::COMMAND_PROCEED in case of ready conditon </returns>
 TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
-    int speed, acc, dec;
+    
 
-    if (!device->demo_mode) {
+    if (!device->simulator_mode) {
 
         // With the brake alarm present, no more action can be executed
         if (brake_alarm) {
@@ -605,43 +578,11 @@ TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
                 ret_code = MotorCompletedCodes::ERROR_BRAKE_DEVICE;
             }
         }
-    } // demo_mode
+    } // simulator_mode
 
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        ret_code = MotorCompletedCodes::ERROR_SAFETY;
-    }
    
 
-    // Handle a Manual activation mode    
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::TILT_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::TILT_ID);
-    if (man_increase || man_decrease) {
-        if (ret_code == MotorCompletedCodes::ERROR_SAFETY) {
-            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-            Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
-        }
-        else if (ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-        else {
-            pending_target = target_options::UNDEF;
-            current_target = target_options::UNDEF;
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_MANUAL_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_MANUAL_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_MANUAL_DEC]);
-
-            if (man_increase) {
-                manual_increment_direction = true;
-                if (!device->activateManualPositioning(MAX_ROTATION_ANGLE, speed, acc, dec)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-            else {
-                manual_increment_direction = false;
-                if (!device->activateManualPositioning(MIN_ROTATION_ANGLE, speed, acc, dec)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-        }
-    }
-
-    return MotorCompletedCodes::COMMAND_PROCEED;
+    return ret_code;
 
 }
 
@@ -658,36 +599,16 @@ TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
 /// <returns></returns>
 TiltMotor::MotorCompletedCodes TiltMotor::automaticPositioningPreparationCallback(void) {
 
-    if (!device->demo_mode) {
+    if (!device->simulator_mode) {
         // If the tomo scan has been activated, the nanoj program shall be activated
         if (tomo_scan) {
             if (!startNanoj()) return MotorCompletedCodes::ERROR_STARTING_NANOJ;
         }
-    } // !demo_mode
-
-    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
-    // with the current valid position
-    MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-    MotorConfig::Configuration->storeFile();
+    } // !simulator_mode
+   
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
-CanOpenMotor::MotorCompletedCodes  TiltMotor::automaticPositioningRunningCallback(void) {
-
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-        return MotorCompletedCodes::ERROR_SAFETY;
-    }
-
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getObstacleRotationStatus((int)CANOPEN::MotorDeviceAddresses::TILT_ID)) {
-        return MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
-    }
-
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
 /// <summary>
 /// The TiltMotor class override this function in order to update the current position
 /// and the command termination
@@ -696,18 +617,11 @@ CanOpenMotor::MotorCompletedCodes  TiltMotor::automaticPositioningRunningCallbac
 /// <param name=error></param>
 void TiltMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
 
-    if (!demo_mode) {
+    if (!simulator_mode) {
         if (tomo_scan) stopNanoj();        
     }
 
     tomo_scan = false;
-    if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-    }
-
-    // Notify the command termination event
-    device->command_completed_event(getCommandId(), (int)error);
 
     // Assignes the current target
     if (error == MotorCompletedCodes::COMMAND_SUCCESS) {
@@ -717,43 +631,25 @@ void TiltMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error)
         current_target = target_options::UNDEF;
     }
 
+    
+    // Next step of the Idle positioning
+    if (idle_positioning) {
+        idle_positioning = false;
+        if (error == MotorCompletedCodes::COMMAND_SUCCESS)  SlideMotor::setIdlePosition();
+        return;
+    }
+   
+    // Notify the command termination event
+    device->command_completed_event(getCommandId(), (int)error);
+
+   
     return;
 }
 
 // MANUAL PROCEDURES -------------------------------------------------------------------
 
 
-/// The BodyMotor class override this function in order to handle the manual activation process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-CanOpenMotor::MotorCompletedCodes  TiltMotor::manualPositioningRunningCallback(void) {
-
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-        return MotorCompletedCodes::ERROR_SAFETY;
-    }
-
-    // handle the manual hardware inputs
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::TILT_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::TILT_ID);
-    if ((!man_increase) && (!man_decrease)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    if ((!man_increase) && (manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    if ((!man_decrease) && (!manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-
-    // Proceeds with the manual activation
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
 void TiltMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
-
-    if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-    }
 
     device->command_completed_event((int)0, (int)error); 
     current_target = target_options::UNDEF;
@@ -762,32 +658,3 @@ void TiltMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
 }
 
 
-
-// HOMING PROCEDURES -------------------------------------------------------------------
-
-/// <summary>
-/// The TiltMotor class override this function in order to 
-///handle the homing completion process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-void TiltMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
-
-    if (isEncoderInitialized()) {
-        // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-        Notify::deactivate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
-    }
-    else {
-        // Reset the position in the configuration file and reactivate the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_TILT, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-        MotorConfig::Configuration->storeFile();
-        Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
-    }
-
-    // Notify the command termination event
-    device->command_completed_event((int)0, (int)error);
-    current_target = target_options::UNDEF;
-}

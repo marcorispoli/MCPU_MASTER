@@ -12,7 +12,7 @@
 #include "Log.h"
 
 
-bool Generator::generatorDemoIdle(void) {
+bool Generator::generatorSimulatorIdle(void) {
     ExposureModule::exposure_completed_errors exposure_err_code;
 
     while (true) {

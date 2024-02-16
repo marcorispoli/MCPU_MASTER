@@ -66,6 +66,13 @@ void  ServiceForm::cancZeroSettingPanel(void) {
 		case zero_commands::ZERO_TILT:TiltMotor::device->abortActivation(); break;
 		case zero_commands::ZERO_ARM:ArmMotor::device->abortActivation(); break;
 		case zero_commands::ZERO_SLIDE:SlideMotor::device->abortActivation(); break;
+		case zero_commands::ZERO_ALL:
+			SlideMotor::device->abortActivation(); 
+			ArmMotor::device->abortActivation();
+			BodyMotor::device->abortActivation();
+			VerticalMotor::device->abortActivation();
+			TiltMotor::device->abortActivation();
+			break;
 		}
 		return;
 	}
@@ -110,7 +117,8 @@ System::Void ServiceForm::zeroSettingSlide_Click(System::Object^ sender, System:
 System::Void ServiceForm::zeroSettingAll_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
 	command_delay = 50;
-
+	current_zero_command = zero_commands::ZERO_ALL;
+	serviceTimer->Start();
 }
 
 
@@ -118,7 +126,112 @@ using namespace System::Drawing;
 
 void ServiceForm::zeroSettingPanelTimer(void) {
 	bool finish = false;
-	
+	static int zero_all_fase = 0;
+
+	// The zero all fase is initiated
+	if (zero_all_fase) {
+		switch (zero_all_fase) {
+			
+		case 1: // TILT
+			if (!TiltMotor::startHoming()) {
+				zeroSettingLog->Text += "TILT ERROR -> " + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
+				zero_all_fase += 2;
+				return;
+			}
+
+			zero_all_fase++;
+			zeroSettingLog->Text += "TILT MOTOR RUN \n";
+			break;
+
+		case 2: 
+			if (!TiltMotor::device->isReady()) return;
+			zeroSettingLog->Text += "TILT MOTOR:" + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
+			zero_all_fase++;
+			return;
+
+		case 3: // SLIDE
+			if (!SlideMotor::startHoming()) {
+				zeroSettingLog->Text += "SLIDE ERROR -> " + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
+				zero_all_fase += 2;
+				return;
+			}
+
+			zero_all_fase++;
+			zeroSettingLog->Text += "SLIDE MOTOR RUN \n";
+			break;
+
+		case 4:
+			if (!SlideMotor::device->isReady()) return;
+			zeroSettingLog->Text += "SLIDE MOTOR:" + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
+			zero_all_fase++;
+			return;
+
+		case 5: // ARM
+			if (!ArmMotor::startHoming()) {
+				zeroSettingLog->Text += "ARM ERROR -> " + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
+				zero_all_fase += 2;
+				return;
+			}
+
+			zero_all_fase++;
+			zeroSettingLog->Text += "ARM MOTOR RUN \n";
+			break;
+
+		case 6:
+			if (!ArmMotor::device->isReady()) return;
+			zeroSettingLog->Text += "ARM MOTOR:" + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
+			zero_all_fase++;
+			return;
+
+		case 7: // BODY
+			if (!BodyMotor::startHoming()) {
+				zeroSettingLog->Text += "BODY ERROR -> " + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
+				zero_all_fase += 2;
+				return;
+			}
+
+			zero_all_fase++;
+			zeroSettingLog->Text += "BODY MOTOR RUN \n";
+			break;
+
+		case 8:
+			if (!BodyMotor::device->isReady()) return;
+			zeroSettingLog->Text += "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
+			zero_all_fase++;
+			return;
+
+		case 9: // VERTICAL
+			if (!VerticalMotor::startHoming()) {
+				zeroSettingLog->Text += "VERTICAL ERROR -> " + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
+				zero_all_fase += 2;
+				return;
+			}
+
+			zero_all_fase++;
+			zeroSettingLog->Text += "VERTICAL MOTOR RUN \n";
+			break;
+
+		case 10:
+			if (!VerticalMotor::device->isReady()) return;
+			zeroSettingLog->Text += "VERTICAL MOTOR:" + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
+			zero_all_fase++;
+			return;
+		case 11:
+			zeroSettingLog->Text += "ZERO ALL COMMAND COMPLETED \n";
+			zero_all_fase = 0;
+			current_zero_command = zero_commands::NO_COMMAND;
+			serviceTimer->Stop();
+			break;
+
+		default:
+			zeroSettingLog->Text += "ZERO ALL COMMAND COMPLETED WITH INVALID STATUS\n";
+			zero_all_fase = 0;
+			current_zero_command = zero_commands::NO_COMMAND;
+			serviceTimer->Stop();
+		}
+
+		return;
+	}
 
 	// Delay Before to start the command
 	if (command_delay > 1) {
@@ -246,6 +359,20 @@ void ServiceForm::zeroSettingPanelTimer(void) {
 
 		current_zero_command = zero_commands::NO_COMMAND;
 		break;
+
+	case zero_commands::ZERO_ALL:
+
+		// Command Initialization
+		if (command_delay == 1) {
+			command_delay = 0;
+
+			zeroSettingLog->Text = "ZERO ALL COMMAND STARTED \n";
+			zero_all_fase = 1;
+			return;
+		}
+		
+		break;
+
 
 	}
 

@@ -60,6 +60,8 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     // With the OPEN Study, the collimator is automatically set to AUTO mode.
     PCB303::setAutoCollimationMode();
 
+    TiltMotor::setIdlePosition();
+
     ackOk();
 }
 
@@ -84,6 +86,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 void  awsProtocol::EXEC_CloseStudy(void) {
     if (!Gantry::setCloseStudy()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
+    TiltMotor::setIdlePosition();
     ackOk();
 
 }

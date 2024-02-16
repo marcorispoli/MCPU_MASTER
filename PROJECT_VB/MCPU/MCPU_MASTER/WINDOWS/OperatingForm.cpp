@@ -982,11 +982,11 @@ void OperatingForm::evaluatePopupPanels(void) {
 			slide = false;
 			tilt = true;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
-			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
+			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(°)");
 		}
 
 		// Set the value to the current compression
-		int position = (int)TiltMotor::device->getCurrentPosition();
+		int position = (int)TiltMotor::device->getCurrentPosition()/100;
 		Gantry::getValuePopupWindow()->content(position.ToString());
 		return;
 	}

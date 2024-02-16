@@ -174,8 +174,8 @@ public:
 	static const cli::array<System::String^>^ bootloader_status_tags = gcnew cli::array<System::String^> { "NOT PRESENT", "RUNNING", "PRESENT", "UNCKNOWN"}; 
 
 	CanDeviceProtocol(unsigned char devid, LPCWSTR devname); //! Standard constructor
-	void runMode(void) { demo_mode = false; run = true; }
-	void demoMode(void) { demo_mode = true; run = true; }
+	void runMode(void) { simulator_mode = false; run = true; }
+	void demoMode(void) { simulator_mode = true; run = true; }
 
 	/// <summary>
 	/// This is the callback to be connected to the CAN reception event.
@@ -235,7 +235,7 @@ private:
 
 	HWND hwnd;
 	unsigned short device_id;
-	bool demo_mode;
+	bool simulator_mode;
 	bool run;
 
 	static unsigned char rx_sequence;

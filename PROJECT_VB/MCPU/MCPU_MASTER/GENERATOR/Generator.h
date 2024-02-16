@@ -14,10 +14,11 @@
 ref class Generator: public TcpClientCLI
 {
 public:
-	Generator();
+	Generator(void);
 	
 	
-
+	static void startNormalMode(void);
+	static void startSimulatorMode(void);
 	static bool isSmartHubConnected(void);
 	static bool isGeneratorConnected(void);
 	
@@ -29,21 +30,23 @@ public:
 
 	
 protected:
-	static Generator^ generator = gcnew Generator(); //! Self module generation 
+	static bool simulator_mode = false;
+	static Generator^ device = gcnew Generator(); //! Self module generation 
 	static short sendCR2CPData(unsigned char* pMessage, unsigned short  datalength);
 	static CR2CP_Eth* R2CP_Eth;
 
 	void rxData(cli::array<Byte>^ receiveBuffer, int rc) override;
 	Thread^ running_thread;//!< This is the worker thread handler
     void threadWork(void);//!< This is the worker thread for the workflow
-	
+	void simulatorWork();
+
 	bool handleCommandProcessedState(unsigned char* code);
 	bool connectionTest(void);
 	bool generatorInitialization(void);
 	bool generatorSetup(void);
 	bool clearSystemMessages(void);
 	bool generatorIdle(void);
-	bool generatorDemoIdle(void);
+	bool generatorSimulatorIdle(void);
 	bool generatorErrorMessagesLoop(void);
 	
 	

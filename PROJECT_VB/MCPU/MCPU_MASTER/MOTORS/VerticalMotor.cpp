@@ -96,10 +96,12 @@ bool VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// - Initializes the encoder initial position from the configuration file;
 /// 
 /// <param name=""></param>
-VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", ROT_PER_MM, true)
+VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", MotorConfig::PARAM_VERTICAL, Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, ROT_PER_MM, true)
 {
     // Sets +/- 5mm as the acceptable target range
-    setTargetRange(5, 5);
+    setTargetRange(5, 5);    
+    max_position = MAX_POSITION;
+    min_position = MIN_POSITION;
 
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
     bool homing_initialized = false;
@@ -116,27 +118,6 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
     
 }
-
-void VerticalMotor::resetCallback(void) {
-
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
-
-    // Activates the configuration of the device
-    activateConfiguration();
-}
-
 
 /// <summary>
 /// This function activates the Isocentric correction procedure.
@@ -167,39 +148,9 @@ bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
         return false;
     }
     
-    // Activate the automatic positioning for isocentric correction
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_AUTO_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_AUTO_ACC]);
-    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_AUTO_DEC]);
- 
-    return device->activateRelativePositioning(id, delta_h, speed, acc, dec);
+    return device->activateRelativePositioning(id, delta_h);
 }
 
-/// <summary>
-/// The module override this function in order to handle the automatic positioning comnpleted activities.
-/// 
-/// </summary>
-/// 
-/// When an automatic activation completes, the current final encoder positionn is stored
-/// in order to be used at the further system power on.
-/// 
-/// The command_completed_event() is then signaled to the application.
-/// 
-/// <param name=LABEL_ERROR></param>
-void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
-    
-    // Sets the current Vertical position
-    if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-    }
-
-    // Always answer with success to the remote command because an error in Vertical activation should not prevent to 
-    // proceed with the Exposure workflow!
-    device->command_completed_event(getCommandId(), (int)MotorCompletedCodes::COMMAND_SUCCESS);    
-
-    return;
-}
 
 /// <summary>
 /// The modjule override this function in order to  handle the IDLE activities
@@ -226,10 +177,10 @@ void VerticalMotor::automaticPositioningCompletedCallback(MotorCompletedCodes er
 CanOpenMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
     static bool error_limit_switch = false;
     bool limit_status;
-    int speed, acc, dec;
+    
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
 
-    if (!demo_mode) {
+    if (!simulator_mode) {
         // If a limit switch should be engaged then the activation shall be disabled
         limit_status = testLimitSwitch();
         if (limit_status != error_limit_switch) {
@@ -251,38 +202,7 @@ CanOpenMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
         if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
     }
 
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        ret_code = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
-    }
-
    
-
-    // Handle a Manual activation mode
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
-    if (man_increase || man_decrease) {
-        if (ret_code == MotorCompletedCodes::ERROR_SAFETY) {
-            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-            Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
-        }
-        else if (ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-        else {
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_MANUAL_DEC]);
-
-            if (man_increase) {
-                manual_increment_direction = true;
-                if(!device->activateManualPositioning(MAX_POSITION, speed, acc, dec)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-            else {
-                manual_increment_direction = false;
-                if(!device->activateManualPositioning(MIN_POSITION, speed, acc, dec)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-        }
-    }
 
     return ret_code;
 
@@ -327,19 +247,7 @@ bool VerticalMotor::startHoming(void) {
 /// <returns></returns>
 VerticalMotor::MotorCompletedCodes  VerticalMotor::automaticPositioningRunningCallback(void) {
 
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-        return MotorCompletedCodes::ERROR_SAFETY;
-    }
-
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getObstacleRotationStatus((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID)) {
-        return MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
-    }
-
-    if(!demo_mode){
+    if(!simulator_mode){
         // Test the limit switch to early stop the activation
         if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
 
@@ -349,28 +257,6 @@ VerticalMotor::MotorCompletedCodes  VerticalMotor::automaticPositioningRunningCa
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
-/// <summary>
-/// The VerticalMotor class override this function in order to 
-/// handle the homing completion process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-void VerticalMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
-    
-    if (isEncoderInitialized()) {
-        // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-        Notify::deactivate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
-    }
-    else {
-        // Reset the position in the configuration file and reactivate the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-        MotorConfig::Configuration->storeFile();
-        Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
-    }
-}
 
 /// <summary>
 /// The VerticalMotor class override this function in order to 
@@ -381,45 +267,16 @@ void VerticalMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) 
 /// <returns></returns>
 VerticalMotor::MotorCompletedCodes  VerticalMotor::manualPositioningRunningCallback(void) {
    
- 
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-        return MotorCompletedCodes::ERROR_SAFETY;
-    }
 
-    if (!demo_mode) {
+    if (!simulator_mode) {
         // Test the limit switch to early stop the activation
         if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
     }
-
-    // handle the manual hardware inputs
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
-    if ((!man_increase) && (!man_decrease)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    if ((!man_increase) && (manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    if ((!man_decrease) && (!manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
 
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
-/// <summary>
-/// The VerticalMotor class override this function in order to 
-/// handle the manual activation completed
-/// 
-/// </summary>
-/// <param name=LABEL_ERROR></param>
-void VerticalMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
-
-    // Sets the current Vertical position
-    if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-    }
-    return;
-}
 
 void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) {
     if (errstat == false) {
@@ -438,34 +295,4 @@ void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int 
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
     if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
 
-}
-
-/// <summary>
-/// This function is called at the beginning of the automatic activation
-/// </summary>
-/// 
-/// The function invalidate the current encoder position in the case, 
-/// during the activation, the software should be killed before to update the current encoder position.
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-VerticalMotor::MotorCompletedCodes VerticalMotor::automaticPositioningPreparationCallback(void) {
-
-    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
-    // with the current valid position
-    MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-    MotorConfig::Configuration->storeFile();
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
-/// <summary>
-/// This function is called at the beginning of the automatic activation
-/// </summary>
-/// 
-/// See the automaticPositioningPreparationCallback()
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-VerticalMotor::MotorCompletedCodes VerticalMotor::manualPositioningPreparationCallback(void) {
-    return automaticPositioningPreparationCallback();
 }

@@ -94,6 +94,7 @@ public:
     static bool startHoming(void);   
     static bool activateTomoScan(int pos, int speed, int acc, int dec);
     static bool serviceAutoPosition(int pos);
+    static bool setIdlePosition(void);
 
     literal int SCOUT_POSITION = 0;     //!< This is the Scout angle position
     literal int BP_R_POSITION = 1500;   //!< This is the Biopsy Right position
@@ -158,18 +159,16 @@ protected:
     bool initializeSpecificObjectDictionaryCallback(void) override;
 
     MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
-    MotorCompletedCodes automaticPositioningRunningCallback(void) override;
+    
     void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
 
   
-    MotorCompletedCodes manualPositioningRunningCallback(void) override;
+    
     void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
 
 
     MotorCompletedCodes idleCallback(void) override;
 
-    
-    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
 
     
     void resetCallback(void) override;
@@ -177,6 +176,9 @@ protected:
     bool unbrakeCallback(void) override;
 
 private:
+
+    static bool idle_positioning = false;
+
     static bool brake_alarm = false; //!< This is the current brake malfunction alarm
     static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
     static bool tomo_scan = false;

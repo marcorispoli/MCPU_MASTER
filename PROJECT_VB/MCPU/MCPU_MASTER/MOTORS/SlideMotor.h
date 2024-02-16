@@ -10,7 +10,8 @@ public:
     static bool startHoming(void);
     static bool serviceAutoPosition(int pos);
     static bool isoAutoPosition(int pos);
-    
+    static bool setIdlePosition(void);
+
     static bool isAllowedPosition(void) {
         if (!device->isEncoderInitialized()) return false;
         return ((device->getCurrentPosition() < 2000) || (device->getCurrentPosition() > 8000));
@@ -20,19 +21,14 @@ protected:
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
 
     bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
-    MotorCompletedCodes idleCallback(void) override;
+   
 
-    MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
-    MotorCompletedCodes automaticPositioningRunningCallback(void) override;
+    
+   
     void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
 
-    MotorCompletedCodes manualPositioningPreparationCallback(void) override;
-    MotorCompletedCodes manualPositioningRunningCallback(void) override;
-    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
-
-    void automaticHomingCompletedCallback(MotorCompletedCodes error) override;
-
-    void resetCallback(void) override;
+    
+    
 
 private:
     static bool manual_up_direction = false; //!< Sets true if the UP manual command is executing, false if the DOWN manual activation is executing
@@ -40,5 +36,6 @@ private:
     double last_angolo;
     double H0;
     double H1;
+    static bool idle_positioning = false;
 };
 

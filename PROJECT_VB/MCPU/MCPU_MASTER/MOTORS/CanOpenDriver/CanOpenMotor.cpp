@@ -2,6 +2,7 @@
 #include "gantry_global_status.h"
 #include "Notify.h"
 #include "CanOpenMotor.h"
+#include "CalibrationConfig.h"
 #include "pd4_od.h"
 #include <thread>
 #include <mutex>
@@ -87,8 +88,9 @@ int CanOpenMotor::convert_UserSec_To_Speed(int x) {
 /// <param name="motorname">This is a string of the Motor name</param>
 /// <param name="rounds_for_units">This is the unit conversion rate</param>
 /// <param name="reverse">true if the position shall be reversed (+/-)</param>
-CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds_for_units, bool reverse) {
+CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, double rounds_for_units, bool reverse) {
     
+    config_param = parameter;
     internal_status = status_options::MOTOR_NOT_CONNECTED;
     configuration_command = false;
     od_initialized = false;
@@ -137,7 +139,10 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, double rounds
     // As default the target range is 0
     target_range_h = 0;
     target_range_l = 0;
-
+   
+    // Error to be notified in case of encoder errors
+    error_homing = home_err; 
+   
     // Creates the Startup thread
     main_thread = gcnew Thread(gcnew ThreadStart(this, &CanOpenMotor::mainWorker));
     main_thread->Name = "Motor Worker" + System::Convert::ToString(device_id);
@@ -203,6 +208,28 @@ void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned
     if (canid != device_id + 0x700) return; // This frame is not a SDO or is not addressed to this device!
     od_initialized = false;
     home_initialized = false;
+
+
+    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
+    bool homing_initialized = false;
+    int  init_position = 0;
+    
+    
+    if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+        homing_initialized = true;
+        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION]);
+    }
+
+    setEncoderInitStatus(homing_initialized);
+    setEncoderInitialUvalue(init_position);
+
+    // Activate a warning condition is the motor should'n be initialized
+    if (!isEncoderInitialized()) Notify::activate(error_homing);
+
+    // Activates the configuration of the device
+    activateConfiguration();
+
+    // calls the specific reset callback
     resetCallback();
 }
 
@@ -475,11 +502,11 @@ void CanOpenMotor::mainWorker(void) {
     }
 
     // Demo mode activation
-    if (demo_mode) {
+    if (simulator_mode) {
         internal_status = status_options::MOTOR_READY;
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
 
-        while (demo_mode) {
+        while (simulator_mode) {
             demoLoop();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
@@ -848,12 +875,34 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
     MotorCommands cmd = current_command;
     current_command = MotorCommands::MOTOR_IDLE;
 
-    if (cmd == MotorCommands::MOTOR_AUTO_POSITIONING) automaticPositioningCompletedCallback(term_code);
-    else if(cmd == MotorCommands::MOTOR_HOMING) automaticHomingCompletedCallback(term_code);
-    else if (cmd == MotorCommands::MOTOR_MANUAL_POSITIONING) manualPositioningCompletedCallback(term_code);
-    
+
+    if (cmd == MotorCommands::MOTOR_HOMING) {
+        if (isEncoderInitialized()) {
+            // Set the position in the configuration file and clear the alarm
+            MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, current_uposition.ToString());
+            MotorConfig::Configuration->storeFile();
+            Notify::deactivate(error_homing);
+        }
+        else {
+            // Reset the position in the configuration file and reactivate the alarm
+            MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+            MotorConfig::Configuration->storeFile();
+            Notify::activate(error_homing);
+        }
+        automaticHomingCompletedCallback(term_code);        
+    }
+    else {
+        if (isEncoderInitialized()) {
+            MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, current_uposition.ToString());
+            MotorConfig::Configuration->storeFile();
+        }
+
+        if (cmd == MotorCommands::MOTOR_AUTO_POSITIONING) automaticPositioningCompletedCallback(term_code);
+        else if (cmd == MotorCommands::MOTOR_MANUAL_POSITIONING) manualPositioningCompletedCallback(term_code);
+    }
+
     if (command_completed_code != MotorCompletedCodes::COMMAND_SUCCESS) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + "ERROR >"+ command_completed_code.ToString());
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + "> ERROR: "+ command_completed_code.ToString());
     }
     return;
 }
@@ -933,6 +982,20 @@ void CanOpenMotor::demoLoop(void) {
                 termination_code = automaticPositioningRunningCallback();
                 if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
 
+                // If the safety condition prevent the command execution it is immediatelly aborted
+                Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+                if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+                    LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+                    termination_code = MotorCompletedCodes::ERROR_SAFETY;
+                    break;
+                }
+
+                // Gets the obstacle condition
+                if (Gantry::getObstacleRotationStatus(device_id)) {
+                    LogClass::logInFile("Motor <" + device_id.ToString() + ">: obstacle condition error");
+                    termination_code = MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
+                    break;
+                }
             }
         }
 
@@ -990,6 +1053,14 @@ void CanOpenMotor::demoLoop(void) {
                 termination_code = manualPositioningRunningCallback();
                 if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
 
+                // If the safety condition prevent the command execution it is immediatelly aborted
+                Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+                if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+                    LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+                    termination_code = MotorCompletedCodes::ERROR_SAFETY;
+                    break;
+                }
+
             }
         }
 
@@ -1008,6 +1079,7 @@ void CanOpenMotor::demoLoop(void) {
         abort_request = false;
         home_initialized = true;
         current_uposition = current_eposition = 0;
+
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
         request_command = MotorCommands::MOTOR_IDLE;

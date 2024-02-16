@@ -106,6 +106,13 @@ bool MainForm::Startup_CanDriver(void) {
 	switch (startupSubFase) {
 
 	case 0: // Creates the Can Driver Object
+		if (Gantry::isCanDriverDemo()) {
+			CanDriver::startSimulatorMode();
+			labelCanDriverActivity->Text = "DEMO RUNNING";
+			labelCanDriverActivity->ForeColor = Color::LightGreen;
+			return true;
+		}
+		else CanDriver::startNormalMode();
 		labelCanDriverActivity->Text = "Connection ..";
 		startupSubFase++;
 		break;
@@ -669,14 +676,17 @@ bool MainForm::Startup_MotorVertical(void) {
 bool MainForm::Startup_Generator(void) {
 	System::String^ string;
 
-	if (Gantry::isGeneratorDemo()) {
-		if (!Generator::isGeneratorSetupCompleted()) return false;
-		return true;
-	}
-
 	switch (startupSubFase) {
 
-	case 0: // Smart Hub Connection
+	case 0: 
+
+		if (Gantry::isGeneratorDemo()) {
+			Generator::startSimulatorMode();
+			return true;
+		}
+		else Generator::startNormalMode();
+
+		// Smart Hub Connection
 		labelShActivity->Text = "WAIT SMART HUB CONNECTION..";
 		string = "Generator: connection with SH ..\n";
 		LogClass::logInFile(string);

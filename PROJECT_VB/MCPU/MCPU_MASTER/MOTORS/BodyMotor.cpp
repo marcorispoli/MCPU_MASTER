@@ -40,11 +40,14 @@
 /// 
 /// <param name=""></param>
 
-BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", ROT_PER_DEGREE, false)
+BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", MotorConfig::PARAM_BODY, Notify::messages::ERROR_BODY_MOTOR_HOMING, ROT_PER_DEGREE, false)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(2, 2);
-    
+    max_position = MAX_ROTATION_ANGLE;
+    min_position = MIN_ROTATION_ANGLE;
+
+
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
     bool homing_initialized = false;
     int  init_position = 0;
@@ -63,35 +66,11 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
 
 bool BodyMotor::serviceAutoPosition(int pos) {
 
-    // Activate the command
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_ACC]);
-    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_AUTO_DEC]);
-
-    return device->activateAutomaticPositioning(0, pos * 10, speed, acc, dec, true);
+    return device->activateAutomaticPositioning(0, pos * 10, true);
 
 }
 
 
-void BodyMotor::resetCallback(void) {
-
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
-
-    // Activates the configuration of the device
-    activateConfiguration();
-}
 
 /// <summary>
 /// The BodyMotor override this function in order to initialize specific motor registers
@@ -242,7 +221,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     int speed, acc, dec;
     bool brake_unlocking_status, limit_status;
     
-    if (!device->demo_mode) {
+    if (!device->simulator_mode) {
 
 
         // With the brake alarm present, no more action can be executed
@@ -289,40 +268,12 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
         }
 
         if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
-    } // demo_mode
+    } // simulator_mode
 
 
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        ret_code = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
-    }
+  
 
-    // Handle a Manual activation mode    
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
-    if (man_increase || man_decrease) {
-        if (ret_code == MotorCompletedCodes::ERROR_SAFETY) {
-            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-            Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
-        } else if (ret_code != MotorCompletedCodes::COMMAND_PROCEED) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-        else {
-            speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_SPEED]);
-            acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_ACC]);
-            dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_MANUAL_DEC]);
-
-            if (man_increase) {
-                manual_increment_direction = true;
-                if (!device->activateManualPositioning(MAX_ROTATION_ANGLE, speed, acc, dec)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-            else {
-                manual_increment_direction = false;
-                if (!device->activateManualPositioning(MIN_ROTATION_ANGLE, speed, acc, dec)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-        }
-    }
-
-    return MotorCompletedCodes::COMMAND_PROCEED;
+    return ret_code;
     
 }
 
@@ -334,21 +285,8 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
 /// 
 /// <param name=""></param>
 /// <returns></returns>
-BodyMotor::MotorCompletedCodes  BodyMotor::automaticPositioningRunningCallback(void) {
-    
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-        return MotorCompletedCodes::ERROR_SAFETY;
-    }
-
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    if (Gantry::getObstacleRotationStatus((int)CANOPEN::MotorDeviceAddresses::BODY_ID)) {
-        return MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
-    }
-
-    if(device->demo_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
+BodyMotor::MotorCompletedCodes  BodyMotor::automaticPositioningRunningCallback(void) {  
+    if(device->simulator_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
 
     // Checks for the limit switch activation     
     if (blocking_readOD(OD_60FD_00)) {
@@ -358,60 +296,6 @@ BodyMotor::MotorCompletedCodes  BodyMotor::automaticPositioningRunningCallback(v
 
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
-/// <summary>
-/// The BodyMotor class override this function in order to update the current position
-/// and the command termination
-/// 
-/// </summary>
-/// <param name=LABEL_ERROR></param>
-void BodyMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
-    if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-    }
-
-    // Notify the command termination event
-    device->command_completed_event(getCommandId(), (int)error);
-    return;
-}
-
-void BodyMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
-    if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-    }
-
-    device->command_completed_event((int) 0, (int) error);
-    return;
-}
-
-/// <summary>
-/// The BodyMotor class override this function in order to 
-///handle the homing completion process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-void BodyMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
-
-
-    if (isEncoderInitialized()) {
-        // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-        Notify::deactivate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
-    }
-    else {
-        // Reset the position in the configuration file and reactivate the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-        MotorConfig::Configuration->storeFile();
-        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
-    }
-
-    // Notify the command termination event
-    device->command_completed_event((int)0, (int)error);
 }
 
 
@@ -447,29 +331,13 @@ bool BodyMotor::startHoming(void) {
 /// <returns></returns>
 BodyMotor::MotorCompletedCodes  BodyMotor::manualPositioningRunningCallback(void) {
 
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-        return MotorCompletedCodes::ERROR_SAFETY;
-    }
-
-    if (!demo_mode) {
+    if (!simulator_mode) {
         // Checks for the limit switch activation     
         if (blocking_readOD(OD_60FD_00)) {
             // Limit switch activation
             if (LIMIT_INPUT_MASK(getRxReg()->data)) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
         }
     }
-
-    // Handle the safety
-
-    // handle the manual hardware inputs
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
-    if ((!man_increase) && (!man_decrease)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    if ((!man_increase) && (manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    if ((!man_decrease) && (!manual_increment_direction)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
 
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
@@ -509,35 +377,4 @@ void BodyMotor::faultCallback(bool errstat, bool data_changed, unsigned int erro
     bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
     if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
 
-}
-
-
-/// <summary>
-/// This function is called at the beginning of the automatic activation
-/// </summary>
-/// 
-/// The function invalidate the current encoder position in the case, 
-/// during the activation, the software should be killed before to update the current encoder position.
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-BodyMotor::MotorCompletedCodes BodyMotor::automaticPositioningPreparationCallback(void) {
-
-    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
-    // with the current valid position
-    MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-    MotorConfig::Configuration->storeFile();
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
-/// <summary>
-/// This function is called at the beginning of the automatic activation
-/// </summary>
-/// 
-/// See the automaticPositioningPreparationCallback()
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-BodyMotor::MotorCompletedCodes BodyMotor::manualPositioningPreparationCallback(void) {
-    return automaticPositioningPreparationCallback();
 }

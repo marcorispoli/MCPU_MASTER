@@ -38,7 +38,7 @@ TcpClientCLI::TcpClientCLI(String^ ip, int port)
 	running_thread = gcnew Thread(gcnew ThreadStart(this, &TcpClientCLI::threadWork));
 	running_thread->Name = "Loop TcpIp Client";
 	running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
-	running_thread->Start();
+	//running_thread->Start();
 
 }
 

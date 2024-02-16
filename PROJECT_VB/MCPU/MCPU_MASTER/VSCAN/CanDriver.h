@@ -19,6 +19,9 @@ public:
     CanDriver();
     static CanDriver^ driver = gcnew  CanDriver();
 
+    static void startSimulatorMode(void);
+    static void startNormalMode(void);
+
     delegate void delegate_can_rx_frame(unsigned short canid, unsigned char* data, unsigned char len);
     static event delegate_can_rx_frame^ canrx_canopen_sdo_event;
     static event delegate_can_rx_frame^ canrx_canopen_pdo_event;
@@ -56,6 +59,7 @@ private:
 
     static bool warning = false;
     static System::String^ WarningString = "";
-    
+  
+    static bool simulator_mode;
 };
 

@@ -1,7 +1,7 @@
 
 #include "PCB303.h"
 #include "PCB302.h"
-#include "./DEMO/PCB302_Demo.h"
+#include "./DEMO/pcb302_simulator.h"
 #include "CalibrationConfig.h"
 
 #include <thread>

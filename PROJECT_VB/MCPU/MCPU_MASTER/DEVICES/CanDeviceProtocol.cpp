@@ -18,7 +18,7 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     attempt = 0;
     communication_error = false;
     run = false;
-    demo_mode = false;
+    simulator_mode = false;
     command_executing = false;
 
     sent_messages = 0;
@@ -219,10 +219,10 @@ void CanDeviceProtocol::mainWorker(void) {
     }
 
     // Demo mode activation
-    if (demo_mode) {
+    if (simulator_mode) {
         internal_status = status_options::DEVICE_DEMO;
         LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
-        while (demo_mode) {
+        while (simulator_mode) {
             demoLoop();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }

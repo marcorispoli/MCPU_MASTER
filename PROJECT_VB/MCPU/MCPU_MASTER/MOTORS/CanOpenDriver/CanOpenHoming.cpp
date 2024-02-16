@@ -1,6 +1,7 @@
 #include "CanDriver.h"
 #include "Notify.h"
 #include "CanOpenMotor.h"
+#include "gantry_global_status.h"
 #include "pd4_od.h"
 #include <thread>
 #include "Log.h"
@@ -8,14 +9,21 @@
 
 
 bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int speed, int acc) {
-    if (!demo_mode) {
-        // Command already in execution
-        if (!isReady()) {
-            command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
-            return false;
-        }
+
+    // If the safety condition prevent the command execution it is immediatelly aborted
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+        command_completed_code = MotorCompletedCodes::ERROR_SAFETY;
+        return false;
     }
 
+    // Command already in execution
+    if (!isReady()) {
+        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+        return false;
+    }
+   
     command_homing_on_method = method_on;
     command_homing_off_method = method_off;
     command_acc = acc;
@@ -156,6 +164,14 @@ void CanOpenMotor::manageAutomaticHoming(void) {
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
+            break;
+        }
+
+        // If the safety condition prevent the command execution it is immediatelly aborted
+        Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+        if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+            termination_code = MotorCompletedCodes::ERROR_SAFETY;
             break;
         }
 

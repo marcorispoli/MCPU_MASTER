@@ -45,6 +45,7 @@ public:
 	
 
 protected:
+	void startConnection(void) { running_thread->Start();}
 	virtual void rxData(cli::array<Byte>^ receiveBuffer, int rc);
 
 private:

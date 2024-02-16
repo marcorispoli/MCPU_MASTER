@@ -2,6 +2,7 @@
 #include "Notify.h"
 #include "pd4_od.h"
 #include "VerticalMotor.h"
+#include "ArmMotor.h"
 #include "TiltMotor.h"
 #include "math.h"
 
@@ -41,9 +42,14 @@ bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
     return true;
 }
 
-SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", GEAR_RATIO, false)
+SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", MotorConfig::PARAM_SLIDE, Notify::messages::ERROR_SLIDE_MOTOR_HOMING, GEAR_RATIO, false)
 {
-    
+    // Sets +/- 0.1 ° as the acceptable target range
+    setTargetRange(20, 20);
+    max_position = MAX_ROTATION_ANGLE;
+    min_position = MIN_ROTATION_ANGLE;
+    idle_positioning = false;
+
     // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
     bool homing_initialized = false;
     int  init_position = 0;
@@ -69,15 +75,26 @@ bool SlideMotor::serviceAutoPosition(int pos) {
     }
 
     device->iso_activation_mode = false;
+    idle_positioning = false;
 
-    // Activate the command
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_ACC]);
-    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_DEC]);
-
-    return device->activateAutomaticPositioning(0, pos * 100, speed, acc, dec, true);
+    return device->activateAutomaticPositioning(0, pos * 100,  true);
 
 }
+
+bool SlideMotor::setIdlePosition(void) {
+    if ((!TiltMotor::isScoutPosition())) {
+        LogClass::logInFile("SlideMotor::serviceAutoPosition() - command: error, tilt not in scout ");
+        return false;
+
+    }
+
+    device->iso_activation_mode = false;
+    idle_positioning = true;
+
+    return device->activateAutomaticPositioning(0, 0, true);
+
+}
+
 
 bool SlideMotor::isoAutoPosition(int pos) {
     if ((!TiltMotor::isScoutPosition())) {
@@ -87,37 +104,12 @@ bool SlideMotor::isoAutoPosition(int pos) {
     }
 
     device->iso_activation_mode = true;
+    idle_positioning = false;
 
-    // Activate the command
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_ACC]);
-    int dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_AUTO_DEC]);
-
-    return device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
+    return device->activateAutomaticPositioning(0, pos, true);
 
 }
 
-
-void SlideMotor::resetCallback(void) {
-
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
-
-    // Activates the configuration of the device
-    activateConfiguration();
-}
 
 
 /// <summary>
@@ -128,12 +120,12 @@ void SlideMotor::resetCallback(void) {
 /// <param name=LABEL_ERROR></param>
 void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
 
-    // Sets the current Vertical position
-    if (isEncoderInitialized()) {
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
+    // Next step of the Idle positioning
+    if (idle_positioning) {
+        idle_positioning = false;
+        if(error == MotorCompletedCodes::COMMAND_SUCCESS)  ArmMotor::setIdlePosition();
+        return;
     }
-
 
     // If Slide activation is not a Isocentric mode (or is terminated in error) then the command termines here
     // end the command_completed event is generated 
@@ -163,23 +155,6 @@ void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error
 }
 
 
-
-/// <summary>
-/// The SlideMotor class override this function in order to 
-/// handle the IDLE activities
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-SlideMotor::MotorCompletedCodes SlideMotor::idleCallback(void) {
-
-
-    return MotorCompletedCodes::COMMAND_PROCEED;
-
-}
-
-
-
 /// <summary>
 /// This function activates the Automatic Homing procedure
 /// 
@@ -194,105 +169,3 @@ bool SlideMotor::startHoming(void) {
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
 }
 
-
-
-
-/// <summary>
-/// The SlideMotor class override this function in order to 
-/// handle the homing completion process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-void SlideMotor::automaticHomingCompletedCallback(MotorCompletedCodes error) {
-
-    if (isEncoderInitialized()) {
-        // Set the position in the configuration file and clear the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, device->getCurrentEncoderUposition().ToString());
-        MotorConfig::Configuration->storeFile();
-        Notify::deactivate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
-    }
-    else {
-        // Reset the position in the configuration file and reactivate the alarm
-        MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-        MotorConfig::Configuration->storeFile();
-        Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
-    }
-
-    // Notify the command termination event
-    device->command_completed_event((int)0, (int)error);
-}
-
-void SlideMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
-
-
-
-    // Notify the command termination event
-    device->command_completed_event((int)0, (int)error);
-
-    return;
-}
-
-SlideMotor::MotorCompletedCodes  SlideMotor::automaticPositioningRunningCallback(void) {
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
-/// <summary>
-/// The ArmMotor class override this function in order to handle the manual activation process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-SlideMotor::MotorCompletedCodes  SlideMotor::manualPositioningRunningCallback(void) {
-
-    /*
-    // Handles the enable condition
-    if (!manual_activation_enabled) {
-        return MotorCompletedCodes::ERROR_COMMAND_DISABLED;
-    }
-
-    // Handle the limit switches
-
-    // Handle the safety
-
-    // handle the manual hardware inputs
-    PCB301::body_activation_options body_request = PCB301::getBodyActivationStatus();
-    if (body_request == PCB301::body_activation_options::BODY_NO_ACTIVATION) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    else if ((manual_cw_direction) && (body_request == PCB301::body_activation_options::BODY_CCW_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-    else if ((!manual_cw_direction) && (body_request == PCB301::body_activation_options::BODY_CW_ACTIVATION)) return MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-
-    */
-    // Proceeds with the manual activation
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
-
-/// <summary>
-/// This function is called at the beginning of the automatic activation
-/// </summary>
-/// 
-/// The function invalidate the current encoder position in the case, 
-/// during the activation, the software should be killed before to update the current encoder position.
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-SlideMotor::MotorCompletedCodes SlideMotor::automaticPositioningPreparationCallback(void) {
-
-    // Invalidate the position: if the command should completes the encoder position will lbe refresh 
-    // with the current valid position
-    MotorConfig::Configuration->setParam(MotorConfig::PARAM_SLIDE, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-    MotorConfig::Configuration->storeFile();
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
-
-/// <summary>
-/// This function is called at the beginning of the automatic activation
-/// </summary>
-/// 
-/// See the automaticPositioningPreparationCallback()
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-SlideMotor::MotorCompletedCodes SlideMotor::manualPositioningPreparationCallback(void) {
-    return automaticPositioningPreparationCallback();
-}

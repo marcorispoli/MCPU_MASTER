@@ -28,30 +28,46 @@ typedef short (*pSendR2CP_callback)(unsigned char*, unsigned short) ; //!< This 
 int16_t Generator::sendCR2CPData(unsigned char* pMessage, unsigned short  datalength) {
     cli::array<Byte>^ buf = gcnew cli::array<Byte>(datalength);
     for (int i = 0; i < datalength; i++) buf[i] = pMessage[i]; 
-    generator->send(buf);
+    device->send(buf);
     return datalength;
 }
 
 
-Generator::Generator():TcpClientCLI( SH_IP_ADDRESS, SH_PORT) 
+Generator::Generator(void):TcpClientCLI( SH_IP_ADDRESS, SH_PORT) 
 {
     
+
+}
+
+void Generator::startNormalMode(void) {
+    device->simulator_mode = false;
+    
+    // Starts the client to communicate with smart Hub
+    device->startConnection();
+
     // CR2CP Initialization
-    R2CP_Eth = new CR2CP_Eth((pSendR2CP_callback) sendCR2CPData, 0, (CaDataDic*) R2CP::CaDataDicGen::GetInstance(), 0, 0);
+    R2CP_Eth = new CR2CP_Eth((pSendR2CP_callback)sendCR2CPData, 0, (CaDataDic*)R2CP::CaDataDicGen::GetInstance(), 0, 0);
     R2CP::CaDataDicGen::GetInstance()->Initialitation();
     R2CP::CaDataDicGen::GetInstance()->SetCommunicationForm(R2CP_Eth);
 
     R2CP_Eth->smartHubConnected = false;
     R2CP_Eth->generatorConnected = false;
-  
 
     // Start the reception thread
-    running_thread = gcnew Thread(gcnew ThreadStart(this, &Generator::threadWork));
-    running_thread->Name = "Loop Generator Workflow ";
-    running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
-    running_thread->Start();
+    device->running_thread = gcnew Thread(gcnew ThreadStart(device, &Generator::threadWork));
+    device->running_thread->Name = "Loop Generator Workflow ";
+    device->running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
+    device->running_thread->Start();
 
+}
 
+void Generator::startSimulatorMode(void) {
+    device->simulator_mode = true;
+
+    device->running_thread = gcnew Thread(gcnew ThreadStart(device, &Generator::simulatorWork));
+    device->running_thread->Name = "Loop Generator Simulator Workflow ";
+    device->running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
+    device->running_thread->Start();
 }
 
 /// <summary>
@@ -86,11 +102,11 @@ void Generator::rxData(cli::array<Byte>^ receiveBuffer, int rc) {
 }
 
 bool Generator::isSmartHubConnected(void) {
-    if (!generator->isConnected()) return false;
+    if (!device->isConnected()) return false;
     return R2CP_Eth->smartHubConnected;
 }
 bool Generator::isGeneratorConnected(void) {
-    if (!generator->isConnected()) return false;
+    if (!device->isConnected()) return false;
     return R2CP_Eth->generatorConnected;
 }
 
@@ -101,23 +117,21 @@ bool Generator::connectionTest(void) {
     return true;
 
 }
+
+void Generator::simulatorWork(void) {
+    LogClass::logInFile("Generator Simulator Version!\n");
+
+    while (true) {
+        setup_completed = true;
+        idle_status = true;
+        ready_for_exposure = true;
+        generatorSimulatorIdle();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
 void Generator::threadWork(void) {
   
-
-    // Demo management
-    if (Gantry::isGeneratorDemo()) {
-        LogClass::logInFile("Generator Demo Version!\n");
-
-        while (true) {           
-            setup_completed = true;
-            idle_status = true;
-            ready_for_exposure = true;
-            generatorDemoIdle();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    }
-
     while (true) {
         LogClass::logInFile("Try to connect the Smart Hub and Generator!\n");
         Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);

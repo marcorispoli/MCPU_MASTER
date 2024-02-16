@@ -427,7 +427,7 @@ private:
 		this->zeroSettingBody->Size = System::Drawing::Size(165, 165);
 		this->zeroSettingBody->TabIndex = 19;
 		this->zeroSettingBody->TabStop = false;
-		this->zeroSettingBody->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_arm_Click);
+		this->zeroSettingBody->Click += gcnew System::EventHandler(this, &ServiceForm::zeroSettingBody_Click);
 		// 
 		// zeroSettingAll
 		// 

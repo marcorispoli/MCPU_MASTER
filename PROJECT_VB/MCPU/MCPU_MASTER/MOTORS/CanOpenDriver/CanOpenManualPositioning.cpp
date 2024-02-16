@@ -1,12 +1,21 @@
 #include "CanDriver.h"
 #include "Notify.h"
 #include "CanOpenMotor.h"
+#include "CalibrationConfig.h"
+#include "gantry_global_status.h"
 #include "pd4_od.h"
 #include <thread>
 #include "Log.h"
 
 bool CanOpenMotor::activateManualPositioning(int target, int speed, int acc, int dec) {
 
+    // If the safety condition prevent the command execution it is immediatelly aborted
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+        command_completed_code = MotorCompletedCodes::ERROR_SAFETY;
+        return false;
+    }
     
     // Only with the homing executed or initialized can be activated
     if (!home_initialized) {
@@ -30,6 +39,41 @@ bool CanOpenMotor::activateManualPositioning(int target, int speed, int acc, int
     request_command = MotorCommands::MOTOR_MANUAL_POSITIONING;
     return true;
 }
+
+bool CanOpenMotor::activateManualPositioning(int target) {
+
+    // If the safety condition prevent the command execution it is immediatelly aborted
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+        command_completed_code = MotorCompletedCodes::ERROR_SAFETY;
+        return false;
+    }
+
+    // Only with the homing executed or initialized can be activated
+    if (!home_initialized) {
+        command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
+        return false;
+    }
+
+    // Command already in execution
+    if (!isReady()) {
+        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+        return false;
+    }
+
+
+    command_speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_MANUAL_SPEED]);
+    command_acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_MANUAL_ACC]);
+    command_dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_MANUAL_DEC]);
+
+    command_id = 0;
+    command_target = target;
+    command_stop = false;
+    request_command = MotorCommands::MOTOR_MANUAL_POSITIONING;
+    return true;
+}
+
 
 
 
@@ -91,6 +135,10 @@ void CanOpenMotor::manageManualPositioning(void) {
         setCommandCompletedCode(preparation_error);
         return;
     }
+    
+    // Invalidate the stored encoder position
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
 
     // Update the previous position
     previous_uposition = current_uposition;
@@ -141,6 +189,25 @@ void CanOpenMotor::manageManualPositioning(void) {
 
         // The Application can early terminate the activation
         MotorCompletedCodes termination_condition = manualPositioningRunningCallback();
+
+        // If the safety condition prevent the command execution it is immediatelly aborted
+        Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+        if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+            termination_condition = MotorCompletedCodes::ERROR_SAFETY;
+        }
+
+        // Evaluates the manual termination condition
+        if (termination_code == MotorCompletedCodes::COMMAND_PROCEED) {
+            // handle the manual hardware inputs
+            bool man_increase = Gantry::getManualRotationIncrease(device_id);
+            bool man_decrease = Gantry::getManualRotationDecrease(device_id);
+            if ((!man_increase) && (!man_decrease)) termination_condition = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+            else if ((!man_increase) && (motor_direction_increment)) termination_condition = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+            else if ((!man_decrease) && (!motor_direction_increment)) termination_condition = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+
+        }
+
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;

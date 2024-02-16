@@ -1,6 +1,7 @@
 #include "CanDriver.h"
 #include "Notify.h"
 #include "CanOpenMotor.h"
+#include "gantry_global_status.h"
 #include "pd4_od.h"
 #include <thread>
 #include "Log.h"
@@ -126,6 +127,37 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
     // The subclass can add extra commands in IDLE and enable the command execution
     idle_returned_condition = idleCallback();
 
+    // Test if the manual activation can be done
+    if (idle_returned_condition == MotorCompletedCodes::COMMAND_PROCEED) {
+
+        // If the safety condition prevent the command execution it is immediatelly aborted
+        Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+        if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+            idle_returned_condition = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
+        }
+
+        // Handle a Manual activation mode
+        bool man_increase = Gantry::getManualRotationIncrease(device_id);
+        bool man_decrease = Gantry::getManualRotationDecrease(device_id);
+        if (man_increase || man_decrease) {
+            if (idle_returned_condition == MotorCompletedCodes::ERROR_SAFETY) {
+                LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+                Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
+            } else {                
+                if (man_increase) {
+                    motor_direction_increment = true;
+                    if (!activateManualPositioning(max_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+                }
+                else {
+                    motor_direction_increment = false;
+                    if (!activateManualPositioning(min_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+                }
+            }
+        }
+
+    }
+    
+    
     // Initiate a requested command
     switch (request_command) {
     case MotorCommands::MOTOR_AUTO_POSITIONING:

@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "Log.h"
+#include "Notify.h"
 
 using namespace System::Diagnostics;
 using namespace System::Threading;
@@ -340,6 +341,8 @@ namespace CANOPEN {
 		
 	};
 	
+	
+
 	/// <summary>
 	/// This is the Class implementing the CanOPEN Motor Device control protocol.
 	///
@@ -439,9 +442,9 @@ namespace CANOPEN {
 		/// </summary>
 		/// @{
 		
-		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, double gear, bool reverse); //!< This is the base class constructor
-		void runMode(void) { demo_mode = false; run = true; }
-		void demoMode(void) { demo_mode = true; run = true; }
+		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err,double gear, bool reverse); //!< This is the base class constructor
+		void runMode(void) { simulator_mode = false; run = true; }
+		void demoMode(void) { simulator_mode = true; run = true; }
 
 		delegate void delegate_fault_callback(int code); //!< Delegate for the callback related to the Fault condition
 		event delegate_fault_callback^ fault_event; //!< Event generated when a Driver fault condition is detected
@@ -450,9 +453,16 @@ namespace CANOPEN {
 	    event delegate_command_completed_callback^ command_completed_event; //!< Event generated at the command completion
 
 		bool  activateRelativePositioning(int id, int target, int speed, int acc, int dec); 	//!< This function starts an automatic relative positioning		
+		bool  activateRelativePositioning(int id, int target); 	//!< This function starts an automatic relative positioning with predefined motor parameters
+
 		bool  activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool autostart);	//!< This function starts an automatic positioning		
+		bool  activateAutomaticPositioning(int id, int target, bool autostart); //!< This function starts an automatic positioning with predefined parameters		
+		
 		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
+		
 		bool  activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
+		bool  activateManualPositioning(int target); //!< This command activates the manual mootion with predefined parameters
+
 		void  abortActivation(void); //!< Immediate abort of any activation running
 
 		/// <summary>
@@ -765,15 +775,15 @@ protected:
 
 		virtual MotorCompletedCodes automaticPositioningPreparationCallback(void);  //!< This function is called just before to Power the motor phases
 		virtual MotorCompletedCodes automaticPositioningRunningCallback(void); //!< This function is called during the command execution to terminate early the positioning
-		virtual void automaticPositioningCompletedCallback(MotorCompletedCodes termination_code);  //!< This function is called when the command is terminated
+		virtual void automaticPositioningCompletedCallback(MotorCompletedCodes termination_code) { command_completed_event(command_id, (int)termination_code); }   //!< This function is called when the command is terminated
 
 		virtual MotorCompletedCodes manualPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
 		virtual MotorCompletedCodes manualPositioningRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
-		virtual void manualPositioningCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
+		virtual void manualPositioningCompletedCallback(MotorCompletedCodes error) { command_completed_event(command_id, (int) error); }  //!< This function is called when the command is terminated
 
 		virtual MotorCompletedCodes automaticHomingPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
 		virtual MotorCompletedCodes automaticHomingRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
-		virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { return; }  //!< This function is called when the command is terminated
+		virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { command_completed_event(command_id, (int)error); }  //!< This function is called when the command is terminated
 
 		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
 		virtual void faultCallback(bool errstat, bool data_change, unsigned int error_class, unsigned int error_code) { return ; }
@@ -810,9 +820,14 @@ protected:
 
 
 protected:
-	bool demo_mode;
+	bool simulator_mode;
 	unsigned char device_id;	//!< This is the target Device Id 
+	System::String^ config_param;//!< Pointer to the parameter in the config parameter
+	int max_position;			//!< This is the maximum target selectable
+	int min_position;			//!< This is the minimum target selectable
 
+	Notify::messages error_homing;
+	
 private:
 		bool run;
 		
@@ -915,7 +930,8 @@ private:
 		int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
 		
 		bool autostart_mode; //!< Set to tru if the activation ommand is automatically started
-		
+		bool motor_direction_increment; //!< The current direction increments the encoder
+
 		// Diagnostic
 		double txrx_time;
 		bool read_sdo_tmo;

@@ -1,6 +1,8 @@
 #include "CanDriver.h"
 #include "Notify.h"
 #include "CanOpenMotor.h"
+#include "CalibrationConfig.h"
+#include "gantry_global_status.h"
 #include "pd4_od.h"
 #include <thread>
 #include "Log.h"
@@ -50,21 +52,25 @@
 /// <returns>true if the command can be executed</returns>
 bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool autostart) {
 
-    // If the driver is in demo executes the demo activation
-    if (!demo_mode) {
-        // Only withthe homing executed or initialized can be activated
-        if (!home_initialized) {
-            command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
-            return false;
-        }
-
-        // Command already in execution
-        if (!isReady()) {
-            command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
-            return false;
-        }
+    // If the safety condition prevent the command execution it is immediatelly aborted
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+        command_completed_code = MotorCompletedCodes::ERROR_SAFETY;
+        return false;
+    }
+    
+    // Only withthe homing executed or initialized can be activated
+    if (!home_initialized) {
+        command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
+        return false;
     }
 
+    // Command already in execution
+    if (!isReady()) {
+        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+        return false;
+    }
 
     command_id = id;
     command_target = target;
@@ -77,12 +83,54 @@ bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, i
     return true;
 }
 
+bool CanOpenMotor::activateAutomaticPositioning(int id, int target, bool autostart) {
+    
+    // If the safety condition prevent the command execution it is immediatelly aborted
+    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+        command_completed_code = MotorCompletedCodes::ERROR_SAFETY;
+        return false;
+    }
+
+    // Only withthe homing executed or initialized can be activated
+    if (!home_initialized) {
+        command_completed_code = MotorCompletedCodes::ERROR_MISSING_HOME;
+        return false;
+    }
+
+    // Command already in execution
+    if (!isReady()) {
+        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+        return false;
+    }
+
+    command_speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_AUTO_SPEED]);
+    command_acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_AUTO_ACC]);
+    command_dec = System::Convert::ToInt16(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_AUTO_DEC]);
+
+    command_id = id;
+    command_target = target;    
+    request_command = MotorCommands::MOTOR_AUTO_POSITIONING;
+    autostart_mode = autostart;
+    return true;
+}
+
+
 bool  CanOpenMotor::activateRelativePositioning(int id, int delta_target, int speed, int acc, int dec) {
     
     // Set the taret position
     int target = getCurrentPosition() + delta_target;
     return activateAutomaticPositioning(id, target, speed, acc, dec, true);
 }
+
+bool  CanOpenMotor::activateRelativePositioning(int id, int delta_target) {
+
+    // Set the taret position
+    int target = getCurrentPosition() + delta_target;
+    return activateAutomaticPositioning(id, target, true);
+}
+
 
 
 /// <summary>
@@ -121,20 +169,6 @@ CanOpenMotor::MotorCompletedCodes CanOpenMotor::automaticPositioningRunningCallb
     return MotorCompletedCodes::COMMAND_PROCEED; 
 }
 
-/// <summary>
-/// This function is called by the Base class at the command completion.
-/// 
-/// </summary>
-/// 
-/// The function only calls the command_completion_event(). 
-/// 
-/// The Subclass should override this function in order to implement specific behaviors.
-/// 
-/// <param name="completed_code"></param>
-void CanOpenMotor::automaticPositioningCompletedCallback(MotorCompletedCodes completed_code) {
-    command_completed_event(command_id, (int)  completed_code);
-    return; 
-}
 
 /// <summary>
 /// This function executes the Automatic positioning of the motor at the expected target position.
@@ -236,6 +270,10 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         setCommandCompletedCode(preparation_error);
         return;
     }
+    
+    // Invalidate the stored encoder position
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
 
     // Update the previous position
     previous_uposition = current_uposition;
@@ -332,6 +370,22 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
             termination_code = termination_condition;
             break;
         }
+        
+        // If the safety condition prevent the command execution it is immediatelly aborted
+        Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+        if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+            LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
+            termination_code = MotorCompletedCodes::ERROR_SAFETY;
+            break;
+        }
+
+        // Gets the obstacle condition
+        if (Gantry::getObstacleRotationStatus(device_id)) {
+            LogClass::logInFile("Motor <" + device_id.ToString() + ">: obstacle condition error" );
+            termination_code = MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
+            break;
+        }
+
 
         if (((statw & 0x1400) == 0x1400) || (current_uposition == command_target) || (timeout) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 

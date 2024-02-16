@@ -1,5 +1,5 @@
 #include "PCB301.h"
-#include "./DEMO/PCB301_Demo.h"
+#include "./DEMO/pcb301_simulator.h"
 
 #include "Notify.h"
 #include "awsProtocol.h"

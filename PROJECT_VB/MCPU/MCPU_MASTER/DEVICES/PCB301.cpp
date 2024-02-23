@@ -19,6 +19,7 @@ void PCB301::evaluateEvents(void) {
     static bool batt_alarm = false;
     static door_options door = door_options::CLOSED_DOOR;
     static bool xray_push = false;
+    static bool soft_power_off = false;
 
     // Initializes the events
     if (init) {
@@ -76,7 +77,7 @@ void PCB301::evaluateEvents(void) {
 
     // Burning Jumper presence
     if (burning_jumper != burning_jumper_present) {
-        burning_jumper != burning_jumper_present;
+        burning_jumper = burning_jumper_present;
 
         if (burning_jumper_present) Notify::activate(Notify::messages::INFO_BURNING_JUMPER_PRESENT);
         else Notify::deactivate(Notify::messages::INFO_BURNING_JUMPER_PRESENT);
@@ -84,7 +85,7 @@ void PCB301::evaluateEvents(void) {
 
     // Monitor of the Battery Enable input
     if (battery_enabled != battery_enabled_status) {
-        battery_enabled != battery_enabled_status;
+        battery_enabled = battery_enabled_status;
 
         if (battery_enabled_status == false) Notify::activate(Notify::messages::INFO_BATTERY_DISABLED);
         else Notify::deactivate(Notify::messages::INFO_BATTERY_DISABLED);
@@ -119,6 +120,14 @@ void PCB301::evaluateEvents(void) {
         xray_push = xray_push_button;
         if (ExposureModule::getXrayPushButtonEvent()) awsProtocol::EVENT_XrayPushButton(xray_push_button);
     }
+
+    // handles the soft_power_off_request event
+    if (soft_power_off_request != soft_power_off) {
+        soft_power_off = soft_power_off_request;        
+        awsProtocol::EVENT_Poweroff();        
+    }
+
+    
 }
 
 void PCB301::handleSystemStatusRegister(void) {
@@ -185,7 +194,7 @@ void PCB301::handleSystemStatusRegister(void) {
     button_slide_up_stat = PCB301_GET_BUTTON_SLIDE_UP(system_status_register);
     button_slide_down_stat = PCB301_GET_BUTTON_SLIDE_DOWN(system_status_register);
 
-     xray_push_button = PCB301_GET_XRAY_PUSH_BUTTON(system_status_register);
+    xray_push_button = PCB301_GET_XRAY_PUSH_BUTTON(system_status_register);
     
 }
 
@@ -313,4 +322,10 @@ void PCB301::demoLoop(void) {
     voltage_batt2 = 120;
 
     evaluateEvents();
+
+    // Evaluates the soft power-off bit
+    if (PCB301_GET_OUTPUTS_DATA_POWER_OFF(outputs_data_register)) {
+        LogClass::logInFile("PCB301 DEMO POWER OFF COMMAND");
+        Application::Exit();
+    }
 }

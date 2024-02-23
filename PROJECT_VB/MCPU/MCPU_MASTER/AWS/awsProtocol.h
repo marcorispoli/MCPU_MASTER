@@ -140,6 +140,8 @@ public:
 	/// This is the EVENT the gantry sends to AWS to notify about a x-ray  pulse termination
 	static void EVENT_exposurePulseCompleted(unsigned char npulse) ;
 	
+	static void EVENT_Poweroff(void) ;
+
 	static void EVENT_operatingStatusChange(void) {};
 
 	/// @}

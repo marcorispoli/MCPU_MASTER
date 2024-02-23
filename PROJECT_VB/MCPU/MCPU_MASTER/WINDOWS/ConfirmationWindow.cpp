@@ -1,5 +1,6 @@
 #include "ConfirmationWindow.h"
 #include "../gantry_global_status.h"
+#include "Log.h"
 
 
 #define ERR_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\error_160x145.PNG")
@@ -58,8 +59,16 @@ void ConfirmationWindow::formInitialization(InfoType wtype, System::String^ info
 
 void ConfirmationWindow::open(void) {
 	if (open_status) return;
-	open_status = true;
-	this->ShowDialog(parent);
+
+	try{
+		open_status = true;
+		this->ShowDialog(parent);
+	}
+	catch (...) {
+		open_status = false;
+		LogClass::logInFile("ConfirmationWindow::open() Exception!");
+	}
+	
 }
 void ConfirmationWindow::close(void) {
 	if (!open_status) return;

@@ -43,7 +43,7 @@ TcpClientCLI::TcpClientCLI(String^ ip, int port)
 }
 
 void TcpClientCLI::threadWork(void) {
-	DWORD dwWaitResult;
+	
 	SocketType sockType = SocketType::Stream;
 	ProtocolType sockProtocol = ProtocolType::Tcp;
 	

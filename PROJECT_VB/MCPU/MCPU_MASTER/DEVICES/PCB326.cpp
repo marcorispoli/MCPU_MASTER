@@ -83,6 +83,20 @@ bool PCB326::configurationLoop(void) {
     // Upload the Sensitivity parameter
     writeParamRegister((unsigned char)ParamRegisters::SENSITIVITY_PARAMETER_REGISTER, setSensitivitRegister(selected_gen_sens, selected_sensor_sens, selected_recalib_time, selected_sensor_ena));
 
+
+    cs1_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS1]);
+    cs2_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS2]);
+    cs3_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS3]);
+    cs4_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS4]);
+    cs5_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS5]);
+    cs6_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS6]);
+    cs7_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS7]);
+    cs8_th = System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_TH_CS8]);
+
+    writeParamRegister((unsigned char)ParamRegisters::CS1_4_THRESHOLD_PARAMETER_REGISTER, cs1_th, cs2_th, cs3_th, cs4_th);
+    writeParamRegister((unsigned char)ParamRegisters::CS5_8_THRESHOLD_PARAMETER_REGISTER, cs5_th, cs6_th, cs7_th, cs8_th);
+
+
     // Executes the reset and re-configuraiton of the CP1188 as soon as the device is in running 
     current_command = CommandRegister::RESET_COMMAND;
 

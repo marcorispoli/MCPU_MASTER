@@ -87,8 +87,8 @@ void MainForm::MainFormInitialize(void) {
 	Gantry::setStartup();
 
 	// Set the motor in safety condition
-	PCB301::set_motor_power_supply(false);
-	PCB301::set_motor_switch(false);
+	PCB301::set_motor_power_supply(true);
+	PCB301::set_motor_switch(true);
 
 	// Start the startup session
 	startupTimer = gcnew System::Timers::Timer(100);

@@ -1,5 +1,5 @@
 #include "IconWindow.h"
-
+#include "Log.h"
 
 void IconWindow::formInitialization(Image^ img) {
 
@@ -21,8 +21,16 @@ void IconWindow::formInitialization(Image^ img) {
 
 void IconWindow::open(void) {
 	if (open_status) return;
-	open_status = true;
-	this->ShowDialog(parent);
+	
+	try {
+		open_status = true;
+		this->ShowDialog(parent);		
+	}
+	catch (...) {
+		open_status = false;		
+		LogClass::logInFile("IconWindow::open Exception!");
+	}
+
 }
 void IconWindow::close(void) {
 	if (!open_status) return;

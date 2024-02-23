@@ -1,4 +1,5 @@
 #include "../AWS/awsProtocol.h"
+#include "ConfirmationWindow.h"
 #include "idleForm.h"
 #include "ValuePopup.h"
 #include "operatingForm.h"
@@ -13,6 +14,10 @@
 #include "VerticalMotor.h"
 #include "ArmMotor.h"
 #include "BodyMotor.h"
+#include "SlideMotor.h"
+#include "TiltMotor.h"
+
+#include "AWS/awsProtocol.h"
 #include "../gantry_global_status.h"
 
 
@@ -103,6 +108,10 @@ void IdleForm::formInitialization(void) {
 	// Service Button
 	serviceButton->BackColor = Color::Transparent;
 
+	// PowerOff Button
+	powerOff->BackColor = Color::Transparent;
+	powerOff->Show();
+
 
 	idleTimer = gcnew System::Timers::Timer(100);
 	idleTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onIdleTimeout);
@@ -187,6 +196,10 @@ void IdleForm::initIdleStatus(void) {
 	// Activate the Idle manual modes
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
+	// Activates the compressor
+	PCB301::set_compressor_ena(true);
+	PCB302::setMasterEna(true);
+
 	// Start the startup session	
 	idleTimer->Start();	
 
@@ -209,25 +222,15 @@ void IdleForm::evaluatePopupPanels(void) {
 	static bool compression = false;
 	static bool arm = false;
 	static bool body = false;
-	static bool vertical  = false;
+	static bool slide = false;
+	static bool vertical = false;
+	static bool tilt = false;
 	static int timer = 0;
 
+	// With a panel already open do not continue;
+	if (Notify::isInstantOpen()) return;
+	if (Notify::isErrorOpen()) return;
 
-	if (PCB302::isCompressing()) {
-		timer = TMO;
-		if (!compression) {
-			compression = true;
-			arm = false;
-			body = false;
-			vertical = false;
-			if(Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
-			else Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
-		}
-
-		// Set the value to the current compression
-		Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
-		return;
-	}else compression = false;
 
 	if (ArmMotor::device->isRunning()) {
 		timer = TMO;
@@ -236,17 +239,20 @@ void IdleForm::evaluatePopupPanels(void) {
 			arm = true;
 			body = false;
 			vertical = false;
+			slide = false;
+			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
 			else Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
-			
+
 		}
 
 		// Set the value to the current compression
-		float position = (float) ArmMotor::device->getCurrentPosition() / 100;
+		int position = ArmMotor::device->getCurrentPosition() / 100;
 		Gantry::getValuePopupWindow()->content(position.ToString());
 		return;
 
-	}else arm = false;
+	}
+	else arm = false;
 
 	if (BodyMotor::device->isRunning()) {
 		timer = TMO;
@@ -255,6 +261,8 @@ void IdleForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = true;
 			vertical = false;
+			slide = false;
+			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
 			else Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
 		}
@@ -263,7 +271,9 @@ void IdleForm::evaluatePopupPanels(void) {
 		float position = (float)BodyMotor::device->getCurrentPosition() / 10;
 		Gantry::getValuePopupWindow()->content(position.ToString());
 		return;
-	}else body = false;
+	}
+	else body = false;
+
 	
 	if (VerticalMotor::device->isRunning()) {
 		timer = TMO;
@@ -272,16 +282,59 @@ void IdleForm::evaluatePopupPanels(void) {
 			arm = false;
 			body = false;
 			vertical = true;
+			slide = false;
+			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
 			else Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
 		}
 
 		// Set the value to the current compression
-		int position = (int) VerticalMotor::device->getCurrentPosition();
+		int position = (int)VerticalMotor::device->getCurrentPosition();
 		Gantry::getValuePopupWindow()->content(position.ToString());
 		return;
 	}
 	else vertical = false;
+	
+
+	if (SlideMotor::device->isRunning()) {
+		timer = TMO;
+		if (!slide) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = true;
+			tilt = false;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
+			else Gantry::getValuePopupWindow()->open(this, SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		int position = (int)SlideMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else slide = false;
+
+	if (TiltMotor::device->isRunning()) {
+		timer = TMO;
+		if (!tilt) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = false;
+			tilt = true;
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
+			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(°)");
+		}
+
+		// Set the value to the current compression
+		int position = (int)TiltMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		return;
+	}
+	else tilt = false;
 
 	// Keeps the popup alive for extra time
 	if (timer) {
@@ -463,4 +516,25 @@ void IdleForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 System::Void IdleForm::serviceButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	Gantry::setService();
+}
+
+void IdleForm::onPowerOffOkCallback(void) {
+
+	// Request the AWS to power off the system
+	awsProtocol::EVENT_Poweroff();
+
+	if (Gantry::isOperatingDemo()) {
+		LogClass::logInFile("APPLICATION DEMO POWER OFF COMMAND");
+		Application::Exit();
+		return;
+	}
+
+}
+System::Void IdleForm::powerOff_Click(System::Object^ sender, System::EventArgs^ e) {
+	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION);
+	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION);
+	ConfirmationWindow^ pConfirmation = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
+	
+	pConfirmation->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &IdleForm::onPowerOffOkCallback);
+	pConfirmation->open();
 }

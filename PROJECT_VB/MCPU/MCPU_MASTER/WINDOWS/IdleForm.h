@@ -38,6 +38,7 @@ public:
 	void open(void);
 	void close(void);
 	bool open_status;
+	void onPowerOffOkCallback(void);
 	   
 
 private:HWND window;
@@ -54,6 +55,7 @@ private: System::Windows::Forms::PictureBox^ batteryConnected;
 private: System::Windows::Forms::PictureBox^ awsConnected;
 private: System::Windows::Forms::PictureBox^ peripheralsConnected;
 private: System::Windows::Forms::PictureBox^ doorClosed;
+private: System::Windows::Forms::PictureBox^ powerOff;
 
 private:void formInitialization(void);
 
@@ -96,6 +98,8 @@ private:
 	/// </summary>
 	void InitializeComponent(void)
 	{
+		this->serviceButton = (gcnew System::Windows::Forms::PictureBox());
+		this->powerOff = (gcnew System::Windows::Forms::PictureBox());
 		this->xrayMode = (gcnew System::Windows::Forms::PictureBox());
 		this->batteryConnected = (gcnew System::Windows::Forms::PictureBox());
 		this->awsConnected = (gcnew System::Windows::Forms::PictureBox());
@@ -108,16 +112,29 @@ private:
 		this->tubeTempOk = (gcnew System::Windows::Forms::Panel());
 		this->errorButton = (gcnew System::Windows::Forms::Panel());
 		this->mainPanel = (gcnew System::Windows::Forms::Panel());
-		this->serviceButton = (gcnew System::Windows::Forms::PictureBox());
+		
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->xrayMode))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->batteryConnected))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->awsConnected))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->peripheralsConnected))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->doorClosed))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceButton))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->powerOff))->BeginInit();
+
 		this->tubeTempOk->SuspendLayout();
 		this->mainPanel->SuspendLayout();
-		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceButton))->BeginInit();
 		this->SuspendLayout();
+
+		// 
+		// powerOff
+		// 
+		this->powerOff->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->powerOff->Location = System::Drawing::Point(187, 60);
+		this->powerOff->Name = L"powerOff";
+		this->powerOff->Size = System::Drawing::Size(230, 200);
+		this->powerOff->TabIndex = 2;
+		this->powerOff->TabStop = false;
+		this->powerOff->Click += gcnew System::EventHandler(this, &IdleForm::powerOff_Click);
 		// 
 		// xrayMode
 		// 
@@ -233,6 +250,7 @@ private:
 		// 
 		// mainPanel
 		// 
+		this->mainPanel->Controls->Add(this->powerOff);
 		this->mainPanel->Controls->Add(this->serviceButton);
 		this->mainPanel->Controls->Add(this->labelDate);
 		this->mainPanel->Controls->Add(this->errorButton);
@@ -269,6 +287,8 @@ private:
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 		this->Name = L"IdleForm";
 		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
+
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->powerOff))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->xrayMode))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->batteryConnected))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->awsConnected))->EndInit();
@@ -295,5 +315,6 @@ private: System::Void errorButton_Click(System::Object^ sender, System::EventArg
 
 
 private: System::Void serviceButton_Click(System::Object^ sender, System::EventArgs^ e);
+private: System::Void powerOff_Click(System::Object^ sender, System::EventArgs^ e);
 };
 

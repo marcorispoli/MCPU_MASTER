@@ -2,6 +2,8 @@
 
 #include "math.h"
 #include "ValuePopup.h"
+#include "../MOTORS/CanOpenDriver/CanOpenMotor.h"
+
 
 
 
@@ -38,9 +40,8 @@ public:
     static const cli::array<System::String^>^ operating_status_tags = gcnew cli::array<System::String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
 
     enum class manual_rotation_options {
-        GANTRY_MANUAL_ROTATION_DISABLED = 0,    //!< The Manual rotation is globally disabled
-        GANTRY_IDLE_MANUAL_ROTATION,        //!< Arm rotation and Vertical activation with buttons and pedals
-        GANTRY_OPERATING_STATUS_MANUAL_ROTATION,        //!< Arm rotation and Vertical activation with buttons and pedals
+        GANTRY_MANUAL_ROTATION_DISABLED = 0,    //!< The Manual rotation is globally disabled        
+        GANTRY_STANDARD_STATUS_MANUAL_ROTATION,        //!< Arm rotation and Vertical activation with buttons and pedals
         GANTRY_BODY_MANUAL_ROTATION,            //!< Pedals and Buttons for Body rotation
         GANTRY_SLIDE_MANUAL_ROTATION,           //!< Pedals and Buttons for Slide
         GANTRY_TILT_MANUAL_ROTATION,            //!< Pedals and Buttons for Slide
@@ -56,13 +57,16 @@ public:
         GANTRY_SAFETY_POWER_SUPPLY,                  //!< The Cabinet is open
     };
 
+
     static manual_rotation_options manual_rotation_mode = manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED;
     static void setManualRotationMode(manual_rotation_options mode);
 
     static bool getObstacleRotationStatus(int addr);
     static safety_rotation_conditions getSafetyRotationStatus(int addr);
-    static bool getManualRotationIncrease(int addr);
-    static bool getManualRotationDecrease(int addr);
+    
+private:static bool getManualRotationIncrease(int addr);
+private:static bool getManualRotationDecrease(int addr);
+public:static CANOPEN::CanOpenMotor::motor_rotation_activations getManualActivationRequestState(int device_id);
 
     static System::String^ getPatientName(void) { return patient_name; }
     static bool setOpenStudy(System::String^ patient);
@@ -96,7 +100,7 @@ public:
     static inline bool isCanDriverDemo(void) { return can_driver_simulator; }
 
     // Motor Activation
-    static inline bool isMotorsActive(void);
+    static bool isMotorsActive(void);
 
 private:
     static operating_status_options current_operating_status = operating_status_options::GANTRY_STARTUP;

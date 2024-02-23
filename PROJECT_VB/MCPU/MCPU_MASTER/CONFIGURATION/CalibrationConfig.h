@@ -143,15 +143,35 @@ public:
     
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_OBSTACLE = "OBSTACLE_CALIBRATION";                               //!< This is the Obstacle calibration parameter
-    literal System::String^ PARAM_OBSTACLE_COMMENT = "OBSTACLE_CALIBRATION calibration data";
+    literal System::String^ PARAM_OBSTACLE_COMMENT = "OBSTACLE_CALIBRATION : gain[l0:h3] sensitivity[h0:l7] recal-time[l0:h15] enable[..] csx_th[..]";
     literal System::String^ PARAM_OBSTACLE_GAIN_DEFAULT = "0"; //!< 0:3 This is the general sensors gain
-    literal System::String^ PARAM_OBSTACLE_SENSITIVITY_DEFAULT = "6"; //!< 0:7 This is the sensors gain with 0 = max sensitivity
+    literal System::String^ PARAM_OBSTACLE_SENSITIVITY_DEFAULT = "5"; //!< 0:7 This is the sensors gain with 0 = max sensitivity
     literal System::String^ PARAM_OBSTACLE_RECAL_TIME_DEFAULT = "0"; //!< 0:15 This is detection time causing the recalibration
-    literal System::String^ PARAM_OBSTACLE_SENS_ENA_DEFAULT = "1";   //!< 0:255 This is a bit field sensor enable
+    literal System::String^ PARAM_OBSTACLE_SENS_ENA_DEFAULT = "15";   //!< 0:255 This is a bit field sensor enable
+    literal System::String^ PARAM_OBSTACLE_TH_CS1_DEFAULT = "64";           //!< 1:127 threshold
+    literal System::String^ PARAM_OBSTACLE_TH_CS2_DEFAULT = "64";           //!< 1:127 threshold
+    literal System::String^ PARAM_OBSTACLE_TH_CS3_DEFAULT = "64";           //!< 1:127 threshold
+    literal System::String^ PARAM_OBSTACLE_TH_CS4_DEFAULT = "64";           //!< 1:127 threshold
+    literal System::String^ PARAM_OBSTACLE_TH_CS5_DEFAULT = "64";           //!< 1:127 threshold
+    literal System::String^ PARAM_OBSTACLE_TH_CS6_DEFAULT = "64";           //!< 1:127 threshold
+    literal System::String^ PARAM_OBSTACLE_TH_CS7_DEFAULT = "64";           //!< 1:127 threshold
+    literal System::String^ PARAM_OBSTACLE_TH_CS8_DEFAULT = "64";           //!< 1:127 threshold
+
+    
     literal int PARAM_OBSTACLE_GAIN = 0;
     literal int PARAM_OBSTACLE_SENSITIVITY = 1;
     literal int PARAM_OBSTACLE_RECAL_TIME = 2;
     literal int PARAM_OBSTACLE_SENS_ENA = 3;
+    literal int PARAM_OBSTACLE_TH_CS1 = 4;
+    literal int PARAM_OBSTACLE_TH_CS2 = 5;
+    literal int PARAM_OBSTACLE_TH_CS3 = 6;
+    literal int PARAM_OBSTACLE_TH_CS4 = 7;
+    literal int PARAM_OBSTACLE_TH_CS5 = 8;
+    literal int PARAM_OBSTACLE_TH_CS6 = 9;
+    literal int PARAM_OBSTACLE_TH_CS7 = 10;
+    literal int PARAM_OBSTACLE_TH_CS8 = 11;
+
+
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_BODY = "BODY_CALIBRATION";                               //!< This is the Body Motor parameter section
@@ -196,27 +216,27 @@ public:
     literal System::String^ PARAM_TILT = "TILT_CALIBRATION";                                       //!< This is the TILT Motor parameter section
     literal System::String^ PARAM_TILT_COMMENT = "TILT_CALIBRATION calibration data";
     literal System::String^ PARAM_TILT_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder TILT Motor position (for initial zero setting)
-    literal System::String^ PARAM_TILT_AUTO_SPEED_DEFAULT = "500";                                  //!< TILT Auto Speed in 0.01 degree/s
-    literal System::String^ PARAM_TILT_AUTO_ACC_DEFAULT = "500";                                    //!< TILT Auto Acc in 0.01 degree /ss
-    literal System::String^ PARAM_TILT_AUTO_DEC_DEFAULT = "500";                                    //!< TILT Auto Dec in 0.01 degree /ss
+    literal System::String^ PARAM_TILT_AUTO_SPEED_DEFAULT = "400";                                  //!< TILT Auto Speed in 0.01 degree/s
+    literal System::String^ PARAM_TILT_AUTO_ACC_DEFAULT = "400";                                    //!< TILT Auto Acc in 0.01 degree /ss
+    literal System::String^ PARAM_TILT_AUTO_DEC_DEFAULT = "400";                                    //!< TILT Auto Dec in 0.01 degree /ss
     literal System::String^ PARAM_TILT_MANUAL_SPEED_DEFAULT = "100";                                //!< TILT Manual Speed in 0.01 degree mm/s
     literal System::String^ PARAM_TILT_MANUAL_ACC_DEFAULT = "100";                                  //!< TILT Manual Acc in 0.01 degree /ss
     literal System::String^ PARAM_TILT_MANUAL_DEC_DEFAULT = "100";                                  //!< TILT Manual Dec in 0.01 degree /ss
-    literal System::String^ PARAM_TILT_HOME_SPEED_DEFAULT = "100";                                  //!< TILT Home Speed in 0.01 degree degree/ss
+    literal System::String^ PARAM_TILT_HOME_SPEED_DEFAULT = "200";                                  //!< TILT Home Speed in 0.01 degree degree/ss
     literal System::String^ PARAM_TILT_HOME_ACC_DEFAULT = "100";                                    //!< TILT Home Acc in 0.01 degree degree/ss
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_SLIDE = "SLIDE_CALIBRATION";                                       //!< This is the SLIDE Motor parameter section
     literal System::String^ PARAM_SLIDE_COMMENT = "SLIDE_CALIBRATION calibration data";
     literal System::String^ PARAM_SLIDE_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder SLIDE Motor position (for initial zero setting)
-    literal System::String^ PARAM_SLIDE_AUTO_SPEED_DEFAULT = "50";                                 //!< SLIDE Auto Speed in 0.1 degree/s
-    literal System::String^ PARAM_SLIDE_AUTO_ACC_DEFAULT = "20";                                    //!< SLIDE Auto Acc in 0.1 degree/ss
-    literal System::String^ PARAM_SLIDE_AUTO_DEC_DEFAULT = "20";                                    //!< SLIDE Auto Dec in 0.1 degree/ss
-    literal System::String^ PARAM_SLIDE_MANUAL_SPEED_DEFAULT = "50";                               //!< SLIDE Manual Speed in 0.1 degree/s
-    literal System::String^ PARAM_SLIDE_MANUAL_ACC_DEFAULT = "20";                                  //!< SLIDE Manual Acc in 0.1 degree/ss
-    literal System::String^ PARAM_SLIDE_MANUAL_DEC_DEFAULT = "20";                                  //!< SLIDE Manual Dec in 0.1 degree/ss
-    literal System::String^ PARAM_SLIDE_HOME_SPEED_DEFAULT = "50";                                 //!< SLIDE Home Speed in 0.1 degree/ss
-    literal System::String^ PARAM_SLIDE_HOME_ACC_DEFAULT = "20";                                    //!< SLIDE Home Acc in 0.1 degree/ss
+    literal System::String^ PARAM_SLIDE_AUTO_SPEED_DEFAULT = "800";                                  //!< SLIDE Auto Speed in 0.01 degree/s
+    literal System::String^ PARAM_SLIDE_AUTO_ACC_DEFAULT = "400";                                    //!< SLIDE Auto Acc in 0.01 degree/ss
+    literal System::String^ PARAM_SLIDE_AUTO_DEC_DEFAULT = "400";                                    //!< SLIDE Auto Dec in 0.01 degree/ss
+    literal System::String^ PARAM_SLIDE_MANUAL_SPEED_DEFAULT = "400";                                //!< SLIDE Manual Speed in 0.01 degree/s
+    literal System::String^ PARAM_SLIDE_MANUAL_ACC_DEFAULT = "400";                                  //!< SLIDE Manual Acc in 0.01 degree/ss
+    literal System::String^ PARAM_SLIDE_MANUAL_DEC_DEFAULT = "400";                                  //!< SLIDE Manual Dec in 0.01 degree/ss
+    literal System::String^ PARAM_SLIDE_HOME_SPEED_DEFAULT = "100";                                  //!< SLIDE Home Speed in 0.01 degree/ss
+    literal System::String^ PARAM_SLIDE_HOME_ACC_DEFAULT = "100";                                    //!< SLIDE Home Acc in 0.01 degree/ss
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
@@ -225,7 +245,15 @@ public:
             PARAM_OBSTACLE_GAIN_DEFAULT,
             PARAM_OBSTACLE_SENSITIVITY_DEFAULT,
             PARAM_OBSTACLE_RECAL_TIME_DEFAULT,
-            PARAM_OBSTACLE_SENS_ENA_DEFAULT,            
+            PARAM_OBSTACLE_SENS_ENA_DEFAULT,  
+            PARAM_OBSTACLE_TH_CS1_DEFAULT,
+            PARAM_OBSTACLE_TH_CS2_DEFAULT,
+            PARAM_OBSTACLE_TH_CS3_DEFAULT,
+            PARAM_OBSTACLE_TH_CS4_DEFAULT,
+            PARAM_OBSTACLE_TH_CS5_DEFAULT,
+            PARAM_OBSTACLE_TH_CS6_DEFAULT,
+            PARAM_OBSTACLE_TH_CS7_DEFAULT,
+            PARAM_OBSTACLE_TH_CS8_DEFAULT
             }),
 
             CONFIG_FILE_ITEM(PARAM_BODY, PARAM_BODY_COMMENT, CONFIG_FILE_DEFAULT{
@@ -374,6 +402,59 @@ public:
             PARAM_FILTER_CALIBRATION_LIGHTON_DEFAULT
             }),
     
+        }
+    );
+};
+
+ref class CompressorConfig
+{
+public:
+
+  
+    literal System::String^ FILENAME = "CompressorCalibration.cnf";
+    literal int     FILE_REVISION = 1;
+
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_POSITION_CALIBRATION = "POSITION_CALIBRATION";
+    literal System::String^ PARAM_POSITION_CALIBRATION_COMMENT = "Defines the Position calibration data";
+    literal int     PARAM_POSITION_CALIBRATION_OFFSET = 0;
+    literal int     PARAM_POSITION_CALIBRATION_GAIN = 1;
+    literal int     PARAM_THICKNESS_CORRECTION = 2;
+
+    literal System::String^ PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT = "2932"; 
+    literal System::String^ PARAM_POSITION_CALIBRATION_GAIN_DEFAULT = "1703";
+    literal System::String^ PARAM_THICKNESS_CORRECTION_DEFAULT = "-120";
+    
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_FORCE_CALIBRATION = "FORCE_CALIBRATION";
+    literal System::String^ PARAM_FORCE_CALIBRATION_COMMENT = "Defines the Force calibration data";
+    literal int     PARAM_FORCE_CALIBRATION_OFFSET = 0;
+    literal int     PARAM_FORCE_CALIBRATION_GAIN = 1;
+    literal int     PARAM_FORCE_LIMIT = 2;
+    literal int     PARAM_FORCE_TARGET = 3;
+    
+
+    literal System::String^ PARAM_FORCE_CALIBRATION_OFFSET_DEFAULT = "385";
+    literal System::String^ PARAM_FORCE_CALIBRATION_GAIN_DEFAULT = "1511";
+    literal System::String^ PARAM_FORCE_LIMIT_DEFAULT = "200";
+    literal System::String^ PARAM_FORCE_TARGET_DEFAULT = "150";
+
+    static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
+        CONFIG_FILE_DESCRIPTOR
+        {
+            CONFIG_FILE_ITEM(PARAM_POSITION_CALIBRATION, PARAM_POSITION_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT,
+            PARAM_POSITION_CALIBRATION_GAIN_DEFAULT,    
+            PARAM_THICKNESS_CORRECTION_DEFAULT
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_FORCE_CALIBRATION, PARAM_FORCE_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FORCE_CALIBRATION_OFFSET_DEFAULT,
+            PARAM_FORCE_CALIBRATION_GAIN_DEFAULT,
+            PARAM_FORCE_LIMIT_DEFAULT,
+            PARAM_FORCE_TARGET_DEFAULT,            
+            }),
+
         }
     );
 };

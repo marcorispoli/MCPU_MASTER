@@ -11,7 +11,84 @@ public:
 
 #define PCB302_GET_STATUS_SYSTEM_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
 
+	/// <summary>
+	///		This is the Device STATUS Register implementation 
+	/// </summary>
+	enum class StatusRegisters {
+		SYSTEM_STATUS_REGISTER = 0, //!> This is the System Status register index
+		SYSTEM_ERROR_REGISTER,
+		PADDLE_STATUS_REGISTER,
+		RAW_PADDLE_STATUS_REGISTER		
+	};
 
+	#define PCB302_GET_SYSTEM_MANUAL_SERVO_UP(reg)			(bool)	(reg->d0 & 0x01)
+	#define PCB302_GET_SYSTEM_MANUAL_SERVO_DWN(reg)			(bool)	(reg->d0 & 0x02)
+	#define PCB302_GET_SYSTEM_PEDAL_UP(reg)					(bool)	(reg->d0 & 0x04)
+	#define PCB302_GET_SYSTEM_PEDAL_DWN(reg)				(bool)	(reg->d0 & 0x08)
+
+	#define PCB302_GET_SYSTEM_IDLE(reg)						(bool)	(reg->d1 & 0x01)
+	#define PCB302_GET_SYSTEM_MANUAL_ACTIVATION(reg)		(bool)	(reg->d1 & 0x02)
+	#define PCB302_GET_SYSTEM_PEDAL_ACTIVATION(reg)			(bool)	(reg->d1 & 0x04)
+	#define PCB302_GET_SYSTEM_COMMAND_ACTIVATION(reg)		(bool)	(reg->d1 & 0x08)
+	#define PCB302_GET_SYSTEM_UPWARD_DIRECTION(reg)			(bool)	(reg->d1 & 0x10)
+	#define PCB302_GET_SYSTEM_DOWNWARD_DIRECTION(reg)		(bool)	(reg->d1 & 0x20)
+	#define PCB302_GET_SYSTEM_UNLOCK_ACTIVATION(reg)		(bool)	(reg->d1 & 0x40)
+	#define PCB302_GET_SYSTEM_FAULT(reg)					(bool)	(reg->d1 & 0x80)
+
+	#define PCB302_GET_SYSTEM_CMP_ENA(reg)					(bool)	(reg->d2 & 0x01)
+	#define PCB302_GET_SYSTEM_CMP_ON(reg)					(bool)	(reg->d2 & 0x02)
+	#define PCB302_GET_SYSTEM_ZERO_COMPRESSION(reg)			(bool)	(reg->d2 & 0x04)
+	#define PCB302_GET_SYSTEM_SMARTUP_TARGET(reg)			(bool)	(reg->d2 & 0x08)
+	#define PCB302_GET_SYSTEM_FORCE_TARGET(reg)				(bool)	(reg->d2 & 0x10)
+	#define PCB302_GET_SYSTEM_LIMIT_COMPRESSION(reg)		(bool)	(reg->d2 & 0x20)
+
+	#define PCB302_GET_PADDLE_POSITION_LOW(reg)				(reg->d0)
+	#define PCB302_GET_PADDLE_POSITION_HIGH(reg)			(reg->d1&0x0F)
+	#define PCB302_GET_PADDLE_FORCE_LOW(reg)				((reg->d1&0xF0) >> 4)
+	#define PCB302_GET_PADDLE_FORCE_HIGH(reg)				(reg->d2)
+
+	#define PCB302_GET_PADDLE_CODE(reg)						(reg->d3)
+
+	/// <summary>
+	///	 This is the Device DATA Register implementation 
+	/// </summary>
+	enum class DataRegisters {
+		POSITION_LIMIT_DATA_REGISTER = 0, 
+		OPTIONS_DATA_REGISTER, 
+	};
+	#define PCB302_POSITION_LIMIT_DATA_LOW(reg, val)					reg->d0 = (unsigned char) val;
+	#define PCB302_POSITION_LIMIT_DATA_HIGH(reg,stat)					reg->d1 = (unsigned char) (val>>8);
+
+	#define PCB302_OPTIONS_DATA_POSITION_CALIBRATION(reg,stat)				reg->D0(stat, 0x1) 
+	#define PCB302_OPTIONS_DATA_FORCE_CALIBRATION(reg,stat)					reg->D0(stat, 0x2) 
+	#define PCB302_OPTIONS_DATA_MASTER_ENABLE(reg,stat)						reg->D0(stat, 0x4) 
+	#define PCB302_OPTIONS_DATA_ZERO_COMPRESSION(reg,stat)					reg->D0(stat, 0x8) 
+
+
+	/// <summary>
+	/// This is the device protocol Parameters registers implementation 
+	/// </summary>
+	enum class ParamRegisters {
+		POSITION_PARAM_REGISTER = 0, 
+		FORCE_CALIBRATION_PARAM_REGISTER,
+		COMPRESSION_PARAM_REGISTER,		
+		UPWARD_PARAM_REGISTER,		
+		DOWNWARD_PARAM_REGISTER,			
+	};
+
+	
+	/// <summary>	
+	/// This enumeration class defines the Indexes of the Command Execution
+	///
+	/// </summary>
+	enum class Commandregister {
+		ABORT_COMMAND = 0, //!< Abort Command (mandatory as for device protocol)
+		SET_TRIMMERS_COMMAND,
+		
+		SET_COMPRESSION,
+		SET_UNLOCK,
+	};
+	#define PCB302_SET_UNLOCK_COMMAND (System::Byte) Commandregister::SET_UNLOCK, (System::Byte) (0),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0 //!< This is the SET_POSITIONER_COMMAND byte frame
 
 	PCB302() : CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE")
 	{
@@ -65,7 +142,11 @@ public:
 	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
 	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
 	static inline bool isCompressing(void) { return compression_executing; }
-	static void setCompressorUnlock(void) {}; //!< This function unlocks the compression
+	static inline bool getCompressionActivationStatus(void) { return downward_activation_status; }
+
+	static inline void setMasterEna(bool stat) { PCB302_OPTIONS_DATA_MASTER_ENABLE(options_data_register, stat); }
+	static inline void setPositionLimit(unsigned short val) { PCB302_POSITION_LIMIT_DATA_LOW(position_limit_data_register, val); PCB302_POSITION_LIMIT_DATA_HIGH(position_limit_data_register, val);}
+	static void setCompressorUnlock(void) { if (!device->isSimulatorMode()) device->command(PCB302_SET_UNLOCK_COMMAND, 30); } //!< This function unlocks the compression
 
 public:
 	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
@@ -77,12 +158,31 @@ public:
 protected: 	
 	void runningLoop(void) override;
 	void demoLoop(void) override;
+	bool configurationLoop(void) override;
 
 private: 
 	static paddleCodes detected_paddle;				//!< This is the current detected paddle
-	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm
-	static unsigned short compression_force = 0;	//!< Compression force in N
+	static int thickness_correction;
+	static unsigned short current_paddle_position;  //!< Current paddle position 
+	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm (0 if the compression_on should be false)
+
+	static unsigned short compression_force = 0;	//!< Evaluated compression force ( 0 if the compression_on should be false)
+	static unsigned short current_force = 0;		//!< Force as received from the device
+
+	static bool downward_activation_status = false; //!< A downward activation has been detected
 	static bool compression_executing = false;		//!< A compression is executing
+	static bool compression_on = false;				//!< A compression is detected
+
+	static Register^ options_data_register = gcnew Register();
+	static Register^ position_limit_data_register = gcnew Register();
+
+	
+
+
+
+	void handleSystemStatusRegister(void);
+	void handlePaddleStatusRegister(void);
+	void evaluateEvents(void);
 
 
 //_________________________________________________________________________// 

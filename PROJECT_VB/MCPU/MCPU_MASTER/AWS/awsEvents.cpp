@@ -178,6 +178,22 @@ void awsProtocol::EVENT_XraySequenceCompleted(void) {
 
 }
 
+
+/// <summary>
+/// This Event is sent to AWS whenever the gantry requestes for a power-off sequence
+/// 
+/// </summary>
+/// <param name=""></param>
+void awsProtocol::EVENT_Poweroff(void) {
+    const std::lock_guard<std::mutex> lock(event_mutex);
+    if (!device->event_server) return;
+
+    device->event_counter++;
+
+    String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Poweroff %>";
+    device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+}
+
 /// <summary>
 /// This is the EVENT the Gantry shall generate when a delayed command completes.
 /// 

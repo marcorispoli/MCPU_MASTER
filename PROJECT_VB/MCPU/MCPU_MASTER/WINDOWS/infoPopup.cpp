@@ -71,12 +71,15 @@ void infoPopupForm::open(Form^ parent_form, int msg, System::String^ extra) {
 	// Set the Content space with the list of active errors
 	infoContent->Text = translated_info_message->content;
 	if(extra != nullptr) infoContent->Text += "\n" + extra;
+	
 	try {
 		this->ShowDialog(parent);
 		window = static_cast<HWND>(Handle.ToPointer());
 	}
 	catch (...) {
-		LogClass::logInFile("infoPopupForm::open() exception ");
+		infoPanelTimer->Stop();
+		open_status = false;
+		LogClass::logInFile("infoPopupForm::open() Exception! ");
 	}
 	
 }

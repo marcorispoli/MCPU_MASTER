@@ -58,6 +58,8 @@ void ServiceForm::initServiceStatus(void) {
 	// Activate the Operating Status  manual modes
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
+	PCB302::setCompressorUnlock();
+
 	// Start the startup session	
 	serviceTimer->Start();	
 	

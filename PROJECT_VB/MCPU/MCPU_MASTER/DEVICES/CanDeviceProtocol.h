@@ -216,7 +216,8 @@ public:
 	bool command(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo);
 	bool isCommandCompleted(void);
 	bool isCommandError(void) { return (command_error != (unsigned char) CommandRegisterErrors::COMMAND_NO_ERROR); }
-	
+	bool inline isSimulatorMode(void) { return simulator_mode; }
+
 protected:
 	virtual void runningLoop(void) ;
 	virtual void demoLoop(void) { return; };

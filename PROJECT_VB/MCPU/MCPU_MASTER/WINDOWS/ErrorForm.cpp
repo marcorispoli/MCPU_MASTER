@@ -90,8 +90,17 @@ void ErrorForm::open(Form^ parent_form) {
 	// Clears the index of the last occurred error
 	Notify::clrNewError();
 
-	this->ShowDialog(parent);
-	window = static_cast<HWND>(Handle.ToPointer());
+	try {
+		window = static_cast<HWND>(Handle.ToPointer());
+		this->ShowDialog(parent);		
+		window = static_cast<HWND>(Handle.ToPointer());
+	}
+	catch (...) {
+		open_status = false;
+		errorPanelTimer->Stop();
+		LogClass::logInFile("ErrorForm::open Exception!");
+	}
+
 }
 
 

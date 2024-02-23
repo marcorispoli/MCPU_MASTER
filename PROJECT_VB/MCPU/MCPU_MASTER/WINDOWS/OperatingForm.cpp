@@ -266,12 +266,22 @@ void OperatingForm::initOperatingStatus(void) {
 	PCB303::setAutoCollimationMode();
 
 	// Sets the current Filter selector to manual mode
-	PCB315::setFilterAutoMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
+	PCB315::setMirrorMode(false);
+	//PCB315::setFilterAutoMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
 
 	Notify::clrInstant();
 
 	// Activate the Operating Status  manual modes
-	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_OPERATING_STATUS_MANUAL_ROTATION);
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_STANDARD_STATUS_MANUAL_ROTATION);
+
+	// initialize the evaluation function
+	evaluateCompressorStatus(true);
+
+	// init of the slide status view
+	evaluateSlideStatus(true);
+
+	// init of the projection status view
+	evaluateProjectionStatus(true);
 
 	// Start the startup session	
 	operatingTimer->Start();		
@@ -306,8 +316,9 @@ void OperatingForm::onArmTargetChangedCallback(int id, int target){
 }
 
 
-void OperatingForm::evaluateProjectionStatus(void) {
+void OperatingForm::evaluateProjectionStatus(bool init) {
 	static ProjectionOptions::options projection = ProjectionOptions::options::RESERVED_FOR_INIT;
+	if(init) projection = ProjectionOptions::options::RESERVED_FOR_INIT;
 
 	if (projection != ArmMotor::getSelectedProjectionCode()) {
 		projection = ArmMotor::getSelectedProjectionCode();
@@ -340,10 +351,12 @@ void OperatingForm::evaluateXrayStatus(void) {
 
 		if (stat == 0) {
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
 			awsProtocol::EVENT_ReadyForExposure(true, (unsigned short)0);
 		}
 		else {
 			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
 			if (stat == 1) awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);
 			else  awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
 		}
@@ -438,16 +451,19 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 #define FORCE_ENABLED_NOT_COMPRESSED 3
 #define FORCE_ENABLED_COMPRESSED 4
 
-void OperatingForm::evaluateCompressorStatus(void) {
-	
+void OperatingForm::evaluateCompressorStatus(bool init) {
+
+	static bool colli_light = false;
 	static int paddle_status = 255;
 	static int thick_status = 255;
 	static int force_status = 255;
+
 	int cur_paddle;
 	int cur_thick;
 	int cur_force;
 	PCB302::paddleCodes paddle;
 	int force, thick;
+
 
 	// used to send the EVENT_Compressor() to AWS
 	static int event_force = 0;
@@ -458,25 +474,42 @@ void OperatingForm::evaluateCompressorStatus(void) {
 	thick = PCB302::getThickness();
 	paddle = PCB302::getDetectedPaddleCode();
 	
+	if (colli_light != PCB302::getCompressionActivationStatus()) {
+		colli_light = PCB302::getCompressionActivationStatus();
+
+		// Activates the mirror (not during initialization)
+		if ((colli_light) && (!init)) PCB315::setMirrorMode(true);
+	}
+
+
 	// Evaluates if the force or the thickness is changed:
 	// the evaluation is performed every 1 seconds about.	
-	if (!event_compressor_timer) {
+	if (init) {
 		event_compressor_timer = 10;
-		bool event_compressor = false;
-
-		if (abs(force - event_force) > 5) {
-			event_force = force;
-			event_compressor = true;
-		}
-		if (abs(thick - event_thickness) > 2) {
-			event_thickness = thick;
-			event_compressor = true;
-		}
-
-		// Signals to AWS the change event
-		if (event_compressor) awsProtocol::EVENT_Compressor();
+		event_thickness = thick;
+		event_force = force;
 	}
-	else event_compressor_timer--;
+	else {
+		if (event_compressor_timer) event_compressor_timer--;
+		else
+		{
+			event_compressor_timer = 10;
+			bool event_compressor = false;
+
+			if (abs(force - event_force) > 5) {
+				event_force = force;
+				event_compressor = true;
+			}
+			if (abs(thick - event_thickness) > 2) {
+				event_thickness = thick;
+				event_compressor = true;
+			}
+
+			// Signals to AWS the change event
+			if (event_compressor) awsProtocol::EVENT_Compressor();
+		}
+	}
+	
 
 	if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_DISABLE) {
 		cur_paddle = PADDLE_DISABLED;
@@ -630,8 +663,9 @@ void OperatingForm::evaluateDoorStatus(void) {
 	
 }
 
-void OperatingForm::evaluateSlideStatus(void) {
+void OperatingForm::evaluateSlideStatus(bool init) {
 	static int stat = 255;
+	if (init) stat = 255;
 
 	int cur_stat;
 	if (SlideMotor::device->getCurrentPosition() < 500) cur_stat = 0;
@@ -654,13 +688,13 @@ void OperatingForm::operatingStatusManagement(void) {
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 	
-	evaluateCompressorStatus();
+	evaluateCompressorStatus(false);
 	evaluateCompressorReleaseStatus();
 	evaluateCollimatorStatus();
 	evaluateMagStatus();
 	evaluateDoorStatus();
-	evaluateSlideStatus();
-	evaluateProjectionStatus();
+	evaluateSlideStatus(false);
+	evaluateProjectionStatus(false);
 	evaluateDigitDisplays();
 
 
@@ -930,7 +964,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 	}
 	else body = false;
 
-	/*
+	
 	if (VerticalMotor::device->isRunning()) {
 		timer = TMO;
 		if (!vertical) {
@@ -950,7 +984,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 		return;
 	}
 	else vertical = false;
-	*/
+	
 
 	if (SlideMotor::device->isRunning()) {
 		timer = TMO;

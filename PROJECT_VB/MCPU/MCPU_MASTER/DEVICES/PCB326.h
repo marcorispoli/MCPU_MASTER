@@ -53,6 +53,8 @@ ref class PCB326 : public CanDeviceProtocol
 	/// </summary>
 	private: enum class ParamRegisters {
 		SENSITIVITY_PARAMETER_REGISTER = 0, //!> This is the Ou
+		CS1_4_THRESHOLD_PARAMETER_REGISTER,
+		CS5_8_THRESHOLD_PARAMETER_REGISTER,
 	};
 
 	#define SENS_CS1 0x1
@@ -177,6 +179,16 @@ private:
 
 	static CommandRegister current_command = CommandRegister::NO_COMMAND;
 	static unsigned char cs_status = 0;
+
+	static unsigned char cs1_th;
+	static unsigned char cs2_th;
+	static unsigned char cs3_th;
+	static unsigned char cs4_th;
+	static unsigned char cs5_th;
+	static unsigned char cs6_th;
+	static unsigned char cs7_th;
+	static unsigned char cs8_th;
+
 
 };
 

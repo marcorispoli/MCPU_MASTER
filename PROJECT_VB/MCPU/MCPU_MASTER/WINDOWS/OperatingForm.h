@@ -46,13 +46,13 @@ public:
 	void operatingStatusManagement(void);
 	void evaluateXrayStatus(void);
 	void evaluateReadyWarnings(bool reset);
-	void evaluateCompressorStatus(void);
+	void evaluateCompressorStatus(bool init);
 	void evaluateCompressorReleaseStatus(void);
 	void evaluateCollimatorStatus(void);
 	void evaluateMagStatus(void);
 	void evaluateDoorStatus(void);
-	void evaluateSlideStatus(void);
-	void evaluateProjectionStatus(void);
+	void evaluateSlideStatus(bool init);
+	void evaluateProjectionStatus(bool init);
 	void evaluatePopupPanels(void);
 	void evaluateDigitDisplays(void);
 	void onArmTargetChangedCallback(int id, int target);

@@ -258,7 +258,6 @@ void PCB303::runningLoop(void) {
     static bool commerr = false;
     
     
-
     // Test the communication status
     if (commerr != isCommunicationError()) {
         commerr = isCommunicationError();

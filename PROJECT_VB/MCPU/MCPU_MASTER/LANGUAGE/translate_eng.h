@@ -106,6 +106,9 @@
 "I00017", Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE, "Manual Motor Activation", "The manual activation is disabled for safety",
 "I00018", Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE, "Manual Motor Activation", "The manual activation is disabled for pending errors",
 
+"I00019", Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION, "Power Off Request", "Proceed with the System Power Off?",
+
+
 
 /* -------- LABELS ---------------------------*/
 

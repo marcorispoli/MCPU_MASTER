@@ -107,7 +107,7 @@ void ServiceForm::initRotationToolPanel(void) {
 	rotationToolSlideButton->BackgroundImage = SLIDE_IMAGE;
 	
 	manual_mode = false;
-	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_STANDARD_STATUS_MANUAL_ROTATION);
 
 
 	rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
@@ -368,7 +368,7 @@ System::Void ServiceForm::rotationTool_slide_Click(System::Object^ sender, Syste
 	rotationToolSelectAngle2->Location = System::Drawing::Point(53, 152);
 
 	rotationToolSelectAngle3->Show(); // 90°
-	rotationToolSelectAngle3->Tag = "90";
+	rotationToolSelectAngle3->Tag = "89";
 	rotationToolSelectAngle3->Location = System::Drawing::Point(350, 336);
 
 	rotationToolSelectAngle4->Hide(); 
@@ -466,7 +466,7 @@ System::Void ServiceForm::rotationTool_manual_Click(System::Object^ sender, Syst
 	if(manual_mode) rotationToolManualButton->BackgroundImage = MANUAL_SELECTED_IMAGE;
 	else {
 		rotationToolManualButton->BackgroundImage = MANUAL_IMAGE;
-		Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+		Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_STANDARD_STATUS_MANUAL_ROTATION);
 	}
 
 	// Resets the selection

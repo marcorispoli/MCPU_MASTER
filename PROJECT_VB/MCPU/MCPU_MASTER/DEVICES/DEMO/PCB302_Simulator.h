@@ -7,7 +7,7 @@ ref class DemoPcb302
 {
 public:
     literal System::String^ FILENAME = "DemoPcb302.cnf";
-    literal int     FILE_REVISION = 1;
+    literal int     FILE_REVISION = 2;
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_PADDLE_STAT = "PADDLE";
@@ -25,6 +25,10 @@ public:
     literal System::String^ PARAM_COMPRESSING = "COMPRESSING";
     literal System::String^ PARAM_COMPRESSING_COMMENT = "Is compressing";
     literal System::String^ PARAM_COMPRESSING_DEFAULT = "0";
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_DOWNWARD = "DOWNWARD_ACTIVATION";
+    literal System::String^ PARAM_DOWNWARD_COMMENT = "Pedal Compression activated";
+    literal System::String^ PARAM_DOWNWARD_DEFAULT = "0";
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
@@ -43,6 +47,10 @@ public:
 
             CONFIG_FILE_ITEM(PARAM_COMPRESSING, PARAM_COMPRESSING_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_COMPRESSING_DEFAULT,
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_DOWNWARD, PARAM_DOWNWARD_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_DOWNWARD_DEFAULT,
             }),
 
         

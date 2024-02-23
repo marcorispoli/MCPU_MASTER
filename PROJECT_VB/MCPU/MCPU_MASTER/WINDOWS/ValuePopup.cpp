@@ -1,5 +1,6 @@
 #include "ValuePopup.h"
 #include "gantry_global_status.h"
+#include "Log.h"
 
 #define FORM_BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "Icons\\DIALOG_BACKGROUND.PNG")
 
@@ -49,7 +50,13 @@ void ValuePopupForm::open(Form^ parent_form, Image^ icon, System::String^ title,
 	valueContent->Text = "";	
 	
 	// The thread stops here until the Dialog is closed (Hide())
-	this->ShowDialog(parent);
+	try {
+		this->ShowDialog(parent);		
+	}
+	catch (...) {		
+		open_status = false;
+		LogClass::logInFile("ValuePopupForm::open() Exception! ");
+	}
 	
 }
 
@@ -59,7 +66,6 @@ void ValuePopupForm::retitle(Image^ icon, System::String^ title, System::String^
 	valueUnit->Text = unit;
 	valueContent->Text = "";
 }
-
 
 
 void ValuePopupForm::content(System::String^ val) {

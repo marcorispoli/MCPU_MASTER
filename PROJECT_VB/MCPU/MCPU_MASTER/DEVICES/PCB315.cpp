@@ -108,6 +108,15 @@ void PCB315::manageFilterSelection(void) {
         return;
 
     case filterWorkingMode::FILTER_MIRROR_MODE:
+        
+        /// DA MODIFICARE----------------------------------------
+        // Executes a pending light activation request
+        if (request_light_activation) {
+            request_light_activation = false;
+            command(PCB315_SET_LIGH_COMMAND(LightCommands::LIGHT_ON), 10);
+        }
+        return;
+        /// ----------------------------------------
 
         // If a command is executing skips 
         if (filter_status == FilterSlotCodes::FILTER_SELECTION_PENDING) return;
@@ -365,6 +374,8 @@ PCB315::FilterSlotCodes PCB315::filterAssignment(System::String^ assignment) {
 /// 
 /// <param name="code">The Filter (material) requested</param>
 void PCB315::setFilterAutoMode(filterMaterialCodes code) {
+    return;
+
     valid_filter_format = false;
 
     switch (code) {
@@ -402,6 +413,8 @@ void PCB315::setFilterAutoMode(filterMaterialCodes code) {
 /// 
 /// <param name=""></param>
 void PCB315::setFilterAutoMode(void) {
+    return;
+
     valid_filter_format = false;
     filter_working_mode = filterWorkingMode::FILTER_AUTO_MODE;    
 }
@@ -421,6 +434,7 @@ void PCB315::setFilterAutoMode(void) {
 /// 
 /// <param name="code">The Filter (material) requested</param>
 void PCB315::setFilterManualMode(filterMaterialCodes code) {
+    return;
     valid_filter_format = false;
 
     switch (code) {
@@ -459,6 +473,7 @@ void PCB315::setFilterManualMode(filterMaterialCodes code) {
 /// 
 /// <param name=""></param>
 void PCB315::setFilterManualMode(void) {
+    return;
     valid_filter_format = false;
     filter_working_mode = filterWorkingMode::FILTER_MANUAL_MODE;
 }

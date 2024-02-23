@@ -61,18 +61,25 @@ ref class PCB301 :  public CanDeviceProtocol
 	private:enum class DataRegisters {
 		OUTPUTS_DATA_REGISTER = 0, //!> This is the Outputs Data register index
 	};
-	#define PCB301_OUTPUTS_DATA_POWER_LOCK(reg,stat)	reg->D0(stat, 0x1) 
+	#define PCB301_OUTPUTS_DATA_POWER_LOCK(reg,stat)				reg->D0(stat, 0x1) 
 	#define PCB301_OUTPUTS_DATA_MOTOR_POWER_SUPPLY_ENABLE(reg,stat)	reg->D0(stat, 0x2)
-	#define PCB301_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE(reg,stat)	reg->D0(stat, 0x4)
-	#define PCB301_OUTPUTS_DATA_COMPRESSOR_ENABLE(reg,stat)	reg->D0(stat, 0x8)
+	#define PCB301_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE(reg,stat)		reg->D0(stat, 0x4)
+	#define PCB301_OUTPUTS_DATA_COMPRESSOR_ENABLE(reg,stat)			reg->D0(stat, 0x8)
 	#define PCB301_OUTPUTS_DATA_COMPRESSOR_CALIBRATION(reg,stat)	reg->D0(stat, 0x10)
-	#define PCB301_OUTPUTS_DATA_XRAY_ENA(reg,stat)	reg->D0(stat, 0x20)
+	#define PCB301_OUTPUTS_DATA_XRAY_ENA(reg,stat)					reg->D0(stat, 0x20)
 	
 
+	#define PCB301_OUTPUTS_DATA_BURNING_STAT(reg,stat)	reg->D1(stat, 0x1) 
 	#define PCB301_OUTPUTS_DATA_BUZZER_STAT(reg,stat)	reg->D1(stat, 0x2) 
 	#define PCB301_OUTPUTS_DATA_MANUAL_BUZZER(reg,stat)	reg->D1(stat, 0x4) 
-	#define PCB301_OUTPUTS_DATA_MAN_ROT_LED(reg,stat)	reg->D3(stat, 0x20) 
-	#define PCB301_OUTPUTS_DATA_KEEP_ALIVE(reg,stat)	reg->D3(stat, 0x80) 
+	#define PCB301_OUTPUTS_DATA_XRAY_LED(reg,stat)		reg->D1(stat, 0x8) 
+	#define PCB301_OUTPUTS_DATA_XRAY_LAMP1(reg,stat)	reg->D1(stat, 0x10) 
+	#define PCB301_OUTPUTS_DATA_XRAY_LAMP2(reg,stat)	reg->D1(stat, 0x20) 
+	#define PCB301_OUTPUTS_DATA_MAN_ROT_LED(reg,stat)	reg->D1(stat, 0x40) 
+	
+	#define PCB301_OUTPUTS_DATA_POWER_OFF(reg,stat)		reg->D3(stat, 0x40) 
+		#define PCB301_GET_OUTPUTS_DATA_POWER_OFF(reg)	(reg->d3 & 0x40) 
+	#define PCB301_OUTPUTS_DATA_KEEP_ALIVE(reg,stat)	reg->D3(stat, 0x80)
 
 public:
 
@@ -132,6 +139,7 @@ public:
 	inline static void set_manual_buzzer(bool stat) { PCB301_OUTPUTS_DATA_MANUAL_BUZZER(outputs_data_register,stat); }
 	inline static void set_activation_buzzer(bool stat) { PCB301_OUTPUTS_DATA_BUZZER_STAT(outputs_data_register, stat); }
 	inline static void set_manual_rot_ena_led(bool stat) { PCB301_OUTPUTS_DATA_MAN_ROT_LED(outputs_data_register, stat); }
+	inline static void set_power_off(bool stat) { PCB301_OUTPUTS_DATA_POWER_OFF(outputs_data_register, stat); }
 
 	
 
@@ -174,6 +182,7 @@ private:
 	static bool button_body_ccw = false;
 	static bool button_slide_up_stat = false;
 	static bool button_slide_down_stat = false;
+	
 
 protected: 	
 	    void runningLoop(void) override;

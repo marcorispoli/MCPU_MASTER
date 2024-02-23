@@ -58,24 +58,17 @@ bool ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
 }
 
 
-/// <summary>
-/// The ArmMotor class override this function in order to 
-/// handle the Isocentric automatic activation code
-/// 
-/// </summary>
-/// <param name=LABEL_ERROR></param>
-void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
+void ArmMotor::completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) {
+    if (current_command != MotorCommands::MOTOR_AUTO_POSITIONING) return;
 
-    if (error != MotorCompletedCodes::COMMAND_SUCCESS) {
+    // Invalidate the target if the command should fails
+    if (term_code != MotorCompletedCodes::COMMAND_SUCCESS) valid_target = false;
 
-        // Invalidate the current target
-        valid_target = false;
-    }
 
     // If the C-ARM activation is not a Isocentric mode (or is terminated in error) then the command termines here
     // end the command_completed event is generated 
-    if ((!iso_activation_mode) || (error != MotorCompletedCodes::COMMAND_SUCCESS)) {
-        command_completed_event(getCommandId(), (int)error);
+    if ((!iso_activation_mode) || (term_code != MotorCompletedCodes::COMMAND_SUCCESS)) {
+        command_completed_event(id, (int) term_code);
         return;
     }
 
@@ -83,12 +76,12 @@ void ArmMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) 
     // The C-ARM position is expressed in cents of degrees;
     // The Vertical Arm position is espressed in millimeters
 
-    double init_h = - 1 *COMPRESSION_PLANE_MM * cos((double) getPreviousPosition() * 3.14159 / (double)18000);
+    double init_h = -1 * COMPRESSION_PLANE_MM * cos((double)getPreviousPosition() * 3.14159 / (double)18000);
     double end_h = -1 * COMPRESSION_PLANE_MM * cos((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
-    int delta_h =  (int) init_h - (int) end_h;
-    if (!VerticalMotor::activateIsocentricCorrection(getCommandId(), delta_h)) {
+    int delta_h = (int)init_h - (int)end_h;
+    if (!VerticalMotor::activateIsocentricCorrection(id, delta_h)) {
         // The target is not invalidated because the rotation angle is still valid!
-        device->command_completed_event(getCommandId(), (int)MotorCompletedCodes::COMMAND_SUCCESS);
+        device->command_completed_event(id, (int)MotorCompletedCodes::COMMAND_SUCCESS);
         //command_completed_event(getCommandId(), (int) VerticalMotor::device->getCommandCompletedCode());
     }
     return;
@@ -188,10 +181,7 @@ void ArmMotor::faultCallback(bool errstat, bool data_changed, unsigned int error
         Notify::activate(Notify::messages::WARNING_ARM_DRIVER, driver_error);
     }
 
-    // If an attempt to activate the manual rotation is generated in fault condition an istant window will appear
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::ARM_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::ARM_ID);
-    if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+   
 
 }
 

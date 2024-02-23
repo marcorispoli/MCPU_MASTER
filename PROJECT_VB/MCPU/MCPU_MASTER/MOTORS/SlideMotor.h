@@ -21,13 +21,7 @@ protected:
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
 
     bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
-   
-
-    
-   
-    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
-
-    
+    void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override;
     
 
 private:

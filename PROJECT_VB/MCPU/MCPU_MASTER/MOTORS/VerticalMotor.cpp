@@ -6,33 +6,42 @@
 
 
 
-#define ROT_PER_MM ((double) 1/ (double) 1) //!< Defines the position user units in 1 mm
+#define ROT_PER_MM ((double) 1/ (double) 0.714 ) //!< Defines the position user units in mm
 
 #define LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI1) //!< Sets the limit photocell switch input
+#define UP_LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI1) //!< Sets the limit photocell switch input
+#define DOWN_LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI4) //!< Sets the limit photocell switch input
 #define ZERO_INPUT_MASK(x) (x & PD4_MOTOR_DI3) //!< Sets the Zero photocell switch input
 
-#define MAX_POSITION 575    //!< Defines the Maximum software position respect the zero setting point
-#define MIN_POSITION -355   //!< Defines the Minimum software position respect the zero setting point
+#define MAX_POSITION 764    //!< Defines the Maximum software position respect the zero setting point
+#define MIN_POSITION 100   //!< Defines the Minimum software position respect the zero setting point
 
 #define HOMING_ON_METHOD 22 //!< Zero setting approaching method starting with the Zero photocell ON
 #define HOMING_OFF_METHOD 21//!< Zero setting approaching method starting with the Zero photocell OFF
 
 /// <summary>
-/// This function test if the limit switch is activated
+/// This function test high and low limit switches.
 /// </summary>
 /// 
-/// The function reads the Input register before to test the related input.
-/// 
-/// The Limit switch activation status is determined when the photocell is not in light condition.
+/// The status of the internal variables high_photocell and low_photocell
+/// sre assigned after the function is called.
 /// 
 /// <param name=""></param>
-/// <returns>true if the limit photocell is detected activated</returns>
-bool VerticalMotor::testLimitSwitch(void) {
-    if (!blocking_readOD(OD_60FD_00)) return false; // reads the Motor GPIO inputs
+/// <returns></returns>
+void VerticalMotor::testLimitSwitch(void) {
+    return;
 
-    if (LIMIT_INPUT_MASK(getRxReg()->data)) return false; // Photocell in Light condition: limit swicth not activated
-    else return true;
+    if (!blocking_readOD(OD_60FD_00)) return ; // reads the Motor GPIO inputs
+
+    if (UP_LIMIT_INPUT_MASK(getRxReg()->data)) high_photocell = true;
+    else high_photocell = false;
+
+    if (DOWN_LIMIT_INPUT_MASK(getRxReg()->data)) low_photocell = true;
+    else low_photocell = false;
+ 
+    return;
 }
+
 
 /// <summary>
 /// The module override this function in order to initialize specific motor registers
@@ -96,7 +105,7 @@ bool VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// - Initializes the encoder initial position from the configuration file;
 /// 
 /// <param name=""></param>
-VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", MotorConfig::PARAM_VERTICAL, Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, ROT_PER_MM, true)
+VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", MotorConfig::PARAM_VERTICAL, Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, ROT_PER_MM, false)
 {
     // Sets +/- 5mm as the acceptable target range
     setTargetRange(5, 5);    
@@ -117,6 +126,9 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
     // Activate a warning condition is the motor should'n be initialized
     if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
     
+    // initializes the value of the detected photocells
+    high_photocell = false;
+    low_photocell = false;
 }
 
 /// <summary>
@@ -153,56 +165,36 @@ bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
 
 
 /// <summary>
-/// The modjule override this function in order to  handle the IDLE activities
+/// The module overrides this function in order to  handle the IDLE activities
 /// 
 /// </summary>
 /// 
-/// In Idle status the following activities are implemented:
-/// - test of the limit switch activation:
-///     - If the limit switch shouild be detected, an alarm is activated and the 
-///       encoder position is invalidated. The Gantry shall rest this condition only 
-///       with a zero setting procedure.
-/// - test of the manual activation:
-///     - The Gantry::getVerticalManualActivationIncrease() and Gantry::getVerticalManualActivationDecrease() 
-///        functions returns the system triggers for the manual activation.
-/// - test of the safety activation condition:
-///     - If the safety condition are not meet the motr cannot be activated.
-/// 
+/// In idle state, the module test limit switches 
+/// verifying that both cannot be in active status at the same time. 
+///
 /// <param name=""></param>
 /// <returns>
 /// - MotorCompletedCodes::COMMAND_PROCEED: a command can be processed;
 /// - Other values: a command cannot be processed due to a number of the reason.
 /// 
 /// </returns>
-CanOpenMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
+VerticalMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
     static bool error_limit_switch = false;
-    bool limit_status;
+   
     
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
-
+    
+    // Update the value of the fotocells
+    // Notify::activate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
+    // Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
     if (!simulator_mode) {
-        // If a limit switch should be engaged then the activation shall be disabled
-        limit_status = testLimitSwitch();
-        if (limit_status != error_limit_switch) {
-            error_limit_switch = limit_status;
-            if (error_limit_switch) {
-                Notify::activate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
-                Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
-
-                // Remove the zero condition
-                if (isEncoderInitialized()) {
-                    setEncoderInitStatus(false);
-                    MotorConfig::Configuration->setParam(MotorConfig::PARAM_VERTICAL, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-                    MotorConfig::Configuration->storeFile();
-                }
-
-            }
-            else  Notify::deactivate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
+        testLimitSwitch();
+        if (high_photocell && low_photocell) {
+            if(!error_limit_switch) Notify::activate(Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH);
+            error_limit_switch = true;
         }
-        if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
     }
-
-   
+    if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
 
     return ret_code;
 
@@ -235,47 +227,32 @@ bool VerticalMotor::startHoming(void) {
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
 }
 
-/// <summary>
-/// The module overrides this function in order to handle the automatic activation process.
-/// </summary>
-/// 
-/// During the automatic activation, the module checks:
-/// - the limit switch activation: the activation is istantly terminated;
-/// - the system enabled abort input: the current enabled abort inputs activation shall quickly stop the activation; 
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-VerticalMotor::MotorCompletedCodes  VerticalMotor::automaticPositioningRunningCallback(void) {
 
-    if(!simulator_mode){
-        // Test the limit switch to early stop the activation
-        if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+VerticalMotor::MotorCompletedCodes VerticalMotor::preparationCallback(MotorCommands current_command, int current_position, int target_position) {
+    if(current_command == MotorCommands::MOTOR_HOMING) return MotorCompletedCodes::COMMAND_PROCEED;
+    if (simulator_mode) return MotorCompletedCodes::COMMAND_PROCEED;
 
-    }
+    // test the limit switches: prevents to start in a wrong direction if the related photocell is activated
+    if ((getMotorDirection() == motor_rotation_activations::MOTOR_INCREASE) && high_photocell) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    if ((getMotorDirection() == motor_rotation_activations::MOTOR_DECREASE) && low_photocell) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    
+    return MotorCompletedCodes::COMMAND_PROCEED;
+
+}
+
+VerticalMotor::MotorCompletedCodes VerticalMotor::runningCallback(MotorCommands current_command, int current_position, int target_position) {
+    if(simulator_mode) return MotorCompletedCodes::COMMAND_PROCEED;
+    
+    // Test the limit switch to early stop the activation
+    testLimitSwitch();
+    if ((getMotorDirection() == motor_rotation_activations::MOTOR_INCREASE) && high_photocell) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
+    if ((getMotorDirection() == motor_rotation_activations::MOTOR_DECREASE) && low_photocell) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
 
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
 
-/// <summary>
-/// The VerticalMotor class override this function in order to 
-/// handle the manual activation process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-VerticalMotor::MotorCompletedCodes  VerticalMotor::manualPositioningRunningCallback(void) {
-   
-
-    if (!simulator_mode) {
-        // Test the limit switch to early stop the activation
-        if (testLimitSwitch()) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
-    }
-
-    // Proceeds with the manual activation
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
 
 
 void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) {
@@ -290,9 +267,5 @@ void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int 
         System::String^ driver_error = CanOpenMotor::getErrorCode1003(error_code);
         Notify::activate(Notify::messages::WARNING_VERTICAL_DRIVER, driver_error);        
     }
-
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::VERTICAL_ID);
-    if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
 
 }

@@ -75,8 +75,6 @@ bool CanOpenMotor::activateManualPositioning(int target) {
 }
 
 
-
-
 void CanOpenMotor::manageManualPositioning(void) {
     bool error_condition;
     MotorCompletedCodes termination_code;
@@ -91,6 +89,10 @@ void CanOpenMotor::manageManualPositioning(void) {
         return;
     }
 
+    // Sets the Speed activation: if the callback returns false, the speed is set here internally with the predefined parameters
+    // This is useful for critical activations where the speeds and ramps can changes following the activation position and direction.
+    // The function should change the command_speed, command_acc and command_dec
+    motionParameterCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
 
     // Sets the Speed activation
     error_condition = false;
@@ -129,12 +131,17 @@ void CanOpenMotor::manageManualPositioning(void) {
         return;
     }
 
+    // Assignes the current motor direction
+    if (command_target > current_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
+    else motor_direction = motor_rotation_activations::MOTOR_DECREASE;
+
     // Allows the application to prepare for the motor activation
-    MotorCompletedCodes preparation_error = manualPositioningPreparationCallback();
+    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
     if (preparation_error != MotorCompletedCodes::COMMAND_PROCEED) {
         setCommandCompletedCode(preparation_error);
         return;
     }
+
     
     // Invalidate the stored encoder position
     MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
@@ -187,8 +194,8 @@ void CanOpenMotor::manageManualPositioning(void) {
         // Read the current position 
         updateCurrentPosition();
 
-        // The Application can early terminate the activation
-        MotorCompletedCodes termination_condition = manualPositioningRunningCallback();
+        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
+        
 
         // If the safety condition prevent the command execution it is immediatelly aborted
         Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
@@ -198,14 +205,10 @@ void CanOpenMotor::manageManualPositioning(void) {
         }
 
         // Evaluates the manual termination condition
-        if (termination_code == MotorCompletedCodes::COMMAND_PROCEED) {
+        if (termination_condition == MotorCompletedCodes::COMMAND_PROCEED) {
             // handle the manual hardware inputs
-            bool man_increase = Gantry::getManualRotationIncrease(device_id);
-            bool man_decrease = Gantry::getManualRotationDecrease(device_id);
-            if ((!man_increase) && (!man_decrease)) termination_condition = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-            else if ((!man_increase) && (motor_direction_increment)) termination_condition = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-            else if ((!man_decrease) && (!motor_direction_increment)) termination_condition = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-
+            motor_rotation_activations manual_req = Gantry::getManualActivationRequestState(device_id);
+            if(motor_direction != manual_req) termination_condition = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;         
         }
 
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {

@@ -139,16 +139,16 @@ private:
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
-	bool testLimitSwitch(void); //!< True if the limit switch is engaged
-
 	
-	MotorCompletedCodes automaticPositioningRunningCallback(void) override;
-	
-	
-	MotorCompletedCodes manualPositioningRunningCallback(void) override;
-	
+	MotorCompletedCodes preparationCallback(MotorCommands current_command, int current_position, int target_position) override;
+	MotorCompletedCodes runningCallback(MotorCommands current_command, int current_position, int target_position) override;
 	MotorCompletedCodes idleCallback(void) override;
 	void faultCallback(bool errstat, bool data_changed,  unsigned int error_class, unsigned int error_code) override;
 
+	
+
+	bool high_photocell;
+	bool low_photocell;
+	void testLimitSwitch(void); //!< True if the limit switch is engaged
 };
 

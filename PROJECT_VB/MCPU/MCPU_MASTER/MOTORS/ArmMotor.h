@@ -346,9 +346,8 @@ public:
 protected:
 
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
-
-    bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
-    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
+    void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override; 
+    bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
     void faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) override;
    
 
@@ -358,7 +357,7 @@ private:
     static int         allowed_high = 0;           //!< Higher acceptable angle (°)
     static bool        valid_target = false;       //!< True if the target is a valid target
     static int         selected_target;            //!< Automatic selected target  
-    static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
+   
     
 };
 

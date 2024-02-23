@@ -16,6 +16,92 @@ static std::mutex init_mutex;
 
 
 /// <summary>
+///  This is the Class constructor.
+/// 
+/// </summary>
+/// <param name="devid">unique device id of the motor</param>
+/// <param name="motorname">motor name assigned to the working thread</param>
+/// <param name="parameter">string name of the parameter in the MotorCalibration.cnf file</param>
+/// <param name="home_err">Error code to be activated in case of Position invalidated</param>
+/// <param name="rounds_for_units">number of motor round for user unit</param>
+/// <param name="reverse">set the current motor direction</param>
+CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, double rounds_for_units, bool reverse) {
+
+    config_param = parameter;
+
+    // Test the presence of the parameter
+    try {
+        if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+            home_initialized = true;
+        }
+    }
+    catch (...) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + "> FATAL ERROR: CanOpenMotor() - Invalid Parameter");
+        Application::Exit();
+    }
+
+    reset_node = true;
+    internal_status = status_options::MOTOR_NOT_CONNECTED;
+    configuration_command = false;
+    od_initialized = false;
+    nanoj_initialized = false;
+    pNanoj = nullptr;
+    nanojSize = 0;
+    home_initialized = false;
+    encoder_initial_value = 0;
+    reverse_direction = reverse;
+
+    // For Can Diagnose
+    read_sdo_tmo = false;
+    write_sdo_tmo = false;
+    sent_messages = 0;
+    unreceived_messages = 0;
+    meanTime = 0;
+
+    // Gets the handler of the class instance to be used for the Post/Send message functions.
+    //hwnd = static_cast<HWND>(Handle.ToPointer());    
+    device_id = devid;
+    rot_per_unit = rounds_for_units;
+
+    error_condition = false;
+    error_class = 0;
+    error_code = 0;
+
+    rxSDOEvent = CreateEvent(
+        NULL,               // default security attributes
+        FALSE,              // Automatic reset after signaling
+        FALSE,              // initial state is nonsignaled
+        motorname           // object name
+    );
+
+
+    // Creates the receiving register
+    rxSdoRegister = gcnew ODRegister();
+    sdo_rx_pending = false;
+    nanoj_rx_pending = false;
+
+
+
+    // Set the current command to IDLE
+    current_command = MotorCommands::MOTOR_IDLE;
+    request_command = MotorCommands::MOTOR_IDLE;
+
+    // As default the target range is 0
+    target_range_h = 0;
+    target_range_l = 0;
+
+    // Error to be notified in case of encoder errors
+    error_homing = home_err;
+
+    // Creates the Startup thread
+    main_thread = gcnew Thread(gcnew ThreadStart(this, &CanOpenMotor::mainWorker));
+    main_thread->Name = "Motor Worker" + System::Convert::ToString(device_id);
+    main_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
+    main_thread->Start();
+
+}
+
+/// <summary>
 /// This function allows to convert the User units to Encoder units.
 /// 
 /// Whenever the application needs to write a Motor register with a position,
@@ -69,87 +155,7 @@ int CanOpenMotor::convert_UserSec_To_Speed(int x) {
     return (int)((double)x * rot_per_unit * (double)SPEED_DENOMINATOR);
 }
 
-/// <summary>
-/// This is the Class constructor.
-/// 
-/// </summary>
-/// 
-/// The Base Class constructor:
-/// + Initializes all the internal variables;
-/// + initializes the CiA internal status;
-/// + Starts the working thread mainWorker
-/// 
-/// As soon as the function returns, the working thread 
-/// starts the communication with the motor device.
-/// 
-/// See the mainWorker() for details.
-/// 
-/// <param name="devid">This is the address of the Motor device</param>
-/// <param name="motorname">This is a string of the Motor name</param>
-/// <param name="rounds_for_units">This is the unit conversion rate</param>
-/// <param name="reverse">true if the position shall be reversed (+/-)</param>
-CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, double rounds_for_units, bool reverse) {
-    
-    config_param = parameter;
-    internal_status = status_options::MOTOR_NOT_CONNECTED;
-    configuration_command = false;
-    od_initialized = false;
-    nanoj_initialized = false;
-    pNanoj = nullptr;
-    nanojSize = 0;
-    home_initialized = false;
-    encoder_initial_value = 0;
-    reverse_direction = reverse;
 
-    // For Can Diagnose
-    read_sdo_tmo = false;
-    write_sdo_tmo = false;
-    sent_messages = 0;
-    unreceived_messages = 0;
-    meanTime = 0;
-
-    // Gets the handler of the class instance to be used for the Post/Send message functions.
-    //hwnd = static_cast<HWND>(Handle.ToPointer());    
-    device_id = devid;
-    rot_per_unit = rounds_for_units;
-
-    error_condition = false;
-    error_class = 0;
-    error_code = 0;
-
-    rxSDOEvent = CreateEvent(
-        NULL,               // default security attributes
-        FALSE,              // Automatic reset after signaling
-        FALSE,              // initial state is nonsignaled
-        motorname           // object name
-    );
-
-    
-    // Creates the receiving register
-    rxSdoRegister = gcnew ODRegister();
-    sdo_rx_pending = false;
-    nanoj_rx_pending = false;
-    
-
-   
-    // Set the current command to IDLE
-    current_command = MotorCommands::MOTOR_IDLE;
-    request_command = MotorCommands::MOTOR_IDLE;
-
-    // As default the target range is 0
-    target_range_h = 0;
-    target_range_l = 0;
-   
-    // Error to be notified in case of encoder errors
-    error_homing = home_err; 
-   
-    // Creates the Startup thread
-    main_thread = gcnew Thread(gcnew ThreadStart(this, &CanOpenMotor::mainWorker));
-    main_thread->Name = "Motor Worker" + System::Convert::ToString(device_id);
-    main_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
-    main_thread->Start();
-
-}
 
 /// <summary>
 /// This is the reception callback assigned to the SDO register reception in the CanDriver module
@@ -206,6 +212,8 @@ void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned
 
     // Checks the canId address
     if (canid != device_id + 0x700) return; // This frame is not a SDO or is not addressed to this device!
+    
+    // Invalidates the current register initialization
     od_initialized = false;
     home_initialized = false;
 
@@ -214,10 +222,15 @@ void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned
     bool homing_initialized = false;
     int  init_position = 0;
     
-    
-    if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION]);
+    // Read the stored position from the configuration file: in case of invalid position, the encoder remains uninitialized.
+    try{
+        if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+            homing_initialized = true;
+            init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION]);
+        }
+    }
+    catch (...) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + "> FATAL ERROR: thread_canopen_bootup_callback() - Invalid Parameter");       
     }
 
     setEncoderInitStatus(homing_initialized);
@@ -246,6 +259,7 @@ void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned
 /// <param name="val">Value to be written into register</param>
 /// <returns>true in case of success</returns>
 bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim, int val) {
+    //const std::lock_guard<std::mutex> lock(can_mutex);
     unsigned char buffer[8];
     DWORD dwWaitResult;
    
@@ -332,6 +346,8 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODR
 /// <param name="dim">Dimension code of the data register</param>
 /// <returns>true in case of success</returns>
 bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim) {
+   // const std::lock_guard<std::mutex> lock(can_mutex);
+
     unsigned char buffer[8];
     DWORD dwWaitResult;
 
@@ -419,6 +435,7 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
 /// </summary>
 /// <param name=""></param>
 void CanOpenMotor::write_resetNode(void) {
+    //const std::lock_guard<std::mutex> lock(can_mutex);
     unsigned char buffer[8];
 
     memset(buffer, 0, 8);
@@ -525,7 +542,14 @@ void CanOpenMotor::mainWorker(void) {
 
 
     while (1) {
-        
+        if (reset_node) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: RESET_NODE");
+            reset_node = false;
+            write_resetNode();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            continue;
+        }
+
         // If a command execution is present the command shall be aborted!
         if (current_command != MotorCommands::MOTOR_IDLE) setCommandCompletedCode(MotorCompletedCodes::ERROR_UNEXPECTED_STATUS);
 
@@ -556,8 +580,8 @@ void CanOpenMotor::mainWorker(void) {
             configuration_command = false;
 
             // Assignes the initial value to the encoder
-            for (int i = 0; i < 5; i++) { if (initResetEncoderCommand(encoder_initial_value)) break; }
-
+            bool result = initResetEncoderCommand(encoder_initial_value);
+            if(!result) LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN INITIALIZATION");
             previous_uposition = current_uposition;
 
         }
@@ -683,7 +707,7 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_2032_00, 5000)) ;  // Maximum Speed
     while (!blocking_writeOD(OD_2033_00, 0)) ;	    // Plunger Block
     while (!blocking_writeOD(OD_2034_00, 51500)) ; // Upper Voltage Warning Level
-    while (!blocking_writeOD(OD_2035_00, 21000)) ; // ****************************************Lower Voltage Warning Level
+    while (!blocking_writeOD(OD_2035_00, 35000)) ; // ****************************************Lower Voltage Warning Level
     while (!blocking_writeOD(OD_2036_00, 2000)) ; 	// Open Loop Current Reduction Idle Time
     while (!blocking_writeOD(OD_2037_00, -50)) ;	// Open Loop Current Reduction Value/factor
 
@@ -745,8 +769,8 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_6068_00, 100)) ;	// Time
 
     // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, 0)) ; 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, 0)) ;	// Max Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, -19000)) ; 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, 19000)) ;	// Max Position Range Limit
 
     // Software Position Limit
     while (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(-18000))) ;	// Min Position Limit
@@ -889,7 +913,7 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
             MotorConfig::Configuration->storeFile();
             Notify::activate(error_homing);
         }
-        automaticHomingCompletedCallback(term_code);        
+            
     }
     else {
         if (isEncoderInitialized()) {
@@ -897,13 +921,14 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
             MotorConfig::Configuration->storeFile();
         }
 
-        if (cmd == MotorCommands::MOTOR_AUTO_POSITIONING) automaticPositioningCompletedCallback(term_code);
-        else if (cmd == MotorCommands::MOTOR_MANUAL_POSITIONING) manualPositioningCompletedCallback(term_code);
     }
 
+    completedCallback(command_id, cmd, current_uposition, term_code);
+    
     if (command_completed_code != MotorCompletedCodes::COMMAND_SUCCESS) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + "> ERROR: "+ command_completed_code.ToString());
     }
+
     return;
 }
 
@@ -929,6 +954,32 @@ void CanOpenMotor::demoLoop(void) {
 
     returned_code = idleCallback();
     
+
+    // Test if the manual activation can be done
+    if (returned_code == MotorCompletedCodes::COMMAND_PROCEED) {
+
+        // If the safety condition prevent the command execution it is immediatelly aborted
+        Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
+        if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
+            returned_code = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
+        }
+
+        // Evaluates the manual termination condition
+        if (returned_code == MotorCompletedCodes::COMMAND_PROCEED) {
+            // handle the manual hardware inputs
+            motor_rotation_activations manual_req = Gantry::getManualActivationRequestState(device_id);
+            if (manual_req == motor_rotation_activations::MOTOR_INCREASE) {
+                if (!activateManualPositioning(max_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+            }
+            else if (manual_req == motor_rotation_activations::MOTOR_DECREASE) {
+                if (!activateManualPositioning(min_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+            }
+        }
+
+    }
+
+
+
     // Initiate a requested command
     switch (request_command) {
     case MotorCommands::MOTOR_AUTO_POSITIONING:
@@ -943,8 +994,10 @@ void CanOpenMotor::demoLoop(void) {
             
         }
          
+        motionParameterCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
+
         // Preparation
-        returned_code = automaticPositioningPreparationCallback();
+        returned_code = preparationCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target); 
         if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING PREPARATION FAILED!");
             current_eposition = convert_User_To_Encoder(current_uposition);
@@ -979,7 +1032,7 @@ void CanOpenMotor::demoLoop(void) {
                     break;
                 }
 
-                termination_code = automaticPositioningRunningCallback();
+                termination_code = runningCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
                 if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
 
                 // If the safety condition prevent the command execution it is immediatelly aborted
@@ -1020,8 +1073,10 @@ void CanOpenMotor::demoLoop(void) {
             return;
         }
 
+        motionParameterCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
+
         // Preparation
-        returned_code = manualPositioningPreparationCallback();
+        returned_code = preparationCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
         if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING PREPARATION FAILED!");
             current_eposition = convert_User_To_Encoder(current_uposition);
@@ -1050,7 +1105,7 @@ void CanOpenMotor::demoLoop(void) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
             
-                termination_code = manualPositioningRunningCallback();
+                termination_code = runningCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
                 if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
 
                 // If the safety condition prevent the command execution it is immediatelly aborted
@@ -1060,7 +1115,13 @@ void CanOpenMotor::demoLoop(void) {
                     termination_code = MotorCompletedCodes::ERROR_SAFETY;
                     break;
                 }
-
+                
+                // handle the manual hardware inputs
+                motor_rotation_activations manual_req = Gantry::getManualActivationRequestState(device_id);
+                if (motor_direction != manual_req) {
+                    termination_code = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
+                    break;
+                }
             }
         }
 

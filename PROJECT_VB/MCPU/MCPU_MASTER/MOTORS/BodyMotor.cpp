@@ -218,8 +218,8 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     
     static bool error_limit_switch = false;
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
-    int speed, acc, dec;
-    bool brake_unlocking_status, limit_status;
+
+    bool limit_status;
     
     if (!device->simulator_mode) {
 
@@ -277,17 +277,10 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     
 }
 
-/// <summary>
-/// This callback is called by the base class during the motor activation.
-/// </summary>
-/// 
-/// The function will checks for the limit switch activation condition.
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-BodyMotor::MotorCompletedCodes  BodyMotor::automaticPositioningRunningCallback(void) {  
-    if(device->simulator_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
-
+BodyMotor::MotorCompletedCodes BodyMotor::runningCallback(MotorCommands current_command, int current_position, int target_position) {
+    
+    if (device->simulator_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
+       
     // Checks for the limit switch activation     
     if (blocking_readOD(OD_60FD_00)) {
         // Limit switch activation
@@ -297,6 +290,7 @@ BodyMotor::MotorCompletedCodes  BodyMotor::automaticPositioningRunningCallback(v
     // Proceeds with the manual activation
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
+
 
 
 /// <summary>
@@ -322,26 +316,6 @@ bool BodyMotor::startHoming(void) {
 }
 
 
-
-/// <summary>
-/// The BodyMotor class override this function in order to handle the manual activation process.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns></returns>
-BodyMotor::MotorCompletedCodes  BodyMotor::manualPositioningRunningCallback(void) {
-
-    if (!simulator_mode) {
-        // Checks for the limit switch activation     
-        if (blocking_readOD(OD_60FD_00)) {
-            // Limit switch activation
-            if (LIMIT_INPUT_MASK(getRxReg()->data)) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
-        }
-    }
-
-    // Proceeds with the manual activation
-    return MotorCompletedCodes::COMMAND_PROCEED;
-}
 
 bool BodyMotor::brakeCallback(void){
     deactivateBrake();
@@ -373,8 +347,5 @@ void BodyMotor::faultCallback(bool errstat, bool data_changed, unsigned int erro
         Notify::activate(Notify::messages::WARNING_BODY_DRIVER, driver_error);
     }
 
-    bool man_increase = Gantry::getManualRotationIncrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
-    bool man_decrease = Gantry::getManualRotationDecrease((int)CANOPEN::MotorDeviceAddresses::BODY_ID);
-    if (man_increase || man_decrease) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
 
 }

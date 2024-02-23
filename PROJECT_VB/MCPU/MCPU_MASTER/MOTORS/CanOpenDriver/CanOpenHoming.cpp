@@ -20,7 +20,7 @@ bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int sp
 
     // Command already in execution
     if (!isReady()) {
-        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+       command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
         return false;
     }
    
@@ -47,6 +47,11 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     if (blocking_readOD(OD_60FD_00)) {
         if (ZERO_INPUT_MASK(rxSdoRegister->data)) current_homing_input = true;
     }
+
+    // Sets the Speed activation: if the callback returns false, the speed is set here internally with the predefined parameters
+    // This is useful for critical activations where the speeds and ramps can changes following the activation position and direction.
+    // The function should change the command_speed, command_acc and command_dec
+    motionParameterCallback(MotorCommands::MOTOR_HOMING, current_uposition, 0);
 
     if (!blocking_writeOD(OD_6099_01, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to switch
     if (!blocking_writeOD(OD_6099_02, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to reference
@@ -93,13 +98,13 @@ void CanOpenMotor::manageAutomaticHoming(void) {
         return;
     }
 
-
     // Allows the application to prepare for the motor activation
-    MotorCompletedCodes preparation_error = automaticHomingPreparationCallback();
+    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_HOMING, current_uposition, 0);
     if (preparation_error != MotorCompletedCodes::COMMAND_PROCEED) {
         setCommandCompletedCode(preparation_error);
         return;
     }
+
 
     // Update the previous position
     previous_uposition = current_uposition;
@@ -159,13 +164,13 @@ void CanOpenMotor::manageAutomaticHoming(void) {
             break;
         }
 
-        // The Application can early terminate the activation
-        MotorCompletedCodes termination_condition = automaticHomingRunningCallback();
+        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_HOMING, current_uposition, 0);
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
             break;
         }
+        
 
         // If the safety condition prevent the command execution it is immediatelly aborted
         Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);

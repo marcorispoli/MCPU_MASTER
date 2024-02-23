@@ -157,19 +157,10 @@ public:
 
 protected:
     bool initializeSpecificObjectDictionaryCallback(void) override;
-
-    MotorCompletedCodes automaticPositioningPreparationCallback(void) override;
     
-    void automaticPositioningCompletedCallback(MotorCompletedCodes error) override; //!< Override the basic class to handle the Virtual isocentric function    	
-
-  
-    
-    void manualPositioningCompletedCallback(MotorCompletedCodes error) override;
-
-
+    MotorCompletedCodes preparationCallback(MotorCommands current_command, int current_position, int target_position) override;
+    void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override;
     MotorCompletedCodes idleCallback(void) override;
-
-
     
     void resetCallback(void) override;
     bool brakeCallback(void) override;

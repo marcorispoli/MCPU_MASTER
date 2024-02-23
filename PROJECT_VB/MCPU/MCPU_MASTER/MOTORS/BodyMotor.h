@@ -103,18 +103,9 @@ public:
 
 protected:
 	bool initializeSpecificObjectDictionaryCallback(void) override;
-
-	
-	MotorCompletedCodes automaticPositioningRunningCallback(void) override;
-	
-	
-	MotorCompletedCodes manualPositioningRunningCallback(void) override;
-	
-	
-
+	MotorCompletedCodes runningCallback(MotorCommands current_command, int current_position, int target_position) override;	
 	MotorCompletedCodes idleCallback(void) override;
 	void faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) override;
-	
 	bool brakeCallback(void) override;
 	bool unbrakeCallback(void) override;
 

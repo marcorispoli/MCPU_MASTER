@@ -200,7 +200,7 @@ static const unsigned char nanojTrxProgram[] = {
 /// <param name=""></param>
 TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, GEAR_RATIO, false)
 {
-    setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
+    // setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
 
     // Sets +/- 0.02 ° as the acceptable target range
     setTargetRange(2, 2);
@@ -383,8 +383,8 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
     while (!blocking_writeOD(OD_3210_02, 5));	 // 10  Position Loop, Integral Gain (closed Loop)
 
     // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 200))); 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 200)));	// Max Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 1000))); 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 1000)));	// Max Position Range Limit
 
     // Software Position Limit
     if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
@@ -457,7 +457,7 @@ return true;
         blocking_writeOD(OD_60FE_01, LOCK_BRAKE_OUT_MASK);
         return false;
     }
-
+return true;
     // Test the input feedback to detect the effective unlock condition
     for (int i = 0; i < 10; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -487,12 +487,12 @@ bool  TiltMotor::lockBrake(void) {
     if (!blocking_writeOD(OD_60FE_01, LOCK_BRAKE_OUT_MASK)) {        
         return false;
     }
-
+    return true;
     // Test the input feedback to detect the effective deactivation
     for (int i = 0; i < 10; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         if (!blocking_readOD(OD_60FD_00)) continue; // Reads the Inputs
-        if (!UNLOCK_BRAKE_OUT_MASK(getRxReg()->data)) return true;
+        if (!UNLOCK_BRAKE_INPUT_MASK(getRxReg()->data)) return true;
     }
 
     // Error in detecting the brake activation    
@@ -556,7 +556,7 @@ bool TiltMotor::unbrakeCallback(void) {
 TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
     
-
+    return ret_code;
     if (!device->simulator_mode) {
 
         // With the brake alarm present, no more action can be executed
@@ -586,75 +586,44 @@ TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
 
 }
 
-// AUTO PROCEDURES -------------------------------------------------------------------
 
-/// <summary>
-/// This function is called at the beginning of the automatic activation
-/// </summary>
-/// 
-/// The function invalidate the current encoder position in the case, 
-/// during the activation, the software should be killed before to update the current encoder position.
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-TiltMotor::MotorCompletedCodes TiltMotor::automaticPositioningPreparationCallback(void) {
+TiltMotor::MotorCompletedCodes TiltMotor::preparationCallback(MotorCommands current_command, int current_position, int target_position) {
+    if (device->simulator_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
+    if (current_command != MotorCommands::MOTOR_AUTO_POSITIONING) return MotorCompletedCodes::COMMAND_PROCEED;
 
-    if (!device->simulator_mode) {
-        // If the tomo scan has been activated, the nanoj program shall be activated
-        if (tomo_scan) {
-            if (!startNanoj()) return MotorCompletedCodes::ERROR_STARTING_NANOJ;
-        }
-    } // !simulator_mode
-   
+    //starts the nano-j program for tomo activation
+    if (tomo_scan) {
+        if (!startNanoj()) return MotorCompletedCodes::ERROR_STARTING_NANOJ;
+    }
+
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
-/// <summary>
-/// The TiltMotor class override this function in order to update the current position
-/// and the command termination
-/// 
-/// </summary>
-/// <param name=error></param>
-void TiltMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
+void TiltMotor::completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) {
+    if (current_command == MotorCommands::MOTOR_AUTO_POSITIONING) {
+        if (!simulator_mode) {
+            if (tomo_scan) stopNanoj();
+        }
+        tomo_scan = false;
 
-    if (!simulator_mode) {
-        if (tomo_scan) stopNanoj();        
-    }
+        // Assignes the current target
+        if (term_code == MotorCompletedCodes::COMMAND_SUCCESS) current_target = pending_target;
+        else  current_target = target_options::UNDEF;
+        
 
-    tomo_scan = false;
+        // Next step of the Idle positioning
+        if (idle_positioning) {
+            idle_positioning = false;
+            if (term_code == MotorCompletedCodes::COMMAND_SUCCESS)  SlideMotor::setIdlePosition();
+            return;
+        }
 
-    // Assignes the current target
-    if (error == MotorCompletedCodes::COMMAND_SUCCESS) {
-        current_target = pending_target;
+        // Notify the command termination event
+        device->command_completed_event(id, (int) term_code);
     }
     else {
+        device->command_completed_event(id, (int) term_code);
         current_target = target_options::UNDEF;
     }
-
-    
-    // Next step of the Idle positioning
-    if (idle_positioning) {
-        idle_positioning = false;
-        if (error == MotorCompletedCodes::COMMAND_SUCCESS)  SlideMotor::setIdlePosition();
-        return;
-    }
-   
-    // Notify the command termination event
-    device->command_completed_event(getCommandId(), (int)error);
-
-   
-    return;
 }
-
-// MANUAL PROCEDURES -------------------------------------------------------------------
-
-
-void TiltMotor::manualPositioningCompletedCallback(MotorCompletedCodes error) {
-
-    device->command_completed_event((int)0, (int)error); 
-    current_target = target_options::UNDEF;
-
-    return;
-}
-
 

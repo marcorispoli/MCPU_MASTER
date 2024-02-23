@@ -356,7 +356,9 @@ namespace CANOPEN {
 	/// - Handles the register initialization and configuration; 
 	/// - Handles the nanoj program uploading and activation;
 	/// - Handles the CiA status machine management;
-	/// - Handles the Positioning commands;
+	/// - Handles the Automatic Positioning commands;
+	/// - Handles the Manual Positioning commands;
+	/// - Handles the Homing commands;
 	/// 
 	/// # Device initialization
 	/// 
@@ -364,21 +366,26 @@ namespace CANOPEN {
 	/// the module starts the remote device configuration. 
 	/// 
 	/// During this configuration fase the module:
-	/// - Upload if present the Nano-J prgram;
+	/// - Uploads if present the Nano-J program;
 	/// - Uploads the object registers with the application object register values.
+	/// - In case the registers should be differents, the value is stored into the device.
 	/// 
-	/// ## Custom register initialization
 	/// 
 	/// 
 	/// # CiA Status machine management
 	/// 
-	/// The CanOPEN based device internal status changes in a set of standard predefined 
-	/// status called CiA_ Status machine. 
+	/// The CanOPEN based device internal status changesaccording with a standard status called CiA_ Status machine. 
 	/// 
-	/// Any status is characterized by a specific motor conditions. 
-	/// It is not possible to arbitrary change from any status to any status but a specific change status sequence 
-	/// shall be followed: the Module implements automatically all the steps to drive 
-	/// the internal status into the operating status: CiA_SwitchedOn status.
+	/// - Any status is characterized by a specific motor conditions;
+	/// - It is not possible to arbitrary change from any status to any status but a specific change status sequence 
+	/// shall be followed; 
+	/// - the Module implements automatically all the steps to drive the internal status into the operating status: CiA_SwitchedOn status;
+	/// - In case of a fault condition should be present, the module automatically enters a special status called fault,
+	/// untile the fault condition should reset.
+	/// 
+	///		NOTE: the module will drive the motor device in only two possible modes: 
+	/// - Switched ON (idle);
+	/// - Fault;
 	/// 
 	/// # Nano-J program handling
 	/// 
@@ -427,7 +434,34 @@ namespace CANOPEN {
 	/// -  activateManualPositioning(): starts the manual position procedure;
 	/// -  abortActivation(): aborts any pending activation;
 	/// 
-	//// 
+	/// # Interface callbacks
+	/// The module provides a set of overridable callbacks  that a derived module can implement to customize the behavior
+	/// of the final motor controller module:
+	/// - motionParameterCallback(): this callback is called just before to set the current activation speed, allowing to customize the 
+	///   activation paramters;
+	/// 
+	/// - preparationCallback(): this callback is called just before to power the motor wires;
+	/// - runningCallback(): this callback is called several time during the motion;
+	/// - completedCallback(): this function is called as soon as the command is completed;
+	/// - idleCallback(): this is the callback during the IDEL startus (CiA_Switched_On status);
+	/// - faultCallback): this is the callback called during the fault status;
+	/// - resetCallback(): this is a callback calle just after the driver reset;
+	/// - initializeSpecificObjectDictionaryCallback(): this is the callback called during the initialization fase;
+	/// - brakeCallback(): this is a callback called just after the activation is terminated, before to remove the power to the wires.
+	/// - unbrakeCallback() : this callback is called at the beginning of the activation, just after the motor wire powering(torque presence)
+	/// 
+	/// # Encoder Position validation
+	/// 
+	/// The current encoder posiiton is stored into the MotorCalibration.cnf file;
+	/// 
+	/// - At the beginning of an activaiton the position is invalidated;
+	/// - At the command completion the position is stored into the file;
+	/// 
+	///		Note: in case of an invalid software procedure should loos the command termination, 
+	///		the encoder position will remain invalidated, until a new homing procedure is executed.
+	/// 
+	/// 
+	///		
 	/// 
 	ref class CanOpenMotor 
 	{
@@ -503,6 +537,15 @@ namespace CANOPEN {
 			MOTOR_MANUAL_POSITIONING, //!< Motor Manual activation to target
 		};
 
+		enum class motor_rotation_activations {
+			MOTOR_NO_ACTIVATION,    //!< No activation 
+			MOTOR_INCREASE,         //!< Activation with encoder increment
+			MOTOR_DECREASE,         //!< Activation with encoder decrement
+			MOTOR_UNDEFINED,		//!< Undefined condition
+		};
+
+
+
 		/// <summary>
 		/// This enumeration class descibes the command complete codes
 		/// </summary>
@@ -527,6 +570,7 @@ namespace CANOPEN {
 			ERROR_INTERNAL_FAULT,//!< The command has been aborted due to a driver fault
 			ERROR_ACCESS_REGISTER,//!< The command has been aborted due to an error in accessing a driver register
 			ERROR_MISSING_HOME,//!< The command has been aborted due to invalid homing (the encoder is not correctly initialized)
+			ERROR_TARGET_OUT_OF_RANGE,//!< The target for the activation is lower the minimum or higher then maximum allowed
 			ERROR_COMMAND_DISABLED,//!< The command has been aborted because the activation is not enabled
 			ERROR_COMMAND_ABORTED,//!< The command has been aborted due to an Abort activation request
 			ERROR_COMMAND_DEMO,//!< The command cannot be executed in demo
@@ -772,25 +816,14 @@ protected:
 		static System::String^ getErrorClass1003(unsigned int val);
 		static System::String^ getErrorCode1003(unsigned int val);
 
-
-		virtual MotorCompletedCodes automaticPositioningPreparationCallback(void);  //!< This function is called just before to Power the motor phases
-		virtual MotorCompletedCodes automaticPositioningRunningCallback(void); //!< This function is called during the command execution to terminate early the positioning
-		virtual void automaticPositioningCompletedCallback(MotorCompletedCodes termination_code) { command_completed_event(command_id, (int)termination_code); }   //!< This function is called when the command is terminated
-
-		virtual MotorCompletedCodes manualPositioningPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
-		virtual MotorCompletedCodes manualPositioningRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
-		virtual void manualPositioningCompletedCallback(MotorCompletedCodes error) { command_completed_event(command_id, (int) error); }  //!< This function is called when the command is terminated
-
-		virtual MotorCompletedCodes automaticHomingPreparationCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called just before to Power the motor phases
-		virtual MotorCompletedCodes automaticHomingRunningCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; } //!< This function is called during the command execution to terminate early the positioning
-		virtual void automaticHomingCompletedCallback(MotorCompletedCodes error) { command_completed_event(command_id, (int)error); }  //!< This function is called when the command is terminated
-
+		virtual void motionParameterCallback(MotorCommands current_command, int current_position, int target_position) { return ; };  //!< This function is called just before to set the speed: if return true, the speed is set to the predefined value
+		virtual MotorCompletedCodes preparationCallback(MotorCommands current_command, int current_position, int target_position) { return MotorCompletedCodes::COMMAND_PROCEED; };  //!< This function is called just before to Power the motor phases
+		virtual MotorCompletedCodes runningCallback(MotorCommands current_command, int current_position, int target_position) { return MotorCompletedCodes::COMMAND_PROCEED; };  //!< This function is called just before to Power the motor phases
+		virtual void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) { return ; };  //!< This function is called just before to Power the motor phases
 		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
 		virtual void faultCallback(bool errstat, bool data_change, unsigned int error_class, unsigned int error_code) { return ; }
 		virtual void resetCallback(void) { return ; } //!< Called whenever the boot message is received from the device
-
 		virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
-
 		virtual bool unbrakeCallback(void) { return true; } //!< Called whenever the optional brake device should be released
 		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated
 		
@@ -825,12 +858,17 @@ protected:
 	System::String^ config_param;//!< Pointer to the parameter in the config parameter
 	int max_position;			//!< This is the maximum target selectable
 	int min_position;			//!< This is the minimum target selectable
-
 	Notify::messages error_homing;
 	
+	void inline setSpeed(int val) { command_speed = val; }   //!< Modifies the assigned command speed (to be used into the motionParameterCallback()) 
+	void inline setAcc(int val)   { command_acc = val; }     //!< Modifies the assigned command acceleration (to be used into the motionParameterCallback()) 
+	void inline setDec(int val)   { command_dec = val; }     //!< Modifies the assigned command deceleration (to be used into the motionParameterCallback()) 
+	inline motor_rotation_activations  getMotorDirection(void) { return motor_direction; }
+	
+
 private:
 		bool run;
-		
+		bool reset_node;
 
 		
 		HANDLE rxSDOEvent;			//!< Event object signaled by the SDO receiving callback
@@ -930,7 +968,7 @@ private:
 		int command_homing_off_method;  //!< Homing method whith zero photocell starting in OFF status
 		
 		bool autostart_mode; //!< Set to tru if the activation ommand is automatically started
-		bool motor_direction_increment; //!< The current direction increments the encoder
+		motor_rotation_activations motor_direction; //!< The current direction of the motor activation
 
 		// Diagnostic
 		double txrx_time;

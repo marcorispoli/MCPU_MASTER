@@ -52,6 +52,13 @@
 /// <returns>true if the command can be executed</returns>
 bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, int acc, int dec, bool autostart) {
 
+    // Test the target range
+    if ((target < min_position) || (target > max_position)) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + "> error: target out of range > " );
+        command_completed_code = MotorCompletedCodes::ERROR_TARGET_OUT_OF_RANGE;
+        return false;
+    }
+
     // If the safety condition prevent the command execution it is immediatelly aborted
     Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
     if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
@@ -84,7 +91,14 @@ bool CanOpenMotor::activateAutomaticPositioning(int id, int target, int speed, i
 }
 
 bool CanOpenMotor::activateAutomaticPositioning(int id, int target, bool autostart) {
-    
+
+    // Test the target range
+    if ((target < min_position) || (target > max_position)) {
+        LogClass::logInFile("Motor <" + device_id.ToString() + "> error: target out of range > ");
+        command_completed_code = MotorCompletedCodes::ERROR_TARGET_OUT_OF_RANGE;
+        return false;
+    }
+
     // If the safety condition prevent the command execution it is immediatelly aborted
     Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
     if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
@@ -120,7 +134,7 @@ bool CanOpenMotor::activateAutomaticPositioning(int id, int target, bool autosta
 bool  CanOpenMotor::activateRelativePositioning(int id, int delta_target, int speed, int acc, int dec) {
     
     // Set the taret position
-    int target = getCurrentPosition() + delta_target;
+    int target = getCurrentPosition() + delta_target;    
     return activateAutomaticPositioning(id, target, speed, acc, dec, true);
 }
 
@@ -129,44 +143,6 @@ bool  CanOpenMotor::activateRelativePositioning(int id, int delta_target) {
     // Set the taret position
     int target = getCurrentPosition() + delta_target;
     return activateAutomaticPositioning(id, target, true);
-}
-
-
-
-/// <summary>
-/// This function is called by the Base class at the command preparation. 
-/// </summary>
-/// 
-/// The Subclass should override this function in order to prepare the 
-/// activation with specif requirements (brake device activation, diagnostic checks).
-/// 
-/// + The function shall return the MotorCompletedCodes::COMMAND_PROCEED code to 
-/// let the command to continue;
-/// + The function shall return any other error code in case of command reject;
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-CanOpenMotor::MotorCompletedCodes CanOpenMotor::automaticPositioningPreparationCallback(void) {
-    return MotorCompletedCodes::COMMAND_PROCEED; 
-}
-
-/// <summary>
-/// This function is called by the Base class during the motor activation,
-/// every 50ms (approximatelly).
-/// 
-/// </summary>
-/// 
-/// The Subclass should override this function in order to monitor the positioning
-/// and eventually to stop it in case of specific conditions should be true.
-/// 
-/// + The function shall return the MotorCompletedCodes::COMMAND_PROCEED code to 
-/// let the command to continue;
-/// + The function shall return any other error code in case of command abort;
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-CanOpenMotor::MotorCompletedCodes CanOpenMotor::automaticPositioningRunningCallback(void) {
-    return MotorCompletedCodes::COMMAND_PROCEED; 
 }
 
 
@@ -211,8 +187,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Get the actual encoder position 
     updateCurrentPosition();
 
-    // Gets the extimation about the transit time
-    command_ms_tmo = getActivationTimeout(command_speed, command_acc, command_dec, command_target);
+   
 
     // Test if the actual position is already in target position
     if (isTarget()) {
@@ -220,6 +195,15 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
         return;
     }
+    
+   
+    // Sets the Speed activation: if the callback returns false, the speed is set here internally with the predefined parameters
+    // This is useful for critical activations where the speeds and ramps can changes following the activation position and direction.
+    // The function should change the command_speed, command_acc and command_dec
+    motionParameterCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
+
+    // Gets the extimation about the transit time
+    command_ms_tmo = getActivationTimeout(command_speed, command_acc, command_dec, command_target);
 
     LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) +
         "> INIT AUTO POSITIONING: From " + System::Convert::ToString(current_uposition) +
@@ -227,20 +211,22 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         " Expected In " + System::Convert::ToString((int)((double)command_ms_tmo)) + " (ms)");
 
 
-    // Sets the Speed activation
+    // Assignes the Positioning parameters
     error_condition = false;
     if (!blocking_writeOD(OD_6081_00, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Sets the Rotation speed 
     if (!blocking_writeOD(OD_6083_00, convert_UserSec_To_Speed(command_acc))) error_condition = true; // Sets the Rotation Acc
     if (!blocking_writeOD(OD_6084_00, convert_UserSec_To_Speed(command_dec))) error_condition = true; // Sets the Rotation Dec
     if (!blocking_writeOD(OD_607A_00, convert_User_To_Encoder(command_target))) error_condition = true; // Set the target position
     if (!blocking_writeOD(OD_6060_00, 1)) error_condition = true;// Set the Activation mode to Profile Positioning Mode
+
+    // Select the positioning activationn mode
     if (!writeControlWord(POSITION_SETTING_CTRL_INIT_MASK, POSITION_SETTING_CTRL_INIT_VAL)) error_condition = true;// Sets the Position control bits in the control word
+
     if (error_condition) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO POSITIONING PREPARATION");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
-
 
     // Tries to activate the Operation Enabled 
     error_condition = true;
@@ -264,13 +250,17 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         return;
     }
 
-    // Allows the application to prepare for the motor activation
-    MotorCompletedCodes preparation_error = automaticPositioningPreparationCallback();
+    // Assignes the current motor direction
+    if (command_target > current_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
+    else motor_direction = motor_rotation_activations::MOTOR_DECREASE;
+    
+        // Allows the application to prepare for the motor activation
+    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
     if (preparation_error != MotorCompletedCodes::COMMAND_PROCEED) {
         setCommandCompletedCode(preparation_error);
         return;
     }
-    
+
     // Invalidate the stored encoder position
     MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
     MotorConfig::Configuration->storeFile();
@@ -363,14 +353,13 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
             break;
         }
 
-        // The Application can early terminate the activation
-        MotorCompletedCodes termination_condition = automaticPositioningRunningCallback();
+        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
             break;
         }
-        
+
         // If the safety condition prevent the command execution it is immediatelly aborted
         Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
         if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {

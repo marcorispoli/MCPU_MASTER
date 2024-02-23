@@ -9,7 +9,7 @@
 // User Units are in 0.01°
 #define GEAR_RATIO ((double) 1 / (double) 29.1) // 1 turn == 0.291° 
 
-#define MAX_ROTATION_ANGLE 9000
+#define MAX_ROTATION_ANGLE 8900
 #define MIN_ROTATION_ANGLE 0
 #define HOMING_ON_METHOD 19
 #define HOMING_OFF_METHOD 20
@@ -25,9 +25,11 @@
 
 bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
 
+    
+
     // Motor Drive Parameter Set
-    while (!blocking_writeOD(OD_3210_01, 10000)); // 50000 Position Loop, Proportional Gain (closed Loop)
-    while (!blocking_writeOD(OD_3210_02, 10));	 // 10  Position Loop, Integral Gain (closed Loop)
+    while (!blocking_writeOD(OD_3210_01, 10000)); 
+    while (!blocking_writeOD(OD_3210_02, 1));	 
 
 
     // Position Range Limit
@@ -111,26 +113,20 @@ bool SlideMotor::isoAutoPosition(int pos) {
 }
 
 
-
-/// <summary>
-/// The SlideMotor class override this function in order to 
-/// handle the Isocentric automatic activation code
-/// 
-/// </summary>
-/// <param name=LABEL_ERROR></param>
-void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error) {
+void SlideMotor::completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) {
+    if (current_command != MotorCommands::MOTOR_AUTO_POSITIONING) return;
 
     // Next step of the Idle positioning
     if (idle_positioning) {
         idle_positioning = false;
-        if(error == MotorCompletedCodes::COMMAND_SUCCESS)  ArmMotor::setIdlePosition();
+        if (term_code == MotorCompletedCodes::COMMAND_SUCCESS)  ArmMotor::setIdlePosition();
         return;
     }
 
     // If Slide activation is not a Isocentric mode (or is terminated in error) then the command termines here
     // end the command_completed event is generated 
-    if ((!iso_activation_mode) || (error != MotorCompletedCodes::COMMAND_SUCCESS)) {
-        command_completed_event(getCommandId(), (int)error);
+    if ((!iso_activation_mode) || (term_code != MotorCompletedCodes::COMMAND_SUCCESS)) {
+        command_completed_event(id, (int) term_code);
         return;
     }
 
@@ -138,20 +134,20 @@ void SlideMotor::automaticPositioningCompletedCallback(MotorCompletedCodes error
     // The Slide position is expressed in cents of degrees;
     // The Vertical Arm position is espressed in millimeters
     double L = 412; // millimeters from the rotation center
-    double A = 30 * 3.14159  / 180; // Alfa of the potter at the 0 slide degree
+    double A = 30 * 3.14159 / 180; // Alfa of the potter at the 0 slide degree
 
-    init_angolo = A + ( (double)getPreviousPosition() * 3.14159 / (double)18000);
+    init_angolo = A + ((double)getPreviousPosition() * 3.14159 / (double)18000);
     last_angolo = A + ((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
     H0 = L * cos(init_angolo);
     H1 = L * cos(last_angolo);
-    
-    if (!VerticalMotor::activateIsocentricCorrection(getCommandId(), (H1-H0))) {
+
+    if (!VerticalMotor::activateIsocentricCorrection(id, (H1 - H0))) {
         // The target is not invalidated because the rotation angle is still valid!
-        device->command_completed_event(getCommandId(), (int)MotorCompletedCodes::COMMAND_SUCCESS);
-        //command_completed_event(getCommandId(), (int) VerticalMotor::device->getCommandCompletedCode());
+        device->command_completed_event(id, (int)MotorCompletedCodes::COMMAND_SUCCESS);
     }
 
     return;
+
 }
 
 

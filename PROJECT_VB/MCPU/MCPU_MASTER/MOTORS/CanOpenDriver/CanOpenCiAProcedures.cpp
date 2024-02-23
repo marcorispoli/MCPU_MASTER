@@ -136,22 +136,15 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
             idle_returned_condition = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
         }
 
-        // Handle a Manual activation mode
-        bool man_increase = Gantry::getManualRotationIncrease(device_id);
-        bool man_decrease = Gantry::getManualRotationDecrease(device_id);
-        if (man_increase || man_decrease) {
-            if (idle_returned_condition == MotorCompletedCodes::ERROR_SAFETY) {
-                LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-                Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE);
-            } else {                
-                if (man_increase) {
-                    motor_direction_increment = true;
-                    if (!activateManualPositioning(max_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-                }
-                else {
-                    motor_direction_increment = false;
-                    if (!activateManualPositioning(min_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-                }
+        // Evaluates the manual termination condition
+        if (idle_returned_condition == MotorCompletedCodes::COMMAND_PROCEED) {
+            // handle the manual hardware inputs
+            motor_rotation_activations manual_req = Gantry::getManualActivationRequestState(device_id);
+            if (manual_req == motor_rotation_activations::MOTOR_INCREASE) {
+                if (!activateManualPositioning(max_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+            }
+            else if (manual_req == motor_rotation_activations::MOTOR_DECREASE) {
+                if (!activateManualPositioning(min_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
             }
         }
 
@@ -268,6 +261,11 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CODE = " + getErrorCode1003(error_code));            
         }       
         faultCallback( error_condition, data_changed, error_class, error_code);
+
+        // If an attempt to activate the manual rotation is generated in fault condition an istant window will appear
+        if ((Gantry::getManualActivationRequestState(device_id) == CANOPEN::CanOpenMotor::motor_rotation_activations::MOTOR_INCREASE) ||
+            (Gantry::getManualActivationRequestState(device_id) == CANOPEN::CanOpenMotor::motor_rotation_activations::MOTOR_DECREASE))
+            Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
         return;
     }
 

@@ -1,5 +1,6 @@
 #include "CanDriver.h"
 #include "CanDeviceProtocol.h"
+#include "gantry_global_status.h"
 #include <thread>
 #include "Log.h"
 
@@ -150,7 +151,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     rx_pending = true;
 
     // Waits to be signalled: waits for 100ms
-    dwWaitResult = WaitForSingleObject(rxEvent, 1000);
+    dwWaitResult = WaitForSingleObject(rxEvent, 2000);
     rx_pending = false;
 
     // Checks if the Event has been signalled or it is a timeout event.
@@ -204,7 +205,12 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
         stringa += " [25]:" + ((int)perc25).ToString();
         stringa += " [30]:" + ((int)perc30).ToString();
         stringa += " [>30]:" + ((int)percXX).ToString();
-       //  LogClass::logInFile(stringa);
+
+        // Log of the can performances
+#ifdef _ACTIVATE_CAN_DEVICE_DIAGNOSTIC_LOG
+       LogClass::logInFile(stringa);
+#endif
+
     }
 
     return true;

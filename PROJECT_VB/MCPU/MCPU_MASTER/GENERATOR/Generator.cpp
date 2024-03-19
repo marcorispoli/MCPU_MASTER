@@ -52,6 +52,7 @@ void Generator::startNormalMode(void) {
 
     R2CP_Eth->smartHubConnected = false;
     R2CP_Eth->generatorConnected = false;
+    R2CP_Eth->serviceToolConnected = false;
 
     // Start the reception thread
     device->running_thread = gcnew Thread(gcnew ThreadStart(device, &Generator::threadWork));
@@ -109,6 +110,11 @@ bool Generator::isGeneratorConnected(void) {
     if (!device->isConnected()) return false;
     return R2CP_Eth->generatorConnected;
 }
+bool Generator::isServiceToolConnected(void) {
+    if (device->simulator_mode) return false;
+    return R2CP_Eth->serviceToolConnected;
+}
+
 
 bool Generator::connectionTest(void) {
     if (!isConnected()) return false;
@@ -130,12 +136,28 @@ void Generator::simulatorWork(void) {
     }
 }
 
+void Generator::errorLoop(void) {
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+}
+void Generator::serviceToolLoop(void) {
+    LogClass::logInFile("Service tool detected!\n");
+    
+    while (isServiceToolConnected()) {
+        //Activates the XRAY-ENA to allows the service tool activities
+        PCB301::set_xray_ena(true);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    LogClass::logInFile("Service tool exited\n");
+    PCB301::set_xray_ena(false);
+
+}
 void Generator::threadWork(void) {
   
     while (true) {
         LogClass::logInFile("Try to connect the Smart Hub and Generator!\n");
-        Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
-        Notify::activate(Notify::messages::WARNING_GENERATOR_INIT);
+        Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);                
         Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY);
 
         R2CP_Eth->smartHubConnected = false;
@@ -168,37 +190,65 @@ void Generator::threadWork(void) {
             R2CP::CaDataDicGen::GetInstance()->Network_GetGeneratorNodeStatus();
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
-        }
-       
+        }       
         Notify::deactivate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
-        LogClass::logInFile("Generator Connected!\n");
         
+        // If the service Tool has been detected the procedure enters here
+        // until the service tool exits
+        if (isServiceToolConnected()) serviceToolLoop();
+
         // Inits of the generator
-        if(!generatorInitialization()) continue;
-        LogClass::logInFile("Generator Initialized!\n");
+        LogClass::logInFile("Generator connected: Initialization\n");
+        if (!generatorInitialization()) {
+            if (!connectionTest()) continue;
+
+            LogClass::logInFile("Generator Iitialization Failed!\n");
+            Notify::activate(Notify::messages::ERROR_GENERATOR_SETUP);
+
+            setup_completed = true;
+            errorLoop();
+            Notify::deactivate(Notify::messages::ERROR_GENERATOR_SETUP);
+            continue;
+        }
+        if (!connectionTest()) continue;
+        if (isServiceToolConnected()) continue;
 
         // Clear the system messages
-        if (!clearSystemMessages()) continue;
-        LogClass::logInFile("System Message erased!\n");
-
-        // Generator setup
-        if (!generatorSetup()) continue;
-        LogClass::logInFile("Generator Setup Completed!\n");
-        setup_completed = true;
-
+        LogClass::logInFile("Clear System Messages\n");
+        while (!clearSystemMessages()) {
+            if (!connectionTest()) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+        if (!connectionTest()) continue;
+        if (isServiceToolConnected()) continue;
         
+        // Generator setup
+        if (!generatorSetup()) {
+            if (!connectionTest()) continue;
+
+            LogClass::logInFile("Generator Setup Failed!\n");
+            Notify::activate(Notify::messages::ERROR_GENERATOR_SETUP);
+
+            setup_completed = true;
+            errorLoop();
+            Notify::deactivate(Notify::messages::ERROR_GENERATOR_SETUP);
+            continue;
+        }
+              
 
         // Disables the Rx Message
         R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(true);
         handleCommandProcessedState(nullptr);
-        LogClass::logInFile("Generator Rx Disabled!\n");
-
-        LogClass::logInFile("Generator In Idle\n");
-        idle_status = true;
-        Notify::deactivate(Notify::messages::WARNING_GENERATOR_INIT);
+        
+        LogClass::logInFile("Generator Setup Completed: Idle mode activated.\n");
+        setup_completed = true;       
+        idle_status = true;        
+        Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
 
         // Handles the Idle mode
-        if (!generatorIdle()) continue;
+        generatorIdle();
+        
+        
 
     }
        
@@ -270,8 +320,7 @@ bool Generator::generatorInitialization(void) {
 
 bool Generator::generatorSetup(void) {
     LogClass::logInFile("GENERATOR: Setup procedure\n");
-    if (!connectionTest()) return false;
-
+    
     // Setup the 2D Test (no grid)  procedure
     LogClass::logInFile("GENERATOR: Setup 2D test no grid procedure \n");
     R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Test, 0);
@@ -349,8 +398,8 @@ bool Generator::generatorSetup(void) {
 
     // Assignes the Skip-Pulse Databank to the Standard 3D Mammography procedure
     LogClass::logInFile("GENERATOR: Assignes Skip Databank to the  ProcId_Standard_Mammography_3D \n");
-   // R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::DB_SkipPulse, R2CP::ProcId_Standard_Mammography_3D);
-   // if (!handleCommandProcessedState(nullptr)) return false;
+    R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::ProcId_Standard_Mammography_3D, R2CP::DB_SkipPulse);
+    if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pre-pulse Databank to the Index 1 of the Standard 3D Mammography with AEC procedure
     LogClass::logInFile("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_Aec_Mammography_3D \n");
@@ -364,8 +413,8 @@ bool Generator::generatorSetup(void) {
 
     // Assignes the Skip-Pulse Databank to the  Standard 3D Mammography with AEC procedure
     LogClass::logInFile("GENERATOR: Assignes Skip Databank to the  ProcId_Aec_Mammography_3D \n");
-   // R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::DB_SkipPulse, R2CP::ProcId_Aec_Mammography_3D);
-   // if (!handleCommandProcessedState(nullptr)) return false;
+    R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::ProcId_Aec_Mammography_3D, R2CP::DB_SkipPulse);
+    if (!handleCommandProcessedState(nullptr)) return false;
 
     LogClass::logInFile("GENERATOR: Setup successfully terminated \n");
     return true;
@@ -427,6 +476,7 @@ bool Generator::generatorIdle(void) {
         
         // Ethernet disconnection detected
         if (!connectionTest()) return false;
+        if (isServiceToolConnected()) return false;
 
         // Request the Generator Node status
         R2CP::CaDataDicGen::GetInstance()->Network_GetGeneratorNodeStatus();
@@ -467,7 +517,7 @@ bool Generator::generatorIdle(void) {
         if (xray_processing) {
             
             // Resets of the exposed pulses for all data-bank
-            // The Exposure seqeunce fills the Data Bank used if the generated pulses real values.
+            // The Exposure sequence fills the Data Bank used if the generated pulses real values.
             // NOTE: a single Pulse can be a sum of several partial pulses due to the Grid interruption.
             // See the function Generator_ExposureManagement_RadPostExposure in CaDataDicGen_GenIndex.cpp file
             R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
@@ -481,6 +531,7 @@ bool Generator::generatorIdle(void) {
             // Every Xray procedure return True if the seqeunce is completed if success.
             // In case of false returned (error condition), the   xray_exposure_error is set properly
             switch (ExposureModule::getExposureMode()) {
+            case ExposureModule::exposure_type_options::TEST_2D: exposure_err_code = test_exposure_procedure();  break;
             case ExposureModule::exposure_type_options::MAN_2D: exposure_err_code = man_2d_exposure_procedure(); break;
             case ExposureModule::exposure_type_options::AEC_2D: exposure_err_code = aec_2d_exposure_procedure(); break;
             case ExposureModule::exposure_type_options::MAN_3D: exposure_err_code = man_3d_exposure_procedure(); break;
@@ -493,6 +544,9 @@ bool Generator::generatorIdle(void) {
                 exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
             }
 
+            // Removes the X-RAY ena signal 
+            PCB301::set_xray_ena(false);
+            
             ExposureModule::setCompletedError(exposure_err_code);
 
             // The X-Ray procedure termines here: the complete event is generated
@@ -503,30 +557,34 @@ bool Generator::generatorIdle(void) {
             else ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_NO_DOSE);
             LogClass::logInFile("GENERATOR EXPOSURE RESULT:" + ExposureModule::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
 
-            // Removes the X-RAY ena signal 
-            PCB301::set_xray_ena(false);
-
+            
             // De-synch the grid device
             PCB304::synchGridWithGenerator(false);
 
-            // Unlock the compressor if requested
-            if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_RELEASE) PCB302::setCompressorUnlock();
+            // Only in operating mode
+            if (ExposureModule::getExposureMode() != ExposureModule::exposure_type_options::TEST_2D) {
+
+                // Unlock the compressor if requested
+                if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_RELEASE) PCB302::setCompressorUnlock();
+
+                // Notify the AWS about the XRAY completed event
+                awsProtocol::EVENT_XraySequenceCompleted();
+
+                // Disable the Xray Button
+                ExposureModule::enableXrayPushButtonEvent(false);
+
+                // Invalidate the current projection
+                ArmMotor::abortTarget();
+            }
             
-            // Notify the AWS about the XRAY completed event
-            awsProtocol::EVENT_XraySequenceCompleted();
-
-            // Disable the Xray Button
-            ExposureModule::enableXrayPushButtonEvent(false);
-
-            // Invalidate the current projection
-            ArmMotor::abortTarget();
 
             // Waits for the X-RAY button release
             if (PCB301::getXrayPushButtonStat()) {
-                LogClass::logInFile("GENERATOR EXPOSURE WAITING BUTTON RELEASE\n");
+                LogClass::logInFile("GENERATOR EXPOSURE WAITING BUTTON RELEASE");
                 while (PCB301::getXrayPushButtonStat()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
-            
+
+            LogClass::logInFile("GENERATOR EXPOSURE COMPLETED");
             xray_processing = false;
             ExposureModule::setXrayCompletedFlag(); // The Exposure is completed and the data are available
         }
@@ -591,5 +649,47 @@ bool Generator::generatorErrorMessagesLoop(void) {
 
         
         
+    }
+}
+
+
+bool Generator::logCurrentStatus(unsigned char status) {
+    static unsigned char old_status = 255;
+
+    // init status
+    if (status == 255) {
+        old_status = 255;
+        return true;
+    }
+
+    if (old_status == status) return false;
+    old_status = status;
+
+    switch (status) {
+    case R2CP::Stat_Standby: LogClass::logInFile("GENERATOR STATUS: Stat_Standby"); break;
+    case R2CP::Stat_Error:LogClass::logInFile("GENERATOR STATUS: Stat_Error"); break;
+    case R2CP::Stat_WaitFootRelease:LogClass::logInFile("GENERATOR STATUS: Stat_WaitFootRelease"); break;
+    case R2CP::Stat_GoigToShutdown:LogClass::logInFile("GENERATOR STATUS: Stat_GoigToShutdown"); break;
+    case R2CP::Stat_Service:LogClass::logInFile("GENERATOR STATUS: Stat_Service"); break;
+    case R2CP::Stat_Initialization:LogClass::logInFile("GENERATOR STATUS: Stat_Initialization"); break;
+    case R2CP::Stat_ExpInProgress:LogClass::logInFile("GENERATOR STATUS: Stat_ExpInProgress"); break;
+    case R2CP::Stat_Ready:LogClass::logInFile("GENERATOR STATUS: Stat_Ready"); break;
+    default: LogClass::logInFile("GENERATOR STATUS: Unknown status");
+    }
+
+    return true;
+}
+
+void Generator::setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc) {
+    if (R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples) {
+        ExposureModule::setExposedPulse(pulse_seq, gcnew ExposureModule::exposure_pulse(
+            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].kV,
+            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].mAs,
+            ft,
+            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].mA,
+            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].ms,
+            fc,
+            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples
+        ));
     }
 }

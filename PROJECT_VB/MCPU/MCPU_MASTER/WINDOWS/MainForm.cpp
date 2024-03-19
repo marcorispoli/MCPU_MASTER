@@ -713,19 +713,24 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 3: // Wait Clear System Messages
-		if (!Generator::isGeneratorSetupCompleted()) break;
-		labelGeneratorActivity->Text = "WAIT GENERATOR IDLE..";
-		string = "Generator: configuration ..";
-		LogClass::logInFile(string);
+		if (!Generator::isGeneratorSetupCompleted()) break;		
 		startupSubFase++;
 		break;
 
 	case 4: // Wait Generator Idle
-		if (!Generator::isGeneratorIdle()) break;
-		labelGeneratorActivity->Text = "CONNECTED AND CONFIGURED";
-		labelGeneratorActivity->ForeColor = Color::LightGreen;
+		if (Generator::isGeneratorIdle()) {
+			labelGeneratorActivity->Text = "CONNECTED AND CONFIGURED";
+			labelGeneratorActivity->ForeColor = Color::LightGreen;
+		}
+		else {
+			startupError = true;
+			labelGeneratorActivity->Text = "SETUP FAILED";
+			labelGeneratorActivity->ForeColor = Color::Red;
+		}
+		
 		return true;
 	}
+
 	return false;
 }
 

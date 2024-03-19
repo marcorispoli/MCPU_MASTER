@@ -2,6 +2,7 @@
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
 #include "TiltMotor.h"
+#include "pd4_od.h"
 #include "Notify.h"
 #include "../gantry_global_status.h"
 
@@ -53,7 +54,18 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDev
 
 bool ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
 
-    
+    // Motor Drive Parameter Set
+    while (!blocking_writeOD(OD_3210_01, 50000)); // Position Loop, Proportional Gain (closed Loop)
+    while (!blocking_writeOD(OD_3210_02, 10));	 // Position Loop, Integral Gain (closed Loop)
+
+    // Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 1000))); 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 1000)));	// Max Position Range Limit
+
+    // Software Position Limit
+    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
+    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return false;	// Max Position Limit
+
     return true;
 }
 
@@ -169,8 +181,10 @@ bool ArmMotor::startHoming(void) {
 
 
 void ArmMotor::faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) {
+    
+
     if (errstat == false) {
-        Notify::deactivate(Notify::messages::WARNING_ARM_DRIVER);
+        Notify::deactivate(Notify::messages::INFO_ARM_DRIVER);
         return;
     }
 
@@ -178,7 +192,7 @@ void ArmMotor::faultCallback(bool errstat, bool data_changed, unsigned int error
     if (data_changed) {
         //System::String^ driver_error = "CL:" + error_class.ToString() + " CD:" + error_code.ToString();
         System::String^ driver_error = CanOpenMotor::getErrorCode1003(error_code);
-        Notify::activate(Notify::messages::WARNING_ARM_DRIVER, driver_error);
+        Notify::activate(Notify::messages::INFO_ARM_DRIVER, driver_error);
     }
 
    

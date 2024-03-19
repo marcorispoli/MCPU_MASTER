@@ -252,12 +252,19 @@ VerticalMotor::MotorCompletedCodes VerticalMotor::runningCallback(MotorCommands 
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
+void VerticalMotor::completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) {
+    if (current_command != MotorCommands::MOTOR_AUTO_POSITIONING) return;
+
+    if(id) command_completed_event(id, (int)term_code);
+    return;
+
+}
 
 
 
 void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) {
     if (errstat == false) {
-        Notify::deactivate(Notify::messages::WARNING_VERTICAL_DRIVER);
+        Notify::deactivate(Notify::messages::INFO_VERTICAL_DRIVER);
         return;
     }
 
@@ -265,7 +272,7 @@ void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int 
     if (data_changed){
         //System::String^ driver_error = "CL:" + error_class.ToString() + " CD:" + error_code.ToString();
         System::String^ driver_error = CanOpenMotor::getErrorCode1003(error_code);
-        Notify::activate(Notify::messages::WARNING_VERTICAL_DRIVER, driver_error);        
+        Notify::activate(Notify::messages::INFO_VERTICAL_DRIVER, driver_error);        
     }
 
 }

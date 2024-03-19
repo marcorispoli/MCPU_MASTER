@@ -651,21 +651,14 @@ void   awsProtocol::EXEC_TestCommand(void) {
         int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
         BodyMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
     }
-    else if (pDecodedFrame->parameters[0] == "OBSTACLE") {
-        if (pDecodedFrame->parameters[1] == "CONFIG") {
-            int gain = System::Convert::ToByte(pDecodedFrame->parameters[2]);
-            int sens = System::Convert::ToByte(pDecodedFrame->parameters[3]);
-            int recal = System::Convert::ToByte(pDecodedFrame->parameters[4]);
-            int ena = System::Convert::ToByte(pDecodedFrame->parameters[5]);
-
-            if (!PCB326::executeObstacleConfig((PCB326::GeneralSensOption)gain, (PCB326::SensorSensOption)sens, (PCB326::RecalibrationOption)recal, ena)) {
-                LogClass::logInFile("TEST ON OBSTACLE CONFIGURATION FAILED!");
-            }else LogClass::logInFile("TEST ON OBSTACLE CONFIGURATION EXECUTING!");
-        }
-
+    else if (pDecodedFrame->parameters[0] == "VERTICAL") {
+        LogClass::logInFile("TEST ON VERTICAL MOTOR");
+        int pos = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+        int speed = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+        int acc = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+        int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+        VerticalMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
     }
-
-    
 
     return;
 }

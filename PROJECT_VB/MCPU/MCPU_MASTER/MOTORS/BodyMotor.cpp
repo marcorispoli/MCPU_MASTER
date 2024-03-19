@@ -220,7 +220,7 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
 
     bool limit_status;
-    
+
     if (!device->simulator_mode) {
 
 
@@ -280,7 +280,8 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
 BodyMotor::MotorCompletedCodes BodyMotor::runningCallback(MotorCommands current_command, int current_position, int target_position) {
     
     if (device->simulator_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
-       
+
+    return MotorCompletedCodes::COMMAND_PROCEED;
     // Checks for the limit switch activation     
     if (blocking_readOD(OD_60FD_00)) {
         // Limit switch activation
@@ -336,7 +337,7 @@ bool BodyMotor::unbrakeCallback(void) {
 void BodyMotor::faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) {
 
     if (errstat == false) {
-        Notify::deactivate(Notify::messages::WARNING_BODY_DRIVER);
+        Notify::deactivate(Notify::messages::INFO_BODY_DRIVER);
         return;
     }
 
@@ -344,7 +345,7 @@ void BodyMotor::faultCallback(bool errstat, bool data_changed, unsigned int erro
     if (data_changed) {
         //System::String^ driver_error = "CL:" + error_class.ToString() + " CD:" + error_code.ToString();
         System::String^ driver_error = CanOpenMotor::getErrorCode1003(error_code);
-        Notify::activate(Notify::messages::WARNING_BODY_DRIVER, driver_error);
+        Notify::activate(Notify::messages::INFO_BODY_DRIVER, driver_error);
     }
 
 

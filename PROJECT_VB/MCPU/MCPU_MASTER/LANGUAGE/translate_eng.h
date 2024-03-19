@@ -42,6 +42,7 @@
 "E00035", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized",
 "E00036", Notify::messages::ERROR_BODY_LIMIT_SWITCH, "Body Motor Monitoring", "The limit switch is active",
 "E00037", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
+"E00038", Notify::messages::ERROR_GENERATOR_SETUP, "Generator Status Monitoring", "The Generator configuration is failed",
 
 
 
@@ -62,7 +63,6 @@
 "W00006", Notify::messages::WARNING_MISSING_EXPOSURE_DATA, "Exposure Parameters Monitoring", "Missing exposure data selection.",
 "W00007", Notify::messages::WARNING_XRAY_BUTTON_DISABLED, "X-Ray Button Monitoring", "The X-Ray button is not enabled.",
 "W00008", Notify::messages::WARNING_DOOR_STUDY_OPEN, "Safety Monitoring", "The Study's door is detected Open.",
-"W00009", Notify::messages::WARNING_GENERATOR_INIT, "Generator Status Monitoring", "The Generator device is initializing.",
 "W00010", Notify::messages::WARNING_GENERATOR_NOT_READY, "Generator Status Monitoring", "The Generator is not ready for exposure.",
 "W00011", Notify::messages::WARNING_GENERATOR_MESSAGE, "Generator Device Messages", "There are messages from generator:",
 "W00012", Notify::messages::WARNING_TUBE_TEMPERATURE, "X-Ray Tube Monitoring", "The X-Ray Tube cumulated energy is too high",
@@ -72,12 +72,8 @@
 "W00016", Notify::messages::WARNING_ANODE_TEMPERATURE_HIGH, "Tube Temperature Monitoring", "The Anode temperature is too high",
 "W00017", Notify::messages::WARNING_FILTER_OUT_OF_POSITION, "Filter Monitoring", "The Filter selector is not in a valid position",
 "W00018", Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, "Collimator Monitoring", "An invalid collimation format is detected",
+"W00018", Notify::messages::WARNING_GENERATOR_SERVICE_MODE, "Generator Monitoring", "The Generator is in Service Mode",
 
-"W00018", Notify::messages::WARNING_BODY_DRIVER, "Body Motor Monitoring", "The motor driver is in error condition",
-"W00018", Notify::messages::WARNING_VERTICAL_DRIVER, "Vertical Motor Monitoring", "The motor driver is in error condition",
-"W00018", Notify::messages::WARNING_TILT_DRIVER, "Tilt Motor Monitoring", "The motor driver is in error condition",
-"W00018", Notify::messages::WARNING_ARM_DRIVER, "Arm Motor Monitoring", "The motor driver is in error condition",
-"W00018", Notify::messages::WARNING_SLIDE_DRIVER, "Slide Motor Monitoring", "The motor driver is in error condition",
 
 
 /* -------- INFO ---------------------------*/
@@ -105,6 +101,11 @@
 "I00016", Notify::messages::INFO_ACTIVATION_MOTOR_MANUAL_DISABLE, "Manual Motor Activation", "The manual activation is disabled in this contest",
 "I00017", Notify::messages::INFO_ACTIVATION_MOTOR_SAFETY_DISABLE, "Manual Motor Activation", "The manual activation is disabled for safety",
 "I00018", Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE, "Manual Motor Activation", "The manual activation is disabled for pending errors",
+"I00018", Notify::messages::INFO_BODY_DRIVER, "Body Motor Monitoring", "The motor driver is in error condition",
+"I00018", Notify::messages::INFO_VERTICAL_DRIVER, "Vertical Motor Monitoring", "The motor driver is in error condition",
+"I00018", Notify::messages::INFO_TILT_DRIVER, "Tilt Motor Monitoring", "The motor driver is in error condition",
+"I00018", Notify::messages::INFO_ARM_DRIVER, "Arm Motor Monitoring", "The motor driver is in error condition",
+"I00018", Notify::messages::INFO_SLIDE_DRIVER, "Slide Motor Monitoring", "The motor driver is in error condition",
 
 "I00019", Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION, "Power Off Request", "Proceed with the System Power Off?",
 
@@ -149,7 +150,7 @@
 
 "L00028", Notify::messages::LABEL_SLIDE_ACTIVATED, "Slide Motor Activated", "-",
 "L00028", Notify::messages::LABEL_TILT_ACTIVATED, "Tilt Motor Activated", "-",
-
+"L00029", Notify::messages::LABEL_CALIBRATION_XRAY_TUBE_TITLE, "Xray Tube Calibration Panel", "-",
 
 
 

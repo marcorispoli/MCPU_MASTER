@@ -15,12 +15,15 @@ ref class Generator: public TcpClientCLI
 {
 public:
 	Generator(void);
-	
-	
+	static Generator^ device = gcnew Generator(); //! Self module generation 
+
+
 	static void startNormalMode(void);
 	static void startSimulatorMode(void);
 	static bool isSmartHubConnected(void);
 	static bool isGeneratorConnected(void);
+	static bool isServiceToolConnected(void);
+	
 	
 
 	inline static bool isGeneratorSetupCompleted(void) { return setup_completed; }
@@ -31,7 +34,7 @@ public:
 	
 protected:
 	static bool simulator_mode = false;
-	static Generator^ device = gcnew Generator(); //! Self module generation 
+	
 	static short sendCR2CPData(unsigned char* pMessage, unsigned short  datalength);
 	static CR2CP_Eth* R2CP_Eth;
 
@@ -39,6 +42,9 @@ protected:
 	Thread^ running_thread;//!< This is the worker thread handler
     void threadWork(void);//!< This is the worker thread for the workflow
 	void simulatorWork();
+	void errorLoop(void);
+	void serviceToolLoop(void);
+
 
 	bool handleCommandProcessedState(unsigned char* code);
 	bool connectionTest(void);
@@ -48,7 +54,7 @@ protected:
 	bool generatorIdle(void);
 	bool generatorSimulatorIdle(void);
 	bool generatorErrorMessagesLoop(void);
-	
+	bool logCurrentStatus(unsigned char status);
 	
 	ExposureModule::exposure_completed_errors man_2d_exposure_procedure(void);
 	ExposureModule::exposure_completed_errors aec_2d_exposure_procedure(void);
@@ -66,6 +72,8 @@ protected:
 	ExposureModule::exposure_completed_errors aec_3d_exposure_procedure_demo(void);
 	ExposureModule::exposure_completed_errors man_combo_exposure_procedure_demo(void);
 	ExposureModule::exposure_completed_errors aec_combo_exposure_procedure_demo(void);
+	ExposureModule::exposure_completed_errors test_exposure_procedure(void);
+	
 
 	static bool setup_completed = false; //!< The Setup process has been terminated
 	static bool idle_status = false;	  //!< The Generator is in IDLE mode
@@ -103,6 +111,7 @@ protected:
         }
         return 0;
     }
-
+	static void setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc);
+		
 };
 

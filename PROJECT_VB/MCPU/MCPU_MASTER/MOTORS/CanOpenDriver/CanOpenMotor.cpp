@@ -66,6 +66,7 @@ CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::Strin
     error_condition = false;
     error_class = 0;
     error_code = 0;
+    fault_activation = false;
 
     rxSDOEvent = CreateEvent(
         NULL,               // default security attributes

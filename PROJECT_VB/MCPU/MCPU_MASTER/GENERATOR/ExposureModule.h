@@ -10,6 +10,10 @@ using namespace System::Threading;
 ref class ExposureModule 
 {
 public:
+
+    literal unsigned char  FOCUS_LARGE = 0;
+    literal unsigned char  FOCUS_SMALL = 1;
+
 	
     ref class tomo_data {
     public:
@@ -67,7 +71,7 @@ public:
             filter = PCB315::filterMaterialCodes::FILTER_INVALID;
             kV = 0;
             mAs = 0;
-
+           
             // When created the pulse is invalidated for safety
             validated = false;
         };
@@ -83,18 +87,67 @@ public:
             filter = flt;
             kV = kv;// Assignes the kV
             mAs = mas;// Assignes the mAs
+           
+            validated = true;
+        };
+
+        exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt, float ma, float mS, unsigned char fc, int samples) {
+
+            validated = false;
+
+            if ((kv > 49.0) || (kv < 20.0)) return;
+            if ((mas > 640) || (mas < 0)) return;
+            if (flt == PCB315::filterMaterialCodes::FILTER_INVALID) return;
+
+            filter = flt;
+            kV = kv;// Assignes the kV
+            mAs = mas;// Assignes the mAs
+            this->mA = ma;
+            this->ms = mS;
+            pulse_samples = samples;
+            focus = fc; // only for test            
+            validated = true;
+        };
+
+        exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt, unsigned char fc, bool gd) {
+
+            validated = false;
+            if ((kv > 49.0) || (kv < 20.0)) return;
+            if ((mas > 640) || (mas < 0)) return;
+            if (flt == PCB315::filterMaterialCodes::FILTER_INVALID) return;
+
+            filter = flt;
+            kV = kv;        
+            mAs = mas;      
+
+            pulse_samples = 0;
+            focus = fc;         
+            use_grid = gd;        // only for test
             validated = true;
         };
 
         inline double getKv() { return kV; }
         inline double getmAs() { return mAs; }
+        inline double getmA() { return mA; }
+        inline double getms() { return ms; }
+        inline double getSamples() { return pulse_samples; }
+        inline unsigned char getFocus() { return focus; }
+        inline bool isLargeFocus() { return (focus == FOCUS_LARGE); }
+        inline bool isSmallFocus() { return (focus == FOCUS_SMALL); }
         inline PCB315::filterMaterialCodes getFilter() { return filter; }
+        inline bool useGrid() { return use_grid; }
         inline bool isValid() { return validated; }
 
+
+        unsigned char focus; // This is the focus assigned to this pulse
         PCB315::filterMaterialCodes filter; //!< This is the assigned filter 
-        double kV; //!< This is the selected kV value
-        double mAs; //!< This is the selected mAs value
-        bool   validated; //!< This is the flag that validate the use of thhis pulse in a sequence
+        bool    use_grid; // Grid shall be used (only test mode)
+        double  kV; //!< This is the selected kV value
+        double  mAs; //!< This is the selected mAs value
+        float   mA; //!< anodic current used in mA
+        float   ms; //!< pulse endurance in ms
+        int     pulse_samples; //!< Number of portion of the pulses received       
+        bool    validated; //!< This is the flag that validate the use of thhis pulse in a sequence
     };
 
 	
@@ -104,7 +157,7 @@ public:
     /// 
     /// </summary>
     enum class exposure_type_options {
-        MAN_2D = 0, //!< The next exposure is a 2D manual mode
+        MAN_2D=0, //!< The next exposure is a 2D manual mode
         AEC_2D, //!< The next exposure is a 2D with AEC
         MAN_3D, //!< The next exposure is a Tomo 3D in manual mode
         AEC_3D, //!< The next exposure is a Tomo 3D with AEC
@@ -112,6 +165,7 @@ public:
         AEC_COMBO, //!< The next exposure is a Combo with AEC
         MAN_AE, //!< The next exposure is a Dual energy exposure in manual mode
         AEC_AE, //!< The next exposure is a Dual energy with AEC        
+        TEST_2D, //!< This is a test exposure without Detector synch
         EXP_NOT_DEFINED
     };
     
@@ -190,6 +244,7 @@ public:
     enum class exposure_completed_errors {
         XRAY_NO_ERRORS = 0,			//!< No error code
         XRAY_INVALID_PROCEDURE,		//!< A not valid procedure has been requested
+        XRAY_INVALID_GENERATOR_STATUS,	//!< The generator is in a not expected status
         XRAY_COMMUNICATION_ERROR,	//!< A generator command is failed
         XRAY_GENERATOR_ERROR,		//!< The generator activated internal error messages
         XRAY_BUTTON_RELEASE,		//!< The X-Ray Button has been released 
@@ -269,6 +324,8 @@ public:
         xray_event_ena = false;
     }
 
+   
+
 private:
 
     static cli::array<exposure_pulse^>^ pulse = gcnew array<exposure_pulse^> {gcnew exposure_pulse (),gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };
@@ -288,5 +345,6 @@ private:
     static exposure_completed_options xray_completed_code = exposure_completed_options::XRAY_NO_DOSE;
     static exposure_completed_errors xray_exposure_error = exposure_completed_errors::XRAY_NO_ERRORS;
 
+   
 };
 

@@ -11,7 +11,9 @@
  * \copyright SEDECAL S.A.
  * \ingroup   R2CPModule
 */
+#include "Generator.h"
 #include "CaDataDicGen.h"
+#include "Log.h"
 
 
 /******************************************************************************************************************/
@@ -74,6 +76,9 @@ namespace R2CP
         float ms = ((float) pData[9] * 65536. + (float) pData[10] * 256. + (float) pData[11]) / 100.;
         float mAs = ms*mA/1000;
        
+        System::String^ exposure_string = "kV:" + kV.ToString() + " mAs:" + mAs.ToString() + " mA:" + mA.ToString() + " ms:" + ms.ToString();        
+        LogClass::logInFile("EXPOSURE PULSE>" + exposure_string);
+
         m_p_instance_->executed_pulses[data_bank_index].result_code = result_code;
         unsigned int samples = m_p_instance_->executed_pulses[data_bank_index].samples;
 

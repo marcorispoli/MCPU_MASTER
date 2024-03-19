@@ -177,12 +177,12 @@ public:
     literal System::String^ PARAM_BODY = "BODY_CALIBRATION";                               //!< This is the Body Motor parameter section
     literal System::String^ PARAM_BODY_COMMENT = "BODY_CALIBRATION calibration data";
     literal System::String^ PARAM_BODY_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid Body Motor position (for initial zero setting)
-    literal System::String^ PARAM_BODY_AUTO_SPEED_DEFAULT = "100";                                  //!< Body Auto Speed in 0.1 degree/s
+    literal System::String^ PARAM_BODY_AUTO_SPEED_DEFAULT = "50";                                  //!< Body Auto Speed in 0.1 degree/s
     literal System::String^ PARAM_BODY_AUTO_ACC_DEFAULT = "20";                                    //!< Body Auto Acc in 0.1 degree/ss
     literal System::String^ PARAM_BODY_AUTO_DEC_DEFAULT = "20";                                    //!< Body Auto  Dec in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_MANUAL_SPEED_DEFAULT = "100";                                //!< Body Manual  Speed in 0.1 degree/s
+    literal System::String^ PARAM_BODY_MANUAL_SPEED_DEFAULT = "50";                                //!< Body Manual  Speed in 0.1 degree/s
     literal System::String^ PARAM_BODY_MANUAL_ACC_DEFAULT = "20";                                  //!< Body Manual  Acc in 0.1 degree/ss
-    literal System::String^ PARAM_BODY_MANUAL_DEC_DEFAULT = "20";                                  //!< Body Manual Dec in 0.1 degree/ss
+    literal System::String^ PARAM_BODY_MANUAL_DEC_DEFAULT = "100";                                  //!< Body Manual Dec in 0.1 degree/ss
     literal System::String^ PARAM_BODY_HOME_SPEED_DEFAULT = "50";                                  //!< Body Home Speed in 0.1 degree/ss
     literal System::String^ PARAM_BODY_HOME_ACC_DEFAULT = "10";                                    //!< Body Home Acc in 0.1 degree/ss
 
@@ -193,8 +193,8 @@ public:
     literal System::String^ PARAM_ARM_AUTO_SPEED_DEFAULT = "1000";                                 //!< Arm Auto Speed in 0.01 degree/s
     literal System::String^ PARAM_ARM_AUTO_ACC_DEFAULT = "500";                                    //!< Arm Auto Acc in 0.01 degree/ss
     literal System::String^ PARAM_ARM_AUTO_DEC_DEFAULT = "500";                                    //!< Arm Auto Dec in 0.01 degree/ss
-    literal System::String^ PARAM_ARM_MANUAL_SPEED_DEFAULT = "1000";                               //!< Arm Manual Speed in 0.01 degree/s
-    literal System::String^ PARAM_ARM_MANUAL_ACC_DEFAULT = "500";                                  //!< Arm Manual Acc in 0.01 degree/ss
+    literal System::String^ PARAM_ARM_MANUAL_SPEED_DEFAULT = "500";                               //!< Arm Manual Speed in 0.01 degree/s
+    literal System::String^ PARAM_ARM_MANUAL_ACC_DEFAULT = "300";                                  //!< Arm Manual Acc in 0.01 degree/ss
     literal System::String^ PARAM_ARM_MANUAL_DEC_DEFAULT = "500";                                  //!< Arm Manual Dec in 0.01 degree/ss
     literal System::String^ PARAM_ARM_HOME_SPEED_DEFAULT = "5000";                                 //!< Arm Home Speed in 0.01 degree/ss
     literal System::String^ PARAM_ARM_HOME_ACC_DEFAULT = "100";                                    //!< Arm Home Acc in 0.01 degree/ss
@@ -221,7 +221,7 @@ public:
     literal System::String^ PARAM_TILT_AUTO_DEC_DEFAULT = "400";                                    //!< TILT Auto Dec in 0.01 degree /ss
     literal System::String^ PARAM_TILT_MANUAL_SPEED_DEFAULT = "100";                                //!< TILT Manual Speed in 0.01 degree mm/s
     literal System::String^ PARAM_TILT_MANUAL_ACC_DEFAULT = "100";                                  //!< TILT Manual Acc in 0.01 degree /ss
-    literal System::String^ PARAM_TILT_MANUAL_DEC_DEFAULT = "100";                                  //!< TILT Manual Dec in 0.01 degree /ss
+    literal System::String^ PARAM_TILT_MANUAL_DEC_DEFAULT = "200";                                  //!< TILT Manual Dec in 0.01 degree /ss
     literal System::String^ PARAM_TILT_HOME_SPEED_DEFAULT = "200";                                  //!< TILT Home Speed in 0.01 degree degree/ss
     literal System::String^ PARAM_TILT_HOME_ACC_DEFAULT = "100";                                    //!< TILT Home Acc in 0.01 degree degree/ss
 
@@ -229,7 +229,7 @@ public:
     literal System::String^ PARAM_SLIDE = "SLIDE_CALIBRATION";                                       //!< This is the SLIDE Motor parameter section
     literal System::String^ PARAM_SLIDE_COMMENT = "SLIDE_CALIBRATION calibration data";
     literal System::String^ PARAM_SLIDE_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder SLIDE Motor position (for initial zero setting)
-    literal System::String^ PARAM_SLIDE_AUTO_SPEED_DEFAULT = "800";                                  //!< SLIDE Auto Speed in 0.01 degree/s
+    literal System::String^ PARAM_SLIDE_AUTO_SPEED_DEFAULT = "400";                                  //!< SLIDE Auto Speed in 0.01 degree/s
     literal System::String^ PARAM_SLIDE_AUTO_ACC_DEFAULT = "400";                                    //!< SLIDE Auto Acc in 0.01 degree/ss
     literal System::String^ PARAM_SLIDE_AUTO_DEC_DEFAULT = "400";                                    //!< SLIDE Auto Dec in 0.01 degree/ss
     literal System::String^ PARAM_SLIDE_MANUAL_SPEED_DEFAULT = "400";                                //!< SLIDE Manual Speed in 0.01 degree/s

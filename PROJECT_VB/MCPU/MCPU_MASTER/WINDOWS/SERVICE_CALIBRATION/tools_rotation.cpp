@@ -249,7 +249,7 @@ System::Void ServiceForm::rotationTool_body_Click(System::Object^ sender, System
 	rotationToolSelectAngle4->Location = System::Drawing::Point(301, 297);
 
 	rotationToolSelectAngle3->Show(); // 90°
-	rotationToolSelectAngle3->Tag = "90";
+	rotationToolSelectAngle3->Tag = "88";
 	rotationToolSelectAngle3->Location = System::Drawing::Point(349, 176);
 
 	rotationToolSelectAngle6->Show(); // -45°
@@ -257,7 +257,7 @@ System::Void ServiceForm::rotationTool_body_Click(System::Object^ sender, System
 	rotationToolSelectAngle6->Location = System::Drawing::Point(60, 302);
 
 	rotationToolSelectAngle7->Show(); // -90°
-	rotationToolSelectAngle7->Tag = "-90";
+	rotationToolSelectAngle7->Tag = "-88";
 	rotationToolSelectAngle7->Location = System::Drawing::Point(7, 182);
 
 	

@@ -45,10 +45,8 @@ protected:
 private: System::Windows::Forms::Panel^ rotationToolPanel;
 private: System::Windows::Forms::PictureBox^ rotationToolArmButton;
 private: System::Windows::Forms::PictureBox^ rotationToolManualButton;
-
-
-
 private: System::Windows::Forms::PictureBox^ rotationToolSlideButton;
+
 
 protected:
 
@@ -85,6 +83,32 @@ private: System::Windows::Forms::PictureBox^ rotationToolSelectAngle1;
 
 Object^ pConfirmation; // Used in the case a confirmation should needed
 private: System::Windows::Forms::Label^ rotationToolTargetAngle;
+private: System::Windows::Forms::PictureBox^ exposureTool;
+private: System::Windows::Forms::Panel^ exposureToolPanel;
+
+
+private: System::Windows::Forms::Label^ kVSelection;
+private: System::Windows::Forms::Label^ mAsSelection;
+private: System::Windows::Forms::Label^ label5;
+private: System::Windows::Forms::ComboBox^ filterSelection;
+private: System::Windows::Forms::Label^ label4;
+private: System::Windows::Forms::Label^ label3;
+private: System::Windows::Forms::ComboBox^ gridSelection;
+private: System::Windows::Forms::ComboBox^ focusSelection;
+private: System::Windows::Forms::Label^ label2;
+private: System::Windows::Forms::Label^ label1;
+private: System::Windows::Forms::PictureBox^ enableXray;
+private: System::Windows::Forms::RichTextBox^ exposureLog;
+
+
+
+
+
+
+
+
+
+
 
 
 public:System::Timers::Timer^ serviceTimer;
@@ -107,8 +131,9 @@ public: enum class panels {
 	PANEL_NOT_DEFINED = 0,
 	MAIN_SERVICE_PANEL,
 	CALIB_PANEL,
+	SETUP_PANEL,
 	CALIB_ZEROSETTING_PANEL,
-	TOOLS_PANEL,
+	TOOL_EXPOSURE_PANEL,
 	TOOL_ROTATION_PANEL,
 };
 
@@ -125,7 +150,7 @@ public: void createServicePanel(void);
 public: void cancServicePanel(void);
 
 #include "calib_panel.h"
-#include "tools_panel.h"
+
 
 
 private: System::Windows::Forms::Label^ serviceMenuTitle;
@@ -173,6 +198,7 @@ private:
 		this->labelTime = (gcnew System::Windows::Forms::Label());
 		this->servicePanel = (gcnew System::Windows::Forms::Panel());
 		this->calibPanel = (gcnew System::Windows::Forms::Panel());
+		this->exposureTool = (gcnew System::Windows::Forms::PictureBox());
 		this->zeroSetting = (gcnew System::Windows::Forms::PictureBox());
 		this->calibZerosettingPanel = (gcnew System::Windows::Forms::Panel());
 		this->zeroSettingLog = (gcnew System::Windows::Forms::RichTextBox());
@@ -202,11 +228,25 @@ private:
 		this->rotationToolBodyButton = (gcnew System::Windows::Forms::PictureBox());
 		this->rotationToolTiltButton = (gcnew System::Windows::Forms::PictureBox());
 		this->rotationToolArmButton = (gcnew System::Windows::Forms::PictureBox());
+		this->exposureToolPanel = (gcnew System::Windows::Forms::Panel());
+		this->exposureLog = (gcnew System::Windows::Forms::RichTextBox());
+		this->enableXray = (gcnew System::Windows::Forms::PictureBox());
+		this->label5 = (gcnew System::Windows::Forms::Label());
+		this->filterSelection = (gcnew System::Windows::Forms::ComboBox());
+		this->label4 = (gcnew System::Windows::Forms::Label());
+		this->label3 = (gcnew System::Windows::Forms::Label());
+		this->gridSelection = (gcnew System::Windows::Forms::ComboBox());
+		this->focusSelection = (gcnew System::Windows::Forms::ComboBox());
+		this->label2 = (gcnew System::Windows::Forms::Label());
+		this->label1 = (gcnew System::Windows::Forms::Label());
+		this->mAsSelection = (gcnew System::Windows::Forms::Label());
+		this->kVSelection = (gcnew System::Windows::Forms::Label());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemSetup))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->BeginInit();
 		this->servicePanel->SuspendLayout();
 		this->calibPanel->SuspendLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->BeginInit();
 		this->calibZerosettingPanel->SuspendLayout();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingSlide))->BeginInit();
@@ -233,6 +273,8 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolBodyButton))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolTiltButton))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolArmButton))->BeginInit();
+		this->exposureToolPanel->SuspendLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->enableXray))->BeginInit();
 		this->SuspendLayout();
 		// 
 		// rotationTool
@@ -321,11 +363,24 @@ private:
 		// 
 		// calibPanel
 		// 
+		this->calibPanel->Controls->Add(this->exposureTool);
 		this->calibPanel->Controls->Add(this->zeroSetting);
 		this->calibPanel->Location = System::Drawing::Point(1000, 50);
 		this->calibPanel->Name = L"calibPanel";
 		this->calibPanel->Size = System::Drawing::Size(600, 880);
 		this->calibPanel->TabIndex = 15;
+		// 
+		// exposureTool
+		// 
+		this->exposureTool->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+			static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->exposureTool->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->exposureTool->Location = System::Drawing::Point(237, 40);
+		this->exposureTool->Name = L"exposureTool";
+		this->exposureTool->Size = System::Drawing::Size(165, 165);
+		this->exposureTool->TabIndex = 2;
+		this->exposureTool->TabStop = false;
+		this->exposureTool->Click += gcnew System::EventHandler(this, &ServiceForm::exposureTool_Click);
 		// 
 		// zeroSetting
 		// 
@@ -473,7 +528,7 @@ private:
 		this->rotationToolPanel->Controls->Add(this->rotationToolBodyButton);
 		this->rotationToolPanel->Controls->Add(this->rotationToolTiltButton);
 		this->rotationToolPanel->Controls->Add(this->rotationToolArmButton);
-		this->rotationToolPanel->Location = System::Drawing::Point(0, 50);
+		this->rotationToolPanel->Location = System::Drawing::Point(1000, 50);
 		this->rotationToolPanel->Name = L"rotationToolPanel";
 		this->rotationToolPanel->Size = System::Drawing::Size(600, 880);
 		this->rotationToolPanel->TabIndex = 21;
@@ -691,12 +746,195 @@ private:
 		this->rotationToolArmButton->TabStop = false;
 		this->rotationToolArmButton->Click += gcnew System::EventHandler(this, &ServiceForm::rotationTool_arm_Click);
 		// 
+		// exposureToolPanel
+		// 
+		this->exposureToolPanel->Controls->Add(this->exposureLog);
+		this->exposureToolPanel->Controls->Add(this->enableXray);
+		this->exposureToolPanel->Controls->Add(this->label5);
+		this->exposureToolPanel->Controls->Add(this->filterSelection);
+		this->exposureToolPanel->Controls->Add(this->label4);
+		this->exposureToolPanel->Controls->Add(this->label3);
+		this->exposureToolPanel->Controls->Add(this->gridSelection);
+		this->exposureToolPanel->Controls->Add(this->focusSelection);
+		this->exposureToolPanel->Controls->Add(this->label2);
+		this->exposureToolPanel->Controls->Add(this->label1);
+		this->exposureToolPanel->Controls->Add(this->mAsSelection);
+		this->exposureToolPanel->Controls->Add(this->kVSelection);
+		this->exposureToolPanel->Location = System::Drawing::Point(0, 50);
+		this->exposureToolPanel->Name = L"exposureToolPanel";
+		this->exposureToolPanel->Size = System::Drawing::Size(600, 880);
+		this->exposureToolPanel->TabIndex = 22;
+		// 
+		// exposureLog
+		// 
+		this->exposureLog->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(207)),
+			static_cast<System::Int32>(static_cast<System::Byte>(208)));
+		this->exposureLog->BorderStyle = System::Windows::Forms::BorderStyle::None;
+		this->exposureLog->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->exposureLog->Location = System::Drawing::Point(12, 621);
+		this->exposureLog->Name = L"exposureLog";
+		this->exposureLog->ReadOnly = true;
+		this->exposureLog->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
+		this->exposureLog->ShortcutsEnabled = false;
+		this->exposureLog->Size = System::Drawing::Size(576, 220);
+		this->exposureLog->TabIndex = 33;
+		this->exposureLog->Text = L"prova ";
+		// 
+		// enableXray
+		// 
+		this->enableXray->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+			static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->enableXray->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->enableXray->Location = System::Drawing::Point(323, 438);
+		this->enableXray->Name = L"enableXray";
+		this->enableXray->Size = System::Drawing::Size(160, 160);
+		this->enableXray->TabIndex = 32;
+		this->enableXray->TabStop = false;
+		this->enableXray->Click += gcnew System::EventHandler(this, &ServiceForm::enableXray_Click);
+		// 
+		// label5
+		// 
+		this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->label5->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
+			static_cast<System::Int32>(static_cast<System::Byte>(149)));
+		this->label5->Location = System::Drawing::Point(77, 401);
+		this->label5->Name = L"label5";
+		this->label5->Size = System::Drawing::Size(178, 36);
+		this->label5->TabIndex = 31;
+		this->label5->Text = L"Filter";
+		this->label5->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		// 
+		// filterSelection
+		// 
+		this->filterSelection->BackColor = System::Drawing::Color::White;
+		this->filterSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->filterSelection->ForeColor = System::Drawing::Color::Black;
+		this->filterSelection->FormattingEnabled = true;
+		this->filterSelection->Items->AddRange(gcnew cli::array< System::Object^  >(5) { L"Rh", L"Mo", L"Al", L"Cu", L"Ag" });
+		this->filterSelection->Location = System::Drawing::Point(83, 438);
+		this->filterSelection->Name = L"filterSelection";
+		this->filterSelection->Size = System::Drawing::Size(179, 81);
+		this->filterSelection->TabIndex = 30;
+		this->filterSelection->Text = L"Ag";
+		// 
+		// label4
+		// 
+		this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
+			static_cast<System::Int32>(static_cast<System::Byte>(149)));
+		this->label4->Location = System::Drawing::Point(79, 275);
+		this->label4->Name = L"label4";
+		this->label4->Size = System::Drawing::Size(178, 36);
+		this->label4->TabIndex = 29;
+		this->label4->Text = L"Grid";
+		this->label4->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		// 
+		// label3
+		// 
+		this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->label3->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
+			static_cast<System::Int32>(static_cast<System::Byte>(149)));
+		this->label3->Location = System::Drawing::Point(79, 151);
+		this->label3->Name = L"label3";
+		this->label3->Size = System::Drawing::Size(178, 36);
+		this->label3->TabIndex = 28;
+		this->label3->Text = L"Focus";
+		this->label3->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		// 
+		// gridSelection
+		// 
+		this->gridSelection->BackColor = System::Drawing::Color::White;
+		this->gridSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->gridSelection->ForeColor = System::Drawing::Color::Black;
+		this->gridSelection->FormattingEnabled = true;
+		this->gridSelection->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"GRID", L"NO GRID" });
+		this->gridSelection->Location = System::Drawing::Point(85, 314);
+		this->gridSelection->Name = L"gridSelection";
+		this->gridSelection->Size = System::Drawing::Size(398, 81);
+		this->gridSelection->TabIndex = 27;
+		this->gridSelection->Text = L"NO GRID";
+		// 
+		// focusSelection
+		// 
+		this->focusSelection->BackColor = System::Drawing::Color::White;
+		this->focusSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->focusSelection->ForeColor = System::Drawing::Color::Black;
+		this->focusSelection->FormattingEnabled = true;
+		this->focusSelection->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"SMALL", L"LARGE" });
+		this->focusSelection->Location = System::Drawing::Point(85, 190);
+		this->focusSelection->Name = L"focusSelection";
+		this->focusSelection->Size = System::Drawing::Size(398, 81);
+		this->focusSelection->TabIndex = 26;
+		this->focusSelection->Text = L"SMALL";
+		// 
+		// label2
+		// 
+		this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->label2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
+			static_cast<System::Int32>(static_cast<System::Byte>(149)));
+		this->label2->Location = System::Drawing::Point(303, 31);
+		this->label2->Name = L"label2";
+		this->label2->Size = System::Drawing::Size(178, 36);
+		this->label2->TabIndex = 25;
+		this->label2->Text = L"mAs";
+		this->label2->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		// 
+		// label1
+		// 
+		this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
+			static_cast<System::Int32>(static_cast<System::Byte>(149)));
+		this->label1->Location = System::Drawing::Point(79, 31);
+		this->label1->Name = L"label1";
+		this->label1->Size = System::Drawing::Size(178, 36);
+		this->label1->TabIndex = 24;
+		this->label1->Text = L"kV";
+		this->label1->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		// 
+		// mAsSelection
+		// 
+		this->mAsSelection->BackColor = System::Drawing::Color::White;
+		this->mAsSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->mAsSelection->ForeColor = System::Drawing::Color::Black;
+		this->mAsSelection->Location = System::Drawing::Point(304, 70);
+		this->mAsSelection->Name = L"mAsSelection";
+		this->mAsSelection->Size = System::Drawing::Size(177, 70);
+		this->mAsSelection->TabIndex = 23;
+		this->mAsSelection->Text = L"120";
+		this->mAsSelection->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->mAsSelection->Click += gcnew System::EventHandler(this, &ServiceForm::mAsSelection_Click);
+		// 
+		// kVSelection
+		// 
+		this->kVSelection->BackColor = System::Drawing::Color::White;
+		this->kVSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->kVSelection->ForeColor = System::Drawing::Color::Black;
+		this->kVSelection->Location = System::Drawing::Point(85, 70);
+		this->kVSelection->Name = L"kVSelection";
+		this->kVSelection->Size = System::Drawing::Size(177, 70);
+		this->kVSelection->TabIndex = 22;
+		this->kVSelection->Text = L"35";
+		this->kVSelection->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->kVSelection->Click += gcnew System::EventHandler(this, &ServiceForm::kvSelection_Click);
+		// 
 		// ServiceForm
 		// 
 		this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 			static_cast<System::Int32>(static_cast<System::Byte>(60)));
 		this->ClientSize = System::Drawing::Size(600, 1024);
 		this->ControlBox = false;
+		this->Controls->Add(this->exposureToolPanel);
 		this->Controls->Add(this->rotationToolPanel);
 		this->Controls->Add(this->serviceMenuTitle);
 		this->Controls->Add(this->calibZerosettingPanel);
@@ -707,6 +945,7 @@ private:
 		this->Controls->Add(this->calibPanel);
 		this->Controls->Add(this->servicePanel);
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
+		this->Location = System::Drawing::Point(1000, 0);
 		this->Name = L"ServiceForm";
 		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationTool))->EndInit();
@@ -714,6 +953,7 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->EndInit();
 		this->servicePanel->ResumeLayout(false);
 		this->calibPanel->ResumeLayout(false);
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTool))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->EndInit();
 		this->calibZerosettingPanel->ResumeLayout(false);
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSettingSlide))->EndInit();
@@ -740,6 +980,8 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolBodyButton))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolTiltButton))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolArmButton))->EndInit();
+		this->exposureToolPanel->ResumeLayout(false);
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->enableXray))->EndInit();
 		this->ResumeLayout(false);
 		this->PerformLayout();
 
@@ -756,14 +998,15 @@ private:
 
 	// Calibration Panel
 	private: System::Void zeroSetting_Click(System::Object^ sender, System::EventArgs^ e);
-		
-		// Calibration - Zero Setting Panel
-		private: System::Void zeroSettingBody_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void zeroSettingVertical_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void zeroSettingArm_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void zeroSettingTilt_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void zeroSettingSlide_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void zeroSettingAll_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void exposureTool_Click(System::Object^ sender, System::EventArgs^ e);
+
+	// Calibration - Zero Setting Panel
+	private: System::Void zeroSettingBody_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void zeroSettingVertical_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void zeroSettingArm_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void zeroSettingTilt_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void zeroSettingSlide_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void zeroSettingAll_Click(System::Object^ sender, System::EventArgs^ e);
 	
 	// Rotation Tool Button callbacks
 	private: System::Void rotationTool_body_Click(System::Object^ sender, System::EventArgs^ e);
@@ -781,5 +1024,9 @@ private:
 	private: System::Void rotationTool_selection_angle_8_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void rotationTool_selection_angle_9_Click(System::Object^ sender, System::EventArgs^ e);
 
+	// ExposureTool Button Callbacks
+	private: System::Void kvSelection_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void mAsSelection_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void enableXray_Click(System::Object^ sender, System::EventArgs^ e);
 };
 

@@ -40,3 +40,25 @@ void PCB304::runningLoop(void) {
 
     return;
 }
+
+
+void PCB304::demoLoop(void) {
+    
+    
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+   
+
+    patient_protection_detected = true; 
+    patient_protection_shifted = false;
+    magnifier_device_detected = false;
+    magnifier_factor_string = "1.0";
+
+    if (grid_on_field) grid_on_field_ready = true;
+    else grid_off_field_ready = true;
+    
+    grid_sync_ready = true;
+    error = false; 
+
+    return;
+}

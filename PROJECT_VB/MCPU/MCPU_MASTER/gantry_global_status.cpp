@@ -53,51 +53,65 @@ Gantry::Gantry() {
 
 void Gantry::initialize(void) {
     
-    // Set the Demo mode for all processes
-    operating_demo_status = false;
-    
-    can_driver_simulator = false;
-    pcb301_simulator = false;
-    pcb302_simulator = false;
-    pcb303_simulator = false;
-    pcb304_simulator = false;
-    pcb315_simulator = false;
-    pcb326_simulator = false;
-    motor_arm_simulator = false;
-    motor_tilt_simulator = false;
-    motor_slide_simulator = false;
-    motor_body_simulator = false;
-    motor_vertical_simulator = false;
-    generator_simulator = false;
-
+   
     // Initializes the Operating Demo status
     if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEMO_MODE)[SystemConfig::PARAM_DEMO_MODE_STATUS] == "1")
         operating_demo_status = true;
+    else  operating_demo_status = false;
 
     // Force some process to be in demo status when the operating is in demo
-    if (operating_demo_status) {
-        pcb303_simulator = true;
-        pcb304_simulator = true;
-        pcb315_simulator = true;
-        pcb326_simulator = true;
+    if (operating_demo_status) {       
         generator_simulator = true;
     }
+    generator_simulator = false;
+    
+    can_driver_simulator = false;   
+    
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB301]) == 1)
+        pcb301_simulator = false;
+    else pcb301_simulator = true;
 
-    operating_demo_status = true;
-    can_driver_simulator = false;
-    pcb301_simulator = true;
-    pcb302_simulator = false;
-    pcb303_simulator = false;
-    pcb304_simulator = true;
-    pcb315_simulator = false;
-    pcb326_simulator = true;
-    motor_arm_simulator = true;
-    motor_tilt_simulator = false;
-    motor_slide_simulator = true;
-    motor_body_simulator = true;
-    motor_vertical_simulator = true;
-    generator_simulator = true;
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB302]) == 1)
+        pcb302_simulator = false;
+    else pcb302_simulator = true;
 
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB303]) == 1)
+        pcb303_simulator = false;
+    else pcb303_simulator = true;
+
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB304]) == 1)
+        pcb304_simulator = false;
+    else pcb304_simulator = true;
+
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB315]) == 1)
+        pcb315_simulator = false;
+    else pcb315_simulator = true;
+
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB326]) == 1)
+        pcb326_simulator = false;
+    else pcb326_simulator = true;
+
+    if( System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_TILT]) == 1)
+        motor_tilt_simulator = false;
+    else motor_tilt_simulator = true;
+
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_ARM]) == 1)
+        motor_arm_simulator = false;
+    else motor_arm_simulator = true;
+
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_SLIDE]) == 1)
+        motor_slide_simulator = false;
+    else motor_slide_simulator = true;
+
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_BODY]) == 1)
+        motor_body_simulator = false;
+    else motor_body_simulator = true;
+
+    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_VERTICAL]) == 1)
+        motor_vertical_simulator = false;
+    else motor_vertical_simulator = true;
+
+   
 
     // Set the current language for messages and GUI
     Notify::setLanguage("ENG");
@@ -142,6 +156,7 @@ bool Gantry::setService() {
     awsProtocol::EVENT_GantryStatus();
     return true;
 }
+
 
 
 void Gantry::setStartup(void) {
@@ -190,6 +205,7 @@ bool Gantry::getObstacleRotationStatus(int addr) {
     return false;
 
 }
+
 
 Gantry::safety_rotation_conditions Gantry::getSafetyRotationStatus(int addr) {
 
@@ -250,8 +266,8 @@ bool Gantry::getManualRotationIncrease(int addr) {
             if (PCB301::get_button_slide_up_stat()) return true;
         }else if (manual_rotation_mode == manual_rotation_options::GANTRY_SLIDE_MANUAL_ROTATION) {
             if (PCB301::get_button_slide_up_stat()) return true;
-            if (PCB301::get_button_up_stat()) return true;
-            if (PCB301::get_pedal_up_stat()) return true;
+            if (PCB301::get_button_down_stat()) return true;
+            if (PCB301::get_pedal_down_stat()) return true;
         }
 
         break;
@@ -304,8 +320,8 @@ bool Gantry::getManualRotationDecrease(int addr) {
         }
         else if (manual_rotation_mode == manual_rotation_options::GANTRY_SLIDE_MANUAL_ROTATION) {
             if (PCB301::get_button_slide_down_stat()) return true;
-            if (PCB301::get_button_down_stat()) return true;
-            if (PCB301::get_pedal_down_stat()) return true;            
+            if (PCB301::get_button_up_stat()) return true; // Makes use of Up notation to drive upward
+            if (PCB301::get_pedal_up_stat()) return true;  // Makes use of Up notation to drive upward     
         }
 
         break;

@@ -200,7 +200,7 @@ static const unsigned char nanojTrxProgram[] = {
 /// <param name=""></param>
 TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, GEAR_RATIO, false)
 {
-    // setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
+    setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
 
     // Sets +/- 0.02 ° as the acceptable target range
     setTargetRange(2, 2);
@@ -402,6 +402,7 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
     if (!blocking_writeOD(OD_3240_03, 0)) return false;   // Force Enable = false
     if (!blocking_writeOD(OD_3240_06, 0)) return false;   // Input Range Select: threshold = 5V;
 
+  
 
     // Test unlock brake
     if (!unlockBrake()) {
@@ -448,16 +449,12 @@ bool TiltMotor::startHoming(void) {
 /// <returns></returns>
 bool TiltMotor::unlockBrake(void) {
 
-#ifdef _DISABLE_BRAKES_
-return true;
-#endif
-
     // Sets the OUTPUT 1 properly
     if (!blocking_writeOD(OD_60FE_01, UNLOCK_BRAKE_OUT_MASK)) {
         blocking_writeOD(OD_60FE_01, LOCK_BRAKE_OUT_MASK);
         return false;
     }
-return true;
+
     // Test the input feedback to detect the effective unlock condition
     for (int i = 0; i < 10; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -482,12 +479,11 @@ return true;
 /// <returns></returns>
 bool  TiltMotor::lockBrake(void) {
 
-
     // Sets the OUTPUT 1 properly   
     if (!blocking_writeOD(OD_60FE_01, LOCK_BRAKE_OUT_MASK)) {        
         return false;
     }
-    return true;
+
     // Test the input feedback to detect the effective deactivation
     for (int i = 0; i < 10; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -556,7 +552,6 @@ bool TiltMotor::unbrakeCallback(void) {
 TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
     
-    return ret_code;
     if (!device->simulator_mode) {
 
         // With the brake alarm present, no more action can be executed
@@ -578,6 +573,7 @@ TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
                 ret_code = MotorCompletedCodes::ERROR_BRAKE_DEVICE;
             }
         }
+
     } // simulator_mode
 
    

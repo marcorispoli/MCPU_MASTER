@@ -64,7 +64,8 @@ public:
 	/// 
 	/// </summary>
 	/// <param name=""></param>
-	inline static void setGridOnField(void) {};
+	inline static void setGridOnField(void) { grid_on_field = true; }
+	inline static void setGridOffField(void) {grid_on_field = false;}
 
 	/// <summary>
 	/// This function activates/deactivates the grid synchronizatio with the generator.
@@ -85,6 +86,7 @@ public:
 	/// <returns>True if the Grid is in field</returns>
 	/// 
 	inline static bool isGridOnFieldReady(void) { return grid_on_field_ready; }
+	inline static bool isGridOffFieldReady(void) { return grid_off_field_ready; }
 
 	/// <summary>
 	/// If the grid has been set to Generator Synch,
@@ -116,15 +118,20 @@ public:
 		display_intensity = intensity;
 	}
 
-protected: 	virtual void runningLoop(void) override;
+protected: 
+	void runningLoop(void) override;
+	void demoLoop(void) override;
 
 private:
 	static bool patient_protection_detected = false; //!< Is set if the patient protection should be detcted
 	static bool patient_protection_shifted = false; //!< Is set if the patient protection should be shifted out of standard position
 	static bool magnifier_device_detected = false; //!< Is set if the Magnifier device has been detected
 	static System::String^  magnifier_factor_string = "1.0"; //!< This is the current magnification factor detected in string format
+	
 	static bool grid_on_field = false; //!< This is the status of the current grid position.
 	static bool grid_on_field_ready = false; //!< This flag stands for grid correctly positioned in Field
+	static bool grid_off_field_ready = false; //!< This flag stands for grid correctly positioned out of Field
+
 	static bool synch_grid = false; //!< This flag set the current synch status 
 	static bool grid_sync_ready = false; //!< This flag stands for grid ready to be activated by the generator
 	static bool error = false; //!< The 2D grid is in error condition

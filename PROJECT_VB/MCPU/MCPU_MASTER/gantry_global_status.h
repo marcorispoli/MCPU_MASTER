@@ -4,6 +4,7 @@
 #include "ValuePopup.h"
 #include "../MOTORS/CanOpenDriver/CanOpenMotor.h"
 
+// #define _ACTIVATE_CAN_DEVICE_DIAGNOSTIC_LOG // Activates the log on the can bus measurements
 
 
 
@@ -82,6 +83,7 @@ public:static CANOPEN::CanOpenMotor::motor_rotation_activations getManualActivat
     static void setStartup(void);
     static bool setOperating(void);
     static bool setService(void);
+
     static inline ValuePopupForm^ getValuePopupWindow() { return valuePopupWindow; }
     
     static inline bool isOperatingDemo(void) { return operating_demo_status; }

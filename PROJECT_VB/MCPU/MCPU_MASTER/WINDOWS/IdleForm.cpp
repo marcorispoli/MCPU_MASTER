@@ -3,6 +3,7 @@
 #include "idleForm.h"
 #include "ValuePopup.h"
 #include "operatingForm.h"
+#include "ServiceForm.h"
 #include "SystemConfig.h"
 #include "Notify.h"
 #include "PCB301.h"
@@ -24,6 +25,7 @@
 // Main Panel Definition
 #define BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\IdleFormBackground.PNG")
 #define XRAY_MODE Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\XrayMode.PNG")
+#define SERVICE_TOOL_MODE Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\ServiceToolMode.PNG")
 #define BATTERY_CONNECTED Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\Battery\\BatteryConnected.PNG")
 #define BATTERY_CONNECTED_LOW Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\Battery\\BatteryConnectedLow.PNG")
 #define BATTERY_POWERDOWN Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\Battery\\BatteryPowerdownFull.PNG")
@@ -200,6 +202,9 @@ void IdleForm::initIdleStatus(void) {
 	PCB301::set_compressor_ena(true);
 	PCB302::setMasterEna(true);
 
+	if(Generator::isServiceToolConnected()) this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
+	else this->xrayMode->BackgroundImage = XRAY_MODE;
+
 	// Start the startup session	
 	idleTimer->Start();	
 
@@ -348,7 +353,7 @@ void IdleForm::evaluatePopupPanels(void) {
 }
 
 void IdleForm::idleStatusManagement(void) {
-	
+	static int xray_mode_status = 0;
 
 	System::DateTime date;
 	date = System::DateTime::Now;
@@ -476,6 +481,20 @@ void IdleForm::idleStatusManagement(void) {
 
 	}
 
+	if (Generator::isServiceToolConnected()) {
+		if (xray_mode_status != 2) {
+			Notify::activate(Notify::messages::WARNING_GENERATOR_SERVICE_MODE);
+			this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
+			xray_mode_status = 2;
+		}		
+	}
+	else {
+		if (xray_mode_status != 1) {
+			Notify::deactivate(Notify::messages::WARNING_GENERATOR_SERVICE_MODE);
+			this->xrayMode->BackgroundImage = XRAY_MODE;
+			xray_mode_status = 1;
+		}		
+	}
 
 	// Popup panels at the end of the timer thread:
 	// if a panel should be open this thread stops to the ShowDialog() 

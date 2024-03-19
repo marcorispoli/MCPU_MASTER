@@ -121,7 +121,16 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
         CiA_current_status = _CiA402Status::CiA402_SwitchedOn;
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: SWITCHED-ON STATUS");        
 
-        
+        if (fault_activation) {
+            fault_activation = false;
+            faultCallback(false, false, (unsigned int)0, (unsigned int)0);
+        }
+    }
+
+    // The Idle procedure cannot be executed before to complete the initialization process
+    if (!od_initialized) {
+
+        return;
     }
 
     // The subclass can add extra commands in IDLE and enable the command execution
@@ -238,6 +247,7 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
         CiA_current_status = _CiA402Status::CiA402_Fault;
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: FAULT STATUS");
     }
+    fault_activation = true;
 
     // If a command execution is present the command shall be aborted!
     if (current_command != MotorCommands::MOTOR_IDLE) setCommandCompletedCode(MotorCompletedCodes::ERROR_INTERNAL_FAULT);
@@ -269,7 +279,9 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
         return;
     }
 
+    fault_activation = false;
     faultCallback(false, false, (unsigned int)0, (unsigned int)0);
+    
 
     // Tries to reset the error condition
     if (!blocking_readOD(OD_6040_00)) return;

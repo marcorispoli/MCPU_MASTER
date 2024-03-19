@@ -228,12 +228,13 @@ ref class PCB315 : public CanDeviceProtocol
 	/// 
 	///@{
 	
-	#define PCB315_ERROR_BULB_LOW(reg)	(reg->d2 & 0x1) //!< This is the Bulb sensor low level
-	#define PCB315_ERROR_BULB_SHORT(reg)	(reg->d2 & 0x2) //!< This is the Bulb sensor connetions open 
-	#define PCB315_ERROR_BULB_HIGH(reg)	(reg->d2 & 0x4) //!< This is the Bulb sensor high temperature
+	#define PCB315_ERROR_BULB_LOW(reg)	(reg->d2 & 0x1) //!< This is the Bulb sensor low level	
+	#define PCB315_ERROR_BULB_HIGH(reg)	(reg->d2 & 0x2) //!< This is the Bulb sensor high temperature
+	#define PCB315_ERROR_BULB_SHORT(reg)	(reg->d2 & 0x4) //!< This is the Bulb sensor connetions open 
+
 	#define PCB315_ERROR_STATOR_LOW(reg)	(reg->d2 & 0x8) //!< This is the Bulb sensor low level
-	#define PCB315_ERROR_STATOR_SHORT(reg)	(reg->d2 & 0x10) //!< This is the Bulb sensor connetions open 
-	#define PCB315_ERROR_STATOR_HIGH(reg)	(reg->d2 & 0x20) //!< This is the Bulb sensor high temperature
+	#define PCB315_ERROR_STATOR_HIGH(reg)	(reg->d2 & 0x10) //!< This is the Bulb sensor high temperature
+	#define PCB315_ERROR_STATOR_SHORT(reg)	(reg->d2 & 0x20) //!< This is the Bulb sensor connetions open 
 	#define PCB315_ERROR_FILTER_SELECTION(reg)	(reg->d2 & 0x40) //!< This is the Filter selection error
 
 

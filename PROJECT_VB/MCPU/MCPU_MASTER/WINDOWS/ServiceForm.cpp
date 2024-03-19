@@ -36,7 +36,6 @@ void ServiceForm::formInitialization(void) {
 	// Every panel creates its own sub-panels
 	createServicePanel();	
 	createCalibrationPanel();
-	createToolsPanel();
 
 
 	serviceTimer = gcnew System::Timers::Timer(100);
@@ -88,32 +87,36 @@ void ServiceForm::setActivePanel(ServiceForm::panels p) {
 
 	// Hides all the panels
 	servicePanel->Hide();
-	
-	// Calib panels set
 	calibPanel->Hide();
 	calibZerosettingPanel->Hide();
-
-	// Tools panel set
+	exposureToolPanel->Hide();
 	rotationToolPanel->Hide();
 
 	// Stops the timer: each individual panel starts its timer version 
 	serviceTimer->Stop();
 
-	if (p == panels::MAIN_SERVICE_PANEL) {
+	switch (p) {
+	case panels::MAIN_SERVICE_PANEL:  
 		initServicePanel();
 		servicePanel->Show();
-	}
-	else if (p == panels::CALIB_PANEL) {
+		break;
+	case panels::CALIB_PANEL:  
 		initCalibrationPanel();
 		calibPanel->Show();
-	}
-	else if (p == panels::CALIB_ZEROSETTING_PANEL) {
+		break;
+	case panels::TOOL_EXPOSURE_PANEL:  
+		initExposureToolPanel();
+		exposureToolPanel->Show();
+		break;
+	case panels::CALIB_ZEROSETTING_PANEL:
 		initZeroSettingCalibrationPanel();
 		calibZerosettingPanel->Show();
-	}
-	else if (p == panels::TOOL_ROTATION_PANEL) {
+		break;
+	case panels::TOOL_ROTATION_PANEL:  
 		initRotationToolPanel();
 		rotationToolPanel->Show();
+		break;
+
 	}
 }
 
@@ -128,6 +131,7 @@ void ServiceForm::serviceStatusManagement(void) {
 
 	switch (current_panel) {
 		case panels::CALIB_ZEROSETTING_PANEL: zeroSettingPanelTimer(); break;
+		case panels::TOOL_EXPOSURE_PANEL: ExposureToolPanelTimer(); break;
 		case panels::TOOL_ROTATION_PANEL: rotationToolPanelTimer(); break;
 	}
 	
@@ -190,6 +194,7 @@ void ServiceForm::cancButton_Click(System::Object^ sender, System::EventArgs^ e)
 		case panels::MAIN_SERVICE_PANEL: cancServicePanel(); break;
 		case panels::CALIB_PANEL: cancCalibrationPanel(); break;
 		case panels::CALIB_ZEROSETTING_PANEL: cancZeroSettingPanel(); break;
+		case panels::TOOL_EXPOSURE_PANEL: cancExposureToolPanel(); break;
 		case panels::TOOL_ROTATION_PANEL: cancRotationToolPanel(); break;
 
 	}

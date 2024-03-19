@@ -31,6 +31,8 @@ static const char* SQL_GENERATOR_DATABASE = "C:/OEM/AppData/system_messages.sqli
 #define SH_PORT  10000 //!< Smart Hub Port Number
 static const unsigned short  SH_NODE_ID = 1; //!< Node ID of the Smart Hub
 static const unsigned short  GENERATOR_NODE_ID = 6; //!< Generator Node ID
+static const unsigned short  SERVICE_TOOL_NODE_ID = 9; //!< Service Tool Node ID
+
 static const unsigned short  APPLICATION_NODE_ID = 17; //!< Node ID of the Application
 static const unsigned short  DIRECT_WORKSTATION_ID = 1; //!< Workstation ID for Test Exposures without synch
 static const unsigned short  DETECTOR_WORKSTATION_ID = 5; //!< Workstation ID for Detector synchronization signals
@@ -162,7 +164,7 @@ class CR2CP_Eth
   	
     bool smartHubConnected;
     bool generatorConnected;
-
+    bool serviceToolConnected;
   	
   	
    	/*!

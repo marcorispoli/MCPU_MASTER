@@ -334,8 +334,11 @@ void OperatingForm::evaluateProjectionStatus(bool init) {
 		}
 	}
 
+	float arm = (float)ArmMotor::device->getCurrentPosition() / 100;
+	int iarm = (int)arm;
 
-	angleText->Text = (((float)ArmMotor::device->getCurrentPosition()) / 100).ToString() + "°";
+	if ((arm - (float)iarm) >= 0.5) iarm++;
+	angleText->Text = iarm.ToString();
 }
 
 void OperatingForm::evaluateXrayStatus(void) {

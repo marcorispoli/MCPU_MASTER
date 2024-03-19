@@ -144,7 +144,7 @@ protected:
 	MotorCompletedCodes runningCallback(MotorCommands current_command, int current_position, int target_position) override;
 	MotorCompletedCodes idleCallback(void) override;
 	void faultCallback(bool errstat, bool data_changed,  unsigned int error_class, unsigned int error_code) override;
-
+	void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override;
 	
 
 	bool high_photocell;

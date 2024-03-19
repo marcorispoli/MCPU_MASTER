@@ -865,7 +865,7 @@ protected:
 	void inline setDec(int val)   { command_dec = val; }     //!< Modifies the assigned command deceleration (to be used into the motionParameterCallback()) 
 	inline motor_rotation_activations  getMotorDirection(void) { return motor_direction; }
 	
-
+	bool fault_activation;
 private:
 		bool run;
 		bool reset_node;

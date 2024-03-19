@@ -60,6 +60,14 @@ namespace R2CP
             return;
         }
 
+		if (pData[0] == SERVICE_TOOL_NODE_ID) {
+			if (pData[1] == 1) m_Type_->serviceToolConnected = true;
+			else m_Type_->serviceToolConnected = false;
+			return;
+		}
+
+		
+
 	}
 	
 	void CaDataDicGen::Network_GetApplicationNodeStatus(void)
@@ -118,6 +126,11 @@ namespace R2CP
 			else m_Type_->generatorConnected = false;
 		}
 
+		if (pData[0] == SERVICE_TOOL_NODE_ID) {
+			if (pData[1]) m_Type_->serviceToolConnected = true;
+			else m_Type_->serviceToolConnected = false;
+			return;
+		}
 	}
 	
 	void CaDataDicGen::Network_ConnectionRequest(tDataDicAccess Access, unsigned char *pData, unsigned short  nData, tInfoMessage *MessageInfo)

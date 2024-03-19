@@ -201,6 +201,9 @@
     <ClInclude Include="WINDOWS\infoPopup.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WINDOWS\KeyPaddle.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -214,7 +217,6 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="WINDOWS\SERVICE_CALIBRATION\calib_panel.h" />
-    <ClInclude Include="WINDOWS\SERVICE_TOOLS\tools_panel.h" />
     <ClInclude Include="WINDOWS\ValuePopup.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -232,6 +234,7 @@
     <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureAEModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureTest.cpp" />
     <ClCompile Include="MESSAGES\Log.cpp" />
     <ClCompile Include="MOTORS\ArmMotor.cpp" />
     <ClCompile Include="MOTORS\BodyMotor.cpp" />
@@ -270,14 +273,15 @@
     <ClCompile Include="WINDOWS\IconWindow.cpp" />
     <ClCompile Include="WINDOWS\IdleForm.cpp" />
     <ClCompile Include="WINDOWS\infoPopup.cpp" />
+    <ClCompile Include="WINDOWS\KeyPaddle.cpp" />
     <ClCompile Include="WINDOWS\MainForm.cpp" />
     <ClCompile Include="WINDOWS\OperatingForm.cpp" />
     <ClCompile Include="WINDOWS\Projections.cpp" />
     <ClCompile Include="WINDOWS\ServiceForm.cpp" />
     <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_main_panel.cpp" />
     <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_zero_setting.cpp" />
-    <ClCompile Include="WINDOWS\SERVICE_TOOLS\tools_main_panel.cpp" />
-    <ClCompile Include="WINDOWS\SERVICE_TOOLS\tools_rotation.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\tools_exposure.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\tools_rotation.cpp" />
     <ClCompile Include="WINDOWS\ValuePopup.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -307,6 +311,9 @@
     <EmbeddedResource Include="WINDOWS\IdleForm.resx" />
     <EmbeddedResource Include="WINDOWS\infoPopup.resx">
       <DependentUpon>WINDOWS\infoPopup.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\KeyPaddle.resx">
+      <DependentUpon>WINDOWS\KeyPaddle.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\MainForm.resx" />
     <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />

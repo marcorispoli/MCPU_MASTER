@@ -8,6 +8,37 @@ public:
     literal int     FILE_REVISION = 1;
 
     //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_RUNNING_MODE = "RUNNING_MODE";
+    literal System::String^ PARAM_RUNNING_MODE_COMMENT = "[1=Run, 0=Sim]: tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,315,326";
+    literal int     PARAM_RUNNING_MODE_TILT = 0;
+    literal int     PARAM_RUNNING_MODE_ARM = 1;
+    literal int     PARAM_RUNNING_MODE_BODY = 2;
+    literal int     PARAM_RUNNING_MODE_VERTICAL = 3;
+    literal int     PARAM_RUNNING_MODE_SLIDE = 4;
+    literal int     PARAM_RUNNING_MODE_PCB301 = 5;
+    literal int     PARAM_RUNNING_MODE_PCB302 = 6;
+    literal int     PARAM_RUNNING_MODE_PCB303 = 7;
+    literal int     PARAM_RUNNING_MODE_PCB304 = 8;
+    literal int     PARAM_RUNNING_MODE_PCB315 = 9;
+    literal int     PARAM_RUNNING_MODE_PCB326 = 10;
+
+
+
+    literal System::String^ PARAM_RUNNING_MODE_TILT_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_ARM_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_BODY_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_VERTICAL_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_SLIDE_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_PCB301_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_PCB302_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_PCB303_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_PCB304_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_PCB315_DEFAULT = "1";
+    literal System::String^ PARAM_RUNNING_MODE_PCB326_DEFAULT = "0";
+
+
+
+    //___________________________________________________________________________________________________//
     literal System::String^ PARAM_INSTALLATION_NAME = "INSTALL_NAME";
     literal System::String^ PARAM_INSTALLATION_NAME_COMMENT = "Name of the installation";
     literal int     PARAM_INSTALLATION_NAME_TOP = 0;
@@ -64,6 +95,21 @@ public:
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
+            CONFIG_FILE_ITEM(PARAM_RUNNING_MODE, PARAM_RUNNING_MODE_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_RUNNING_MODE_TILT_DEFAULT,
+            PARAM_RUNNING_MODE_ARM_DEFAULT,
+            PARAM_RUNNING_MODE_BODY_DEFAULT,
+            PARAM_RUNNING_MODE_VERTICAL_DEFAULT,
+            PARAM_RUNNING_MODE_SLIDE_DEFAULT,
+            PARAM_RUNNING_MODE_PCB301_DEFAULT,
+            PARAM_RUNNING_MODE_PCB302_DEFAULT,
+            PARAM_RUNNING_MODE_PCB303_DEFAULT,
+            PARAM_RUNNING_MODE_PCB304_DEFAULT,
+            PARAM_RUNNING_MODE_PCB315_DEFAULT,
+            PARAM_RUNNING_MODE_PCB326_DEFAULT
+            }),
+
+
             CONFIG_FILE_ITEM(PARAM_INSTALLATION_NAME, PARAM_INSTALLATION_NAME_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_INSTALLATION_NAME_TOP_DEFAULT,            
             }),

@@ -29,7 +29,7 @@ bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     // Motor Drive Parameter Set
     while (!blocking_writeOD(OD_3210_01, 10000)); 
-    while (!blocking_writeOD(OD_3210_02, 1));	 
+    while (!blocking_writeOD(OD_3210_02, 10));	 
 
 
     // Position Range Limit

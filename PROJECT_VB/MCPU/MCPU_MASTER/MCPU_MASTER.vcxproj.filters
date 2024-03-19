@@ -206,7 +206,7 @@
     <ClInclude Include="MESSAGES\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WINDOWS\SERVICE_TOOLS\tools_panel.h">
+    <ClInclude Include="WINDOWS\KeyPaddle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -382,10 +382,16 @@
     <ClCompile Include="MESSAGES\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WINDOWS\SERVICE_TOOLS\tools_main_panel.cpp">
+    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\tools_exposure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WINDOWS\SERVICE_TOOLS\tools_rotation.cpp">
+    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\tools_rotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\KeyPaddle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\ExposureTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

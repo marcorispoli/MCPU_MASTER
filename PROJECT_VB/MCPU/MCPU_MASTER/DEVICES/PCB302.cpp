@@ -125,7 +125,7 @@ void PCB302::handlePaddleStatusRegister(void) {
 	current_force = PCB302_GET_PADDLE_FORCE_LOW(paddle_status_register) + 16 * PCB302_GET_PADDLE_FORCE_HIGH(paddle_status_register);
 
 	// To be modified
-	detected_paddle == paddleCodes::PADDLE_24x30_CONTACT;
+	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;
 }
 
 void PCB302::evaluateEvents(void) {
@@ -170,7 +170,8 @@ bool PCB302::configurationLoop(void) {
 	unsigned short force_limit = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_LIMIT]);
 	unsigned short force_target = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_TARGET]);
 
-
+	thickness_correction = System::Convert::ToInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_POSITION_CALIBRATION)[CompressorConfig::PARAM_THICKNESS_CORRECTION]);
+	
 	// Upload calibration registers
 	unsigned char d0 = (unsigned char) position_offset;
 	unsigned char d1 = (unsigned char) (position_offset >> 8) ;

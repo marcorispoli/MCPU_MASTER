@@ -61,6 +61,7 @@ CR2CP_Eth::CR2CP_Eth(	short (*cbSendMsgEth)( unsigned char *pMessage , unsigned 
 	mBlockManager.infomessage.Priority=0;
 	smartHubConnected = false;
 	generatorConnected = false;
+	serviceToolConnected = false;
 
 }
 

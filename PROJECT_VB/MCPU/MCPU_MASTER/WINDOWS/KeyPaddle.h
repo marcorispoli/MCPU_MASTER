@@ -216,6 +216,7 @@ private: System::Void InitializeComponent() {
 	this->kb->Size = System::Drawing::Size(100, 100);
 	this->kb->TabIndex = 41;
 	this->kb->TabStop = false;
+	this->kb->Click += gcnew System::EventHandler(this, &KeyPaddleWindow::kb_Click);
 	// 
 	// k4
 	// 
@@ -415,7 +416,12 @@ private: System::Void k0_Click(System::Object^ sender, System::EventArgs^ e) {
 	result += "0";
 	InfoContentText->Text = result;
 }
+private: System::Void kb_Click(System::Object^ sender, System::EventArgs^ e) {
+	result = "";
+	InfoContentText->Text = result;
+}
 private: System::Void kp_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (result->Contains(".")) return;
 	result += ".";
 	InfoContentText->Text = result;
 }

@@ -170,43 +170,53 @@ bool PCB315::updateStatusRegister(void) {
 
     
     // If an error condition is signaled gets the error register 
+    bool temp_fault = false;
     if ((PCB315_GET_ERROR_FLAG(flags_status)) && (!Gantry::isOperatingDemo())) {
-
         error_status = true;        
         Register^ error_register = readErrorRegister();
+        
         if (error_register != nullptr)
         {
-            if (PCB315_ERROR_BULB_LOW(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_LOW);
-            else Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_LOW);
-            if (PCB315_ERROR_BULB_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_BULB_SENSOR_SHORT);
+            if (PCB315_ERROR_BULB_LOW(error_register)) {
+                Notify::activate(Notify::messages::ERROR_BULB_SENSOR_LOW);
+                temp_fault = true;
+            } else Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_LOW);
+            
+            if (PCB315_ERROR_BULB_SHORT(error_register)) {
+                Notify::activate(Notify::messages::ERROR_BULB_SENSOR_SHORT);
+                temp_fault = true;
+            }
             else Notify::deactivate(Notify::messages::ERROR_BULB_SENSOR_SHORT);
            
 
-            if (PCB315_ERROR_STATOR_LOW(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_LOW);
+            if (PCB315_ERROR_STATOR_LOW(error_register)) {
+                Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_LOW);
+                temp_fault = true;
+            }
             else Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_LOW);
-            if (PCB315_ERROR_STATOR_SHORT(error_register))    Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_SHORT);
+
+            if (PCB315_ERROR_STATOR_SHORT(error_register)) {
+                Notify::activate(Notify::messages::ERROR_STATOR_SENSOR_SHORT);
+                temp_fault = true;
+            }
             else Notify::deactivate(Notify::messages::ERROR_STATOR_SENSOR_SHORT);
 
-            // Evaluates the Warning related to the High tube temperature
-            if (PCB315_ERROR_BULB_HIGH(error_register) || PCB315_ERROR_STATOR_HIGH(error_register)) {
-                tube_high_temp_alarm = true;
-
-                if (PCB315_ERROR_BULB_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
-                else Notify::deactivate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
-
-                if (PCB315_ERROR_STATOR_HIGH(error_register)) Notify::activate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
-                else Notify::deactivate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
-
+            if (PCB315_ERROR_BULB_HIGH(error_register)) {
+                Notify::activate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
+                temp_fault = true;
             }
-            else {
-                Notify::deactivate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
-                Notify::deactivate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
-                tube_high_temp_alarm = false;
+            else Notify::deactivate(Notify::messages::WARNING_BULB_SENSOR_HIGH);
+
+            if (PCB315_ERROR_STATOR_HIGH(error_register)) {
+                Notify::activate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
+                temp_fault = true;
             }
+            else Notify::deactivate(Notify::messages::WARNING_STATOR_SENSOR_HIGH);
 
         }
     }
     else {
+       
         if (error_status) {
 
             // Resets all the possible errors
@@ -221,7 +231,7 @@ bool PCB315::updateStatusRegister(void) {
 
        
     }
-
+    tube_temp_alarm = temp_fault;
 
     return true;
 }
@@ -374,8 +384,6 @@ PCB315::FilterSlotCodes PCB315::filterAssignment(System::String^ assignment) {
 /// 
 /// <param name="code">The Filter (material) requested</param>
 void PCB315::setFilterAutoMode(filterMaterialCodes code) {
-    return;
-
     valid_filter_format = false;
 
     switch (code) {
@@ -413,7 +421,6 @@ void PCB315::setFilterAutoMode(filterMaterialCodes code) {
 /// 
 /// <param name=""></param>
 void PCB315::setFilterAutoMode(void) {
-    return;
 
     valid_filter_format = false;
     filter_working_mode = filterWorkingMode::FILTER_AUTO_MODE;    
@@ -434,7 +441,6 @@ void PCB315::setFilterAutoMode(void) {
 /// 
 /// <param name="code">The Filter (material) requested</param>
 void PCB315::setFilterManualMode(filterMaterialCodes code) {
-    return;
     valid_filter_format = false;
 
     switch (code) {
@@ -473,7 +479,6 @@ void PCB315::setFilterManualMode(filterMaterialCodes code) {
 /// 
 /// <param name=""></param>
 void PCB315::setFilterManualMode(void) {
-    return;
     valid_filter_format = false;
     filter_working_mode = filterWorkingMode::FILTER_MANUAL_MODE;
 }
@@ -559,6 +564,144 @@ System::String^ PCB315::getTagFromFilter(filterMaterialCodes filter) {
     if (filter == filterMaterialCodes::FILTER_CU) return "Cu";
     if (filter == filterMaterialCodes::FILTER_RH) return "Rh";
     if (filter == filterMaterialCodes::FILTER_MO) return "Mo";
-
     return "UNDEF";
 }
+
+
+void PCB315::demoLoop(void) {
+    static int filter_demo_selection_time = 0;
+    static int filter_light_activation_timer = 0;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    filter_fault = false;
+
+    stator_perc = 0;
+    bulb_perc = 0;
+    anode_perc = 0;
+    tube_temp_alarm = false;
+
+    // Sets the flag status related to the Power light activation
+    if (filter_light_activation_timer) {
+        filter_light_activation_timer--;
+        if (!filter_light_activation_timer) flags_status &=~ 0x1;
+        else flags_status |= 0x1;
+    }
+
+    // Verifies the correct calibration format
+    switch (filter_working_mode) {
+
+        // Auto Filter selection mode (AWS) 
+    case filterWorkingMode::FILTER_AUTO_MODE:
+
+        // No Filter activation in case of invalid filter code
+        if (auto_filter_selected == FilterSlotCodes::FILTER_INVALID) {
+            valid_filter_format = false;
+            return;
+
+        }
+
+        // If a command is executing  
+        if (filter_status == FilterSlotCodes::FILTER_SELECTION_PENDING) {
+            if (filter_demo_selection_time) {
+                filter_demo_selection_time--;
+                if (!filter_demo_selection_time) {
+                    filter_status = auto_filter_selected;
+                    valid_filter_format = true;
+                    return;
+                }
+            }
+            return;
+        }
+
+        // Start the simulation timer for filter selection
+        if (filter_status != auto_filter_selected)
+        {
+            filter_demo_selection_time = 10; // 1 second simulated selection time
+            valid_filter_format = false;
+            filter_status = FilterSlotCodes::FILTER_SELECTION_PENDING;
+            return;
+        }
+
+        valid_filter_format = true;
+        return;
+
+        // Manual Filter selection mode (test/calibration)  
+    case filterWorkingMode::FILTER_MANUAL_MODE:
+
+        // No Filter activation in case of invalid filter code
+        if (manual_filter_selected == FilterSlotCodes::FILTER_INVALID) {
+            valid_filter_format = false;
+            return;
+
+        }
+
+        // If a command is executing  
+        if (filter_status == FilterSlotCodes::FILTER_SELECTION_PENDING) {
+            if (filter_demo_selection_time) {
+                filter_demo_selection_time--;
+                if (!filter_demo_selection_time) {
+                    filter_status = manual_filter_selected;
+                    valid_filter_format = true;
+                    LogClass::logInFile("PCB315-SYM: manaul filter selected");
+                    return;
+                }
+            }
+            return;
+        }
+
+        // Start the simulation timer for filter selection
+        if (filter_status != manual_filter_selected)
+        {
+            LogClass::logInFile("PCB315-SYM: selection manual filter");
+            filter_demo_selection_time = 10; // 1 second simulated selection time
+            valid_filter_format = false;
+            filter_status = FilterSlotCodes::FILTER_SELECTION_PENDING;
+            return;
+        }
+
+        valid_filter_format = true;
+        return;
+
+    case filterWorkingMode::FILTER_MIRROR_MODE:
+
+        /// DA MODIFICARE----------------------------------------
+        // Executes a pending light activation request
+        if (request_light_activation) {
+            request_light_activation = false;   
+            filter_light_activation_timer = 100;
+            LogClass::logInFile("PCB315 Simulator: Light On");
+        }
+
+        /// ----------------------------------------         
+        if (filter_status == FilterSlotCodes::FILTER_SELECTION_PENDING) {
+            if (filter_demo_selection_time) {
+                filter_demo_selection_time--;
+                if (!filter_demo_selection_time) {
+                    filter_status = FilterSlotCodes::MIRROR_SELECTION;
+                    valid_filter_format = true;
+                    return;
+                }
+            }
+            return;
+        }
+
+        // Start the simulation timer for filter selection
+        if (filter_status != FilterSlotCodes::MIRROR_SELECTION)
+        {
+            filter_demo_selection_time = 10;    // 1 second simulated selection time
+            filter_light_activation_timer = 100;// 10 seconds for the light simulation
+            LogClass::logInFile("PCB315 Simulator: Light On");
+            request_light_activation = false;
+            valid_filter_format = false;
+            filter_status = FilterSlotCodes::FILTER_SELECTION_PENDING;
+            return;
+        }
+
+        valid_filter_format = true;
+        return;
+
+    }
+
+    return;
+}
+   

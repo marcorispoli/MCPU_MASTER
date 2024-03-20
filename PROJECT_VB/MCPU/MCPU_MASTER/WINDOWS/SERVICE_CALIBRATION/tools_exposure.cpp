@@ -18,6 +18,7 @@ typedef enum {
 	EXPTOOL_WAIT_BUTTON,
 	EXPTOOL_EXECUTING,
 	EXPTOOL_COMPLETED,
+	EXPTOOL_TERMINATED
 }_exptool_steps_t;
 
 static _exptool_steps_t exposureStep = EXPTOOL_NO_EXPOSURE;
@@ -48,7 +49,6 @@ void ServiceForm::initExposureToolPanel(void) {
 	exposureLog->Clear();
 	exposureLog->Show();
 	PCB301::set_xray_ena(false);
-
 	
 	return;
 }
@@ -67,9 +67,11 @@ void ServiceForm::onKvSelectionCallback(System::String^ value) {
 		kV = 0;
 	}
 
-	if ((kV > 20.0) && (kV < 49)) {
-		kVSelection->Text = value;
-	}
+	if (kV < 20) kVSelection->Text = "20";
+	else if (kV > 49) kVSelection->Text = "49";
+	else kVSelection->Text = value;
+
+	
 }
 void ServiceForm::onmAsSelectionCallback(System::String^ value) {
 	float mAs;
@@ -81,9 +83,11 @@ void ServiceForm::onmAsSelectionCallback(System::String^ value) {
 		mAs = 0;
 	}
 
-	if ((mAs >= 1) && (mAs < 640)) {
-		mAsSelection->Text = value;
-	}
+	if (mAs < 1) mAsSelection->Text = "1";
+	else if (mAs > 640) mAsSelection->Text = "640";
+	else mAsSelection->Text = value;
+
+	
 }
 
 System::Void  ServiceForm::kvSelection_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -109,6 +113,7 @@ System::Void ServiceForm::enableXray_Click(System::Object^ sender, System::Event
 		float kV;
 		bool use_grid;
 		unsigned char focus;
+		PCB315::filterMaterialCodes filter;
 
 		try {
 			mAs = System::Convert::ToDouble(mAsSelection->Text);
@@ -117,6 +122,13 @@ System::Void ServiceForm::enableXray_Click(System::Object^ sender, System::Event
 			else use_grid = false;
 			if (focusSelection->Text == "LARGE") focus = ExposureModule::FOCUS_LARGE;
 			else focus = ExposureModule::FOCUS_SMALL;
+			
+			if (filterSelection->Text == "Rh") filter = PCB315::filterMaterialCodes::FILTER_RH;
+			else if (filterSelection->Text == "Ag") filter = PCB315::filterMaterialCodes::FILTER_AG;
+			else if (filterSelection->Text == "Al") filter = PCB315::filterMaterialCodes::FILTER_AL;
+			else if (filterSelection->Text == "Cu") filter = PCB315::filterMaterialCodes::FILTER_CU;
+			else if (filterSelection->Text == "Mo") filter = PCB315::filterMaterialCodes::FILTER_MO;
+			else filter = PCB315::filterMaterialCodes::FILTER_RH;
 
 		}
 		catch (...) {
@@ -124,7 +136,7 @@ System::Void ServiceForm::enableXray_Click(System::Object^ sender, System::Event
 			return;
 		}
 
-		if (!ExposureModule::setExposurePulse(0, gcnew ExposureModule::exposure_pulse(kV, mAs, PCB315::filterMaterialCodes::FILTER_RH, focus, use_grid))) {
+		if (!ExposureModule::setExposurePulse(0, gcnew ExposureModule::exposure_pulse(kV, mAs, filter, focus, use_grid))) {
 			ExposureToolXrayEna = false;
 			return;
 		}
@@ -148,6 +160,7 @@ System::Void ServiceForm::enableXray_Click(System::Object^ sender, System::Event
 
 void ServiceForm::ExposureToolPanelTimer(void) {
 	ExposureModule::exposure_completed_errors xerror;
+	ExposureModule::exposure_pulse^ pulse;
 	float val;
 
 	switch (exposureStep) {
@@ -159,8 +172,8 @@ void ServiceForm::ExposureToolPanelTimer(void) {
 				exposureStep = EXPTOOL_EXECUTING;
 			}
 			else {
-				exposureLog->Text += "BUTTON PRESSED: generator error\n";
-				exposureStep = EXPTOOL_COMPLETED;
+				exposureLog->Text += "startExposure() Failed!\nUnable to start exposure\n";
+				exposureStep = EXPTOOL_TERMINATED;
 			}
 			
 		}
@@ -176,8 +189,7 @@ void ServiceForm::ExposureToolPanelTimer(void) {
 
 		xerror = ExposureModule::getExposureCompletedError();
 		exposureLog->Text += "Exposure Completed:" + xerror.ToString() + "\n";
-
-		ExposureModule::exposure_pulse^ pulse = ExposureModule::getExposedPulse(0);
+		pulse = ExposureModule::getExposedPulse(0);
 		if (pulse) {
 			if(pulse->isLargeFocus()) exposureLog->Text += "focus: large\n";
 			else  exposureLog->Text += "focus: small\n";
@@ -195,9 +207,12 @@ void ServiceForm::ExposureToolPanelTimer(void) {
 
 			val = ((float)((int)(pulse->getms() * 100))) / 100;
 			exposureLog->Text += ", ms:" + val.ToString();
-
-			
 		}
+
+		exposureStep = EXPTOOL_TERMINATED;
+		break;
+
+	case EXPTOOL_TERMINATED:
 
 		serviceTimer->Stop();
 		exposureStep = EXPTOOL_NO_EXPOSURE;

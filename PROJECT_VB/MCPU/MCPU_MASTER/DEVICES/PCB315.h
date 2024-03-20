@@ -406,12 +406,13 @@ private:
 	protected: 	void runningLoop(void) override; //!< This is the Base class runningLoop override function
 	protected: 	bool configurationLoop(void) override;//!< This is the Base class configurationLoop override function
 	protected: 	void resetLoop(void) override;//!< This is the Base class resetLoop override function
+	protected:  void demoLoop(void) override;
 
 	// Tube Monitoring
 	private: static unsigned char stator_perc = 0;//!< This is the current stator temperature in percent of the maximum possible
 	private: static unsigned char bulb_perc = 0;//!< This is the current bulb temperature in percent of the maximum possible
 	private: static unsigned char anode_perc = 0;//!< This is the current anode temperature in percent of the maximum possible
-	private: static bool tube_high_temp_alarm = false;//!< This is the current tube temperature alarm flag in case of fault detected
+	private: static bool tube_temp_alarm = false;//!< This is the current tube temperature alarm flag in case of fault detected
 
 	// Macro function reading registers
 	private: bool updateStatusRegister(void); //!< Function handling the status register acquisition
@@ -471,7 +472,7 @@ public:
 	/// /// </summary>
 	/// <param name=""></param>
 	/// <returns>The alarm condition due to temperature</returns>	
-	inline static bool isTubeAlarm(void) { return tube_high_temp_alarm; }
+	inline static bool isTubeAlarm(void) { return tube_temp_alarm; }
 
 	
 	static filterMaterialCodes getFilterFromTag(System::String^ filter_tag); //!< Returns the Filter selection code
@@ -492,7 +493,8 @@ public:
 	inline static bool getPowerLightStatus(void) { return PCB315_GET_LIGHT_FLAG(flags_status); }
 
 	
-
+	inline static bool isValidFilterSelected(void) { return valid_filter_format; }
+	inline static bool isFilterFault(void) { return filter_fault; }
 	///@}
 
 };

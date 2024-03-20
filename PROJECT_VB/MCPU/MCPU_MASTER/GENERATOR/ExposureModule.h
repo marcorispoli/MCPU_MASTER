@@ -252,8 +252,12 @@ public:
         XRAY_KV_ERROR,				//!< The generator detected a kV error
         XRAY_STARTER_ERROR,			//!< The generator detected an Anode Starter error condition
         XRAY_GRID_ERROR,			//!< The Grid device is in error condition
+        XRAY_TIMEOUT,			    //!< Timeout generator sequence
         XRAY_TIMEOUT_AEC,			//!< Timeout waiting the Main Pulse data after an AEC pre pulse
         XRAY_POSITIONING_ERROR,     //!< Error in ARM or Tilt positioning
+        XRAY_FILTER_ERROR,          //!< Error in selecting the filter for the exposure
+        XRAY_TUBE_TEMPERATURE,      //!< Error the Tube is in fault condition
+
     };
 
     

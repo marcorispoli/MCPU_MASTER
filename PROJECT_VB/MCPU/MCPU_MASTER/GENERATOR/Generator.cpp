@@ -139,6 +139,7 @@ void Generator::simulatorWork(void) {
 void Generator::errorLoop(void) {
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        return;
     }
 }
 void Generator::serviceToolLoop(void) {
@@ -197,20 +198,38 @@ void Generator::threadWork(void) {
         // until the service tool exits
         if (isServiceToolConnected()) serviceToolLoop();
 
-        // Inits of the generator
-        LogClass::logInFile("Generator connected: Initialization\n");
-        if (!generatorInitialization()) {
-            if (!connectionTest()) continue;
-
-            LogClass::logInFile("Generator Iitialization Failed!\n");
-            Notify::activate(Notify::messages::ERROR_GENERATOR_SETUP);
-
-            setup_completed = true;
-            errorLoop();
-            Notify::deactivate(Notify::messages::ERROR_GENERATOR_SETUP);
+        // Sets the version 6 of the protocol
+        LogClass::logInFile("Setting protocol version\n");        
+        
+        while (!R2CP::CaDataDicGen::GetInstance()->isVersionUpdated()) {
+            R2CP::CaDataDicGen::GetInstance()->Protocol_Get_Version();
+            handleCommandProcessedState(nullptr);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if (!connectionTest()) break;
+        }
+        if (!connectionTest()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             continue;
         }
-        if (!connectionTest()) continue;
+     
+        while (true) {
+
+            // If the version is already the 6 finish here
+            if (R2CP::CaDataDicGen::GetInstance()->isProtoV6()) break;
+
+            // Set the version 6 of the protocol            
+            R2CP::CaDataDicGen::GetInstance()->Protocol_Set_Version6();
+            handleCommandProcessedState(nullptr);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            if (!connectionTest()) break;
+
+        }
+
+        if (!connectionTest()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            continue;
+        }
+
         if (isServiceToolConnected()) continue;
 
         // Clear the system messages
@@ -273,7 +292,8 @@ bool  Generator::handleCommandProcessedState(unsigned char* cd) {
     if (cd) *cd = code;
 
     if (code) {       
-        LogClass::logInFile("CommandProcessedError:" + gcnew String(R2CP_Eth->getCommandProcessedString().c_str()));
+        LogClass::logInFile("CommandProcessedError:" + code.ToString() + " >" +  gcnew String(R2CP_Eth->getCommandProcessedString().c_str()));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         return false;
     }
     
@@ -289,10 +309,12 @@ bool Generator::generatorInitialization(void) {
         while (!R2CP::CaDataDicGen::GetInstance()->isVersionUpdated()) {
             R2CP::CaDataDicGen::GetInstance()->Protocol_Get_Version();
             handleCommandProcessedState(nullptr);
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
             if (!connectionTest()) return false;
         }
 
+        // If the version is already the 6 finish here
         if (R2CP::CaDataDicGen::GetInstance()->isProtoV6()) break;
 
         // Set the version 6 of the protocol            
@@ -308,9 +330,8 @@ bool Generator::generatorInitialization(void) {
 
     while (true) {
         R2CP::CaDataDicGen::GetInstance()->Generator_Get_StatusV6();
-        if (handleCommandProcessedState(nullptr)) {
-            if (R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus != R2CP::Stat_Initialization) break;
-        }        
+        if (!handleCommandProcessedState(nullptr)) return false; 
+        if (R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus != R2CP::Stat_Initialization) break;                
         if (!connectionTest()) return false;
     }
 
@@ -613,7 +634,6 @@ bool Generator::generatorErrorMessagesLoop(void) {
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-
         // Get the error list
         R2CP::CaDataDicGen::GetInstance()->SystemMessages_Get_AllMessages();
         if (!handleCommandProcessedState(nullptr)) return false;
@@ -647,8 +667,6 @@ bool Generator::generatorErrorMessagesLoop(void) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
-        
-        
     }
 }
 
@@ -667,6 +685,8 @@ bool Generator::logCurrentStatus(unsigned char status) {
 
     switch (status) {
     case R2CP::Stat_Standby: LogClass::logInFile("GENERATOR STATUS: Stat_Standby"); break;
+    case R2CP::Stat_Preparation: LogClass::logInFile("GENERATOR STATUS: Stat_Preparation"); break;
+    case R2CP::Stat_ExpReq: LogClass::logInFile("GENERATOR STATUS: Stat_ExpReq"); break;
     case R2CP::Stat_Error:LogClass::logInFile("GENERATOR STATUS: Stat_Error"); break;
     case R2CP::Stat_WaitFootRelease:LogClass::logInFile("GENERATOR STATUS: Stat_WaitFootRelease"); break;
     case R2CP::Stat_GoigToShutdown:LogClass::logInFile("GENERATOR STATUS: Stat_GoigToShutdown"); break;
@@ -679,6 +699,7 @@ bool Generator::logCurrentStatus(unsigned char status) {
 
     return true;
 }
+
 
 void Generator::setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc) {
     if (R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples) {

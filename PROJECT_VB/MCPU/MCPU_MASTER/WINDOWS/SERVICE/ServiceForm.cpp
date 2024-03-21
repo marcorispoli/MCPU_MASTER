@@ -1,23 +1,19 @@
 #include "../AWS/awsProtocol.h"
 #include "ServiceForm.h"
 #include "ErrorForm.h"
-#include "operatingForm.h"
 #include "SystemConfig.h"
 #include "Notify.h"
-#include "PCB301.h"
-#include "PCB302.h"
-#include "PCB303.h"
-#include "PCB304.h"
-#include "PCB315.h"
-#include "PCB326.h"
-#include "VerticalMotor.h"
-#include "BodyMotor.h"
 #include "../gantry_global_status.h"
+
+#include "ServiceExposureTool.h"
+#include "ServiceRotationTool.h"
+#include "ServiceZeroSettingTool.h"
 
 
 // Main Panel Definition
 #define FORM_BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ServiceBackground.PNG")
 #define SERVICE_MENU_BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ServiceMenuBackground.PNG")
+#define CALIB_MENU_BACKGROUND System::Drawing::Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\CALIBRATION\\CalibrationBackground.PNG")
 
 
 void ServiceForm::formInitialization(void) {
@@ -32,10 +28,21 @@ void ServiceForm::formInitialization(void) {
 	labelInstallation->Text = SystemConfig::Configuration->getParam(SystemConfig::PARAM_INSTALLATION_NAME)[SystemConfig::PARAM_INSTALLATION_NAME_TOP];
 	serviceCanc->BackColor = Color::Transparent;
 	
-	// Service Panels creation
-	// Every panel creates its own sub-panels
-	createServicePanel();	
-	createCalibrationPanel();
+	servicePanel->SetBounds(0, 0, PANEL_WIDTH, PANEL_HIGH);
+	servicePanel->BackgroundImage = SERVICE_MENU_BACKGROUND;
+	servicePanel->Location = System::Drawing::Point(PANEL_X, PANEL_Y);
+	systemCalibration->BackColor = Color::Transparent;
+	systemSetup->BackColor = Color::Transparent;
+	rotationTool->BackColor = Color::Transparent;
+
+	// Calib panel Definition
+	calibPanel->SetBounds(0, 0, PANEL_WIDTH, PANEL_HIGH);
+	calibPanel->BackgroundImage = CALIB_MENU_BACKGROUND;
+	calibPanel->Location = System::Drawing::Point(PANEL_X, PANEL_Y);
+
+	// Set of the Menu Buttons
+	zeroSetting->BackColor = Color::Transparent;
+	exposureTool->BackColor = Color::Transparent;
 
 
 	serviceTimer = gcnew System::Timers::Timer(100);
@@ -57,8 +64,7 @@ void ServiceForm::initServiceStatus(void) {
 	// Activate the Operating Status  manual modes
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
-	PCB302::setCompressorUnlock();
-
+	
 	// Start the startup session	
 	serviceTimer->Start();	
 	
@@ -76,8 +82,6 @@ void ServiceForm::close(void) {
 	if (!open_status) return;
 	open_status = false;
 	serviceTimer->Stop();
-
-	
 	this->Hide();
 }
 
@@ -88,35 +92,23 @@ void ServiceForm::setActivePanel(ServiceForm::panels p) {
 	// Hides all the panels
 	servicePanel->Hide();
 	calibPanel->Hide();
-	calibZerosettingPanel->Hide();
-	exposureToolPanel->Hide();
-	rotationToolPanel->Hide();
+	
+	
 
 	// Stops the timer: each individual panel starts its timer version 
 	serviceTimer->Stop();
 
 	switch (p) {
-	case panels::MAIN_SERVICE_PANEL:  
+	case panels::MAIN_SERVICE_PANEL:
 		initServicePanel();
 		servicePanel->Show();
 		break;
-	case panels::CALIB_PANEL:  
+	case panels::CALIB_PANEL:
 		initCalibrationPanel();
 		calibPanel->Show();
 		break;
-	case panels::TOOL_EXPOSURE_PANEL:  
-		initExposureToolPanel();
-		exposureToolPanel->Show();
-		break;
-	case panels::CALIB_ZEROSETTING_PANEL:
-		initZeroSettingCalibrationPanel();
-		calibZerosettingPanel->Show();
-		break;
-	case panels::TOOL_ROTATION_PANEL:  
-		initRotationToolPanel();
-		rotationToolPanel->Show();
-		break;
 
+	
 	}
 }
 
@@ -129,12 +121,6 @@ void ServiceForm::serviceStatusManagement(void) {
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-	switch (current_panel) {
-		case panels::CALIB_ZEROSETTING_PANEL: zeroSettingPanelTimer(); break;
-		case panels::TOOL_EXPOSURE_PANEL: ExposureToolPanelTimer(); break;
-		case panels::TOOL_ROTATION_PANEL: rotationToolPanelTimer(); break;
-	}
-	
 }
 
 void ServiceForm::WndProc(System::Windows::Forms::Message% m)
@@ -157,16 +143,7 @@ System::Void ServiceForm::onServiceTimeout(Object^ source, System::Timers::Elaps
 	SendMessageA(window, WM_USER + 1, 0, 0);
 }
 
-// ____________________________ MAIN PANEL ACTIVATION __________________________________ //
-void ServiceForm::createServicePanel(void) {
-	servicePanel->SetBounds(0, 0, PANEL_WIDTH, PANEL_HIGH);
-	servicePanel->BackgroundImage = SERVICE_MENU_BACKGROUND;
-	servicePanel->Location = System::Drawing::Point(PANEL_X, PANEL_Y);
-	systemCalibration->BackColor = Color::Transparent;
-	systemSetup->BackColor = Color::Transparent;
-	rotationTool->BackColor = Color::Transparent;
-	return;
-}
+
 
 void ServiceForm::initServicePanel(void) {
 	serviceMenuTitle->Text = Notify::TranslateLabel(Notify::messages::LABEL_SERVICE_PANEL_TITLE);
@@ -182,9 +159,6 @@ System::Void  ServiceForm::systemCalibration_Click(System::Object^ sender, Syste
 	setActivePanel(panels::CALIB_PANEL);
 }
 
-System::Void  ServiceForm::systemRotation_Click(System::Object^ sender, System::EventArgs^ e) {
-	setActivePanel(panels::TOOL_ROTATION_PANEL);
-}
 
 
 
@@ -193,10 +167,31 @@ void ServiceForm::cancButton_Click(System::Object^ sender, System::EventArgs^ e)
 	switch (current_panel) {
 		case panels::MAIN_SERVICE_PANEL: cancServicePanel(); break;
 		case panels::CALIB_PANEL: cancCalibrationPanel(); break;
-		case panels::CALIB_ZEROSETTING_PANEL: cancZeroSettingPanel(); break;
-		case panels::TOOL_EXPOSURE_PANEL: cancExposureToolPanel(); break;
-		case panels::TOOL_ROTATION_PANEL: cancRotationToolPanel(); break;
+		
+		
 
 	}
 
+}
+
+void ServiceForm::cancCalibrationPanel(void) {
+	setActivePanel(panels::MAIN_SERVICE_PANEL);
+	return;
+}
+
+void ServiceForm::initCalibrationPanel(void) {
+	serviceMenuTitle->Text = Notify::TranslateLabel(Notify::messages::LABEL_CALIBRATION_PANEL_TITLE);
+	return;
+}
+
+
+
+System::Void ServiceForm::exposureTool_Click(System::Object^ sender, System::EventArgs^ e) {
+	ServiceExposureTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
+}
+System::Void  ServiceForm::systemRotation_Click(System::Object^ sender, System::EventArgs^ e) {
+	ServiceRotationTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
+}
+System::Void ServiceForm::zeroSetting_Click(System::Object^ sender, System::EventArgs^ e) {
+	ServiceZeroSettingTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
 }

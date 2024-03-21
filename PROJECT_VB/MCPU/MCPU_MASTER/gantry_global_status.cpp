@@ -1,9 +1,8 @@
 #include "gantry_global_status.h"
-#include "WINDOWS/IdleForm.h"
-#include "WINDOWS/OperatingForm.h"
-#include "WINDOWS/ServiceForm.h"
-#include "CONFIGURATION/SystemConfig.h"
-
+#include "IdleForm.h"
+#include "OperatingForm.h"
+#include "ServiceForm.h"
+#include "SystemConfig.h"
 #include "Notify.h"
 #include <mutex>
 #include "PCB301.h"
@@ -63,7 +62,7 @@ void Gantry::initialize(void) {
     if (operating_demo_status) {       
         generator_simulator = true;
     }
-    generator_simulator = false;
+    generator_simulator = true;
     
     can_driver_simulator = false;   
     

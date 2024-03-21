@@ -182,12 +182,6 @@
     <ClInclude Include="MOTORS\SlideMotor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WINDOWS\ServiceForm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WINDOWS\SERVICE_CALIBRATION\calib_panel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WINDOWS\IconWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -207,6 +201,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WINDOWS\KeyPaddle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceExposureTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceRotationTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceZeroSettingTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -343,15 +349,6 @@
     <ClCompile Include="MOTORS\SlideMotor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WINDOWS\ServiceForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_zero_setting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\calib_main_panel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MOTORS\CanOpenDriver\CanOpenCiAProcedures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -382,16 +379,22 @@
     <ClCompile Include="MESSAGES\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\tools_exposure.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WINDOWS\SERVICE_CALIBRATION\tools_rotation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WINDOWS\KeyPaddle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GENERATOR\ExposureTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\SERVICE\ServiceExposureTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\SERVICE\ServiceForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\SERVICE\ServiceRotationTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\SERVICE\ServiceZeroSettingTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

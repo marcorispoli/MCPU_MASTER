@@ -94,11 +94,6 @@ public:
         exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt, float ma, float mS, unsigned char fc, int samples) {
 
             validated = false;
-
-            if ((kv > 49.0) || (kv < 20.0)) return;
-            if ((mas > 640) || (mas < 0)) return;
-            if (flt == PCB315::filterMaterialCodes::FILTER_INVALID) return;
-
             filter = flt;
             kV = kv;// Assignes the kV
             mAs = mas;// Assignes the mAs

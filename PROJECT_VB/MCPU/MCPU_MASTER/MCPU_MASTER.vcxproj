@@ -213,7 +213,9 @@
     <ClInclude Include="WINDOWS\Projections.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="WINDOWS\SERVICE\ServiceExposureTool.h" />
+    <ClInclude Include="WINDOWS\SERVICE\ServiceExposureTool.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\SERVICE\ServiceForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -320,6 +322,9 @@
     <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />
     <EmbeddedResource Include="WINDOWS\Projections.resx">
       <DependentUpon>WINDOWS\Projections.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\SERVICE\ServiceExposureTool.resx">
+      <DependentUpon>WINDOWS\SERVICE\ServiceExposureTool.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\SERVICE\ServiceForm.resx">
       <DependentUpon>WINDOWS\SERVICE\ServiceForm.h</DependentUpon>

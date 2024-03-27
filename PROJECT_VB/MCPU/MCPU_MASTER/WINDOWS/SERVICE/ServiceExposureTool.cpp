@@ -143,22 +143,23 @@ void ServiceExposureTool::timerManagement(void) {
 		exposureLog->Text += "Exposure Completed:" + xerror.ToString() + "\n";
 		pulse = ExposureModule::getExposedPulse(0);
 		if (pulse) {
-			if (pulse->isLargeFocus()) exposureLog->Text += "focus: large\n";
-			else  exposureLog->Text += "focus: small\n";
-			if (pulse->useGrid()) exposureLog->Text += "grid: ON\n";
-			else  exposureLog->Text += "grid: OFF\n";
-			exposureLog->Text += "samples:" + pulse->getSamples().ToString() + "\n";
+			if (pulse->isLargeFocus()) exposureLog->Text += "focus: large, ";
+			else  exposureLog->Text += "focus: small, ";
+			if (gridSelection->Text == "GRID") exposureLog->Text += "grid: ON, ";
+			else exposureLog->Text += "grid: OFF, ";
+			
+			exposureLog->Text += "Smp:" + pulse->getSamples().ToString() + ", ";
 			val = ((float)((int)(pulse->getKv() * 100))) / 100;
-			exposureLog->Text += "kV:" + val.ToString();
+			exposureLog->Text += "kV:" + val.ToString() + ", ";
 
 			val = ((float)((int)(pulse->getmAs() * 100))) / 100;
-			exposureLog->Text += ", mAs:" + val.ToString();
+			exposureLog->Text += "mAs:" + val.ToString() + ", ";
 
 			val = ((float)((int)(pulse->getmA() * 100))) / 100;
-			exposureLog->Text += ", mA:" + val.ToString();
+			exposureLog->Text += "mA:" + val.ToString() + ", ";
 
 			val = ((float)((int)(pulse->getms() * 100))) / 100;
-			exposureLog->Text += ", ms:" + val.ToString();
+			exposureLog->Text += "ms:" + val.ToString();
 		}
 
 		exposureStep = EXPTOOL_TERMINATED;

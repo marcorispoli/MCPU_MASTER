@@ -75,14 +75,14 @@ namespace R2CP
         float mA = ((float) pData[6] * 65536. + (float) pData[7] * 256. + (float) pData[8]) / 100.;
         float ms = ((float) pData[9] * 65536. + (float) pData[10] * 256. + (float) pData[11]) / 100.;
         float mAs = ms*mA/1000;
-       
-        System::String^ exposure_string = "kV:" + kV.ToString() + " mAs:" + mAs.ToString() + " mA:" + mA.ToString() + " ms:" + ms.ToString();        
-        LogClass::logInFile("EXPOSURE PULSE>" + exposure_string);
-
-        m_p_instance_->executed_pulses[data_bank_index].result_code = result_code;
         unsigned int samples = m_p_instance_->executed_pulses[data_bank_index].samples;
 
-        if (m_p_instance_->executed_pulses[data_bank_index].samples == 0) {
+        System::String^ exposure_string = "[" + samples.ToString() + "] -> kV:" + kV.ToString() + " mAs:" + mAs.ToString() + " mA:" + mA.ToString() + " ms:" + ms.ToString();        
+        LogClass::logInFile("EXPOSURE PULSE>" + exposure_string);
+        m_p_instance_->executed_pulses[data_bank_index].result_code = result_code;
+        
+
+        if (samples == 0) {
             m_p_instance_->executed_pulses[data_bank_index].focus = focus;
             m_p_instance_->executed_pulses[data_bank_index].kV = kV;
             m_p_instance_->executed_pulses[data_bank_index].mA = mA;
@@ -90,13 +90,13 @@ namespace R2CP
             m_p_instance_->executed_pulses[data_bank_index].mAs = mAs;
         }
         else {
-            m_p_instance_->executed_pulses[data_bank_index].kV = (m_p_instance_->executed_pulses[data_bank_index].kV * samples + kV) / samples + 1;
-            m_p_instance_->executed_pulses[data_bank_index].mA = (m_p_instance_->executed_pulses[data_bank_index].mA * samples + mA) / samples + 1;
+            m_p_instance_->executed_pulses[data_bank_index].kV = (m_p_instance_->executed_pulses[data_bank_index].kV * samples + kV) / (samples + 1);
+            m_p_instance_->executed_pulses[data_bank_index].mA = (m_p_instance_->executed_pulses[data_bank_index].mA * samples + mA) / (samples + 1);
             m_p_instance_->executed_pulses[data_bank_index].ms += ms;
             m_p_instance_->executed_pulses[data_bank_index].mAs += mAs;
         }
-        
         m_p_instance_->executed_pulses[data_bank_index].samples++;
+
         
     }
 

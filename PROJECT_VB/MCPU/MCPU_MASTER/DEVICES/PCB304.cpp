@@ -19,7 +19,12 @@ void PCB304::runningLoop(void) {
         }
     }
 
-   
+    // Read the STATUS register
+    Register^ system_status_register = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_STATUS_REGISTER);
+    if (system_status_register) {
+        grid_sync_ready = PCB304_GET_GRID_SYNC_STATUS(system_status_register);
+    }
+
     // Always toggles the keepalive to keep the display ON
     if(keepalive)   PCB304_DISPLAY_KEEPALIVE(display_data_register, true); 
     else  PCB304_DISPLAY_KEEPALIVE(display_data_register, false); 
@@ -35,7 +40,12 @@ void PCB304::runningLoop(void) {
     PCB304_DISPLAY_CONTENT_LOW(display_data_register, val);
     PCB304_DISPLAY_CONTENT_HIGH(display_data_register, val);
  
+    // Udates the DISPLAY DATA REGISTER
     writeDataRegister((unsigned char)DataRegisters::DISPLAY_DATA_REGISTER, display_data_register);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    // Udates the DISPLAY GRID REGISTER
+    writeDataRegister((unsigned char)DataRegisters::GRID_DATA_REGISTER, grid_data_register);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     return;

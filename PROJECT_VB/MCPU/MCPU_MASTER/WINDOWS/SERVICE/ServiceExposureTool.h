@@ -99,7 +99,7 @@ private:
 	{
 		this->labelDate = (gcnew System::Windows::Forms::Label());
 		this->labelInstallation = (gcnew System::Windows::Forms::Label());
-		this->labelTime = (gcnew System::Windows::Forms::Label());		
+		this->labelTime = (gcnew System::Windows::Forms::Label());
 		this->serviceCanc = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceMenuTitle = (gcnew System::Windows::Forms::Label());
 		this->exposureToolPanel = (gcnew System::Windows::Forms::Panel());
@@ -114,7 +114,7 @@ private:
 		this->label2 = (gcnew System::Windows::Forms::Label());
 		this->label1 = (gcnew System::Windows::Forms::Label());
 		this->mAsSelection = (gcnew System::Windows::Forms::Label());
-		this->kVSelection = (gcnew System::Windows::Forms::Label());		
+		this->kVSelection = (gcnew System::Windows::Forms::Label());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->BeginInit();
 		this->exposureToolPanel->SuspendLayout();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->enableXray))->BeginInit();
@@ -157,7 +157,7 @@ private:
 		this->labelTime->Name = L"labelTime";
 		this->labelTime->Size = System::Drawing::Size(88, 24);
 		this->labelTime->TabIndex = 9;
-		this->labelTime->Text = L"10:35 PM";		
+		this->labelTime->Text = L"10:35 PM";
 		// 
 		// serviceCanc
 		// 
@@ -208,14 +208,14 @@ private:
 		this->exposureLog->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(207)),
 			static_cast<System::Int32>(static_cast<System::Byte>(208)));
 		this->exposureLog->BorderStyle = System::Windows::Forms::BorderStyle::None;
-		this->exposureLog->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+		this->exposureLog->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->exposureLog->Location = System::Drawing::Point(12, 621);
+		this->exposureLog->Location = System::Drawing::Point(83, 621);
 		this->exposureLog->Name = L"exposureLog";
 		this->exposureLog->ReadOnly = true;
 		this->exposureLog->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
 		this->exposureLog->ShortcutsEnabled = false;
-		this->exposureLog->Size = System::Drawing::Size(576, 220);
+		this->exposureLog->Size = System::Drawing::Size(400, 220);
 		this->exposureLog->TabIndex = 33;
 		this->exposureLog->Text = L"prova ";
 		// 
@@ -380,8 +380,8 @@ private:
 		this->Controls->Add(this->serviceCanc);
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 		this->Location = System::Drawing::Point(1000, 0);
-		this->Name = L"ServiceForm";
-		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;		
+		this->Name = L"ServiceExposureTool";
+		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->EndInit();
 		this->exposureToolPanel->ResumeLayout(false);
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->enableXray))->EndInit();

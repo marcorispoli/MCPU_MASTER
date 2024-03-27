@@ -60,10 +60,10 @@ ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(voi
 
         if (grid_synch) {
             if (!PCB304::isGridSynchReady()) continue;
-            if (!PCB304::isGridOnFieldReady()) continue;
+           // if (!PCB304::isGridOnFieldReady()) continue;
             
         }
-        else  if (!PCB304::isGridOffFieldReady()) continue;        
+        //else  if (!PCB304::isGridOffFieldReady()) continue;        
         break;        
     }
 

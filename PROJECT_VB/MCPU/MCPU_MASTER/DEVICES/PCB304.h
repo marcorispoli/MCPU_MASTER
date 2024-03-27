@@ -15,6 +15,7 @@ public:
 	enum class StatusRegisters {
 		SYSTEM_STATUS_REGISTER = 0, //!> This is the System Status register index		
 	};
+	#define PCB304_GET_GRID_SYNC_STATUS(reg)	(bool)	(reg->d0 & 0x01)
 
 	//#define PCB326_GET_SYSTEM_CS1_STATUS(reg)			(bool)	(reg->d0 & 0x01)
 	
@@ -23,6 +24,7 @@ public:
 	/// </summary>
 	enum class DataRegisters {
 		DISPLAY_DATA_REGISTER = 0, //!> This is the Display Data register index
+		GRID_DATA_REGISTER //!< This is the control of the Grid status
 	};
 
 	#define PCB304_DISPLAY_ON(reg,stat)	reg->D0(stat, 0x1)
@@ -35,7 +37,7 @@ public:
 	#define PCB304_DISPLAY_CONTENT_LOW(reg, val)	reg->d2 = (unsigned char) (*((unsigned short*)&val)) 
 	#define PCB304_DISPLAY_CONTENT_HIGH(reg, val)	reg->d3 = (unsigned char) ((*((unsigned short*)&val)) >> 8) 
 
-	
+	#define PCB304_GRID_SYNC(reg,stat)	reg->D0(stat, 0x1) // Sets the Synch Grid Bit
 
 	PCB304() : CanDeviceProtocol(0x14, L"POTTER_DEVICE")
 	{
@@ -71,12 +73,12 @@ public:
 	/// This function activates/deactivates the grid synchronizatio with the generator.
 	/// 
 	/// The Grid device moves the grid in home position ready to start:
-	/// as soon as the X-RAY ON signal is detected, the grid device 
+	/// as soon as the START_GRID signal is detected, the grid device 
 	/// starts moving.
 	/// 
 	/// </summary>
 	/// <param name="status">If status == true, the grid shall activate the generator synchronization</param>	
-	inline static void synchGridWithGenerator(bool status) { synch_grid = status; };
+	inline static void synchGridWithGenerator(bool status) { PCB304_GRID_SYNC(grid_data_register, status); }
 
 	/// <summary>
 	/// This function returns true if the Grid is correctly positioned in Field.
@@ -143,5 +145,6 @@ private:
 	static unsigned char display_decimals = 0;	
 	static unsigned char display_intensity = 0;
 	static Register^ display_data_register = gcnew Register();
+	static Register^ grid_data_register = gcnew Register();
 };
 

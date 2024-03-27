@@ -476,7 +476,7 @@ namespace CANOPEN {
 		/// </summary>
 		/// @{
 		
-		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err,double gear, bool reverse); //!< This is the base class constructor
+		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err,double gear, double external_k, bool reverse); //!< This is the base class constructor
 		void runMode(void) { simulator_mode = false; run = true; }
 		void demoMode(void) { simulator_mode = true; run = true; }
 
@@ -493,7 +493,8 @@ namespace CANOPEN {
 		bool  activateAutomaticPositioning(int id, int target, bool autostart); //!< This function starts an automatic positioning with predefined parameters		
 		
 		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
-		
+		bool  activateExternalHoming(int current_uposition);	//!< This function starts the external sensor homing procedure
+
 		bool  activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
 		bool  activateManualPositioning(int target); //!< This command activates the manual mootion with predefined parameters
 
@@ -664,7 +665,7 @@ namespace CANOPEN {
 		/// </summary>
 		/// <param name=""></param>
 		/// <returns>The encoder position in user units</returns>
-		inline int getCurrentPosition(void) { return current_uposition; }
+		inline int getCurrentPosition(void) { return getCurrentUposition(); }
 		
 		
 
@@ -706,25 +707,27 @@ protected:
 		/// <param name="size">this is the size of the program in bytes</param>
 		void setNanoJPtr(const unsigned char* ptr, int size) { pNanoj = ptr; nanojSize = size; }
 		
-		/// <summary>
-		/// This function is used to assignes the inital value of the encoder at the startup
-		/// </summary>
-		/// <param name="val"></param>
-		inline void setEncoderInitialUvalue(int val) { encoder_initial_value = convert_User_To_Encoder(val); }
+		
 
 		/// <summary>
 		/// This function returns the current encoder position in Encoder internal units
 		/// </summary>
 		/// <param name=""></param>
 		/// <returns>The current encoder position in Internal encoder units</returns>
-		inline int getCurrentEncoderEposition(void) { return current_eposition; }
+		inline int getCurrentEncoderEposition(void) { return encoder_eposition;}
+
+		inline int getCurrentEncoderUposition(void) { return encoder_uposition;}
 
 		/// <summary>
-		/// This function returns the current encoder position in user units
+		/// This function returns the current user defined position
 		/// </summary>
+		/// 
+		/// The user defined position is the position of the external sensor 
+		/// if it should be configured.
+		/// 
 		/// <param name=""></param>
 		/// <returns>The current encoder position in user units</returns>
-		inline int getCurrentEncoderUposition(void) { return current_uposition; }
+		inline int getCurrentUposition(void) { return (external_position_mode) ? external_uposition : encoder_uposition; }
 
 		/// <summary>
 		/// This function set the current acceptable position range.
@@ -881,9 +884,17 @@ private:
 
 		status_options internal_status; //!< This is the current internal motor status
 		
-		int encoder_initial_value;		//! This is the value that shall be assigne to the encoder at the startup
-		int current_eposition;			//!< Current Encoder position
-		int current_uposition;			//!< Current User position 
+		bool			external_position_mode;			//! The current position is detected with the analog input from an external source (potentiometer)
+		unsigned short  external_raw_position;		//!< Cureent value of the potentiometer;
+		unsigned short  external_zero_setting;	//!< Potentiometer value at mechanical zero position
+		int				external_uposition;		//!< Current user position calculate from the external source
+		float			external_k_coeff;		//!< user_position/external_raw_position coefficient
+		bool			update_external_position(void);//!< read the external sensor and fill the external data
+		
+		
+		int encoder_eposition;			//!< Current Encoder position
+		int encoder_uposition;			//!< Current User position 
+
 		bool reverse_direction;			//!< Changes the polarity of the position
 		int previous_uposition;			//!< This is the last target position for non coordinate activations
 		int target_range_h;				//!< This is the acceptable target range in user units (upper limit)
@@ -929,7 +940,7 @@ private:
 		
 
 		// Device Configuration _____________________________________________________________________________
-		bool initResetEncoderCommand(int initial_position);
+		bool initResetEncoderCommand(void);
 		bool initializeObjectDictionary(void);
 		bool initNanojDataRegister(void);
 		bool nanojWrite1024Block(int index, int size);
@@ -943,12 +954,12 @@ private:
 		void setCommandCompletedCode(MotorCompletedCodes error); //!< This function 	
 		void updateCurrentPosition(void);
 		int getActivationTimeout(int speed, int acc, int dec, int target);
-		bool isTarget(void) { return ((current_uposition <= command_target + target_range_h) && (current_uposition >= command_target - target_range_h)); }
+		bool isTarget(void) { return ((getCurrentUposition() <= command_target + target_range_h) && (getCurrentUposition() >= command_target - target_range_h)); }
 
 		void manageAutomaticPositioning(void);
 		void manageAutomaticHoming(void);
 		void manageManualPositioning(void);
-			   
+		void manageExternalHoming(int zero_position);//!< This function gets the external zero position sensor	   
 
 
 		MotorCommands request_command; //!< Application request command code

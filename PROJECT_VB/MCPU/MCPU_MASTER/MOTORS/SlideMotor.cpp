@@ -44,7 +44,7 @@ bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
     return true;
 }
 
-SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", MotorConfig::PARAM_SLIDE, Notify::messages::ERROR_SLIDE_MOTOR_HOMING, GEAR_RATIO, false)
+SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", MotorConfig::PARAM_SLIDE, Notify::messages::ERROR_SLIDE_MOTOR_HOMING, GEAR_RATIO, 1, false)
 {
     // Sets +/- 0.1 ° as the acceptable target range
     setTargetRange(20, 20);
@@ -52,20 +52,7 @@ SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::Moto
     min_position = MIN_ROTATION_ANGLE;
     idle_positioning = false;
 
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
+   
 
 }
 
@@ -137,7 +124,7 @@ void SlideMotor::completedCallback(int id, MotorCommands current_command, int cu
     double A = 30 * 3.14159 / 180; // Alfa of the potter at the 0 slide degree
 
     init_angolo = A + ((double)getPreviousPosition() * 3.14159 / (double)18000);
-    last_angolo = A + ((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
+    last_angolo = A + ((double)getCurrentUposition() * 3.14159 / (double)18000);
     H0 = L * cos(init_angolo);
     H1 = L * cos(last_angolo);
 

@@ -131,15 +131,19 @@ public:
     literal int     FILE_REVISION = 2;//!< This is the current revision code
 
     literal System::String^ MOTOR_UNDEFINED_POSITION = "UNDEF";    //!< This is the TAG of the Undefined position 
-    literal int PARAM_CURRENT_POSITION = 0;                        //!< Parameter position for the last valid motor position 
-    literal int PARAM_AUTO_SPEED = 1;                              //!< Parameter position for the Automatic mode motor speed
-    literal int PARAM_AUTO_ACC = 2;                                //!< Parameter position for the Automatic mode  motor acceleration
-    literal int PARAM_AUTO_DEC = 3;                                //!< Parameter position for the Automatic mode  motor deceleration 
-    literal int PARAM_MANUAL_SPEED = 4;                            //!< Parameter position for the Manual mode  motor speed
-    literal int PARAM_MANUAL_ACC = 5;                              //!< Parameter position for the Manual mode  motor acceleration
-    literal int PARAM_MANUAL_DEC = 6;                              //!< Parameter position for the Manual mode   motor deceleration 
-    literal int PARAM_HOME_SPEED = 7;                              //!< Parameter speed in home procedure
-    literal int PARAM_HOME_ACC = 8;                                //!< Parameter acceleration in home procedure
+    literal System::String^ MOTOR_INTERNAL_POSITION = "INTERNAL";    //!< This is the TAG of the Internal position mode 
+    literal System::String^ MOTOR_EXTERNAL_UNDEFINED_POSITION = "UNDEF";    //!< This is the TAG of the External not initialized position
+
+    literal int PARAM_EXTERNAL_POSITION = 0;                       //!< Potentiometer zero setting if present 
+    literal int PARAM_CURRENT_POSITION = 1;                        //!< Parameter position for the last valid motor position 
+    literal int PARAM_AUTO_SPEED = 2;                              //!< Parameter position for the Automatic mode motor speed
+    literal int PARAM_AUTO_ACC = 3;                                //!< Parameter position for the Automatic mode  motor acceleration
+    literal int PARAM_AUTO_DEC = 4;                                //!< Parameter position for the Automatic mode  motor deceleration 
+    literal int PARAM_MANUAL_SPEED = 5;                            //!< Parameter position for the Manual mode  motor speed
+    literal int PARAM_MANUAL_ACC = 6;                              //!< Parameter position for the Manual mode  motor acceleration
+    literal int PARAM_MANUAL_DEC = 7;                              //!< Parameter position for the Manual mode   motor deceleration 
+    literal int PARAM_HOME_SPEED = 8;                              //!< Parameter speed in home procedure
+    literal int PARAM_HOME_ACC = 9;                                //!< Parameter acceleration in home procedure
     
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_OBSTACLE = "OBSTACLE_CALIBRATION";                               //!< This is the Obstacle calibration parameter
@@ -176,6 +180,7 @@ public:
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_BODY = "BODY_CALIBRATION";                               //!< This is the Body Motor parameter section
     literal System::String^ PARAM_BODY_COMMENT = "BODY_CALIBRATION calibration data";
+    literal System::String^ PARAM_BODY_EXTERNAL_ZERO_DEFAULT = MOTOR_EXTERNAL_UNDEFINED_POSITION;           //!< Initial pot zero setting
     literal System::String^ PARAM_BODY_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid Body Motor position (for initial zero setting)
     literal System::String^ PARAM_BODY_AUTO_SPEED_DEFAULT = "50";                                  //!< Body Auto Speed in 0.1 degree/s
     literal System::String^ PARAM_BODY_AUTO_ACC_DEFAULT = "20";                                    //!< Body Auto Acc in 0.1 degree/ss
@@ -189,6 +194,7 @@ public:
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_ARM = "ARM_CALIBRATION";                                         //!< This is the ARM Motor parameter section
     literal System::String^ PARAM_ARM_COMMENT = "ARM_CALIBRATION calibration data";
+    literal System::String^ PARAM_ARM_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;            //!< Initial pot zero setting
     literal System::String^ PARAM_ARM_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder ARM Motor position (for initial zero setting)
     literal System::String^ PARAM_ARM_AUTO_SPEED_DEFAULT = "1000";                                 //!< Arm Auto Speed in 0.01 degree/s
     literal System::String^ PARAM_ARM_AUTO_ACC_DEFAULT = "500";                                    //!< Arm Auto Acc in 0.01 degree/ss
@@ -202,6 +208,7 @@ public:
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_VERTICAL = "VERTICAL_CALIBRATION";                                   //!< This is the VERTICAL Motor parameter section
     literal System::String^ PARAM_VERTICAL_COMMENT = "VERTICAL_CALIBRATION calibration data";
+    literal System::String^ PARAM_VERTICAL_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;                        //!< Initial pot zero setting
     literal System::String^ PARAM_VERTICAL_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder VERTICAL Motor position (for initial zero setting)
     literal System::String^ PARAM_VERTICAL_AUTO_SPEED_DEFAULT = "30";                                  //!< VERTICAL Auto Speed in 1 mm/s
     literal System::String^ PARAM_VERTICAL_AUTO_ACC_DEFAULT = "20";                                    //!< VERTICAL Auto Acc in 1mm /ss
@@ -215,7 +222,8 @@ public:
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_TILT = "TILT_CALIBRATION";                                       //!< This is the TILT Motor parameter section
     literal System::String^ PARAM_TILT_COMMENT = "TILT_CALIBRATION calibration data";
-    literal System::String^ PARAM_TILT_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder TILT Motor position (for initial zero setting)
+    literal System::String^ PARAM_TILT_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;                         //!< Initial pot zero setting
+    literal System::String^ PARAM_TILT_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder TILT Motor position (for initial zero setting)
     literal System::String^ PARAM_TILT_AUTO_SPEED_DEFAULT = "400";                                  //!< TILT Auto Speed in 0.01 degree/s
     literal System::String^ PARAM_TILT_AUTO_ACC_DEFAULT = "400";                                    //!< TILT Auto Acc in 0.01 degree /ss
     literal System::String^ PARAM_TILT_AUTO_DEC_DEFAULT = "400";                                    //!< TILT Auto Dec in 0.01 degree /ss
@@ -228,6 +236,7 @@ public:
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_SLIDE = "SLIDE_CALIBRATION";                                       //!< This is the SLIDE Motor parameter section
     literal System::String^ PARAM_SLIDE_COMMENT = "SLIDE_CALIBRATION calibration data";
+    literal System::String^ PARAM_SLIDE_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;                         //!< Initial pot zero setting
     literal System::String^ PARAM_SLIDE_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder SLIDE Motor position (for initial zero setting)
     literal System::String^ PARAM_SLIDE_AUTO_SPEED_DEFAULT = "400";                                  //!< SLIDE Auto Speed in 0.01 degree/s
     literal System::String^ PARAM_SLIDE_AUTO_ACC_DEFAULT = "400";                                    //!< SLIDE Auto Acc in 0.01 degree/ss
@@ -257,6 +266,7 @@ public:
             }),
 
             CONFIG_FILE_ITEM(PARAM_BODY, PARAM_BODY_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_BODY_EXTERNAL_ZERO_DEFAULT,
             PARAM_BODY_CURRENT_POSITION_DEFAULT,
             PARAM_BODY_AUTO_SPEED_DEFAULT,
             PARAM_BODY_AUTO_ACC_DEFAULT,
@@ -269,6 +279,7 @@ public:
             }),
 
             CONFIG_FILE_ITEM(PARAM_ARM, PARAM_ARM_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_ARM_EXTERNAL_ZERO_DEFAULT,
             PARAM_ARM_CURRENT_POSITION_DEFAULT,
             PARAM_ARM_AUTO_SPEED_DEFAULT,
             PARAM_ARM_AUTO_ACC_DEFAULT,
@@ -281,6 +292,7 @@ public:
             }),
 
             CONFIG_FILE_ITEM(PARAM_VERTICAL, PARAM_VERTICAL_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_VERTICAL_EXTERNAL_ZERO_DEFAULT,
             PARAM_VERTICAL_CURRENT_POSITION_DEFAULT,
             PARAM_VERTICAL_AUTO_SPEED_DEFAULT,
             PARAM_VERTICAL_AUTO_ACC_DEFAULT,
@@ -293,6 +305,7 @@ public:
             }),
 
             CONFIG_FILE_ITEM(PARAM_TILT, PARAM_TILT_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_TILT_EXTERNAL_ZERO_DEFAULT,
             PARAM_TILT_CURRENT_POSITION_DEFAULT,
             PARAM_TILT_AUTO_SPEED_DEFAULT,
             PARAM_TILT_AUTO_ACC_DEFAULT,
@@ -305,6 +318,7 @@ public:
             }),
 
             CONFIG_FILE_ITEM(PARAM_SLIDE, PARAM_SLIDE_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_SLIDE_EXTERNAL_ZERO_DEFAULT,
             PARAM_SLIDE_CURRENT_POSITION_DEFAULT,
             PARAM_SLIDE_AUTO_SPEED_DEFAULT,
             PARAM_SLIDE_AUTO_ACC_DEFAULT,

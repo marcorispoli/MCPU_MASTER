@@ -132,6 +132,7 @@ using namespace CANOPEN;
 #define OD_3210_02  0x3210, 0x02 ,ODRegister::SDODataDimension::R4B  // Position Loop, Integral Gain (closed Loop)
 
 // Analogue Inputs Control
+#define OD_3220_01  0x3220, 0x01 ,ODRegister::SDODataDimension::R2B  // Analogue Inputs 1 value (0:1024)
 #define OD_3221_00  0x3221, 0x00 ,ODRegister::SDODataDimension::R4B  // Analogue Inputs Control: 0 , Voltage, 1, Current
 
 // Digital Inputs Control

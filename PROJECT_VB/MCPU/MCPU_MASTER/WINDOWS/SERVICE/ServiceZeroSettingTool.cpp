@@ -186,7 +186,7 @@ void ServiceZeroSettingTool::timerManagement(void) {
 			return;
 
 		case 7: // BODY
-			if (!BodyMotor::startHoming()) {
+			if (!BodyMotor::startHoming((int) 0)) {
 				zeroSettingLog->Text += "BODY ERROR -> " + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
 				zero_all_fase += 2;
 				return;
@@ -258,7 +258,7 @@ void ServiceZeroSettingTool::timerManagement(void) {
 		if (command_delay == 1) {
 			command_delay = 0;
 
-			if (!BodyMotor::startHoming()) {
+			if (!BodyMotor::startHoming(0)) {
 				zeroSettingLog->Text = "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
 				current_zero_command = zero_commands::NO_COMMAND;
 				finish = true;

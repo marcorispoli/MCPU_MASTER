@@ -198,7 +198,7 @@ static const unsigned char nanojTrxProgram[] = {
 /// 
 /// 
 /// <param name=""></param>
-TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, GEAR_RATIO, false)
+TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, GEAR_RATIO, 1, false)
 {
     setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
 
@@ -207,22 +207,7 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     max_position = MAX_ROTATION_ANGLE;
     min_position = MIN_ROTATION_ANGLE;
 
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-    
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_TILT_MOTOR_HOMING);
-  
+     
     idle_positioning = false;
     tomo_scan = false;
     pending_target = target_options::UNDEF;

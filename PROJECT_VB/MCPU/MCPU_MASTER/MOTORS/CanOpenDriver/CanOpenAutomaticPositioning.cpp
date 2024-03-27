@@ -184,10 +184,13 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     bool motor_started = false;
     unsigned int ctrlw;
 
-    // Get the actual encoder position 
-    updateCurrentPosition();
-
-   
+    // If this is the external source, befor to proceed initialize the encoder atthe current external position
+    if (!initResetEncoderCommand()) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: manageAutomaticPositioning() ERROR IN RESETTING THE ENCODER DURING PREPARATION");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
+        return;
+    }
+          
 
     // Test if the actual position is already in target position
     if (isTarget()) {
@@ -200,13 +203,13 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Sets the Speed activation: if the callback returns false, the speed is set here internally with the predefined parameters
     // This is useful for critical activations where the speeds and ramps can changes following the activation position and direction.
     // The function should change the command_speed, command_acc and command_dec
-    motionParameterCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
+    motionParameterCallback(MotorCommands::MOTOR_AUTO_POSITIONING, encoder_uposition, command_target);
 
     // Gets the extimation about the transit time
     command_ms_tmo = getActivationTimeout(command_speed, command_acc, command_dec, command_target);
 
     LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) +
-        "> INIT AUTO POSITIONING: From " + System::Convert::ToString(current_uposition) +
+        "> INIT AUTO POSITIONING: From " + System::Convert::ToString(encoder_uposition) +
         " To " + System::Convert::ToString(command_target) +
         " Expected In " + System::Convert::ToString((int)((double)command_ms_tmo)) + " (ms)");
 
@@ -251,11 +254,11 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     }
 
     // Assignes the current motor direction
-    if (command_target > current_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
+    if (command_target > encoder_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
     else motor_direction = motor_rotation_activations::MOTOR_DECREASE;
     
         // Allows the application to prepare for the motor activation
-    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
+    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_AUTO_POSITIONING, encoder_uposition, command_target);
     if (preparation_error != MotorCompletedCodes::COMMAND_PROCEED) {
         setCommandCompletedCode(preparation_error);
         return;
@@ -266,7 +269,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     MotorConfig::Configuration->storeFile();
 
     // Update the previous position
-    previous_uposition = current_uposition;
+    previous_uposition = encoder_uposition;
     
     // Unbrake 
     if (!unbrakeCallback()) {
@@ -287,7 +290,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Every 1000 ms checks the distance from the target
     command_ms_tmo = 5000;
     bool timeout = false;
-    int delta_target = abs(current_uposition - command_target);
+    int delta_target = abs(encoder_uposition - command_target);
     
     // Measuring the actuation time
     typedef std::chrono::high_resolution_clock clock;
@@ -299,7 +302,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
 
         if (!motor_started) {
             command_ms_tmo = 5000;
-            delta_target = abs(current_uposition - command_target);
+            delta_target = abs(encoder_uposition - command_target);
             timeout = false;
 
             if (readControlWord(&ctrlw)) {
@@ -312,9 +315,9 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         }
         else {
             if (command_ms_tmo <= 0) {
-                if (abs(current_uposition - command_target) >= delta_target) timeout = true;
+                if (abs(encoder_uposition - command_target) >= delta_target) timeout = true;
                 else {
-                    delta_target = abs(current_uposition - command_target);
+                    delta_target = abs(encoder_uposition - command_target);
                     command_ms_tmo = 5000;
                 }
             }
@@ -353,7 +356,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
             break;
         }
 
-        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_AUTO_POSITIONING, current_uposition, command_target);
+        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_AUTO_POSITIONING, encoder_uposition, command_target);
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
@@ -376,7 +379,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         }
 
 
-        if (((statw & 0x1400) == 0x1400) || (current_uposition == command_target) || (timeout) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
+        if (((statw & 0x1400) == 0x1400) || (encoder_uposition == command_target) || (timeout) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
             // Calculates the effective duration time
             typedef std::chrono::milliseconds milliseconds;
@@ -410,10 +413,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     } // End of main controlling loop
     
 
-    // Read the current position 
-    updateCurrentPosition();   
-    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
-
+    
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
@@ -429,11 +429,19 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Activates the brakes
     brakeCallback();
 
+    // Read the current position 
+    updateCurrentPosition();
+    if (external_position_mode) {
+        update_external_position();
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT ENCODER UPOSITION = " + encoder_uposition.ToString() + ", CURRENT EXTERNAL UPOSITION = " + external_uposition.ToString());
+    }
+    else {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + encoder_uposition.ToString());
+    }
+
     // set the cia Switched On status
     writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
-
     setCommandCompletedCode(termination_code);
-
     return;
 
 }

@@ -12,10 +12,9 @@
 
 
 #define ROT_PER_DEGREE ((double) 80 / (double) 3600) //!< Defines the position user units in 0.1 degree
+#define EXTERNAL_K ((double) 2.929) //!< Defines the external pot resolution per 0.1 degree
 
 #define BRAKE_INPUT_MASK(x) (x & PD4_MOTOR_DI4) //!< Not in the Special region [00II][0000]
-#define LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI2) //!< Not in the Special region [00II][0000]
-#define ZERO_INPUT_MASK(x) (x & PD4_MOTOR_DI3) //!< Not in the Special region [00II][0000]
 
 #define OUPUT1_OUT_MASK     PD4_MOTOR_DO1 //!< Not in the Special region [00II][0000]
 #define OUPUT2_OUT_MASK     PD4_MOTOR_DO2 //!< Not in the Special region [00II][0000]
@@ -40,7 +39,7 @@
 /// 
 /// <param name=""></param>
 
-BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", MotorConfig::PARAM_BODY, Notify::messages::ERROR_BODY_MOTOR_HOMING, ROT_PER_DEGREE, false)
+BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", MotorConfig::PARAM_BODY, Notify::messages::ERROR_BODY_MOTOR_HOMING, ROT_PER_DEGREE, EXTERNAL_K, false)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(2, 2);
@@ -48,20 +47,6 @@ BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     min_position = MIN_ROTATION_ANGLE;
 
 
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
-    
 }
 
 bool BodyMotor::serviceAutoPosition(int pos) {
@@ -125,6 +110,10 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     if (!blocking_writeOD(OD_3240_03, 0)) return false;   // Force Enable = false
     if (!blocking_writeOD(OD_3240_06, 0)) return false;   // Input Range Select: threshold = 5V;
 
+    // Setup the Analog Input
+    while (!blocking_writeOD(OD_3221_00, 0));     // 0 , Voltage, 1, Current
+
+
     // Writes 0s of both outputs    
     if (!blocking_writeOD(OD_60FE_01, 0)) return false;
 
@@ -160,8 +149,11 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);        
     }
 
+   
+
     return true;
 }
+
 
 
 bool BodyMotor::activateBrake(void) {
@@ -219,101 +211,29 @@ CanOpenMotor::MotorCompletedCodes BodyMotor::idleCallback(void) {
     static bool error_limit_switch = false;
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
 
-    bool limit_status;
-
-    if (!device->simulator_mode) {
-
-
-        // With the brake alarm present, no more action can be executed
-        if (brake_alarm) {
-
-            // Keeps the alarm ON
-            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
-
-            // Alarm condition
-            blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-            return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
-        }
-
-        // reads the Motor GPIO inputs
-        if (!blocking_readOD(OD_60FD_00)) return MotorCompletedCodes::ERROR_ACCESS_REGISTER;
-
-        if (BRAKE_INPUT_MASK(getRxReg()->data)) {
-            brake_alarm = true;
-            LogClass::logInFile("BodyMotor: Failed test brake input in IDLE");
-            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
-            blocking_writeOD(OD_60FE_01, 0); // Set All outputs to 0
-            return MotorCompletedCodes::ERROR_BRAKE_DEVICE;
-        }
-
-        // Test the limit switch activation
-        if (LIMIT_INPUT_MASK(getRxReg()->data)) limit_status = true; // Photocell in Light condition: limit swicth activated
-        else limit_status = false;
-
-        // If a limit switch should be engaged then the activation shall be disabled
-        if (limit_status != error_limit_switch) {
-            error_limit_switch = limit_status;
-            if (error_limit_switch) {
-                Notify::activate(Notify::messages::ERROR_BODY_LIMIT_SWITCH);
-                Notify::activate(Notify::messages::ERROR_BODY_MOTOR_HOMING);
-
-                // Remove the zero condition
-                if (isEncoderInitialized()) {
-                    setEncoderInitStatus(false);
-                    MotorConfig::Configuration->setParam(MotorConfig::PARAM_BODY, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-                    MotorConfig::Configuration->storeFile();
-                }
-            }
-            else  Notify::deactivate(Notify::messages::ERROR_BODY_LIMIT_SWITCH);
-        }
-
-        if (error_limit_switch) ret_code = MotorCompletedCodes::ERROR_LIMIT_SWITCH;
-    } // simulator_mode
-
-
-  
 
     return ret_code;
     
 }
 
 BodyMotor::MotorCompletedCodes BodyMotor::runningCallback(MotorCommands current_command, int current_position, int target_position) {
+    MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
+    return ret_code;
+
     
-    if (device->simulator_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
-
-    return MotorCompletedCodes::COMMAND_PROCEED;
-    // Checks for the limit switch activation     
-    if (blocking_readOD(OD_60FD_00)) {
-        // Limit switch activation
-        if (LIMIT_INPUT_MASK(getRxReg()->data)) return MotorCompletedCodes::ERROR_LIMIT_SWITCH;
-    }
-
-    // Proceeds with the manual activation
-    return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
 
 
 /// <summary>
-/// This function activates the Automatic Homing procedure
+/// This function activates the External Sensor calibration Homing procedure
 /// 
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool BodyMotor::startHoming(void) {
+bool BodyMotor::startHoming(int target_position) {
 
-    // If the safety condition prevent the command execution it is immediatelly aborted
-    Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device->device_id);
-    if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-        LogClass::logInFile("Motor <" + device->device_id.ToString() + ">: safety condition error > " + safety.ToString());
-        device->setCommandCompleted(CanOpenMotor::MotorCompletedCodes::ERROR_SAFETY);
-        return false;
-    }
-
-    // Gets the Speed and Acceleration from the configuration file
-    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_HOME_SPEED]);
-    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_HOME_ACC]);
-    return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
+    return device->activateExternalHoming(target_position);
 }
 
 

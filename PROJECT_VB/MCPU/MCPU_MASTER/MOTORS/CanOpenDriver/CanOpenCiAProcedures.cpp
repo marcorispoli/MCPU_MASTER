@@ -133,6 +133,11 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
         return;
     }
 
+    // If the position should be external the sensor is automatically read back
+    if (external_position_mode) {
+        update_external_position();
+    }
+
     // The subclass can add extra commands in IDLE and enable the command execution
     idle_returned_condition = idleCallback();
 
@@ -182,11 +187,15 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
     case MotorCommands::MOTOR_HOMING:
         current_command = request_command;
         abort_request = false;
+
         if (
             (idle_returned_condition == MotorCompletedCodes::COMMAND_PROCEED) ||
-            (idle_returned_condition == MotorCompletedCodes::ERROR_LIMIT_SWITCH) 
-            )   manageAutomaticHoming();
-        else setCommandCompletedCode(idle_returned_condition);
+            (idle_returned_condition == MotorCompletedCodes::ERROR_LIMIT_SWITCH)
+            ) {
+            if (external_position_mode) {
+                manageExternalHoming(command_target);
+            }else   manageAutomaticHoming();
+        } else setCommandCompletedCode(idle_returned_condition);
         
         request_command = MotorCommands::MOTOR_IDLE;
         break;

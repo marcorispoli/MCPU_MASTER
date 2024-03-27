@@ -79,8 +79,12 @@ void CanOpenMotor::manageManualPositioning(void) {
     bool error_condition;
     MotorCompletedCodes termination_code;
 
-    // Get the actual encoder position 
-    updateCurrentPosition();
+    // If this is the external source, befor to proceed initialize the encoder atthe current external position
+    if (!initResetEncoderCommand()) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: manageAutomaticPositioning() ERROR IN RESETTING THE ENCODER DURING PREPARATION");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
+        return;
+    }
 
     // Test if the actual position is already in target position
     if (isTarget()) {
@@ -92,7 +96,7 @@ void CanOpenMotor::manageManualPositioning(void) {
     // Sets the Speed activation: if the callback returns false, the speed is set here internally with the predefined parameters
     // This is useful for critical activations where the speeds and ramps can changes following the activation position and direction.
     // The function should change the command_speed, command_acc and command_dec
-    motionParameterCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
+    motionParameterCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, encoder_uposition, command_target);
 
     // Sets the Speed activation
     error_condition = false;
@@ -132,11 +136,11 @@ void CanOpenMotor::manageManualPositioning(void) {
     }
 
     // Assignes the current motor direction
-    if (command_target > current_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
+    if (command_target > encoder_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
     else motor_direction = motor_rotation_activations::MOTOR_DECREASE;
 
     // Allows the application to prepare for the motor activation
-    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
+    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, encoder_uposition, command_target);
     if (preparation_error != MotorCompletedCodes::COMMAND_PROCEED) {
         setCommandCompletedCode(preparation_error);
         return;
@@ -148,7 +152,7 @@ void CanOpenMotor::manageManualPositioning(void) {
     MotorConfig::Configuration->storeFile();
 
     // Update the previous position
-    previous_uposition = current_uposition;
+    previous_uposition = encoder_uposition;
 
     // Unbrake 
     if (!unbrakeCallback()) {
@@ -194,7 +198,7 @@ void CanOpenMotor::manageManualPositioning(void) {
         // Read the current position 
         updateCurrentPosition();
 
-        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, current_uposition, command_target);
+        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, encoder_uposition, command_target);
         
 
         // If the safety condition prevent the command execution it is immediatelly aborted
@@ -218,7 +222,7 @@ void CanOpenMotor::manageManualPositioning(void) {
         }
 
        
-        if (((statw & 0x1400) == 0x1400) || (current_uposition == command_target) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
+        if (((statw & 0x1400) == 0x1400) || (encoder_uposition == command_target) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING COMPLETED ");
             termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
@@ -241,10 +245,7 @@ void CanOpenMotor::manageManualPositioning(void) {
 
     } // End of main controlling loop
 
-    // Read the current position 
-    updateCurrentPosition();
-    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + current_uposition.ToString());
-
+  
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
@@ -259,6 +260,17 @@ void CanOpenMotor::manageManualPositioning(void) {
     
     // Activates the brakes
     brakeCallback();
+
+    // Read the current position 
+    updateCurrentPosition();
+    if (external_position_mode) {
+        update_external_position();
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT ENCODER UPOSITION = " + encoder_uposition.ToString() + ", CURRENT EXTERNAL UPOSITION = " + external_uposition.ToString());
+    }
+    else {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT POSITION = " + encoder_uposition.ToString());
+    }
+
 
     // set the cia Switched On status
     writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);

@@ -25,16 +25,20 @@
 /// 
 /// # Motor GPIO assignment
 /// 
+/// ## Analog Input
+/// 
+/// The Analog input is used to detect the actual position of the shaft.
+/// 
+/// The position is detected using a 5 turns potentiometer connected 
+/// to the shaft with a x3 multiply factor:
+/// 
+/// 180° -> 1.5 potentiometer turns.
+/// 
+/// The calculated resolution is 0.4882 °/unit
+/// 
 /// ## Digital Inputs
 ///  
-/// + DIGITAL INPUT 1 and 2: Assigned to the limit switch photocell;
-/// + DIGITAL INPUT 3: Homing photocell;
 /// + DIGITAL INPUT 4: Brake activation status;
-/// 
-/// The Input1 and Input 2 are assigned to the same photocell: the limit switch.\n
-/// The Limit switch is an active low: when 0 means that the limit switch has been detected.
-/// 
-/// The Input3 shal be assigned to the Homing Driver process.
 /// 
 /// The Input4 is a Positive logic assigned to the current brake status:
 ///		- ON: the brake is powered;
@@ -62,7 +66,7 @@
 /// 
 /// # Position unit definition
 /// 
-/// + The module provides the position readout in the range of +/-180 degree; 
+/// + The module provides the position readout in the range of +/- 180 degrees; 
 /// + The allowed activation is in the range of +/- 90° with a precision of 0.1 degree;
 /// + The positive angle is the counter-clockwise direction (from the TOP View);
 /// 
@@ -98,7 +102,7 @@ ref class BodyMotor : public CANOPEN::CanOpenMotor
 public:
 	BodyMotor(void);
 	static BodyMotor^ device = gcnew BodyMotor();
-	static bool startHoming(void);
+	static bool startHoming(int target_position);
 	static bool serviceAutoPosition(int pos);
 
 protected:
@@ -116,6 +120,7 @@ private:
 
 	bool activateBrake(void);
 	bool deactivateBrake(void);
+	
 };
 
 		

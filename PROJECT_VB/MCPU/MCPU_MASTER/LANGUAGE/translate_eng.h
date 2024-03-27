@@ -41,8 +41,9 @@
 "E00034", Notify::messages::ERROR_TILT_MOTOR_HOMING, "Tilt Motor Monitoring", "The encoder is not initialized",
 "E00035", Notify::messages::ERROR_BODY_MOTOR_HOMING, "Body Motor Monitoring", "The encoder is not initialized",
 "E00036", Notify::messages::ERROR_BODY_LIMIT_SWITCH, "Body Motor Monitoring", "The limit switch is active",
-"E00037", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
-"E00038", Notify::messages::ERROR_GENERATOR_SETUP, "Generator Status Monitoring", "The Generator configuration is failed",
+"E00037", Notify::messages::ERROR_BODY_POTENTIOMETER_READ_FAULT, "Body Motor Monitoring", "Unable to read the potentiometer input",
+"E00038", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
+"E00039", Notify::messages::ERROR_GENERATOR_SETUP, "Generator Status Monitoring", "The Generator configuration is failed",
 
 
 

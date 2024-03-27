@@ -17,28 +17,13 @@
 #define HOMING_OFF_METHOD 20
 
 
-ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", MotorConfig::PARAM_ARM, Notify::messages::ERROR_ARM_MOTOR_HOMING, ROT_PER_CDEGREE, true)
+ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", MotorConfig::PARAM_ARM, Notify::messages::ERROR_ARM_MOTOR_HOMING, ROT_PER_CDEGREE, 1, true)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(20, 20);
     max_position = MAX_ROTATION_ANGLE;
     min_position = MIN_ROTATION_ANGLE;
     
-
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_ARM)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_ARM_MOTOR_HOMING);
-
 
 }
 
@@ -89,7 +74,7 @@ void ArmMotor::completedCallback(int id, MotorCommands current_command, int curr
     // The Vertical Arm position is espressed in millimeters
 
     double init_h = -1 * COMPRESSION_PLANE_MM * cos((double)getPreviousPosition() * 3.14159 / (double)18000);
-    double end_h = -1 * COMPRESSION_PLANE_MM * cos((double)getCurrentEncoderUposition() * 3.14159 / (double)18000);
+    double end_h = -1 * COMPRESSION_PLANE_MM * cos((double)getCurrentUposition() * 3.14159 / (double)18000);
     int delta_h = (int)init_h - (int)end_h;
     if (!VerticalMotor::activateIsocentricCorrection(id, delta_h)) {
         // The target is not invalidated because the rotation angle is still valid!

@@ -105,27 +105,14 @@ bool VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// - Initializes the encoder initial position from the configuration file;
 /// 
 /// <param name=""></param>
-VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", MotorConfig::PARAM_VERTICAL, Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, ROT_PER_MM, false)
+VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", MotorConfig::PARAM_VERTICAL, Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, ROT_PER_MM, 1, false)
 {
     // Sets +/- 5mm as the acceptable target range
     setTargetRange(5, 5);    
     max_position = MAX_POSITION;
     min_position = MIN_POSITION;
 
-    // Gets the initial position of the encoder. If the position is a valid position the oming is not necessary
-    bool homing_initialized = false;
-    int  init_position = 0;
-    if (MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-        homing_initialized = true;
-        init_position = System::Convert::ToInt32(MotorConfig::Configuration->getParam(MotorConfig::PARAM_VERTICAL)[MotorConfig::PARAM_CURRENT_POSITION]);
-    }
-
-    setEncoderInitStatus(homing_initialized);
-    setEncoderInitialUvalue(init_position);
-
-    // Activate a warning condition is the motor should'n be initialized
-    if (!isEncoderInitialized()) Notify::activate(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
-    
+     
     // initializes the value of the detected photocells
     high_photocell = false;
     low_photocell = false;

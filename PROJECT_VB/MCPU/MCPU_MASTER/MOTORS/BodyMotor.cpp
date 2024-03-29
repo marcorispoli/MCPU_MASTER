@@ -39,14 +39,11 @@
 /// 
 /// <param name=""></param>
 
-BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", MotorConfig::PARAM_BODY, Notify::messages::ERROR_BODY_MOTOR_HOMING, ROT_PER_DEGREE, EXTERNAL_K, false)
+BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", MotorConfig::PARAM_BODY, Notify::messages::ERROR_BODY_MOTOR_HOMING, MIN_ROTATION_ANGLE, MAX_ROTATION_ANGLE, ROT_PER_DEGREE, EXTERNAL_K, false)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(2, 2);
-    max_position = MAX_ROTATION_ANGLE;
-    min_position = MIN_ROTATION_ANGLE;
-
-
+   
 }
 
 bool BodyMotor::serviceAutoPosition(int pos) {
@@ -84,7 +81,8 @@ bool BodyMotor::serviceAutoPosition(int pos) {
 /// 
 /// <param name=""></param>
 /// <returns>true if the initialization termines successfully</returns>
-bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
+#define BODY_OD_CODE 0x0001
+unsigned short BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     
     // Motor Drive Parameter Set
     while (!blocking_writeOD(OD_3210_01, 10000)); // 50000 Position Loop, Proportional Gain (closed Loop)
@@ -95,27 +93,27 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 50)));	// Max Position Range Limit
 
     // Software Position Limit
-    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
-    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return false;	// Max Position Limit
+    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return 0;	// Min Position Limit
+    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return 0;	// Max Position Limit
 
     // Sets the Output setting
-    if (!blocking_writeOD(OD_3250_02, 0)) return false; // Output control not inverted
-    if (!blocking_writeOD(OD_3250_03, 0)) return false; // Force Enable = false
-    if (!blocking_writeOD(OD_3250_08, 0)) return false; // Routing Enable = false
-    if (!blocking_writeOD(OD_60FE_01, 0)) return false; // Set All outputs to 0
+    if (!blocking_writeOD(OD_3250_02, 0)) return 0; // Output control not inverted
+    if (!blocking_writeOD(OD_3250_03, 0)) return 0; // Force Enable = false
+    if (!blocking_writeOD(OD_3250_08, 0)) return 0; // Routing Enable = false
+    if (!blocking_writeOD(OD_60FE_01, 0)) return 0; // Set All outputs to 0
 
     // Set the input setting
-    if (!blocking_writeOD(OD_3240_01, 0x4)) return false; // Input control special: I3 = HOMING
-    if (!blocking_writeOD(OD_3240_02, 0)) return false;   // Function Inverted: not inverted
-    if (!blocking_writeOD(OD_3240_03, 0)) return false;   // Force Enable = false
-    if (!blocking_writeOD(OD_3240_06, 0)) return false;   // Input Range Select: threshold = 5V;
+    if (!blocking_writeOD(OD_3240_01, 0x4)) return 0; // Input control special: I3 = HOMING
+    if (!blocking_writeOD(OD_3240_02, 0)) return 0;   // Function Inverted: not inverted
+    if (!blocking_writeOD(OD_3240_03, 0)) return 0;   // Force Enable = false
+    if (!blocking_writeOD(OD_3240_06, 0)) return 0;   // Input Range Select: threshold = 5V;
 
     // Setup the Analog Input
     while (!blocking_writeOD(OD_3221_00, 0));     // 0 , Voltage, 1, Current
 
 
     // Writes 0s of both outputs    
-    if (!blocking_writeOD(OD_60FE_01, 0)) return false;
+    if (!blocking_writeOD(OD_60FE_01, 0)) return 0;
 
     bool brake_activated = true;
     for (int i = 0; i < 10; i++) {
@@ -135,13 +133,13 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
         
         // Clear the OUTPUTS
         blocking_writeOD(OD_60FE_01, 0);
-        return true;
+        return BODY_OD_CODE;
     }
 
     if (!activateBrake()) {
         LogClass::logInFile("BodyMotor: Failed test output on, on");
         Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
-        return true;
+        return BODY_OD_CODE;
     }
 
     if (!deactivateBrake()) {
@@ -151,7 +149,7 @@ bool BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
 
    
 
-    return true;
+    return BODY_OD_CODE;
 }
 
 
@@ -231,12 +229,20 @@ BodyMotor::MotorCompletedCodes BodyMotor::runningCallback(MotorCommands current_
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool BodyMotor::startHoming(int target_position) {
+bool BodyMotor::startAutoHoming(void) {
 
-    return device->activateExternalHoming(target_position);
+    // Gets the Speed and Acceleration from the configuration file
+    int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_HOME_SPEED]);
+    int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_BODY)[MotorConfig::PARAM_HOME_ACC]);
+    return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
+
+    
 }
 
-
+bool BodyMotor::startManualHoming(int target_position) {
+    if(device->isPositionFromExternalSensor()) return device->activateExternalHoming(target_position);
+    else return device->activateManualHoming(target_position);
+}
 
 bool BodyMotor::brakeCallback(void){
     deactivateBrake();

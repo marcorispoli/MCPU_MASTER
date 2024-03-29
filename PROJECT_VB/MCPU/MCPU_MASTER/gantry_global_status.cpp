@@ -62,7 +62,7 @@ void Gantry::initialize(void) {
     if (operating_demo_status) {       
         generator_simulator = true;
     }
-    generator_simulator = false;
+    generator_simulator = true;
     
     can_driver_simulator = false;   
     
@@ -270,8 +270,13 @@ bool Gantry::getManualRotationIncrease(int addr) {
         }
 
         break;
+
     case CANOPEN::MotorDeviceAddresses::VERTICAL_ID:
         if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_STATUS_MANUAL_ROTATION) {
+            if (PCB301::get_button_up_stat()) return true;
+            if (PCB301::get_pedal_up_stat()) return true;
+        }
+        else if (manual_rotation_mode == manual_rotation_options::GANTRY_VERTICAL_MANUAL_ROTATION) {
             if (PCB301::get_button_up_stat()) return true;
             if (PCB301::get_pedal_up_stat()) return true;
         }
@@ -309,8 +314,9 @@ bool Gantry::getManualRotationDecrease(int addr) {
         }
         else if (manual_rotation_mode == manual_rotation_options::GANTRY_BODY_MANUAL_ROTATION) {
             if (PCB301::get_button_body_ccw()) return true;
-            if (PCB301::get_button_down_stat()) return true;
-            if (PCB301::get_pedal_down_stat()) return true;            
+            if (PCB301::get_pedal_down_stat()) return true;
+            if (PCB301::get_button_arm_ccw_stat()) return true;
+            
         }
         break;
     case CANOPEN::MotorDeviceAddresses::SLIDE_ID:
@@ -326,6 +332,10 @@ bool Gantry::getManualRotationDecrease(int addr) {
         break;
     case CANOPEN::MotorDeviceAddresses::VERTICAL_ID:
         if (manual_rotation_mode == manual_rotation_options::GANTRY_STANDARD_STATUS_MANUAL_ROTATION) {
+            if (PCB301::get_button_down_stat()) return true;
+            if (PCB301::get_pedal_down_stat()) return true;
+        }
+        else if (manual_rotation_mode == manual_rotation_options::GANTRY_VERTICAL_MANUAL_ROTATION) {
             if (PCB301::get_button_down_stat()) return true;
             if (PCB301::get_pedal_down_stat()) return true;
         }

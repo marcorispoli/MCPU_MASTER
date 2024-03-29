@@ -128,7 +128,7 @@ ref class MotorConfig
 {
 public:
     literal System::String^ FILENAME = "MotorCalibration.cnf"; //!< This is the name of the configuration file
-    literal int     FILE_REVISION = 2;//!< This is the current revision code
+    literal int     FILE_REVISION = 1;//!< This is the current revision code
 
     literal System::String^ MOTOR_UNDEFINED_POSITION = "UNDEF";    //!< This is the TAG of the Undefined position 
     literal System::String^ MOTOR_INTERNAL_POSITION = "INTERNAL";    //!< This is the TAG of the Internal position mode 

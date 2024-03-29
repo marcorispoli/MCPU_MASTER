@@ -22,37 +22,23 @@
 /// 
 /// <param name=""></param>
 /// <returns>true if the initialization termines successfully</returns>
-
-bool SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
+#define SLIDE_OD_CODE 0x0001
+unsigned short SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     
-
     // Motor Drive Parameter Set
     while (!blocking_writeOD(OD_3210_01, 10000)); 
     while (!blocking_writeOD(OD_3210_02, 10));	 
 
 
-    // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 200))); 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 200)));	// Max Position Range Limit
-
-    // Software Position Limit
-    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
-    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return false;	// Max Position Limit
-
-
-    return true;
+    return SLIDE_OD_CODE;
 }
 
-SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", MotorConfig::PARAM_SLIDE, Notify::messages::ERROR_SLIDE_MOTOR_HOMING, GEAR_RATIO, 1, false)
+SlideMotor::SlideMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::SLIDE_ID, L"MOTOR_SLIDE", MotorConfig::PARAM_SLIDE, Notify::messages::ERROR_SLIDE_MOTOR_HOMING, MIN_ROTATION_ANGLE, MAX_ROTATION_ANGLE, GEAR_RATIO, 1, false)
 {
     // Sets +/- 0.1 ° as the acceptable target range
     setTargetRange(20, 20);
-    max_position = MAX_ROTATION_ANGLE;
-    min_position = MIN_ROTATION_ANGLE;
     idle_positioning = false;
-
-   
 
 }
 
@@ -144,7 +130,7 @@ void SlideMotor::completedCallback(int id, MotorCommands current_command, int cu
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool SlideMotor::startHoming(void) {
+bool SlideMotor::startAutoHoming(void) {
 
     // Gets the Speed and Acceleration from the configuration file
     int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_SLIDE)[MotorConfig::PARAM_HOME_SPEED]);
@@ -152,3 +138,8 @@ bool SlideMotor::startHoming(void) {
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
 }
 
+
+bool SlideMotor::startManualHoming(int target_position) {
+    if (device->isPositionFromExternalSensor()) return device->activateExternalHoming(target_position);
+    else return device->activateManualHoming(target_position);
+}

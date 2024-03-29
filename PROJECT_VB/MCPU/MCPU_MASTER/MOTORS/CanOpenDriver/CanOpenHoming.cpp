@@ -8,6 +8,13 @@
 #include "CalibrationConfig.h"
 
 bool CanOpenMotor::activateExternalHoming(int current_uposition) {
+
+    // Thi is a valid command for the external sensor
+    if (!external_position_mode) {
+        command_completed_code = MotorCompletedCodes::ERROR_INVALID_COMMAND;
+        return false;
+    }
+
     // Command already in execution
     if (!isReady()) {
         command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
@@ -15,10 +22,31 @@ bool CanOpenMotor::activateExternalHoming(int current_uposition) {
     }
 
     command_target = current_uposition;
-    request_command = MotorCommands::MOTOR_HOMING;
+    request_command = MotorCommands::MOTOR_EXTERNAL_HOMING;
+    return true;
 }
 
+bool CanOpenMotor::activateManualHoming(int current_uposition) {
+
+    // Command already in execution
+    if (!isReady()) {
+        command_completed_code = MotorCompletedCodes::ERROR_MOTOR_BUSY;
+        return false;
+    }
+
+    command_target = current_uposition;
+    request_command = MotorCommands::MOTOR_MANUAL_HOMING;
+    return true;
+}
+
+
 bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int speed, int acc) {
+    
+    // Command not valid for the external position mode
+    if (external_position_mode) {
+        command_completed_code = MotorCompletedCodes::ERROR_INVALID_COMMAND;
+        return false;
+    }
 
     // If the safety condition prevent the command execution it is immediatelly aborted
     Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
@@ -38,7 +66,7 @@ bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int sp
     command_homing_off_method = method_off;
     command_acc = acc;
     command_speed = speed;
-    request_command = MotorCommands::MOTOR_HOMING;
+    request_command = MotorCommands::MOTOR_AUTO_HOMING;
     return true;
 }
 
@@ -46,12 +74,18 @@ bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int sp
 void CanOpenMotor::manageAutomaticHoming(void) {
     bool error_condition;
     MotorCompletedCodes termination_code;
+
     home_initialized = false;
     
+    // Reset the position in the configuration file and reactivate the alarm
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    Notify::activate(error_homing);
     
     // Sets the Speed activation
     error_condition = false;
 
+   
     // Read the inputs before to proceed
     bool current_homing_input = false;
     if (blocking_readOD(OD_60FD_00)) {
@@ -61,7 +95,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     // Sets the Speed activation: if the callback returns false, the speed is set here internally with the predefined parameters
     // This is useful for critical activations where the speeds and ramps can changes following the activation position and direction.
     // The function should change the command_speed, command_acc and command_dec
-    motionParameterCallback(MotorCommands::MOTOR_HOMING, encoder_uposition, 0);
+    motionParameterCallback(MotorCommands::MOTOR_AUTO_HOMING, encoder_uposition, 0);
 
     if (!blocking_writeOD(OD_6099_01, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to switch
     if (!blocking_writeOD(OD_6099_02, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Homing Speed to reference
@@ -109,12 +143,11 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     }
 
     // Allows the application to prepare for the motor activation
-    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_HOMING, encoder_uposition, 0);
+    MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_AUTO_HOMING, encoder_uposition, 0);
     if (preparation_error != MotorCompletedCodes::COMMAND_PROCEED) {
         setCommandCompletedCode(preparation_error);
         return;
     }
-
 
     // Update the previous position
     previous_uposition = encoder_uposition;
@@ -174,7 +207,7 @@ void CanOpenMotor::manageAutomaticHoming(void) {
             break;
         }
 
-        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_HOMING, encoder_uposition, 0);
+        MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_AUTO_HOMING, encoder_uposition, 0);
         if (termination_condition >= MotorCompletedCodes::MOTOR_ERRORS) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Application terminated early for error detected");
             termination_code = termination_condition;
@@ -261,99 +294,56 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     // set the cia Switched On status
     writeControlWord(OD_6040_00_DISABLEOP_MASK, OD_6040_00_DISABLEOP_VAL);
 
+    if (home_initialized) {
+        // Set the position in the configuration file and clear the alarm
+        MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, getCurrentUposition().ToString());
+        MotorConfig::Configuration->storeFile();
+        Notify::deactivate(error_homing);
+    }
+
     setCommandCompletedCode(termination_code);
     return;
 
 }
 
+void CanOpenMotor::manageManualHoming(int zero_position) {
 
-bool CanOpenMotor::initResetEncoderCommand(void) {
-    int initial_eposition = 0;
+    int initial_eposition = convert_User_To_Encoder(zero_position);
+
+    home_initialized = false;
     
-    // Updates the current encoder position
-    updateCurrentPosition();
+    // Reset the position in the configuration file and reactivate the alarm
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    Notify::activate(error_homing);
 
-    // gets the proper initial position based on the configuration file
-    if (external_position_mode) {
-        // Read the external sensor
-        if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_EXTERNAL_POSITION] != MotorConfig::MOTOR_EXTERNAL_UNDEFINED_POSITION) {
-            if (!update_external_position()) return false;
-            initial_eposition = convert_User_To_Encoder(external_uposition);
-        }
-        else {
-            return false;
-        }        
-    }
-    else {
-        // Gets the initial position of the encoder. If the position is a valid position the homing is not necessary
-        if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
-            initial_eposition = convert_User_To_Encoder(System::Convert::ToInt32(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION]));
-        }
-        else {
-            return false;
-        }        
+    if (!setEncoderCommand(initial_eposition)) {
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
+        return;
     }
 
-    // Already reset in this position
-    if (encoder_eposition == initial_eposition) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + encoder_uposition.ToString());
-        return true;
-    }
+    home_initialized = true;
+    
+    // Set the position in the configuration file and clear the alarm
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, getCurrentUposition().ToString());
+    MotorConfig::Configuration->storeFile();
+    Notify::deactivate(error_homing);
 
-    // Write the Homing method to 35: current position method
-    if (!blocking_writeOD(OD_6098_00, 35)) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6098");
-        return false;
-    }
-
-    // Write the Position offset register
-    if (!blocking_writeOD(OD_607C_00, initial_eposition)) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 607C");
-        return false;
-    }
-
-
-    // Write the operating mode to HOMING
-    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_HOMING)) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO HOMING");
-        return false;
-    }
-
-    // Set the start bit (BIT4) in the control word register
-    if (!writeControlWord(0x10, 0x10)) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING CW BIT 4");
-        return false;
-    }
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    // Clear the start bit (BIT4) in the control word register
-    if (!writeControlWord(0x10, 0)) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR CLEARING CW BIT 4");
-        return false;
-    }
-
-    // Write the operating mode to PROFILE POSITIONING
-    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_POSITIONING)) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR WRITING IDX 6060 TO POSITIONING");
-        return false;
-    }
-
-    updateCurrentPosition();
-    if (encoder_eposition != initial_eposition) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER NOT IN THE INITIAL ASSIGNED VALUE");
-        return false;
-    }
-
-
-    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER INITIALIZATION SUCCESS, Position = " + encoder_uposition.ToString());
-    return true;
-
+    setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+    return ;
 
 }
 
 void CanOpenMotor::manageExternalHoming(int zero_position) {
     
+    home_initialized = false;
+    
+    // Reset the position in the configuration file and reactivate the alarm
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_EXTERNAL_POSITION, MotorConfig::MOTOR_EXTERNAL_UNDEFINED_POSITION);
+    MotorConfig::Configuration->storeFile();
+    Notify::activate(error_homing);
+
     // Potentiometer position acquisition
     if (!blocking_readOD(OD_3220_01)) {
         setCommandCompletedCode(MotorCompletedCodes::ERROR_ACCESS_REGISTER);
@@ -362,16 +352,98 @@ void CanOpenMotor::manageExternalHoming(int zero_position) {
     external_raw_position = (unsigned short)getRxReg()->data;
 
     // Calcs the equivalent zero position
-    float f = (float)zero_position / external_k_coeff;
-    external_zero_setting = (unsigned short)((float)external_raw_position - f);
+    float f = (float) zero_position / external_k_coeff;
+    external_zero_setting = (unsigned short)((float) external_raw_position - f);
+    
+    update_external_position();
+    int initial_eposition = convert_User_To_Encoder(external_uposition);
 
     // Stores the zero position in the configuration file    
     MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_EXTERNAL_POSITION, external_zero_setting.ToString());
+
+    if (!setEncoderCommand(initial_eposition)) {
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
+        return;
+    }
+
+    // Set the position in the configuration file and clear the alarm
+    MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, getCurrentUposition().ToString());
     MotorConfig::Configuration->storeFile();
-    
-    // Initializes the encoder at the current position
-    initResetEncoderCommand();
+    Notify::deactivate(error_homing);
+    home_initialized = true;
 
     // Command completed
     setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
+    return;
 }
+
+
+
+/// <summary>
+/// This function reset the Encoder internal position to a predefined value.
+/// </summary>
+/// 
+/// + The function sets the  variable "home_initialized" to TRUE in case of success;
+/// + The function sets the  variable "home_initialized" to FALSE in case of failure;
+/// 
+/// NOTE: the function returns FALSE only if a communication error happen.
+/// 
+/// <param name=""></param>
+/// <returns>true: no communcation errors</returns>
+bool CanOpenMotor::setEncoderCommand(int initial_eposition) {
+    
+
+    // Already reset in this position
+    updateCurrentPosition();
+    if (encoder_eposition == initial_eposition) return true;
+   
+    // Write the Homing method to 35: current position method
+    if (!blocking_writeOD(OD_6098_00, 35)) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() - ERROR WRITING IDX 6098");
+        return false;
+    }
+
+    // Write the Position offset register
+    if (!blocking_writeOD(OD_607C_00, initial_eposition)) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() - ERROR WRITING IDX 607C");
+        return false;
+    }
+
+    // Write the operating mode to HOMING
+    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_HOMING)) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() - ERROR WRITING IDX 6060 TO HOMING");
+        return false;
+    }
+
+    // Set the start bit (BIT4) in the control word register
+    if (!writeControlWord(0x10, 0x10)) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() - ERROR WRITING CW BIT 4");
+        return false;
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    // Clear the start bit (BIT4) in the control word register
+    if (!writeControlWord(0x10, 0)) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() -  ERROR CLEARING CW BIT 4");
+        return false;
+    }
+
+    // Write the operating mode to PROFILE POSITIONING
+    if (!blocking_writeOD(OD_6060_00, OD_6060_00_PROFILE_POSITIONING)) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() - ERROR WRITING IDX 6060 TO POSITIONING");
+        return false;
+    }
+
+    updateCurrentPosition();
+    if (encoder_eposition != initial_eposition) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() - ENCODER NOT IN THE INITIAL ASSIGNED VALUE");
+        return false;
+    }
+
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() -  ENCODER INITIALIZATION SUCCESS, Position = " + encoder_uposition.ToString());
+    return true;
+
+}
+
+

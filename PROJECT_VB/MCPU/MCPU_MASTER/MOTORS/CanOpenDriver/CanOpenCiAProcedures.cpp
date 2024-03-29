@@ -137,6 +137,7 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
     if (external_position_mode) {
         update_external_position();
     }
+    else updateCurrentPosition();
 
     // The subclass can add extra commands in IDLE and enable the command execution
     idle_returned_condition = idleCallback();
@@ -155,10 +156,23 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
             // handle the manual hardware inputs
             motor_rotation_activations manual_req = Gantry::getManualActivationRequestState(device_id);
             if (manual_req == motor_rotation_activations::MOTOR_INCREASE) {
-                if (!activateManualPositioning(max_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+                if (service_mode) {
+                    activateManualService(true);
+                }
+                else {
+                    if (!activateManualPositioning(max_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+                }
+                
             }
             else if (manual_req == motor_rotation_activations::MOTOR_DECREASE) {
-                if (!activateManualPositioning(min_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+                if (service_mode) {
+                    activateManualService(false);
+                }
+                else {
+                    if (!activateManualPositioning(min_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
+                }
+
+                
             }
         }
 
@@ -184,7 +198,16 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
         request_command = MotorCommands::MOTOR_IDLE;
         break;
 
-    case MotorCommands::MOTOR_HOMING:
+    case MotorCommands::MOTOR_MANUAL_SERVICE:
+        current_command = request_command;
+        abort_request = false;
+        if (idle_returned_condition == MotorCompletedCodes::COMMAND_PROCEED) manageManualServicePositioning();
+        else setCommandCompletedCode(idle_returned_condition);
+
+        request_command = MotorCommands::MOTOR_IDLE;
+        break;
+
+    case MotorCommands::MOTOR_AUTO_HOMING:
         current_command = request_command;
         abort_request = false;
 
@@ -192,11 +215,23 @@ void CanOpenMotor::CiA402_SwitchedOnCallback(void) {
             (idle_returned_condition == MotorCompletedCodes::COMMAND_PROCEED) ||
             (idle_returned_condition == MotorCompletedCodes::ERROR_LIMIT_SWITCH)
             ) {
-            if (external_position_mode) {
-                manageExternalHoming(command_target);
-            }else   manageAutomaticHoming();
+            manageAutomaticHoming();
         } else setCommandCompletedCode(idle_returned_condition);
         
+        request_command = MotorCommands::MOTOR_IDLE;
+        break;
+
+    case MotorCommands::MOTOR_MANUAL_HOMING:
+        current_command = request_command;
+        abort_request = false;
+        manageManualHoming(command_target);
+        request_command = MotorCommands::MOTOR_IDLE;
+        break;
+
+    case MotorCommands::MOTOR_EXTERNAL_HOMING:
+        current_command = request_command;
+        abort_request = false;
+        manageExternalHoming(command_target);
         request_command = MotorCommands::MOTOR_IDLE;
         break;
 

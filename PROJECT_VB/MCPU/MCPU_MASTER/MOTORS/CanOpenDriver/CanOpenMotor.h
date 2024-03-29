@@ -476,7 +476,17 @@ namespace CANOPEN {
 		/// </summary>
 		/// @{
 		
-		public:CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err,double gear, double external_k, bool reverse); //!< This is the base class constructor
+		public:CanOpenMotor(unsigned char devid, 
+			LPCWSTR motorname, 
+			System::String^ parameter, 
+			Notify::messages home_err,
+			int min_position,
+			int max_position,
+			double gear, 
+			double external_k, 
+			bool reverse
+		); //!< This is the base class constructor
+
 		void runMode(void) { simulator_mode = false; run = true; }
 		void demoMode(void) { simulator_mode = true; run = true; }
 
@@ -494,9 +504,13 @@ namespace CANOPEN {
 		
 		bool  activateAutomaticHoming(int method_on, int method_off, int speed, int acc);	//!< This function starts the automatic homing procedure
 		bool  activateExternalHoming(int current_uposition);	//!< This function starts the external sensor homing procedure
+		bool  activateManualHoming(int current_uposition);	//!< This function starts the external sensor homing procedure
 
 		bool  activateManualPositioning(int target, int speed, int acc, int dec); //!< This command activates the manual mootion		
 		bool  activateManualPositioning(int target); //!< This command activates the manual mootion with predefined parameters
+		bool  activateManualService(bool increase);
+
+		void setServiceMode(bool stat) { service_mode = stat; }
 
 		void  abortActivation(void); //!< Immediate abort of any activation running
 
@@ -533,9 +547,13 @@ namespace CANOPEN {
 		/// </summary>
 		enum class MotorCommands {
 			MOTOR_IDLE = 0,			//!< No command are presents				
-			MOTOR_HOMING,			//!< Homing procedure for automatic zero setting
+			MOTOR_AUTO_HOMING,		//!< Automatic Homing procedure for automatic zero setting
+			MOTOR_MANUAL_HOMING,	//!< Manual Homing procedure for manual zero setting
+			MOTOR_EXTERNAL_HOMING,	//!< Homing for the external position sensor
+
 			MOTOR_AUTO_POSITIONING, //!< Motor Automatic activation to target
 			MOTOR_MANUAL_POSITIONING, //!< Motor Manual activation to target
+			MOTOR_MANUAL_SERVICE,	//!< Motor Manual activation for service (no position limitation)
 		};
 
 		enum class motor_rotation_activations {
@@ -576,7 +594,8 @@ namespace CANOPEN {
 			ERROR_COMMAND_ABORTED,//!< The command has been aborted due to an Abort activation request
 			ERROR_COMMAND_DEMO,//!< The command cannot be executed in demo
 			ERROR_SAFETY, //!< The command has been aborted due to safety conditions
-			ERROR_STARTING_NANOJ //!< The Nano-J command failed to start
+			ERROR_STARTING_NANOJ, //!< The Nano-J command failed to start
+			ERROR_INVALID_COMMAND //!< Command not valuid in the current motor configuration or motor status
 		};		
 		
 		/// <summary>
@@ -598,6 +617,8 @@ namespace CANOPEN {
 			return true;
 		} 
 		
+		inline bool isPositionFromExternalSensor(void) { return external_position_mode; }
+
 		/// <summary>
 		/// This function returns the current configuration fase status
 		/// </summary>
@@ -666,7 +687,14 @@ namespace CANOPEN {
 		/// <param name=""></param>
 		/// <returns>The encoder position in user units</returns>
 		inline int getCurrentPosition(void) { return getCurrentUposition(); }
+
+
+		inline unsigned short getExternalSensor(void) { return external_raw_position; }
+		inline int getExternalPosition(void) { return external_uposition; }
+		inline int getEncoderPosition(void) { return encoder_uposition; }
 		
+		inline int getMinPosition(void) { return min_position; }
+		inline int getMaxPosition(void) { return max_position; }
 		
 
 		///@} End of the API section ________________________________________________________________________
@@ -826,7 +854,7 @@ protected:
 		virtual MotorCompletedCodes idleCallback(void) { return MotorCompletedCodes::COMMAND_PROCEED; }
 		virtual void faultCallback(bool errstat, bool data_change, unsigned int error_class, unsigned int error_code) { return ; }
 		virtual void resetCallback(void) { return ; } //!< Called whenever the boot message is received from the device
-		virtual bool initializeSpecificObjectDictionaryCallback(void) { return true; } //!< Override this function to initialize specific registers of the target Motor Device
+		virtual unsigned short initializeSpecificObjectDictionaryCallback(void) { return 0x0001; } //!< Override this function to initialize specific registers of the target Motor Device
 		virtual bool unbrakeCallback(void) { return true; } //!< Called whenever the optional brake device should be released
 		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated
 		
@@ -858,9 +886,7 @@ protected:
 protected:
 	bool simulator_mode;
 	unsigned char device_id;	//!< This is the target Device Id 
-	System::String^ config_param;//!< Pointer to the parameter in the config parameter
-	int max_position;			//!< This is the maximum target selectable
-	int min_position;			//!< This is the minimum target selectable
+	System::String^ config_param;//!< Pointer to the parameter in the config parameter	
 	Notify::messages error_homing;
 	
 	void inline setSpeed(int val) { command_speed = val; }   //!< Modifies the assigned command speed (to be used into the motionParameterCallback()) 
@@ -872,8 +898,10 @@ protected:
 private:
 		bool run;
 		bool reset_node;
+		int max_position;			//!< This is the maximum target selectable
+		int min_position;			//!< This is the minimum target selectable
+		bool service_mode;
 
-		
 		HANDLE rxSDOEvent;			//!< Event object signaled by the SDO receiving callback
 		bool sdo_rx_pending;		//!< A SDO reception fdata is pending 
 		bool nanoj_rx_pending;		//!< A SDO reception fdata is pending 
@@ -884,6 +912,8 @@ private:
 
 		status_options internal_status; //!< This is the current internal motor status
 		
+		bool home_initialized;			//!< The device has executed the homing procedure	
+	
 		bool			external_position_mode;			//! The current position is detected with the analog input from an external source (potentiometer)
 		unsigned short  external_raw_position;		//!< Cureent value of the potentiometer;
 		unsigned short  external_zero_setting;	//!< Potentiometer value at mechanical zero position
@@ -901,7 +931,7 @@ private:
 		int target_range_l;				//!< This is the acceptable target range in user units (lower limit)
 		bool od_initialized;			//!< Object dictionary has been intialized
 		bool nanoj_initialized;			//!< Nano-J program has been intialized
-		bool home_initialized;			//!< The device has executed the homing procedure		
+			
 		double rot_per_unit;			//!< This is the assigned Rotation/units convertion factor
 
 		
@@ -939,8 +969,8 @@ private:
 		unsigned int error_code;
 		
 
-		// Device Configuration _____________________________________________________________________________
-		bool initResetEncoderCommand(void);
+		// Device Configuration _____________________________________________________________________________		
+		bool setEncoderCommand(int eposition);
 		bool initializeObjectDictionary(void);
 		bool initNanojDataRegister(void);
 		bool nanojWrite1024Block(int index, int size);
@@ -956,9 +986,12 @@ private:
 		int getActivationTimeout(int speed, int acc, int dec, int target);
 		bool isTarget(void) { return ((getCurrentUposition() <= command_target + target_range_h) && (getCurrentUposition() >= command_target - target_range_h)); }
 
-		void manageAutomaticPositioning(void);
-		void manageAutomaticHoming(void);
+		void manageAutomaticPositioning(void);		
 		void manageManualPositioning(void);
+		void manageManualServicePositioning(void);
+
+		void manageAutomaticHoming(void);
+		void manageManualHoming(int zero_position);
 		void manageExternalHoming(int zero_position);//!< This function gets the external zero position sensor	   
 
 

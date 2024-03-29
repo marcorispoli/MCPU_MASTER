@@ -26,8 +26,9 @@
 #define HOMING_ON_METHOD 19
 #define HOMING_OFF_METHOD 20
 
-// #define _DISABLE_BRAKES_
+#define NANOJ_PROGRAM
 
+#ifdef NANOJ_PROGRAM
 /*      Versione con attesa iniziale del segnale EXP WIN
  *      ad un livello IDLE e inizializzazione a zero degli
  *      angoli di scansione
@@ -180,7 +181,9 @@ static const unsigned char nanojTrxProgram[] = {
 
 
 };
-
+#else
+static const unsigned char nanojTrxProgram[] = { 0 };
+#endif
 /// <summary>
 /// This is the Tilt Motor class constructor
 /// 
@@ -198,15 +201,12 @@ static const unsigned char nanojTrxProgram[] = {
 /// 
 /// 
 /// <param name=""></param>
-TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, GEAR_RATIO, 1, false)
+TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, MIN_ROTATION_ANGLE, MAX_ROTATION_ANGLE, GEAR_RATIO, 1, false)
 {
     setNanoJPtr(nanojTrxProgram, sizeof(nanojTrxProgram));
 
     // Sets +/- 0.02 ° as the acceptable target range
     setTargetRange(2, 2);
-    max_position = MAX_ROTATION_ANGLE;
-    min_position = MIN_ROTATION_ANGLE;
-
      
     idle_positioning = false;
     tomo_scan = false;
@@ -361,31 +361,25 @@ void TiltMotor::resetCallback(void) {
 /// 
 /// <param name=""></param>
 /// <returns>true if the initialization termines successfully</returns>
-bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
+#define TILT_OD_CODE 0x0001
+unsigned short TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     // Motor Drive Parameter Set
     while (!blocking_writeOD(OD_3210_01, 10000)); // 50000 Position Loop, Proportional Gain (closed Loop)
     while (!blocking_writeOD(OD_3210_02, 5));	 // 10  Position Loop, Integral Gain (closed Loop)
 
-    // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 1000))); 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 1000)));	// Max Position Range Limit
-
-    // Software Position Limit
-    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
-    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return false;	// Max Position Limit
-
+    
     // Sets the Output setting
-    if (!blocking_writeOD(OD_3250_02, 0)) return false; // Output control not inverted
-    if (!blocking_writeOD(OD_3250_03, 0)) return false; // Force Enable = false
-    if (!blocking_writeOD(OD_3250_08, 0)) return false; // Routing Enable = false
-    if (!blocking_writeOD(OD_60FE_01, 0)) return false; // Set All outputs to 0
+    if (!blocking_writeOD(OD_3250_02, 0)) return 0; // Output control not inverted
+    if (!blocking_writeOD(OD_3250_03, 0)) return 0; // Force Enable = false
+    if (!blocking_writeOD(OD_3250_08, 0)) return 0; // Routing Enable = false
+    if (!blocking_writeOD(OD_60FE_01, 0)) return 0; // Set All outputs to 0
 
     // Set the input setting
-    if (!blocking_writeOD(OD_3240_01, 0x4)) return false; // Input control special: I3 = HOMING
-    if (!blocking_writeOD(OD_3240_02, 0)) return false;   // Function Inverted: not inverted
-    if (!blocking_writeOD(OD_3240_03, 0)) return false;   // Force Enable = false
-    if (!blocking_writeOD(OD_3240_06, 0)) return false;   // Input Range Select: threshold = 5V;
+    if (!blocking_writeOD(OD_3240_01, 0x4)) return 0; // Input control special: I3 = HOMING
+    if (!blocking_writeOD(OD_3240_02, 0)) return 0;   // Function Inverted: not inverted
+    if (!blocking_writeOD(OD_3240_03, 0)) return 0;   // Force Enable = false
+    if (!blocking_writeOD(OD_3240_06, 0)) return 0;   // Input Range Select: threshold = 5V;
 
   
 
@@ -394,7 +388,7 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
         LogClass::logInFile("TiltMotor: Failed test unlock brake");
         Notify::activate(Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT);
         brake_alarm = true;
-        return true;
+        return TILT_OD_CODE;
     }
 
     // Test lock brake
@@ -402,10 +396,10 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
         LogClass::logInFile("TiltMotor: Failed test lock brake");
         Notify::activate(Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT);
         brake_alarm = true;
-        return true;
+        return TILT_OD_CODE;
     }
 
-    return true;
+    return TILT_OD_CODE;
 }
 
 
@@ -416,7 +410,7 @@ bool TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool TiltMotor::startHoming(void) {
+bool TiltMotor::startAutoHoming(void) {
     pending_target = target_options::UNDEF;
     current_target = pending_target;
 
@@ -424,6 +418,14 @@ bool TiltMotor::startHoming(void) {
     int speed = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_HOME_SPEED]);
     int acc = System::Convert::ToInt16(MotorConfig::Configuration->getParam(MotorConfig::PARAM_TILT)[MotorConfig::PARAM_HOME_ACC]);
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
+}
+
+bool TiltMotor::startManualHoming(int target_position) {
+    pending_target = target_options::UNDEF;
+    current_target = pending_target;
+
+    if (device->isPositionFromExternalSensor()) return device->activateExternalHoming(target_position);
+    else return device->activateManualHoming(target_position);
 }
 
 /// <summary>

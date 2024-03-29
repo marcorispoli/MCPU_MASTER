@@ -7,49 +7,44 @@
 #include "TiltMotor.h"
 #include "BodyMotor.h"
 #include "SlideMotor.h"
-
+#include "KeyPaddle.h"
+#include "gantry_global_status.h"
 
 
 // Main Panel Definition
 #define FORM_BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ServiceBackground.PNG")
-#define BODY_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\BodyOk.PNG")
-#define BODY_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\BodyNok.PNG")
-#define ARM_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\ArmOk.PNG")
-#define ARM_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\ArmNok.PNG")
-#define TILT_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\TiltOk.PNG")
-#define TILT_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\TiltNok.PNG")
-#define VERTICAL_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\VerticalOk.PNG")
-#define VERTICAL_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\VerticalNok.PNG")
-#define SLIDE_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\SlideOk.PNG")
-#define SLIDE_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\ZeroSetting\\SlideNok.PNG")
-
+#define BODY_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\BODY_MOTOR_ICON.PNG")
+#define ARM_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\ARM_MOTOR_ICON.PNG")
+#define VERTICAL_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\VERTICAL_MOTOR_ICON.PNG")
+#define TILT_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\TILT_MOTOR_ICON.PNG")
+#define SLIDE_ICON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\SLIDE_MOTOR_ICON.PNG")
 #define CALIB_ZERO_SETTING_BACKGROUND System::Drawing::Image::FromFile(Gantry::applicationResourcePath + "ServiceForm\\CALIBRATION\\ZERO_SETTING\\ZeroSettingBackground.PNG")
+
+typedef enum {
+	NO_PANEL = 0,
+	ZERO_BODY_PANEL,
+	ZERO_ARM_PANEL,
+	ZERO_VERTICAL_PANEL,
+	ZERO_TILT_PANEL,
+	ZERO_SLIDE_PANEL,
+}zero_panels;
 
 /// <summary>
 /// Thuis is the enumeration of the possible zero setting commands
 /// </summary>
 typedef enum {
 	NO_COMMAND = 0,
-	ZERO_BODY,
-	ZERO_ARM,
-	ZERO_VERTICAL,
-	ZERO_TILT,
-	ZERO_SLIDE,
-	ZERO_ALL
+	ZERO_AUTO_START,
+	ZERO_MANUAL_START,
+	ZERO_EXECUTING,
+	ZERO_COMPLETED,	
 }zero_commands;
 
+static zero_panels current_panel = zero_panels::NO_PANEL;
 static zero_commands current_zero_command = zero_commands::NO_COMMAND;
 static int command_delay = 30;
 
-typedef enum {
-	EXPTOOL_NO_EXPOSURE = 0,
-	EXPTOOL_WAIT_BUTTON,
-	EXPTOOL_EXECUTING,
-	EXPTOOL_COMPLETED,
-	EXPTOOL_TERMINATED
-}_exptool_steps_t;
 
-static _exptool_steps_t exposureStep = EXPTOOL_NO_EXPOSURE;
 
 void ServiceZeroSettingTool::formInitialization(void) {
 
@@ -75,9 +70,12 @@ void ServiceZeroSettingTool::formInitialization(void) {
 	zeroSettingBody->BackColor = Color::Transparent;
 	zeroSettingSlide->BackColor = Color::Transparent;
 	zeroSettingTilt->BackColor = Color::Transparent;
-	zeroSettingVertical->BackColor = Color::Transparent;
-	zeroSettingAll->BackColor = Color::Transparent;
-	
+	zeroSettingVertical->BackColor = Color::Transparent;	
+	executeIcon->BackColor = Color::Transparent;
+
+	max_target_angle = 0;
+	min_target_angle = 0;
+
 	this->Hide();
 	open_status = false;
 }
@@ -88,8 +86,12 @@ void ServiceZeroSettingTool::initPanel(void) {
 
 	serviceMenuTitle->Text = Notify::TranslateLabel(Notify::messages::LABEL_ZERO_SETTING_PANEL_TITLE);
 	current_zero_command = zero_commands::NO_COMMAND;
+	
 	zeroSettingLog->Clear();
+	executePanel->Hide();
 
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+	
 	// Start the startup session	
 	serviceTimer->Stop();	
 	
@@ -117,6 +119,295 @@ void ServiceZeroSettingTool::close(void) {
 	this->Hide();
 }
 
+void ServiceZeroSettingTool::onBodyPanelTimerCallback(void) {
+	System::String^ device_str = "BODY MOTOR";
+	float val;
+	if (current_zero_command == zero_commands::NO_COMMAND) {
+		if (BodyMotor::device->isPositionFromExternalSensor()) {
+			sensorValue->Text = BodyMotor::device->getExternalSensor().ToString();
+			val = BodyMotor::device->getExternalPosition() * 0.1;			
+			externalPosition->Text = val.ToString();
+			val = BodyMotor::device->getEncoderPosition() * 0.1;
+			encoderPosition->Text = val.ToString();
+		}
+		else {
+			sensorValue->Text = "-";
+			externalPosition->Text = "-";
+			val = BodyMotor::device->getEncoderPosition() * 0.1;
+			encoderPosition->Text = val.ToString();
+		}
+		return;
+	}
+
+	switch (current_zero_command) {
+	case zero_commands::ZERO_MANUAL_START:
+		val = System::Convert::ToDouble(targetSelection->Text) * 10;
+
+		if (!BodyMotor::startManualHoming((int) val)) {
+			zeroSettingLog->Text += device_str + ": Unable to start the manual home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		break;
+
+	case zero_commands::ZERO_AUTO_START:
+		if (!BodyMotor::startAutoHoming()) {
+			zeroSettingLog->Text += device_str + ": Unable to start the auto home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		zeroSettingLog->Text += device_str + ": Home procedure started\n";
+		break;
+		
+	case zero_commands::ZERO_EXECUTING:
+		if (!BodyMotor::device->isReady()) return;
+		current_zero_command = zero_commands::ZERO_COMPLETED;
+		break;
+
+	case zero_commands::ZERO_COMPLETED:
+		if (BodyMotor::device->getCommandCompletedCode() == BodyMotor::MotorCompletedCodes::COMMAND_SUCCESS) {
+			zeroSettingLog->Text += "BODY MOTOR: COMPLETED\n";
+		}else zeroSettingLog->Text += "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
+		current_zero_command = zero_commands::NO_COMMAND;
+		return;
+	}
+
+}
+
+void ServiceZeroSettingTool::onTiltPanelTimerCallback(void) {
+	System::String^ device_str = "TILT MOTOR";
+
+	float val;
+	if (current_zero_command == zero_commands::NO_COMMAND) {		
+		if (TiltMotor::device->isPositionFromExternalSensor()) {
+			sensorValue->Text = TiltMotor::device->getExternalSensor().ToString();
+			val = TiltMotor::device->getExternalPosition() * 0.01;
+			externalPosition->Text = val.ToString();
+			val = TiltMotor::device->getEncoderPosition() * 0.01;
+			encoderPosition->Text = val.ToString();
+		}
+		else {
+			sensorValue->Text = "-";
+			externalPosition->Text = "-";
+			val = TiltMotor::device->getEncoderPosition() * 0.01;
+			encoderPosition->Text = val.ToString();
+		}
+		return;
+	}
+
+	switch (current_zero_command) {
+	case zero_commands::ZERO_MANUAL_START:
+		val = System::Convert::ToDouble(targetSelection->Text) * 100;
+		if (!TiltMotor::startManualHoming((int) val)) {
+			zeroSettingLog->Text += device_str + ": Unable to start the manual home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		break;
+
+	case zero_commands::ZERO_AUTO_START:
+		if (!TiltMotor::startAutoHoming()) {
+			zeroSettingLog->Text += device_str + ": Unable to start the auto home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		zeroSettingLog->Text += device_str + ": Home procedure started\n";
+		break;
+	
+	case zero_commands::ZERO_EXECUTING:
+		if (!TiltMotor::device->isReady()) return;
+		current_zero_command = zero_commands::ZERO_COMPLETED;
+		break;
+
+	case zero_commands::ZERO_COMPLETED:
+		if (TiltMotor::device->getCommandCompletedCode() == CANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_SUCCESS) {
+			zeroSettingLog->Text += device_str + ": COMPLETED\n";
+		}
+		else zeroSettingLog->Text += device_str + ":" + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
+		current_zero_command = zero_commands::NO_COMMAND;
+		return;
+	}
+
+}
+
+void ServiceZeroSettingTool::onVerticalPanelTimerCallback(void) {
+	System::String^ device_str = "VERTICAL MOTOR";
+
+	if (current_zero_command == zero_commands::NO_COMMAND) {
+		if (VerticalMotor::device->isPositionFromExternalSensor()) {
+			sensorValue->Text = VerticalMotor::device->getExternalSensor().ToString();
+			externalPosition->Text = VerticalMotor::device->getExternalPosition().ToString();
+			encoderPosition->Text = VerticalMotor::device->getEncoderPosition().ToString();
+		}
+		else {
+			sensorValue->Text = "-";
+			externalPosition->Text = "-";
+			encoderPosition->Text = VerticalMotor::device->getEncoderPosition().ToString();
+		}
+		return;
+	}
+
+	switch (current_zero_command) {
+	case zero_commands::ZERO_MANUAL_START:
+		if (!VerticalMotor::startManualHoming(System::Convert::ToInt16(targetSelection->Text))) {
+			zeroSettingLog->Text += device_str + ": Unable to start the manual home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		break;
+
+	case zero_commands::ZERO_AUTO_START:
+		if (!VerticalMotor::startAutoHoming()) {
+			zeroSettingLog->Text += device_str + ": Unable to start the auto home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		zeroSettingLog->Text += device_str + ": Home procedure started\n";
+		break;
+
+	case zero_commands::ZERO_EXECUTING:
+		if (!VerticalMotor::device->isReady()) return;
+		current_zero_command = zero_commands::ZERO_COMPLETED;
+		break;
+
+	case zero_commands::ZERO_COMPLETED:
+		if (VerticalMotor::device->getCommandCompletedCode() == CANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_SUCCESS) {
+			zeroSettingLog->Text += device_str + ": COMPLETED\n";
+		}
+		else zeroSettingLog->Text += device_str + ":" + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
+		current_zero_command = zero_commands::NO_COMMAND;
+		return;
+	}
+
+}
+
+void ServiceZeroSettingTool::onArmPanelTimerCallback(void) {
+	System::String^ device_str = "ARM MOTOR";
+
+	float val;
+	if (current_zero_command == zero_commands::NO_COMMAND) {
+		if (ArmMotor::device->isPositionFromExternalSensor()) {
+			sensorValue->Text = ArmMotor::device->getExternalSensor().ToString();
+			val = ArmMotor::device->getExternalPosition() * 0.01;
+			externalPosition->Text = val.ToString();
+			val = ArmMotor::device->getEncoderPosition() * 0.01;
+			encoderPosition->Text = val.ToString();
+		}
+		else {
+			sensorValue->Text = "-";
+			externalPosition->Text = "-";
+			val = ArmMotor::device->getEncoderPosition() * 0.01;
+			encoderPosition->Text = val.ToString();
+		}
+		return;
+	}
+
+	switch (current_zero_command) {
+	case zero_commands::ZERO_MANUAL_START:
+		val = System::Convert::ToDouble(targetSelection->Text) * 100;
+		if (!ArmMotor::startManualHoming((int) val)) {
+			zeroSettingLog->Text += device_str + ": Unable to start the manual home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		break;
+
+	case zero_commands::ZERO_AUTO_START:
+		if (!ArmMotor::startAutoHoming()) {
+			zeroSettingLog->Text += device_str + ": Unable to start the auto home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		zeroSettingLog->Text += device_str + ": Home procedure started\n";
+		break;
+
+	case zero_commands::ZERO_EXECUTING:
+		if (!ArmMotor::device->isReady()) return;
+		current_zero_command = zero_commands::ZERO_COMPLETED;
+		break;
+
+	case zero_commands::ZERO_COMPLETED:
+		if (ArmMotor::device->getCommandCompletedCode() == CANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_SUCCESS) {
+			zeroSettingLog->Text += device_str + ": COMPLETED\n";
+		}
+		else zeroSettingLog->Text += device_str + ":" + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
+		current_zero_command = zero_commands::NO_COMMAND;
+		return;
+	}
+
+}
+
+void ServiceZeroSettingTool::onSlidePanelTimerCallback(void) {
+	System::String^ device_str = "SLIDE MOTOR";
+
+	float val;
+	if (current_zero_command == zero_commands::NO_COMMAND) {
+		if (SlideMotor::device->isPositionFromExternalSensor()) {
+			sensorValue->Text = SlideMotor::device->getExternalSensor().ToString();
+			val = SlideMotor::device->getExternalPosition() * 0.01;
+			externalPosition->Text = val.ToString();
+			val = SlideMotor::device->getEncoderPosition() * 0.01;
+			encoderPosition->Text = val.ToString();
+		}
+		else {
+			sensorValue->Text = "-";
+			externalPosition->Text = "-";
+			val = SlideMotor::device->getEncoderPosition() * 0.01;
+			encoderPosition->Text = val.ToString();
+		}
+		return;
+	}
+
+	switch (current_zero_command) {
+	case zero_commands::ZERO_MANUAL_START:
+		val = System::Convert::ToDouble(targetSelection->Text) * 100;
+		if (!SlideMotor::startManualHoming((int) val)) {
+			zeroSettingLog->Text += device_str + ": Unable to start the manual home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		break;
+
+	case zero_commands::ZERO_AUTO_START:
+		if (!SlideMotor::startAutoHoming()) {
+			zeroSettingLog->Text += device_str + ": Unable to start the auto home procedure\n";
+			current_zero_command = zero_commands::NO_COMMAND;
+			return;
+		}
+
+		current_zero_command = zero_commands::ZERO_EXECUTING;
+		zeroSettingLog->Text += device_str + ": Home procedure started\n";
+		break;
+
+	case zero_commands::ZERO_EXECUTING:
+		if (!SlideMotor::device->isReady()) return;
+		current_zero_command = zero_commands::ZERO_COMPLETED;
+		break;
+
+	case zero_commands::ZERO_COMPLETED:
+		if (SlideMotor::device->getCommandCompletedCode() == CANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_SUCCESS) {
+			zeroSettingLog->Text += device_str + ": COMPLETED\n";
+		}
+		else zeroSettingLog->Text += device_str + ":" + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
+		current_zero_command = zero_commands::NO_COMMAND;
+		return;
+	}
+
+}
+
 
 void ServiceZeroSettingTool::timerManagement(void) {
 
@@ -127,258 +418,17 @@ void ServiceZeroSettingTool::timerManagement(void) {
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-	bool finish = false;
-	static int zero_all_fase = 0;
 
-	// The zero all fase is initiated
-	if (zero_all_fase) {
-		switch (zero_all_fase) {
-
-		case 1: // TILT
-			if (!TiltMotor::startHoming()) {
-				zeroSettingLog->Text += "TILT ERROR -> " + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
-				zero_all_fase += 2;
-				return;
-			}
-
-			zero_all_fase++;
-			zeroSettingLog->Text += "TILT MOTOR RUN \n";
-			break;
-
-		case 2:
-			if (!TiltMotor::device->isReady()) return;
-			zeroSettingLog->Text += "TILT MOTOR:" + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
-			zero_all_fase++;
-			return;
-
-		case 3: // SLIDE
-			if (!SlideMotor::startHoming()) {
-				zeroSettingLog->Text += "SLIDE ERROR -> " + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
-				zero_all_fase += 2;
-				return;
-			}
-
-			zero_all_fase++;
-			zeroSettingLog->Text += "SLIDE MOTOR RUN \n";
-			break;
-
-		case 4:
-			if (!SlideMotor::device->isReady()) return;
-			zeroSettingLog->Text += "SLIDE MOTOR:" + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
-			zero_all_fase++;
-			return;
-
-		case 5: // ARM
-			if (!ArmMotor::startHoming()) {
-				zeroSettingLog->Text += "ARM ERROR -> " + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
-				zero_all_fase += 2;
-				return;
-			}
-
-			zero_all_fase++;
-			zeroSettingLog->Text += "ARM MOTOR RUN \n";
-			break;
-
-		case 6:
-			if (!ArmMotor::device->isReady()) return;
-			zeroSettingLog->Text += "ARM MOTOR:" + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
-			zero_all_fase++;
-			return;
-
-		case 7: // BODY
-			if (!BodyMotor::startHoming((int) 0)) {
-				zeroSettingLog->Text += "BODY ERROR -> " + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
-				zero_all_fase += 2;
-				return;
-			}
-
-			zero_all_fase++;
-			zeroSettingLog->Text += "BODY MOTOR RUN \n";
-			break;
-
-		case 8:
-			if (!BodyMotor::device->isReady()) return;
-			zeroSettingLog->Text += "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
-			zero_all_fase++;
-			return;
-
-		case 9: // VERTICAL
-			if (!VerticalMotor::startHoming()) {
-				zeroSettingLog->Text += "VERTICAL ERROR -> " + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
-				zero_all_fase += 2;
-				return;
-			}
-
-			zero_all_fase++;
-			zeroSettingLog->Text += "VERTICAL MOTOR RUN \n";
-			break;
-
-		case 10:
-			if (!VerticalMotor::device->isReady()) return;
-			zeroSettingLog->Text += "VERTICAL MOTOR:" + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
-			zero_all_fase++;
-			return;
-		case 11:
-			zeroSettingLog->Text += "ZERO ALL COMMAND COMPLETED \n";
-			zero_all_fase = 0;
-			current_zero_command = zero_commands::NO_COMMAND;
-			serviceTimer->Stop();
-			break;
-
-		default:
-			zeroSettingLog->Text += "ZERO ALL COMMAND COMPLETED WITH INVALID STATUS\n";
-			zero_all_fase = 0;
-			current_zero_command = zero_commands::NO_COMMAND;
-			serviceTimer->Stop();
-		}
-
-		return;
+	switch (current_panel) {
+	case zero_panels::ZERO_ARM_PANEL:  onArmPanelTimerCallback(); break;
+	case zero_panels::ZERO_TILT_PANEL:  onTiltPanelTimerCallback(); break;
+	case zero_panels::ZERO_BODY_PANEL: onBodyPanelTimerCallback();  break;
+	case zero_panels::ZERO_VERTICAL_PANEL:  onVerticalPanelTimerCallback(); break;
+	case zero_panels::ZERO_SLIDE_PANEL:  onSlidePanelTimerCallback(); break;
 	}
 
-	// Delay Before to start the command
-	if (command_delay > 1) {
-		zeroSettingLog->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 72, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-		zeroSettingLog->SelectionAlignment = HorizontalAlignment::Center;
-		zeroSettingLog->Text = ((command_delay / 10) + 1).ToString();
-		command_delay--;
+	return;
 
-		if (command_delay == 1) {
-			zeroSettingLog->Text = "";
-			zeroSettingLog->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			zeroSettingLog->SelectionAlignment = HorizontalAlignment::Left;
-
-		}
-		return;
-	}
-
-	switch (current_zero_command) {
-	case zero_commands::ZERO_BODY:
-
-		// Command Initialization
-		if (command_delay == 1) {
-			command_delay = 0;
-
-			if (!BodyMotor::startHoming(0)) {
-				zeroSettingLog->Text = "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
-				current_zero_command = zero_commands::NO_COMMAND;
-				finish = true;
-				break;
-			}
-			zeroSettingLog->Text += "BODY MOTOR RUN \n";
-			break;
-		}
-
-		if (!BodyMotor::device->isReady()) break;
-		zeroSettingLog->Text += "BODY MOTOR:" + BodyMotor::device->getCommandCompletedCode().ToString() + "\n";
-
-		current_zero_command = zero_commands::NO_COMMAND;
-		finish = true;
-		break;
-
-	case zero_commands::ZERO_VERTICAL:
-
-		// Command Initialization
-		if (command_delay == 1) {
-			command_delay = 0;
-			if (!VerticalMotor::startHoming()) {
-				zeroSettingLog->Text = "VERTICAL MOTOR:" + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
-				current_zero_command = zero_commands::NO_COMMAND;
-				finish = true;
-				break;
-			}
-			zeroSettingLog->Text += "VERTICAL MOTOR RUN \n";
-			break;
-		}
-
-		if (!VerticalMotor::device->isReady()) break;
-		zeroSettingLog->Text += "VERTICAL MOTOR:" + VerticalMotor::device->getCommandCompletedCode().ToString() + "\n";
-
-		current_zero_command = zero_commands::NO_COMMAND;
-		finish = true;
-		break;
-
-	case zero_commands::ZERO_TILT:
-		// Command Initialization
-		if (command_delay == 1) {
-			command_delay = 0;
-
-			if (!TiltMotor::startHoming()) {
-				zeroSettingLog->Text = "TILT MOTOR:" + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
-				current_zero_command = zero_commands::NO_COMMAND;
-				finish = true;
-				break;
-			}
-			zeroSettingLog->Text += "TILT MOTOR RUN \n";
-			break;
-		}
-
-		if (!TiltMotor::device->isReady()) break;
-		zeroSettingLog->Text += "TILT MOTOR:" + TiltMotor::device->getCommandCompletedCode().ToString() + "\n";
-
-		current_zero_command = zero_commands::NO_COMMAND;
-		break;
-
-	case zero_commands::ZERO_SLIDE:
-
-		// Command Initialization
-		if (command_delay == 1) {
-			command_delay = 0;
-
-			if (!SlideMotor::startHoming()) {
-				zeroSettingLog->Text = "SLIDE MOTOR:" + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
-				current_zero_command = zero_commands::NO_COMMAND;
-				finish = true;
-				break;
-			}
-			zeroSettingLog->Text += "SLIDE MOTOR RUN \n";
-			break;
-		}
-
-		if (!SlideMotor::device->isReady()) break;
-		zeroSettingLog->Text += "SLIDE MOTOR:" + SlideMotor::device->getCommandCompletedCode().ToString() + "\n";
-
-		current_zero_command = zero_commands::NO_COMMAND;
-		break;
-
-	case zero_commands::ZERO_ARM:
-
-		// Command Initialization
-		if (command_delay == 1) {
-			command_delay = 0;
-
-			if (!ArmMotor::startHoming()) {
-				zeroSettingLog->Text = "ARM MOTOR:" + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
-				current_zero_command = zero_commands::NO_COMMAND;
-				finish = true;
-				break;
-			}
-			zeroSettingLog->Text += "ARM MOTOR RUN \n";
-			break;
-		}
-
-		if (!ArmMotor::device->isReady()) break;
-		zeroSettingLog->Text += "ARM MOTOR:" + ArmMotor::device->getCommandCompletedCode().ToString() + "\n";
-
-		current_zero_command = zero_commands::NO_COMMAND;
-		break;
-
-	case zero_commands::ZERO_ALL:
-
-		// Command Initialization
-		if (command_delay == 1) {
-			command_delay = 0;
-
-			zeroSettingLog->Text = "ZERO ALL COMMAND STARTED \n";
-			zero_all_fase = 1;
-			return;
-		}
-
-		break;
-
-
-	}
-
-	if (finish) serviceTimer->Stop();
 
 }
 
@@ -404,64 +454,203 @@ System::Void ServiceZeroSettingTool::onServiceTimeout(Object^ source, System::Ti
 
 // Canc button common management
 void ServiceZeroSettingTool::cancButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (current_zero_command != zero_commands::NO_COMMAND) {
-		switch (current_zero_command) {
-		case zero_commands::ZERO_BODY:BodyMotor::device->abortActivation(); break;
-		case zero_commands::ZERO_VERTICAL:VerticalMotor::device->abortActivation(); break;
-		case zero_commands::ZERO_TILT:TiltMotor::device->abortActivation(); break;
-		case zero_commands::ZERO_ARM:ArmMotor::device->abortActivation(); break;
-		case zero_commands::ZERO_SLIDE:SlideMotor::device->abortActivation(); break;
-		case zero_commands::ZERO_ALL:
-			SlideMotor::device->abortActivation();
-			ArmMotor::device->abortActivation();
-			BodyMotor::device->abortActivation();
-			VerticalMotor::device->abortActivation();
-			TiltMotor::device->abortActivation();
-			break;
-		}
+	BodyMotor::device->setServiceMode(false);
+	TiltMotor::device->setServiceMode(false);
+	SlideMotor::device->setServiceMode(false);
+	ArmMotor::device->setServiceMode(false);
+	VerticalMotor::device->setServiceMode(false);
+
+	if ((current_panel == zero_panels::NO_PANEL) && (current_zero_command == zero_commands::NO_COMMAND)) {
+		executePanel->Hide();
+		serviceTimer->Stop();
+		Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+		
+
+		close();
 		return;
 	}
+	
+	
+	if (current_zero_command != zero_commands::NO_COMMAND) {
 
-	close();
+		switch (current_panel) {
+		case zero_panels::ZERO_BODY_PANEL:BodyMotor::device->abortActivation(); break;
+		case zero_panels::ZERO_ARM_PANEL:ArmMotor::device->abortActivation(); break;
+		case zero_panels::ZERO_TILT_PANEL:TiltMotor::device->abortActivation(); break;
+		case zero_panels::ZERO_VERTICAL_PANEL:VerticalMotor::device->abortActivation(); break;
+		case zero_panels::ZERO_SLIDE_PANEL:SlideMotor::device->abortActivation(); break;
+		}
+	}
 
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
+	current_panel = zero_panels::NO_PANEL;
+	current_zero_command = zero_commands::NO_COMMAND;
+	executePanel->Hide();
+	serviceTimer->Stop();
+	return;
+	
 }
 
 System::Void ServiceZeroSettingTool::zeroSettingBody_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (current_zero_command != zero_commands::NO_COMMAND) return;
-	command_delay = 50;
-	current_zero_command = zero_commands::ZERO_BODY;
+	if (current_zero_command != zero_commands::NO_COMMAND) return;	
+	
+	max_target_angle = BodyMotor::device->getMaxPosition() * 0.1;
+	min_target_angle = BodyMotor::device->getMinPosition() * 0.1;
+	executeIcon->BackgroundImage = BODY_ICON_IMAGE;
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_BODY_MANUAL_ROTATION);
+	BodyMotor::device->setServiceMode(true);	
+
+	float val = BodyMotor::device->getCurrentPosition() * 0.1;
+	targetSelection->Text = val.ToString();
+
+	if (BodyMotor::device->isPositionFromExternalSensor()) {
+		manButton->Show();
+		runButton->Hide();
+	}
+	else {
+		manButton->Show();
+		runButton->Show();		
+	}
+
+	
+	zeroSettingLog->Clear();
+	executePanel->Show();
+	current_panel = zero_panels::ZERO_BODY_PANEL;
 	serviceTimer->Start();
 }
+
 System::Void ServiceZeroSettingTool::zeroSettingVertical_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
-	command_delay = 50;
-	current_zero_command = zero_commands::ZERO_VERTICAL;
+
+	current_panel = zero_panels::ZERO_VERTICAL_PANEL;
+	executeIcon->BackgroundImage = VERTICAL_ICON_IMAGE;
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_VERTICAL_MANUAL_ROTATION);
+	VerticalMotor::device->setServiceMode(true);
+
+	float val = VerticalMotor::device->getCurrentPosition() * 1;
+	targetSelection->Text = val.ToString();
+	
+
+	if (VerticalMotor::device->isPositionFromExternalSensor()) {
+		
+		manButton->Show();
+		runButton->Hide();
+	}
+	else {
+		manButton->Show();
+		runButton->Show();
+		
+	}
+
+	zeroSettingLog->Clear();
+	executePanel->Show();
 	serviceTimer->Start();
 }
 System::Void ServiceZeroSettingTool::zeroSettingArm_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
-	command_delay = 50;
-	current_zero_command = zero_commands::ZERO_ARM;
+
+	current_panel = zero_panels::ZERO_ARM_PANEL;
+	executeIcon->BackgroundImage = ARM_ICON_IMAGE;
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_ARM_MANUAL_ROTATION);
+	ArmMotor::device->setServiceMode(true);
+
+	float val = ArmMotor::device->getCurrentPosition() * 0.01;
+	targetSelection->Text = val.ToString();
+	
+
+	if (ArmMotor::device->isPositionFromExternalSensor()) {
+		
+		manButton->Show();
+		runButton->Hide();
+	}
+	else {
+		manButton->Show();
+		runButton->Show();
+		
+	}
+
+	zeroSettingLog->Clear();
+	executePanel->Show();
 	serviceTimer->Start();
 }
 System::Void ServiceZeroSettingTool::zeroSettingTilt_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
-	command_delay = 50;
-	current_zero_command = zero_commands::ZERO_TILT;
+
+	current_panel = zero_panels::ZERO_TILT_PANEL;
+	executeIcon->BackgroundImage = TILT_ICON_IMAGE;
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_TILT_MANUAL_ROTATION);
+	TiltMotor::device->setServiceMode(true);
+	
+	float val = TiltMotor::device->getCurrentPosition() * 0.01;
+	targetSelection->Text = val.ToString();
+
+	if (TiltMotor::device->isPositionFromExternalSensor()) {
+		
+		manButton->Show();
+		runButton->Hide();
+	}
+	else {
+		manButton->Show();
+		runButton->Show();
+		
+	}
+
+	zeroSettingLog->Clear();
+	executePanel->Show();
 	serviceTimer->Start();
 }
 
 System::Void ServiceZeroSettingTool::zeroSettingSlide_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
-	command_delay = 50;
-	current_zero_command = zero_commands::ZERO_SLIDE;
+
+	current_panel = zero_panels::ZERO_SLIDE_PANEL;
+	executeIcon->BackgroundImage = SLIDE_ICON_IMAGE;
+	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_SLIDE_MANUAL_ROTATION);
+	SlideMotor::device->setServiceMode(true);
+	
+	float val =  SlideMotor::device->getCurrentPosition() * 0.01;
+	targetSelection->Text = val.ToString();
+
+	if (SlideMotor::device->isPositionFromExternalSensor()) {
+		
+		manButton->Show();
+		runButton->Hide();
+	}
+	else {
+		manButton->Show();
+		runButton->Show();
+		
+	}
+
+	zeroSettingLog->Clear();
+	executePanel->Show();
 	serviceTimer->Start();
 }
 
-System::Void ServiceZeroSettingTool::zeroSettingAll_Click(System::Object^ sender, System::EventArgs^ e) {
+
+void ServiceZeroSettingTool::onTargetSelectionCallback(System::String^ value) {
+
+	float angle = System::Convert::ToDouble(value);
+	if (angle > max_target_angle) return;
+	if (angle < min_target_angle) return;
+	targetSelection->Text = value;
+
+}
+
+System::Void ServiceZeroSettingTool::targetSelection_Click(System::Object^ sender, System::EventArgs^ e) {
+	KeyPaddleWindow^ pkeyPaddle = gcnew KeyPaddleWindow(this, "Target Selection (°)", targetSelection->Text);
+	pkeyPaddle->button_ok_event += gcnew KeyPaddleWindow::delegate_button_callback(this, &ServiceZeroSettingTool::onTargetSelectionCallback);
+	pkeyPaddle->open();
+}
+
+System::Void ServiceZeroSettingTool::runButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
-	command_delay = 50;
-	current_zero_command = zero_commands::ZERO_ALL;
-	serviceTimer->Start();
+	if (current_panel == zero_panels::NO_PANEL) return;
+	current_zero_command = zero_commands::ZERO_AUTO_START;
 }
 
+System::Void ServiceZeroSettingTool::manButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (current_zero_command != zero_commands::NO_COMMAND) return;
+	if (current_panel == zero_panels::NO_PANEL) return;
+	current_zero_command = zero_commands::ZERO_MANUAL_START;
+}

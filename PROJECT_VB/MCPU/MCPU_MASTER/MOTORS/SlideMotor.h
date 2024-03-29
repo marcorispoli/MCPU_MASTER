@@ -7,7 +7,8 @@ ref class SlideMotor : public CANOPEN::CanOpenMotor
 public:
 	SlideMotor(void);
 	static SlideMotor^ device = gcnew SlideMotor();        
-    static bool startHoming(void);
+    static bool startManualHoming(int target_position);
+    static bool startAutoHoming();
     static bool serviceAutoPosition(int pos);
     static bool isoAutoPosition(int pos);
     static bool setIdlePosition(void);
@@ -20,7 +21,7 @@ public:
 protected:
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
 
-    bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
+    unsigned short initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
     void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override;
     
 

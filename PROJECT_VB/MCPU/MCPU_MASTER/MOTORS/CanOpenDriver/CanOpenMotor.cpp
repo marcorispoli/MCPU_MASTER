@@ -25,11 +25,22 @@ static std::mutex init_mutex;
 /// <param name="home_err">Error code to be activated in case of Position invalidated</param>
 /// <param name="rounds_for_units">number of motor round for user unit</param>
 /// <param name="reverse">set the current motor direction</param>
-CanOpenMotor::CanOpenMotor(unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, double rounds_for_units, double external_k, bool reverse) {
+CanOpenMotor::CanOpenMotor(unsigned char devid, 
+    LPCWSTR motorname, 
+    System::String^ parameter, 
+    Notify::messages home_err, 
+    int min,
+    int max,
+    double rounds_for_units, 
+    double external_k, 
+    bool reverse) {
 
     config_param = parameter;
     external_position_mode = false;
     external_k_coeff = external_k;
+    min_position = min;
+    max_position = max;
+    service_mode = false;
 
     reset_node = true;
     internal_status = status_options::MOTOR_NOT_CONNECTED;
@@ -229,18 +240,20 @@ void CanOpenMotor::thread_canopen_rx_sdo_callback(unsigned short canid, unsigned
 /// <param name="data"></param>
 /// <param name="len"></param>
 void CanOpenMotor::thread_canopen_bootup_callback(unsigned short canid, unsigned char* data, unsigned char len) {
+   
     // Be careful!! This call is runing into the program thread pull, out of the class thread.
 
     // Checks the canId address
     if (canid != device_id + 0x700) return; // This frame is not a SDO or is not addressed to this device!
     
+    if (configuration_command) return;
+    configuration_command = true;
+
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + "> Reset Management");
+    
     // Invalidates the current register initialization
     od_initialized = false;
     home_initialized = false;
-
-
-    // Activates the configuration of the device
-    activateConfiguration();
 
     // calls the specific reset callback
     resetCallback();
@@ -527,10 +540,14 @@ void CanOpenMotor::mainWorker(void) {
         if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
             external_uposition = encoder_uposition = System::Convert::ToInt32(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION]);
             home_initialized = true;
+            Notify::deactivate(error_homing);
         }
         else {
             home_initialized = false;
+            Notify::activate(error_homing);
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN INITIALIZATION");
         }
+
 
         while (simulator_mode) {
             demoLoop();
@@ -551,14 +568,7 @@ void CanOpenMotor::mainWorker(void) {
 
 
     while (1) {
-        if (reset_node) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: RESET_NODE");
-            reset_node = false;
-            write_resetNode();
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            continue;
-        }
-
+        
         // If a command execution is present the command shall be aborted!
         if (current_command != MotorCommands::MOTOR_IDLE) setCommandCompletedCode(MotorCompletedCodes::ERROR_UNEXPECTED_STATUS);
 
@@ -569,30 +579,63 @@ void CanOpenMotor::mainWorker(void) {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             continue;
         }
+        
+        
+        if (reset_node) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: EXECUTES RESET_NODE");
+            internal_status = status_options::MOTOR_NOT_CONNECTED;
+            reset_node = false;
+            write_resetNode();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));  
+            configuration_command = true;
+        }
 
         // Read the status word
         if (!blocking_readOD(OD_6041_00)) {
             internal_status = status_options::MOTOR_NOT_CONNECTED;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             unreceived_messages = 0;
             continue;
         }
 
         // Activate  the configuration: both object dictionary registers and nanoj program (if present) shall be uploaded
         if ((configuration_command) && ((internal_status == status_options::MOTOR_READY) || (internal_status == status_options::MOTOR_FAULT))) {
-            internal_status = status_options::MOTOR_CONFIGURATION;
+            internal_status = status_options::MOTOR_CONFIGURATION;            
+            service_mode = false;
 
             // If the nanoj program is not present (pNanoj = nullptr)  the nanoj_initialized flag  shall be set to true !
             if (pNanoj) nanoj_initialized = uploadNanojProgram();
             else nanoj_initialized = true;
 
+            // Initializes the object dictionary
             od_initialized = initializeObjectDictionary();
+            
+            // Initializes the Encoder
+            bool init_valid = false;
+            home_initialized = false;
+            int init_eposition;
+            if (external_position_mode) {
+                // Read the external sensor
+                if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_EXTERNAL_POSITION] != MotorConfig::MOTOR_EXTERNAL_UNDEFINED_POSITION) {
+                    update_external_position();
+                    init_eposition = convert_User_To_Encoder(external_uposition);
+                    init_valid = true;
+                }
+            }
+            else {
+                // Gets the initial position of the encoder. If the position is a valid position the homing is not necessary
+                if (MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION] != MotorConfig::MOTOR_UNDEFINED_POSITION) {
+                    init_eposition = convert_User_To_Encoder(System::Convert::ToInt32(MotorConfig::Configuration->getParam(config_param)[MotorConfig::PARAM_CURRENT_POSITION]));
+                    init_valid = true;
+                }
+            }
+
+            if((init_valid) && (setEncoderCommand(init_eposition)) ) home_initialized = true;           
             configuration_command = false;
 
-            // Assignes the initial value to the encoder
-            home_initialized = initResetEncoderCommand();
             if (!home_initialized) {
                 Notify::activate(error_homing);
-                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN INITIALIZATION");
+                LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ENCODER NOT INITIALIZED");                
             }
             else {
                 Notify::deactivate(error_homing);
@@ -715,6 +758,8 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
 
     
     while(!blocking_writeOD(OD_4013_01,1)) ; // Hardware configuration : 1 = EXTERNAL VCC LOGIC ON
+    while (!blocking_writeOD(OD_2300_00, 0)); // Stops early the NanoJ program
+    
 
     // NMT Behavior in case of fault
     while (!blocking_writeOD(OD_1029_01, 0)) ;
@@ -785,12 +830,12 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_6068_00, 100)) ;	// Time
 
     // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, -19000)) ; 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, 19000)) ;	// Max Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(min_position - 10))); 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(max_position + 10)));	// Max Position Range Limit
 
     // Software Position Limit
-    while (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(-18000))) ;	// Min Position Limit
-    while (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(18000))) ;	// Max Position Limit
+    while (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(min_position))); 	// Min Position Limit
+    while (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(max_position)));	    // Max Position Limit
 
     // Polarity
     while (!blocking_writeOD(OD_607E_00, 0)) ;	// b7:1-> inverse rotation
@@ -813,19 +858,20 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_607C_00, 0));
     
     // Specific register set for the Subclassed motor
-    if(!initializeSpecificObjectDictionaryCallback()) return false;
+    unsigned short od_code = initializeSpecificObjectDictionaryCallback();
+    if(od_code == 0) return false;
 
     // Read the Object dictionary flag initialization
     while (!blocking_readOD(CONFIG_USER_PARAM)) ; // Reads the user parameter containing the stored nanoj checksum
-    if (rxSdoRegister->data == 0x1A1B) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZED");
+    if (rxSdoRegister->data == od_code) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZED TO " + od_code.ToString());
         return true;
     }
     
-    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: STORING DATA IN FLASH");
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: STORING DATA IN FLASH WITH OD-CODE=" + od_code.ToString());
     
     // Save the Flag in the User Param register and store the User param space
-    blocking_writeOD(CONFIG_USER_PARAM, 0x1A1B);
+    blocking_writeOD(CONFIG_USER_PARAM, od_code);
     blocking_writeOD(OD_2700_01, 1);
 
     // Save the whole object dictionary
@@ -916,29 +962,16 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
     current_command = MotorCommands::MOTOR_IDLE;
 
 
-    if (cmd == MotorCommands::MOTOR_HOMING) {
-        if (isEncoderInitialized()) {
-            // Set the position in the configuration file and clear the alarm
-            MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, getCurrentUposition().ToString());
-            MotorConfig::Configuration->storeFile();
-            Notify::deactivate(error_homing);
-        }
-        else {
-            // Reset the position in the configuration file and reactivate the alarm
-            MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
-            MotorConfig::Configuration->storeFile();
-            Notify::activate(error_homing);
-        }
-            
-    }
-    else {
+    if (
+        (cmd == MotorCommands::MOTOR_AUTO_POSITIONING) ||
+        (cmd == MotorCommands::MOTOR_MANUAL_POSITIONING) ||
+        (cmd == MotorCommands::MOTOR_MANUAL_SERVICE))
+    {
         if (isEncoderInitialized()) {
             MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, getCurrentUposition().ToString());
             MotorConfig::Configuration->storeFile();
         }
-
     }
-
     completedCallback(command_id, cmd, getCurrentUposition(), term_code);
     
     if (command_completed_code != MotorCompletedCodes::COMMAND_SUCCESS) {
@@ -1153,9 +1186,13 @@ void CanOpenMotor::demoLoop(void) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING COMPLETED TO TARGET:" + uposition.ToString());
         break;
 
-    case MotorCommands::MOTOR_HOMING:
+    case MotorCommands::MOTOR_EXTERNAL_HOMING:
+    case MotorCommands::MOTOR_MANUAL_HOMING:
+    case MotorCommands::MOTOR_AUTO_HOMING:
         if (external_position_mode) {
             external_uposition = encoder_uposition = command_target;
+            external_raw_position = 0;
+            external_zero_setting = 0;
             encoder_eposition = convert_User_To_Encoder(command_target);            
         }
         else {

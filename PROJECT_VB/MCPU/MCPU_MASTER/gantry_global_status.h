@@ -42,11 +42,12 @@ public:
 
     enum class manual_rotation_options {
         GANTRY_MANUAL_ROTATION_DISABLED = 0,    //!< The Manual rotation is globally disabled        
-        GANTRY_STANDARD_STATUS_MANUAL_ROTATION,        //!< Arm rotation and Vertical activation with buttons and pedals
+        GANTRY_STANDARD_STATUS_MANUAL_ROTATION, //!< Arm rotation and Vertical activation with buttons and pedals
         GANTRY_BODY_MANUAL_ROTATION,            //!< Pedals and Buttons for Body rotation
         GANTRY_SLIDE_MANUAL_ROTATION,           //!< Pedals and Buttons for Slide
         GANTRY_TILT_MANUAL_ROTATION,            //!< Pedals and Buttons for Slide
         GANTRY_ARM_MANUAL_ROTATION,             //!< Pedals and Buttons for Arm
+        GANTRY_VERTICAL_MANUAL_ROTATION,        //!< Pedals and Buttons for Vertical
     };
 
     enum class safety_rotation_conditions {

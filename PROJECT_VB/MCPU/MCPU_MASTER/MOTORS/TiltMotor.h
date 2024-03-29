@@ -91,7 +91,8 @@ public:
 	TiltMotor(void);
 
 	static TiltMotor^ device = gcnew TiltMotor(); //!< This is the pointer to the Base Class functions
-    static bool startHoming(void);   
+    static bool startManualHoming(int target_position);
+    static bool startAutoHoming();
     static bool activateTomoScan(int pos, int speed, int acc, int dec);
     static bool serviceAutoPosition(int pos);
     static bool setIdlePosition(void);
@@ -156,7 +157,7 @@ public:
     
 
 protected:
-    bool initializeSpecificObjectDictionaryCallback(void) override;
+    unsigned short initializeSpecificObjectDictionaryCallback(void) override;
     
     MotorCompletedCodes preparationCallback(MotorCommands current_command, int current_position, int target_position) override;
     void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override;

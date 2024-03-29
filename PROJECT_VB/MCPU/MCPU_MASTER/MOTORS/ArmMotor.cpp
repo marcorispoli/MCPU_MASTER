@@ -17,14 +17,11 @@
 #define HOMING_OFF_METHOD 20
 
 
-ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", MotorConfig::PARAM_ARM, Notify::messages::ERROR_ARM_MOTOR_HOMING, ROT_PER_CDEGREE, 1, true)
+ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::ARM_ID, L"MOTOR_ARM", MotorConfig::PARAM_ARM, Notify::messages::ERROR_ARM_MOTOR_HOMING, MIN_ROTATION_ANGLE, MAX_ROTATION_ANGLE, ROT_PER_CDEGREE, 1, true)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(20, 20);
-    max_position = MAX_ROTATION_ANGLE;
-    min_position = MIN_ROTATION_ANGLE;
-    
-
+   
 }
 
 
@@ -36,8 +33,8 @@ ArmMotor::ArmMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDev
 /// 
 /// <param name=""></param>
 /// <returns>true if the initialization termines successfully</returns>
-
-bool ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
+#define ARM_OD_CODE 0x0001
+unsigned short ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     // Motor Drive Parameter Set
     while (!blocking_writeOD(OD_3210_01, 50000)); // Position Loop, Proportional Gain (closed Loop)
@@ -48,10 +45,10 @@ bool ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
     while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 1000)));	// Max Position Range Limit
 
     // Software Position Limit
-    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return false;	// Min Position Limit
-    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return false;	// Max Position Limit
+    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return 0;	// Min Position Limit
+    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return 0;	// Max Position Limit
 
-    return true;
+    return ARM_OD_CODE;
 }
 
 
@@ -154,7 +151,7 @@ bool ArmMotor::setIdlePosition(void) {
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-bool ArmMotor::startHoming(void) {
+bool ArmMotor::startAutoHoming(void) {
     
 
     // Gets the Speed and Acceleration from the configuration file
@@ -163,7 +160,10 @@ bool ArmMotor::startHoming(void) {
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
 }
 
-
+bool ArmMotor::startManualHoming(int target_position) {
+    if (device->isPositionFromExternalSensor()) return device->activateExternalHoming(target_position);
+    else return device->activateManualHoming(target_position);
+}
 
 void ArmMotor::faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) {
     

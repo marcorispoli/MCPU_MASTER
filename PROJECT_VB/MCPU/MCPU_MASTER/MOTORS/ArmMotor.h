@@ -321,7 +321,8 @@ public:
     static bool isValidPosition(void) { return (valid_target && isInRange()); }
 
     // Arm activation section
-    static bool startHoming(void);
+    static bool startManualHoming(int target_position);
+    static bool startAutoHoming();
     
     static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
     static void abortTarget(void);
@@ -347,7 +348,7 @@ protected:
 
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
     void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override; 
-    bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
+    unsigned short initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
     void faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) override;
    
 

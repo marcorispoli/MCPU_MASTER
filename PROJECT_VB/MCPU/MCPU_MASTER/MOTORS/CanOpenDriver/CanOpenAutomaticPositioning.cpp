@@ -184,12 +184,19 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     bool motor_started = false;
     unsigned int ctrlw;
 
-    // If this is the external source, befor to proceed initialize the encoder atthe current external position
-    if (!initResetEncoderCommand()) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: manageAutomaticPositioning() ERROR IN RESETTING THE ENCODER DURING PREPARATION");
-        setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
-        return;
+    if (external_position_mode) {
+        // If this is the external source, befor to proceed initializes the encoder at 
+        // the current external position
+        update_external_position();
+        int init_eposition = convert_User_To_Encoder(external_uposition);
+
+        if (!setEncoderCommand(init_eposition)) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: manageAutomaticPositioning() ERROR IN RESETTING THE ENCODER DURING PREPARATION");
+            setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
+            return;
+        }
     }
+    else updateCurrentPosition();
           
 
     // Test if the actual position is already in target position

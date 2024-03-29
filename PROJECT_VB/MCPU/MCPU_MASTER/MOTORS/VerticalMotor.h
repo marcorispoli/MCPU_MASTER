@@ -131,14 +131,15 @@ public:
 	static VerticalMotor^ device = gcnew VerticalMotor();
 
 	static bool activateIsocentricCorrection(int id, int delta_target); //!< This command activates the isocentric correction
-	static bool startHoming(void);
+	static bool startManualHoming(int target_position);
+	static bool startAutoHoming();
 	
 private:
 
 	static bool manual_increment_direction = false; //!< Sets true if the increment manual command is executing, false if the decrement manual activation is executing
 
 protected:
-	bool initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
+	unsigned short initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation
 	
 	MotorCompletedCodes preparationCallback(MotorCommands current_command, int current_position, int target_position) override;
 	MotorCompletedCodes runningCallback(MotorCommands current_command, int current_position, int target_position) override;

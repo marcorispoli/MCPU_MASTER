@@ -17,9 +17,9 @@ int main()
 	Gantry::initialize();
 
 	//Notify::disable(Notify::messages::ERROR_VERTICAL_MOTOR_HOMING);
-	Notify::disable(Notify::messages::ERROR_ARM_MOTOR_HOMING);
-	Notify::disable(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
-	Notify::disable(Notify::messages::ERROR_TILT_MOTOR_HOMING);
+	//Notify::disable(Notify::messages::ERROR_ARM_MOTOR_HOMING);
+	//Notify::disable(Notify::messages::ERROR_SLIDE_MOTOR_HOMING);
+	//Notify::disable(Notify::messages::ERROR_TILT_MOTOR_HOMING);
 
 
 	LogClass::logInFile("PROGRAM INITIALIZATION");

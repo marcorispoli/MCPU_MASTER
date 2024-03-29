@@ -31,6 +31,7 @@ void KeyPaddleWindow::formInitialization(System::String^ info_title, System::Str
 	kp->BackColor = Color::Transparent;
 	kb->BackColor = Color::Transparent;
 	kok->BackColor = Color::Transparent;
+	km->BackColor = Color::Transparent;
 	
 
 	
@@ -52,7 +53,7 @@ void KeyPaddleWindow::open(void) {
 
 	try{
 		open_status = true;
-		result = gcnew System::String("");
+		result = InfoContentText->Text;
 		this->ShowDialog(parent);
 	}
 	catch (...) {

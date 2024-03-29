@@ -102,11 +102,12 @@ ref class BodyMotor : public CANOPEN::CanOpenMotor
 public:
 	BodyMotor(void);
 	static BodyMotor^ device = gcnew BodyMotor();
-	static bool startHoming(int target_position);
+	static bool startManualHoming(int target_position);
+	static bool startAutoHoming();
 	static bool serviceAutoPosition(int pos);
-
+	
 protected:
-	bool initializeSpecificObjectDictionaryCallback(void) override;
+	unsigned short initializeSpecificObjectDictionaryCallback(void) override;
 	MotorCompletedCodes runningCallback(MotorCommands current_command, int current_position, int target_position) override;	
 	MotorCompletedCodes idleCallback(void) override;
 	void faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) override;

@@ -51,7 +51,8 @@ void VerticalMotor::testLimitSwitch(void) {
 /// 
 /// <param name=""></param>
 /// <returns>true if the initialization termines successfully</returns>
-bool VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
+#define VERTICAL_OD_CODE 0x0001
+unsigned short VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
     
     while (!blocking_writeOD(OD_3202_00, 0x41)) ; 	// Motor Drive Submode Select: 6:BLDC 3:CurRed 2:Brake 1:VoS 0: 1=CLOSED_LOOP/O = OPEN_LOOP
 
@@ -74,21 +75,14 @@ bool VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
     while (!blocking_writeOD(OD_60C5_00, 5000)) ;   // Max Acceleration
     while (!blocking_writeOD(OD_60C6_00, 5000)) ;   // Max Deceleration
 
-    // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_POSITION - 10))); 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_POSITION + 10)));	// Max Position Range Limit
-
-    // Software Position Limit
-    while (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_POSITION))) ;	// Min Position Limit
-    while (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_POSITION))) ;	// Max Position Limit
-    
+      
     // Set the input setting
     while (!blocking_writeOD(OD_3240_01, 0x4)) ; // Input control special: I3 = HOMING
     while (!blocking_writeOD(OD_3240_02, 0)) ;   // Function Inverted: not inverted
     while (!blocking_writeOD(OD_3240_03, 0)) ;   // Force Enable = false
     while (!blocking_writeOD(OD_3240_06, 0)) ;   // Input Range Select: threshold = 5V;
 
-    return true;
+    return VERTICAL_OD_CODE;
 }
 
 /// <summary>
@@ -105,13 +99,10 @@ bool VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
 /// - Initializes the encoder initial position from the configuration file;
 /// 
 /// <param name=""></param>
-VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", MotorConfig::PARAM_VERTICAL, Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, ROT_PER_MM, 1, false)
+VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::VERTICAL_ID, L"MOTOR_VERTICAL", MotorConfig::PARAM_VERTICAL, Notify::messages::ERROR_VERTICAL_MOTOR_HOMING, MIN_POSITION, MAX_POSITION, ROT_PER_MM, 1, false)
 {
     // Sets +/- 5mm as the acceptable target range
     setTargetRange(5, 5);    
-    max_position = MAX_POSITION;
-    min_position = MIN_POSITION;
-
      
     // initializes the value of the detected photocells
     high_photocell = false;
@@ -198,7 +189,7 @@ VerticalMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
 /// 
 /// <param name=""></param>
 /// <returns>true: the command is processing</returns>
-bool VerticalMotor::startHoming(void) {
+bool VerticalMotor::startAutoHoming(void) {
     
     // If the safety condition prevent the command execution it is immediatelly aborted
     Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device->device_id);
@@ -214,9 +205,14 @@ bool VerticalMotor::startHoming(void) {
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
 }
 
+bool VerticalMotor::startManualHoming(int target_position) {
+   
+    if (device->isPositionFromExternalSensor()) return device->activateExternalHoming(target_position);
+    else return device->activateManualHoming(target_position);
+}
 
 VerticalMotor::MotorCompletedCodes VerticalMotor::preparationCallback(MotorCommands current_command, int current_position, int target_position) {
-    if(current_command == MotorCommands::MOTOR_HOMING) return MotorCompletedCodes::COMMAND_PROCEED;
+    if(current_command == MotorCommands::MOTOR_AUTO_HOMING) return MotorCompletedCodes::COMMAND_PROCEED;
     if (simulator_mode) return MotorCompletedCodes::COMMAND_PROCEED;
 
     // test the limit switches: prevents to start in a wrong direction if the related photocell is activated

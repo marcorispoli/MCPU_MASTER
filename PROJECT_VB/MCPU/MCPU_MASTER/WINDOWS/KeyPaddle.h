@@ -43,6 +43,7 @@ private: System::Windows::Forms::PictureBox^ k3;
 private: System::Windows::Forms::PictureBox^ k0;
 private: System::Windows::Forms::PictureBox^ kp;
 private: System::Windows::Forms::PictureBox^ kok;
+private: System::Windows::Forms::PictureBox^ km;
 
 
 
@@ -122,6 +123,7 @@ private: System::Void InitializeComponent() {
 	this->k0 = (gcnew System::Windows::Forms::PictureBox());
 	this->kp = (gcnew System::Windows::Forms::PictureBox());
 	this->kok = (gcnew System::Windows::Forms::PictureBox());
+	this->km = (gcnew System::Windows::Forms::PictureBox());
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->k7))->BeginInit();
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->k8))->BeginInit();
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->k9))->BeginInit();
@@ -135,6 +137,7 @@ private: System::Void InitializeComponent() {
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->k0))->BeginInit();
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->kp))->BeginInit();
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->kok))->BeginInit();
+	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->km))->BeginInit();
 	this->SuspendLayout();
 	// 
 	// CancButton
@@ -152,8 +155,8 @@ private: System::Void InitializeComponent() {
 	// 
 	this->InfoTitleText->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(0)));
-	this->InfoTitleText->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
-		static_cast<System::Int32>(static_cast<System::Byte>(64)));
+	this->InfoTitleText->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
+		static_cast<System::Int32>(static_cast<System::Byte>(149)));
 	this->InfoTitleText->Location = System::Drawing::Point(12, 9);
 	this->InfoTitleText->Name = L"InfoTitleText";
 	this->InfoTitleText->Size = System::Drawing::Size(576, 59);
@@ -310,12 +313,23 @@ private: System::Void InitializeComponent() {
 	// 
 	this->kok->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 		static_cast<System::Int32>(static_cast<System::Byte>(0)));
-	this->kok->Location = System::Drawing::Point(430, 457);
+	this->kok->Location = System::Drawing::Point(430, 577);
 	this->kok->Name = L"kok";
-	this->kok->Size = System::Drawing::Size(100, 347);
+	this->kok->Size = System::Drawing::Size(100, 227);
 	this->kok->TabIndex = 50;
 	this->kok->TabStop = false;
-	this->kok->Click += gcnew System::EventHandler(this, &KeyPaddleWindow::OkButton_Click);	
+	this->kok->Click += gcnew System::EventHandler(this, &KeyPaddleWindow::OkButton_Click);
+	// 
+	// km
+	// 
+	this->km->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+		static_cast<System::Int32>(static_cast<System::Byte>(0)));
+	this->km->Location = System::Drawing::Point(430, 457);
+	this->km->Name = L"km";
+	this->km->Size = System::Drawing::Size(100, 100);
+	this->km->TabIndex = 51;
+	this->km->TabStop = false;
+	this->km->Click += gcnew System::EventHandler(this, &KeyPaddleWindow::km_Click);
 	// 
 	// KeyPaddleWindow
 	// 
@@ -323,6 +337,7 @@ private: System::Void InitializeComponent() {
 		static_cast<System::Int32>(static_cast<System::Byte>(224)));
 	this->ClientSize = System::Drawing::Size(600, 1024);
 	this->ControlBox = false;
+	this->Controls->Add(this->km);
 	this->Controls->Add(this->kok);
 	this->Controls->Add(this->kp);
 	this->Controls->Add(this->k0);
@@ -357,6 +372,7 @@ private: System::Void InitializeComponent() {
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->k0))->EndInit();
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->kp))->EndInit();
 	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->kok))->EndInit();
+	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->km))->EndInit();
 	this->ResumeLayout(false);
 
 }
@@ -426,5 +442,15 @@ private: System::Void kp_Click(System::Object^ sender, System::EventArgs^ e) {
 	InfoContentText->Text = result;
 }
 
+private: System::Void km_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (result->Contains("-")) {
+		result = result->Replace("-", "");
+		InfoContentText->Text = result;
+		return;
+	}
+		
+	result = "-" + result;
+	InfoContentText->Text = result;
+}
 };
 

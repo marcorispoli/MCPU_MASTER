@@ -63,7 +63,7 @@ public:
     static manual_rotation_options manual_rotation_mode = manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED;
     static void setManualRotationMode(manual_rotation_options mode);
 
-    static bool getObstacleRotationStatus(int addr);
+    static bool getObstacleRotationStatus(int addr, CANOPEN::CanOpenMotor::motor_rotation_activations direction);
     static safety_rotation_conditions getSafetyRotationStatus(int addr);
     
 private:static bool getManualRotationIncrease(int addr);

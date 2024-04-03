@@ -71,6 +71,7 @@ void ProjectionForm::open(void) {
 	
 	loadProjections();
 	this->ShowDialog(parent);
+	window = static_cast<HWND>(Handle.ToPointer());
 	
 }
 

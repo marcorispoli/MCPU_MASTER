@@ -149,9 +149,9 @@ public:
     literal System::String^ PARAM_OBSTACLE = "OBSTACLE_CALIBRATION";                               //!< This is the Obstacle calibration parameter
     literal System::String^ PARAM_OBSTACLE_COMMENT = "OBSTACLE_CALIBRATION : gain[l0:h3] sensitivity[h0:l7] recal-time[l0:h15] enable[..] csx_th[..]";
     literal System::String^ PARAM_OBSTACLE_GAIN_DEFAULT = "0"; //!< 0:3 This is the general sensors gain
-    literal System::String^ PARAM_OBSTACLE_SENSITIVITY_DEFAULT = "5"; //!< 0:7 This is the sensors gain with 0 = max sensitivity
+    literal System::String^ PARAM_OBSTACLE_SENSITIVITY_DEFAULT = "3"; //!< 0:7 This is the sensors gain with 0 = max sensitivity
     literal System::String^ PARAM_OBSTACLE_RECAL_TIME_DEFAULT = "0"; //!< 0:15 This is detection time causing the recalibration
-    literal System::String^ PARAM_OBSTACLE_SENS_ENA_DEFAULT = "15";   //!< 0:255 This is a bit field sensor enable
+    literal System::String^ PARAM_OBSTACLE_SENS_ENA_DEFAULT = "3";   //!< 0:255 This is a bit field sensor enable
     literal System::String^ PARAM_OBSTACLE_TH_CS1_DEFAULT = "64";           //!< 1:127 threshold
     literal System::String^ PARAM_OBSTACLE_TH_CS2_DEFAULT = "64";           //!< 1:127 threshold
     literal System::String^ PARAM_OBSTACLE_TH_CS3_DEFAULT = "64";           //!< 1:127 threshold
@@ -161,7 +161,7 @@ public:
     literal System::String^ PARAM_OBSTACLE_TH_CS7_DEFAULT = "64";           //!< 1:127 threshold
     literal System::String^ PARAM_OBSTACLE_TH_CS8_DEFAULT = "64";           //!< 1:127 threshold
 
-    
+   
     literal int PARAM_OBSTACLE_GAIN = 0;
     literal int PARAM_OBSTACLE_SENSITIVITY = 1;
     literal int PARAM_OBSTACLE_RECAL_TIME = 2;

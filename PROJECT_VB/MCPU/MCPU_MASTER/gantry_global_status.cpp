@@ -182,10 +182,11 @@ bool Gantry::setCloseStudy(void) {
     else PCB301::set_manual_rot_ena_led(true);
 }
 
-bool Gantry::getObstacleRotationStatus(int addr) { 
+bool Gantry::getObstacleRotationStatus(int addr, CANOPEN::CanOpenMotor::motor_rotation_activations direction) {
     switch ((CANOPEN::MotorDeviceAddresses)addr) {
     case CANOPEN::MotorDeviceAddresses::ARM_ID:
-        return PCB326::isSensorActive(SENS_CS1 | SENS_CS2);
+        if(direction == CANOPEN::CanOpenMotor::motor_rotation_activations::MOTOR_INCREASE) return PCB326::isSensorActive(SENS_CS1 );
+        else    return PCB326::isSensorActive(SENS_CS2);
         break;
 
     case CANOPEN::MotorDeviceAddresses::TILT_ID:

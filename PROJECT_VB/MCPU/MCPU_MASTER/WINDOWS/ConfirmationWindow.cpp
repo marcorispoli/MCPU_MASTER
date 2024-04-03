@@ -63,6 +63,7 @@ void ConfirmationWindow::open(void) {
 	try{
 		open_status = true;
 		this->ShowDialog(parent);
+		window = static_cast<HWND>(Handle.ToPointer());
 	}
 	catch (...) {
 		open_status = false;

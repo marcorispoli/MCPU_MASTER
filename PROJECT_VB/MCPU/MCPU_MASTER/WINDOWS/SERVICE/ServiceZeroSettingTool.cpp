@@ -93,7 +93,7 @@ void ServiceZeroSettingTool::initPanel(void) {
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 	
 	// Start the startup session	
-	serviceTimer->Stop();	
+	serviceTimer->Start();	
 	
 }
 
@@ -104,6 +104,7 @@ void ServiceZeroSettingTool::dialog_open(Form^ p) {
 		panel->open_status = true;
 		panel->initPanel();
 		this->ShowDialog(parent);
+		window = static_cast<HWND>(Handle.ToPointer());
 	}
 	catch (...) {
 		panel->open_status = false;

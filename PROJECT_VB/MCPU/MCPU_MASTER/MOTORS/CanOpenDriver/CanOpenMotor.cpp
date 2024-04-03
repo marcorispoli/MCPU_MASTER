@@ -1093,7 +1093,7 @@ void CanOpenMotor::demoLoop(void) {
                 }
 
                 // Gets the obstacle condition
-                if (Gantry::getObstacleRotationStatus(device_id)) {
+                if (Gantry::getObstacleRotationStatus(device_id, motor_direction)) {
                     LogClass::logInFile("Motor <" + device_id.ToString() + ">: obstacle condition error");
                     termination_code = MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
                     break;

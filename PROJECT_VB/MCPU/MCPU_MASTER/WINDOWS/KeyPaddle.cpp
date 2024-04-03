@@ -55,6 +55,7 @@ void KeyPaddleWindow::open(void) {
 		open_status = true;
 		result = InfoContentText->Text;
 		this->ShowDialog(parent);
+		window = static_cast<HWND>(Handle.ToPointer());
 	}
 	catch (...) {
 		open_status = false;

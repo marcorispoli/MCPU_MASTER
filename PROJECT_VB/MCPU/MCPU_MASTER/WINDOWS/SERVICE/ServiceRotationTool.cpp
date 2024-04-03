@@ -165,6 +165,7 @@ void ServiceRotationTool::dialog_open(Form^ p) {
 		panel->open_status = true;
 		panel->initPanel();
 		this->ShowDialog(parent);
+		window = static_cast<HWND>(Handle.ToPointer());
 	}
 	catch (...) {
 		panel->open_status = false;

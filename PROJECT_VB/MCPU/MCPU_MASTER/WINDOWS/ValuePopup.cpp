@@ -52,6 +52,7 @@ void ValuePopupForm::open(Form^ parent_form, Image^ icon, System::String^ title,
 	// The thread stops here until the Dialog is closed (Hide())
 	try {
 		this->ShowDialog(parent);		
+		window = static_cast<HWND>(Handle.ToPointer());
 	}
 	catch (...) {		
 		open_status = false;

@@ -248,6 +248,9 @@ void PCB302::demoLoop(void) {
 	if (DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_DOWNWARD)[0] == "1") downward_activation_status = true;
 	else downward_activation_status = false;
 
+	patient_protection_detected = true;
+	patient_protection_shifted = false;
+
 	evaluateEvents();
 
 	return;

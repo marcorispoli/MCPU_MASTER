@@ -402,11 +402,12 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 
 
 	// Patient Protection Mode Warning
-	bool patient_protection = false;
-	if ((PCB304::isPatientProtection()) && (!PCB304::isPatientProtectionShifted())) patient_protection = true;
-	else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) patient_protection = true;
+	bool patient_protection;
+	if ((PCB302::isPatientProtection()) && (!PCB302::isPatientProtectionShifted())) patient_protection = true;
+	else patient_protection = false;
+	//else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) patient_protection = true;
 
-	if ((ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) && (patient_protection))
+	if ((ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) && (!patient_protection))
 		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	else 
 		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);

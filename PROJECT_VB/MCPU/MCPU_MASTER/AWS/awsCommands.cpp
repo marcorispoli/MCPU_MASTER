@@ -524,8 +524,8 @@ void   awsProtocol::GET_Components(void) {
     lista->Add(PCB302::getDetectedPaddleCode().ToString());
 
     // Protection Type
-    if(PCB304::isPatientProtection()) lista->Add("PROTECTION_3D");
-    else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) lista->Add("PROTECTION_2D");
+    if(PCB302::isPatientProtection()) lista->Add("PROTECTION_3D");
+    //else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) lista->Add("PROTECTION_2D");
     else lista->Add("UNDETECTED_PROTECTION");
 
     // Collimation Tool

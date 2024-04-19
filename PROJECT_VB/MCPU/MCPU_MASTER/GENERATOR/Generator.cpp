@@ -549,20 +549,36 @@ bool Generator::generatorIdle(void) {
             ExposureModule::setExposedPulse(2, gcnew ExposureModule::exposure_pulse());
             ExposureModule::setExposedPulse(3, gcnew ExposureModule::exposure_pulse());
 
-            // Every Xray procedure return True if the seqeunce is completed if success.
-            // In case of false returned (error condition), the   xray_exposure_error is set properly
-            switch (ExposureModule::getExposureMode()) {
-            case ExposureModule::exposure_type_options::TEST_2D: exposure_err_code = test_exposure_procedure();  break;
-            case ExposureModule::exposure_type_options::MAN_2D: exposure_err_code = man_2d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_2D: exposure_err_code = aec_2d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::MAN_3D: exposure_err_code = man_3d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_3D: exposure_err_code = aec_3d_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::MAN_COMBO: exposure_err_code = man_combo_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_COMBO: exposure_err_code = aec_combo_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::MAN_AE: exposure_err_code = man_ae_exposure_procedure(); break;
-            case ExposureModule::exposure_type_options::AEC_AE: exposure_err_code = aec_ae_exposure_procedure(); break;
-            default:         
-                exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
+            // Common preparation Tests
+            exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;
+            
+            if (!PCB301::getXrayPushButtonStat()) {        
+                // Checks if the X-RAY push button is pressed
+                exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
+            }else if (PCB315::isTubeAlarm()) {
+                // Checks for the Tube temperature
+                exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_TUBE_TEMPERATURE;
+            }
+            else {
+                
+                // Preliminary selection of the filter without waiting the command completion. The given seqeunce will check for completion
+                PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false);
+
+                // Every Xray procedure return True if the seqeunce is completed if success.
+                // In case of false returned (error condition), the   xray_exposure_error is set properly
+                switch (ExposureModule::getExposureMode()) {
+                case ExposureModule::exposure_type_options::TEST_2D: exposure_err_code = test_exposure_procedure();  break;
+                case ExposureModule::exposure_type_options::MAN_2D: exposure_err_code = man_2d_exposure_procedure(); break;
+                case ExposureModule::exposure_type_options::AEC_2D: exposure_err_code = aec_2d_exposure_procedure(); break;
+                case ExposureModule::exposure_type_options::MAN_3D: exposure_err_code = man_3d_exposure_procedure(); break;
+                case ExposureModule::exposure_type_options::AEC_3D: exposure_err_code = aec_3d_exposure_procedure(); break;
+                case ExposureModule::exposure_type_options::MAN_COMBO: exposure_err_code = man_combo_exposure_procedure(); break;
+                case ExposureModule::exposure_type_options::AEC_COMBO: exposure_err_code = aec_combo_exposure_procedure(); break;
+                case ExposureModule::exposure_type_options::MAN_AE: exposure_err_code = man_ae_exposure_procedure(); break;
+                case ExposureModule::exposure_type_options::AEC_AE: exposure_err_code = aec_ae_exposure_procedure(); break;
+                default:
+                    exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
+                }
             }
 
             // Removes the X-RAY ena signal 
@@ -713,4 +729,97 @@ void Generator::setExposedData(unsigned char databank_index, unsigned char pulse
             R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples
         ));
     }
+}
+
+
+ExposureModule::exposure_completed_errors Generator::commonExposurePulseSequence(System::String^ ExpName, bool pre_pulse) {
+    unsigned char current_status;
+    ExposureModule::exposure_completed_errors error;
+
+    // Wait to exit from standby
+    int timeout = 100;
+    while (timeout--) {
+        if (!timeout) {
+            LogClass::logInFile(ExpName + "timeout waiting generator executing the xray sequence");
+            return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+        }
+
+        // Gets the current generator status
+        R2CP::CaDataDicGen::GetInstance()->Generator_Get_StatusV6();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "Generator_Get_StatusV6 error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
+
+        current_status = R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus;
+        if (current_status != R2CP::Stat_Standby) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+
+
+    logCurrentStatus(255);
+
+    timeout = 200;
+    while (true) {
+
+        // No more than10 seconds for the entire sequence
+        if (timeout) {
+            timeout--;
+            if (!timeout) {
+                LogClass::logInFile(ExpName + "generator sequence timeout error");
+                return ExposureModule::exposure_completed_errors::XRAY_TIMEOUT;
+            }
+        }
+
+        // Gets the current generator status
+        R2CP::CaDataDicGen::GetInstance()->Generator_Get_StatusV6();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "Generator_Get_StatusV6 error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;            
+        }
+        current_status = R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus;
+
+        // Checks for the XRAY button
+        if (!R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.ExposureSwitches.Fields.ExpsignalStatus) {
+            LogClass::logInFile(ExpName + "push button release error");
+            return ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
+        }
+
+        // Checks for error messages
+        if (R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.SystemMessage.Fields.Active == R2CP::Stat_SystemMessageActive_Active) {
+            LogClass::logInFile(ExpName + "generator system messages during exposure error");
+            return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;           
+        }
+
+        if (logCurrentStatus(current_status)) {
+            // Waits for the Exposure complete event
+            switch (current_status) {
+
+            case R2CP::Stat_WaitFootRelease: // Exposure terminated
+                if(pre_pulse) return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+                else return ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;
+
+            case R2CP::Stat_Standby:               
+                return ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;                
+
+            case R2CP::Stat_Error:
+                LogClass::logInFile(ExpName + "generator R2CP::Stat_Error error ");
+                return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;               
+
+            case R2CP::Stat_GoigToShutdown:
+            case R2CP::Stat_Service:
+            case R2CP::Stat_Initialization:
+                LogClass::logInFile(ExpName + current_status.ToString() + " status error ");
+                return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+                
+
+            default:
+                break;
+            }
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+
+    return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
 }

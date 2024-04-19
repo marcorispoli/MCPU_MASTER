@@ -96,8 +96,8 @@ void awsProtocol::EVENT_Components(void) {
     paddle = PCB302::getDetectedPaddleCode().ToString();
 
     // Protection Type
-    if (PCB304::isPatientProtection()) protection = "PROTECTION_3D";
-    else if (PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) protection = "PROTECTION_2D";
+    if (PCB302::isPatientProtection()) protection = "PROTECTION_3D";
+    //else if (PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) protection = "PROTECTION_2D";
     else protection = "UNDETECTED_PROTECTION";
 
     // Collimation Tool

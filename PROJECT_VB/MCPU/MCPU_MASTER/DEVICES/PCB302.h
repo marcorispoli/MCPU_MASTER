@@ -139,6 +139,9 @@ public:
 		return "";
 	}
 
+	inline static bool isPatientProtection(void) { return patient_protection_detected; }
+	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
+
 	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
 	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
 	static inline bool isCompressing(void) { return compression_executing; }
@@ -176,7 +179,9 @@ private:
 	static Register^ options_data_register = gcnew Register();
 	static Register^ position_limit_data_register = gcnew Register();
 
-	
+	static bool patient_protection_detected = false; //!< Is set if the patient protection should be detcted
+	static bool patient_protection_shifted = false; //!< Is set if the patient protection should be shifted out of standard position
+
 
 
 

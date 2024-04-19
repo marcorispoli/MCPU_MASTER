@@ -479,11 +479,12 @@ public:
 	
 	static System::String^ getTagFromFilter(filterMaterialCodes filter); //!< Returns the Filter name
 
-	static void setFilterAutoMode(filterMaterialCodes code); //!< This function sets the Auto mode, assigning the filter to be selected
+	static bool setFilterAutoMode(filterMaterialCodes code, bool wait_completion); //!< This function sets the Auto mode, assigning the filter to be selected
 	static void setFilterAutoMode(void); //!< This function acctivates the auto mode: the selected filter has been already set.
 	static void setFilterManualMode(filterMaterialCodes code); //!< This function activates the manaul mode assigning the filter to be selected
 	static void setFilterManualMode(void); //!< This function activates the manaul mode: the filter shall be already set
 	static void setMirrorMode(bool request_power_light); //!< This function activates the Mirror Mode and the light (if requested)
+	static bool waitForValidFilter(void); //!< This function waits that a valid filter is selected
 
 	/// <summary>
 	/// This function returns the current status of the Power light 

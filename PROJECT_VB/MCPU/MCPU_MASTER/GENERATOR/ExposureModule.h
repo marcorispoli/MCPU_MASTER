@@ -104,7 +104,7 @@ public:
             validated = true;
         };
 
-        exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt, unsigned char fc, bool gd) {
+        exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt, unsigned char fc, bool gd, bool sync) {
 
             validated = false;
             if ((kv > 49.0) || (kv < 20.0)) return;
@@ -118,6 +118,7 @@ public:
             pulse_samples = 0;
             focus = fc;         
             use_grid = gd;        // only for test
+            synch_det = sync;     // only for test
             validated = true;
         };
 
@@ -131,12 +132,14 @@ public:
         inline bool isSmallFocus() { return (focus == FOCUS_SMALL); }
         inline PCB315::filterMaterialCodes getFilter() { return filter; }
         inline bool useGrid() { return use_grid; }
+        inline bool useDetector() { return synch_det; }
         inline bool isValid() { return validated; }
 
 
         unsigned char focus; // This is the focus assigned to this pulse
         PCB315::filterMaterialCodes filter; //!< This is the assigned filter 
         bool    use_grid; // Grid shall be used (only test mode)
+        bool    synch_det; // Detector sync shall be used (only test mode)
         double  kV; //!< This is the selected kV value
         double  mAs; //!< This is the selected mAs value
         float   mA; //!< anodic current used in mA
@@ -247,6 +250,7 @@ public:
         XRAY_KV_ERROR,				//!< The generator detected a kV error
         XRAY_STARTER_ERROR,			//!< The generator detected an Anode Starter error condition
         XRAY_GRID_ERROR,			//!< The Grid device is in error condition
+        XRAY_COLLI_FORMAT_ERROR,	//!< The current collimation format is not valid
         XRAY_TIMEOUT,			    //!< Timeout generator sequence
         XRAY_TIMEOUT_AEC,			//!< Timeout waiting the Main Pulse data after an AEC pre pulse
         XRAY_POSITIONING_ERROR,     //!< Error in ARM or Tilt positioning

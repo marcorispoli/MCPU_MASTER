@@ -78,7 +78,7 @@ namespace R2CP
         unsigned int samples = m_p_instance_->executed_pulses[data_bank_index].samples;
 
         System::String^ exposure_string = "[" + samples.ToString() + "] -> kV:" + kV.ToString() + " mAs:" + mAs.ToString() + " mA:" + mA.ToString() + " ms:" + ms.ToString();        
-        LogClass::logInFile("EXPOSURE PULSE>" + exposure_string);
+        LogClass::logInFile("EXPOSURE PULSE IDX(" + data_bank_index.ToString() + ") >" + exposure_string);
         m_p_instance_->executed_pulses[data_bank_index].result_code = result_code;
         
 

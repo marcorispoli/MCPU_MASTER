@@ -55,19 +55,9 @@ public:
 	inline static bool isMagnifierDeviceDetected(void) { return magnifier_device_detected; }
 	static System::String^  getMagnifierfactorString(void) { return magnifier_factor_string; }
 
-	/// <summary>
-	/// This function set the Grid in Field.
-	/// 
-	/// The Grid is positioned in field, ready to be used.\n
-	/// The Grid is positioned in the center of the travel.
-	/// 
-	/// See the synchGridWithGenerator() function for details about 
-	/// the grid activation.
-	/// 
-	/// </summary>
-	/// <param name=""></param>
-	inline static void setGridOnField(void) { grid_on_field = true; }
-	inline static void setGridOffField(void) {grid_on_field = false;}
+	
+	static bool setGridOnField(bool wait_completion);
+	static bool setGridOffField(bool wait_completion);
 
 	/// <summary>
 	/// This function activates/deactivates the grid synchronizatio with the generator.
@@ -104,9 +94,6 @@ public:
 
 	inline static bool isError(void) { return error; }
 
-	inline static bool isPatientProtection(void) { return patient_protection_detected; }
-	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
-	
 	static void setDisplay(bool on_off) {
 		display_on = on_off;
 		return;
@@ -125,8 +112,6 @@ protected:
 	void demoLoop(void) override;
 
 private:
-	static bool patient_protection_detected = false; //!< Is set if the patient protection should be detcted
-	static bool patient_protection_shifted = false; //!< Is set if the patient protection should be shifted out of standard position
 	static bool magnifier_device_detected = false; //!< Is set if the Magnifier device has been detected
 	static System::String^  magnifier_factor_string = "1.0"; //!< This is the current magnification factor detected in string format
 	

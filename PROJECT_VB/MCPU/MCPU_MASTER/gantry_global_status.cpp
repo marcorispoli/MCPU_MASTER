@@ -62,7 +62,7 @@ void Gantry::initialize(void) {
     if (operating_demo_status) {       
         generator_simulator = true;
     }
-    generator_simulator = true;
+    generator_simulator = false;
     
     can_driver_simulator = false;   
     

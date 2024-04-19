@@ -25,6 +25,17 @@ void PCB304::runningLoop(void) {
         grid_sync_ready = PCB304_GET_GRID_SYNC_STATUS(system_status_register);
     }
 
+    // To be completed
+    if (grid_sync_ready) {
+        grid_on_field_ready = true;
+        grid_off_field_ready = false;
+    }
+    else {
+        grid_on_field_ready = false;
+        grid_off_field_ready = true;
+    }
+    
+
     // Always toggles the keepalive to keep the display ON
     if(keepalive)   PCB304_DISPLAY_KEEPALIVE(display_data_register, true); 
     else  PCB304_DISPLAY_KEEPALIVE(display_data_register, false); 
@@ -53,14 +64,10 @@ void PCB304::runningLoop(void) {
 
 
 void PCB304::demoLoop(void) {
-    
-    
+        
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
    
-
-    patient_protection_detected = true; 
-    patient_protection_shifted = false;
     magnifier_device_detected = false;
     magnifier_factor_string = "1.0";
 
@@ -72,3 +79,58 @@ void PCB304::demoLoop(void) {
 
     return;
 }
+
+
+bool PCB304::setGridOnField(bool wait_completion) { 
+    grid_on_field = true; 
+
+    // Returns immediatelly if the function shall not wait for the command completion
+    if (!wait_completion) return true;
+
+    int timeout = 50;
+    while (timeout--) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+        if (PCB304::isError()) {
+            LogClass::logInFile("PCB304: error during On field grid positioning");
+            return false;
+        }
+
+        if (!PCB304::isGridOnFieldReady()) continue;
+        
+        // Grin On field
+        return true;
+    }
+
+    LogClass::logInFile("PCB304: timeout waiting for the grid On Field");
+    return false;
+
+
+}
+
+bool PCB304::setGridOffField(bool wait_completion) {
+    grid_on_field = false; 
+
+    // Returns immediatelly if the function shall not wait for the command completion
+    if (!wait_completion) return true;
+
+    int timeout = 50;
+    while (timeout--) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+        if (PCB304::isError()) {
+            LogClass::logInFile("PCB304: error during OFF field grid positioning");
+            return false;
+        }
+
+        if (!PCB304::isGridOffFieldReady()) continue;
+
+        // Grin Off field
+        return true;
+    }
+
+    LogClass::logInFile("PCB304: timeout waiting for the grid OFF Field");
+    return false;
+
+}
+

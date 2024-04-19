@@ -2,8 +2,11 @@
 #include <Windows.h>
 #include "SystemConfig.h"
 #include <thread>
+#include <mutex>
 
 using namespace System::IO;
+static std::mutex log_mutex;
+
 
 
 /// <summary>
@@ -96,6 +99,8 @@ void LogClass::logClose(void) {
 /// 
 /// <param name="logstr"></param>
 void LogClass::logInFile(System::String^ logstr) {
+    const std::lock_guard<std::mutex> lock(log_mutex);
+
     static double oldt = clock();
     if (!enabled) return;
    

@@ -55,7 +55,8 @@ protected:
 	bool generatorSimulatorIdle(void);
 	bool generatorErrorMessagesLoop(void);
 	bool logCurrentStatus(unsigned char status);
-	
+	ExposureModule::exposure_completed_errors commonExposurePulseSequence(System::String^ ExpName, bool pre_pulse);
+
 	ExposureModule::exposure_completed_errors man_2d_exposure_procedure(void);
 	ExposureModule::exposure_completed_errors aec_2d_exposure_procedure(void);
 	ExposureModule::exposure_completed_errors man_ae_exposure_procedure(void);

@@ -31,6 +31,11 @@ public:
 	bool open_status;
 
 	Form^ parent;
+private: System::Windows::Forms::ComboBox^ synchSelection;
+public:
+
+private: System::Windows::Forms::Label^ label6;
+public:
 	HWND window;
 	
 	void initPanel(void);
@@ -103,6 +108,8 @@ private:
 		this->serviceCanc = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceMenuTitle = (gcnew System::Windows::Forms::Label());
 		this->exposureToolPanel = (gcnew System::Windows::Forms::Panel());
+		this->label6 = (gcnew System::Windows::Forms::Label());
+		this->synchSelection = (gcnew System::Windows::Forms::ComboBox());
 		this->exposureLog = (gcnew System::Windows::Forms::RichTextBox());
 		this->enableXray = (gcnew System::Windows::Forms::PictureBox());
 		this->label5 = (gcnew System::Windows::Forms::Label());
@@ -186,6 +193,8 @@ private:
 		// 
 		// exposureToolPanel
 		// 
+		this->exposureToolPanel->Controls->Add(this->label6);
+		this->exposureToolPanel->Controls->Add(this->synchSelection);
 		this->exposureToolPanel->Controls->Add(this->exposureLog);
 		this->exposureToolPanel->Controls->Add(this->enableXray);
 		this->exposureToolPanel->Controls->Add(this->label5);
@@ -203,19 +212,47 @@ private:
 		this->exposureToolPanel->Size = System::Drawing::Size(600, 880);
 		this->exposureToolPanel->TabIndex = 22;
 		// 
+		// label6
+		// 
+		this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->label6->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
+			static_cast<System::Int32>(static_cast<System::Byte>(149)));
+		this->label6->Location = System::Drawing::Point(79, 402);
+		this->label6->Name = L"label6";
+		this->label6->Size = System::Drawing::Size(178, 31);
+		this->label6->TabIndex = 35;
+		this->label6->Text = L"Synch";
+		this->label6->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		
+		// 
+		// synchSelection
+		// 
+		this->synchSelection->BackColor = System::Drawing::Color::White;
+		this->synchSelection->Cursor = System::Windows::Forms::Cursors::No;
+		this->synchSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->synchSelection->ForeColor = System::Drawing::Color::Black;
+		this->synchSelection->FormattingEnabled = true;
+		this->synchSelection->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"NO-SYNCH", L"SYNCH" });
+		this->synchSelection->Location = System::Drawing::Point(85, 436);
+		this->synchSelection->Name = L"synchSelection";
+		this->synchSelection->Size = System::Drawing::Size(398, 81);
+		this->synchSelection->TabIndex = 34;
+		this->synchSelection->Text = L"NO-SYNCH";
+		// 
 		// exposureLog
 		// 
 		this->exposureLog->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(207)),
 			static_cast<System::Int32>(static_cast<System::Byte>(208)));
-		this->exposureLog->BorderStyle = System::Windows::Forms::BorderStyle::None;
 		this->exposureLog->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
-		this->exposureLog->Location = System::Drawing::Point(83, 621);
+		this->exposureLog->Location = System::Drawing::Point(85, 713);
 		this->exposureLog->Name = L"exposureLog";
 		this->exposureLog->ReadOnly = true;
 		this->exposureLog->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
 		this->exposureLog->ShortcutsEnabled = false;
-		this->exposureLog->Size = System::Drawing::Size(400, 220);
+		this->exposureLog->Size = System::Drawing::Size(398, 164);
 		this->exposureLog->TabIndex = 33;
 		this->exposureLog->Text = L"prova ";
 		// 
@@ -224,7 +261,7 @@ private:
 		this->enableXray->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->enableXray->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->enableXray->Location = System::Drawing::Point(323, 438);
+		this->enableXray->Location = System::Drawing::Point(323, 532);
 		this->enableXray->Name = L"enableXray";
 		this->enableXray->Size = System::Drawing::Size(160, 160);
 		this->enableXray->TabIndex = 32;
@@ -237,26 +274,29 @@ private:
 			static_cast<System::Byte>(0)));
 		this->label5->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(156)), static_cast<System::Int32>(static_cast<System::Byte>(149)),
 			static_cast<System::Int32>(static_cast<System::Byte>(149)));
-		this->label5->Location = System::Drawing::Point(77, 401);
+		this->label5->Location = System::Drawing::Point(79, 520);
 		this->label5->Name = L"label5";
 		this->label5->Size = System::Drawing::Size(178, 36);
 		this->label5->TabIndex = 31;
 		this->label5->Text = L"Filter";
 		this->label5->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		
 		// 
 		// filterSelection
 		// 
 		this->filterSelection->BackColor = System::Drawing::Color::White;
+		this->filterSelection->Cursor = System::Windows::Forms::Cursors::No;
+		this->filterSelection->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 		this->filterSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->filterSelection->ForeColor = System::Drawing::Color::Black;
 		this->filterSelection->FormattingEnabled = true;
 		this->filterSelection->Items->AddRange(gcnew cli::array< System::Object^  >(5) { L"Rh", L"Mo", L"Al", L"Cu", L"Ag" });
-		this->filterSelection->Location = System::Drawing::Point(83, 438);
+		this->filterSelection->Location = System::Drawing::Point(85, 559);
 		this->filterSelection->Name = L"filterSelection";
 		this->filterSelection->Size = System::Drawing::Size(179, 81);
 		this->filterSelection->TabIndex = 30;
-		this->filterSelection->Text = L"Ag";
+		
 		// 
 		// label4
 		// 
@@ -287,6 +327,8 @@ private:
 		// gridSelection
 		// 
 		this->gridSelection->BackColor = System::Drawing::Color::White;
+		this->gridSelection->Cursor = System::Windows::Forms::Cursors::No;
+		this->gridSelection->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 		this->gridSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->gridSelection->ForeColor = System::Drawing::Color::Black;
@@ -296,11 +338,12 @@ private:
 		this->gridSelection->Name = L"gridSelection";
 		this->gridSelection->Size = System::Drawing::Size(398, 81);
 		this->gridSelection->TabIndex = 27;
-		this->gridSelection->Text = L"NO GRID";
 		// 
 		// focusSelection
 		// 
 		this->focusSelection->BackColor = System::Drawing::Color::White;
+		this->focusSelection->Cursor = System::Windows::Forms::Cursors::No;
+		this->focusSelection->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 		this->focusSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->focusSelection->ForeColor = System::Drawing::Color::Black;
@@ -310,7 +353,6 @@ private:
 		this->focusSelection->Name = L"focusSelection";
 		this->focusSelection->Size = System::Drawing::Size(398, 81);
 		this->focusSelection->TabIndex = 26;
-		this->focusSelection->Text = L"SMALL";
 		// 
 		// label2
 		// 
@@ -341,6 +383,7 @@ private:
 		// mAsSelection
 		// 
 		this->mAsSelection->BackColor = System::Drawing::Color::White;
+		this->mAsSelection->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 		this->mAsSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->mAsSelection->ForeColor = System::Drawing::Color::Black;
@@ -355,6 +398,7 @@ private:
 		// kVSelection
 		// 
 		this->kVSelection->BackColor = System::Drawing::Color::White;
+		this->kVSelection->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 		this->kVSelection->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 			static_cast<System::Byte>(0)));
 		this->kVSelection->ForeColor = System::Drawing::Color::Black;
@@ -401,5 +445,7 @@ private:
 	private: System::Void kvSelection_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void mAsSelection_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void enableXray_Click(System::Object^ sender, System::EventArgs^ e);
+
+
 };
 

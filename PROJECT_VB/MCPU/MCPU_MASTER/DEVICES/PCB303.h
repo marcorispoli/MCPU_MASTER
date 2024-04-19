@@ -395,8 +395,11 @@ public: static ColliStandardSelections getColliFormatIndexFromParam(System::Stri
 	protected: 	void resetLoop(void) override;//!< This is the Base class resetLoop override function
 	protected: 	virtual void runningLoop(void) override;//!< This is the Base Class override function to handle the normal operation workflow 
 	protected: 	bool configurationLoop(void) override;//!< This is the Base Class override function to handle the device configuration
+				void demoLoop(void) override;
+
 	private:	bool updateStatusRegister(void); //! Read the status registers and handle the related bytes
 	private:	void formatCollimationManagement(void);//!< This is the Base Class override function to handle the device configuration
+
 	///@}
 	
 	/// <summary>
@@ -484,6 +487,7 @@ public:
 	static void setTomoCollimationMode(void); //!< This function activates the Tomo collimation mode
 	static void setCustomCollimationMode(ColliStandardSelections custom );//!< This function sets the format collimation to CUSTOM mode
 	static void resetFaults(void);//!< In case of collimation fault condition, this function starts a new collimation attempt.
+	inline static bool isValidCollimationFormat(void) { return valid_collimation_format; }
 	///@}
 };
 

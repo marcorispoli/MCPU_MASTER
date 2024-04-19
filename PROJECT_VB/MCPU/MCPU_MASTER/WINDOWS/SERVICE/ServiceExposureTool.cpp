@@ -51,6 +51,14 @@ void ServiceExposureTool::formInitialization(void) {
 	serviceTimer->Stop();
 	this->Hide();
 	open_status = false;
+
+	// Inizializtion with default values
+	kVSelection->Text = "28";
+	mAsSelection->Text = "50";
+	focusSelection->Text = "LARGE";
+	gridSelection->Text = "NO GRID";
+	filterSelection->Text = "Rh";
+	synchSelection->Text = "NO-SYNCH";
 }
 
 void ServiceExposureTool::initPanel(void) {
@@ -58,17 +66,14 @@ void ServiceExposureTool::initPanel(void) {
 	date = System::DateTime::Now;
 
 	serviceMenuTitle->Text = Notify::TranslateLabel(Notify::messages::LABEL_CALIBRATION_XRAY_TUBE_TITLE);
-
-	kVSelection->Text = "-";
-	mAsSelection->Text = "-";
-	focusSelection->Text = "LARGE";
-	gridSelection->Text = "NO GRID";
-	filterSelection->Text = "Rh";
+	
+	
 	enableXray->BackgroundImage = EXPTOOL_XRAY_OFF;
 	ExposureToolXrayEna = false;
-	exposureStep = EXPTOOL_NO_EXPOSURE;
+	exposureStep = EXPTOOL_NO_EXPOSURE;	
 	exposureLog->Clear();
 	exposureLog->Show();
+	focusSelection->Select(0, 0);
 	PCB301::set_xray_ena(false);
 
 	// Start the startup session	
@@ -237,15 +242,36 @@ void ServiceExposureTool::onmAsSelectionCallback(System::String^ value) {
 }
 
 System::Void  ServiceExposureTool::kvSelection_Click(System::Object^ sender, System::EventArgs^ e) {
+	float kV;
+	System::String^ strval = "";
 
-	KeyPaddleWindow^ pkeyPaddle = gcnew KeyPaddleWindow(this, "kV Selection", "25");
+	try {
+		kV = System::Convert::ToDouble(kVSelection->Text);
+		if ((kV >= 20) && (kV <= 49)) strval = kVSelection->Text;
+	}
+	catch (...) {
+		strval = "";
+	}
+	
+
+	KeyPaddleWindow^ pkeyPaddle = gcnew KeyPaddleWindow(this, "kV Selection", strval);
 	pkeyPaddle->button_ok_event += gcnew KeyPaddleWindow::delegate_button_callback(this, &ServiceExposureTool::onKvSelectionCallback);
 	pkeyPaddle->open();
 
 }
 System::Void  ServiceExposureTool::mAsSelection_Click(System::Object^ sender, System::EventArgs^ e) {
+	float mAs;
+	System::String^ strval = "";
 
-	KeyPaddleWindow^ pkeyPaddle = gcnew KeyPaddleWindow(this, "kV Selection", "25");
+	try {
+		mAs = System::Convert::ToDouble(mAsSelection->Text);
+		if ((mAs >= 0) && (mAs <= 640)) strval = mAsSelection->Text;
+	}
+	catch (...) {
+		strval = "";
+	}
+
+	KeyPaddleWindow^ pkeyPaddle = gcnew KeyPaddleWindow(this, "mAs Selection", strval);
 	pkeyPaddle->button_ok_event += gcnew KeyPaddleWindow::delegate_button_callback(this, &ServiceExposureTool::onmAsSelectionCallback);
 	pkeyPaddle->open();
 
@@ -258,6 +284,7 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 		int mAs;
 		float kV;
 		bool use_grid;
+		bool use_det;
 		unsigned char focus;
 		PCB315::filterMaterialCodes filter;
 
@@ -268,6 +295,9 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 			else use_grid = false;
 			if (focusSelection->Text == "LARGE") focus = ExposureModule::FOCUS_LARGE;
 			else focus = ExposureModule::FOCUS_SMALL;
+			if (synchSelection->Text == "NO-SYNCH") use_det = false;
+			else use_det = true;
+
 
 			if (filterSelection->Text == "Rh") filter = PCB315::filterMaterialCodes::FILTER_RH;
 			else if (filterSelection->Text == "Ag") filter = PCB315::filterMaterialCodes::FILTER_AG;
@@ -282,7 +312,7 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 			return;
 		}
 
-		if (!ExposureModule::setExposurePulse(0, gcnew ExposureModule::exposure_pulse(kV, mAs, filter, focus, use_grid))) {
+		if (!ExposureModule::setExposurePulse(0, gcnew ExposureModule::exposure_pulse(kV, mAs, filter, focus, use_grid, use_det))) {
 			ExposureToolXrayEna = false;
 			return;
 		}

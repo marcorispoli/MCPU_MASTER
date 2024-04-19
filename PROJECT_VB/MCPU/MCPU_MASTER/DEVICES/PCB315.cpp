@@ -383,7 +383,7 @@ PCB315::FilterSlotCodes PCB315::filterAssignment(System::String^ assignment) {
 /// setFilterAutoMode( filter-material ) --> Auto Filter Slot = slot assigned to the filter-material
 /// 
 /// <param name="code">The Filter (material) requested</param>
-void PCB315::setFilterAutoMode(filterMaterialCodes code) {
+bool PCB315::setFilterAutoMode(filterMaterialCodes code, bool wait_completion) {
     valid_filter_format = false;
 
     switch (code) {
@@ -410,7 +410,40 @@ void PCB315::setFilterAutoMode(filterMaterialCodes code) {
     }
 
     filter_working_mode = filterWorkingMode::FILTER_AUTO_MODE;
+
+    if (!wait_completion) return true;
+    return waitForValidFilter();
+
 }
+
+/// <summary>
+/// This function waits for a maximum of 2.5 seconds that a valid filter is selected.
+/// 
+/// </summary>
+/// 
+/// The filter shall be selected before to call this function.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+bool PCB315::waitForValidFilter(void) {
+
+    // Wait for the filter selection completion
+    int timeout = 50;
+    while (timeout--) {
+        if (isFilterFault()) {
+            LogClass::logInFile("PCB315: error selecting a filter");
+            return false;
+        }
+
+        if (isValidFilterSelected()) return true;
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+
+    LogClass::logInFile("PCB315: timeout selecting a filter");
+    return false;
+}
+
 
 /// <summary>
 /// 

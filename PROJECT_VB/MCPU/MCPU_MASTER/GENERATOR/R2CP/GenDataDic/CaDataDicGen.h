@@ -172,7 +172,7 @@ namespace R2CP
         void Patient_ClearAllProcedures(void);
         void Generator_Get_Databank(unsigned char i);
         void Generator_Set_2D_Databank(unsigned char i, bool large_focus, float kV, float mAs, unsigned long tmo);
-        void Generator_Set_3D_Databank(unsigned char i, unsigned char focus, float kV, float MA, float MS, float MT);
+        void Generator_Set_3D_Databank(unsigned char i, bool large_focus, float kV, float MA, float MS, float MT);
         void Generator_Set_Ms_Databank(unsigned char dbId, float MS);
 
         void Generator_Set_SkipPulse_Databank(unsigned char dbId, unsigned char nskip);

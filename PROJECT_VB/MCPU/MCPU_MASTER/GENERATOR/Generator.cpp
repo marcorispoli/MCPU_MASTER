@@ -823,7 +823,24 @@ ExposureModule::exposure_completed_errors Generator::commonExposurePulseSequence
     return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
 }
 
-
+/// <summary>
+/// This function load a databank with a 3 point tech to fit the finest mAs required value.
+/// </summary>
+/// 
+/// When a decimal value is needed for the mAs (i.e. 10.5 mAs instead of 10 or 11)
+/// the 2 point tech cannot be used because this tech can set only integer values.
+/// 
+/// In the case where the decimal part should be important (for Tomo Exposures)
+/// a different approach shall be
+/// 
+/// <param name="dbId"></param>
+/// <param name="large_focus"></param>
+/// <param name="KV"></param>
+/// <param name="MAS"></param>
+/// <param name="long_pulse"></param>
+/// <param name="min_pulse"></param>
+/// <param name="max_pulse"></param>
+/// <returns></returns>
 ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse) {
     
     unsigned short mas;

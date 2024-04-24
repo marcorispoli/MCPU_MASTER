@@ -166,9 +166,9 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
 
     error = commonExposurePulseSequence(ExpName, false);
 
-
-    if (large_focus) setExposedData(R2CP::DB_Pulse, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
-    else setExposedData(R2CP::DB_Pulse, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
+    // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
+    if (large_focus) setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
+    else setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
 
     return error;
 

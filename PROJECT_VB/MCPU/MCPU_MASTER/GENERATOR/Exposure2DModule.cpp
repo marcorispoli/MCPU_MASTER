@@ -92,9 +92,9 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
 
     ExposureModule::exposure_completed_errors  error = commonExposurePulseSequence(ExpName, false);
     
-
-    if(large_focus) setExposedData(R2CP::DB_Pulse, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
-    else setExposedData(R2CP::DB_Pulse, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
+    // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
+    if(large_focus) setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
+    else setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
     
     return error;
 };
@@ -182,9 +182,9 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
     // Sequence for the AEC
     ExposureModule::exposure_completed_errors  error = commonExposurePulseSequence(ExpName, true);
        
-
-    if (large_focus) setExposedData(R2CP::DB_Pre, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
-    else setExposedData(R2CP::DB_Pre, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
+    // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
+    if (large_focus) setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
+    else setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
 
     // If the sequence should return an error condition termines here
     if (error != ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS) {
@@ -228,9 +228,9 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
     error = commonExposurePulseSequence(ExpName, false);
 
    
-    // Updates the Exposed pulses  
-    if (large_focus) setExposedData(R2CP::DB_Pulse, (unsigned char)0, ExposureModule::getExposurePulse(1)->filter, 1);
-    else setExposedData(R2CP::DB_Pulse, (unsigned char)0, ExposureModule::getExposurePulse(1)->filter, 0);
+    // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!! 
+    if (large_focus) setExposedData(2, (unsigned char)0, ExposureModule::getExposurePulse(1)->filter, 1);
+    else setExposedData(2, (unsigned char)0, ExposureModule::getExposurePulse(1)->filter, 0);
 
     return error;
     

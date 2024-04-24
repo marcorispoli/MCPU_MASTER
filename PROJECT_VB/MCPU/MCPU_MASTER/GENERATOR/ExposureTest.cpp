@@ -95,8 +95,8 @@ ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(voi
 
     ExposureModule::exposure_completed_errors  error = commonExposurePulseSequence(ExpName, false);
     
-    // Updates the Exposed pulses     
-    setExposedData(R2CP::DB_Pulse, (unsigned char) 0, filter, focus);
+    // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!! 
+    setExposedData(1, (unsigned char) 0, filter, focus);
     return error;
 
 };

@@ -277,7 +277,7 @@ namespace R2CP
                                 pData);
     }
 
-    void CaDataDicGen::Generator_Set_3D_Databank(unsigned char dbId, unsigned char focus, float KV, float MA, float MS, float MT){
+    void CaDataDicGen::Generator_Set_3D_Databank(unsigned char dbId, bool large_focus, float KV, float MA, float MS, float MT){
         if((dbId < 1) || (dbId >= DB_LastId)) return;
 
         unsigned char pData[27];
@@ -320,8 +320,8 @@ namespace R2CP
         pData[17] = (unsigned char ) (((MInt * 1) >> 0) & 0xFF);
 
         // Focal spot
-        // TBD if(focus == exposureManager::_FOCUS_LARGE) pData[18] = 1;
-        // else pData[18] = 0;
+        if (large_focus) pData[18] = 1;
+        else pData[18] = 0;
 
         pData[19] = 0; // NA
         pData[20] = 0; // NA

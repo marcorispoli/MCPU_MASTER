@@ -18,6 +18,11 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
     bool detector_synch = true;
     bool grid_synch = true;
 
+    // Set the filter selected is the expected into the pulse(0). No wait for positioning here
+    if (!PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false)) {
+        return ExposureModule::exposure_completed_errors::XRAY_FILTER_ERROR;
+    }
+
     // Sets the Grid On Field (if not yet) : wait for the ready condition   
     PCB304::synchGridWithGenerator(true);
     if (!PCB304::setGridOnField(true)) {
@@ -51,32 +56,8 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
     }
 
     // Clear the active system messages
-    for (int i = 0; i < R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size(); i++) {
-        unsigned int id = R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList[i];
-        R2CP::CaDataDicGen::GetInstance()->SystemMessages_Clear_Message(id);
-        if (!handleCommandProcessedState(nullptr)) {
-            LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
-            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-        }
-    }
-
-    // Read again the messages
-    R2CP::CaDataDicGen::GetInstance()->SystemMessages_Get_AllMessages();
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "SystemMessages_Get_AllMessages error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
-
-    // Test if the messages have been removed
-    if (R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size()) {
-        LogClass::logInFile(ExpName + "system messages error");
-        return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
-    }
-
-    // Disables the safety disable RX message    
-    R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(false);
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "SystemMessages_SetDisableRx error");
+    if (!clearSystemMessages()) {
+        LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
 
@@ -124,7 +105,11 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
     bool detector_synch = true;
     bool grid_synch = true;
 
-   
+    // Set the filter selected is the expected into the pulse(0). No wait for positioning here
+    if (!PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false)) {
+        return ExposureModule::exposure_completed_errors::XRAY_FILTER_ERROR;
+    }
+
     // Sets the Grid On Field (if not yet) : wait for the ready condition   
     PCB304::synchGridWithGenerator(true);
     if (!PCB304::setGridOnField(true)) {
@@ -158,27 +143,11 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
     }
 
     // Clear the active system messages
-    for (int i = 0; i < R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size(); i++) {
-        unsigned int id = R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList[i];
-        R2CP::CaDataDicGen::GetInstance()->SystemMessages_Clear_Message(id);
-        if (!handleCommandProcessedState(nullptr)) {
-            LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
-            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-        }
-    }
-
-    // Read again the messages
-    R2CP::CaDataDicGen::GetInstance()->SystemMessages_Get_AllMessages();
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "SystemMessages_Get_AllMessages error");
+    if (!clearSystemMessages()) {
+        LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
 
-    // Test if the messages have been removed
-    if (R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size()) {
-        LogClass::logInFile(ExpName + "system messages error");
-        return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
-    }
 
     // Disables the safety disable RX message    
     R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(false);

@@ -56,6 +56,7 @@ protected:
 	bool generatorErrorMessagesLoop(void);
 	bool logCurrentStatus(unsigned char status);
 	ExposureModule::exposure_completed_errors commonExposurePulseSequence(System::String^ ExpName, bool pre_pulse);
+	ExposureModule::exposure_completed_errors set3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse);
 
 	ExposureModule::exposure_completed_errors man_2d_exposure_procedure(void);
 	ExposureModule::exposure_completed_errors aec_2d_exposure_procedure(void);

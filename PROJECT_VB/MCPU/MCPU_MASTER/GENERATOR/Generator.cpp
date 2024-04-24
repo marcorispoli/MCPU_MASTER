@@ -731,7 +731,6 @@ void Generator::setExposedData(unsigned char databank_index, unsigned char pulse
     }
 }
 
-
 ExposureModule::exposure_completed_errors Generator::commonExposurePulseSequence(System::String^ ExpName, bool pre_pulse) {
     unsigned char current_status;
     ExposureModule::exposure_completed_errors error;
@@ -759,10 +758,10 @@ ExposureModule::exposure_completed_errors Generator::commonExposurePulseSequence
 
     logCurrentStatus(255);
 
-    timeout = 200;
+    timeout = 400;
     while (true) {
 
-        // No more than10 seconds for the entire sequence
+        // No more than 20 seconds for the entire sequence
         if (timeout) {
             timeout--;
             if (!timeout) {
@@ -822,4 +821,47 @@ ExposureModule::exposure_completed_errors Generator::commonExposurePulseSequence
     }
 
     return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+}
+
+
+ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse) {
+    
+    unsigned short mas;
+    // Rounding to the next integer value of the requested mAs 
+    if ((float)((unsigned short) MAS) != MAS) mas = ((unsigned short) MAS + 1);
+    else mas = ((unsigned short) MAS);
+
+    // Sets the 2D databank to force the generator to select the mA and mS(R10 tab) for an exposure with the requested mAs
+    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(dbId, large_focus, KV, mas, long_pulse);
+    if (!handleCommandProcessedState(nullptr)) {
+        LogClass::logInFile("set3PointDatabank() - error");
+        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+    }
+
+    // Gets the R10 time imposed by the generator
+    float pulse_mS = R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[dbId].ms100.value / 100;
+
+    // Gets the R10 value corresponding to the minimum pulse time acceptable
+    float min_r10_mS = getR10Time(min_pulse, true);
+
+    // if the assigned pulse time is less than the minimum, the minimum is used
+    if ((pulse_mS < min_pulse) && (min_r10_mS < max_pulse)) pulse_mS = min_r10_mS;
+
+    // The maximum anodic current selected by Generator cannot fit into the Integration Window
+    if (pulse_mS > max_pulse) {
+        LogClass::logInFile("set3PointDatabank() - Invalid integration time for the current tomo pulse");
+        return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_mAs;
+    }
+
+    // Recalculate the Anodic current that can fit with the R10 time slot
+    float mA = (MAS * 1000) / pulse_mS;
+
+    // Uses a 3 point procedure to better fit with the requested mAs
+    R2CP::CaDataDicGen::GetInstance()->Generator_Set_3D_Databank(dbId, large_focus, KV, mA, pulse_mS, max_pulse);
+    if (!handleCommandProcessedState(nullptr)) {
+        LogClass::logInFile("set3PointDatabank() - Generator_Set_3D_Databank() error");
+        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+    }
+
+    return ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;
 }

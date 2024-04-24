@@ -62,27 +62,11 @@ ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(voi
     }
 
     // Clear the active system messages
-    for (int i = 0; i < R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size(); i++) {
-        unsigned int id = R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList[i];
-        R2CP::CaDataDicGen::GetInstance()->SystemMessages_Clear_Message(id);
-        if (!handleCommandProcessedState(nullptr)) {
-            LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
-            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-        }
-    }
-
-    // Read again the messages
-    R2CP::CaDataDicGen::GetInstance()->SystemMessages_Get_AllMessages();
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "SystemMessages_Get_AllMessages error");
+    if (!clearSystemMessages()) {
+        LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
 
-    // Test if the messages have been removed
-    if (R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size()) {
-        LogClass::logInFile(ExpName + "system messages error");
-        return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
-    }
 
     // Disables the safety disable RX message    
     R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(false);

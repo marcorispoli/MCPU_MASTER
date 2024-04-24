@@ -243,6 +243,10 @@ public:
         XRAY_NO_ERRORS = 0,			//!< No error code
         XRAY_INVALID_PROCEDURE,		//!< A not valid procedure has been requested
         XRAY_INVALID_GENERATOR_STATUS,	//!< The generator is in a not expected status
+        XRAY_INVALID_TOMO_PARAMETERS,	//!< The Tomo parameters has not been validated (selected)
+        XRAY_INVALID_TOMO_mAs,	    //!< The requested mAs is not compatible with the minimum and maximum detector timeout
+        XRAY_TIMEOUT_TILT_IN_HOME,	//!< Timeout waiting for the Tilt to be ready for home positioning 
+        XRAY_ERROR_TILT_IN_HOME,	//!< Error in positionining the Tilt in Home
         XRAY_COMMUNICATION_ERROR,	//!< A generator command is failed
         XRAY_GENERATOR_ERROR,		//!< The generator activated internal error messages
         XRAY_BUTTON_RELEASE,		//!< The X-Ray Button has been released 

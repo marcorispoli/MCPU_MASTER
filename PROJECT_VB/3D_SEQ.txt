@@ -7,7 +7,7 @@
 <10% SET_TomoConfig TOMO3F_WIDE%>
 <10%SET_ExposureMode MAN_3D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_DIS ARM_DIS%>
 
-<10%SET_ExposureData 0 28 200 Rh %>
+<10%SET_ExposureData 0 28 157 Al %>
 	
 <10%SET_EnableXrayPush ON%>
 

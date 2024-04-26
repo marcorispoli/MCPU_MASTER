@@ -10,9 +10,8 @@
 #include <thread>
 #include "Log.h"
 
-using namespace System::Diagnostics;
-using namespace System::Collections::Generic;
 
+using namespace System::Collections::Generic;
 
 
 ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(void) {
@@ -22,15 +21,41 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
     int timeout;
     ExposureModule::exposure_completed_errors error;
 
-    System::String^ exposure_data_str = ExpName + " ---------------- "; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "kV:" + ExposureModule::getExposurePulse(0)->kV; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "mAs:" + ExposureModule::getExposurePulse(0)->mAs; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "pulses:" + ExposureModule::getTomoExposure()->tomo_samples; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "skip-pulses:" + ExposureModule::getTomoExposure()->tomo_skip; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "speed:" + ExposureModule::getTomoExposure()->tomo_speed; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "acc:" + ExposureModule::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "dec:" + ExposureModule::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
-    
+    // Gets the Detector used in the exposure sequence:
+    // The Detector determines the maximum integration time allowd and 
+    // the maximum FPS the detector can support.
+    System::String^ detector_param = ExposureModule::getDetectorType().ToString();
+    int max_fps;
+    int exposure_time;
+
+    try
+    {
+        max_fps = System::Convert::ToInt16(DetectorConfig::Configuration->getParam(detector_param)[DetectorConfig::PARAM_MAX_3D_FPS]);
+
+        // Tomo not enabled for this detector
+        if (max_fps < 1) {
+            LogClass::logInFile(ExpName + "Invalid Tomo activation for this detector");
+            return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+        }
+
+        if (max_fps > DetectorConfig::MAX_TOMO_FPS) {
+            LogClass::logInFile(ExpName + "Invalid Tomo Configuration file");
+            return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+        }
+
+        if (ExposureModule::getTomoExposure()->tomo_fps > max_fps) {
+            LogClass::logInFile(ExpName + "Invalid Tomo FPS");
+            return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+        }
+
+        exposure_time = System::Convert::ToInt16(DetectorConfig::Configuration->getParam(detector_param)[DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_1FPS + (ExposureModule::getTomoExposure()->tomo_fps - 1)]);
+    }
+    catch (...) {
+        LogClass::logInFile(ExpName + "Invalid Detector Parameter ");
+        return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+    }
+
+   
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here
     if (!PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false)) {
@@ -63,17 +88,34 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
     //}
 
     // ------------------------------------------------------------------------------------ > Dynamic collimation mode
-    
 
-    //-------- Setup the 3D pulse using the 3 point approach procedure ---------------------------------------------    
-    #define MIN_TOMO_PULSE_TIME 25 // ms
-    #define MAX_TOMO_PULSE_TIME 150 // ms
 
-    error = set3PointDatabank(R2CP::DB_Pulse, true, ExposureModule::getExposurePulse(0)->kV, (ExposureModule::getExposurePulse(0)->mAs / ExposureModule::getTomoExposure()->tomo_samples), 5000, 25, 150);
+    //-------- Setup the 3D pulse using the 3 point approach procedure ---------------------------------------------           
+    error = set3PointDatabank(R2CP::DB_Pulse, true, ExposureModule::getExposurePulse(0)->kV, (ExposureModule::getExposurePulse(0)->mAs / ExposureModule::getTomoExposure()->tomo_samples), ExposureModule::getTomoExposure()->tomo_samples, 25, exposure_time);
     if (error != ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS) {
         LogClass::logInFile(ExpName + "set3PointDatabank() error");
         return error;
     }
+
+    // Gets the Anodic current selected
+    float pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+
+    System::String^ exposure_data_str = ExpName + " ---------------- "; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "FPS:" + ExposureModule::getTomoExposure()->tomo_fps; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "kV:" + ExposureModule::getExposurePulse(0)->kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + ExposureModule::getExposurePulse(0)->mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + pulse_mA; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Filter:" + ExposureModule::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Samples:" + ExposureModule::getTomoExposure()->tomo_samples; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Skips:" + ExposureModule::getTomoExposure()->tomo_skip; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Position Home:" + ExposureModule::getTomoExposure()->tomo_home; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Position End:" + ExposureModule::getTomoExposure()->tomo_end; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Speed:" + ExposureModule::getTomoExposure()->tomo_speed; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Ramp-Acc:" + ExposureModule::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Ramp-Dec:" + ExposureModule::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
+
 
     // Setup the 3D Databank for Tomo skip pulses
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, ExposureModule::getTomoExposure()->tomo_skip);

@@ -17,6 +17,17 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
     bool large_focus;
     bool detector_synch = true;
     bool grid_synch = true;
+    System::String^ detector_param;
+    int exposure_time;
+
+    try {
+        detector_param = ExposureModule::getDetectorType().ToString();
+        exposure_time = System::Convert::ToInt16(DetectorConfig::Configuration->getParam(detector_param)[DetectorConfig::PARAM_MAX_2D_INTEGRATION_TIME]);
+    }
+    catch (...) {
+        LogClass::logInFile(ExpName + "Invalid Detector Parameter ");
+        return ExposureModule::exposure_completed_errors::XRAY_INVALID_2D_PARAMETERS;
+    }
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here
     if (!PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false)) {
@@ -39,13 +50,28 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
         return ExposureModule::exposure_completed_errors::XRAY_COLLI_FORMAT_ERROR;
     }
     
+   
 
-    // Load Data Bank For pulse    
-    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, ExposureModule::getExposurePulse(0)->kV, ExposureModule::getExposurePulse(0)->mAs, 5000);
+    // Load Data Bank For pulse        
+    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, ExposureModule::getExposurePulse(0)->kV, ExposureModule::getExposurePulse(0)->mAs, exposure_time);
     if (!handleCommandProcessedState(nullptr)) {
         LogClass::logInFile(ExpName + "Generator_Set_2D_Databank error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
+
+
+    // Gets the Anodic current selected
+    float pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+
+    System::String^ exposure_data_str = ExpName + " ---------------- "; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR MAX INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "kV:" + ExposureModule::getExposurePulse(0)->kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + ExposureModule::getExposurePulse(0)->mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + pulse_mA; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Filter:" + ExposureModule::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    if (large_focus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
 
     // Procedure activation
     LogClass::logInFile("GENERATOR MAN 2D EXPOSURE: procedure activation");
@@ -105,6 +131,18 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
     bool detector_synch = true;
     bool grid_synch = true;
 
+    System::String^ detector_param;
+    int exposure_time;
+
+    try {
+        detector_param = ExposureModule::getDetectorType().ToString();
+        exposure_time = System::Convert::ToInt16(DetectorConfig::Configuration->getParam(detector_param)[DetectorConfig::PARAM_MAX_2D_PRE_INTEGRATION_TIME]);
+    }
+    catch (...) {
+        LogClass::logInFile(ExpName + "Invalid Detector Parameter ");
+        return ExposureModule::exposure_completed_errors::XRAY_INVALID_2D_PARAMETERS;
+    }
+
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here
     if (!PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false)) {
         return ExposureModule::exposure_completed_errors::XRAY_FILTER_ERROR;
@@ -126,13 +164,26 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
         return ExposureModule::exposure_completed_errors::XRAY_COLLI_FORMAT_ERROR;
     }
 
+
     // Load Data Bank For pre-pulse    
-    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pre, large_focus, ExposureModule::getExposurePulse(0)->kV, ExposureModule::getExposurePulse(0)->mAs, 5000);
+    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pre, large_focus, ExposureModule::getExposurePulse(0)->kV, ExposureModule::getExposurePulse(0)->mAs, exposure_time);
     ExposureModule::getExposurePulse(0)->validated = false;
     if (!handleCommandProcessedState(nullptr)) {
         LogClass::logInFile(ExpName + "Generator_Set_2D_Databank error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
+
+    // Gets the Anodic current selected
+    float pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pre].mA100.value) / 100;
+    System::String^ exposure_data_str = ExpName + " PRE-PULSE DATA ---------------- "; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR MAX AEC INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "kV Pre:" + ExposureModule::getExposurePulse(0)->kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs Pre:" + ExposureModule::getExposurePulse(0)->mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + pulse_mA; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Filter Pre:" + ExposureModule::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    if (large_focus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
 
     // Procedure activation
     LogClass::logInFile(ExpName + "procedure activation");
@@ -209,13 +260,32 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
         return ExposureModule::exposure_completed_errors::XRAY_FILTER_ERROR;
     }
 
-    // Load Data Bank For pulse    
-    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, ExposureModule::getExposurePulse(1)->kV, ExposureModule::getExposurePulse(1)->mAs, 5000);
+    try {        
+        exposure_time = System::Convert::ToInt16(DetectorConfig::Configuration->getParam(detector_param)[DetectorConfig::PARAM_MAX_2D_INTEGRATION_TIME]);
+    }
+    catch (...) {
+        LogClass::logInFile(ExpName + "Invalid Detector Parameter ");
+        return ExposureModule::exposure_completed_errors::XRAY_INVALID_2D_PARAMETERS;
+    }
+
+    // Load Data Bank For pulse       
+    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, ExposureModule::getExposurePulse(1)->kV, ExposureModule::getExposurePulse(1)->mAs, exposure_time);
     ExposureModule::getExposurePulse(1)->validated = false;
     if (!handleCommandProcessedState(nullptr)) {
         LogClass::logInFile(ExpName + "Generator_Set_2D_Databank(pulse) error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
+    
+    pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+    exposure_data_str = ExpName + " PULSE DATA ---------------- "; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "DETECTOR MAX PULSE INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "kV:" + ExposureModule::getExposurePulse(1)->kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + ExposureModule::getExposurePulse(1)->mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + pulse_mA; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Filter:" + ExposureModule::getExposurePulse(1)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    if (large_focus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
 
     // Procedure activation
     LogClass::logInFile(ExpName + "procedure activation");

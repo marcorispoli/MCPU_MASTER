@@ -210,16 +210,8 @@ public:
     };
     //static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "PROTECTION_ENA", "PROTECTION_DIS", "UNDEF"}; //!< This is the option-tags static array
 
-    /// <summary>
-    /// This is the enumeration of the possible Detectors used for exposures
-    /// 
-    /// </summary>
-    enum class detector_model_option {
-        LMAM2V2 = 0, //!< Analogic LMAM2 V2
-        FDIV2,  //!< Analogic FDI-V2            
-    };
-    // static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "LMAM2V2", "FDIV2", "UNDEF"}; //!< This is the option-tags static array
-
+    
+    
     /// <summary>
     /// This Enumeration class describes the possible results of an exposure.
     /// 
@@ -243,6 +235,7 @@ public:
         XRAY_NO_ERRORS = 0,			//!< No error code
         XRAY_INVALID_PROCEDURE,		//!< A not valid procedure has been requested
         XRAY_INVALID_GENERATOR_STATUS,	//!< The generator is in a not expected status
+        XRAY_INVALID_2D_PARAMETERS,	//!< The pexposure parameters for 2D are incorrect
         XRAY_INVALID_TOMO_PARAMETERS,	//!< The Tomo parameters has not been validated (selected)
         XRAY_INVALID_TOMO_mAs,	    //!< The requested mAs is not compatible with the minimum and maximum detector timeout
         XRAY_TIMEOUT_TILT_IN_HOME,	//!< Timeout waiting for the Tilt to be ready for home positioning 
@@ -267,8 +260,8 @@ public:
     static void inline setExposureMode(exposure_type_options mode) { exposure_type = mode; }
     static exposure_type_options inline getExposureMode(void) { return exposure_type; }
 
-    static void inline setDetectorType(detector_model_option detector) { detector_model = detector; }
-    static detector_model_option inline getDetectorType(void) { return detector_model; }
+    static void inline setDetectorType(DetectorConfig::detector_model_option detector) { detector_model = detector; }
+    static DetectorConfig::detector_model_option inline getDetectorType(void) { return detector_model; }
 
     static void inline setCompressorMode(compression_mode_option mode) { compressor_mode = mode; }
     static compression_mode_option inline getCompressorMode(void) { return compressor_mode; }
@@ -342,7 +335,7 @@ private:
     static arm_mode_option arm_mode = arm_mode_option::ARM_ENA;
     static compression_mode_option compressor_mode = compression_mode_option::CMP_KEEP;
     static patient_protection_option protection_mode = patient_protection_option::PROTECTION_ENA;
-    static detector_model_option detector_model = detector_model_option::LMAM2V2;
+    static DetectorConfig::detector_model_option detector_model = DetectorConfig::detector_model_option::GENERIC;
     static exposure_type_options xray_exposure_type = exposure_type_options::EXP_NOT_DEFINED;
     static tomo_data^ tomo_exposure = gcnew tomo_data;
     static bool xray_event_ena = false;

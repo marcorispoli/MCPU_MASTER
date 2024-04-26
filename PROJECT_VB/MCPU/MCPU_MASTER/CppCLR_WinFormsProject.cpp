@@ -23,7 +23,6 @@ int main()
 
 
 	LogClass::logInFile("PROGRAM INITIALIZATION");
-
 	Application::Run(gcnew CppCLRWinFormsProject::MainForm());
 	return 0;
 }

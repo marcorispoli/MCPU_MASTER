@@ -23,7 +23,7 @@ public:
 	static bool isSmartHubConnected(void);
 	static bool isGeneratorConnected(void);
 	static bool isServiceToolConnected(void);
-	
+	static System::String^ getGeneratorErrorString(System::String^ errstr);
 	
 
 	inline static bool isGeneratorSetupCompleted(void) { return setup_completed; }

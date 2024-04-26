@@ -864,12 +864,20 @@ void OperatingForm::evaluatePopupPanels(void) {
 	static bool slide = false;
 	static bool vertical = false;
 	static bool tilt = false;
-
-	static int timer = 0;
+	static int  timer = 0;
 
 	// With a panel already open do not continue;
-	if (Notify::isInstantOpen()) return;
-	if (Notify::isErrorOpen()) return;
+	if (ExposureModule::isXrayRunning() || Notify::isInstantOpen() || Notify::isErrorOpen()) {
+		if(Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->close();
+		compression = false;
+		arm = false;
+		body = false;
+		slide = false;
+		vertical = false;
+		tilt = false;
+		timer = 0;
+		return;
+	}
 
 	// Error Button
 	if (Notify::isError()) {

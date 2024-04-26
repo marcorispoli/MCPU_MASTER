@@ -7,9 +7,8 @@
 #include <thread>
 #include "Log.h"
 
-using namespace System::Diagnostics;
-using namespace System::Collections::Generic;
 
+using namespace System::Collections::Generic;
 
 ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(void) {
     System::String^ ExpName = "Exposure Test>";
@@ -37,11 +36,9 @@ ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(voi
         }        
     }
 
-
     // Filter selection 
     filter = ExposureModule::getExposurePulse(0)->filter;
-    LogClass::logInFile(ExpName + "filter:" + filter.ToString());
-
+    
     if (!PCB315::setFilterAutoMode(filter, true)) {
         return ExposureModule::exposure_completed_errors::XRAY_FILTER_ERROR;
     }
@@ -52,6 +49,15 @@ ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(voi
         LogClass::logInFile(ExpName + "Generator_Set_2D_Databank error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
+
+    float pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+    System::String^ exposure_data_str = ExpName + " PULSE DATA ---------------- "; LogClass::logInFile(exposure_data_str);   
+    exposure_data_str = "kV:" + ExposureModule::getExposurePulse(0)->kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + ExposureModule::getExposurePulse(0)->mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + pulse_mA; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Filter:" + ExposureModule::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    if (large_focus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
 
        
     if (detector_synch) grid_synch = true; // Procedure activation 

@@ -14,6 +14,8 @@
 #include "Log.h"
 
 
+#using "SQLITE\\System.Data.SQLite.dll" // put this file in the project directory
+using namespace System::Data::SQLite;
 
 typedef short (*pSendR2CP_callback)(unsigned char*, unsigned short) ; //!< This is the type used to pass the reception callback to the R2CP module
 
@@ -33,10 +35,11 @@ int16_t Generator::sendCR2CPData(unsigned char* pMessage, unsigned short  datale
 }
 
 
+
 Generator::Generator(void):TcpClientCLI( SH_IP_ADDRESS, SH_PORT) 
 {
     
-
+    
 }
 
 void Generator::startNormalMode(void) {
@@ -830,18 +833,32 @@ ExposureModule::exposure_completed_errors Generator::commonExposurePulseSequence
 /// When a decimal value is needed for the mAs (i.e. 10.5 mAs instead of 10 or 11)
 /// the 2 point tech cannot be used because this tech can set only integer values.
 /// 
-/// In the case where the decimal part should be important (for Tomo Exposures)
-/// a different approach shall be
+/// In the case where the decimal part of the mAs should be important (i.e. in Tomo Exposures)
+/// a different approach shall be followed:
 /// 
-/// <param name="dbId"></param>
-/// <param name="large_focus"></param>
-/// <param name="KV"></param>
-/// <param name="MAS"></param>
-/// <param name="long_pulse"></param>
-/// <param name="min_pulse"></param>
-/// <param name="max_pulse"></param>
-/// <returns></returns>
-ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse) {
+/// The 3 point method allow to set the kV, the Anodic m Amps and the milliseconds of exposure.
+/// The Anodic current can be controlle with enough accuracy, wheathe the Exposure time can be selected in a discrete 
+/// range of values in the R10 table.
+/// 
+/// The method consist of the following procedure:
+/// - The 2 point databank is uploaded into the generator with the mAs in integer format:\n
+///     this step is necessary to know what is the available anodic current for the kV and mAs range selected;
+/// - The generator then will assignes the proper anodic current and the integration time requested;
+/// - The procedure select a new integration time bigger than the one selected by the genrator (in the R10 scale) so that \n
+///   it will be possible to use a lower anodic current (a bigger value could not be usable because of Tube limitations);
+/// - A new anodic current is calculated based on the requested mAs and integration time;
+/// - A databank with 3 point tech is then uploaded with the new calculated data.
+/// 
+/// 
+/// <param name="dbId">Databank index</param>
+/// <param name="large_focus">true for large focuse, false for small focus</param>
+/// <param name="KV">kV value</param>
+/// <param name="MAS">mAs value</param>
+/// <param name="n_pulse">number of pulses (1 in case of databank for a 2D procedure)</param>
+/// <param name="min_pulse">minimum time for pulse in ms</param>
+/// <param name="max_pulse">maximum pulse time (limited usually by the Max integration time of the Detector )</param>
+/// <returns>ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS for success</returns>
+ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int n_pulse, int min_pulse, int max_pulse) {
     
     unsigned short mas;
     // Rounding to the next integer value of the requested mAs 
@@ -849,14 +866,14 @@ ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned 
     else mas = ((unsigned short) MAS);
 
     // Sets the 2D databank to force the generator to select the mA and mS(R10 tab) for an exposure with the requested mAs
-    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(dbId, large_focus, KV, mas, long_pulse);
+    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(dbId, large_focus, KV, mas, n_pulse * max_pulse);
     if (!handleCommandProcessedState(nullptr)) {
         LogClass::logInFile("set3PointDatabank() - error");
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
 
     // Gets the R10 time imposed by the generator
-    float pulse_mS = R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[dbId].ms100.value / 100;
+    float pulse_mS = R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[dbId].ms100.value / 100;   
 
     // Gets the R10 value corresponding to the minimum pulse time acceptable
     float min_r10_mS = getR10Time(min_pulse, true);
@@ -880,5 +897,44 @@ ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned 
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
 
+    // Gets the Anodic current imposed by the generator
+    float pulse_mA = ((float) R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[dbId].mA100.value) / 100;
+    float err_100_mAs = (abs((pulse_mA * pulse_mS / 1000) - MAS) * 100 ) / MAS;
+
+    // Max allowed error is 1%
+    if (err_100_mAs > 1.0) {
+        LogClass::logInFile("set3PointDatabank(): ERROR! pulse_mA:" + pulse_mA + "; pulse_mS:" + pulse_mS + "; mAs Error (\%):" + err_100_mAs);
+        return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_mAs;
+    }
+    else {
+        LogClass::logInFile("set3PointDatabank() -> pulse_mA:" + pulse_mA + "; pulse_mS:" + pulse_mS + "; mAs Error (\%):" + err_100_mAs);
+    }
+    
     return ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;
+}
+
+
+System::String^ Generator::getGeneratorErrorString(System::String^ errstr) {
+
+    SQLiteConnection conn("Data Source=C:\\OEM\\AppData\\system_messages.sqlite;");
+    
+    try {
+        conn.Open();
+        System::String^ result;
+
+        SQLiteCommand sqlCmd("SELECT ID, DESC FROM SystemMessage WHERE ID=" + errstr, % conn);
+        SQLiteDataReader^ sqReader = sqlCmd.ExecuteReader();
+
+        if (sqReader->Read()) result = sqReader->GetString(1);
+        else result = "";
+
+        sqReader->Close();
+        conn.Close();
+
+        return result;
+    }
+    catch (...) {
+        return "";
+    }
+    
 }

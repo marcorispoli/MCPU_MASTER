@@ -87,7 +87,7 @@
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalLibraryDirectories>$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SQL;$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -128,7 +128,7 @@
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalLibraryDirectories>$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SQL;$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

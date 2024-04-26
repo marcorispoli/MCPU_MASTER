@@ -330,10 +330,20 @@ void   awsProtocol::SET_ExposureMode(void) {
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_EXPOSURE_TYPE"; ackNok(); return; }
 
     // Sets the detector used for the exposure
-    if (detector_type == "LMAM2V2") ExposureModule::setDetectorType(ExposureModule::detector_model_option::LMAM2V2);
-    else if (detector_type == "FDIV2") ExposureModule::setDetectorType(ExposureModule::detector_model_option::FDIV2);
-    else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_DETECTOR_TYPE"; ackNok(); return; }
+    bool detector_found = false;
+    for (int i = 0; i < (int)DetectorConfig::detector_model_option::DETECTOR_LIST_SIZE; i++) {
+        if (((DetectorConfig::detector_model_option)i).ToString() == detector_type) {
+            ExposureModule::setDetectorType((DetectorConfig::detector_model_option)i);
+            detector_found = true;
+            break;
+        }
+    }
+    if (!detector_found) {
+        ExposureModule::setDetectorType(DetectorConfig::detector_model_option::GENERIC);
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_DETECTOR_TYPE"; ackNok(); return;
+    }
 
+    
     // Sets the Compression Mode used for the exposure
     if (compression_mode == "CMP_KEEP") ExposureModule::setCompressorMode(ExposureModule::compression_mode_option::CMP_KEEP);
     else if (compression_mode == "CMP_RELEASE") ExposureModule::setCompressorMode(ExposureModule::compression_mode_option::CMP_RELEASE);

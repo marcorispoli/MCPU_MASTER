@@ -59,36 +59,15 @@ void ErrorForm::open(Form^ parent_form) {
 	errorPanelTimer->Stop();
 	errorPanelTimer->Start();
 
-	// Sets the new error in evidence 
-	Notify::translate^ msgit;
-	Notify::messages lastmsg = Notify::getLastMessage();
 	
-	if (lastmsg != Notify::messages::NO_MESSAGE) {
-		msgit = Notify::Translate(lastmsg);
-		errorTitle->Text = msgit->title;
-		errorId->Text = msgit->number;
-
-		// Sete the ICON based on thelast error or warnings
-		if(msgit->isError()) notifyIcon->BackgroundImage = ERROR_IMAGE;
-		else if (msgit->isWarning()) notifyIcon->BackgroundImage = WARNING_IMAGE;
-		else notifyIcon->BackgroundImage = INFO_IMAGE;
-	}
-	else {
-		errorTitle->Text = "";
-		errorId->Text = "";
-
-		// Sete the ICON based on the current error or warnings
-		if (Notify::isError()) notifyIcon->BackgroundImage = ERROR_IMAGE;
-		else if (Notify::isWarning()) notifyIcon->BackgroundImage = WARNING_IMAGE;
-		else notifyIcon->BackgroundImage = INFO_IMAGE;
-
-	}
+	// Sete the ICON based on the current error or warnings
+	if (Notify::isError()) notifyIcon->BackgroundImage = ERROR_IMAGE;
+	else if (Notify::isWarning()) notifyIcon->BackgroundImage = WARNING_IMAGE;
+	else notifyIcon->BackgroundImage = INFO_IMAGE;
 
 	// Set the Content space with the list of active errors
 	errorContent->Text = Notify::getListOfErrors();
-
-	// Clears the index of the last occurred error
-	Notify::clrNewError();
+	
 
 	try {
 		window = static_cast<HWND>(Handle.ToPointer());

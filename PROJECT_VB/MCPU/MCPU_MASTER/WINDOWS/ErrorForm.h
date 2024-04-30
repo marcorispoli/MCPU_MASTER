@@ -32,8 +32,8 @@ public: Form^ parent;
 public:System::Timers::Timer^ errorPanelTimer;
 
 private: System::Windows::Forms::Label^ TitleText;
-private: System::Windows::Forms::Label^ errorId;
-private: System::Windows::Forms::Label^ errorTitle;
+
+
 private: System::Windows::Forms::RichTextBox^ errorContent;
 private: System::Windows::Forms::Panel^ notifyIcon;
 
@@ -89,8 +89,6 @@ private:
 private: System::Void InitializeComponent() {
 	this->TitleText = (gcnew System::Windows::Forms::Label());
 	this->CancButton = (gcnew System::Windows::Forms::Button());
-	this->errorId = (gcnew System::Windows::Forms::Label());
-	this->errorTitle = (gcnew System::Windows::Forms::Label());
 	this->errorContent = (gcnew System::Windows::Forms::RichTextBox());
 	this->notifyIcon = (gcnew System::Windows::Forms::Panel());
 	this->SuspendLayout();
@@ -104,7 +102,7 @@ private: System::Void InitializeComponent() {
 	this->TitleText->Name = L"TitleText";
 	this->TitleText->Size = System::Drawing::Size(570, 42);
 	this->TitleText->TabIndex = 16;
-	this->TitleText->Text = L"Projection Selection Window [1]";
+	this->TitleText->Text = L"Error Panel";
 	this->TitleText->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 	// 
 	// CancButton
@@ -124,42 +122,18 @@ private: System::Void InitializeComponent() {
 	this->CancButton->UseVisualStyleBackColor = false;
 	this->CancButton->Click += gcnew System::EventHandler(this, &ErrorForm::CancButton_Click);
 	// 
-	// errorId
-	// 
-	this->errorId->AutoSize = true;
-	this->errorId->BackColor = System::Drawing::Color::Transparent;
-	this->errorId->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 24, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-		static_cast<System::Byte>(0)));
-	this->errorId->Location = System::Drawing::Point(175, 153);
-	this->errorId->Name = L"errorId";
-	this->errorId->Size = System::Drawing::Size(132, 37);
-	this->errorId->TabIndex = 18;
-	this->errorId->Text = L"E00001";
-	// 
-	// errorTitle
-	// 
-	this->errorTitle->BackColor = System::Drawing::Color::Transparent;
-	this->errorTitle->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-		static_cast<System::Byte>(0)));
-	this->errorTitle->Location = System::Drawing::Point(35, 241);
-	this->errorTitle->Name = L"errorTitle";
-	this->errorTitle->Size = System::Drawing::Size(525, 29);
-	this->errorTitle->TabIndex = 19;
-	this->errorTitle->Text = L"Xray Push Button Error";
-	this->errorTitle->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
-	// 
 	// errorContent
 	// 
 	this->errorContent->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(207)),
 		static_cast<System::Int32>(static_cast<System::Byte>(208)));
 	this->errorContent->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-	this->errorContent->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+	this->errorContent->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(0)));
-	this->errorContent->Location = System::Drawing::Point(40, 337);
+	this->errorContent->Location = System::Drawing::Point(40, 251);
 	this->errorContent->Name = L"errorContent";
 	this->errorContent->ReadOnly = true;
 	this->errorContent->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
-	this->errorContent->Size = System::Drawing::Size(520, 550);
+	this->errorContent->Size = System::Drawing::Size(520, 636);
 	this->errorContent->TabIndex = 20;
 	this->errorContent->Text = L"";
 	// 
@@ -180,8 +154,6 @@ private: System::Void InitializeComponent() {
 	this->ControlBox = false;
 	this->Controls->Add(this->notifyIcon);
 	this->Controls->Add(this->errorContent);
-	this->Controls->Add(this->errorTitle);
-	this->Controls->Add(this->errorId);
 	this->Controls->Add(this->CancButton);
 	this->Controls->Add(this->TitleText);
 	this->Cursor = System::Windows::Forms::Cursors::Hand;
@@ -191,7 +163,6 @@ private: System::Void InitializeComponent() {
 	this->Name = L"ErrorForm";
 	this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
 	this->ResumeLayout(false);
-	this->PerformLayout();
 
 }
 

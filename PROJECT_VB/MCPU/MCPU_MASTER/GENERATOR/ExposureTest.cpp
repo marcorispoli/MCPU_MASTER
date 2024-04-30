@@ -30,10 +30,10 @@ ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(voi
         }       
     }
     else {        
-        PCB304::synchGridWithGenerator(false);
-        if (!PCB304::setGridOffField(true)) {
-            return ExposureModule::exposure_completed_errors::XRAY_GRID_ERROR;
-        }        
+        //PCB304::synchGridWithGenerator(false);
+        //if (!PCB304::setGridOffField(true)) {
+        //    return ExposureModule::exposure_completed_errors::XRAY_GRID_ERROR;
+        //}        
     }
 
     // Filter selection 
@@ -99,7 +99,7 @@ ExposureModule::exposure_completed_errors Generator::test_exposure_procedure(voi
     // Activate the X-RAY Enable Interface signal on the PCB301 board
     PCB301::set_xray_ena(true);
 
-    ExposureModule::exposure_completed_errors  error = commonExposurePulseSequence(ExpName, false);
+    ExposureModule::exposure_completed_errors  error = pulseSequence(ExpName, 15000);
     
     // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!! 
     setExposedData(1, (unsigned char) 0, filter, focus);

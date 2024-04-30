@@ -206,7 +206,7 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
     // Activate the X-RAY Enable Interface signal on the PCB301 board
     PCB301::set_xray_ena(true);
 
-    error = commonExposurePulseSequence(ExpName, false);
+    error = pulseSequence(ExpName, 15000);
 
     // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
     if (large_focus) setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);

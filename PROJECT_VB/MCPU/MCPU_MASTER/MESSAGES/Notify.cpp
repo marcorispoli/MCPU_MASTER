@@ -120,7 +120,7 @@ void Notify::activate(messages msg) {
 
 	message_list[(int)msg]->active = true;	
 	message_list[(int)msg]->extra = nullptr;
-	last_message = msg;
+	
 	
 	if (msg < messages::WARNING_MESSAGES_SECTION) error_counter++;
 	else if (msg < messages::INFO_MESSAGES_SECTION) warning_counter++;
@@ -152,9 +152,7 @@ void Notify::activate(messages msg, System::String^ extra) {
 
 	message_list[(int)msg]->active = true;
 	message_list[(int)msg]->extra = extra;
-	last_message = msg;
 	
-
 	if (msg < messages::WARNING_MESSAGES_SECTION) error_counter++;
 	else if (msg < messages::INFO_MESSAGES_SECTION) warning_counter++;
 	else  info_counter++;
@@ -188,9 +186,6 @@ void Notify::deactivate(messages msg) {
 	else if (msg < messages::INFO_MESSAGES_SECTION) warning_counter--;
 	else  info_counter--;
 
-	if (last_message == msg) last_message = messages::NO_MESSAGE;
-
-
 }
 
 void Notify::disable(messages msg) {
@@ -207,8 +202,6 @@ void Notify::disable(messages msg) {
 	else if (msg < messages::INFO_MESSAGES_SECTION) warning_counter--;
 	else  info_counter--;
 
-	if (last_message == msg) last_message = messages::NO_MESSAGE;
-
 }
 
 
@@ -223,25 +216,15 @@ System::String^ Notify::getListOfErrors(void) {
 
 	System::String^ errlist = "";
 	
-
-
-	// Set the current error in the Top position of the string
-	if(last_message != messages::NO_MESSAGE){
-		errlist = formatMsg(last_message);
-		if (message_list[(int)last_message]->extra) errlist += "\n" + message_list[(int)last_message]->extra;
-		errlist += "\n\n";		
-	}
-
 	// Sets the full list
-	for (int i = (int)messages::NO_MESSAGE + 1; i < (int) messages::NUM_MESSAGES; i++) {
-		if ((int)last_message == i) continue;
+	for (int i = (int)messages::NO_MESSAGE + 1; i < (int) messages::NUM_MESSAGES; i++) {		
 		if (!message_list[i]->active) continue;
 		if (i == (int)messages::WARNING_MESSAGES_SECTION) continue;
 		if (i == (int)messages::INFO_MESSAGES_SECTION) continue;
 
 		errlist += formatMsg((messages) i);
-		if (message_list[i]->extra) errlist += "\n" + message_list[i]->extra;
-		errlist += "\n\n";
+		if (message_list[i]->extra) errlist += ":\n >" + message_list[i]->extra;
+		errlist += "----------------------------------------------------------------------------\n\n";
 	}
 
 

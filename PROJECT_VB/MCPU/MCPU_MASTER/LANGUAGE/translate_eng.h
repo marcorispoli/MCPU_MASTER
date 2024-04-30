@@ -44,7 +44,7 @@
 "E00037", Notify::messages::ERROR_BODY_POTENTIOMETER_READ_FAULT, "Body Motor Monitoring", "Unable to read the potentiometer input",
 "E00038", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
 "E00039", Notify::messages::ERROR_GENERATOR_SETUP, "Generator Status Monitoring", "The Generator configuration is failed",
-
+"E00040", Notify::messages::ERROR_GENERATOR_SYS_MESSAGE, "Generator Messages", "There are error messages",
 
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
@@ -65,7 +65,6 @@
 "W00007", Notify::messages::WARNING_XRAY_BUTTON_DISABLED, "X-Ray Button Monitoring", "The X-Ray button is not enabled.",
 "W00008", Notify::messages::WARNING_DOOR_STUDY_OPEN, "Safety Monitoring", "The Study's door is detected Open.",
 "W00010", Notify::messages::WARNING_GENERATOR_NOT_READY, "Generator Status Monitoring", "The Generator is not ready for exposure.",
-"W00011", Notify::messages::WARNING_GENERATOR_MESSAGE, "Generator Device Messages", "There are messages from generator:",
 "W00012", Notify::messages::WARNING_TUBE_TEMPERATURE, "X-Ray Tube Monitoring", "The X-Ray Tube cumulated energy is too high",
 "W00013", Notify::messages::WARNING_COLLI_LIGHT_ACTIVATION, "Collimator Light Command Failed", "The Collimation Light cannot be activated now. Try again.",
 "W00014", Notify::messages::WARNING_STATOR_SENSOR_HIGH, "Tube Temperature Monitoring", "The Tube Stator temperature is too high",

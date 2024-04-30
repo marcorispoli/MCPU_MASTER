@@ -116,7 +116,7 @@ ExposureModule::exposure_completed_errors Generator::man_2d_exposure_procedure(v
     // Activate the X-RAY Enable Interface signal on the PCB301 board
     PCB301::set_xray_ena(true);
 
-    ExposureModule::exposure_completed_errors  error = commonExposurePulseSequence(ExpName, false);
+    ExposureModule::exposure_completed_errors  error = pulseSequence(ExpName, 15000);
     
     // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
     if(large_focus) setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
@@ -230,9 +230,10 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
     // Activate the X-RAY Enable Interface signal on the PCB301 board
     PCB301::set_xray_ena(true);
 
-    // Sequence for the AEC
-    ExposureModule::exposure_completed_errors  error = commonExposurePulseSequence(ExpName, true);
-       
+    // Sequence for the AEC: only the Standby is admitted as returned code: the WaitFootRelease is not admitted here
+    ExposureModule::exposure_completed_errors  error = pulseSequence(ExpName, 15000);
+    if(current_status != R2CP::Stat_Standby) return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+
     // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
     if (large_focus) setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
     else setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
@@ -295,7 +296,7 @@ ExposureModule::exposure_completed_errors Generator::aec_2d_exposure_procedure(v
         return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
     }
     
-    error = commonExposurePulseSequence(ExpName, false);
+    error = pulseSequence(ExpName, 15000);
 
    
     // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!! 

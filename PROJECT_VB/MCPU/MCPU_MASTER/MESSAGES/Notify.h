@@ -53,7 +53,8 @@ public:
 		ERROR_BODY_MOTOR_HOMING,
 		ERROR_BODY_LIMIT_SWITCH,
 		ERROR_GENERATOR_SETUP,
-		
+		ERROR_GENERATOR_SYS_MESSAGE,
+
 		
 
 		ERROR_X_RAY_BUTTON_RELEASED,
@@ -73,7 +74,6 @@ public:
 		WARNING_XRAY_BUTTON_DISABLED,
 		WARNING_DOOR_STUDY_OPEN,		
 		WARNING_GENERATOR_NOT_READY,
-		WARNING_GENERATOR_MESSAGE,
 		WARNING_TUBE_TEMPERATURE,
 		WARNING_COLLI_LIGHT_ACTIVATION,
 		WARNING_STATOR_SENSOR_HIGH,
@@ -206,12 +206,12 @@ public:
 	static bool isInfo(void) { return (info_counter != 0); }
 	static bool isInstant(void) { return (instant_msg != messages::NO_MESSAGE); }
 
-	static void clrNewError(void) { last_message = messages::NO_MESSAGE; }
+	
 	static void clrInstant(void) { instant_msg = messages::NO_MESSAGE; }
 
 	static System::String^ getListOfErrors(void);
 	static System::String^ formatMsg(messages msg);
-	static inline messages getLastMessage(void) { return last_message; }
+	
 
 	static void disable(messages msg);
 	static void activate(messages msg);
@@ -256,8 +256,7 @@ public:
 	inline static bool isErrorOpen(void) { return errorWindow->open_status; }
 
 private:
-	static List<item^>^ message_list;
-	static messages last_message = messages::NO_MESSAGE;
+	static List<item^>^ message_list;	
 	static messages instant_msg = messages::NO_MESSAGE;
 	static System::String^ instant_extra;
 

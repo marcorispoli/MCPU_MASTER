@@ -1,4 +1,5 @@
 #include "PCB301.h"
+#include "ExposureModule.h"
 #include "./DEMO/pcb301_simulator.h"
 
 #include "Notify.h"

@@ -1,4 +1,4 @@
-.TH "SlideMotor" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "SlideMotor" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,13 +21,24 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .in +1c
 .ti -1c
-.RI "static bool \fBstartHoming\fP (void)"
+.RI "static bool \fBstartManualHoming\fP (int target_position)"
+.br
+.ti -1c
+.RI "static bool \fBstartAutoHoming\fP ()"
 .br
 .RI "This function activates the Automatic Homing procedure "
 .ti -1c
-.RI "static void \fBsetManualEnable\fP (bool status)"
+.RI "static bool \fBserviceAutoPosition\fP (int pos)"
 .br
-.RI "Enables / Disables the manual activation mode\&. "
+.ti -1c
+.RI "static bool \fBisoAutoPosition\fP (int pos)"
+.br
+.ti -1c
+.RI "static bool \fBsetIdlePosition\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisAllowedPosition\fP (void)"
+.br
 .in -1c
 .SS "Static Public Attributes"
 
@@ -40,45 +51,50 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .in +1c
 .ti -1c
-.RI "bool \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
+.RI "unsigned short \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
 .br
 .RI "Sets specific registers for the Arm activation 
 .br
  "
 .ti -1c
-.RI "\fBMotorCompletedCodes\fP \fBidleCallback\fP (void) override"
+.RI "void \fBcompletedCallback\fP (int id, \fBMotorCommands\fP \fBcurrent_command\fP, int current_position, \fBMotorCompletedCodes\fP term_code) override"
 .br
-.RI "The \fBSlideMotor\fP class override this function in order to handle the IDLE activities "
+.RI "This function is called just before to Power the motor phases\&. "
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
 .ti -1c
-.RI "void \fBautomaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.RI "bool \fBiso_activation_mode\fP"
 .br
-.RI "Override the basic class to handle the Virtual isocentric function 
-.br
- "
+.RI "Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. "
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
 .ti -1c
-.RI "void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.RI "double \fBinit_angolo\fP"
 .br
-.RI "The \fBSlideMotor\fP class override this function in order to handle the homing completion process\&. "
 .ti -1c
-.RI "void \fBmanualPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.RI "double \fBlast_angolo\fP"
 .br
-.RI "This function is called when the command is terminated\&. "
 .ti -1c
-.RI "\fBMotorCompletedCodes\fP \fBmanualPositioningRunningCallback\fP (void) override"
+.RI "double \fBH0\fP"
 .br
-.RI "The \fBArmMotor\fP class override this function in order to handle the manual activation process\&. "
+.ti -1c
+.RI "double \fBH1\fP"
+.br
 .in -1c
 .SS "Static Private Attributes"
 
 .in +1c
 .ti -1c
-.RI "static bool \fBmanual_activation_enabled\fP = false"
-.br
-.RI "This is the flag activating the body manual activation\&. "
-.ti -1c
 .RI "static bool \fBmanual_up_direction\fP = false"
 .br
 .RI "Sets true if the UP manual command is executing, false if the DOWN manual activation is executing\&. "
+.ti -1c
+.RI "static bool \fBidle_positioning\fP = false"
+.br
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Constructor & Destructor Documentation"
@@ -87,86 +103,29 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .SH "Member Function Documentation"
 .PP 
-.SS "void SlideMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "void SlideMotor::completedCallback (int id, \fBMotorCommands\fP current_command, int current_position, \fBMotorCompletedCodes\fP term_code)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-The \fBSlideMotor\fP class override this function in order to handle the homing completion process\&. 
-.PP
-\fBReturns\fP
-.RS 4
-
-.RE
-.PP
-
+This function is called just before to Power the motor phases\&. 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "void SlideMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-Override the basic class to handle the Virtual isocentric function 
-.br
- The \fBSlideMotor\fP class override this function in order to handle the Isocentric automatic activation code
-.PP
-\fBParameters\fP
-.RS 4
-\fILABEL_ERROR\fP 
-.RE
-.PP
-
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "\fBSlideMotor::MotorCompletedCodes\fP SlideMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-The \fBSlideMotor\fP class override this function in order to handle the IDLE activities 
-.PP
-\fBReturns\fP
-.RS 4
-
-.RE
-.PP
-
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "bool SlideMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "unsigned short SlideMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Sets specific registers for the Arm activation 
 .br
- The \fBSlideMotor\fP override this function in order to initialize specific motor registers
-.PP
-\fBReturns\fP
-.RS 4
-true if the initialization termines successfully
-.RE
-.PP
-
+ 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "void SlideMotor::manualPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "static bool SlideMotor::isAllowedPosition (void)\fC [inline]\fP, \fC [static]\fP"
 
-.PP
-This function is called when the command is terminated\&. 
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "\fBSlideMotor::MotorCompletedCodes\fP SlideMotor::manualPositioningRunningCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "bool SlideMotor::isoAutoPosition (int pos)\fC [static]\fP"
 
-.PP
-The \fBArmMotor\fP class override this function in order to handle the manual activation process\&. 
-.PP
-\fBReturns\fP
-.RS 4
+.SS "bool SlideMotor::serviceAutoPosition (int pos)\fC [static]\fP"
 
-.RE
-.PP
+.SS "bool SlideMotor::setIdlePosition (void)\fC [static]\fP"
 
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "static void SlideMotor::setManualEnable (bool status)\fC [inline]\fP, \fC [static]\fP"
-
-.PP
-Enables / Disables the manual activation mode\&. 
-.SS "bool SlideMotor::startHoming (void)\fC [static]\fP"
+.SS "bool SlideMotor::startAutoHoming (void)\fC [static]\fP"
 
 .PP
 This function activates the Automatic Homing procedure 
@@ -177,14 +136,26 @@ This function activates the Automatic Homing procedure
 .RE
 .PP
 
+.SS "bool SlideMotor::startManualHoming (int target_position)\fC [static]\fP"
+
 .SH "Member Data Documentation"
 .PP 
 .SS "\fBSlideMotor\fP ^ SlideMotor::device = gcnew \fBSlideMotor\fP()\fC [static]\fP"
 
-.SS "bool SlideMotor::manual_activation_enabled = false\fC [static]\fP, \fC [private]\fP"
+.SS "double SlideMotor::H0\fC [private]\fP"
+
+.SS "double SlideMotor::H1\fC [private]\fP"
+
+.SS "bool SlideMotor::idle_positioning = false\fC [static]\fP, \fC [private]\fP"
+
+.SS "double SlideMotor::init_angolo\fC [private]\fP"
+
+.SS "bool SlideMotor::iso_activation_mode\fC [protected]\fP"
 
 .PP
-This is the flag activating the body manual activation\&. 
+Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. 
+.SS "double SlideMotor::last_angolo\fC [private]\fP"
+
 .SS "bool SlideMotor::manual_up_direction = false\fC [static]\fP, \fC [private]\fP"
 
 .PP

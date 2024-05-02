@@ -1,4 +1,4 @@
-.TH "IDLESTATUS" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "IDLESTATUS" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -41,16 +41,29 @@ IDLESTATUS
 .RI "   bool \fBIDLESTATUS::peripherals_connected\fP"
 .br
 .ti -1c
+.RI "   bool \fBIDLESTATUS::alarm\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::warning\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::info\fP"
+.br
+.ti -1c
 .RI "} \fBRegisters\fP"
 .br
 .in -1c
 .SH "Variable Documentation"
 .PP 
+.SS "bool IDLESTATUS::alarm"
+
 .SS "bool IDLESTATUS::aws_connected"
 
 .SS "\fBbatteryStatus\fP IDLESTATUS::battery"
 
 .SS "\fBPCB301::door_options\fP IDLESTATUS::door_status"
+
+.SS "bool IDLESTATUS::info"
 
 .SS "bool IDLESTATUS::peripherals_connected"
 
@@ -59,6 +72,8 @@ IDLESTATUS
 .SS "struct  { \&.\&.\&. }  IDLESTATUS::Registers\fC [static]\fP"
 
 .SS "\fBtubeStatus\fP IDLESTATUS::tube"
+
+.SS "bool IDLESTATUS::warning"
 
 .SH "Author"
 .PP 

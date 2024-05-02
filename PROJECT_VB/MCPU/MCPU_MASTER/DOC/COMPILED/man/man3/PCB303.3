@@ -1,4 +1,4 @@
-.TH "PCB303" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB303" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -59,6 +59,9 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static void \fBresetFaults\fP (void)"
 .br
 .RI "In case of collimation fault condition, this function starts a new collimation attempt\&. "
+.ti -1c
+.RI "static bool \fBisValidCollimationFormat\fP (void)"
+.br
 .in -1c
 .in -1c
 .SS "Static Public Attributes"
@@ -113,6 +116,9 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "
 .br
  This enumeration class defines the Indexes of the Parameters Registers  "
+.ti -1c
+.RI "static \fBColliStandardSelections\fP \fBgetColliFormatIndexFromParam\fP (System::String^ param)"
+.br
 .in -1c
 .in +1c
 .ti -1c
@@ -168,6 +174,9 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "bool \fBconfigurationLoop\fP (void) override"
 .br
 .RI "This is the Base Class override function to handle the device configuration\&. "
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
+.br
 .ti -1c
 .RI "bool \fBupdateStatusRegister\fP (void)"
 .br
@@ -466,6 +475,10 @@ This is the current Left and Right position (if the position is valid)
 .TP
 \fB\fISYSTEM_CURRENT_T_REGISTER \fP\fP
 This is the current Trap position (if the position is valid) 
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBColliStandardSelections\fP PCB303::getColliFormatIndexFromParam (System::String^ param)\fC [inline]\fP, \fC [static]\fP"
+
 .SH "Member Data Documentation"
 .PP 
 .SS "\fBPCB303\fP ^ PCB303::device = gcnew \fBPCB303\fP()\fC [static]\fP"

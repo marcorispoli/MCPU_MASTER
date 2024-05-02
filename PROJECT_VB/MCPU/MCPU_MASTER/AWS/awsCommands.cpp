@@ -477,7 +477,7 @@ void   awsProtocol::EXEC_StartXraySequence(void) {
 
     
     // Tries to start the sequence
-    if (Generator::startExposure()) ackOk();
+    if (ExposureModule::startExposure()) ackOk();
     else {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR;
         pDecodedFrame->errstr = "GENERATOR_ERROR";

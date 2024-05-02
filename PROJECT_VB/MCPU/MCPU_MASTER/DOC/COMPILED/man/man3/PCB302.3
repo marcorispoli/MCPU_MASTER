@@ -1,4 +1,4 @@
-.TH "PCB302" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB302" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,6 +13,24 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .SS "Public Types"
 
 .in +1c
+.ti -1c
+.RI "enum class \fBStatusRegisters\fP { \fBSYSTEM_STATUS_REGISTER\fP = 0, \fBSYSTEM_ERROR_REGISTER\fP, \fBPADDLE_STATUS_REGISTER\fP, \fBRAW_PADDLE_STATUS_REGISTER\fP }"
+.br
+.RI "This is the Device STATUS Register implementation  "
+.ti -1c
+.RI "enum class \fBDataRegisters\fP { \fBPOSITION_LIMIT_DATA_REGISTER\fP = 0, \fBOPTIONS_DATA_REGISTER\fP }"
+.br
+.RI "This is the Device DATA Register implementation  "
+.ti -1c
+.RI "enum class \fBParamRegisters\fP { \fBPOSITION_PARAM_REGISTER\fP = 0, \fBFORCE_CALIBRATION_PARAM_REGISTER\fP, \fBCOMPRESSION_PARAM_REGISTER\fP, \fBUPWARD_PARAM_REGISTER\fP, \fBDOWNWARD_PARAM_REGISTER\fP }"
+.br
+.RI "This is the device protocol Parameters registers implementation  "
+.ti -1c
+.RI "enum class \fBCommandregister\fP { \fBABORT_COMMAND\fP = 0, \fBSET_TRIMMERS_COMMAND\fP, \fBSET_COMPRESSION\fP, \fBSET_UNLOCK\fP }"
+.br
+.RI "
+.br
+ This enumeration class defines the Indexes of the Command Execution "
 .ti -1c
 .RI "enum class \fBpaddleCodes\fP { \fBPADDLE_PROSTHESIS\fP, \fBPADDLE_BIOP2D\fP, \fBPADDLE_BIOP3D\fP, \fBPADDLE_TOMO\fP, \fBPADDLE_24x30_CONTACT\fP, \fBPADDLE_18x24_C_CONTACT\fP, \fBPADDLE_18x24_L_CONTACT\fP, \fBPADDLE_18x24_R_CONTACT\fP, \fBPADDLE_10x24_CONTACT\fP, \fBPADDLE_9x21_MAG\fP, \fBPADDLE_9x9_MAG\fP, \fBPADDLE_D75_MAG\fP, \fBPADDLE_LEN\fP, \fBPADDLE_NOT_DETECTED\fP = PADDLE_LEN }"
 .br
@@ -29,17 +47,48 @@ Inherits \fBCanDeviceProtocol\fP\&.
 
 .in +1c
 .ti -1c
+.RI "static System::String ^ \fBgetPaddleName\fP (\fBpaddleCodes\fP paddle)"
+.br
+.ti -1c
+.RI "static bool \fBisPatientProtection\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPatientProtectionShifted\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetThickness\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetForce\fP (void)"
+.br
+.RI "This function returnrs the current thickness in mm\&. "
+.ti -1c
+.RI "static bool \fBisCompressing\fP (void)"
+.br
+.RI "This function returnrs the current compression force in N\&. "
+.ti -1c
+.RI "static bool \fBgetCompressionActivationStatus\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetMasterEna\fP (bool stat)"
+.br
+.ti -1c
+.RI "static void \fBsetPositionLimit\fP (unsigned short val)"
+.br
+.ti -1c
+.RI "static void \fBsetCompressorUnlock\fP (void)"
+.br
+.RI "This function unlocks the compression\&. "
+.ti -1c
 .RI "static int \fBgetPaddleCollimationFormatIndex\fP (unsigned char paddle_code)"
 .br
 .RI "This function returns the index of the collimation format associated at the paddle\&. "
 .ti -1c
-.RI "static int \fBgetPaddleCode\fP (System::String^ tag)"
+.RI "static \fBpaddleCodes\fP \fBgetPaddleCode\fP (System::String^ tag)"
 .br
-.RI "This function returns the paddle code from the paddle name\&. "
-.ti -1c
-.RI "static System::String ^ \fBgetPaddleName\fP (\fBpaddleCodes\fP paddle)"
+.RI "This function returns the paddle code from the paddle name 
 .br
-.RI "This function returns the name of the paddle\&. "
+ "
 .ti -1c
 .RI "static \fBpaddleCodes\fP \fBgetDetectedPaddleCode\fP (void)"
 .br
@@ -48,17 +97,6 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static int \fBgetDetectedPaddleCollimationFormat\fP (void)"
 .br
 .RI "This function returns he collimation format index associated to the detected paddle\&. "
-.ti -1c
-.RI "static void \fBsetCompressorUnlock\fP (void)"
-.br
-.ti -1c
-.RI "static unsigned short \fBgetThickness\fP (void)"
-.br
-.RI "This function unlocks the compression\&. "
-.ti -1c
-.RI "static unsigned short \fBgetForce\fP (void)"
-.br
-.RI "This function returnrs the current thickness in mm\&. "
 .in -1c
 .SS "Static Public Attributes"
 
@@ -66,37 +104,121 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "static \fBPCB302\fP ^ \fBdevice\fP = gcnew \fBPCB302\fP()"
 .br
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBpaddle_names\fP"
+.br
 .in -1c
 .SS "Protected Member Functions"
 
 .in +1c
 .ti -1c
-.RI "virtual void \fBrunningLoop\fP (void) override"
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
+.br
+.ti -1c
+.RI "bool \fBconfigurationLoop\fP (void) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBhandleSystemStatusRegister\fP (void)"
+.br
+.ti -1c
+.RI "void \fBhandlePaddleStatusRegister\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateEvents\fP (void)"
 .br
 .in -1c
 .SS "Static Private Attributes"
 
 .in +1c
 .ti -1c
-.RI "static const cli::array< System::String^> ^ \fBpaddle_name\fP"
-.br
-.RI "This is the option-tags static array\&. "
-.ti -1c
 .RI "static \fBpaddleCodes\fP \fBdetected_paddle\fP"
 .br
 .RI "This is the current detected paddle\&. "
 .ti -1c
+.RI "static int \fBthickness_correction\fP"
+.br
+.ti -1c
+.RI "static unsigned short \fBcurrent_paddle_position\fP"
+.br
+.RI "Current paddle position\&. "
+.ti -1c
 .RI "static unsigned short \fBbreast_thickness\fP = 0"
 .br
-.RI "Compressed breast thickness in mm\&. "
+.RI "Compressed breast thickness in mm (0 if the compression_on should be false) "
 .ti -1c
 .RI "static unsigned short \fBcompression_force\fP = 0"
 .br
-.RI "Compression force in N\&. "
+.RI "Evaluated compression force ( 0 if the compression_on should be false) "
+.ti -1c
+.RI "static unsigned short \fBcurrent_force\fP = 0"
+.br
+.RI "Force as received from the device\&. "
+.ti -1c
+.RI "static bool \fBdownward_activation_status\fP = false"
+.br
+.RI "A downward activation has been detected\&. "
+.ti -1c
+.RI "static bool \fBcompression_executing\fP = false"
+.br
+.RI "A compression is executing\&. "
+.ti -1c
+.RI "static bool \fBcompression_on\fP = false"
+.br
+.RI "A compression is detected\&. "
+.ti -1c
+.RI "static \fBRegister\fP ^ \fBoptions_data_register\fP = gcnew \fBRegister\fP()"
+.br
+.ti -1c
+.RI "static \fBRegister\fP ^ \fBposition_limit_data_register\fP = gcnew \fBRegister\fP()"
+.br
+.ti -1c
+.RI "static bool \fBpatient_protection_detected\fP = false"
+.br
+.RI "Is set if the patient protection should be detcted\&. "
+.ti -1c
+.RI "static bool \fBpatient_protection_shifted\fP = false"
+.br
+.RI "Is set if the patient protection should be shifted out of standard position\&. "
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Member Enumeration Documentation"
 .PP 
+.SS "enum class \fBPCB302::Commandregister\fP\fC [strong]\fP"
+
+.PP
+
+.br
+ This enumeration class defines the Indexes of the Command Execution 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIABORT_COMMAND \fP\fP
+Abort Command (mandatory as for device protocol) 
+.TP
+\fB\fISET_TRIMMERS_COMMAND \fP\fP
+.TP
+\fB\fISET_COMPRESSION \fP\fP
+.TP
+\fB\fISET_UNLOCK \fP\fP
+.SS "enum class \fBPCB302::DataRegisters\fP\fC [strong]\fP"
+
+.PP
+This is the Device DATA Register implementation  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPOSITION_LIMIT_DATA_REGISTER \fP\fP
+.TP
+\fB\fIOPTIONS_DATA_REGISTER \fP\fP
 .SS "enum class \fBPCB302::paddleCodes\fP\fC [strong]\fP"
 
 .PP
@@ -144,12 +266,71 @@ Paddle D75(MAG) format\&.
 \fB\fIPADDLE_LEN \fP\fP
 .TP
 \fB\fIPADDLE_NOT_DETECTED \fP\fP
+.SS "enum class \fBPCB302::ParamRegisters\fP\fC [strong]\fP"
+
+.PP
+This is the device protocol Parameters registers implementation  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPOSITION_PARAM_REGISTER \fP\fP
+.TP
+\fB\fIFORCE_CALIBRATION_PARAM_REGISTER \fP\fP
+.TP
+\fB\fICOMPRESSION_PARAM_REGISTER \fP\fP
+.TP
+\fB\fIUPWARD_PARAM_REGISTER \fP\fP
+.TP
+\fB\fIDOWNWARD_PARAM_REGISTER \fP\fP
+.SS "enum class \fBPCB302::StatusRegisters\fP\fC [strong]\fP"
+
+.PP
+This is the Device STATUS Register implementation  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISYSTEM_STATUS_REGISTER \fP\fP
+.TP
+\fB\fISYSTEM_ERROR_REGISTER \fP\fP
+
+.PP
+.RS 4
+This is the System Status register index 
+.RE
+.PP
+
+.TP
+\fB\fIPADDLE_STATUS_REGISTER \fP\fP
+.TP
+\fB\fIRAW_PADDLE_STATUS_REGISTER \fP\fP
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "PCB302::PCB302 ()\fC [inline]\fP"
 
 .SH "Member Function Documentation"
 .PP 
+.SS "bool PCB302::configurationLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called by the Base class before to call the \fBrunningLoop()\fP allowing the module to properly configure the device\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB302::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB302::evaluateEvents (void)\fC [private]\fP"
+
+.SS "static bool PCB302::getCompressionActivationStatus (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "\fBPCB302::paddleCodes\fP PCB302::getDetectedPaddleCode (void)\fC [static]\fP"
 
 .PP
@@ -176,10 +357,12 @@ the format index or -1 if no format is available
 
 .PP
 This function returnrs the current thickness in mm\&. 
-.SS "int PCB302::getPaddleCode (System::String^ tag)\fC [static]\fP"
+.SS "\fBPCB302::paddleCodes\fP PCB302::getPaddleCode (System::String^ tag)\fC [static]\fP"
 
 .PP
-This function returns the paddle code from the paddle name\&. This function returns the paddle code from the paddle name
+This function returns the paddle code from the paddle name 
+.br
+ This function returns the paddle code from the paddle name
 .PP
 The Paddle name is a string name describing the Paddle\&.
 .br
@@ -220,77 +403,103 @@ the collimation format or \&.-1 if the paddle is notn a valid paddle
 .RE
 .PP
 
-.SS "System::String PCB302::getPaddleName (\fBpaddleCodes\fP paddle)\fC [static]\fP"
-
-.PP
-This function returns the name of the paddle\&. This function returns the name of the paddle
-.PP
-.PP
-.nf
-NOTE: If the paddle code shouldn't match with any paddle name available\\n
-the function returns a NULLPTR\&. The Application shall check the result before to use it\&. 
-.fi
-.PP
-  
-.PP
-\fBParameters\fP
-.RS 4
-\fIpaddle\fP This is the paddle code
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-The name of the paddle or nullptr if the name is not found
-.RE
-.PP
+.SS "static System::String ^ PCB302::getPaddleName (\fBpaddleCodes\fP paddle)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static unsigned short PCB302::getThickness (void)\fC [inline]\fP, \fC [static]\fP"
 
+.SS "void PCB302::handlePaddleStatusRegister (void)\fC [private]\fP"
+
+.SS "void PCB302::handleSystemStatusRegister (void)\fC [private]\fP"
+
+.SS "static bool PCB302::isCompressing (void)\fC [inline]\fP, \fC [static]\fP"
+
 .PP
-This function unlocks the compression\&. 
+This function returnrs the current compression force in N\&. 
+.SS "static bool PCB302::isPatientProtection (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool PCB302::isPatientProtectionShifted (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "void PCB302::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "static void PCB302::setCompressorUnlock (void)\fC [inline]\fP, \fC [static]\fP"
 
+.PP
+This function unlocks the compression\&. 
+.SS "static void PCB302::setMasterEna (bool stat)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void PCB302::setPositionLimit (unsigned short val)\fC [inline]\fP, \fC [static]\fP"
+
 .SH "Member Data Documentation"
 .PP 
 .SS "unsigned short PCB302::breast_thickness = 0\fC [static]\fP, \fC [private]\fP"
 
 .PP
-Compressed breast thickness in mm\&. 
+Compressed breast thickness in mm (0 if the compression_on should be false) 
+.SS "bool PCB302::compression_executing = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+A compression is executing\&. 
 .SS "unsigned short PCB302::compression_force = 0\fC [static]\fP, \fC [private]\fP"
 
 .PP
-Compression force in N\&. 
+Evaluated compression force ( 0 if the compression_on should be false) 
+.SS "bool PCB302::compression_on = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+A compression is detected\&. 
+.SS "unsigned short PCB302::current_force = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Force as received from the device\&. 
+.SS "unsigned short PCB302::current_paddle_position\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Current paddle position\&. 
 .SS "\fBpaddleCodes\fP PCB302::detected_paddle\fC [static]\fP, \fC [private]\fP"
 
 .PP
 This is the current detected paddle\&. 
 .SS "\fBPCB302\fP ^ PCB302::device = gcnew \fBPCB302\fP()\fC [static]\fP"
 
-.SS "const cli::array<System::String^> ^ PCB302::paddle_name\fC [static]\fP, \fC [private]\fP"
+.SS "bool PCB302::downward_activation_status = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+A downward activation has been detected\&. 
+.SS "\fBRegister\fP ^ PCB302::options_data_register = gcnew \fBRegister\fP()\fC [static]\fP, \fC [private]\fP"
+
+.SS "const cli::array<System::String^> ^ PCB302::paddle_names\fC [static]\fP"
 \fBInitial value:\fP
 .PP
 .nf
-= gcnew cli::array<System::String^>  { 
-        "PADDLE_PROSTHESIS",
-        "PADDLE_BIOP2D", 
-        "PADDLE_BIOP3D", 
-        "PADDLE_TOMO", 
-        "PADDLE_24x30_CONTACT",
-        "PADDLE_18x24_C_CONTACT", 
-        "PADDLE_18x24_L_CONTACT", 
-        "PADDLE_18x24_R_CONTACT", 
-        "PADDLE_10x24_CONTACT", 
-        "PADDLE_9x21_MAG", 
-        "PADDLE_9x9_MAG", 
-        "PADDLE_D75_MAG"
+= gcnew cli::array<System::String^> { 
+        "PROSTHESIS", 
+        "BIOP2D", 
+        "BIOP3D", 
+        "TOMO",
+        "24x30",
+        "18x24C",
+        "18x24L",
+        "18x24R",
+        "10x24 CNT",
+        "9x21 MAG",
+        "9x9 MAG",
+        "D75 MAG",
     }
 .fi
+.SS "bool PCB302::patient_protection_detected = false\fC [static]\fP, \fC [private]\fP"
+
 .PP
-This is the option-tags static array\&. 
+Is set if the patient protection should be detcted\&. 
+.SS "bool PCB302::patient_protection_shifted = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Is set if the patient protection should be shifted out of standard position\&. 
+.SS "\fBRegister\fP ^ PCB302::position_limit_data_register = gcnew \fBRegister\fP()\fC [static]\fP, \fC [private]\fP"
+
+.SS "int PCB302::thickness_correction\fC [static]\fP, \fC [private]\fP"
+
 
 .SH "Author"
 .PP 

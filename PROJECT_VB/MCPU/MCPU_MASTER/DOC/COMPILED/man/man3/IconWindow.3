@@ -1,0 +1,108 @@
+.TH "IconWindow" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IconWindow
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <IconWindow\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBopen\fP (void)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBformInitialization\fP (Image^ img)"
+.br
+.ti -1c
+.RI "void \fBsetContentBackground\fP (Image^ img)"
+.br
+.ti -1c
+.RI "\fBIconWindow\fP (Form^ pp, Image^ img)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~IconWindow\fP ()"
+.br
+.RI "Clean up any resources being used\&.  "
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "System::Void \fBInitializeComponent\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBmainPanel\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&.  "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IconWindow::IconWindow (Form^ pp, Image^ img)\fC [inline]\fP"
+
+.SS "IconWindow::~IconWindow ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Clean up any resources being used\&.  
+.SH "Member Function Documentation"
+.PP 
+.SS "void IconWindow::close (void)"
+
+.SS "void IconWindow::formInitialization (Image^ img)"
+
+.SS "System::Void IconWindow::InitializeComponent ()\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void IconWindow::open (void)"
+
+.SS "void IconWindow::setContentBackground (Image^ img)"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::ComponentModel::Container ^ IconWindow::components\fC [private]\fP"
+
+.PP
+Required designer variable\&.  
+.SS "System::Windows::Forms::Panel ^ IconWindow::mainPanel\fC [private]\fP"
+
+.SS "bool IconWindow::open_status"
+
+.SS "Form ^ IconWindow::parent"
+
+.SS "HWND IconWindow::window"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

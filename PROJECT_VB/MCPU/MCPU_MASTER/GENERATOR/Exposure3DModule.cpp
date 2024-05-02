@@ -14,12 +14,15 @@
 using namespace System::Collections::Generic;
 
 
-ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(void) {
-    System::String^ ExpName = "Exposure 3D Manual>";
+ExposureModule::exposure_completed_errors ExposureModule::man_3d_exposure_procedure(bool demo) {
+    System::String^ ExpName ;
     bool large_focus = true;
     bool detector_synch = true;
     int timeout;
-    ExposureModule::exposure_completed_errors error;
+    exposure_completed_errors error;
+
+    if (demo) ExpName = "Demo Exposure 3D Manual>";
+    else ExpName = "Exposure 3D Manual>";
 
     // Gets the Detector used in the exposure sequence:
     // The Detector determines the maximum integration time allowd and 
@@ -35,36 +38,36 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
         // Tomo not enabled for this detector
         if (max_fps < 1) {
             LogClass::logInFile(ExpName + "Invalid Tomo activation for this detector");
-            return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+            return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
         }
 
         if (max_fps > DetectorConfig::MAX_TOMO_FPS) {
             LogClass::logInFile(ExpName + "Invalid Tomo Configuration file");
-            return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+            return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
         }
 
         if (ExposureModule::getTomoExposure()->tomo_fps > max_fps) {
             LogClass::logInFile(ExpName + "Invalid Tomo FPS");
-            return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+            return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
         }
 
         exposure_time = System::Convert::ToInt16(DetectorConfig::Configuration->getParam(detector_param)[DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_1FPS + (ExposureModule::getTomoExposure()->tomo_fps - 1)]);
     }
     catch (...) {
         LogClass::logInFile(ExpName + "Invalid Detector Parameter ");
-        return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+        return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
    
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here
-    if (!PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false)) {
-        return ExposureModule::exposure_completed_errors::XRAY_FILTER_ERROR;
+    if (!PCB315::setFilterAutoMode(getExposurePulse(0)->filter, false)) {
+        return exposure_completed_errors::XRAY_FILTER_ERROR;
     }
 
     // Tilt preparation in Home
-    if (!ExposureModule::getTomoExposure()->valid) {
-        return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
+    if (!getTomoExposure()->valid) {
+        return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
     // 20s waits for ready condition
@@ -72,12 +75,12 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
     while (!TiltMotor::device->isReady()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         timeout--;
-        if(!timeout) return ExposureModule::exposure_completed_errors::XRAY_TIMEOUT_TILT_IN_HOME;
+        if(!timeout) return exposure_completed_errors::XRAY_TIMEOUT_TILT_IN_HOME;
     }
     
     // Starts the Tilt positioning in Home. Further in the code the Home position is checked 
     if (!TiltMotor::setTarget(TiltMotor::target_options::TOMO_H, 0)) {
-        return ExposureModule::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+        return exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
     }
 
 
@@ -88,17 +91,21 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
     //}
 
     // ------------------------------------------------------------------------------------ > Dynamic collimation mode
+    float pulse_mA;
+    if (!demo) {
 
+        //-------- Setup the 3D pulse using the 3 point approach procedure ---------------------------------------------           
+        error = (exposure_completed_errors)generatorSet3PointDatabank(R2CP::DB_Pulse, true, ExposureModule::getExposurePulse(0)->kV, (ExposureModule::getExposurePulse(0)->mAs / ExposureModule::getTomoExposure()->tomo_samples), ExposureModule::getTomoExposure()->tomo_samples, 25, exposure_time);
+        if (error != exposure_completed_errors::XRAY_NO_ERRORS) {
+            LogClass::logInFile(ExpName + "set3PointDatabank() error");
+            return error;
+        }
 
-    //-------- Setup the 3D pulse using the 3 point approach procedure ---------------------------------------------           
-    error = set3PointDatabank(R2CP::DB_Pulse, true, ExposureModule::getExposurePulse(0)->kV, (ExposureModule::getExposurePulse(0)->mAs / ExposureModule::getTomoExposure()->tomo_samples), ExposureModule::getTomoExposure()->tomo_samples, 25, exposure_time);
-    if (error != ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS) {
-        LogClass::logInFile(ExpName + "set3PointDatabank() error");
-        return error;
+        // Gets the Anodic current selected
+        pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
     }
-
-    // Gets the Anodic current selected
-    float pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+    else pulse_mA = 200;
+    
 
     System::String^ exposure_data_str = ExpName + " ---------------- "; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
@@ -116,55 +123,57 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
     exposure_data_str = "Ramp-Acc:" + ExposureModule::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Ramp-Dec:" + ExposureModule::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
 
+    if (!demo) {
+        // Setup the 3D Databank for Tomo skip pulses
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, getTomoExposure()->tomo_skip);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "Generator_Set_SkipPulse_Databank error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
 
-    // Setup the 3D Databank for Tomo skip pulses
-    R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, ExposureModule::getTomoExposure()->tomo_skip);
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "Generator_Set_SkipPulse_Databank error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
+        // Setup the 3D Mammography procedure    
+        R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Mammography_3D, getTomoExposure()->tomo_samples);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "Patient_SetupProcedureV6 error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
 
-    // Setup the 3D Mammography procedure    
-    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Mammography_3D, ExposureModule::getTomoExposure()->tomo_samples);
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "Patient_SetupProcedureV6 error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
+        // Assignes the Skip-Pulse Databank to the Standard 3D Mammography procedure    
+        R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::ProcId_Standard_Mammography_3D, R2CP::DB_SkipPulse);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "Generator_Assign_SkipPulse_Databank error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
 
-    // Assignes the Skip-Pulse Databank to the Standard 3D Mammography procedure    
-    R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::ProcId_Standard_Mammography_3D, R2CP::DB_SkipPulse);
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "Generator_Assign_SkipPulse_Databank error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
+        // Assignes the Pulse Databank to the Index 2 of the Standard 3D Mammography with AEC procedure    
+        R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Mammography_3D, 1);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "Generator_AssignDbToProc error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
 
-    // Assignes the Pulse Databank to the Index 2 of the Standard 3D Mammography with AEC procedure    
-    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Mammography_3D, 1);
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "Generator_AssignDbToProc error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
+        // Procedure activation
+        LogClass::logInFile(ExpName + " procedure activation");
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate3DProcedurePulse();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "Patient_Activate3DProcedurePulse error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
 
-    // Procedure activation
-    LogClass::logInFile(ExpName + " procedure activation");
-    R2CP::CaDataDicGen::GetInstance()->Patient_Activate3DProcedurePulse();
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "Patient_Activate3DProcedurePulse error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
+        // Clear the active system messages
+        if (!clearSystemMessages()) {
+            LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
 
-    // Clear the active system messages
-    if (!clearSystemMessages()) {
-        LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        // Disables the safety disable RX message    
+        R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(false);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(ExpName + "SystemMessages_SetDisableRx error");
+            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        }
     }
-    
-    // Disables the safety disable RX message    
-    R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(false);
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "SystemMessages_SetDisableRx error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
+   
 
     // Waits the Tilt completion
     timeout = 200;
@@ -179,45 +188,70 @@ ExposureModule::exposure_completed_errors Generator::man_3d_exposure_procedure(v
         return ExposureModule::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
     }
 
-    // Activate the Tube Tomo Scan
-    if (!TiltMotor::activateTomoScan(ExposureModule::getTomoExposure()->tomo_end, ExposureModule::getTomoExposure()->tomo_speed, ExposureModule::getTomoExposure()->tomo_acc, ExposureModule::getTomoExposure()->tomo_dec))  {
-        return ExposureModule::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
-    }
+    if (!demo) {
 
-    // Gets the current generator status
-    R2CP::CaDataDicGen::GetInstance()->Generator_Get_StatusV6();
-    if (!handleCommandProcessedState(nullptr)) {
-        LogClass::logInFile(ExpName + "Generator_Get_StatusV6 error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
-    }
-    unsigned char current_status = R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus;
+        // Activate the Tube Tomo Scan
+        if (!TiltMotor::activateTomoScan(ExposureModule::getTomoExposure()->tomo_end, getTomoExposure()->tomo_speed, getTomoExposure()->tomo_acc, getTomoExposure()->tomo_dec)) {
+            return ExposureModule::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+        }
 
-    // Status not in standby
-    if (current_status != R2CP::Stat_Standby) {
-        LogClass::logInFile(ExpName + "generator not in standby error");
-        return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+        // Status not in StandBy
+        updateGeneratorStatus();
+        if (getGeneratorStatus() != R2CP::Stat_Standby) {
+            LogClass::logInFile(ExpName + "generator not in standby error");
+            return exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+        }
     }
-
+   
     // Checks the filter in position: the filter has been selected early in the generator procedure    
     if (!PCB315::waitForValidFilter()) {
-        return ExposureModule::exposure_completed_errors::XRAY_FILTER_ERROR;
+        return exposure_completed_errors::XRAY_FILTER_ERROR;
     }
 
     // Activate the X-RAY Enable Interface signal on the PCB301 board
     PCB301::set_xray_ena(true);
 
-    error = pulseSequence(ExpName, 15000);
+    if (!demo) {
+        error = (exposure_completed_errors)generatorPulseSequence(ExpName, 15000);
 
-    // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
-    if (large_focus) setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 1);
-    else setExposedData(1, (unsigned char)0, ExposureModule::getExposurePulse(0)->filter, 0);
+        // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
+        if (large_focus) setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 1);
+        else setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 0);
 
+    }
+    else {
+        // Simulation of the preparation:
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+        // Starts the Tomo scan 
+        if (!TiltMotor::setTarget(TiltMotor::target_options::TOMO_E, 0)) return exposure_completed_errors::XRAY_POSITIONING_ERROR;
+
+        int deltat = 1000 / getTomoExposure()->tomo_fps;
+        if (deltat > 200) deltat -= 200;
+        else deltat = 100;
+
+        for (int i = 0; i < getTomoExposure()->tomo_samples; i++) {
+
+            // Xray push button test
+            if (!PCB301::getXrayPushButtonStat())  return exposure_completed_errors::XRAY_BUTTON_RELEASE;
+
+            PCB301::set_activation_buzzer(true);
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            PCB301::set_activation_buzzer(false);
+            std::this_thread::sleep_for(std::chrono::milliseconds(deltat));
+        }
+
+        exposure_pulse^ epulse = ExposureModule::getExposurePulse(0);
+        setExposedPulse(0, gcnew exposure_pulse(epulse->getKv(), epulse->getmAs(), epulse->getFilter()));
+        error = exposure_completed_errors::XRAY_NO_ERRORS;
+    }
+    
     return error;
 
 };
 
-ExposureModule::exposure_completed_errors Generator::aec_3d_exposure_procedure(void) {
+ExposureModule::exposure_completed_errors ExposureModule::aec_3d_exposure_procedure(bool demo) {
     // Set thecommunication error code as general case
-    return ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
+    return exposure_completed_errors::XRAY_NO_ERRORS;
 
 };

@@ -1,4 +1,4 @@
-.TH "ProjectionForm" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ProjectionForm" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -38,11 +38,12 @@ Inherits System::Windows::Forms::Form\&.
 .ti -1c
 .RI "void \fBloadProjections\fP (void)"
 .br
-.ti -1c
-.RI "void \fBformInitialization\fP (void)"
-.br
+.RI "This function assignes the projections into the projection list to the Icons in the page\&. "
 .ti -1c
 .RI "\fBProjectionForm\fP (Form^ pp)"
+.br
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -219,6 +220,8 @@ Clean up any resources being used\&.
 
 .SS "void ProjectionForm::loadProjections (void)"
 
+.PP
+This function assignes the projections into the projection list to the Icons in the page\&. panelNumber is the index of the current icon-page\&. Every Icon Page is coposed of 8 icons\&.
 .SS "void ProjectionForm::NextButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
 
 .SS "void ProjectionForm::OkButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"

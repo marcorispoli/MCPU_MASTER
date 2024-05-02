@@ -1,4 +1,4 @@
-.TH "PCB315_Internal" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Internal" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -59,7 +59,7 @@ PCB315_Internal \- Internal implementation section
 .br
 .RI "This is the current anode temperature in percent of the maximum possible\&. "
 .ti -1c
-.RI "static bool \fBPCB315::tube_high_temp_alarm\fP = false"
+.RI "static bool \fBPCB315::tube_temp_alarm\fP = false"
 .br
 .RI "This is the current tube temperature alarm flag in case of fault detected\&. "
 .ti -1c
@@ -82,6 +82,9 @@ PCB315_Internal \- Internal implementation section
 .RI "void \fBPCB315::resetLoop\fP (void) override"
 .br
 .RI "This is the Base class resetLoop override function\&. "
+.ti -1c
+.RI "void \fBPCB315::demoLoop\fP (void) override"
+.br
 .ti -1c
 .RI "bool \fBPCB315::updateStatusRegister\fP (void)"
 .br
@@ -117,6 +120,13 @@ The routine never exit in the case of communication issues
 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB315::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+DA MODIFICARE----------------------------------------
+.PP
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "\fBPCB315::FilterSlotCodes\fP PCB315::filterAssignment (System::String^ assignment)\fC [static]\fP, \fC [private]\fP"
 
 .PP
@@ -144,7 +154,10 @@ The FilterSlotCodes selection, or \fBFilterSlotCodes::FILTER_INVALID\fP in case 
 .SS "void PCB315::manageFilterSelection (void)\fC [private]\fP"
 
 .PP
-Function handling the Filter selection operations\&. 
+Function handling the Filter selection operations\&. DA MODIFICARE----------------------------------------
+.PP
+.PP
+
 .SS "void PCB315::resetLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -237,7 +250,7 @@ A light activation request is pending\&.
 
 .PP
 This is the current stator temperature in percent of the maximum possible\&. 
-.SS "bool PCB315::tube_high_temp_alarm = false\fC [static]\fP, \fC [private]\fP"
+.SS "bool PCB315::tube_temp_alarm = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
 This is the current tube temperature alarm flag in case of fault detected\&. 

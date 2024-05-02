@@ -1,4 +1,4 @@
-.TH "SystemConfig" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "SystemConfig" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,6 +16,78 @@ SystemConfig
 .br
 .ti -1c
 .RI "literal int \fBFILE_REVISION\fP = 1"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE\fP = 'RUNNING_MODE'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_COMMENT\fP = '[1=Run, 0=Sim]: tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,315,326'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_TILT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_ARM\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_BODY\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_VERTICAL\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_SLIDE\fP = 4"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_PCB301\fP = 5"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_PCB302\fP = 6"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_PCB303\fP = 7"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_PCB304\fP = 8"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_PCB315\fP = 9"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_RUNNING_MODE_PCB326\fP = 10"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_TILT_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_ARM_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_BODY_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_VERTICAL_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_SLIDE_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_PCB301_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_PCB302_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_PCB303_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_PCB304_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_PCB315_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_RUNNING_MODE_PCB326_DEFAULT\fP = '0'"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPARAM_INSTALLATION_NAME\fP = 'INSTALL_NAME'"
@@ -113,6 +185,36 @@ SystemConfig
 .ti -1c
 .RI "literal System::String ^ \fBPARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT\fP = '10001'"
 .br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DEMO_MODE\fP = 'DEMO_MODE'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DEMO_MODE_COMMENT\fP = 'This is the Demo Mode activation '"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_DEMO_MODE_STATUS\fP = 0"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DEMO_MODE_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LOG_DIRECTORY\fP = 'LOG_DIRECTORY'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPPARAM_LOG_DIRECTORY_COMMENT\fP = 'The directory reserved for logs '"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_DIR\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_ENA\fP = 1"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LOG_DIRECTORY_DEFAULT\fP = '\\\\GANTRY_LOGS'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LOG_ENA_DEFAULT\fP = 'ON'"
+.br
 .in -1c
 .SS "Static Public Attributes"
 
@@ -124,38 +226,7 @@ SystemConfig
 .SH "Member Data Documentation"
 .PP 
 .SS "\fBConfigFile\fP ^ SystemConfig::Configuration\fC [static]\fP"
-\fBInitial value:\fP
-.PP
-.nf
-= gcnew ConfigFile(FILENAME, FILE_REVISION,
-        CONFIG_FILE_DESCRIPTOR
-        {
-            CONFIG_FILE_ITEM(PARAM_INSTALLATION_NAME, PARAM_INSTALLATION_NAME_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_INSTALLATION_NAME_TOP_DEFAULT,            
-            }),
 
-            CONFIG_FILE_ITEM(PARAM_PACKAGE, PARAM_PACKAGE_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_PACKAGE_ID_DEFAULT,
-            PARAM_PACKAGE_FW301_DEFAULT, 
-            PARAM_PACKAGE_FW302_DEFAULT,
-            PARAM_PACKAGE_FW303_DEFAULT,
-            PARAM_PACKAGE_FW304_DEFAULT,
-            PARAM_PACKAGE_FW315_DEFAULT,
-            PARAM_PACKAGE_FW326_DEFAULT,
-            PARAM_PACKAGE_FWCAN_DEFAULT,
-            PARAM_PACKAGE_FWGEN_DEFAULT,
-            }),
-         
-            CONFIG_FILE_ITEM(PARAM_AWS_CONNECTIONS, PARAM_AWS_CONNECTIONS_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_AWS_CONNECTIONS_IP_DEFAULT,
-            PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT,
-            PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT,           
-            }),
-
-            
-        }
-    )
-.fi
 .SS "literal int SystemConfig::FILE_REVISION = 1"
 
 .SS "literal System::String ^ SystemConfig::FILENAME = 'SystemInit\&.cnf'"
@@ -176,6 +247,18 @@ SystemConfig
 
 .SS "literal System::String ^ SystemConfig::PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = '10001'"
 
+.SS "literal System::String ^ SystemConfig::PARAM_DEMO_MODE = 'DEMO_MODE'"
+
+.SS "literal System::String ^ SystemConfig::PARAM_DEMO_MODE_COMMENT = 'This is the Demo Mode activation '"
+
+.SS "literal System::String ^ SystemConfig::PARAM_DEMO_MODE_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_DEMO_MODE_STATUS = 0"
+
+.SS "literal int SystemConfig::PARAM_DIR = 0"
+
+.SS "literal int SystemConfig::PARAM_ENA = 1"
+
 .SS "literal System::String ^ SystemConfig::PARAM_INSTALLATION_NAME = 'INSTALL_NAME'"
 
 .SS "literal System::String ^ SystemConfig::PARAM_INSTALLATION_NAME_COMMENT = 'Name of the installation'"
@@ -183,6 +266,12 @@ SystemConfig
 .SS "literal int SystemConfig::PARAM_INSTALLATION_NAME_TOP = 0"
 
 .SS "literal System::String ^ SystemConfig::PARAM_INSTALLATION_NAME_TOP_DEFAULT = 'FACTORY INSTALLATION'"
+
+.SS "literal System::String ^ SystemConfig::PARAM_LOG_DIRECTORY = 'LOG_DIRECTORY'"
+
+.SS "literal System::String ^ SystemConfig::PARAM_LOG_DIRECTORY_DEFAULT = '\\\\GANTRY_LOGS'"
+
+.SS "literal System::String ^ SystemConfig::PARAM_LOG_ENA_DEFAULT = 'ON'"
 
 .SS "literal System::String ^ SystemConfig::PARAM_PACKAGE = 'PACKAGE'"
 
@@ -223,6 +312,56 @@ SystemConfig
 .SS "literal int SystemConfig::PARAM_PACKAGE_ID = 0"
 
 .SS "literal System::String ^ SystemConfig::PARAM_PACKAGE_ID_DEFAULT = '1\&.0'"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE = 'RUNNING_MODE'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_ARM = 1"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_ARM_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_BODY = 2"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_BODY_DEFAULT = '1'"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_COMMENT = '[1=Run, 0=Sim]: tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,315,326'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_PCB301 = 5"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_PCB301_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_PCB302 = 6"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_PCB302_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_PCB303 = 7"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_PCB303_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_PCB304 = 8"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_PCB304_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_PCB315 = 9"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_PCB315_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_PCB326 = 10"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_PCB326_DEFAULT = '0'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_SLIDE = 4"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_SLIDE_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_TILT = 0"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_TILT_DEFAULT = '1'"
+
+.SS "literal int SystemConfig::PARAM_RUNNING_MODE_VERTICAL = 3"
+
+.SS "literal System::String ^ SystemConfig::PARAM_RUNNING_MODE_VERTICAL_DEFAULT = '1'"
+
+.SS "literal System::String ^ SystemConfig::PPARAM_LOG_DIRECTORY_COMMENT = 'The directory reserved for logs '"
 
 
 .SH "Author"

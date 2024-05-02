@@ -125,7 +125,7 @@ void ServiceExposureTool::timerManagement(void) {
 	case EXPTOOL_WAIT_BUTTON:
 		if (PCB301::getXrayPushButtonStat()) {
 
-			if (Generator::startExposure()) {
+			if (ExposureModule::startExposure()) {
 				exposureLog->Text += "BUTTON PRESSED: exposure started\n";
 				exposureStep = EXPTOOL_EXECUTING;
 			}

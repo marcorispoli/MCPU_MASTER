@@ -1,4 +1,4 @@
-.TH "PaddleConfig" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PaddleConfig" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBFILENAME\fP = 'PaddleCalibration\&.cnf'"
 .br
 .ti -1c
-.RI "literal int \fBFILE_REVISION\fP = 1"
+.RI "literal int \fBFILE_REVISION\fP = 2"
 .br
 .ti -1c
 .RI "literal int \fBPADDLE_COLLIMATION\fP = 0"
@@ -33,7 +33,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_PROSTHESIS_COMMENT\fP = 'PADDLE_PROSTHESIS calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_PROSTHESIS_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_PROSTHESIS_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD1\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -48,7 +48,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_BIOP2D_COMMENT\fP = 'PADDLE_BIOP2D calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_BIOP2D_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_BIOP2D_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD2\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_BIOP2D_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -63,7 +63,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_BIOP3D_COMMENT\fP = 'PADDLE_BIOP3D calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_BIOP3D_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_BIOP3D_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD3\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_BIOP3D_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -78,7 +78,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_TOMO_COMMENT\fP = 'PADDLE_TOMO calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_TOMO_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_TOMO_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD4\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_TOMO_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -93,7 +93,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_24x30_CONTACT_COMMENT\fP = 'PADDLE_24x30_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_24x30_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_24x30_CONTACT_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD5\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_24x30_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -108,7 +108,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_18x24_C_CONTACT_COMMENT\fP = 'PADDLE_18x24_C_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD6\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_18x24_C_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -123,7 +123,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_18x24_L_CONTACT_COMMENT\fP = 'PADDLE_18x24_L_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD7\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_18x24_L_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -138,7 +138,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_18x24_R_CONTACT_COMMENT\fP = 'PADDLE_18x24_R_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD8\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_18x24_R_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -153,7 +153,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_10x24_CONTACT_COMMENT\fP = 'PADDLE_10x24_CONTACT calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_10x24_CONTACT_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_10x24_CONTACT_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD9\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_10x24_CONTACT_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -168,7 +168,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_9x9_MAG_COMMENT\fP = 'PADDLE_9x9_MAG calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_9x9_MAG_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_9x9_MAG_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD10\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -183,7 +183,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_9x21_MAG_COMMENT\fP = 'PADDLE_9x21_MAG calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_9x21_MAG_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_9x21_MAG_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD11\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -198,7 +198,7 @@ PaddleConfig
 .RI "literal System::String ^ \fBPARAM_PADDLE_D75_MAG_COMMENT\fP = 'PADDLE_D75_MAG calibration data'"
 .br
 .ti -1c
-.RI "literal System::String ^ \fBPADDLE_D75_MAG_COLLIMATION_DEFAULT\fP = '1'"
+.RI "literal System::String ^ \fBPADDLE_D75_MAG_COLLIMATION_DEFAULT\fP = \fBCollimatorConfig::PARAM_COLLI_STANDARD12\fP"
 .br
 .ti -1c
 .RI "literal System::String ^ \fBPADDLE_D75_MAG_POSITION_OFFSET_DEFAULT\fP = '120'"
@@ -218,59 +218,59 @@ PaddleConfig
 .PP 
 .SS "\fBConfigFile\fP ^ PaddleConfig::Configuration\fC [static]\fP"
 
-.SS "literal int PaddleConfig::FILE_REVISION = 1"
+.SS "literal int PaddleConfig::FILE_REVISION = 2"
 
 .SS "literal System::String ^ PaddleConfig::FILENAME = 'PaddleCalibration\&.cnf'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD9\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_10x24_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD6\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_18x24_C_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD7\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_18x24_L_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD8\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_18x24_R_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD5\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_24x30_CONTACT_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_9x21_MAG_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x21_MAG_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD11\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_9x21_MAG_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_9x9_MAG_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_9x9_MAG_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD10\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_9x9_MAG_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP2D_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP2D_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD2\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_BIOP2D_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_BIOP2D_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP3D_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_BIOP3D_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD3\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_BIOP3D_POSITION_OFFSET_DEFAULT = '120'"
 
@@ -278,7 +278,7 @@ PaddleConfig
 
 .SS "literal int PaddleConfig::PADDLE_COLLIMATION = 0"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_D75_MAG_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_D75_MAG_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD12\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_D75_MAG_POSITION_OFFSET_DEFAULT = '120'"
 
@@ -286,13 +286,13 @@ PaddleConfig
 
 .SS "literal int PaddleConfig::PADDLE_POSITION_OFFSET = 1"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_PROSTHESIS_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_PROSTHESIS_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD1\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT = '120'"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_PROSTHESIS_WEIGHT_DEFAULT = '10'"
 
-.SS "literal System::String ^ PaddleConfig::PADDLE_TOMO_COLLIMATION_DEFAULT = '1'"
+.SS "literal System::String ^ PaddleConfig::PADDLE_TOMO_COLLIMATION_DEFAULT = \fBCollimatorConfig::PARAM_COLLI_STANDARD4\fP"
 
 .SS "literal System::String ^ PaddleConfig::PADDLE_TOMO_POSITION_OFFSET_DEFAULT = '120'"
 

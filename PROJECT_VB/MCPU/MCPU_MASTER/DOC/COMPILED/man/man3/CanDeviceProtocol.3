@@ -1,4 +1,4 @@
-.TH "CanDeviceProtocol" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanDeviceProtocol" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -35,7 +35,7 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "enum class \fBCommandRegisterErrors\fP { \fBCOMMAND_NO_ERROR\fP = 0, \fBCOMMAND_ERROR_BUSY\fP, \fBCOMMAND_ERROR_INVALID_PARAM\fP, \fBCOMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCOMMAND_DEVICE_TMO\fP = 255 }"
 .br
 .ti -1c
-.RI "enum class \fBstatus_options\fP { \fBWAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBWAITING_REVISION\fP, \fBDEVICE_CONFIGURATION\fP, \fBDEVICE_RUNNING\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBstatus_options\fP { \fBWAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBWAITING_REVISION\fP, \fBDEVICE_CONFIGURATION\fP, \fBDEVICE_RUNNING\fP, \fBDEVICE_DEMO\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
 .br
 .ti -1c
 .RI "enum class \fBbootloader_options\fP { \fBBOOTLOADER_NOT_PRESENT\fP = 0, \fBBOOTLOADER_RUNNING\fP = 1, \fBBOOTLOADER_PRESENT\fP = 2, \fBBOOTLOADER_UNCKNOWN_STAT\fP }"
@@ -46,6 +46,13 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .in +1c
 .ti -1c
 .RI "\fBCanDeviceProtocol\fP (unsigned char devid, LPCWSTR devname)"
+.br
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.RI "Standard constructor\&. "
+.ti -1c
+.RI "void \fBdemoMode\fP (void)"
 .br
 .ti -1c
 .RI "void \fBthread_can_rx_callback\fP (unsigned short canid, unsigned char *data, unsigned char len)"
@@ -70,10 +77,19 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "bool \fBwriteParamRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
 .br
 .ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.ti -1c
 .RI "bool \fBwriteDataRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
 .br
 .ti -1c
-.RI "bool \fBisTmo\fP (void)"
+.RI "bool \fBwriteDataRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.ti -1c
+.RI "bool \fBisCommunicationError\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisCommunicationOk\fP (void)"
 .br
 .ti -1c
 .RI "\fBCanDeviceRegister\fP ^ \fBgetRxRegister\fP (void)"
@@ -91,7 +107,7 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "System::String ^ \fBgetBootStatus\fP (void)"
 .br
 .ti -1c
-.RI "bool \fBcommand\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int \fBtmo\fP)"
+.RI "bool \fBcommand\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
 .br
 .ti -1c
 .RI "bool \fBisCommandCompleted\fP (void)"
@@ -99,21 +115,75 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .ti -1c
 .RI "bool \fBisCommandError\fP (void)"
 .br
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
 .in -1c
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "unsigned int \fBsent_messages\fP"
+.RI "double \fBtxrx_time\fP"
 .br
 .ti -1c
-.RI "unsigned int \fBunreceived_messages\fP"
+.RI "bool \fBread_sdo_tmo\fP"
 .br
 .ti -1c
-.RI "unsigned int \fBperc_sent_messages\fP"
+.RI "bool \fBwrite_sdo_tmo\fP"
 .br
 .ti -1c
-.RI "unsigned int \fBperc_unreceived_messages\fP"
+.RI "unsigned long \fBsent_messages\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_5\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_10\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_15\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_20\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_25\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_30\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_xx\fP"
+.br
+.ti -1c
+.RI "double \fBperc5\fP"
+.br
+.ti -1c
+.RI "double \fBperc10\fP"
+.br
+.ti -1c
+.RI "double \fBperc15\fP"
+.br
+.ti -1c
+.RI "double \fBperc20\fP"
+.br
+.ti -1c
+.RI "double \fBperc25\fP"
+.br
+.ti -1c
+.RI "double \fBperc30\fP"
+.br
+.ti -1c
+.RI "double \fBpercXX\fP"
+.br
+.ti -1c
+.RI "double \fBmeanTime\fP"
+.br
+.ti -1c
+.RI "double \fBpercMeanTime\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBunreceived_messages\fP"
 .br
 .in -1c
 .SS "Static Public Attributes"
@@ -128,6 +198,9 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .in +1c
 .ti -1c
 .RI "virtual void \fBrunningLoop\fP (void)"
+.br
+.ti -1c
+.RI "virtual void \fBdemoLoop\fP (void)"
 .br
 .ti -1c
 .RI "virtual void \fBresetLoop\fP (void)"
@@ -167,6 +240,12 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .br
 .ti -1c
 .RI "unsigned short \fBdevice_id\fP"
+.br
+.ti -1c
+.RI "bool \fBsimulator_mode\fP"
+.br
+.ti -1c
+.RI "bool \fBrun\fP"
 .br
 .ti -1c
 .RI "HANDLE \fBrxEvent\fP"
@@ -213,7 +292,7 @@ Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\f
 .RI "unsigned char \fBbootloader_status\fP"
 .br
 .ti -1c
-.RI "bool \fBtmo\fP"
+.RI "bool \fBcommunication_error\fP"
 .br
 .ti -1c
 .RI "bool \fBrxOk\fP"
@@ -369,6 +448,9 @@ The module is Running
 .br
  
 .TP
+\fB\fIDEVICE_DEMO \fP\fP
+Device in Demo mode\&. 
+.TP
 \fB\fILEN \fP\fP
 .TP
 \fB\fIUNDEF \fP\fP
@@ -383,7 +465,13 @@ The module is Running
 .SS "bool CanDeviceProtocol::configurationLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
+Reimplemented in \fBPCB302\fP, \fBPCB303\fP, \fBPCB315\fP, and \fBPCB326\fP\&.
+.SS "virtual void CanDeviceProtocol::demoLoop (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, and \fBPCB315\fP\&.
+.SS "void CanDeviceProtocol::demoMode (void)\fC [inline]\fP"
+
 .SS "System::String ^ CanDeviceProtocol::getAppRevision (void)\fC [inline]\fP"
 
 .SS "System::String ^ CanDeviceProtocol::getBootRevision (void)\fC [inline]\fP"
@@ -400,7 +488,11 @@ Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
 
 .SS "bool CanDeviceProtocol::isCommandError (void)\fC [inline]\fP"
 
-.SS "bool CanDeviceProtocol::isTmo (void)\fC [inline]\fP"
+.SS "bool CanDeviceProtocol::isCommunicationError (void)\fC [inline]\fP"
+
+.SS "bool CanDeviceProtocol::isCommunicationOk (void)\fC [inline]\fP"
+
+.SS "bool CanDeviceProtocol::isSimulatorMode (void)\fC [inline]\fP"
 
 .SS "void CanDeviceProtocol::mainWorker (void)\fC [private]\fP"
 
@@ -416,6 +508,10 @@ Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
 
 .PP
 Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
+.SS "void CanDeviceProtocol::runMode (void)\fC [inline]\fP"
+
+.PP
+Standard constructor\&. 
 .SS "void CanDeviceProtocol::runningLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
@@ -437,7 +533,11 @@ This is the callback to be connected to the CAN reception event\&.  This callbac
 .RE
 .PP
 
+.SS "bool CanDeviceProtocol::writeDataRegister (unsigned char idx, \fBRegister\fP^ reg)\fC [inline]\fP"
+
 .SS "bool CanDeviceProtocol::writeDataRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+
+.SS "bool CanDeviceProtocol::writeParamRegister (unsigned char idx, \fBRegister\fP^ reg)\fC [inline]\fP"
 
 .SS "bool CanDeviceProtocol::writeParamRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
 
@@ -481,6 +581,8 @@ This is the callback to be connected to the CAN reception event\&.  This callbac
 
 .SS "int CanDeviceProtocol::command_tmo\fC [private]\fP"
 
+.SS "bool CanDeviceProtocol::communication_error\fC [private]\fP"
+
 .SS "unsigned short CanDeviceProtocol::device_id\fC [private]\fP"
 
 .SS "bool CanDeviceProtocol::device_reset\fC [private]\fP"
@@ -493,13 +595,31 @@ A Device reset code has been received\&.
 
 .SS "Thread ^ CanDeviceProtocol::main_thread\fC [private]\fP"
 
-.SS "unsigned int CanDeviceProtocol::perc_sent_messages"
+.SS "double CanDeviceProtocol::meanTime"
 
-.SS "unsigned int CanDeviceProtocol::perc_unreceived_messages"
+.SS "double CanDeviceProtocol::perc10"
+
+.SS "double CanDeviceProtocol::perc15"
+
+.SS "double CanDeviceProtocol::perc20"
+
+.SS "double CanDeviceProtocol::perc25"
+
+.SS "double CanDeviceProtocol::perc30"
+
+.SS "double CanDeviceProtocol::perc5"
+
+.SS "double CanDeviceProtocol::percMeanTime"
+
+.SS "double CanDeviceProtocol::percXX"
+
+.SS "bool CanDeviceProtocol::read_sdo_tmo"
 
 .SS "bool CanDeviceProtocol::register_access_fault\fC [protected]\fP"
 
 .SS "int CanDeviceProtocol::register_access_fault_counter\fC [protected]\fP"
+
+.SS "bool CanDeviceProtocol::run\fC [private]\fP"
 
 .SS "bool CanDeviceProtocol::rx_pending\fC [private]\fP"
 
@@ -517,15 +637,33 @@ Received register\&.
 Event object signaled by the receiving callback\&. 
 .SS "bool CanDeviceProtocol::rxOk\fC [private]\fP"
 
-.SS "unsigned int CanDeviceProtocol::sent_messages"
+.SS "unsigned long CanDeviceProtocol::sent_10"
 
-.SS "bool CanDeviceProtocol::tmo\fC [private]\fP"
+.SS "unsigned long CanDeviceProtocol::sent_15"
+
+.SS "unsigned long CanDeviceProtocol::sent_20"
+
+.SS "unsigned long CanDeviceProtocol::sent_25"
+
+.SS "unsigned long CanDeviceProtocol::sent_30"
+
+.SS "unsigned long CanDeviceProtocol::sent_5"
+
+.SS "unsigned long CanDeviceProtocol::sent_messages"
+
+.SS "unsigned long CanDeviceProtocol::sent_xx"
+
+.SS "bool CanDeviceProtocol::simulator_mode\fC [private]\fP"
 
 .SS "\fBCanDeviceRegister\fP ^ CanDeviceProtocol::tx_register\fC [private]\fP"
 
 .PP
 Received register\&. 
-.SS "unsigned int CanDeviceProtocol::unreceived_messages"
+.SS "double CanDeviceProtocol::txrx_time"
+
+.SS "unsigned long CanDeviceProtocol::unreceived_messages"
+
+.SS "bool CanDeviceProtocol::write_sdo_tmo"
 
 
 .SH "Author"

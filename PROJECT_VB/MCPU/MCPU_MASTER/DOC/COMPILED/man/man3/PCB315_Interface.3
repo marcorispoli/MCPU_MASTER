@@ -1,4 +1,4 @@
-.TH "PCB315_Interface" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Interface" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -55,7 +55,7 @@ PCB315_Interface \- Application Interface
 .br
 .RI "Returns the Filter name\&. "
 .ti -1c
-.RI "static void \fBPCB315::setFilterAutoMode\fP (\fBfilterMaterialCodes\fP code)"
+.RI "static bool \fBPCB315::setFilterAutoMode\fP (\fBfilterMaterialCodes\fP code, bool wait_completion)"
 .br
 .RI "This function sets the Auto mode, assigning the filter to be selected\&. "
 .ti -1c
@@ -75,9 +75,19 @@ PCB315_Interface \- Application Interface
 .br
 .RI "This function activates the Mirror Mode and the light (if requested) "
 .ti -1c
+.RI "static bool \fBPCB315::waitForValidFilter\fP (void)"
+.br
+.RI "This function waits that a valid filter is selected\&. "
+.ti -1c
 .RI "static bool \fBPCB315::getPowerLightStatus\fP (void)"
 .br
 .RI "This function returns the current status of the Power light  "
+.ti -1c
+.RI "static bool \fBPCB315::isValidFilterSelected\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBPCB315::isFilterFault\fP (void)"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -259,6 +269,8 @@ The current implemented filter names are:
 .RE
 .PP
 
+.SS "static bool PCB315::isFilterFault (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "static bool PCB315::isTubeAlarm (void)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
@@ -272,13 +284,15 @@ The alarm condition due to temperature
 
 .br
  
+.SS "static bool PCB315::isValidFilterSelected (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "PCB315::PCB315 ()\fC [inline]\fP"
 
 .PP
 \fBPCB315\fP Class constructor\&. The construction initializes several internal variables\&. The constructor call the base class setting the address of the controlled device\&.
 .PP
 As soon as the base class is initialized, the communication process starts and the device is initialized with \fBconfigurationLoop()\fP routine\&.
-.SS "void PCB315::setFilterAutoMode (\fBfilterMaterialCodes\fP code)\fC [static]\fP"
+.SS "bool PCB315::setFilterAutoMode (\fBfilterMaterialCodes\fP code, bool wait_completion)\fC [static]\fP"
 
 .PP
 This function sets the Auto mode, assigning the filter to be selected\&. This function activate the Automatic mode assigning what is the Filter slot to be selected in the Filter device\&.
@@ -338,6 +352,18 @@ Because the light remains active for a limited time, the application can reactiv
 \fBParameters\fP
 .RS 4
 \fIlight\fP request the activation of the light
+.RE
+.PP
+
+.SS "bool PCB315::waitForValidFilter (void)\fC [static]\fP"
+
+.PP
+This function waits that a valid filter is selected\&. This function waits for a maximum of 2\&.5 seconds that a valid filter is selected\&.
+.PP
+The filter shall be selected before to call this function\&.
+.PP
+\fBReturns\fP
+.RS 4
 .RE
 .PP
 

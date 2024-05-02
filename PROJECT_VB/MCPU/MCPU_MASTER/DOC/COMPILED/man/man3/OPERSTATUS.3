@@ -1,4 +1,4 @@
-.TH "OPERSTATUS" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "OPERSTATUS" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,25 +15,6 @@ OPERSTATUS
 .ti -1c
 .RI "struct \fBexposureStatus\fP"
 .br
-.ti -1c
-.RI "struct \fBpaddleStatus\fP"
-.br
-.in -1c
-.SS "Enumerations"
-
-.in +1c
-.ti -1c
-.RI "enum \fBxray_status_t\fP { \fBXRAY_STATUS_NOT_READY\fP = 1, \fBXRAY_STATUS_READY\fP }"
-.br
-.ti -1c
-.RI "enum \fBcompressor_mode_t\fP { \fBCOMPRESSOR_DISABLED\fP = 1, \fBCOMPRESSOR_NOT_DETECTED\fP, \fBCOMPRESSOR_DETECTED\fP }"
-.br
-.ti -1c
-.RI "enum \fBthickness_mode_t\fP { \fBTHICKNESS_DISABLED\fP = 1, \fBTHICKNESS_ENABLED\fP }"
-.br
-.ti -1c
-.RI "enum \fBforce_mode_t\fP { \fBFORCE_DISABLED_NOT_COMPRESSED\fP = 1, \fBFORCE_DISABLED_COMPRESSED\fP, \fBFORCE_ENABLED\fP }"
-.br
 .in -1c
 .SS "Variables"
 
@@ -42,13 +23,7 @@ OPERSTATUS
 .RI "struct {"
 .br
 .ti -1c
-.RI "   \fBpaddleStatus\fP \fBOPERSTATUS::paddle\fP"
-.br
-.ti -1c
 .RI "   \fBcollimatorStatus\fP \fBOPERSTATUS::collimator\fP"
-.br
-.ti -1c
-.RI "   \fBxray_status_t\fP \fBOPERSTATUS::xray_status\fP"
 .br
 .ti -1c
 .RI "   \fBPCB301::door_options\fP \fBOPERSTATUS::door_status\fP"
@@ -63,88 +38,32 @@ OPERSTATUS
 .RI "   bool \fBOPERSTATUS::warning\fP"
 .br
 .ti -1c
+.RI "   bool \fBOPERSTATUS::info\fP"
+.br
+.ti -1c
 .RI "   unsigned char \fBOPERSTATUS::mag_factor\fP"
-.br
-.ti -1c
-.RI "   bool \fBOPERSTATUS::compressor_release\fP"
-.br
-.ti -1c
-.RI "   unsigned char \fBOPERSTATUS::residual_exposures\fP"
-.br
-.ti -1c
-.RI "   bool \fBOPERSTATUS::projectionSelected\fP"
 .br
 .ti -1c
 .RI "} \fBRegisters\fP"
 .br
 .in -1c
-.SH "Enumeration Type Documentation"
-.PP 
-.SS "enum \fBOPERSTATUS::compressor_mode_t\fP"
-
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fICOMPRESSOR_DISABLED \fP\fP
-.TP
-\fB\fICOMPRESSOR_NOT_DETECTED \fP\fP
-.TP
-\fB\fICOMPRESSOR_DETECTED \fP\fP
-.SS "enum \fBOPERSTATUS::force_mode_t\fP"
-
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fIFORCE_DISABLED_NOT_COMPRESSED \fP\fP
-.TP
-\fB\fIFORCE_DISABLED_COMPRESSED \fP\fP
-.TP
-\fB\fIFORCE_ENABLED \fP\fP
-.SS "enum \fBOPERSTATUS::thickness_mode_t\fP"
-
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fITHICKNESS_DISABLED \fP\fP
-.TP
-\fB\fITHICKNESS_ENABLED \fP\fP
-.SS "enum \fBOPERSTATUS::xray_status_t\fP"
-
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fIXRAY_STATUS_NOT_READY \fP\fP
-.TP
-\fB\fIXRAY_STATUS_READY \fP\fP
 .SH "Variable Documentation"
 .PP 
 .SS "bool OPERSTATUS::alarm"
 
 .SS "\fBcollimatorStatus\fP OPERSTATUS::collimator"
 
-.SS "bool OPERSTATUS::compressor_release"
-
 .SS "unsigned char OPERSTATUS::currentPanel"
 
 .SS "\fBPCB301::door_options\fP OPERSTATUS::door_status"
 
+.SS "bool OPERSTATUS::info"
+
 .SS "unsigned char OPERSTATUS::mag_factor"
-
-.SS "\fBpaddleStatus\fP OPERSTATUS::paddle"
-
-.SS "bool OPERSTATUS::projectionSelected"
 
 .SS "struct  { \&.\&.\&. }  OPERSTATUS::Registers\fC [static]\fP"
 
-.SS "unsigned char OPERSTATUS::residual_exposures"
-
 .SS "bool OPERSTATUS::warning"
-
-.SS "\fBxray_status_t\fP OPERSTATUS::xray_status"
 
 .SH "Author"
 .PP 

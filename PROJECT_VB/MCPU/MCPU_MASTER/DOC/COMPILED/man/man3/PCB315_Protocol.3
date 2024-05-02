@@ -1,4 +1,4 @@
-.TH "PCB315_Protocol" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Protocol" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,27 +14,29 @@ PCB315_Protocol \- Protocol Implementation
 .ti -1c
 .RI "#define \fBPCB315_ERROR_BULB_LOW\fP(reg)   (reg\->d2 & 0x1)"
 .br
-.RI "This is the Bulb sensor low level\&. "
-.ti -1c
-.RI "#define \fBPCB315_ERROR_BULB_SHORT\fP(reg)   (reg\->d2 & 0x2)"
+.RI "This is the Bulb sensor low level 
 .br
-.RI "This is the Bulb sensor connetions open\&. "
+ "
 .ti -1c
-.RI "#define \fBPCB315_ERROR_BULB_HIGH\fP(reg)   (reg\->d2 & 0x4)"
+.RI "#define \fBPCB315_ERROR_BULB_HIGH\fP(reg)   (reg\->d2 & 0x2)"
 .br
 .RI "This is the Bulb sensor high temperature\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_BULB_SHORT\fP(reg)   (reg\->d2 & 0x4)"
+.br
+.RI "This is the Bulb sensor connetions open\&. "
 .ti -1c
 .RI "#define \fBPCB315_ERROR_STATOR_LOW\fP(reg)   (reg\->d2 & 0x8)"
 .br
 .RI "This is the Bulb sensor low level\&. "
 .ti -1c
-.RI "#define \fBPCB315_ERROR_STATOR_SHORT\fP(reg)   (reg\->d2 & 0x10)"
-.br
-.RI "This is the Bulb sensor connetions open\&. "
-.ti -1c
-.RI "#define \fBPCB315_ERROR_STATOR_HIGH\fP(reg)   (reg\->d2 & 0x20)"
+.RI "#define \fBPCB315_ERROR_STATOR_HIGH\fP(reg)   (reg\->d2 & 0x10)"
 .br
 .RI "This is the Bulb sensor high temperature\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_STATOR_SHORT\fP(reg)   (reg\->d2 & 0x20)"
+.br
+.RI "This is the Bulb sensor connetions open\&. "
 .ti -1c
 .RI "#define \fBPCB315_ERROR_FILTER_SELECTION\fP(reg)   (reg\->d2 & 0x40)"
 .br
@@ -97,15 +99,17 @@ This section implements the internal module data and structures in order to impl
 
 .SH "Macro Definition Documentation"
 .PP 
-.SS "#define PCB315_ERROR_BULB_HIGH(reg)   (reg\->d2 & 0x4)"
+.SS "#define PCB315_ERROR_BULB_HIGH(reg)   (reg\->d2 & 0x2)"
 
 .PP
 This is the Bulb sensor high temperature\&. 
 .SS "#define PCB315_ERROR_BULB_LOW(reg)   (reg\->d2 & 0x1)"
 
 .PP
-This is the Bulb sensor low level\&. <> 
-.SS "#define PCB315_ERROR_BULB_SHORT(reg)   (reg\->d2 & 0x2)"
+This is the Bulb sensor low level 
+.br
+ <> 
+.SS "#define PCB315_ERROR_BULB_SHORT(reg)   (reg\->d2 & 0x4)"
 
 .PP
 This is the Bulb sensor connetions open\&. 
@@ -113,7 +117,7 @@ This is the Bulb sensor connetions open\&.
 
 .PP
 This is the Filter selection error\&. 
-.SS "#define PCB315_ERROR_STATOR_HIGH(reg)   (reg\->d2 & 0x20)"
+.SS "#define PCB315_ERROR_STATOR_HIGH(reg)   (reg\->d2 & 0x10)"
 
 .PP
 This is the Bulb sensor high temperature\&. 
@@ -121,7 +125,7 @@ This is the Bulb sensor high temperature\&.
 
 .PP
 This is the Bulb sensor low level\&. 
-.SS "#define PCB315_ERROR_STATOR_SHORT(reg)   (reg\->d2 & 0x10)"
+.SS "#define PCB315_ERROR_STATOR_SHORT(reg)   (reg\->d2 & 0x20)"
 
 .PP
 This is the Bulb sensor connetions open\&. 

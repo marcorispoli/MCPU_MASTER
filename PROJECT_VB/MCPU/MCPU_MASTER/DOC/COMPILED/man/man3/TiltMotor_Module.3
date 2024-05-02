@@ -1,0 +1,108 @@
+.TH "TiltMotor_Module" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TiltMotor_Module \- Tilt Motor Module controller
+.PP
+ \- This module implements the Tilt activation requirements\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBTiltMotor\fP"
+.br
+.RI "This is the Tilt Module class implementation"
+.in -1c
+.SH "Detailed Description"
+.PP 
+This module implements the Tilt activation requirements\&. 
+
+
+.SH "Motor Mechanical Assembly setup"
+.PP
+.IP "\(bu" 2
+The Motor Rotation conversion ratio is 1 round -> 1\&.2° rotation;
+.IP "\(bu" 2
+The Motor assembly is equipped with a brake device\&.
+.PP
+.SH "Motor GPIO assignment"
+.PP
+.SS "Digital Inputs"
+.IP "\(bu" 2
+DIGITAL INPUT 1: assigned to the Exp-Win signal;
+.IP "\(bu" 2
+DIGITAL INPUT 2: assigned to the feedback of the brake device activation status;
+.IP "\(bu" 2
+DIGITAL INPUT 3: Homing photocell;
+.IP "\(bu" 2
+DIGITAL INPUT 4: Safety circuit activation feedback;
+.PP
+.SS "Digital Outputs"
+.IP "\(bu" 2
+DIGITAL OUTPUT 1: assigned to the brake unlock;
+.PP
+.PP
+OUTPUT STATUS   BRAKE DEVICE STATUS    1   LOCKED    0   UNLOCKED   
+.SH "General module Specification"
+.PP
+.SS "Position control"
+.IP "\(bu" 2
+The position is set in 0\&.01°/units;
+.IP "\(bu" 2
+The speed is set in 0\&.01°/sec;
+.IP "\(bu" 2
+The Acceleration and deceleration is set in 0\&.01°/sec^2;
+.IP "\(bu" 2
+After the first system startup, the current position is invalidated:
+.IP "  \(bu" 4
+the \fBGantry\fP shall execute a Service/Zero setting procedure to validate the actual position;
+.PP
+
+.IP "\(bu" 2
+The current position is stored in the Motor Configuration File after any activation;
+.IP "  \(bu" 4
+the current position will be retrived from the Motor Configuration File at the system startup (if the zero setting has been executed almost ones)
+.PP
+
+.IP "\(bu" 2
+The position can be activated in Automatic mode or in Tomo mode:
+.IP "  \(bu" 4
+In Automatic mode the motor moves the arm to a defined target;
+.IP "  \(bu" 4
+In Tomo mode the motor moves the arm to a defined target starting when the Digital Input 1 is triggered;
+.PP
+
+.PP
+.PP
+The modules upload a Nano-J program into the Motor driver to handle the Tomo activation mode\&.
+.SS "Manual Motor activation"
+.IP "\(bu" 2
+The module allows to manually activate the motor;
+.IP "\(bu" 2
+The \fBGantry\fP module determines what are the proper input selected for the manual activation:
+.IP "  \(bu" 4
+Gantry::manualMotorActivationIncrease(): causes the activation upward;
+.IP "  \(bu" 4
+Gantry::manualMotorActivationDecrease(): causes the activation downward;
+.PP
+
+.PP
+.PP
+The manual activation is monitored in Idle status\&.
+.PP
+See the \fBGantry\fP module description for details\&.
+.SS "Safety condition detection"
+The module during the activation monitors the system safety conditions\&. The safety conditions are monitored calling the \fBGantry::getSafetyRotationStatus()\fP;
+.PP
+See the \fBGantry\fP module description for details\&.
+.SS "Obstacle detection condition"
+The module during the activation monitors the possible obstacle detection calling the \fBGantry::getObstacleRotationStatus()\fP;
+.PP
+See the \fBGantry\fP module description for details\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

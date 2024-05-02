@@ -1,4 +1,4 @@
-.TH "CANOPEN::CanOpenMotor" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CANOPEN::CanOpenMotor" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -18,11 +18,14 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This enumeration class descibes the internal status condition  "
 .ti -1c
-.RI "enum class \fBMotorCommands\fP { \fBMotorCommands::MOTOR_IDLE\fP = 0, \fBMotorCommands::MOTOR_HOMING\fP, \fBMotorCommands::MOTOR_AUTO_POSITIONING\fP, \fBMotorCommands::MOTOR_MANUAL_POSITIONING\fP }"
+.RI "enum class \fBMotorCommands\fP { \fBMotorCommands::MOTOR_IDLE\fP = 0, \fBMotorCommands::MOTOR_AUTO_HOMING\fP, \fBMotorCommands::MOTOR_MANUAL_HOMING\fP, \fBMotorCommands::MOTOR_EXTERNAL_HOMING\fP, \fBMotorCommands::MOTOR_AUTO_POSITIONING\fP, \fBMotorCommands::MOTOR_MANUAL_POSITIONING\fP, \fBMotorCommands::MOTOR_MANUAL_SERVICE\fP }"
 .br
 .RI "This enumeration class descibes the Command codes "
 .ti -1c
-.RI "enum class \fBMotorCompletedCodes\fP { \fBMotorCompletedCodes::COMMAND_SUCCESS\fP = 0, \fBMotorCompletedCodes::COMMAND_PROCEED\fP = 0, \fBMotorCompletedCodes::COMMAND_MANUAL_TERMINATION\fP, \fBMotorCompletedCodes::MOTOR_ERRORS\fP, \fBMotorCompletedCodes::ERROR_OBSTACLE_DETECTED\fP = MOTOR_ERRORS, \fBMotorCompletedCodes::ERROR_MOTOR_BUSY\fP, \fBMotorCompletedCodes::ERROR_INITIALIZATION\fP, \fBMotorCompletedCodes::ERROR_UNEXPECTED_STATUS\fP, \fBMotorCompletedCodes::ERROR_LIMIT_SWITCH\fP, \fBMotorCompletedCodes::ERROR_BRAKE_DEVICE\fP, \fBMotorCompletedCodes::ERROR_TIMOUT\fP, \fBMotorCompletedCodes::ERROR_INTERNAL_FAULT\fP, \fBMotorCompletedCodes::ERROR_ACCESS_REGISTER\fP, \fBMotorCompletedCodes::ERROR_MISSING_HOME\fP, \fBMotorCompletedCodes::ERROR_COMMAND_DISABLED\fP, \fBMotorCompletedCodes::ERROR_COMMAND_ABORTED\fP }"
+.RI "enum class \fBmotor_rotation_activations\fP { \fBmotor_rotation_activations::MOTOR_NO_ACTIVATION\fP, \fBmotor_rotation_activations::MOTOR_INCREASE\fP, \fBmotor_rotation_activations::MOTOR_DECREASE\fP, \fBmotor_rotation_activations::MOTOR_UNDEFINED\fP }"
+.br
+.ti -1c
+.RI "enum class \fBMotorCompletedCodes\fP { \fBMotorCompletedCodes::COMMAND_SUCCESS\fP = 0, \fBMotorCompletedCodes::COMMAND_PROCEED\fP = 0, \fBMotorCompletedCodes::COMMAND_MANUAL_TERMINATION\fP, \fBMotorCompletedCodes::MOTOR_ERRORS\fP, \fBMotorCompletedCodes::ERROR_OBSTACLE_DETECTED\fP = MOTOR_ERRORS, \fBMotorCompletedCodes::ERROR_MOTOR_BUSY\fP, \fBMotorCompletedCodes::ERROR_INITIALIZATION\fP, \fBMotorCompletedCodes::ERROR_UNEXPECTED_STATUS\fP, \fBMotorCompletedCodes::ERROR_LIMIT_SWITCH\fP, \fBMotorCompletedCodes::ERROR_BRAKE_DEVICE\fP, \fBMotorCompletedCodes::ERROR_TIMOUT\fP, \fBMotorCompletedCodes::ERROR_INTERNAL_FAULT\fP, \fBMotorCompletedCodes::ERROR_ACCESS_REGISTER\fP, \fBMotorCompletedCodes::ERROR_MISSING_HOME\fP, \fBMotorCompletedCodes::ERROR_TARGET_OUT_OF_RANGE\fP, \fBMotorCompletedCodes::ERROR_COMMAND_DISABLED\fP, \fBMotorCompletedCodes::ERROR_COMMAND_ABORTED\fP, \fBMotorCompletedCodes::ERROR_COMMAND_DEMO\fP, \fBMotorCompletedCodes::ERROR_SAFETY\fP, \fBMotorCompletedCodes::ERROR_STARTING_NANOJ\fP, \fBMotorCompletedCodes::ERROR_INVALID_COMMAND\fP }"
 .br
 .RI "This enumeration class descibes the command complete codes  "
 .in -1c
@@ -30,9 +33,15 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 
 .in +1c
 .ti -1c
-.RI "\fBCanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, double gear)"
+.RI "\fBCanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, int \fBmin_position\fP, int \fBmax_position\fP, double gear, double external_k, bool reverse)"
 .br
 .RI "This is the base class constructor\&. "
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.ti -1c
+.RI "void \fBdemoMode\fP (void)"
+.br
 .ti -1c
 .RI "delegate void \fBdelegate_fault_callback\fP (int code)"
 .br
@@ -44,9 +53,25 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
  "
 .ti -1c
-.RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec)"
+.RI "bool \fBactivateRelativePositioning\fP (int id, int target, int speed, int acc, int dec)"
+.br
+.RI "This function starts an automatic relative positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateRelativePositioning\fP (int id, int target)"
+.br
+.RI "This function starts an automatic relative positioning with predefined motor parameters\&. "
+.ti -1c
+.RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec, bool autostart)"
 .br
 .RI "This function starts an automatic positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, bool autostart)"
+.br
+.RI "This function starts an automatic positioning with predefined parameters 
 .br
  "
 .ti -1c
@@ -54,11 +79,29 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This function starts the automatic homing procedure\&. "
 .ti -1c
+.RI "bool \fBactivateExternalHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
+.RI "bool \fBactivateManualHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
 .RI "bool \fBactivateManualPositioning\fP (int target, int speed, int acc, int dec)"
 .br
 .RI "This command activates the manual mootion 
 .br
  "
+.ti -1c
+.RI "bool \fBactivateManualPositioning\fP (int target)"
+.br
+.RI "This command activates the manual mootion with predefined parameters\&. "
+.ti -1c
+.RI "bool \fBactivateManualService\fP (bool increase)"
+.br
+.ti -1c
+.RI "void \fBsetServiceMode\fP (bool stat)"
+.br
 .ti -1c
 .RI "void \fBabortActivation\fP (void)"
 .br
@@ -72,17 +115,16 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This function returns a description string of the internal motor status  "
 .ti -1c
-.RI "System::String ^ \fBgetCompletedCodeString\fP (void)"
-.br
-.RI "This command returns a description string(translated) of the last termination code\&. "
-.ti -1c
 .RI "\fBMotorCompletedCodes\fP \fBgetCommandCompletedCode\fP (void)"
 .br
 .RI "This function returns the last command termination code  "
 .ti -1c
 .RI "bool \fBactivateConfiguration\fP (void)"
 .br
-.RI "This function activates the Driver configuration fase\&. "
+.RI "This function activates the Driver configuration fase  "
+.ti -1c
+.RI "bool \fBisPositionFromExternalSensor\fP (void)"
+.br
 .ti -1c
 .RI "bool \fBisConfigurating\fP (void)"
 .br
@@ -98,7 +140,15 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .ti -1c
 .RI "bool \fBisReady\fP (void)"
 .br
-.RI "This function returns the Ready status\&.  "
+.RI "This function returns true if the module is ready to execute a command\&.  "
+.ti -1c
+.RI "bool \fBisBusy\fP (void)"
+.br
+.RI "This function return true if an executing command is pending  "
+.ti -1c
+.RI "bool \fBisRunning\fP (void)"
+.br
+.RI "This function return true if a command is executing\&. "
 .ti -1c
 .RI "bool \fBisZeroOk\fP (void)"
 .br
@@ -107,6 +157,21 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .RI "int \fBgetCurrentPosition\fP (void)"
 .br
 .RI "This function returns the current encoder position\&.  "
+.ti -1c
+.RI "unsigned short \fBgetExternalSensor\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetExternalPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetEncoderPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetMinPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetMaxPosition\fP (void)"
+.br
 .in -1c
 .SS "Protected Member Functions"
 
@@ -120,17 +185,16 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This function assignes the binary pointer of the nano-j program to be uploaded during the configuration fase\&.  "
 .ti -1c
-.RI "void \fBsetEncoderInitialEvalue\fP (int val)"
-.br
-.RI "This function is used to assignes the inital value of the encoder at the startup  "
-.ti -1c
 .RI "int \fBgetCurrentEncoderEposition\fP (void)"
 .br
 .RI "This function returns the current encoder position in Encoder internal units  "
 .ti -1c
 .RI "int \fBgetCurrentEncoderUposition\fP (void)"
 .br
-.RI "This function returns the current encoder position in user units  "
+.ti -1c
+.RI "int \fBgetCurrentUposition\fP (void)"
+.br
+.RI "This function returns the current user defined position  "
 .ti -1c
 .RI "void \fBsetTargetRange\fP (int h, int l)"
 .br
@@ -172,60 +236,65 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This function writes a part of the control word\&. "
 .ti -1c
-.RI "System::String ^ \fBgetErrorClass1001\fP (unsigned int val)"
+.RI "bool \fBreadControlWord\fP (unsigned int *ctrlw)"
 .br
-.RI "This is a convenient function to decode a Error string from the error of the register 1001\&. "
+.RI "This function reads the control word\&. "
 .ti -1c
-.RI "System::String ^ \fBgetErrorClass1003\fP (unsigned int val)"
+.RI "bool \fBstartRotation\fP (void)"
 .br
-.RI "This is a convenient function to decode a Error Class string from the register 1003\&. "
+.RI "This function starts the motor rotation\&.  "
 .ti -1c
-.RI "System::String ^ \fBgetErrorCode1003\fP (unsigned int val)"
+.RI "bool \fBstartNanoj\fP (void)"
 .br
-.RI "This is a convenient function to decode a Error Code string from the register 1003\&. "
+.RI "This function runs the Nano-J program on the Motor Device  "
 .ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBautomaticPositioningPreparationCallback\fP (void)"
+.RI "bool \fBstopNanoj\fP (void)"
+.br
+.RI "This function stops a running Nano-J program\&. "
+.ti -1c
+.RI "virtual void \fBmotionParameterCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBpreparationCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.RI "This function is called just before to set the speed: if return true, the speed is set to the predefined value\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBrunningCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
 .br
 .RI "This function is called just before to Power the motor phases\&. "
 .ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBautomaticPositioningRunningCallback\fP (void)"
-.br
-.RI "This function is called during the command execution to terminate early the positioning\&. "
-.ti -1c
-.RI "virtual void \fBautomaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP termination_code)"
-.br
-.RI "This function is called when the command is terminated\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBmanualPositioningPreparationCallback\fP (void)"
+.RI "virtual void \fBcompletedCallback\fP (int id, \fBMotorCommands\fP \fBcurrent_command\fP, int current_position, \fBMotorCompletedCodes\fP term_code)"
 .br
 .RI "This function is called just before to Power the motor phases\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBmanualPositioningRunningCallback\fP (void)"
-.br
-.RI "This function is called during the command execution to terminate early the positioning\&. "
-.ti -1c
-.RI "virtual void \fBmanualPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
-.br
-.RI "This function is called when the command is terminated\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBautomaticHomingPreparationCallback\fP (void)"
-.br
-.RI "This function is called just before to Power the motor phases\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBautomaticHomingRunningCallback\fP (void)"
-.br
-.RI "This function is called during the command execution to terminate early the positioning\&. "
-.ti -1c
-.RI "virtual void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
-.br
-.RI "This function is called when the command is terminated\&. "
 .ti -1c
 .RI "virtual \fBMotorCompletedCodes\fP \fBidleCallback\fP (void)"
 .br
+.RI "This function is called just before to Power the motor phases\&. "
 .ti -1c
-.RI "virtual bool \fBinitializeSpecificObjectDictionaryCallback\fP (void)"
+.RI "virtual void \fBfaultCallback\fP (bool errstat, bool data_change, unsigned int \fBerror_class\fP, unsigned int \fBerror_code\fP)"
+.br
+.ti -1c
+.RI "virtual void \fBresetCallback\fP (void)"
+.br
+.RI "Called whenever the boot message is received from the device\&. "
+.ti -1c
+.RI "virtual unsigned short \fBinitializeSpecificObjectDictionaryCallback\fP (void)"
 .br
 .RI "Override this function to initialize specific registers of the target Motor Device\&. "
+.ti -1c
+.RI "virtual bool \fBunbrakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be released\&. "
+.ti -1c
+.RI "virtual bool \fBbrakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be reactivated\&. "
+.ti -1c
+.RI "virtual void \fBdemoLoop\fP (void)"
+.br
+.ti -1c
+.RI "void \fBsetCommandCompleted\fP (\fBMotorCompletedCodes\fP error)"
+.br
 .ti -1c
 .RI "int \fBgetCommandId\fP (void)"
 .br
@@ -234,16 +303,70 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .RI "\fBODRegister\fP ^ \fBgetRxReg\fP (void)"
 .br
 .RI "Returns the pointer of the reception sdo register  "
+.ti -1c
+.RI "void \fBsetSpeed\fP (int val)"
+.br
+.RI "Modifies the assigned command speed (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "void \fBsetAcc\fP (int val)"
+.br
+.RI "Modifies the assigned command acceleration (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "void \fBsetDec\fP (int val)"
+.br
+.RI "Modifies the assigned command deceleration (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "\fBmotor_rotation_activations\fP \fBgetMotorDirection\fP (void)"
+.br
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static System::String ^ \fBgetErrorClass1001\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error string from the error of the register 1001\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetErrorClass1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Class string from the register 1003\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetErrorCode1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Code string from the register 1003\&. "
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBsimulator_mode\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBdevice_id\fP"
+.br
+.RI "This is the target Device Id\&. "
+.ti -1c
+.RI "System::String ^ \fBconfig_param\fP"
+.br
+.RI "Pointer to the parameter in the config parameter 
+.br
+ "
+.ti -1c
+.RI "Notify::messages \fBerror_homing\fP"
+.br
+.ti -1c
+.RI "bool \fBfault_activation\fP"
+.br
 .in -1c
 .SS "Events"
 
 .in +1c
 .ti -1c
-.RI "static \fBdelegate_fault_callback\fP^ \fBfault_event\fP"
+.RI "\fBdelegate_fault_callback\fP^ \fBfault_event\fP"
 .br
 .RI "Event generated when a Driver fault condition is detected\&. "
 .ti -1c
-.RI "static \fBdelegate_command_completed_callback\fP^ \fBcommand_completed_event\fP"
+.RI "\fBdelegate_command_completed_callback\fP^ \fBcommand_completed_event\fP"
 .br
 .RI "Event generated at the command completion\&. "
 .in -1c
@@ -257,6 +380,10 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .SS "Private Member Functions"
 
 .in +1c
+.ti -1c
+.RI "bool \fBupdate_external_position\fP (void)"
+.br
+.RI "read the external sensor and fill the external data "
 .ti -1c
 .RI "void \fBthread_canopen_rx_sdo_callback\fP (unsigned short canid, unsigned char *data, unsigned char len)"
 .br
@@ -304,8 +431,9 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This function handles the CiA_Fault status "
 .ti -1c
-.RI "bool \fBinitResetEncoderCommand\fP (int initial_position)"
+.RI "bool \fBsetEncoderCommand\fP (int eposition)"
 .br
+.RI "This function reset the Encoder internal position to a predefined value\&.  "
 .ti -1c
 .RI "bool \fBinitializeObjectDictionary\fP (void)"
 .br
@@ -332,9 +460,9 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This function updates the current position\&. "
 .ti -1c
-.RI "void \fBsetActivationTimeout\fP (int speed, int acc, int dec, int target)"
+.RI "int \fBgetActivationTimeout\fP (int speed, int acc, int dec, int target)"
 .br
-.RI "This function sets aan activation timeout based on the activation parameters\&. "
+.RI "This function returns the activation timeout extimation, based on the speed and target parameters\&. "
 .ti -1c
 .RI "bool \fBisTarget\fP (void)"
 .br
@@ -343,19 +471,44 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This function executes the Automatic positioning of the motor at the expected target position\&. "
 .ti -1c
+.RI "void \fBmanageManualPositioning\fP (void)"
+.br
+.ti -1c
+.RI "void \fBmanageManualServicePositioning\fP (void)"
+.br
+.ti -1c
 .RI "void \fBmanageAutomaticHoming\fP (void)"
 .br
 .ti -1c
-.RI "void \fBmanageManualPositioning\fP (void)"
+.RI "void \fBmanageManualHoming\fP (int zero_position)"
 .br
+.ti -1c
+.RI "void \fBmanageExternalHoming\fP (int zero_position)"
+.br
+.RI "This function gets the external zero position sensor 
+.br
+ "
 .in -1c
 .SS "Private Attributes"
 
 .in +1c
 .ti -1c
-.RI "unsigned char \fBdevice_id\fP"
+.RI "bool \fBrun\fP"
 .br
-.RI "This is the target Device Id\&. "
+.ti -1c
+.RI "bool \fBreset_node\fP"
+.br
+.ti -1c
+.RI "int \fBmax_position\fP"
+.br
+.RI "This is the maximum target selectable\&. "
+.ti -1c
+.RI "int \fBmin_position\fP"
+.br
+.RI "This is the minimum target selectable\&. "
+.ti -1c
+.RI "bool \fBservice_mode\fP"
+.br
 .ti -1c
 .RI "HANDLE \fBrxSDOEvent\fP"
 .br
@@ -385,16 +538,42 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "This is the current internal motor status\&. "
 .ti -1c
-.RI "int \fBencoder_initial_value\fP"
+.RI "bool \fBhome_initialized\fP"
+.br
+.RI "The device has executed the homing procedure 
+.br
+ "
+.ti -1c
+.RI "bool \fBexternal_position_mode\fP"
 .br
 .ti -1c
-.RI "int \fBcurrent_eposition\fP"
+.RI "unsigned short \fBexternal_raw_position\fP"
 .br
-.RI "This is the value that shall be assigne to the encoder at the startup\&. "
+.RI "The current position is detected with the analog input from an external source (potentiometer) "
 .ti -1c
-.RI "int \fBcurrent_uposition\fP"
+.RI "unsigned short \fBexternal_zero_setting\fP"
+.br
+.RI "Potentiometer value at mechanical zero position\&. "
+.ti -1c
+.RI "int \fBexternal_uposition\fP"
+.br
+.RI "Current user position calculate from the external source\&. "
+.ti -1c
+.RI "float \fBexternal_k_coeff\fP"
+.br
+.RI "user_position/external_raw_position coefficient "
+.ti -1c
+.RI "int \fBencoder_eposition\fP"
+.br
+.RI "Current Encoder position\&. "
+.ti -1c
+.RI "int \fBencoder_uposition\fP"
 .br
 .RI "Current User position\&. "
+.ti -1c
+.RI "bool \fBreverse_direction\fP"
+.br
+.RI "Changes the polarity of the position\&. "
 .ti -1c
 .RI "int \fBprevious_uposition\fP"
 .br
@@ -415,12 +594,6 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .RI "bool \fBnanoj_initialized\fP"
 .br
 .RI "Nano-J program has been intialized\&. "
-.ti -1c
-.RI "bool \fBhome_initialized\fP"
-.br
-.RI "The device has executed the homing procedure 
-.br
- "
 .ti -1c
 .RI "double \fBrot_per_unit\fP"
 .br
@@ -489,7 +662,7 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .ti -1c
 .RI "int \fBcommand_ms_tmo\fP"
 .br
-.RI "Timoeut activation in ms\&. "
+.RI "Timeout activation in ms\&. "
 .ti -1c
 .RI "bool \fBcommand_stop\fP"
 .br
@@ -503,16 +676,75 @@ Inherited by \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP,
 .br
 .RI "Homing method whith zero photocell starting in OFF status\&. "
 .ti -1c
+.RI "bool \fBautostart_mode\fP"
+.br
+.RI "Set to tru if the activation ommand is automatically started\&. "
+.ti -1c
+.RI "\fBmotor_rotation_activations\fP \fBmotor_direction\fP"
+.br
+.RI "The current direction of the motor activation\&. "
+.ti -1c
+.RI "double \fBtxrx_time\fP"
+.br
+.ti -1c
 .RI "bool \fBread_sdo_tmo\fP"
 .br
 .ti -1c
 .RI "bool \fBwrite_sdo_tmo\fP"
 .br
 .ti -1c
-.RI "unsigned int \fBsent_messages\fP"
+.RI "unsigned long \fBsent_messages\fP"
 .br
 .ti -1c
-.RI "unsigned int \fBunreceived_messages\fP"
+.RI "unsigned long \fBsent_5\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_10\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_15\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_20\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_25\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_30\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBsent_xx\fP"
+.br
+.ti -1c
+.RI "double \fBperc5\fP"
+.br
+.ti -1c
+.RI "double \fBperc10\fP"
+.br
+.ti -1c
+.RI "double \fBperc15\fP"
+.br
+.ti -1c
+.RI "double \fBperc20\fP"
+.br
+.ti -1c
+.RI "double \fBperc25\fP"
+.br
+.ti -1c
+.RI "double \fBperc30\fP"
+.br
+.ti -1c
+.RI "double \fBpercXX\fP"
+.br
+.ti -1c
+.RI "double \fBmeanTime\fP"
+.br
+.ti -1c
+.RI "double \fBpercMeanTime\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBunreceived_messages\fP"
 .br
 .in -1c
 .SS "Static Private Attributes"
@@ -581,6 +813,32 @@ This function is called when the CiA402_SwitchedOn status is detected\&.
 
 .PP
 This function handles the SwitchOnDisabled CiA status\&. The module tries to enter the ReadyToSwitchOn from this status  
+.SS "int CanOpenMotor::getActivationTimeout (int speed, int acc, int dec, int target)\fC [private]\fP"
+
+.PP
+This function returns the activation timeout extimation, based on the speed and target parameters\&. The Activation algorithm control the speed with a trapezioidal mode:
+.IP "\(bu" 2
+A constant acceleration until a target speed is reached;
+.IP "\(bu" 2
+A constant speed until a deceleration point is reached;
+.IP "\(bu" 2
+A constant deceleration until a target is reached;
+.PP
+.PP
+The timeout is calculated based on this operating mode
+.PP
+\fBParameters\fP
+.RS 4
+\fIspeed\fP The activation speed in User units
+.br
+\fIacc\fP The activation Acc in user units
+.br
+\fIdec\fP The activation Dec in user units
+.br
+\fItarget\fP The target position in user units
+.RE
+.PP
+
 .SS "\fBCanOpenMotor::_CiA402Status\fP CanOpenMotor::getCiAStatus (int regval)\fC [private]\fP"
 
 .PP
@@ -613,6 +871,8 @@ The String name of the CiA status code
 .RE
 .PP
 
+.SS "\fBmotor_rotation_activations\fP CANOPEN::CanOpenMotor::getMotorDirection (void)\fC [inline]\fP, \fC [protected]\fP"
+
 .SS "bool CanOpenMotor::initializeObjectDictionary (void)\fC [private]\fP"
 
 .PP
@@ -641,8 +901,6 @@ This function initializes the Nanoj program download
 
 .RE
 .PP
-
-.SS "bool CanOpenMotor::initResetEncoderCommand (int initial_position)\fC [private]\fP"
 
 .SS "bool CANOPEN::CanOpenMotor::isTarget (void)\fC [inline]\fP, \fC [private]\fP"
 
@@ -682,7 +940,7 @@ upload the running parameters: speed, acceleration deceleration;
 .IP "\(bu" 2
 Activate the Power to the motor wires;
 .IP "\(bu" 2
-Calls the \fBautomaticPositioningPreparationCallback()\fP;
+Calls the automaticPositioningPreparationCallback();
 .IP "\(bu" 2
 stores the encoder current_position (before to move) in the previous_position variable;
 .PP
@@ -698,7 +956,7 @@ verifies if the current CiA status should be changed: in this case termines with
 .IP "\(bu" 2
 verifies if the activation timeout should expires\&. In this case termines with error;
 .IP "\(bu" 2
-calls the \fBautomaticPositioningRunningCallback()\fP for the subclass management;
+calls the automaticPositioningRunningCallback() for the subclass management;
 .IP "\(bu" 2
 verifies if the target is detected in three possible ways:
 .IP "  \(bu" 4
@@ -716,12 +974,22 @@ The procedure executes the following steps for the command termination:
 .IP "\(bu" 2
 updates the current position;
 .IP "\(bu" 2
-calls the \fBautomaticPositioningCompletedCallback()\fP for the subclass management;
+calls the automaticPositioningCompletedCallback() for the subclass management;
 .IP "\(bu" 2
 exits form the Powered mode to the Idle status (if not in CiA-Fault);
 .PP
 
+.SS "void CanOpenMotor::manageExternalHoming (int zero_position)\fC [private]\fP"
+
+.PP
+This function gets the external zero position sensor 
+.br
+ 
+.SS "void CanOpenMotor::manageManualHoming (int zero_position)\fC [private]\fP"
+
 .SS "void CanOpenMotor::manageManualPositioning (void)\fC [private]\fP"
+
+.SS "void CanOpenMotor::manageManualServicePositioning (void)\fC [private]\fP"
 
 .SS "bool CanOpenMotor::nanojWrite1024Block (int vectorIndex, int block_size)\fC [private]\fP"
 
@@ -740,32 +1008,10 @@ This function Upload a block of 1024 byte into the Motor nanoj Ram Area
 .RE
 .PP
 
-.SS "void CanOpenMotor::setActivationTimeout (int speed, int acc, int dec, int target)\fC [private]\fP"
+.SS "void CANOPEN::CanOpenMotor::setAcc (int val)\fC [inline]\fP, \fC [protected]\fP"
 
 .PP
-This function sets aan activation timeout based on the activation parameters\&. The Activation algorithm control the speed with a trapezioidal mode:
-.IP "\(bu" 2
-A constant acceleration until a target speed is reached;
-.IP "\(bu" 2
-A constant speed until a deceleration point is reached;
-.IP "\(bu" 2
-A constant deceleration until a target is reached;
-.PP
-.PP
-The timeout is calculated based on this operating mode
-.PP
-\fBParameters\fP
-.RS 4
-\fIspeed\fP The activation speed in User units
-.br
-\fIacc\fP The activation Acc in user units
-.br
-\fIdec\fP The activation Dec in user units
-.br
-\fItarget\fP The target position in user units
-.RE
-.PP
-
+Modifies the assigned command acceleration (to be used into the \fBmotionParameterCallback()\fP) 
 .SS "void CanOpenMotor::setCommandCompletedCode (\fBMotorCompletedCodes\fP term_code)\fC [private]\fP"
 
 .PP
@@ -788,6 +1034,32 @@ manualPositioningCompletedCallback: in case of manual command termination
 .RE
 .PP
 
+.SS "void CANOPEN::CanOpenMotor::setDec (int val)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Modifies the assigned command deceleration (to be used into the \fBmotionParameterCallback()\fP) 
+.SS "bool CanOpenMotor::setEncoderCommand (int initial_eposition)\fC [private]\fP"
+
+.PP
+This function reset the Encoder internal position to a predefined value\&.  
+.IP "\(bu" 2
+The function sets the variable 'home_initialized' to TRUE in case of success;
+.IP "\(bu" 2
+The function sets the variable 'home_initialized' to FALSE in case of failure;
+.PP
+.PP
+NOTE: the function returns FALSE only if a communication error happen\&.
+.PP
+\fBReturns\fP
+.RS 4
+true: no communcation errors
+.RE
+.PP
+
+.SS "void CANOPEN::CanOpenMotor::setSpeed (int val)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Modifies the assigned command speed (to be used into the \fBmotionParameterCallback()\fP) 
 .SS "void CanOpenMotor::thread_canopen_bootup_callback (unsigned short canid, unsigned char * data, unsigned char len)\fC [private]\fP"
 
 .PP
@@ -824,6 +1096,10 @@ NOTE: Every motor device subclassing this module receives all the incomimng fram
 .RE
 .PP
 
+.SS "bool CanOpenMotor::update_external_position (void)\fC [private]\fP"
+
+.PP
+read the external sensor and fill the external data 
 .SS "void CanOpenMotor::updateCurrentPosition (void)\fC [private]\fP"
 
 .PP
@@ -865,6 +1141,10 @@ true in case of upload success
 
 .PP
 This flag active causes an immediate command abort\&. 
+.SS "bool CANOPEN::CanOpenMotor::autostart_mode\fC [private]\fP"
+
+.PP
+Set to tru if the activation ommand is automatically started\&. 
 .SS "\fB_CiA402Status\fP CANOPEN::CanOpenMotor::CiA_current_status\fC [private]\fP"
 
 .PP
@@ -896,7 +1176,7 @@ ID code of the requested command\&.
 .SS "int CANOPEN::CanOpenMotor::command_ms_tmo\fC [private]\fP"
 
 .PP
-Timoeut activation in ms\&. 
+Timeout activation in ms\&. 
 .SS "int CANOPEN::CanOpenMotor::command_speed\fC [private]\fP"
 
 .PP
@@ -909,31 +1189,57 @@ Request to stop the current activation\&.
 
 .PP
 Target position in user units\&. 
+.SS "System::String ^ CANOPEN::CanOpenMotor::config_param\fC [protected]\fP"
+
+.PP
+Pointer to the parameter in the config parameter 
+.br
+ 
 .SS "bool CANOPEN::CanOpenMotor::configuration_command\fC [private]\fP"
 
 .SS "\fBMotorCommands\fP CANOPEN::CanOpenMotor::current_command\fC [private]\fP"
 
 .PP
 Current executing command code\&. 
-.SS "int CANOPEN::CanOpenMotor::current_eposition\fC [private]\fP"
-
-.PP
-This is the value that shall be assigne to the encoder at the startup\&. Current Encoder position 
-.SS "int CANOPEN::CanOpenMotor::current_uposition\fC [private]\fP"
-
-.PP
-Current User position\&. 
-.SS "unsigned char CANOPEN::CanOpenMotor::device_id\fC [private]\fP"
+.SS "unsigned char CANOPEN::CanOpenMotor::device_id\fC [protected]\fP"
 
 .PP
 This is the target Device Id\&. 
-.SS "int CANOPEN::CanOpenMotor::encoder_initial_value\fC [private]\fP"
+.SS "int CANOPEN::CanOpenMotor::encoder_eposition\fC [private]\fP"
 
+.PP
+Current Encoder position\&. 
+.SS "int CANOPEN::CanOpenMotor::encoder_uposition\fC [private]\fP"
+
+.PP
+Current User position\&. 
 .SS "unsigned int CANOPEN::CanOpenMotor::error_class\fC [private]\fP"
 
 .SS "unsigned int CANOPEN::CanOpenMotor::error_code\fC [private]\fP"
 
 .SS "bool CANOPEN::CanOpenMotor::error_condition\fC [private]\fP"
+
+.SS "Notify::messages CANOPEN::CanOpenMotor::error_homing\fC [protected]\fP"
+
+.SS "float CANOPEN::CanOpenMotor::external_k_coeff\fC [private]\fP"
+
+.PP
+user_position/external_raw_position coefficient 
+.SS "bool CANOPEN::CanOpenMotor::external_position_mode\fC [private]\fP"
+
+.SS "unsigned short CANOPEN::CanOpenMotor::external_raw_position\fC [private]\fP"
+
+.PP
+The current position is detected with the analog input from an external source (potentiometer) Cureent value of the potentiometer; 
+.SS "int CANOPEN::CanOpenMotor::external_uposition\fC [private]\fP"
+
+.PP
+Current user position calculate from the external source\&. 
+.SS "unsigned short CANOPEN::CanOpenMotor::external_zero_setting\fC [private]\fP"
+
+.PP
+Potentiometer value at mechanical zero position\&. 
+.SS "bool CANOPEN::CanOpenMotor::fault_activation\fC [protected]\fP"
 
 .SS "bool CANOPEN::CanOpenMotor::home_initialized\fC [private]\fP"
 
@@ -947,6 +1253,20 @@ The device has executed the homing procedure
 This is the current internal motor status\&. 
 .SS "Thread ^ CANOPEN::CanOpenMotor::main_thread\fC [private]\fP"
 
+.SS "int CANOPEN::CanOpenMotor::max_position\fC [private]\fP"
+
+.PP
+This is the maximum target selectable\&. 
+.SS "double CANOPEN::CanOpenMotor::meanTime\fC [private]\fP"
+
+.SS "int CANOPEN::CanOpenMotor::min_position\fC [private]\fP"
+
+.PP
+This is the minimum target selectable\&. 
+.SS "\fBmotor_rotation_activations\fP CANOPEN::CanOpenMotor::motor_direction\fC [private]\fP"
+
+.PP
+The current direction of the motor activation\&. 
 .SS "bool CANOPEN::CanOpenMotor::nanoj_initialized\fC [private]\fP"
 
 .PP
@@ -961,6 +1281,22 @@ A SDO reception fdata is pending\&.
 
 .PP
 Object dictionary has been intialized\&. 
+.SS "double CANOPEN::CanOpenMotor::perc10\fC [private]\fP"
+
+.SS "double CANOPEN::CanOpenMotor::perc15\fC [private]\fP"
+
+.SS "double CANOPEN::CanOpenMotor::perc20\fC [private]\fP"
+
+.SS "double CANOPEN::CanOpenMotor::perc25\fC [private]\fP"
+
+.SS "double CANOPEN::CanOpenMotor::perc30\fC [private]\fP"
+
+.SS "double CANOPEN::CanOpenMotor::perc5\fC [private]\fP"
+
+.SS "double CANOPEN::CanOpenMotor::percMeanTime\fC [private]\fP"
+
+.SS "double CANOPEN::CanOpenMotor::percXX\fC [private]\fP"
+
 .SS "const unsigned char* CANOPEN::CanOpenMotor::pNanoj\fC [private]\fP"
 
 .SS "int CANOPEN::CanOpenMotor::previous_uposition\fC [private]\fP"
@@ -973,10 +1309,18 @@ This is the last target position for non coordinate activations\&.
 
 .PP
 Application request command code\&. 
+.SS "bool CANOPEN::CanOpenMotor::reset_node\fC [private]\fP"
+
+.SS "bool CANOPEN::CanOpenMotor::reverse_direction\fC [private]\fP"
+
+.PP
+Changes the polarity of the position\&. 
 .SS "double CANOPEN::CanOpenMotor::rot_per_unit\fC [private]\fP"
 
 .PP
 This is the assigned Rotation/units convertion factor\&. 
+.SS "bool CANOPEN::CanOpenMotor::run\fC [private]\fP"
+
 .SS "unsigned char CANOPEN::CanOpenMotor::rxNanojAck\fC [private]\fP"
 
 .PP
@@ -997,7 +1341,25 @@ SDO receiving data\&.
 
 .PP
 A SDO reception fdata is pending\&. 
-.SS "unsigned int CANOPEN::CanOpenMotor::sent_messages\fC [private]\fP"
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_10\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_15\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_20\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_25\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_30\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_5\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_messages\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::sent_xx\fC [private]\fP"
+
+.SS "bool CANOPEN::CanOpenMotor::service_mode\fC [private]\fP"
+
+.SS "bool CANOPEN::CanOpenMotor::simulator_mode\fC [protected]\fP"
 
 .SS "const cli::array<System::String^> ^ CANOPEN::CanOpenMotor::status_tags = gcnew cli::array<System::String^> { 'NOT CONNECTED', 'CONFIGURATION', 'READY', 'BUSY', 'FAULT'}\fC [static]\fP, \fC [private]\fP"
 
@@ -1009,7 +1371,9 @@ This is the acceptable target range in user units (upper limit)
 
 .PP
 This is the acceptable target range in user units (lower limit) 
-.SS "unsigned int CANOPEN::CanOpenMotor::unreceived_messages\fC [private]\fP"
+.SS "double CANOPEN::CanOpenMotor::txrx_time\fC [private]\fP"
+
+.SS "unsigned long CANOPEN::CanOpenMotor::unreceived_messages\fC [private]\fP"
 
 .SS "bool CANOPEN::CanOpenMotor::write_sdo_tmo\fC [private]\fP"
 

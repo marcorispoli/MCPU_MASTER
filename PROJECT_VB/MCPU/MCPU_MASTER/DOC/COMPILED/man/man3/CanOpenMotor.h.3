@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.h" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.h" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,6 +7,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 .PP
 \fC#include <Windows\&.h>\fP
+.br
+\fC#include 'Log\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
 .br
 
 .SS "Classes"
@@ -47,7 +51,7 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBDRIVER_POLLING_MS\fP   100"
 .br
 .ti -1c
-.RI "#define \fBSEND_TMO\fP   50"
+.RI "#define \fBSEND_TMO\fP   1000"
 .br
 .in -1c
 .SS "Enumerations"
@@ -62,7 +66,7 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .PP 
 .SS "#define DRIVER_POLLING_MS   100"
 
-.SS "#define SEND_TMO   50"
+.SS "#define SEND_TMO   1000"
 
 .SS "#define SPEED_DENOMINATOR   120"
 

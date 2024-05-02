@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.cpp" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.cpp" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,14 +8,35 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .PP
 \fC#include 'CanDriver\&.h'\fP
 .br
+\fC#include 'gantry_global_status\&.h'\fP
+.br
 \fC#include 'Notify\&.h'\fP
 .br
 \fC#include 'CanOpenMotor\&.h'\fP
+.br
+\fC#include 'CalibrationConfig\&.h'\fP
 .br
 \fC#include 'pd4_od\&.h'\fP
 .br
 \fC#include <thread>\fP
 .br
+\fC#include <mutex>\fP
+.br
+\fC#include <chrono>\fP
+.br
+\fC#include 'Log\&.h'\fP
+.br
+
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "static std::mutex \fBinit_mutex\fP"
+.br
+.in -1c
+.SH "Variable Documentation"
+.PP 
+.SS "std::mutex init_mutex\fC [static]\fP"
 
 .SH "Author"
 .PP 

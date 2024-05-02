@@ -6,14 +6,14 @@ using namespace System::Diagnostics;
 using namespace System::Collections::Generic;
 
 
-ExposureModule::exposure_completed_errors Generator::man_ae_exposure_procedure(void) {
+ExposureModule::exposure_completed_errors ExposureModule::man_ae_exposure_procedure(bool demo) {
     // Set thecommunication error code as general case
-    return ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
+    return exposure_completed_errors::XRAY_NO_ERRORS;
 
 };
 
-ExposureModule::exposure_completed_errors Generator::aec_ae_exposure_procedure(void) {
+ExposureModule::exposure_completed_errors ExposureModule::aec_ae_exposure_procedure(bool demo) {
     // Set thecommunication error code as general case
-    return ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
+    return exposure_completed_errors::XRAY_NO_ERRORS;
 
 };

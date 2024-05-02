@@ -415,6 +415,7 @@ namespace R2CP
 
     /// This id the Enumeration code of the GEnerator Internal Status
     typedef enum{
+	   Stat_Invalid = 0,		//!< [0] Invalid or wrong communication
        Stat_Initialization = 1, //!< [1] The Generator is Initializing
        Stat_Standby,            //!< [2] The Generator is in Standby mode
        Stat_Preparation,        //!< [3] The Generator is in Exposure preparation

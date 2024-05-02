@@ -1,4 +1,4 @@
-.TH "awsProtocol" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtocol" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -75,13 +75,17 @@ awsProtocol \- This is the class implementing the AWS Interface Module
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. "
 .ti -1c
-.RI "static void \fBEVENT_XraySequenceCompleted\fP (\fBGenerator::exposure_completed_options\fP code)"
+.RI "static void \fBEVENT_XraySequenceCompleted\fP (void)"
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. "
 .ti -1c
 .RI "static void \fBEVENT_exposurePulseCompleted\fP (unsigned char npulse)"
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. "
+.ti -1c
+.RI "static void \fBEVENT_Poweroff\fP (void)"
+.br
+.RI "This Event is sent to AWS whenever the gantry requestes for a power-off sequence "
 .ti -1c
 .RI "static void \fBEVENT_operatingStatusChange\fP (void)"
 .br

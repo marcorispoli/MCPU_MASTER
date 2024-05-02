@@ -19,7 +19,7 @@
 #include "PCB304.h"
 #include "PCB315.h"
 #include "PCB326.h"
-#include "Generator.h"
+#include "ExposureModule.h"
 #include "Log.h"
 
 
@@ -681,10 +681,10 @@ bool MainForm::Startup_Generator(void) {
 	case 0: 
 
 		if (Gantry::isGeneratorDemo()) {
-			Generator::startSimulatorMode();
+			ExposureModule::getDevice()->startSimulatorMode();
 			return true;
 		}
-		else Generator::startNormalMode();
+		else ExposureModule::getDevice()->startNormalMode();
 
 		// Smart Hub Connection
 		labelShActivity->Text = "WAIT SMART HUB CONNECTION..";
@@ -694,7 +694,7 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 1: // Wait Generator connection
-		if (!Generator::isSmartHubConnected()) break;
+		if (!ExposureModule::getDevice()->isSmartHubConnected()) break;
 		labelShActivity->Text = "CONNECTED AND RUNNING";
 		labelShActivity->ForeColor = Color::LightGreen;
 
@@ -705,7 +705,7 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 2: // Wait Generator setup
-		if (!Generator::isGeneratorConnected()) break;
+		if (!ExposureModule::getDevice()->isGeneratorConnected()) break;
 		labelGeneratorActivity->Text = "WAIT GENERATOR SETUP..";
 		string = "Generator: setup protocol ..";
 		LogClass::logInFile(string);
@@ -713,12 +713,12 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 3: // Wait Clear System Messages
-		if (!Generator::isGeneratorSetupCompleted()) break;		
+		if (!ExposureModule::getDevice()->isGeneratorSetupCompleted()) break;
 		startupSubFase++;
 		break;
 
 	case 4: // Wait Generator Idle
-		if (Generator::isGeneratorIdle()) {
+		if (ExposureModule::getDevice()->isGeneratorIdle()) {
 			labelGeneratorActivity->Text = "CONNECTED AND CONFIGURED";
 			labelGeneratorActivity->ForeColor = Color::LightGreen;
 		}

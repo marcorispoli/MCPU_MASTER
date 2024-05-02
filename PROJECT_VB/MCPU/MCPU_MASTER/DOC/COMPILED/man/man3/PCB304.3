@@ -1,4 +1,4 @@
-.TH "PCB304" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB304" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,6 +10,18 @@ PCB304
 \fC#include <PCB304\&.h>\fP
 .PP
 Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBStatusRegisters\fP { \fBSYSTEM_STATUS_REGISTER\fP = 0 }"
+.br
+.RI "This is the Device STATUS Register implementation  "
+.ti -1c
+.RI "enum class \fBDataRegisters\fP { \fBDISPLAY_DATA_REGISTER\fP = 0, \fBGRID_DATA_REGISTER\fP }"
+.br
+.RI "This is the Device DATA Register implementation  "
+.in -1c
 .SS "Public Member Functions"
 
 .in +1c
@@ -28,9 +40,11 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static System::String ^ \fBgetMagnifierfactorString\fP (void)"
 .br
 .ti -1c
-.RI "static void \fBsetGridOnField\fP (void)"
+.RI "static bool \fBsetGridOnField\fP (bool wait_completion)"
 .br
-.RI "This function set the Grid in Field\&. "
+.ti -1c
+.RI "static bool \fBsetGridOffField\fP (bool wait_completion)"
+.br
 .ti -1c
 .RI "static void \fBsynchGridWithGenerator\fP (bool status)"
 .br
@@ -40,6 +54,9 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This function returns true if the Grid is correctly positioned in Field\&. "
 .ti -1c
+.RI "static bool \fBisGridOffFieldReady\fP (void)"
+.br
+.ti -1c
 .RI "static bool \fBisGridSynchReady\fP (void)"
 .br
 .RI "If the grid has been set to \fBGenerator\fP Synch, the function returns true when the grid is ready to start\&. "
@@ -47,10 +64,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static bool \fBisError\fP (void)"
 .br
 .ti -1c
-.RI "static bool \fBisPatientProtection\fP (void)"
+.RI "static void \fBsetDisplay\fP (bool on_off)"
 .br
 .ti -1c
-.RI "static bool \fBisPatientProtectionShifted\fP (void)"
+.RI "static void \fBsetDisplay\fP (short val, unsigned char decimals, bool blink, unsigned char intensity)"
 .br
 .in -1c
 .SS "Static Public Attributes"
@@ -64,20 +81,15 @@ Inherits \fBCanDeviceProtocol\fP\&.
 
 .in +1c
 .ti -1c
-.RI "virtual void \fBrunningLoop\fP (void) override"
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
 .br
 .in -1c
 .SS "Static Private Attributes"
 
 .in +1c
-.ti -1c
-.RI "static bool \fBpatient_protection_detected\fP = false"
-.br
-.RI "Is set if the patient protection should be detcted\&. "
-.ti -1c
-.RI "static bool \fBpatient_protection_shifted\fP = false"
-.br
-.RI "Is set if the patient protection should be shifted out of standard position\&. "
 .ti -1c
 .RI "static bool \fBmagnifier_device_detected\fP = false"
 .br
@@ -95,6 +107,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This flag stands for grid correctly positioned in Field\&. "
 .ti -1c
+.RI "static bool \fBgrid_off_field_ready\fP = false"
+.br
+.RI "This flag stands for grid correctly positioned out of Field\&. "
+.ti -1c
 .RI "static bool \fBsynch_grid\fP = false"
 .br
 .RI "This flag set the current synch status\&. "
@@ -106,17 +122,73 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static bool \fBerror\fP = false"
 .br
 .RI "The 2D grid is in error condition\&. "
+.ti -1c
+.RI "static bool \fBdisplay_on\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBdisplay_blink\fP = false"
+.br
+.ti -1c
+.RI "static short \fBdisplay_val\fP = 0"
+.br
+.ti -1c
+.RI "static unsigned char \fBdisplay_decimals\fP = 0"
+.br
+.ti -1c
+.RI "static unsigned char \fBdisplay_intensity\fP = 0"
+.br
+.ti -1c
+.RI "static \fBRegister\fP ^ \fBdisplay_data_register\fP = gcnew \fBRegister\fP()"
+.br
+.ti -1c
+.RI "static \fBRegister\fP ^ \fBgrid_data_register\fP = gcnew \fBRegister\fP()"
+.br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB304::DataRegisters\fP\fC [strong]\fP"
+
+.PP
+This is the Device DATA Register implementation  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIDISPLAY_DATA_REGISTER \fP\fP
+.TP
+\fB\fIGRID_DATA_REGISTER \fP\fP
+
+.PP
+.RS 4
+This is the Display Data register index 
+.RE
+.PP
+This is the control of the Grid status 
+.SS "enum class \fBPCB304::StatusRegisters\fP\fC [strong]\fP"
+
+.PP
+This is the Device STATUS Register implementation  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISYSTEM_STATUS_REGISTER \fP\fP
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "PCB304::PCB304 ()\fC [inline]\fP"
 
 .SH "Member Function Documentation"
 .PP 
+.SS "void PCB304::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "static System::String ^ PCB304::getMagnifierfactorString (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static bool PCB304::isError (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool PCB304::isGridOffFieldReady (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static bool PCB304::isGridOnFieldReady (void)\fC [inline]\fP, \fC [static]\fP"
 
@@ -153,26 +225,22 @@ True if the Magnifier device has been detected
 .RE
 .PP
 
-.SS "static bool PCB304::isPatientProtection (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB304::isPatientProtectionShifted (void)\fC [inline]\fP, \fC [static]\fP"
-
 .SS "void PCB304::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
-.SS "static void PCB304::setGridOnField (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "static void PCB304::setDisplay (bool on_off)\fC [inline]\fP, \fC [static]\fP"
 
-.PP
-This function set the Grid in Field\&. The Grid is positioned in field, ready to be used\&.
-.br
-The Grid is positioned in the center of the travel\&.
-.PP
-See the \fBsynchGridWithGenerator()\fP function for details about the grid activation\&.
+.SS "static void PCB304::setDisplay (short val, unsigned char decimals, bool blink, unsigned char intensity)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "bool PCB304::setGridOffField (bool wait_completion)\fC [static]\fP"
+
+.SS "bool PCB304::setGridOnField (bool wait_completion)\fC [static]\fP"
+
 .SS "static void PCB304::synchGridWithGenerator (bool status)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
-This function activates/deactivates the grid synchronizatio with the generator\&. The Grid device moves the grid in home position ready to start: as soon as the X-RAY ON signal is detected, the grid device starts moving\&.
+This function activates/deactivates the grid synchronizatio with the generator\&. The Grid device moves the grid in home position ready to start: as soon as the START_GRID signal is detected, the grid device starts moving\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -186,10 +254,28 @@ This function activates/deactivates the grid synchronizatio with the generator\&
 .PP 
 .SS "\fBPCB304\fP ^ PCB304::device = gcnew \fBPCB304\fP()\fC [static]\fP"
 
+.SS "bool PCB304::display_blink = false\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBRegister\fP ^ PCB304::display_data_register = gcnew \fBRegister\fP()\fC [static]\fP, \fC [private]\fP"
+
+.SS "unsigned char PCB304::display_decimals = 0\fC [static]\fP, \fC [private]\fP"
+
+.SS "unsigned char PCB304::display_intensity = 0\fC [static]\fP, \fC [private]\fP"
+
+.SS "bool PCB304::display_on = false\fC [static]\fP, \fC [private]\fP"
+
+.SS "short PCB304::display_val = 0\fC [static]\fP, \fC [private]\fP"
+
 .SS "bool PCB304::error = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
 The 2D grid is in error condition\&. 
+.SS "\fBRegister\fP ^ PCB304::grid_data_register = gcnew \fBRegister\fP()\fC [static]\fP, \fC [private]\fP"
+
+.SS "bool PCB304::grid_off_field_ready = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This flag stands for grid correctly positioned out of Field\&. 
 .SS "bool PCB304::grid_on_field = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
@@ -210,14 +296,6 @@ Is set if the Magnifier device has been detected\&.
 
 .PP
 This is the current magnification factor detected in string format\&. 
-.SS "bool PCB304::patient_protection_detected = false\fC [static]\fP, \fC [private]\fP"
-
-.PP
-Is set if the patient protection should be detcted\&. 
-.SS "bool PCB304::patient_protection_shifted = false\fC [static]\fP, \fC [private]\fP"
-
-.PP
-Is set if the patient protection should be shifted out of standard position\&. 
 .SS "bool PCB304::synch_grid = false\fC [static]\fP, \fC [private]\fP"
 
 .PP

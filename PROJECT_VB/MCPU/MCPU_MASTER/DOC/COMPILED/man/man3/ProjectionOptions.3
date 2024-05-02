@@ -1,4 +1,4 @@
-.TH "ProjectionOptions" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ProjectionOptions" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,7 +13,7 @@ ProjectionOptions \-
 
 .in +1c
 .ti -1c
-.RI "enum class \fBoptions\fP { \fBLCC\fP = 0, \fBLFB\fP, \fBLISO\fP, \fBLLM\fP, \fBLLMO\fP, \fBLML\fP, \fBLMLO\fP, \fBLSIO\fP, \fBRCC\fP, \fBRFB\fP, \fBRISO\fP, \fBRLM\fP, \fBRLMO\fP, \fBRML\fP, \fBRMLO\fP, \fBRSIO\fP, \fBLCCT\fP, \fBLFBT\fP, \fBLISOT\fP, \fBLLMT\fP, \fBLLMOT\fP, \fBLMLT\fP, \fBLMLOT\fP, \fBLSIOT\fP, \fBRCCT\fP, \fBRFBT\fP, \fBRISOT\fP, \fBRLMT\fP, \fBRLMOT\fP, \fBRMLT\fP, \fBRMLOT\fP, \fBRSIOT\fP, \fBLCCD\fP, \fBLFBD\fP, \fBLISOD\fP, \fBLLMD\fP, \fBLLMOD\fP, \fBLMLD\fP, \fBLMLOD\fP, \fBLSIOD\fP, \fBRCCD\fP, \fBRFBD\fP, \fBRISOD\fP, \fBRLMD\fP, \fBRLMOD\fP, \fBRMLD\fP, \fBRMLOD\fP, \fBRSIOD\fP, \fBLCCB\fP, \fBLFBB\fP, \fBLISOB\fP, \fBLLMB\fP, \fBLLMOB\fP, \fBLMLB\fP, \fBLMLOB\fP, \fBLSIOB\fP, \fBRCCB\fP, \fBRFBB\fP, \fBRISOB\fP, \fBRLMB\fP, \fBRLMOB\fP, \fBRMLB\fP, \fBRMLOB\fP, \fBRSIOB\fP, \fBLCCM\fP, \fBLFBM\fP, \fBLISOM\fP, \fBLLMM\fP, \fBLLMOM\fP, \fBLMLM\fP, \fBLMLOM\fP, \fBLSIOM\fP, \fBRCCM\fP, \fBRFBM\fP, \fBRISOM\fP, \fBRLMM\fP, \fBRLMOM\fP, \fBRMLM\fP, \fBRMLOM\fP, \fBRSIOM\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBoptions\fP { \fBLCC\fP = 0, \fBLFB\fP, \fBLISO\fP, \fBLLM\fP, \fBLLMO\fP, \fBLML\fP, \fBLMLO\fP, \fBLSIO\fP, \fBRCC\fP, \fBRFB\fP, \fBRISO\fP, \fBRLM\fP, \fBRLMO\fP, \fBRML\fP, \fBRMLO\fP, \fBRSIO\fP, \fBLCCT\fP, \fBLFBT\fP, \fBLISOT\fP, \fBLLMT\fP, \fBLLMOT\fP, \fBLMLT\fP, \fBLMLOT\fP, \fBLSIOT\fP, \fBRCCT\fP, \fBRFBT\fP, \fBRISOT\fP, \fBRLMT\fP, \fBRLMOT\fP, \fBRMLT\fP, \fBRMLOT\fP, \fBRSIOT\fP, \fBLCCD\fP, \fBLFBD\fP, \fBLISOD\fP, \fBLLMD\fP, \fBLLMOD\fP, \fBLMLD\fP, \fBLMLOD\fP, \fBLSIOD\fP, \fBRCCD\fP, \fBRFBD\fP, \fBRISOD\fP, \fBRLMD\fP, \fBRLMOD\fP, \fBRMLD\fP, \fBRMLOD\fP, \fBRSIOD\fP, \fBLCCB\fP, \fBLFBB\fP, \fBLISOB\fP, \fBLLMB\fP, \fBLLMOB\fP, \fBLMLB\fP, \fBLMLOB\fP, \fBLSIOB\fP, \fBRCCB\fP, \fBRFBB\fP, \fBRISOB\fP, \fBRLMB\fP, \fBRLMOB\fP, \fBRMLB\fP, \fBRMLOB\fP, \fBRSIOB\fP, \fBLCCM\fP, \fBLFBM\fP, \fBLISOM\fP, \fBLLMM\fP, \fBLLMOM\fP, \fBLMLM\fP, \fBLMLOM\fP, \fBLSIOM\fP, \fBRCCM\fP, \fBRFBM\fP, \fBRISOM\fP, \fBRLMM\fP, \fBRLMOM\fP, \fBRMLM\fP, \fBRMLOM\fP, \fBRSIOM\fP, \fBLEN\fP, \fBUNDEF\fP = LEN, \fBRESERVED_FOR_INIT\fP }"
 .br
 .RI "This is the enumeration option code of the selectable projections\&. "
 .in -1c
@@ -37,6 +37,9 @@ ProjectionOptions \-
 .br
 .ti -1c
 .RI "bool \fBsetList\fP (List< System::String^>^ list)"
+.br
+.ti -1c
+.RI "void \fBclrList\fP (void)"
 .br
 .ti -1c
 .RI "System::String ^ \fBgetCurrentProjectionName\fP (void)"
@@ -273,12 +276,16 @@ This is the enumeration option code of the selectable projections\&.
 \fB\fILEN \fP\fP
 .TP
 \fB\fIUNDEF \fP\fP
+.TP
+\fB\fIRESERVED_FOR_INIT \fP\fP
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "ProjectionOptions::ProjectionOptions ()\fC [inline]\fP"
 
 .SH "Member Function Documentation"
 .PP 
+.SS "void ProjectionOptions::clrList (void)\fC [inline]\fP"
+
 .SS "void ProjectionOptions::clrProjection (void)\fC [inline]\fP"
 
 .SS "static \fBoptions\fP ProjectionOptions::getCode (System::String^ tg)\fC [inline]\fP, \fC [static]\fP"

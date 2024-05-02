@@ -1,8 +1,8 @@
-.TH "Generator" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "Generator" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-Generator \- <>   
+Generator \- This Module class implements the communication and control of the the SHFD Device\&.  
 
 .SH SYNOPSIS
 .br
@@ -11,32 +11,32 @@ Generator \- <>
 \fC#include <Generator\&.h>\fP
 .PP
 Inherits \fBTcpClientCLI\fP\&.
+.PP
+Inherited by \fBExposureModule\fP\&.
 .SS "Public Types"
 
 .in +1c
 .ti -1c
-.RI "enum class \fBexposure_completed_options\fP { \fBXRAY_SUCCESS\fP = 0, \fBXRAY_PARTIAL_DOSE\fP = 1, \fBXRAY_NO_DOSE\fP = 2 }"
+.RI "enum class \fBgenerator_errors\fP { \fBGEN_NO_ERRORS\fP = 0, \fBGEN_INVALID_PROCEDURE\fP, \fBGEN_INVALID_PARAMS\fP, \fBGEN_INVALID_STATUS\fP, \fBGEN_COMMUNICATION_ERROR\fP, \fBGEN_INTERNAL_ERROR\fP, \fBGEN_BUTTON_RELEASE\fP, \fBGEN_TIMEOUT\fP, \fBGEN_LAST_ERRCODE\fP }"
 .br
-.RI "This Enumeration class describes the possible results of an exposure\&. "
-.ti -1c
-.RI "enum class \fBexposure_completed_errors\fP { \fBXRAY_NO_ERRORS\fP = 0, \fBXRAY_INVALID_PROCEDURE\fP, \fBXRAY_COMMUNICATION_ERROR\fP, \fBXRAY_GENERATOR_ERROR\fP, \fBXRAY_BUTTON_RELEASE\fP, \fBXRAY_FILAMENT_ERROR\fP, \fBXRAY_KV_ERROR\fP, \fBXRAY_STARTER_ERROR\fP, \fBXRAY_GRID_ERROR\fP }"
-.br
-.RI "This class enumerates all the possible x-ray error reasons "
+.RI "Self module generation\&. "
 .in -1c
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBGenerator\fP ()"
+.RI "\fBGenerator\fP (void)"
 .br
-.ti -1c
-.RI "delegate void \fBdelegate_xray_complete_callback\fP (\fBexposure_completed_options\fP code)"
-.br
-.RI "This is the delegate of the xr-ray complete event\&. "
 .in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "static void \fBstartNormalMode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBstartSimulatorMode\fP (void)"
+.br
 .ti -1c
 .RI "static bool \fBisSmartHubConnected\fP (void)"
 .br
@@ -44,7 +44,7 @@ Inherits \fBTcpClientCLI\fP\&.
 .RI "static bool \fBisGeneratorConnected\fP (void)"
 .br
 .ti -1c
-.RI "static bool \fBstartExposure\fP (void)"
+.RI "static bool \fBisServiceToolConnected\fP (void)"
 .br
 .ti -1c
 .RI "static bool \fBisGeneratorSetupCompleted\fP (void)"
@@ -53,7 +53,14 @@ Inherits \fBTcpClientCLI\fP\&.
 .RI "static bool \fBisGeneratorIdle\fP (void)"
 .br
 .ti -1c
-.RI "static \fBexposure_completed_errors\fP \fBgetExposureError\fP (void)"
+.RI "static bool \fBisReadyForExosure\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBGenerator\fP ^ \fBdevice\fP = gcnew \fBGenerator\fP()"
 .br
 .in -1c
 .SS "Protected Member Functions"
@@ -64,12 +71,63 @@ Inherits \fBTcpClientCLI\fP\&.
 .br
 .RI "This is the ethernet reception buffer callback\&. "
 .ti -1c
-.RI "void \fBthreadWork\fP (void)"
+.RI "virtual void \fBexposureManagementLoop\fP (bool demo)"
 .br
-.RI "This is the worker thread for the workflow\&. "
+.ti -1c
+.RI "virtual void \fBsetXrayEnable\fP (bool stat)"
+.br
 .ti -1c
 .RI "bool \fBhandleCommandProcessedState\fP (unsigned char *code)"
 .br
+.ti -1c
+.RI "bool \fBclearSystemMessages\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBupdateGeneratorStatus\fP (void)"
+.br
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgeneratorPulseSequence\fP (System::String^ ExpName, int ms_timeout)"
+.br
+.RI "This function controls the generator execution of a single exposure pulse\&. "
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgeneratorSet3PointDatabank\fP (unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse)"
+.br
+.RI "This function load a databank with a 3 point tech to fit the finest mAs required value\&.  "
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static System::String ^ \fBgetGeneratorErrorString\fP (System::String^ errstr)"
+.br
+.RI "This function returns a description strings of the System Message Error\&. "
+.ti -1c
+.RI "static unsigned char \fBgetGeneratorStatus\fP (void)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBthreadWork\fP (void)"
+.br
+.ti -1c
+.RI "void \fBsimulatorWork\fP ()"
+.br
+.ti -1c
+.RI "void \fBerrorLoop\fP (void)"
+.br
+.ti -1c
+.RI "void \fBserviceToolLoop\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBgeneratorIdleLoop\fP (void)"
+.br
+.RI "This function loop handles the \fBGenerator\fP Idle status\&.  "
+.ti -1c
+.RI "bool \fBgeneratorErrorMessagesLoop\fP (void)"
+.br
+.RI "This is the Loop procedure handling the presence of active \fBGenerator\fP System Messages\&. "
 .ti -1c
 .RI "bool \fBconnectionTest\fP (void)"
 .br
@@ -79,73 +137,40 @@ Inherits \fBTcpClientCLI\fP\&.
 .ti -1c
 .RI "bool \fBgeneratorSetup\fP (void)"
 .br
-.ti -1c
-.RI "bool \fBclearSystemMessages\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBgeneratorIdle\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBgeneratorErrorMessagesLoop\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBsetExecutedPulse\fP (\fBExposureModule::exposure_type_options\fP \fBxray_exposure_type\fP)"
-.br
-.RI "This function assignes the kV and mAs of the \fBGenerator\fP executed pulses to the \fBExposureModule::exposed\fP[] pulses\&. "
-.ti -1c
-.RI "bool \fBman_2d_exposure_procedure\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBaec_2d_exposure_procedure\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBman_ae_exposure_procedure\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBaec_ae_exposure_procedure\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBman_3d_exposure_procedure\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBaec_3d_exposure_procedure\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBman_combo_exposure_procedure\fP (void)"
-.br
-.ti -1c
-.RI "bool \fBaec_combo_exposure_procedure\fP (void)"
-.br
 .in -1c
-.SS "Static Protected Member Functions"
+.SS "Static Private Member Functions"
 
 .in +1c
 .ti -1c
 .RI "static short \fBsendCR2CPData\fP (unsigned char *pMessage, unsigned short datalength)"
 .br
-.RI "Self module generation\&. "
+.RI "This is the callback called by the R2CP module 
+.br
+whenever a valid R2CP frame shall be sent to the smart hub "
 .ti -1c
 .RI "static float \fBgetR10Time\fP (float ms, bool next)"
 .br
 .RI "This function returns the closed lower or higher time from the reinard R10 scale\&. "
 .in -1c
-.SS "Protected Attributes"
+.SS "Private Attributes"
 
 .in +1c
 .ti -1c
 .RI "Thread ^ \fBrunning_thread\fP"
 .br
-.RI "This is the worker thread handler\&. "
+.RI "This is the module worker thread handler\&. "
 .in -1c
-.SS "Static Protected Attributes"
+.SS "Static Private Attributes"
 
 .in +1c
 .ti -1c
-.RI "static \fBGenerator\fP ^ \fBgenerator\fP = gcnew \fBGenerator\fP()"
+.RI "static bool \fBsimulator_mode\fP = false"
 .br
+.RI "This is the current real or simulating mode flag\&. "
 .ti -1c
 .RI "static CR2CP_Eth * \fBR2CP_Eth\fP"
 .br
+.RI "This is the Tcp/Ip client connection handler with the smart-hub external software\&. "
 .ti -1c
 .RI "static bool \fBsetup_completed\fP = false"
 .br
@@ -159,123 +184,261 @@ Inherits \fBTcpClientCLI\fP\&.
 .br
 .RI "Ready for exposure\&. "
 .ti -1c
-.RI "static bool \fBxray_processing\fP = false"
+.RI "static unsigned char \fBcurrent_generator_status\fP = 255"
 .br
-.RI "The \fBGenerator\fP is processing a X-RAY sequence\&. "
-.ti -1c
-.RI "static \fBExposureModule::exposure_type_options\fP \fBxray_exposure_type\fP"
-.br
-.ti -1c
-.RI "static \fBexposure_completed_errors\fP \fBxray_exposure_error\fP = \fBexposure_completed_errors::XRAY_NO_ERRORS\fP"
-.br
+.RI "This is the current generator status\&. "
 .in -1c
-.SS "Events"
-
-.in +1c
-.ti -1c
-.RI "static \fBdelegate_xray_complete_callback\fP^ \fBxray_complete_event\fP"
-.br
-.in -1c
+.SS "Additional Inherited Members"
 .SH "Detailed Description"
 .PP 
-<>  
+This Module class implements the communication and control of the the SHFD Device\&. 
+
+This module implements the R2CP protocol interface in order to communicate and control the \fBGenerator\fP Device through the external Smart Hub software\&.
+.PP
+The Feature provided by the module are following described:
+.IP "\(bu" 2
+Simulator Mode: the module can be activated in simulation mode when required;
+.PP
+<> 
+.PP
+
 .SH "Member Enumeration Documentation"
 .PP 
-.SS "enum class \fBGenerator::exposure_completed_errors\fP\fC [strong]\fP"
+.SS "enum class \fBGenerator::generator_errors\fP\fC [strong]\fP"
 
 .PP
-This class enumerates all the possible x-ray error reasons 
+Self module generation\&. 
 .PP
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIXRAY_NO_ERRORS \fP\fP
+\fB\fIGEN_NO_ERRORS \fP\fP
 No error code\&. 
 .TP
-\fB\fIXRAY_INVALID_PROCEDURE \fP\fP
+\fB\fIGEN_INVALID_PROCEDURE \fP\fP
 A not valid procedure has been requested\&. 
 .TP
-\fB\fIXRAY_COMMUNICATION_ERROR \fP\fP
-A generator command is failed\&. 
+\fB\fIGEN_INVALID_PARAMS \fP\fP
+A non valid exposure parameter has been detected\&. 
 .TP
-\fB\fIXRAY_GENERATOR_ERROR \fP\fP
-The generator activated internal error messages\&. 
-.TP
-\fB\fIXRAY_BUTTON_RELEASE \fP\fP
-The X-Ray Button has been released\&. 
-.TP
-\fB\fIXRAY_FILAMENT_ERROR \fP\fP
-The generator detected a Filament error\&. 
-.TP
-\fB\fIXRAY_KV_ERROR \fP\fP
-The generator detected a kV error\&. 
-.TP
-\fB\fIXRAY_STARTER_ERROR \fP\fP
-The generator detected an Anode Starter error condition\&. 
-.TP
-\fB\fIXRAY_GRID_ERROR \fP\fP
-The Grid device is in error condition\&. 
-.SS "enum class \fBGenerator::exposure_completed_options\fP\fC [strong]\fP"
-
-.PP
-This Enumeration class describes the possible results of an exposure\&. 
-.IP "\(bu" 2
-XRAY_SUCCESS: All the expected exposure's pulses has been successfully executed;
-.IP "\(bu" 2
-XRAY_PARTIAL_DOSE: the exposure has been partially executed\&.
-.IP "\(bu" 2
-XRAY_NO_DOSE: The exposure is early terminated without dose released to the patient\&.
-.IP "\(bu" 2
-XRAY_EXECUTING: The X-RAY sequence is still running
-.PP
-
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fIXRAY_SUCCESS \fP\fP
-XRAY sequence successfully completed\&. 
-.TP
-\fB\fIXRAY_PARTIAL_DOSE \fP\fP
-XRAY sequence partially completed\&. 
-.TP
-\fB\fIXRAY_NO_DOSE \fP\fP
-XRAY sequence aborted without dose 
+\fB\fIGEN_INVALID_STATUS \fP\fP
+The generator is in a not expected status 
 .br
  
+.TP
+\fB\fIGEN_COMMUNICATION_ERROR \fP\fP
+A generator command is failed\&. 
+.TP
+\fB\fIGEN_INTERNAL_ERROR \fP\fP
+The generator activated internal error messages\&. 
+.TP
+\fB\fIGEN_BUTTON_RELEASE \fP\fP
+The X-Ray Button has been released\&. 
+.TP
+\fB\fIGEN_TIMEOUT \fP\fP
+Timeout generator sequence 
+.br
+ 
+.TP
+\fB\fIGEN_LAST_ERRCODE \fP\fP
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "Generator::Generator ()"
+.SS "Generator::Generator (void)"
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool Generator::aec_2d_exposure_procedure (void)\fC [protected]\fP"
-
-.SS "bool Generator::aec_3d_exposure_procedure (void)\fC [protected]\fP"
-
-.SS "bool Generator::aec_ae_exposure_procedure (void)\fC [protected]\fP"
-
-.SS "bool Generator::aec_combo_exposure_procedure (void)\fC [protected]\fP"
-
 .SS "bool Generator::clearSystemMessages (void)\fC [protected]\fP"
 
-.SS "bool Generator::connectionTest (void)\fC [protected]\fP"
+.SS "bool Generator::connectionTest (void)\fC [private]\fP"
 
-.SS "delegate void Generator::delegate_xray_complete_callback (\fBexposure_completed_options\fP code)"
+.SS "void Generator::errorLoop (void)\fC [private]\fP"
+
+.SS "virtual void Generator::exposureManagementLoop (bool demo)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-This is the delegate of the xr-ray complete event\&. 
-.SS "bool Generator::generatorErrorMessagesLoop (void)\fC [protected]\fP"
+Reimplemented in \fBExposureModule\fP\&.
+.SS "bool Generator::generatorErrorMessagesLoop (void)\fC [private]\fP"
 
-.SS "bool Generator::generatorIdle (void)\fC [protected]\fP"
+.PP
+This is the Loop procedure handling the presence of active \fBGenerator\fP System Messages\&. The presence of internal system messages in the generator device means that the generator is facing with internal anomalies or invalid status that prevent a correct exposure activation\&.
+.PP
+The Loop procedure calls a Module routine (R2CP::CaDataDicGen::GetInstance()->SystemMessages_Get_AllMessages() ) 
+.br
+ to get all the active messages from the device\&. 
+.br
+ The routine internally filter out a special message that is used to prevent an unwanted exposure procedure and, consequently, is not part of actual malfunctions\&.
+.PP
+The Loop remains alive until no system messages are detected active\&.
+.PP
+The \fBGenerator\fP module in this execution status cannot activate any exposure procedure\&.
+.PP
+The loop activates a dedicated error message in the application:
+.IP "\(bu" 2
+The descriptiono of the current error (errors) in string format is retrived by the sqlite database of the generator software tool set\&.
+.PP
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+False: in case of error in communication with the generator device
+.IP "\(bu" 2
+True: in case of no system messages are present and communication ok; 
+.PP
+.RE
+.PP
 
-.SS "bool Generator::generatorInitialization (void)\fC [protected]\fP"
+.SS "bool Generator::generatorIdleLoop (void)\fC [private]\fP"
 
-.SS "bool Generator::generatorSetup (void)\fC [protected]\fP"
+.PP
+This function loop handles the \fBGenerator\fP Idle status\&.  The \fBGenerator\fP Idle status is a module status where an exposure procedure can be initiated\&.
+.PP
+The \fBGenerator\fP Idle Status is activated as soon after the System Startup and the first \fBGenerator\fP Setup procedure\&.
+.PP
+During the Idle Status:
+.IP "\(bu" 2
+The correct connection with the smart hub is checked;
+.IP "\(bu" 2
+The correct connection with the generator device is checked;
+.IP "\(bu" 2
+The absence of the external \fBGenerator\fP Service Tool software is checked;
+.PP
+.PP
+If any of the previous condition should fail this routine exits and the main thread routine with a new startup sequence will be activated\&.
+.PP
+During the Idle Status, the presence of System Messages is checked:
+.IP "\(bu" 2
+in case of system message presence, the Loop calls the \fBgeneratorErrorMessagesLoop()\fP in order to handle the messages\&.
+.PP
+.PP
+Finally, only if no system messages are present and only if the \fBGenerator\fP internal status should be the R2CP::Stat_Standby,
+.br
+a possible exposure activation procedure can be evaluated (xray_processing variable)\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
 
-.SS "static \fBexposure_completed_errors\fP Generator::getExposureError (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "bool Generator::generatorInitialization (void)\fC [private]\fP"
 
-.SS "static float Generator::getR10Time (float ms, bool next)\fC [inline]\fP, \fC [static]\fP, \fC [protected]\fP"
+.SS "\fBGenerator::generator_errors\fP Generator::generatorPulseSequence (System::String^ ExpName, int ms_timeout)\fC [protected]\fP"
+
+.PP
+This function controls the generator execution of a single exposure pulse\&. The Single Pulse is any pulse composing a complete exposure sequence:
+.br
+.IP "\(bu" 2
+The Manual 2D sequence is composed by only one pulse-Sequence;
+.IP "\(bu" 2
+The AEC 2D sequence is composed by two pulse-Sequences (the pre-pulse and main-pulse);
+.IP "\(bu" 2
+The 3D manual Exposure is composed by only one pulse-Sequence, where the sequence is a multi kv pulse output;
+.IP "\(bu" 2
+The 3D AEC Exposure is composed by two pulse-Sequence ( the pre-pulse and the main train of kv pulses);
+.IP "\(bu" 2
+And so on\&.\&.\&.
+.PP
+.PP
+The procedure:
+.IP "\(bu" 2
+waits to exit from the stand-by before to follow the genratore sequence;
+.IP "\(bu" 2
+follows the generator status changes until the Stand-By or the WaitFootRelease status is detected;
+.PP
+.PP
+The procedure will fail always when:
+.IP "\(bu" 2
+an invalid status is detected;
+.IP "\(bu" 2
+the procedure timeout expires;
+.IP "\(bu" 2
+the x-ray enable signal is released (x-ray push button early release);
+.PP
+.PP
+\fBParameters\fP
+.RS 4
+\fIExpName\fP A string used to log the name of the current exposure sequence
+.br
+\fIms_timeout\fP the timeout assigned to the execution of a pulse in ms
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The procedure returns the \fBExposureModule::exposure_completed_errors::XRAY_NO_ERRORS\fP if csuccessfully completes
+.RE
+.PP
+
+.SS "\fBGenerator::generator_errors\fP Generator::generatorSet3PointDatabank (unsigned char dbId, bool large_focus, float KV, float MAS, int n_pulse, int min_pulse, int max_pulse)\fC [protected]\fP"
+
+.PP
+This function load a databank with a 3 point tech to fit the finest mAs required value\&.  When a decimal value is needed for the mAs (i\&.e\&. 10\&.5 mAs instead of 10 or 11) the 2 point tech cannot be used because this tech can set only integer values\&.
+.PP
+In the case where the decimal part of the mAs should be important (i\&.e\&. in Tomo Exposures) a different approach shall be followed:
+.PP
+The 3 point method allow to set the kV, the Anodic m Amps and the milliseconds of exposure\&. The Anodic current can be controlle with enough accuracy, wheathe the Exposure time can be selected in a discrete range of values in the R10 table\&.
+.PP
+The method consist of the following procedure:
+.IP "\(bu" 2
+The 2 point databank is uploaded into the generator with the mAs in integer format:
+.br
+ this step is necessary to know what is the available anodic current for the kV and mAs range selected;
+.IP "\(bu" 2
+The generator then will assignes the proper anodic current and the integration time requested;
+.IP "\(bu" 2
+The procedure select a new integration time bigger than the one selected by the genrator (in the R10 scale) so that 
+.br
+ it will be possible to use a lower anodic current (a bigger value could not be usable because of Tube limitations);
+.IP "\(bu" 2
+A new anodic current is calculated based on the requested mAs and integration time;
+.IP "\(bu" 2
+A databank with 3 point tech is then uploaded with the new calculated data\&.
+.PP
+.PP
+\fBParameters\fP
+.RS 4
+\fIdbId\fP Databank index
+.br
+\fIlarge_focus\fP true for large focuse, false for small focus
+.br
+\fIKV\fP kV value
+.br
+\fIMAS\fP mAs value
+.br
+\fIn_pulse\fP number of pulses (1 in case of databank for a 2D procedure)
+.br
+\fImin_pulse\fP minimum time for pulse in ms
+.br
+\fImax_pulse\fP maximum pulse time (limited usually by the Max integration time of the Detector )
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBExposureModule::exposure_completed_errors::XRAY_NO_ERRORS\fP for success
+.RE
+.PP
+
+.SS "bool Generator::generatorSetup (void)\fC [private]\fP"
+
+.SS "System::String Generator::getGeneratorErrorString (System::String^ errstr)\fC [static]\fP, \fC [protected]\fP"
+
+.PP
+This function returns a description strings of the System Message Error\&. The whole set of the system messages are stored into an SQLite database file in the OEM/AppData/system_messages\&.sqlite file\&.
+.PP
+This function makes use of the message id code to retrive the message description in a readable string format\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIerrstr\fP This is the message identifier code in string format
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A desciption string of the related system message
+.RE
+.PP
+
+.SS "static unsigned char Generator::getGeneratorStatus (void)\fC [inline]\fP, \fC [static]\fP, \fC [protected]\fP"
+
+.SS "float Generator::getR10Time (float ms, bool next)\fC [static]\fP, \fC [private]\fP"
 
 .PP
 This function returns the closed lower or higher time from the reinard R10 scale\&. The Function returns the next R10 value or the Previous R10 value 
@@ -305,15 +468,11 @@ the requested time of the R10 scale
 
 .SS "static bool Generator::isGeneratorSetupCompleted (void)\fC [inline]\fP, \fC [static]\fP"
 
+.SS "static bool Generator::isReadyForExosure (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "bool Generator::isServiceToolConnected (void)\fC [static]\fP"
+
 .SS "bool Generator::isSmartHubConnected (void)\fC [static]\fP"
-
-.SS "bool Generator::man_2d_exposure_procedure (void)\fC [protected]\fP"
-
-.SS "bool Generator::man_3d_exposure_procedure (void)\fC [protected]\fP"
-
-.SS "bool Generator::man_ae_exposure_procedure (void)\fC [protected]\fP"
-
-.SS "bool Generator::man_combo_exposure_procedure (void)\fC [protected]\fP"
 
 .SS "void Generator::rxData (cli::array< Byte >^ receiveBuffer, int rc)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
@@ -332,12 +491,12 @@ to the R2CP module to be properly processed\&.
 
 .PP
 Reimplemented from \fBTcpClientCLI\fP\&.
-.SS "int16_t Generator::sendCR2CPData (unsigned char * pMessage, unsigned short datalength)\fC [static]\fP, \fC [protected]\fP"
+.SS "int16_t Generator::sendCR2CPData (unsigned char * pMessage, unsigned short datalength)\fC [static]\fP, \fC [private]\fP"
 
 .PP
-Self module generation\&. This is the callback called by the R2CP module 
+This is the callback called by the R2CP module 
 .br
-whenever a valid R2CP frame shall be sent to the smart hub
+whenever a valid R2CP frame shall be sent to the smart hub 
 .PP
 \fBParameters\fP
 .RS 4
@@ -351,63 +510,54 @@ whenever a valid R2CP frame shall be sent to the smart hub
 .RE
 .PP
 
-.SS "bool Generator::setExecutedPulse (\fBExposureModule::exposure_type_options\fP xray_exposure_type)\fC [protected]\fP"
+.SS "void Generator::serviceToolLoop (void)\fC [private]\fP"
+
+.SS "virtual void Generator::setXrayEnable (bool stat)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-This function assignes the kV and mAs of the \fBGenerator\fP executed pulses to the \fBExposureModule::exposed\fP[] pulses\&. The \fBGenerator\fP sequence cumulates the exposure data of the partial pulses into the array of the data bank used\&.
-.PP
-Based on the exposure type, this function takes the proper Data Bank pulse data and reverses its content into the \fBExposureModule\fP pulse array\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIxray_exposure_type\fP 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-.RE
-.PP
+Reimplemented in \fBExposureModule\fP\&.
+.SS "void Generator::simulatorWork (void)\fC [private]\fP"
 
-.SS "bool Generator::startExposure (void)\fC [static]\fP"
+.SS "void Generator::startNormalMode (void)\fC [static]\fP"
 
-.SS "void Generator::threadWork (void)\fC [protected]\fP"
+.SS "void Generator::startSimulatorMode (void)\fC [static]\fP"
 
-.PP
-This is the worker thread for the workflow\&. 
+.SS "void Generator::threadWork (void)\fC [private]\fP"
+
+.SS "bool Generator::updateGeneratorStatus (void)\fC [protected]\fP"
+
 .SH "Member Data Documentation"
 .PP 
-.SS "\fBGenerator\fP ^ Generator::generator = gcnew \fBGenerator\fP()\fC [static]\fP, \fC [protected]\fP"
+.SS "unsigned char Generator::current_generator_status = 255\fC [static]\fP, \fC [private]\fP"
 
-.SS "bool Generator::idle_status = false\fC [static]\fP, \fC [protected]\fP"
+.PP
+This is the current generator status\&. 
+.SS "\fBGenerator\fP ^ Generator::device = gcnew \fBGenerator\fP()\fC [static]\fP"
+
+.SS "bool Generator::idle_status = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
 The \fBGenerator\fP is in IDLE mode\&. 
-.SS "CR2CP_Eth* Generator::R2CP_Eth\fC [static]\fP, \fC [protected]\fP"
+.SS "CR2CP_Eth* Generator::R2CP_Eth\fC [static]\fP, \fC [private]\fP"
 
-.SS "bool Generator::ready_for_exposure = false\fC [static]\fP, \fC [protected]\fP"
+.PP
+This is the Tcp/Ip client connection handler with the smart-hub external software\&. 
+.SS "bool Generator::ready_for_exposure = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
 Ready for exposure\&. 
-.SS "Thread ^ Generator::running_thread\fC [protected]\fP"
+.SS "Thread ^ Generator::running_thread\fC [private]\fP"
 
 .PP
-This is the worker thread handler\&. 
-.SS "bool Generator::setup_completed = false\fC [static]\fP, \fC [protected]\fP"
+This is the module worker thread handler\&. 
+.SS "bool Generator::setup_completed = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
 The Setup process has been terminated\&. 
-.SS "\fBexposure_completed_errors\fP Generator::xray_exposure_error = \fBexposure_completed_errors::XRAY_NO_ERRORS\fP\fC [static]\fP, \fC [protected]\fP"
-
-.SS "\fBExposureModule::exposure_type_options\fP Generator::xray_exposure_type\fC [static]\fP, \fC [protected]\fP"
-
-.SS "bool Generator::xray_processing = false\fC [static]\fP, \fC [protected]\fP"
+.SS "bool Generator::simulator_mode = false\fC [static]\fP, \fC [private]\fP"
 
 .PP
-The \fBGenerator\fP is processing a X-RAY sequence\&. 
-.SH "Event Documentation"
-.PP 
-.SS "\fBdelegate_xray_complete_callback\fP^ Generator::xray_complete_event\fC [static]\fP"
-
+This is the current real or simulating mode flag\&. 
 
 .SH "Author"
 .PP 

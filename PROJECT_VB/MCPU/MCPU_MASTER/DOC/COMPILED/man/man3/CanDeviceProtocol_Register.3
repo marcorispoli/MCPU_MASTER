@@ -1,4 +1,4 @@
-.TH "CanDeviceProtocol::Register" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanDeviceProtocol::Register" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,6 +13,21 @@ CanDeviceProtocol::Register
 .in +1c
 .ti -1c
 .RI "\fBRegister\fP (unsigned char pd0, unsigned char pd1, unsigned char pd2, unsigned char pd3)"
+.br
+.ti -1c
+.RI "\fBRegister\fP (void)"
+.br
+.ti -1c
+.RI "void \fBD0\fP (bool stat, unsigned char mask)"
+.br
+.ti -1c
+.RI "void \fBD1\fP (bool stat, unsigned char mask)"
+.br
+.ti -1c
+.RI "void \fBD2\fP (bool stat, unsigned char mask)"
+.br
+.ti -1c
+.RI "void \fBD3\fP (bool stat, unsigned char mask)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -34,6 +49,18 @@ CanDeviceProtocol::Register
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "CanDeviceProtocol::Register::Register (unsigned char pd0, unsigned char pd1, unsigned char pd2, unsigned char pd3)\fC [inline]\fP"
+
+.SS "CanDeviceProtocol::Register::Register (void)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void CanDeviceProtocol::Register::D0 (bool stat, unsigned char mask)\fC [inline]\fP"
+
+.SS "void CanDeviceProtocol::Register::D1 (bool stat, unsigned char mask)\fC [inline]\fP"
+
+.SS "void CanDeviceProtocol::Register::D2 (bool stat, unsigned char mask)\fC [inline]\fP"
+
+.SS "void CanDeviceProtocol::Register::D3 (bool stat, unsigned char mask)\fC [inline]\fP"
 
 .SH "Member Data Documentation"
 .PP 

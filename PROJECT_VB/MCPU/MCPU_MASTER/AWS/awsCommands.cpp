@@ -296,7 +296,7 @@ void awsProtocol::SET_TomoConfig(void) {
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     // Parameter 0: Tomo configiguration selection;
-    if(!ExposureModule::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
+    if(!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
     ackOk();
 
     return;
@@ -319,35 +319,35 @@ void   awsProtocol::SET_ExposureMode(void) {
     String^ arm_mode = pDecodedFrame->parameters[5];
 
     // Setes the next exposure mode
-    if (exposure_type == "MAN_2D") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::MAN_2D);
-    else if (exposure_type == "AEC_2D") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::AEC_2D);
-    else if (exposure_type == "MAN_3D") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::MAN_3D);
-    else if (exposure_type == "AEC_3D") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::AEC_3D);
-    else if (exposure_type == "MAN_COMBO") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::MAN_COMBO);
-    else if (exposure_type == "AEC_COMBO") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::AEC_COMBO);
-    else if (exposure_type == "MAN_AE") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::MAN_AE);
-    else if (exposure_type == "AEC_AE") ExposureModule::setExposureMode(ExposureModule::exposure_type_options::AEC_AE);
+    if (exposure_type == "MAN_2D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_2D);
+    else if (exposure_type == "AEC_2D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_2D);
+    else if (exposure_type == "MAN_3D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_3D);
+    else if (exposure_type == "AEC_3D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_3D);
+    else if (exposure_type == "MAN_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_COMBO);
+    else if (exposure_type == "AEC_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_COMBO);
+    else if (exposure_type == "MAN_AE") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_AE);
+    else if (exposure_type == "AEC_AE") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_AE);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_EXPOSURE_TYPE"; ackNok(); return; }
 
     // Sets the detector used for the exposure
     bool detector_found = false;
     for (int i = 0; i < (int)DetectorConfig::detector_model_option::DETECTOR_LIST_SIZE; i++) {
         if (((DetectorConfig::detector_model_option)i).ToString() == detector_type) {
-            ExposureModule::setDetectorType((DetectorConfig::detector_model_option)i);
+            Exposures::setDetectorType((DetectorConfig::detector_model_option)i);
             detector_found = true;
             break;
         }
     }
     if (!detector_found) {
-        ExposureModule::setDetectorType(DetectorConfig::detector_model_option::GENERIC);
+        Exposures::setDetectorType(DetectorConfig::detector_model_option::GENERIC);
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_DETECTOR_TYPE"; ackNok(); return;
     }
 
     
     // Sets the Compression Mode used for the exposure
-    if (compression_mode == "CMP_KEEP") ExposureModule::setCompressorMode(ExposureModule::compression_mode_option::CMP_KEEP);
-    else if (compression_mode == "CMP_RELEASE") ExposureModule::setCompressorMode(ExposureModule::compression_mode_option::CMP_RELEASE);
-    else if (compression_mode == "CMP_DISABLE") ExposureModule::setCompressorMode(ExposureModule::compression_mode_option::CMP_DISABLE);
+    if (compression_mode == "CMP_KEEP") Exposures::setCompressorMode(Exposures::compression_mode_option::CMP_KEEP);
+    else if (compression_mode == "CMP_RELEASE") Exposures::setCompressorMode(Exposures::compression_mode_option::CMP_RELEASE);
+    else if (compression_mode == "CMP_DISABLE") Exposures::setCompressorMode(Exposures::compression_mode_option::CMP_DISABLE);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_COMPRESSION_MODE"; ackNok(); return; }
     
     // Collimation Mode
@@ -385,13 +385,13 @@ void   awsProtocol::SET_ExposureMode(void) {
     }
 
     // Patient protection usage 
-    if (protection_mode == "PROTECTION_ENA") ExposureModule::setProtectionMode(ExposureModule::patient_protection_option::PROTECTION_ENA);
-    else if (protection_mode == "PROTECTION_DIS") ExposureModule::setProtectionMode(ExposureModule::patient_protection_option::PROTECTION_DIS);
+    if (protection_mode == "PROTECTION_ENA") Exposures::setProtectionMode(Exposures::patient_protection_option::PROTECTION_ENA);
+    else if (protection_mode == "PROTECTION_DIS") Exposures::setProtectionMode(Exposures::patient_protection_option::PROTECTION_DIS);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PATIENT_PROTECTION_MODE"; ackNok(); return; }
 
     // Arm Mode setting  
-    if (arm_mode == "ARM_ENA") ExposureModule::setArmMode(ExposureModule::arm_mode_option::ARM_ENA);
-    else if (arm_mode == "ARM_DIS") ExposureModule::setArmMode(ExposureModule::arm_mode_option::ARM_DIS);
+    if (arm_mode == "ARM_ENA") Exposures::setArmMode(Exposures::arm_mode_option::ARM_ENA);
+    else if (arm_mode == "ARM_DIS") Exposures::setArmMode(Exposures::arm_mode_option::ARM_DIS);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_ARM_MODE"; ackNok(); return; }
 
 
@@ -418,7 +418,7 @@ void   awsProtocol::SET_ExposureData(void) {
     Double kV = Convert::ToDouble(kv_param, myInfo);
     Double mAs = Convert::ToDouble(mAs_param, myInfo);
     
-    if (!ExposureModule::setExposurePulse(pulse_seq, gcnew ExposureModule::exposure_pulse(kV, mAs, PCB315::getFilterFromTag(filter_param)))) {
+    if (!Exposures::setExposurePulse(pulse_seq, gcnew Exposures::exposure_pulse(kV, mAs, PCB315::getFilterFromTag(filter_param)))) {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return;
     }
    
@@ -434,8 +434,8 @@ void   awsProtocol::SET_EnableXrayPush(void) {
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     
-    if (pDecodedFrame->parameters[0] == "ON") ExposureModule::enableXrayPushButtonEvent(true);
-    else  ExposureModule::enableXrayPushButtonEvent(false);
+    if (pDecodedFrame->parameters[0] == "ON") Exposures::enableXrayPushButtonEvent(true);
+    else  Exposures::enableXrayPushButtonEvent(false);
 
     ackOk();
 
@@ -477,7 +477,7 @@ void   awsProtocol::EXEC_StartXraySequence(void) {
 
     
     // Tries to start the sequence
-    if (ExposureModule::startExposure()) ackOk();
+    if (Exposures::startExposure()) ackOk();
     else {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR;
         pDecodedFrame->errstr = "GENERATOR_ERROR";

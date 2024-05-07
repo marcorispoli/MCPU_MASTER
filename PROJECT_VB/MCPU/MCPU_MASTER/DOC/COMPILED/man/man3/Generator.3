@@ -12,7 +12,7 @@ Generator \- This Module class implements the communication and control of the t
 .PP
 Inherits \fBTcpClientCLI\fP\&.
 .PP
-Inherited by \fBExposureModule\fP\&.
+Inherited by \fBExposures\fP\&.
 .SS "Public Types"
 
 .in +1c
@@ -256,7 +256,7 @@ Timeout generator sequence
 .SS "virtual void Generator::exposureManagementLoop (bool demo)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Reimplemented in \fBExposureModule\fP\&.
+Reimplemented in \fBExposures\fP\&.
 .SS "bool Generator::generatorErrorMessagesLoop (void)\fC [private]\fP"
 
 .PP
@@ -363,7 +363,7 @@ the x-ray enable signal is released (x-ray push button early release);
 .PP
 \fBReturns\fP
 .RS 4
-The procedure returns the \fBExposureModule::exposure_completed_errors::XRAY_NO_ERRORS\fP if csuccessfully completes
+The procedure returns the ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS if csuccessfully completes
 .RE
 .PP
 
@@ -372,7 +372,7 @@ The procedure returns the \fBExposureModule::exposure_completed_errors::XRAY_NO_
 .PP
 This function load a databank with a 3 point tech to fit the finest mAs required value\&.  When a decimal value is needed for the mAs (i\&.e\&. 10\&.5 mAs instead of 10 or 11) the 2 point tech cannot be used because this tech can set only integer values\&.
 .PP
-In the case where the decimal part of the mAs should be important (i\&.e\&. in Tomo Exposures) a different approach shall be followed:
+In the case where the decimal part of the mAs should be important (i\&.e\&. in Tomo \fBExposures\fP) a different approach shall be followed:
 .PP
 The 3 point method allow to set the kV, the Anodic m Amps and the milliseconds of exposure\&. The Anodic current can be controlle with enough accuracy, wheathe the Exposure time can be selected in a discrete range of values in the R10 table\&.
 .PP
@@ -412,7 +412,7 @@ A databank with 3 point tech is then uploaded with the new calculated data\&.
 .PP
 \fBReturns\fP
 .RS 4
-\fBExposureModule::exposure_completed_errors::XRAY_NO_ERRORS\fP for success
+ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS for success
 .RE
 .PP
 
@@ -515,7 +515,7 @@ whenever a valid R2CP frame shall be sent to the smart hub
 .SS "virtual void Generator::setXrayEnable (bool stat)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Reimplemented in \fBExposureModule\fP\&.
+Reimplemented in \fBExposures\fP\&.
 .SS "void Generator::simulatorWork (void)\fC [private]\fP"
 
 .SS "void Generator::startNormalMode (void)\fC [static]\fP"

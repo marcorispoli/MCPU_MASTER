@@ -21,12 +21,13 @@ using namespace System::Threading;
 /// </summary>
 /// 
 /// \ingroup Exposure_Module
-ref class ExposureModule : public Generator
+ref class Exposures : public Generator
 {
 public:
 
     literal unsigned char  FOCUS_LARGE = 0;
     literal unsigned char  FOCUS_SMALL = 1;
+    static Exposures^ pExposure = gcnew Exposures(); //! Self module generation
     static inline  Generator^ getDevice(void) { return device; }
 	
     ref class tomo_data {
@@ -338,9 +339,9 @@ public:
 
     static bool startExposure(void);
    
-
+    
 protected:
-    void exposureManagementLoop(bool demo) override;       
+    void exposureManagementLoop(bool demo) override; 
     void setXrayEnable(bool stat) override ;
 
 

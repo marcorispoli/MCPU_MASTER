@@ -13,7 +13,7 @@
 #include <thread>
 #include "Log.h"
 
-bool ExposureModule::startExposure(void) {
+bool Exposures::startExposure(void) {
 
     // test if the Exposure mode is correctly set
     if (getExposureMode() == exposure_type_options::EXP_NOT_DEFINED) return false;
@@ -36,7 +36,7 @@ bool ExposureModule::startExposure(void) {
     return true;
 }
 
-void ExposureModule::setXrayEnable(bool stat)
+void Exposures::setXrayEnable(bool stat)
 {
     PCB301::set_xray_ena(stat); 
 }
@@ -65,7 +65,7 @@ void ExposureModule::setXrayEnable(bool stat)
 /// 
 /// 
 /// <param name=""></param>
-void ExposureModule::exposureManagementLoop(bool demo) {
+void Exposures::exposureManagementLoop(bool demo) {
     if (!xray_processing) return;
     getExposurePulse(0)->validated = false;
 
@@ -109,39 +109,39 @@ void ExposureModule::exposureManagementLoop(bool demo) {
         case exposure_type_options::MAN_AE: exposure_err_code = man_ae_exposure_procedure(demo); break;
         case exposure_type_options::AEC_AE: exposure_err_code = aec_ae_exposure_procedure(demo); break;
         default:
-            exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
+            exposure_err_code = Exposures::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
         }
     }
 
     // Removes the X-RAY ena signal 
     PCB301::set_xray_ena(false);
 
-    ExposureModule::setCompletedError(exposure_err_code);
+    Exposures::setCompletedError(exposure_err_code);
 
     // The X-Ray procedure termines here: the complete event is generated
     // In case of sequence not completed (partial or total) is App to the application 
     // retrive the error code (xray_exposure_error).
-    if (exposure_err_code == ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS)  ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_SUCCESS);// xray_complete_event(exposure_completed_options::XRAY_SUCCESS);
-    else if (ExposureModule::getExposedPulse(0)->getmAs()) ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_PARTIAL_DOSE);
-    else ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_NO_DOSE);
-    LogClass::logInFile("GENERATOR EXPOSURE RESULT:" + ExposureModule::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
+    if (exposure_err_code == Exposures::exposure_completed_errors::XRAY_NO_ERRORS)  Exposures::setCompletedCode(Exposures::exposure_completed_options::XRAY_SUCCESS);// xray_complete_event(exposure_completed_options::XRAY_SUCCESS);
+    else if (Exposures::getExposedPulse(0)->getmAs()) Exposures::setCompletedCode(Exposures::exposure_completed_options::XRAY_PARTIAL_DOSE);
+    else Exposures::setCompletedCode(Exposures::exposure_completed_options::XRAY_NO_DOSE);
+    LogClass::logInFile("GENERATOR EXPOSURE RESULT:" + Exposures::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
 
 
     // De-synch the grid device
     PCB304::synchGridWithGenerator(false);
 
     // Only in operating mode
-    if (ExposureModule::getExposureMode() != ExposureModule::exposure_type_options::TEST_2D) {
+    if (Exposures::getExposureMode() != Exposures::exposure_type_options::TEST_2D) {
 
         // Unlock the compressor if requested
-        if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_RELEASE) 
+        if (Exposures::getCompressorMode() == Exposures::compression_mode_option::CMP_RELEASE) 
             PCB302::setCompressorUnlock();
 
         // Notify the AWS about the XRAY completed event
         awsProtocol::EVENT_XraySequenceCompleted();
 
         // Disable the Xray Button
-        ExposureModule::enableXrayPushButtonEvent(false);
+        Exposures::enableXrayPushButtonEvent(false);
 
         // Invalidate the current projection
         ArmMotor::abortTarget();
@@ -156,7 +156,7 @@ void ExposureModule::exposureManagementLoop(bool demo) {
 
     LogClass::logInFile("GENERATOR EXPOSURE COMPLETED");
     xray_processing = false;
-    ExposureModule::setXrayCompletedFlag(); // The Exposure is completed and the data are available
+    Exposures::setXrayCompletedFlag(); // The Exposure is completed and the data are available
 }
 
 /// <summary>
@@ -192,9 +192,9 @@ void ExposureModule::exposureManagementLoop(bool demo) {
     /// <param name="pulse_seq">This is the current pulse sequence (0 to 3) </param>
     /// <param name="ft">Filter used in the exposure</param>
     /// <param name="fc">This is the focus used in the exposure</param>
-void ExposureModule::setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc) {
+void Exposures::setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc) {
     if (R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples) {
-        setExposedPulse(pulse_seq, gcnew ExposureModule::exposure_pulse(
+        setExposedPulse(pulse_seq, gcnew Exposures::exposure_pulse(
             R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].kV,
             R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].mAs,
             ft,

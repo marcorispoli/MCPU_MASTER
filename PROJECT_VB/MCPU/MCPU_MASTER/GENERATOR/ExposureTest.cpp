@@ -10,12 +10,12 @@
 
 using namespace System::Collections::Generic;
 
-ExposureModule::exposure_completed_errors ExposureModule::test_exposure_procedure(bool demo) {
+Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool demo) {
     System::String^ ExpName ;
-    unsigned char focus = ExposureModule::getExposurePulse(0)->getFocus();
-    bool large_focus = ExposureModule::getExposurePulse(0)->isLargeFocus();
-    bool detector_synch = ExposureModule::getExposurePulse(0)->useDetector();
-    bool grid_synch = ExposureModule::getExposurePulse(0)->useGrid();
+    unsigned char focus = Exposures::getExposurePulse(0)->getFocus();
+    bool large_focus = Exposures::getExposurePulse(0)->isLargeFocus();
+    bool detector_synch = Exposures::getExposurePulse(0)->useDetector();
+    bool grid_synch = Exposures::getExposurePulse(0)->useGrid();
     PCB315::filterMaterialCodes filter;
     unsigned char current_status;
     int timeout;
@@ -48,10 +48,10 @@ ExposureModule::exposure_completed_errors ExposureModule::test_exposure_procedur
 
     if (!demo) {
         // Load Data Bank For pulse    
-        R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, ExposureModule::getExposurePulse(0)->kV, ExposureModule::getExposurePulse(0)->mAs, 5000);
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, 5000);
         if (!handleCommandProcessedState(nullptr)) {
             LogClass::logInFile(ExpName + "Generator_Set_2D_Databank error");
-            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+            return Exposures::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
         }
 
         pulse_mA = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
@@ -59,10 +59,10 @@ ExposureModule::exposure_completed_errors ExposureModule::test_exposure_procedur
     else pulse_mA = 150;
     
     System::String^ exposure_data_str = ExpName + " PULSE DATA ---------------- "; LogClass::logInFile(exposure_data_str);   
-    exposure_data_str = "kV:" + ExposureModule::getExposurePulse(0)->kV; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "mAs:" + ExposureModule::getExposurePulse(0)->mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "kV:" + Exposures::getExposurePulse(0)->kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + Exposures::getExposurePulse(0)->mAs; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Anodic-mA:" + pulse_mA; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Filter:" + ExposureModule::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Filter:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
     if (large_focus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
     else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
 
@@ -71,13 +71,13 @@ ExposureModule::exposure_completed_errors ExposureModule::test_exposure_procedur
         R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DProcedurePulse(detector_synch, grid_synch);
         if (!handleCommandProcessedState(nullptr)) {
             LogClass::logInFile(ExpName + "Patient_Activate2DProcedurePulse error");
-            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+            return Exposures::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
         }
 
         // Clear the active system messages
         if (!clearSystemMessages()) {
             LogClass::logInFile(ExpName + "SystemMessages_Clear_Message error");
-            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+            return Exposures::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
         }
 
 
@@ -85,7 +85,7 @@ ExposureModule::exposure_completed_errors ExposureModule::test_exposure_procedur
         R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(false);
         if (!handleCommandProcessedState(nullptr)) {
             LogClass::logInFile(ExpName + "SystemMessages_SetDisableRx error");
-            return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+            return Exposures::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
         }
 
         // Status not in StandBy
@@ -127,7 +127,7 @@ ExposureModule::exposure_completed_errors ExposureModule::test_exposure_procedur
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         PCB301::set_activation_buzzer(false);
 
-        exposure_pulse^ epulse = ExposureModule::getExposurePulse(0);
+        exposure_pulse^ epulse = Exposures::getExposurePulse(0);
         setExposedPulse(0, gcnew exposure_pulse(epulse->getKv(), epulse->getmAs(), epulse->getFilter()));
 
         error = exposure_completed_errors::XRAY_NO_ERRORS;

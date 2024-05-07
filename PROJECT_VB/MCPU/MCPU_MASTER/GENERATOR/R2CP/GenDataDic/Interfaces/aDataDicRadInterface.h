@@ -425,7 +425,8 @@ namespace R2CP
        Stat_WaitFootRelease,    //!< [7] The Generator is waiting the XRAY signal release
        Stat_GoigToShutdown,     //!< [8] The Generator is in shutdown
        Stat_Error,              //!< [9] The Generator is in error condition
-       Stat_Service             //!< [10] The Generator is in Service Mode
+       Stat_Service,            //!< [10] The Generator is in Service Mode
+	   Stat_Unknown				
     } tGenStatus_Stat;
 
     typedef enum{

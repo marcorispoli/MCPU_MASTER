@@ -32,9 +32,8 @@ int16_t Generator::sendCR2CPData(unsigned char* pMessage, unsigned short  datale
 
 Generator::Generator(void):TcpClientCLI( SH_IP_ADDRESS, SH_PORT) 
 {
-    
+    device = this;
  
-
 }
 
 void Generator::startNormalMode(void) {
@@ -665,6 +664,10 @@ bool Generator::generatorIdleLoop(void) {
     return false;
 }
 
+void Generator::exposureManagementLoop(bool demo){
+    return;
+
+};
 
 
 
@@ -699,6 +702,11 @@ Generator::generator_errors Generator::generatorPulseSequence(System::String^ Ex
     // Wait to exit from the generator standby status
     int timeout = timeout_tic;
     while (timeout--) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(time_interval));
+        
+        // Brake as soon a non standby condition is detected
+        updateGeneratorStatus();        
+        if (current_generator_status != R2CP::Stat_Standby) break;
 
         // Checks for the XRAY button
         if (!R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.ExposureSwitches.Fields.ExpsignalStatus) {
@@ -712,17 +720,14 @@ Generator::generator_errors Generator::generatorPulseSequence(System::String^ Ex
             return generator_errors::GEN_INTERNAL_ERROR;
         }
 
-        // Brake as soon a non standby condition is detected
-        updateGeneratorStatus();
-        if (current_generator_status != R2CP::Stat_Standby) break;
-        std::this_thread::sleep_for(std::chrono::milliseconds(time_interval));
+        
     }
     
     if (!timeout) {
         LogClass::logInFile(ExpName + "timeout waiting generator executing the xray sequence");
         return generator_errors::GEN_INVALID_STATUS;
     }
-
+    
     // The sequence will completes when generator returns in Standby or Stat_WaitFootRelease.
     // The sequence termines as sooon a wrong expected status should be detected
     timeout = timeout_tic;
@@ -744,8 +749,15 @@ Generator::generator_errors Generator::generatorPulseSequence(System::String^ Ex
         updateGeneratorStatus();
         if (curstat != current_generator_status) {
         
+            // The Stat is not a valid stat
+            if (current_generator_status >= R2CP::Stat_Unknown) {
+                LogClass::logInFile(ExpName + current_generator_status.ToString() + " Unknown Start");
+                return generator_errors::GEN_INVALID_STATUS;
+            }
+
             // Waits for the Exposure complete event
             switch (current_generator_status) {
+            
 
             case R2CP::Stat_WaitFootRelease:
             case R2CP::Stat_Standby:               
@@ -757,13 +769,12 @@ Generator::generator_errors Generator::generatorPulseSequence(System::String^ Ex
 
             case R2CP::Stat_GoigToShutdown:
             case R2CP::Stat_Service:
-            case R2CP::Stat_Initialization:
+            case R2CP::Stat_Initialization:            
                 LogClass::logInFile(ExpName + current_generator_status.ToString() + " status error ");
-                return generator_errors::GEN_INVALID_STATUS;
-                
+                return generator_errors::GEN_INVALID_STATUS;                
 
             default:
-                return generator_errors::GEN_INVALID_STATUS;
+                break;
             }
         }
 

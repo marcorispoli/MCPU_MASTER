@@ -20,7 +20,7 @@ ref class Generator: public TcpClientCLI
 {
 public:
 	Generator(void);
-	static Generator^ device = gcnew Generator(); //! Self module generation 
+	
 
 	enum class generator_errors {
 		GEN_NO_ERRORS = 0,			//!< No error code
@@ -47,18 +47,21 @@ public:
 	
 protected:
 	void rxData(cli::array<Byte>^ receiveBuffer, int rc) override;
-	void virtual exposureManagementLoop(bool demo) {};
+	virtual void  setXrayEnable(bool stat) {};
+	virtual void  exposureManagementLoop(bool demo) ;
 	static System::String^ getGeneratorErrorString(System::String^ errstr);
 
-	void virtual setXrayEnable(bool stat) {};
 	bool handleCommandProcessedState(unsigned char* code);
 	bool clearSystemMessages(void);
 	bool updateGeneratorStatus(void);
 	inline static unsigned char getGeneratorStatus(void) {return current_generator_status;}
 	generator_errors generatorPulseSequence(System::String^ ExpName, int ms_timeout);
 	generator_errors generatorSet3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse);
+	static Generator^ device;// = gcnew Generator(); //! Self module generation 
 
 private:
+	
+
 	static bool simulator_mode = false; //!< This is the current real or simulating mode flag
 	Thread^ running_thread;				//!< This is the module worker thread handler
 	static CR2CP_Eth* R2CP_Eth;			//!< This is the Tcp/Ip client connection handler with the smart-hub external software

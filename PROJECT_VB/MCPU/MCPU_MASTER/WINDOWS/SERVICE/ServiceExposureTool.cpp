@@ -115,8 +115,8 @@ void ServiceExposureTool::timerManagement(void) {
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 
-	ExposureModule::exposure_completed_errors xerror;
-	ExposureModule::exposure_pulse^ pulse;
+	Exposures::exposure_completed_errors xerror;
+	Exposures::exposure_pulse^ pulse;
 	float val;
 
 	if (exposureStep == EXPTOOL_NO_EXPOSURE) return;
@@ -125,7 +125,7 @@ void ServiceExposureTool::timerManagement(void) {
 	case EXPTOOL_WAIT_BUTTON:
 		if (PCB301::getXrayPushButtonStat()) {
 
-			if (ExposureModule::startExposure()) {
+			if (Exposures::startExposure()) {
 				exposureLog->Text += "BUTTON PRESSED: exposure started\n";
 				exposureStep = EXPTOOL_EXECUTING;
 			}
@@ -138,16 +138,16 @@ void ServiceExposureTool::timerManagement(void) {
 		break;
 
 	case EXPTOOL_EXECUTING:
-		if (ExposureModule::isXrayRunning()) break;
+		if (Exposures::isXrayRunning()) break;
 		if (PCB301::getXrayPushButtonStat()) break;
 		exposureStep = EXPTOOL_COMPLETED;
 		break;
 
 	case EXPTOOL_COMPLETED:
 
-		xerror = ExposureModule::getExposureCompletedError();
+		xerror = Exposures::getExposureCompletedError();
 		exposureLog->Text += "Exposure Completed:" + xerror.ToString() + "\n";
-		pulse = ExposureModule::getExposedPulse(0);
+		pulse = Exposures::getExposedPulse(0);
 		if (pulse) {
 			if (pulse->isLargeFocus()) exposureLog->Text += "focus: large, ";
 			else  exposureLog->Text += "focus: small, ";
@@ -293,8 +293,8 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 			kV = System::Convert::ToDouble(kVSelection->Text);
 			if (gridSelection->Text == "GRID") use_grid = true;
 			else use_grid = false;
-			if (focusSelection->Text == "LARGE") focus = ExposureModule::FOCUS_LARGE;
-			else focus = ExposureModule::FOCUS_SMALL;
+			if (focusSelection->Text == "LARGE") focus = Exposures::FOCUS_LARGE;
+			else focus = Exposures::FOCUS_SMALL;
 			if (synchSelection->Text == "NO-SYNCH") use_det = false;
 			else use_det = true;
 
@@ -312,13 +312,13 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 			return;
 		}
 
-		if (!ExposureModule::setExposurePulse(0, gcnew ExposureModule::exposure_pulse(kV, mAs, filter, focus, use_grid, use_det))) {
+		if (!Exposures::setExposurePulse(0, gcnew Exposures::exposure_pulse(kV, mAs, filter, focus, use_grid, use_det))) {
 			ExposureToolXrayEna = false;
 			return;
 		}
 
 		// Set the current exposure mode properly
-		ExposureModule::setExposureMode(ExposureModule::exposure_type_options::TEST_2D);
+		Exposures::setExposureMode(Exposures::exposure_type_options::TEST_2D);
 
 		enableXray->BackgroundImage = EXPTOOL_XRAY_ON;
 		exposureLog->Clear();

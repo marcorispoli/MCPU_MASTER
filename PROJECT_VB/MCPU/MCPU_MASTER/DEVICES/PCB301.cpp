@@ -119,7 +119,7 @@ void PCB301::evaluateEvents(void) {
     // handles the X-RAY push button event
     if (xray_push != xray_push_button) {
         xray_push = xray_push_button;
-        if (ExposureModule::getXrayPushButtonEvent()) awsProtocol::EVENT_XrayPushButton(xray_push_button);
+        if (Exposures::getXrayPushButtonEvent()) awsProtocol::EVENT_XrayPushButton(xray_push_button);
     }
 
     // handles the soft_power_off_request event

@@ -170,7 +170,7 @@ bool Gantry::setOpenStudy(System::String^ patient) {
 
 bool Gantry::setCloseStudy(void) {    
     patient_name = "";
-    ExposureModule::reset();// Reset all the modalities
+    Exposures::reset();// Reset all the modalities
     ((OperatingForm^)pOperatingForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
 
     return setIdle();

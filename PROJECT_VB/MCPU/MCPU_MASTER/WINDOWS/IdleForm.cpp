@@ -132,9 +132,8 @@ void IdleForm::initIdleStatus(void) {
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
-	if(Gantry::isOperatingDemo()) this->xrayMode->Hide();
-	else this->xrayMode->Show();
-
+	
+	
 	// Handle the Powerdown
 	IDLESTATUS::Registers.powerdown = PCB301::getPowerdown();
 
@@ -192,19 +191,27 @@ void IdleForm::initIdleStatus(void) {
 	PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
 
 	// Activates the motors
-	PCB301::set_motor_power_supply(true);
-	PCB301::set_motor_switch(true);
+	PCB301::setMotorPowerSupply(true);
+	PCB301::setMotorSwitch(true);
 
 	// Activate the Idle manual modes
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
 	// Activates the compressor
-	PCB301::set_compressor_ena(true);
+	PCB301::SetCompressorEna(true);
 	PCB302::setMasterEna(true);
 
-	if(Generator::isServiceToolConnected()) this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
-	else this->xrayMode->BackgroundImage = XRAY_MODE;
-
+	// XRAY mode setting
+	if (Exposures::isSimulatorMode()) {
+		this->xrayMode->Hide();
+	}
+	else {
+		if (Exposures::isServiceToolConnected()) this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
+		else this->xrayMode->BackgroundImage = XRAY_MODE;
+		this->xrayMode->Show();
+	}
+	 
+	
 	// Start the startup session	
 	idleTimer->Start();	
 
@@ -492,19 +499,22 @@ void IdleForm::idleStatusManagement(void) {
 
 	}
 
-	if (Generator::isServiceToolConnected()) {
-		if (xray_mode_status != 2) {
-			Notify::activate(Notify::messages::WARNING_GENERATOR_SERVICE_MODE);
-			this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
-			xray_mode_status = 2;
-		}		
-	}
-	else {
-		if (xray_mode_status != 1) {
-			Notify::deactivate(Notify::messages::WARNING_GENERATOR_SERVICE_MODE);
-			this->xrayMode->BackgroundImage = XRAY_MODE;
-			xray_mode_status = 1;
-		}		
+	// XRAY mode setting
+	if (!Exposures::isSimulatorMode()) {
+		if (Exposures::isServiceToolConnected()) {
+			if (xray_mode_status != 2) {
+				Notify::activate(Notify::messages::WARNING_GENERATOR_SERVICE_MODE);
+				this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
+				xray_mode_status = 2;
+			}
+		}
+		else {
+			if (xray_mode_status != 1) {
+				Notify::deactivate(Notify::messages::WARNING_GENERATOR_SERVICE_MODE);
+				this->xrayMode->BackgroundImage = XRAY_MODE;
+				xray_mode_status = 1;
+			}
+		}
 	}
 
 	// Popup panels at the end of the timer thread:

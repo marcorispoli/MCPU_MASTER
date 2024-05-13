@@ -1098,6 +1098,9 @@ void CanOpenMotor::demoLoop(void) {
                     termination_code = MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
                     break;
                 }
+
+                external_uposition = encoder_uposition = uposition;
+                encoder_eposition = convert_User_To_Encoder(uposition);
             }
         }
 

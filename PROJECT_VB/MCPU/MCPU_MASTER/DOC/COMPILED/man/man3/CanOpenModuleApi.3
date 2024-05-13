@@ -1,4 +1,4 @@
-.TH "CanOpenModuleApi" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanOpenModuleApi" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,11 +14,14 @@ CanOpenModuleApi \- Application Interface (API)
 .br
 .RI "This enumeration class descibes the internal status condition  "
 .ti -1c
-.RI "enum class \fBCANOPEN::CanOpenMotor::MotorCommands\fP { \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_IDLE\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_HOMING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_AUTO_POSITIONING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_MANUAL_POSITIONING\fP }"
+.RI "enum class \fBCANOPEN::CanOpenMotor::MotorCommands\fP { \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_IDLE\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_AUTO_HOMING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_MANUAL_HOMING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_EXTERNAL_HOMING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_AUTO_POSITIONING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_MANUAL_POSITIONING\fP, \fBCANOPEN::CanOpenMotor::MotorCommands::MOTOR_MANUAL_SERVICE\fP }"
 .br
 .RI "This enumeration class descibes the Command codes "
 .ti -1c
-.RI "enum class \fBCANOPEN::CanOpenMotor::MotorCompletedCodes\fP { \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_SUCCESS\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_PROCEED\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_MANUAL_TERMINATION\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::MOTOR_ERRORS\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_OBSTACLE_DETECTED\fP = MOTOR_ERRORS, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_MOTOR_BUSY\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_INITIALIZATION\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_UNEXPECTED_STATUS\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_LIMIT_SWITCH\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_BRAKE_DEVICE\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_TIMOUT\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_INTERNAL_FAULT\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_ACCESS_REGISTER\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_MISSING_HOME\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_COMMAND_DISABLED\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_COMMAND_ABORTED\fP }"
+.RI "enum class \fBCANOPEN::CanOpenMotor::motor_rotation_activations\fP { \fBCANOPEN::CanOpenMotor::motor_rotation_activations::MOTOR_NO_ACTIVATION\fP, \fBCANOPEN::CanOpenMotor::motor_rotation_activations::MOTOR_INCREASE\fP, \fBCANOPEN::CanOpenMotor::motor_rotation_activations::MOTOR_DECREASE\fP, \fBCANOPEN::CanOpenMotor::motor_rotation_activations::MOTOR_UNDEFINED\fP }"
+.br
+.ti -1c
+.RI "enum class \fBCANOPEN::CanOpenMotor::MotorCompletedCodes\fP { \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_SUCCESS\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_PROCEED\fP = 0, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::COMMAND_MANUAL_TERMINATION\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::MOTOR_ERRORS\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_OBSTACLE_DETECTED\fP = MOTOR_ERRORS, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_MOTOR_BUSY\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_INITIALIZATION\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_UNEXPECTED_STATUS\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_LIMIT_SWITCH\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_BRAKE_DEVICE\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_TIMOUT\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_INTERNAL_FAULT\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_ACCESS_REGISTER\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_MISSING_HOME\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_TARGET_OUT_OF_RANGE\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_COMMAND_DISABLED\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_COMMAND_ABORTED\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_COMMAND_DEMO\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_SAFETY\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_STARTING_NANOJ\fP, \fBCANOPEN::CanOpenMotor::MotorCompletedCodes::ERROR_INVALID_COMMAND\fP }"
 .br
 .RI "This enumeration class descibes the command complete codes  "
 .in -1c
@@ -26,9 +29,15 @@ CanOpenModuleApi \- Application Interface (API)
 
 .in +1c
 .ti -1c
-.RI "\fBCANOPEN::CanOpenMotor::CanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, double gear)"
+.RI "\fBCANOPEN::CanOpenMotor::CanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, int \fBmin_position\fP, int \fBmax_position\fP, double gear, double external_k, bool reverse)"
 .br
 .RI "This is the base class constructor\&. "
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::runMode\fP (void)"
+.br
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::demoMode\fP (void)"
+.br
 .ti -1c
 .RI "delegate void \fBCANOPEN::CanOpenMotor::delegate_fault_callback\fP (int code)"
 .br
@@ -40,9 +49,25 @@ CanOpenModuleApi \- Application Interface (API)
 .br
  "
 .ti -1c
-.RI "bool \fBCANOPEN::CanOpenMotor::activateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec)"
+.RI "bool \fBCANOPEN::CanOpenMotor::activateRelativePositioning\fP (int id, int target, int speed, int acc, int dec)"
+.br
+.RI "This function starts an automatic relative positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateRelativePositioning\fP (int id, int target)"
+.br
+.RI "This function starts an automatic relative positioning with predefined motor parameters\&. "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec, bool autostart)"
 .br
 .RI "This function starts an automatic positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateAutomaticPositioning\fP (int id, int target, bool autostart)"
+.br
+.RI "This function starts an automatic positioning with predefined parameters 
 .br
  "
 .ti -1c
@@ -50,11 +75,29 @@ CanOpenModuleApi \- Application Interface (API)
 .br
 .RI "This function starts the automatic homing procedure\&. "
 .ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateExternalHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateManualHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
 .RI "bool \fBCANOPEN::CanOpenMotor::activateManualPositioning\fP (int target, int speed, int acc, int dec)"
 .br
 .RI "This command activates the manual mootion 
 .br
  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateManualPositioning\fP (int target)"
+.br
+.RI "This command activates the manual mootion with predefined parameters\&. "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::activateManualService\fP (bool increase)"
+.br
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::setServiceMode\fP (bool stat)"
+.br
 .ti -1c
 .RI "void \fBCANOPEN::CanOpenMotor::abortActivation\fP (void)"
 .br
@@ -68,17 +111,16 @@ CanOpenModuleApi \- Application Interface (API)
 .br
 .RI "This function returns a description string of the internal motor status  "
 .ti -1c
-.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getCompletedCodeString\fP (void)"
-.br
-.RI "This command returns a description string(translated) of the last termination code\&. "
-.ti -1c
 .RI "\fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::getCommandCompletedCode\fP (void)"
 .br
 .RI "This function returns the last command termination code  "
 .ti -1c
 .RI "bool \fBCANOPEN::CanOpenMotor::activateConfiguration\fP (void)"
 .br
-.RI "This function activates the Driver configuration fase\&. "
+.RI "This function activates the Driver configuration fase  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isPositionFromExternalSensor\fP (void)"
+.br
 .ti -1c
 .RI "bool \fBCANOPEN::CanOpenMotor::isConfigurating\fP (void)"
 .br
@@ -94,7 +136,15 @@ CanOpenModuleApi \- Application Interface (API)
 .ti -1c
 .RI "bool \fBCANOPEN::CanOpenMotor::isReady\fP (void)"
 .br
-.RI "This function returns the Ready status\&.  "
+.RI "This function returns true if the module is ready to execute a command\&.  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isBusy\fP (void)"
+.br
+.RI "This function return true if an executing command is pending  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::isRunning\fP (void)"
+.br
+.RI "This function return true if a command is executing\&. "
 .ti -1c
 .RI "bool \fBCANOPEN::CanOpenMotor::isZeroOk\fP (void)"
 .br
@@ -103,16 +153,31 @@ CanOpenModuleApi \- Application Interface (API)
 .RI "int \fBCANOPEN::CanOpenMotor::getCurrentPosition\fP (void)"
 .br
 .RI "This function returns the current encoder position\&.  "
+.ti -1c
+.RI "unsigned short \fBCANOPEN::CanOpenMotor::getExternalSensor\fP (void)"
+.br
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getExternalPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getEncoderPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getMinPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getMaxPosition\fP (void)"
+.br
 .in -1c
 .SS "Events"
 
 .in +1c
 .ti -1c
-.RI "static \fBdelegate_fault_callback\fP^ \fBCANOPEN::CanOpenMotor::fault_event\fP"
+.RI "\fBdelegate_fault_callback\fP^ \fBCANOPEN::CanOpenMotor::fault_event\fP"
 .br
 .RI "Event generated when a Driver fault condition is detected\&. "
 .ti -1c
-.RI "static \fBdelegate_command_completed_callback\fP^ \fBCANOPEN::CanOpenMotor::command_completed_event\fP"
+.RI "\fBdelegate_command_completed_callback\fP^ \fBCANOPEN::CanOpenMotor::command_completed_event\fP"
 .br
 .RI "Event generated at the command completion\&. "
 .in -1c
@@ -123,6 +188,23 @@ CanOpenModuleApi \- Application Interface (API)
 This section describes the API for the Application usage\&.
 .SH "Enumeration Type Documentation"
 .PP 
+.SS "enum class \fBCANOPEN::CanOpenMotor::motor_rotation_activations\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMOTOR_NO_ACTIVATION \fP\fP
+No activation\&. 
+.TP
+\fB\fIMOTOR_INCREASE \fP\fP
+Activation with encoder increment\&. 
+.TP
+\fB\fIMOTOR_DECREASE \fP\fP
+Activation with encoder decrement\&. 
+.TP
+\fB\fIMOTOR_UNDEFINED \fP\fP
+Undefined condition\&. 
 .SS "enum class \fBCANOPEN::CanOpenMotor::MotorCommands\fP\fC [strong]\fP"
 
 .PP
@@ -136,14 +218,23 @@ No command are presents
 .br
  
 .TP
-\fB\fIMOTOR_HOMING \fP\fP
-Homing procedure for automatic zero setting\&. 
+\fB\fIMOTOR_AUTO_HOMING \fP\fP
+Automatic Homing procedure for automatic zero setting\&. 
+.TP
+\fB\fIMOTOR_MANUAL_HOMING \fP\fP
+Manual Homing procedure for manual zero setting\&. 
+.TP
+\fB\fIMOTOR_EXTERNAL_HOMING \fP\fP
+Homing for the external position sensor\&. 
 .TP
 \fB\fIMOTOR_AUTO_POSITIONING \fP\fP
 Motor Automatic activation to target\&. 
 .TP
 \fB\fIMOTOR_MANUAL_POSITIONING \fP\fP
 Motor Manual activation to target\&. 
+.TP
+\fB\fIMOTOR_MANUAL_SERVICE \fP\fP
+Motor Manual activation for service (no position limitation) 
 .SS "enum class \fBCANOPEN::CanOpenMotor::MotorCompletedCodes\fP\fC [strong]\fP"
 
 .PP
@@ -202,11 +293,26 @@ The command has been aborted due to an error in accessing a driver register\&.
 \fB\fIERROR_MISSING_HOME \fP\fP
 The command has been aborted due to invalid homing (the encoder is not correctly initialized) 
 .TP
+\fB\fIERROR_TARGET_OUT_OF_RANGE \fP\fP
+The target for the activation is lower the minimum or higher then maximum allowed\&. 
+.TP
 \fB\fIERROR_COMMAND_DISABLED \fP\fP
 The command has been aborted because the activation is not enabled\&. 
 .TP
 \fB\fIERROR_COMMAND_ABORTED \fP\fP
 The command has been aborted due to an Abort activation request\&. 
+.TP
+\fB\fIERROR_COMMAND_DEMO \fP\fP
+The command cannot be executed in demo\&. 
+.TP
+\fB\fIERROR_SAFETY \fP\fP
+The command has been aborted due to safety conditions\&. 
+.TP
+\fB\fIERROR_STARTING_NANOJ \fP\fP
+The Nano-J command failed to start\&. 
+.TP
+\fB\fIERROR_INVALID_COMMAND \fP\fP
+Command not valuid in the current motor configuration or motor status\&. 
 .SS "enum class \fBCANOPEN::CanOpenMotor::status_options\fP\fC [strong]\fP"
 
 .PP
@@ -228,7 +334,9 @@ The driver is ready to execute an activation command\&.
 The driver is executing an acivation command\&. 
 .TP
 \fB\fIMOTOR_FAULT \fP\fP
-The driver is in fault condition\&. 
+The driver is in fault condition 
+.br
+ 
 .SH "Function Documentation"
 .PP 
 .SS "void CanOpenMotor::abortActivation (void)"
@@ -246,7 +354,13 @@ If the motor is active, a quick stop procedure is activated\&.
 
 .PP
 This function starts the automatic homing procedure\&. 
-.SS "bool CanOpenMotor::activateAutomaticPositioning (int id, int target, int speed, int acc, int dec)"
+.SS "bool CanOpenMotor::activateAutomaticPositioning (int id, int target, bool autostart)"
+
+.PP
+This function starts an automatic positioning with predefined parameters 
+.br
+ 
+.SS "bool CanOpenMotor::activateAutomaticPositioning (int id, int target, int speed, int acc, int dec, bool autostart)"
 
 .PP
 This function starts an automatic positioning 
@@ -274,9 +388,9 @@ polling the running status with the \fBisReady()\fP function;
 handling the \fBcommand_completed_event()\fP callback;
 .PP
 .PP
-The Subclass may override the \fBautomaticPositioningCompletedCallback()\fP in order to handling differently the command termination event\&.
+The Subclass may override the automaticPositioningCompletedCallback() in order to handling differently the command termination event\&.
 .PP
-The command execution is based on thre different fases:
+The command execution is based on thre different Steps:
 .IP "\(bu" 2
 Command Preparation: the motor driver is in a non powered state;
 .IP "\(bu" 2
@@ -285,15 +399,15 @@ Command Execution: the motor is powered and moving;
 Command Termination: the activation is terminated (successfully or with error)\&.
 .PP
 .PP
-The Subclass can implement specific actions that may be executed in those phases,
+The Subclass can implement specific actions that may be executed in those steps,
 .br
 overriding the following functions:
 .IP "\(bu" 2
-\fBautomaticPositioningPreparationCallback()\fP: this is called during the preparation fase;
+automaticPositioningPreparationCallback(): this is called during the preparation fase;
 .IP "\(bu" 2
-\fBautomaticPositioningRunningCallback()\fP: this is called during the running phase;
+automaticPositioningRunningCallback(): this is called during the running phase;
 .IP "\(bu" 2
-\fBautomaticPositioningCompletedCallback()\fP: this is called after the motor has been stopped;
+automaticPositioningCompletedCallback(): this is called after the motor has been stopped;
 .PP
 .PP
 \fBParameters\fP
@@ -307,6 +421,8 @@ overriding the following functions:
 \fIacc\fP This is the Acceleration rate in Application units
 .br
 \fIdec\fP This is the Deceleration rate in Application units
+.br
+\fIautostart\fP set to true to automatically start the activation (bit4 of control word) 
 .RE
 .PP
 \fBReturns\fP
@@ -315,51 +431,65 @@ true if the command can be executed
 .RE
 .PP
 
-.SS "bool CanOpenMotor::activateConfiguration (void)"
+.SS "bool CANOPEN::CanOpenMotor::activateConfiguration (void)\fC [inline]\fP"
 
 .PP
-This function activates the Driver configuration fase\&. This function activate motor configuration fase\&.
-.PP
-During the motor configuration fase, the device Object registers are written with the wanted values (see \fBinitializeObjectDictionary()\fP and \fBinitializeSpecificObjectDictionaryCallback()\fP);
-.PP
-If the implementation needs the Nanoj program, the applicaiton program is uploaded into the device\&.
+This function activates the Driver configuration fase  The Driver configuration will take place only when the driver is in internal status READY or FAULT 
 .PP
 \fBReturns\fP
 .RS 4
+true always
 .RE
 .PP
 
+.SS "bool CanOpenMotor::activateExternalHoming (int current_uposition)"
+
+.PP
+This function starts the external sensor homing procedure\&. 
+.SS "bool CanOpenMotor::activateManualHoming (int current_uposition)"
+
+.PP
+This function starts the external sensor homing procedure\&. 
+.SS "bool CanOpenMotor::activateManualPositioning (int target)"
+
+.PP
+This command activates the manual mootion with predefined parameters\&. 
 .SS "bool CanOpenMotor::activateManualPositioning (int target, int speed, int acc, int dec)"
 
 .PP
 This command activates the manual mootion 
 .br
  
-.SS "CanOpenMotor::CanOpenMotor (unsigned char devid, LPCWSTR motorname, double rounds_for_units)"
+.SS "bool CanOpenMotor::activateManualService (bool increase)"
+
+.SS "bool CanOpenMotor::activateRelativePositioning (int id, int target)"
+
+.PP
+This function starts an automatic relative positioning with predefined motor parameters\&. 
+.SS "bool CanOpenMotor::activateRelativePositioning (int id, int target, int speed, int acc, int dec)"
+
+.PP
+This function starts an automatic relative positioning 
+.br
+ 
+.SS "CanOpenMotor::CanOpenMotor (unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, int min, int max, double rounds_for_units, double external_k, bool reverse)"
 
 .PP
 This is the base class constructor\&. This is the Class constructor\&.
 .PP
-The Base Class constructor:
-.IP "\(bu" 2
-Initializes all the internal variables;
-.IP "\(bu" 2
-initializes the CiA internal status;
-.IP "\(bu" 2
-Starts the working thread mainWorker
-.PP
-.PP
-As soon as the function returns, the working thread starts the communication with the motor device\&.
-.PP
-See the \fBmainWorker()\fP for details\&.
-.PP
 \fBParameters\fP
 .RS 4
-\fIdevid\fP This is the address of the Motor device
+\fIdevid\fP unique device id of the motor
 .br
-\fImotorname\fP This is a string of the Motor name
+\fImotorname\fP motor name assigned to the working thread
 .br
-\fIrounds_for_units\fP This is the unit conversion rate
+\fIparameter\fP string name of the parameter in the MotorCalibration\&.cnf file
+.br
+\fIhome_err\fP Error code to be activated in case of Position invalidated
+.br
+\fIrounds_for_units\fP number of motor round for user unit
+.br
+\fIreverse\fP set the current motor direction
 .RE
 .PP
 
@@ -373,6 +503,8 @@ Delegate for the command completed event
 
 .PP
 Delegate for the callback related to the Fault condition\&. 
+.SS "void CANOPEN::CanOpenMotor::demoMode (void)\fC [inline]\fP"
+
 .SS "\fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::getCommandCompletedCode (void)\fC [inline]\fP"
 
 .PP
@@ -381,17 +513,6 @@ This function returns the last command termination code
 \fBReturns\fP
 .RS 4
 
-.RE
-.PP
-
-.SS "System::String CanOpenMotor::getCompletedCodeString (void)"
-
-.PP
-This command returns a description string(translated) of the last termination code\&. This procedure returns a language-translated string describing the last terminated command code\&.
-.PP
-\fBReturns\fP
-.RS 4
-String describing the last termninated command code
 .RE
 .PP
 
@@ -405,6 +526,12 @@ This function returns the current encoder position\&.
 The encoder position in user units
 .RE
 .PP
+
+.SS "int CANOPEN::CanOpenMotor::getEncoderPosition (void)\fC [inline]\fP"
+
+.SS "int CANOPEN::CanOpenMotor::getExternalPosition (void)\fC [inline]\fP"
+
+.SS "unsigned short CANOPEN::CanOpenMotor::getExternalSensor (void)\fC [inline]\fP"
 
 .SS "\fBstatus_options\fP CANOPEN::CanOpenMotor::getInternalStatus (void)\fC [inline]\fP"
 
@@ -425,6 +552,20 @@ This function returns a description string of the internal motor status
 \fBReturns\fP
 .RS 4
 
+.RE
+.PP
+
+.SS "int CANOPEN::CanOpenMotor::getMaxPosition (void)\fC [inline]\fP"
+
+.SS "int CANOPEN::CanOpenMotor::getMinPosition (void)\fC [inline]\fP"
+
+.SS "bool CANOPEN::CanOpenMotor::isBusy (void)\fC [inline]\fP"
+
+.PP
+This function return true if an executing command is pending  The function shall be used to know if the motor is activated or a comnmand is pending (but not yet started)
+.PP
+\fBReturns\fP
+.RS 4
 .RE
 .PP
 
@@ -461,14 +602,31 @@ true: the object dictionary has benn successfully configured
 .RE
 .PP
 
+.SS "bool CANOPEN::CanOpenMotor::isPositionFromExternalSensor (void)\fC [inline]\fP"
+
 .SS "bool CANOPEN::CanOpenMotor::isReady (void)\fC [inline]\fP"
 
 .PP
-This function returns the Ready status\&.  
+This function returns true if the module is ready to execute a command\&.  If this function should return false, it doesn't mean that a command is executing\&. See the \fBisRunning()\fP function for that purpose\&.
+.PP
+A false return code is related to an ointernal code not allowed to execute any command\&.
+.PP
+NOTE: in case of true condition, other external conditions may prevent the command to start execution\&.
 .PP
 \fBReturns\fP
 .RS 4
-true: the driver is ready to execute an activation command
+true: the driver is ready to execute a command
+.RE
+.PP
+
+.SS "bool CANOPEN::CanOpenMotor::isRunning (void)\fC [inline]\fP"
+
+.PP
+This function return true if a command is executing\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true: a command is executing
 .RE
 .PP
 
@@ -483,13 +641,17 @@ true: the encoder has been correctly initialized
 .RE
 .PP
 
+.SS "void CANOPEN::CanOpenMotor::runMode (void)\fC [inline]\fP"
+
+.SS "void CANOPEN::CanOpenMotor::setServiceMode (bool stat)\fC [inline]\fP"
+
 .SH "Events"
 .PP 
-.SS "\fBdelegate_command_completed_callback\fP^ CANOPEN::CanOpenMotor::command_completed_event\fC [static]\fP"
+.SS "\fBdelegate_command_completed_callback\fP^ CANOPEN::CanOpenMotor::command_completed_event"
 
 .PP
 Event generated at the command completion\&. 
-.SS "\fBdelegate_fault_callback\fP^ CANOPEN::CanOpenMotor::fault_event\fC [static]\fP"
+.SS "\fBdelegate_fault_callback\fP^ CANOPEN::CanOpenMotor::fault_event"
 
 .PP
 Event generated when a Driver fault condition is detected\&. 

@@ -1,4 +1,4 @@
-.TH "PCB303_Interface" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB303_Interface" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -47,12 +47,17 @@ PCB303_Interface \- Application Interface
 .RI "static void \fBPCB303::resetFaults\fP (void)"
 .br
 .RI "In case of collimation fault condition, this function starts a new collimation attempt\&. "
+.ti -1c
+.RI "static bool \fBPCB303::isValidCollimationFormat\fP (void)"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
 
 .SH "Function Documentation"
 .PP 
+.SS "static bool PCB303::isValidCollimationFormat (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "PCB303::PCB303 ()\fC [inline]\fP"
 
 .PP

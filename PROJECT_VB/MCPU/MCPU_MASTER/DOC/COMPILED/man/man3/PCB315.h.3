@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB315.h" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB315.h" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -28,27 +28,29 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBPCB315_ERROR_BULB_LOW\fP(reg)   (reg\->d2 & 0x1)"
 .br
-.RI "This is the Bulb sensor low level\&. "
-.ti -1c
-.RI "#define \fBPCB315_ERROR_BULB_SHORT\fP(reg)   (reg\->d2 & 0x2)"
+.RI "This is the Bulb sensor low level 
 .br
-.RI "This is the Bulb sensor connetions open\&. "
+ "
 .ti -1c
-.RI "#define \fBPCB315_ERROR_BULB_HIGH\fP(reg)   (reg\->d2 & 0x4)"
+.RI "#define \fBPCB315_ERROR_BULB_HIGH\fP(reg)   (reg\->d2 & 0x2)"
 .br
 .RI "This is the Bulb sensor high temperature\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_BULB_SHORT\fP(reg)   (reg\->d2 & 0x4)"
+.br
+.RI "This is the Bulb sensor connetions open\&. "
 .ti -1c
 .RI "#define \fBPCB315_ERROR_STATOR_LOW\fP(reg)   (reg\->d2 & 0x8)"
 .br
 .RI "This is the Bulb sensor low level\&. "
 .ti -1c
-.RI "#define \fBPCB315_ERROR_STATOR_SHORT\fP(reg)   (reg\->d2 & 0x10)"
-.br
-.RI "This is the Bulb sensor connetions open\&. "
-.ti -1c
-.RI "#define \fBPCB315_ERROR_STATOR_HIGH\fP(reg)   (reg\->d2 & 0x20)"
+.RI "#define \fBPCB315_ERROR_STATOR_HIGH\fP(reg)   (reg\->d2 & 0x10)"
 .br
 .RI "This is the Bulb sensor high temperature\&. "
+.ti -1c
+.RI "#define \fBPCB315_ERROR_STATOR_SHORT\fP(reg)   (reg\->d2 & 0x20)"
+.br
+.RI "This is the Bulb sensor connetions open\&. "
 .ti -1c
 .RI "#define \fBPCB315_ERROR_FILTER_SELECTION\fP(reg)   (reg\->d2 & 0x40)"
 .br

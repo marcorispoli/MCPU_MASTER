@@ -1,8 +1,9 @@
-.TH "TcpClientCLI" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "TcpClientCLI" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-TcpClientCLI
+TcpClientCLI \- This Class implements the Tcp/Ip Client connection with the SmartHub server\&.  
+
 .SH SYNOPSIS
 .br
 .PP
@@ -41,6 +42,9 @@ Inherited by \fBGenerator\fP\&.
 .RI "void \fBthreadWork\fP (void)"
 .br
 .RI "This is the worker thread for the connection management\&. "
+.ti -1c
+.RI "void \fBstartConnection\fP (void)"
+.br
 .ti -1c
 .RI "virtual void \fBrxData\fP (cli::array< Byte >^ receiveBuffer, int rc)"
 .br
@@ -93,6 +97,11 @@ Inherited by \fBGenerator\fP\&.
 .br
 .RI "This is the reception buffer\&. "
 .in -1c
+.SH "Detailed Description"
+.PP 
+This Class implements the Tcp/Ip Client connection with the SmartHub server\&. 
+
+<> 
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "TcpClientCLI::TcpClientCLI (String^ ip, int port)"
@@ -147,6 +156,8 @@ This is function to send data in the BUS\&. This function sends a buffer on the 
 \fIbuffer\fP This is the data buffer to be sent
 .RE
 .PP
+
+.SS "void TcpClientCLI::startConnection (void)\fC [inline]\fP, \fC [protected]\fP"
 
 .SS "void TcpClientCLI::threadWork (void)\fC [protected]\fP"
 

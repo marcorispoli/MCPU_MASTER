@@ -1,4 +1,4 @@
-.TH "CppCLRWinFormsProject::MainForm" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CppCLRWinFormsProject::MainForm" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -120,12 +120,6 @@ Inherits System::Windows::Forms::Form\&.
 
 .in +1c
 .ti -1c
-.RI "System::Windows::Forms::RichTextBox ^ \fBStartupLogMessages\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelFW326\fP"
-.br
-.ti -1c
 .RI "System::Windows::Forms::Label ^ \fBlabelPcb326Activity\fP"
 .br
 .ti -1c
@@ -138,49 +132,13 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Windows::Forms::Label ^ \fBlabel17\fP"
 .br
 .ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabel4\fP"
+.RI "System::Windows::Forms::PictureBox ^ \fBstartupIcon\fP"
 .br
 .ti -1c
-.RI "System::Windows::Forms::GroupBox ^ \fBBoardInitialization\fP"
+.RI "System::Windows::Forms::GroupBox ^ \fBinfoPanel\fP"
 .br
 .ti -1c
 .RI "System::Windows::Forms::Label ^ \fBlabelBoardInitialization\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabel2\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::GroupBox ^ \fBgroupBox1\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::GroupBox ^ \fBgroupBoxPackage\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelFW301\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelGeneratorRevision\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelFW315\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelFW304\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelFW303\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelFW302\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::RichTextBox ^ \fBStartupErrorMessages\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabel3\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBlabelCanDriver\fP"
 .br
 .ti -1c
 .RI "System::Windows::Forms::Label ^ \fBlabelPcb301Activity\fP"
@@ -315,15 +273,11 @@ Required method for Designer support - do not modify the contents of this method
 
 .SH "Member Data Documentation"
 .PP 
-.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::MainForm::BoardInitialization\fC [private]\fP"
-
 .SS "System::ComponentModel::Container ^ CppCLRWinFormsProject::MainForm::components\fC [private]\fP"
 
 .PP
 Required designer variable\&.  
-.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::MainForm::groupBox1\fC [private]\fP"
-
-.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::MainForm::groupBoxPackage\fC [private]\fP"
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::MainForm::infoPanel\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label1\fC [private]\fP"
 
@@ -341,12 +295,6 @@ Required designer variable\&.
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label17\fC [private]\fP"
 
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label2\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label3\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label4\fC [private]\fP"
-
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label5\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label6\fC [private]\fP"
@@ -359,25 +307,9 @@ Required designer variable\&.
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelBoardInitialization\fC [private]\fP"
 
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelCanDriver\fC [private]\fP"
-
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelCanDriverActivity\fC [private]\fP"
 
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelFW301\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelFW302\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelFW303\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelFW304\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelFW315\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelFW326\fC [private]\fP"
-
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelGeneratorActivity\fC [private]\fP"
-
-.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelGeneratorRevision\fC [private]\fP"
 
 .SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelMotorArmActivity\fC [private]\fP"
 
@@ -407,11 +339,9 @@ Required designer variable\&.
 
 .SS "bool CppCLRWinFormsProject::MainForm::startupError"
 
-.SS "System::Windows::Forms::RichTextBox ^ CppCLRWinFormsProject::MainForm::StartupErrorMessages\fC [private]\fP"
-
 .SS "int CppCLRWinFormsProject::MainForm::startupFase"
 
-.SS "System::Windows::Forms::RichTextBox ^ CppCLRWinFormsProject::MainForm::StartupLogMessages\fC [private]\fP"
+.SS "System::Windows::Forms::PictureBox ^ CppCLRWinFormsProject::MainForm::startupIcon\fC [private]\fP"
 
 .SS "int CppCLRWinFormsProject::MainForm::startupSubFase"
 

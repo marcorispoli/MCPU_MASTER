@@ -149,7 +149,7 @@ public:
 
 	static inline void setMasterEna(bool stat) { PCB302_OPTIONS_DATA_MASTER_ENABLE(options_data_register, stat); }
 	static inline void setPositionLimit(unsigned short val) { PCB302_POSITION_LIMIT_DATA_LOW(position_limit_data_register, val); PCB302_POSITION_LIMIT_DATA_HIGH(position_limit_data_register, val);}
-	static void setCompressorUnlock(void) { if (!device->isSimulatorMode()) device->command(PCB302_SET_UNLOCK_COMMAND, 30); } //!< This function unlocks the compression
+	static void setCompressorUnlock(void) { if (!device->isSimulatorMode()) device->commandNoWaitCompletion(PCB302_SET_UNLOCK_COMMAND, 30); } //!< This function unlocks the compression
 
 public:
 	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.

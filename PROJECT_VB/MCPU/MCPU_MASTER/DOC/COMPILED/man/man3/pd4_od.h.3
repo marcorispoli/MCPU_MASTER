@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/pd4_od.h" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/pd4_od.h" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,6 +12,30 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .SS "Macros"
 
 .in +1c
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DI1\fP   0x00010000"
+.br
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DI2\fP   0x00020000"
+.br
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DI3\fP   0x00040000"
+.br
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DI4\fP   0x00080000"
+.br
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DI5\fP   0x00100000"
+.br
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DI6\fP   0x00200000"
+.br
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DO1\fP   0x00010000"
+.br
+.ti -1c
+.RI "#define \fBPD4_MOTOR_DO2\fP   0x00020000"
+.br
 .ti -1c
 .RI "#define \fBZERO_SETTING_CTRL_INIT\fP   0x0270,0x0000"
 .br
@@ -259,6 +283,9 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBOD_3210_02\fP   0x3210, 0x02 ,ODRegister::SDODataDimension::R4B"
 .br
 .ti -1c
+.RI "#define \fBOD_3220_01\fP   0x3220, 0x01 ,ODRegister::SDODataDimension::R2B"
+.br
+.ti -1c
 .RI "#define \fBOD_3221_00\fP   0x3221, 0x00 ,ODRegister::SDODataDimension::R4B"
 .br
 .ti -1c
@@ -382,7 +409,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBOD_6040_00_DISABLEOP_VAL\fP   0x0007"
 .br
 .ti -1c
-.RI "#define \fBOD_6040_00_QUICKSTOP\fP   0x0087, 0x0002"
+.RI "#define \fBOD_6040_00_QUICKSTOP_MASK\fP   0x0087"
+.br
+.ti -1c
+.RI "#define \fBOD_6040_00_QUICKSTOP_VAL\fP   0x0002"
 .br
 .ti -1c
 .RI "#define \fBOD_6040_00_DISVOLTAGE\fP   0x0082, 0x0000"
@@ -639,6 +669,8 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .SS "#define OD_3210_02   0x3210, 0x02 ,ODRegister::SDODataDimension::R4B"
 
+.SS "#define OD_3220_01   0x3220, 0x01 ,ODRegister::SDODataDimension::R2B"
+
 .SS "#define OD_3221_00   0x3221, 0x00 ,ODRegister::SDODataDimension::R4B"
 
 .SS "#define OD_3240_01   0x3240, 0x01 ,ODRegister::SDODataDimension::R4B"
@@ -691,7 +723,9 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .SS "#define OD_6040_00_ENABLEOP_VAL   0x000F"
 
-.SS "#define OD_6040_00_QUICKSTOP   0x0087, 0x0002"
+.SS "#define OD_6040_00_QUICKSTOP_MASK   0x0087"
+
+.SS "#define OD_6040_00_QUICKSTOP_VAL   0x0002"
 
 .SS "#define OD_6040_00_RESET_OMS   0x0270, 0x0000"
 
@@ -804,6 +838,22 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .SS "#define OD_SAVE_DISABLED   0"
 
 .SS "#define OD_SAVE_ENABLED   0x1"
+
+.SS "#define PD4_MOTOR_DI1   0x00010000"
+
+.SS "#define PD4_MOTOR_DI2   0x00020000"
+
+.SS "#define PD4_MOTOR_DI3   0x00040000"
+
+.SS "#define PD4_MOTOR_DI4   0x00080000"
+
+.SS "#define PD4_MOTOR_DI5   0x00100000"
+
+.SS "#define PD4_MOTOR_DI6   0x00200000"
+
+.SS "#define PD4_MOTOR_DO1   0x00010000"
+
+.SS "#define PD4_MOTOR_DO2   0x00020000"
 
 .SS "#define POSITION_SETTING_CTRL_INIT_MASK   0x0370"
 

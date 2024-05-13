@@ -22,6 +22,14 @@ using namespace System::Net::Sockets;
 #define TcpClientCLI_TX_BUFFER_SIZE (4096)
 #define TcpClientCLI_DISPATCH_BUFFER_SIZE (100)
 
+/// <summary>
+/// This Class implements the Tcp/Ip Client connection with the SmartHub server.
+/// 
+/// </summary>
+/// 
+/// 
+///	
+/// \ingroup Exposure_Module  
 ref class TcpClientCLI
 {
 public:

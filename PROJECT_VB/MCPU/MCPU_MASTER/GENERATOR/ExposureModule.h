@@ -2,18 +2,33 @@
 #include <Windows.h>
 #include "PCB315.h"
 #include "CalibrationConfig.h"
+#include "Generator.h"
 
-
+/// <summary>
+/// \defgroup Exposure_Module Exposure Module
+/// This Module implements the Application exposure sequence workflows.
+/// 
+/// </summary>
+/// 
+/// 
+///	
+ 
 using namespace System::Collections::Generic;
 using namespace System::Threading;
 
-ref class ExposureModule 
+/// <summary>
+/// This Class implements the Exposure data structures and the exposure worflows.
+/// </summary>
+/// 
+/// \ingroup Exposure_Module
+ref class Exposures : public Generator
 {
 public:
 
     literal unsigned char  FOCUS_LARGE = 0;
     literal unsigned char  FOCUS_SMALL = 1;
-
+    static Exposures^ pExposure = gcnew Exposures(); //! Self module generation
+    
 	
     ref class tomo_data {
     public:
@@ -231,32 +246,31 @@ public:
     /// This class enumerates all the possible x-ray error reasons
     /// 
     /// </summary>
-    enum class exposure_completed_errors {
-        XRAY_NO_ERRORS = 0,			//!< No error code
-        XRAY_INVALID_PROCEDURE,		//!< A not valid procedure has been requested
-        XRAY_INVALID_GENERATOR_STATUS,	//!< The generator is in a not expected status
+    enum class exposure_completed_errors 
+    {
+        XRAY_NO_ERRORS = (int) Generator::generator_errors::GEN_NO_ERRORS,			//!< No error code
+        XRAY_BUTTON_RELEASE = (int)Generator::generator_errors::GEN_BUTTON_RELEASE, //!< The X-Ray Button has been released  
+        XRAY_TIMEOUT = (int) Generator::generator_errors::GEN_TIMEOUT,			    //!< Timeout generator sequence
+        XRAY_COMMUNICATION_ERROR = (int)Generator::generator_errors::GEN_COMMUNICATION_ERROR,         //!< A generator command is failed        
+        XRAY_INVALID_GENERATOR_STATUS = (int) Generator::generator_errors::GEN_INVALID_STATUS,//!< The generator is in a not expected status	
+        XRAY_ERR_CODE = (int)Generator::generator_errors::GEN_LAST_ERRCODE,         //!< Initialize the ExposureModule error codes        
         XRAY_INVALID_2D_PARAMETERS,	//!< The pexposure parameters for 2D are incorrect
-        XRAY_INVALID_TOMO_PARAMETERS,	//!< The Tomo parameters has not been validated (selected)
-        XRAY_INVALID_TOMO_mAs,	    //!< The requested mAs is not compatible with the minimum and maximum detector timeout
+        XRAY_INVALID_TOMO_PARAMETERS,	//!< The Tomo parameters has not been validated (selected)        
         XRAY_TIMEOUT_TILT_IN_HOME,	//!< Timeout waiting for the Tilt to be ready for home positioning 
-        XRAY_ERROR_TILT_IN_HOME,	//!< Error in positionining the Tilt in Home
-        XRAY_COMMUNICATION_ERROR,	//!< A generator command is failed
-        XRAY_GENERATOR_ERROR,		//!< The generator activated internal error messages
-        XRAY_BUTTON_RELEASE,		//!< The X-Ray Button has been released 
-        XRAY_FILAMENT_ERROR,		//!< The generator detected a Filament error
-        XRAY_KV_ERROR,				//!< The generator detected a kV error
-        XRAY_STARTER_ERROR,			//!< The generator detected an Anode Starter error condition
+        XRAY_ERROR_TILT_IN_HOME,	//!< Error in positionining the Tilt in Home        		
         XRAY_GRID_ERROR,			//!< The Grid device is in error condition
-        XRAY_COLLI_FORMAT_ERROR,	//!< The current collimation format is not valid
-        XRAY_TIMEOUT,			    //!< Timeout generator sequence
+        XRAY_COLLI_FORMAT_ERROR,	//!< The current collimation format is not valid        
         XRAY_TIMEOUT_AEC,			//!< Timeout waiting the Main Pulse data after an AEC pre pulse
         XRAY_POSITIONING_ERROR,     //!< Error in ARM or Tilt positioning
         XRAY_FILTER_ERROR,          //!< Error in selecting the filter for the exposure
         XRAY_TUBE_TEMPERATURE,      //!< Error the Tube is in fault condition
+        XRAY_INVALID_PROCEDURE,     //!< Error non defined procedure has been requested
 
     };
 
-    
+    static void startSimulator(void) { getDevice()->startSimulatorMode(); }
+    static void startGenerator(void) { getDevice()->startNormalMode(); }
+
     static void inline setExposureMode(exposure_type_options mode) { exposure_type = mode; }
     static exposure_type_options inline getExposureMode(void) { return exposure_type; }
 
@@ -296,10 +310,12 @@ public:
         return  pulse[seq];
     }
 
+    
     inline static bool isXrayCompleted() { return xray_completed; }
     inline static bool isXrayRunning() { return !xray_completed; }
     inline static void clearXrayCompleted() { xray_completed = false; }
     inline static void setXrayCompletedFlag() { xray_completed = true; }
+
 
     inline static exposure_completed_errors getExposureCompletedError(void) { return xray_exposure_error; }
     inline static exposure_completed_options getExposureCompletedCode(void) { return xray_completed_code; }
@@ -324,7 +340,14 @@ public:
         xray_event_ena = false;
     }
 
+
+    static bool startExposure(void);
    
+    
+protected:
+    void exposureManagementLoop(bool demo) override; 
+    void setXrayEnable(bool stat) override ;
+    bool getXrayPushButton(void) override;
 
 private:
 
@@ -342,9 +365,23 @@ private:
 
     // X-Ray completed section    
     static bool xray_completed = true;
+    static bool xray_processing = false; 
     static exposure_completed_options xray_completed_code = exposure_completed_options::XRAY_NO_DOSE;
     static exposure_completed_errors xray_exposure_error = exposure_completed_errors::XRAY_NO_ERRORS;
 
-   
+    exposure_completed_errors man_2d_exposure_procedure(bool demo);
+    exposure_completed_errors aec_2d_exposure_procedure(bool demo);
+    exposure_completed_errors man_ae_exposure_procedure(bool demo);
+    exposure_completed_errors aec_ae_exposure_procedure(bool demo);
+    exposure_completed_errors man_3d_exposure_procedure(bool demo);
+    exposure_completed_errors aec_3d_exposure_procedure(bool demo);
+    exposure_completed_errors man_combo_exposure_procedure(bool demo);
+    exposure_completed_errors aec_combo_exposure_procedure(bool demo);    
+    exposure_completed_errors test_exposure_procedure(bool demo);
+
+    void setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc);
+        
+    float demo2DPulse(float mAs, float current);
+    float demo3DPulses(float mAs,  int samples, int fps);
 };
 

@@ -1,4 +1,4 @@
-.TH "BodyMotor_Module" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "BodyMotor_Module" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -44,20 +44,18 @@ with Zero setting OFF: the limit is the clockwise;
 .PP
 .SH "Motor GPIO assignment"
 .PP
+.SS "Analog Input"
+The Analog input is used to detect the actual position of the shaft\&.
+.PP
+The position is detected using a 5 turns potentiometer connected to the shaft with a x3 multiply factor:
+.PP
+180° -> 1\&.5 potentiometer turns\&.
+.PP
+The calculated resolution is 0\&.4882 °/unit
 .SS "Digital Inputs"
-.IP "\(bu" 2
-DIGITAL INPUT 1 and 2: Assigned to the limit switch photocell;
-.IP "\(bu" 2
-DIGITAL INPUT 3: Homing photocell;
 .IP "\(bu" 2
 DIGITAL INPUT 4: Brake activation status;
 .PP
-.PP
-The Input1 and Input 2 are assigned to the same photocell: the limit switch\&.
-.br
-The Limit switch is an active low: when 0 means that the limit switch has been detected\&.
-.PP
-The Input3 shal be assigned to the Homing Driver process\&.
 .PP
 The Input4 is a Positive logic assigned to the current brake status:
 .IP "\(bu" 2
@@ -87,7 +85,7 @@ NOTE: The OUPUT2 should be kept ON because this status should guarantee that one
 .SH "Position unit definition"
 .PP
 .IP "\(bu" 2
-The module provides the position readout in the range of +/-180 degree;
+The module provides the position readout in the range of +/- 180 degrees;
 .IP "\(bu" 2
 The allowed activation is in the range of +/- 90° with a precision of 0\&.1 degree;
 .IP "\(bu" 2

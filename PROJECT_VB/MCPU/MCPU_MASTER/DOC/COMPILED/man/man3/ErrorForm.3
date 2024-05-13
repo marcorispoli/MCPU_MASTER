@@ -1,4 +1,4 @@
-.TH "ErrorForm" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ErrorForm" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,13 +20,13 @@ Inherits System::Windows::Forms::Form\&.
 .RI "void \fBformInitialization\fP (void)"
 .br
 .ti -1c
-.RI "void \fBopen\fP (void)"
+.RI "void \fBopen\fP (Form^ pp)"
 .br
 .ti -1c
 .RI "void \fBclose\fP (void)"
 .br
 .ti -1c
-.RI "\fBErrorForm\fP (Form^ pp)"
+.RI "\fBErrorForm\fP (void)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -83,12 +83,6 @@ Inherits System::Windows::Forms::Form\&.
 .RI "System::Windows::Forms::Label ^ \fBTitleText\fP"
 .br
 .ti -1c
-.RI "System::Windows::Forms::Label ^ \fBerrorId\fP"
-.br
-.ti -1c
-.RI "System::Windows::Forms::Label ^ \fBerrorTitle\fP"
-.br
-.ti -1c
 .RI "System::Windows::Forms::RichTextBox ^ \fBerrorContent\fP"
 .br
 .ti -1c
@@ -104,7 +98,7 @@ Inherits System::Windows::Forms::Form\&.
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "ErrorForm::ErrorForm (Form^ pp)\fC [inline]\fP"
+.SS "ErrorForm::ErrorForm (void)\fC [inline]\fP"
 
 .SS "ErrorForm::~ErrorForm ()\fC [inline]\fP, \fC [protected]\fP"
 
@@ -124,7 +118,7 @@ Clean up any resources being used\&.
 
 .SS "System::Void ErrorForm::onErrorTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
 
-.SS "void ErrorForm::open (void)"
+.SS "void ErrorForm::open (Form^ pp)"
 
 .SS "void ErrorForm::WndProc (System::Windows::Forms::Message% m)\fC [inline]\fP, \fC [override]\fP, \fC [protected]\fP"
 
@@ -138,11 +132,7 @@ Clean up any resources being used\&.
 Required designer variable\&.  
 .SS "System::Windows::Forms::RichTextBox ^ ErrorForm::errorContent\fC [private]\fP"
 
-.SS "System::Windows::Forms::Label ^ ErrorForm::errorId\fC [private]\fP"
-
 .SS "System::Timers::Timer ^ ErrorForm::errorPanelTimer"
-
-.SS "System::Windows::Forms::Label ^ ErrorForm::errorTitle\fC [private]\fP"
 
 .SS "System::Windows::Forms::Panel ^ ErrorForm::notifyIcon\fC [private]\fP"
 

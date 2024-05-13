@@ -1,4 +1,4 @@
-.TH "CanOpenModuleProtected" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanOpenModuleProtected" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -18,17 +18,16 @@ CanOpenModuleProtected \- Protected Interface (Subclass reserved)
 .br
 .RI "This function assignes the binary pointer of the nano-j program to be uploaded during the configuration fase\&.  "
 .ti -1c
-.RI "void \fBCANOPEN::CanOpenMotor::setEncoderInitialEvalue\fP (int val)"
-.br
-.RI "This function is used to assignes the inital value of the encoder at the startup  "
-.ti -1c
 .RI "int \fBCANOPEN::CanOpenMotor::getCurrentEncoderEposition\fP (void)"
 .br
 .RI "This function returns the current encoder position in Encoder internal units  "
 .ti -1c
 .RI "int \fBCANOPEN::CanOpenMotor::getCurrentEncoderUposition\fP (void)"
 .br
-.RI "This function returns the current encoder position in user units  "
+.ti -1c
+.RI "int \fBCANOPEN::CanOpenMotor::getCurrentUposition\fP (void)"
+.br
+.RI "This function returns the current user defined position  "
 .ti -1c
 .RI "void \fBCANOPEN::CanOpenMotor::setTargetRange\fP (int h, int l)"
 .br
@@ -70,60 +69,77 @@ CanOpenModuleProtected \- Protected Interface (Subclass reserved)
 .br
 .RI "This function writes a part of the control word\&. "
 .ti -1c
-.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getErrorClass1001\fP (unsigned int val)"
+.RI "bool \fBCANOPEN::CanOpenMotor::readControlWord\fP (unsigned int *ctrlw)"
+.br
+.RI "This function reads the control word\&. "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::startRotation\fP (void)"
+.br
+.RI "This function starts the motor rotation\&.  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::startNanoj\fP (void)"
+.br
+.RI "This function runs the Nano-J program on the Motor Device  "
+.ti -1c
+.RI "bool \fBCANOPEN::CanOpenMotor::stopNanoj\fP (void)"
+.br
+.RI "This function stops a running Nano-J program\&. "
+.ti -1c
+.RI "static System::String ^ \fBCANOPEN::CanOpenMotor::getErrorClass1001\fP (unsigned int val)"
 .br
 .RI "This is a convenient function to decode a Error string from the error of the register 1001\&. "
 .ti -1c
-.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getErrorClass1003\fP (unsigned int val)"
+.RI "static System::String ^ \fBCANOPEN::CanOpenMotor::getErrorClass1003\fP (unsigned int val)"
 .br
 .RI "This is a convenient function to decode a Error Class string from the register 1003\&. "
 .ti -1c
-.RI "System::String ^ \fBCANOPEN::CanOpenMotor::getErrorCode1003\fP (unsigned int val)"
+.RI "static System::String ^ \fBCANOPEN::CanOpenMotor::getErrorCode1003\fP (unsigned int val)"
 .br
 .RI "This is a convenient function to decode a Error Code string from the register 1003\&. "
 .ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticPositioningPreparationCallback\fP (void)"
+.RI "virtual void \fBCANOPEN::CanOpenMotor::motionParameterCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::preparationCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.RI "This function is called just before to set the speed: if return true, the speed is set to the predefined value\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::runningCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
 .br
 .RI "This function is called just before to Power the motor phases\&. "
 .ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticPositioningRunningCallback\fP (void)"
-.br
-.RI "This function is called during the command execution to terminate early the positioning\&. "
-.ti -1c
-.RI "virtual void \fBCANOPEN::CanOpenMotor::automaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP termination_code)"
-.br
-.RI "This function is called when the command is terminated\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::manualPositioningPreparationCallback\fP (void)"
+.RI "virtual void \fBCANOPEN::CanOpenMotor::completedCallback\fP (int id, \fBMotorCommands\fP \fBcurrent_command\fP, int current_position, \fBMotorCompletedCodes\fP term_code)"
 .br
 .RI "This function is called just before to Power the motor phases\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::manualPositioningRunningCallback\fP (void)"
-.br
-.RI "This function is called during the command execution to terminate early the positioning\&. "
-.ti -1c
-.RI "virtual void \fBCANOPEN::CanOpenMotor::manualPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
-.br
-.RI "This function is called when the command is terminated\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticHomingPreparationCallback\fP (void)"
-.br
-.RI "This function is called just before to Power the motor phases\&. "
-.ti -1c
-.RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::automaticHomingRunningCallback\fP (void)"
-.br
-.RI "This function is called during the command execution to terminate early the positioning\&. "
-.ti -1c
-.RI "virtual void \fBCANOPEN::CanOpenMotor::automaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error)"
-.br
-.RI "This function is called when the command is terminated\&. "
 .ti -1c
 .RI "virtual \fBMotorCompletedCodes\fP \fBCANOPEN::CanOpenMotor::idleCallback\fP (void)"
 .br
+.RI "This function is called just before to Power the motor phases\&. "
 .ti -1c
-.RI "virtual bool \fBCANOPEN::CanOpenMotor::initializeSpecificObjectDictionaryCallback\fP (void)"
+.RI "virtual void \fBCANOPEN::CanOpenMotor::faultCallback\fP (bool errstat, bool data_change, unsigned int \fBerror_class\fP, unsigned int \fBerror_code\fP)"
+.br
+.ti -1c
+.RI "virtual void \fBCANOPEN::CanOpenMotor::resetCallback\fP (void)"
+.br
+.RI "Called whenever the boot message is received from the device\&. "
+.ti -1c
+.RI "virtual unsigned short \fBCANOPEN::CanOpenMotor::initializeSpecificObjectDictionaryCallback\fP (void)"
 .br
 .RI "Override this function to initialize specific registers of the target Motor Device\&. "
+.ti -1c
+.RI "virtual bool \fBCANOPEN::CanOpenMotor::unbrakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be released\&. "
+.ti -1c
+.RI "virtual bool \fBCANOPEN::CanOpenMotor::brakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be reactivated\&. "
+.ti -1c
+.RI "virtual void \fBCANOPEN::CanOpenMotor::demoLoop\fP (void)"
+.br
+.ti -1c
+.RI "void \fBCANOPEN::CanOpenMotor::setCommandCompleted\fP (\fBMotorCompletedCodes\fP error)"
+.br
 .ti -1c
 .RI "int \fBCANOPEN::CanOpenMotor::getCommandId\fP (void)"
 .br
@@ -140,77 +156,6 @@ CanOpenModuleProtected \- Protected Interface (Subclass reserved)
 This section describes the API for subclass modules\&.
 .SH "Function Documentation"
 .PP 
-.SS "virtual void CANOPEN::CanOpenMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called when the command is terminated\&. 
-.PP
-Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
-.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::automaticHomingPreparationCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called just before to Power the motor phases\&. 
-.PP
-Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
-.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::automaticHomingRunningCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called during the command execution to terminate early the positioning\&. 
-.SS "void CanOpenMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP completed_code)\fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called when the command is terminated\&. This function is called by the Base class at the command completion\&.
-.PP
-The function only calls the command_completion_event()\&.
-.PP
-The Subclass should override this function in order to implement specific behaviors\&.
-.PP
-\fBParameters\fP
-.RS 4
-\fIcompleted_code\fP 
-.RE
-.PP
-
-.PP
-Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
-.SS "\fBCanOpenMotor::MotorCompletedCodes\fP CanOpenMotor::automaticPositioningPreparationCallback (void)\fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called just before to Power the motor phases\&. This function is called by the Base class at the command preparation\&. 
-.PP
-The Subclass should override this function in order to prepare the activation with specif requirements (brake device activation, diagnostic checks)\&.
-.PP
-.IP "\(bu" 2
-The function shall return the \fBMotorCompletedCodes::COMMAND_PROCEED\fP code to let the command to continue;
-.IP "\(bu" 2
-The function shall return any other error code in case of command reject;
-.PP
-.PP
-\fBReturns\fP
-.RS 4
-.RE
-.PP
-
-.PP
-Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
-.SS "\fBCanOpenMotor::MotorCompletedCodes\fP CanOpenMotor::automaticPositioningRunningCallback (void)\fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called during the command execution to terminate early the positioning\&. This function is called by the Base class during the motor activation, every 50ms (approximatelly)\&.
-.PP
-The Subclass should override this function in order to monitor the positioning and eventually to stop it in case of specific conditions should be true\&.
-.PP
-.IP "\(bu" 2
-The function shall return the \fBMotorCompletedCodes::COMMAND_PROCEED\fP code to let the command to continue;
-.IP "\(bu" 2
-The function shall return any other error code in case of command abort;
-.PP
-.PP
-\fBReturns\fP
-.RS 4
-.RE
-.PP
-
 .SS "bool CanOpenMotor::blocking_readOD (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim)\fC [protected]\fP"
 
 .PP
@@ -253,6 +198,18 @@ true in case of success
 .RE
 .PP
 
+.SS "virtual bool CANOPEN::CanOpenMotor::brakeCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called whenever the optional brake device should be reactivated\&. 
+.PP
+Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
+.SS "virtual void CANOPEN::CanOpenMotor::completedCallback (int id, \fBMotorCommands\fP current_command, int current_position, \fBMotorCompletedCodes\fP term_code)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented in \fBArmMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
 .SS "int CanOpenMotor::convert_Encoder_To_User (int x)\fC [protected]\fP"
 
 .PP
@@ -348,6 +305,12 @@ The Speed or Acceleration ratio in motor units
 .RE
 .PP
 
+.SS "void CanOpenMotor::demoLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+
+.SS "virtual void CANOPEN::CanOpenMotor::faultCallback (bool errstat, bool data_change, unsigned int error_class, unsigned int error_code)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, and \fBVerticalMotor\fP\&.
 .SS "int CANOPEN::CanOpenMotor::getCommandId (void)\fC [inline]\fP, \fC [protected]\fP"
 
 .PP
@@ -372,8 +335,10 @@ The current encoder position in Internal encoder units
 
 .SS "int CANOPEN::CanOpenMotor::getCurrentEncoderUposition (void)\fC [inline]\fP, \fC [protected]\fP"
 
+.SS "int CANOPEN::CanOpenMotor::getCurrentUposition (void)\fC [inline]\fP, \fC [protected]\fP"
+
 .PP
-This function returns the current encoder position in user units  
+This function returns the current user defined position  The user defined position is the position of the external sensor if it should be configured\&.
 .PP
 \fBReturns\fP
 .RS 4
@@ -381,7 +346,7 @@ The current encoder position in user units
 .RE
 .PP
 
-.SS "System::String CanOpenMotor::getErrorClass1001 (unsigned int val)\fC [protected]\fP"
+.SS "System::String CanOpenMotor::getErrorClass1001 (unsigned int val)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
 This is a convenient function to decode a Error string from the error of the register 1001\&. 
@@ -396,7 +361,7 @@ This is a convenient function to decode a Error string from the error of the reg
 .RE
 .PP
 
-.SS "System::String CanOpenMotor::getErrorClass1003 (unsigned int val)\fC [protected]\fP"
+.SS "System::String CanOpenMotor::getErrorClass1003 (unsigned int val)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
 This is a convenient function to decode a Error Class string from the register 1003\&. 
@@ -411,7 +376,7 @@ This is a convenient function to decode a Error Class string from the register 1
 .RE
 .PP
 
-.SS "System::String CanOpenMotor::getErrorCode1003 (unsigned int val)\fC [protected]\fP"
+.SS "System::String CanOpenMotor::getErrorCode1003 (unsigned int val)\fC [static]\fP, \fC [protected]\fP"
 
 .PP
 This is a convenient function to decode a Error Code string from the register 1003\&. 
@@ -451,8 +416,10 @@ Returns the pointer of the reception sdo register
 .SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::idleCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
-.SS "virtual bool CANOPEN::CanOpenMotor::initializeSpecificObjectDictionaryCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented in \fBBodyMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "virtual unsigned short CANOPEN::CanOpenMotor::initializeSpecificObjectDictionaryCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 Override this function to initialize specific registers of the target Motor Device\&. 
@@ -469,34 +436,43 @@ true if a valid encoder position is present
 .RE
 .PP
 
-.SS "virtual void CANOPEN::CanOpenMotor::manualPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "virtual void CANOPEN::CanOpenMotor::motionParameterCallback (\fBMotorCommands\fP current_command, int current_position, int target_position)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::preparationCallback (\fBMotorCommands\fP current_command, int current_position, int target_position)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-This function is called when the command is terminated\&. 
+This function is called just before to set the speed: if return true, the speed is set to the predefined value\&. 
 .PP
-Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, and \fBTiltMotor\fP\&.
-.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::manualPositioningPreparationCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+Reimplemented in \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "bool CanOpenMotor::readControlWord (unsigned int * ctrlw)\fC [protected]\fP"
+
+.PP
+This function reads the control word\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctrlw\fP This is the pointer to the variable where the control word will be copied in
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the register is successfully read
+.RE
+.PP
+
+.SS "virtual void CANOPEN::CanOpenMotor::resetCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called whenever the boot message is received from the device\&. 
+.PP
+Reimplemented in \fBTiltMotor\fP\&.
+.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::runningCallback (\fBMotorCommands\fP current_command, int current_position, int target_position)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
 This function is called just before to Power the motor phases\&. 
 .PP
-Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
-.SS "virtual \fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::manualPositioningRunningCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called during the command execution to terminate early the positioning\&. 
-.PP
-Reimplemented in \fBArmMotor\fP, \fBBodyMotor\fP, \fBSlideMotor\fP, \fBTiltMotor\fP, and \fBVerticalMotor\fP\&.
-.SS "void CANOPEN::CanOpenMotor::setEncoderInitialEvalue (int val)\fC [inline]\fP, \fC [protected]\fP"
-
-.PP
-This function is used to assignes the inital value of the encoder at the startup  
-.PP
-\fBParameters\fP
-.RS 4
-\fIval\fP 
-.RE
-.PP
+Reimplemented in \fBBodyMotor\fP, and \fBVerticalMotor\fP\&.
+.SS "void CANOPEN::CanOpenMotor::setCommandCompleted (\fBMotorCompletedCodes\fP error)\fC [inline]\fP, \fC [protected]\fP"
 
 .SS "void CANOPEN::CanOpenMotor::setEncoderInitStatus (bool val)\fC [inline]\fP, \fC [protected]\fP"
 
@@ -542,6 +518,48 @@ The Subclass should set this range to define the specific activation range\&.
 .RE
 .PP
 
+.SS "bool CanOpenMotor::startNanoj (void)\fC [protected]\fP"
+
+.PP
+This function runs the Nano-J program on the Motor Device  If the Nanoj-Program has been uploaded into the device this function tries to run it\&.
+.PP
+If a program is already in execution the function tries to stop it and restart again\&.
+.PP
+In case of error in running the program the function fails\&.
+.PP
+\fBReturns\fP
+.RS 4
+true if the program successfully starts
+.RE
+.PP
+
+.SS "bool CanOpenMotor::startRotation (void)\fC [protected]\fP"
+
+.PP
+This function starts the motor rotation\&.  The function activates the BIT-4 of the control word: this bit starts the motor rotation for the Positioning Mode\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool CanOpenMotor::stopNanoj (void)\fC [protected]\fP"
+
+.PP
+This function stops a running Nano-J program\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if the program is successfully stopped
+.RE
+.PP
+
+.SS "virtual bool CANOPEN::CanOpenMotor::unbrakeCallback (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called whenever the optional brake device should be released\&. 
+.PP
+Reimplemented in \fBBodyMotor\fP, and \fBTiltMotor\fP\&.
 .SS "void CanOpenMotor::write_resetNode (void)\fC [protected]\fP"
 
 .PP

@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB326.h" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB326.h" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,6 +16,117 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "class \fBPCB326\fP"
 .br
 .in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS_STATUS\fP(reg)   (unsigned char) reg\->d0"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS1_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x01)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS2_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x02)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS3_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x04)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS4_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x08)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS5_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS6_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS7_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CS8_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x80)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_RESET_STATUS\fP(reg)   (bool)	(reg\->d1 & 0x1)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CONFIG_STATUS\fP(reg)   (bool)	(reg\->d1 & 0x2)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_CALIB_STATUS\fP(reg)   (bool)	(reg\->d1 & 0x4)"
+.br
+.ti -1c
+.RI "#define \fBPCB326_GET_SYSTEM_RUN_STATUS\fP(reg)   (bool)	(reg\->d1 & 0x8)"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS1\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS2\fP   0x2"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS3\fP   0x4"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS4\fP   0x8"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS5\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS6\fP   0x20"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS7\fP   0x40"
+.br
+.ti -1c
+.RI "#define \fBSENS_CS8\fP   0x80"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define PCB326_GET_SYSTEM_CALIB_STATUS(reg)   (bool)	(reg\->d1 & 0x4)"
+
+.SS "#define PCB326_GET_SYSTEM_CONFIG_STATUS(reg)   (bool)	(reg\->d1 & 0x2)"
+
+.SS "#define PCB326_GET_SYSTEM_CS1_STATUS(reg)   (bool)	(reg\->d0 & 0x01)"
+
+.SS "#define PCB326_GET_SYSTEM_CS2_STATUS(reg)   (bool)	(reg\->d0 & 0x02)"
+
+.SS "#define PCB326_GET_SYSTEM_CS3_STATUS(reg)   (bool)	(reg\->d0 & 0x04)"
+
+.SS "#define PCB326_GET_SYSTEM_CS4_STATUS(reg)   (bool)	(reg\->d0 & 0x08)"
+
+.SS "#define PCB326_GET_SYSTEM_CS5_STATUS(reg)   (bool)	(reg\->d0 & 0x10)"
+
+.SS "#define PCB326_GET_SYSTEM_CS6_STATUS(reg)   (bool)	(reg\->d0 & 0x20)"
+
+.SS "#define PCB326_GET_SYSTEM_CS7_STATUS(reg)   (bool)	(reg\->d0 & 0x40)"
+
+.SS "#define PCB326_GET_SYSTEM_CS8_STATUS(reg)   (bool)	(reg\->d0 & 0x80)"
+
+.SS "#define PCB326_GET_SYSTEM_CS_STATUS(reg)   (unsigned char) reg\->d0"
+
+.SS "#define PCB326_GET_SYSTEM_RESET_STATUS(reg)   (bool)	(reg\->d1 & 0x1)"
+
+.SS "#define PCB326_GET_SYSTEM_RUN_STATUS(reg)   (bool)	(reg\->d1 & 0x8)"
+
+.SS "#define SENS_CS1   0x1"
+
+.SS "#define SENS_CS2   0x2"
+
+.SS "#define SENS_CS3   0x4"
+
+.SS "#define SENS_CS4   0x8"
+
+.SS "#define SENS_CS5   0x10"
+
+.SS "#define SENS_CS6   0x20"
+
+.SS "#define SENS_CS7   0x40"
+
+.SS "#define SENS_CS8   0x80"
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

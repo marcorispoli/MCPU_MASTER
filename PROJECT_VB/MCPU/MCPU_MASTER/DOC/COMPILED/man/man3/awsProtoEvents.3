@@ -1,4 +1,4 @@
-.TH "awsProtoEvents" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtoEvents" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -42,13 +42,17 @@ awsProtoEvents \- AWS Protocol Events
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. "
 .ti -1c
-.RI "static void \fBawsProtocol::EVENT_XraySequenceCompleted\fP (\fBGenerator::exposure_completed_options\fP code)"
+.RI "static void \fBawsProtocol::EVENT_XraySequenceCompleted\fP (void)"
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. "
 .ti -1c
 .RI "static void \fBawsProtocol::EVENT_exposurePulseCompleted\fP (unsigned char npulse)"
 .br
 .RI "This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_Poweroff\fP (void)"
+.br
+.RI "This Event is sent to AWS whenever the gantry requestes for a power-off sequence "
 .ti -1c
 .RI "static void \fBawsProtocol::EVENT_operatingStatusChange\fP (void)"
 .br
@@ -87,7 +91,7 @@ The Id == 0 codes are rserved for internal activations that shall not be acknowl
 .RE
 .PP
 
-.SS "static void awsProtocol::EVENT_exposurePulseCompleted (unsigned char npulse)\fC [inline]\fP, \fC [static]\fP"
+.SS "void awsProtocol::EVENT_exposurePulseCompleted (unsigned char npulse)\fC [static]\fP"
 
 .PP
 This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. 
@@ -97,6 +101,10 @@ This is the EVENT the gantry sends to AWS to notify about a x-ray pulse terminat
 This is the EVENT the gantry sends to AWS to notify about its internal operating status\&. 
 .SS "static void awsProtocol::EVENT_operatingStatusChange (void)\fC [inline]\fP, \fC [static]\fP"
 
+.SS "void awsProtocol::EVENT_Poweroff (void)\fC [static]\fP"
+
+.PP
+This Event is sent to AWS whenever the gantry requestes for a power-off sequence 
 .SS "void awsProtocol::EVENT_ReadyForExposure (bool ready, unsigned short code)\fC [static]\fP"
 
 .PP
@@ -120,7 +128,7 @@ Syntax:
 
 .PP
 This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. 
-.SS "void awsProtocol::EVENT_XraySequenceCompleted (\fBGenerator::exposure_completed_options\fP code)\fC [static]\fP"
+.SS "void awsProtocol::EVENT_XraySequenceCompleted (void)\fC [static]\fP"
 
 .PP
 This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. 

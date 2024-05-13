@@ -364,9 +364,6 @@
     <ClCompile Include="MOTORS\CanOpenDriver\CanOpenManualPositioning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GENERATOR\DEMO\GeneratorDemo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WINDOWS\IconWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -395,6 +392,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WINDOWS\SERVICE\ServiceZeroSettingTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GENERATOR\ExposureModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

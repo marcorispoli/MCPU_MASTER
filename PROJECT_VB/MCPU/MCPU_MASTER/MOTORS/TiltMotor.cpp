@@ -254,13 +254,13 @@ bool TiltMotor::setTarget(target_options tg, int id) {
         break;
 
     case target_options::TOMO_H:
-        if (!ExposureModule::getTomoExposure()->valid) return false;       
+        if (!Exposures::getTomoExposure()->valid) return false;       
         if ((!SlideMotor::isAllowedPosition())) {
             LogClass::logInFile("TiltMotor::serviceAutoPosition() - command: error, slide not in allowed position ");
             return false;
         }        
 
-        angle = ExposureModule::getTomoExposure()->tomo_home;        
+        angle = Exposures::getTomoExposure()->tomo_home;        
         break;
 
     case target_options::TOMO_E:
@@ -269,11 +269,11 @@ bool TiltMotor::setTarget(target_options tg, int id) {
             return false;
         }
 
-        if (!ExposureModule::getTomoExposure()->valid) return false;
-        angle = ExposureModule::getTomoExposure()->tomo_end;
-        speed = ExposureModule::getTomoExposure()->tomo_speed;
-        acc = ExposureModule::getTomoExposure()->tomo_acc;
-        dec = ExposureModule::getTomoExposure()->tomo_dec;
+        if (!Exposures::getTomoExposure()->valid) return false;
+        angle = Exposures::getTomoExposure()->tomo_end;
+        speed = Exposures::getTomoExposure()->tomo_speed;
+        acc = Exposures::getTomoExposure()->tomo_acc;
+        dec = Exposures::getTomoExposure()->tomo_dec;
         pending_target = tg;
         return device->activateAutomaticPositioning(id, angle, speed, acc, dec, true);
         break;

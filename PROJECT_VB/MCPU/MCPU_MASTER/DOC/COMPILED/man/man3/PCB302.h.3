@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB302.h" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB302.h" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,11 +22,164 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBPCB302_GET_STATUS_SYSTEM_REGISTER\fP   (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false"
 .br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_MANUAL_SERVO_UP\fP(reg)   (bool)	(reg\->d0 & 0x01)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_MANUAL_SERVO_DWN\fP(reg)   (bool)	(reg\->d0 & 0x02)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_PEDAL_UP\fP(reg)   (bool)	(reg\->d0 & 0x04)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_PEDAL_DWN\fP(reg)   (bool)	(reg\->d0 & 0x08)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_IDLE\fP(reg)   (bool)	(reg\->d1 & 0x01)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_MANUAL_ACTIVATION\fP(reg)   (bool)	(reg\->d1 & 0x02)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_PEDAL_ACTIVATION\fP(reg)   (bool)	(reg\->d1 & 0x04)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_COMMAND_ACTIVATION\fP(reg)   (bool)	(reg\->d1 & 0x08)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_UPWARD_DIRECTION\fP(reg)   (bool)	(reg\->d1 & 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_DOWNWARD_DIRECTION\fP(reg)   (bool)	(reg\->d1 & 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_UNLOCK_ACTIVATION\fP(reg)   (bool)	(reg\->d1 & 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_FAULT\fP(reg)   (bool)	(reg\->d1 & 0x80)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_CMP_ENA\fP(reg)   (bool)	(reg\->d2 & 0x01)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_CMP_ON\fP(reg)   (bool)	(reg\->d2 & 0x02)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_ZERO_COMPRESSION\fP(reg)   (bool)	(reg\->d2 & 0x04)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_SMARTUP_TARGET\fP(reg)   (bool)	(reg\->d2 & 0x08)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_FORCE_TARGET\fP(reg)   (bool)	(reg\->d2 & 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_SYSTEM_LIMIT_COMPRESSION\fP(reg)   (bool)	(reg\->d2 & 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_PADDLE_POSITION_LOW\fP(reg)   (reg\->d0)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_PADDLE_POSITION_HIGH\fP(reg)   (reg\->d1&0x0F)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_PADDLE_FORCE_LOW\fP(reg)   ((reg\->d1&0xF0) >> 4)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_PADDLE_FORCE_HIGH\fP(reg)   (reg\->d2)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_GET_PADDLE_CODE\fP(reg)   (reg\->d3)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_POSITION_LIMIT_DATA_LOW\fP(reg,  val)   reg\->d0 = (unsigned char) val;"
+.br
+.ti -1c
+.RI "#define \fBPCB302_POSITION_LIMIT_DATA_HIGH\fP(reg,  stat)   reg\->d1 = (unsigned char) (val>>8);"
+.br
+.ti -1c
+.RI "#define \fBPCB302_OPTIONS_DATA_POSITION_CALIBRATION\fP(reg,  stat)   reg\->D0(stat, 0x1)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_OPTIONS_DATA_FORCE_CALIBRATION\fP(reg,  stat)   reg\->D0(stat, 0x2)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_OPTIONS_DATA_MASTER_ENABLE\fP(reg,  stat)   reg\->D0(stat, 0x4)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_OPTIONS_DATA_ZERO_COMPRESSION\fP(reg,  stat)   reg\->D0(stat, 0x8)"
+.br
+.ti -1c
+.RI "#define \fBPCB302_SET_UNLOCK_COMMAND\fP   (System::Byte) Commandregister::SET_UNLOCK, (System::Byte) (0),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+.br
+.RI "This is the SET_POSITIONER_COMMAND byte frame\&. "
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define PCB302_GET_PADDLE_CODE(reg)   (reg\->d3)"
+
+.SS "#define PCB302_GET_PADDLE_FORCE_HIGH(reg)   (reg\->d2)"
+
+.SS "#define PCB302_GET_PADDLE_FORCE_LOW(reg)   ((reg\->d1&0xF0) >> 4)"
+
+.SS "#define PCB302_GET_PADDLE_POSITION_HIGH(reg)   (reg\->d1&0x0F)"
+
+.SS "#define PCB302_GET_PADDLE_POSITION_LOW(reg)   (reg\->d0)"
+
 .SS "#define PCB302_GET_STATUS_SYSTEM_REGISTER   (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false"
 
+.SS "#define PCB302_GET_SYSTEM_CMP_ENA(reg)   (bool)	(reg\->d2 & 0x01)"
+
+.SS "#define PCB302_GET_SYSTEM_CMP_ON(reg)   (bool)	(reg\->d2 & 0x02)"
+
+.SS "#define PCB302_GET_SYSTEM_COMMAND_ACTIVATION(reg)   (bool)	(reg\->d1 & 0x08)"
+
+.SS "#define PCB302_GET_SYSTEM_DOWNWARD_DIRECTION(reg)   (bool)	(reg\->d1 & 0x20)"
+
+.SS "#define PCB302_GET_SYSTEM_FAULT(reg)   (bool)	(reg\->d1 & 0x80)"
+
+.SS "#define PCB302_GET_SYSTEM_FORCE_TARGET(reg)   (bool)	(reg\->d2 & 0x10)"
+
+.SS "#define PCB302_GET_SYSTEM_IDLE(reg)   (bool)	(reg\->d1 & 0x01)"
+
+.SS "#define PCB302_GET_SYSTEM_LIMIT_COMPRESSION(reg)   (bool)	(reg\->d2 & 0x20)"
+
+.SS "#define PCB302_GET_SYSTEM_MANUAL_ACTIVATION(reg)   (bool)	(reg\->d1 & 0x02)"
+
+.SS "#define PCB302_GET_SYSTEM_MANUAL_SERVO_DWN(reg)   (bool)	(reg\->d0 & 0x02)"
+
+.SS "#define PCB302_GET_SYSTEM_MANUAL_SERVO_UP(reg)   (bool)	(reg\->d0 & 0x01)"
+
+.SS "#define PCB302_GET_SYSTEM_PEDAL_ACTIVATION(reg)   (bool)	(reg\->d1 & 0x04)"
+
+.SS "#define PCB302_GET_SYSTEM_PEDAL_DWN(reg)   (bool)	(reg\->d0 & 0x08)"
+
+.SS "#define PCB302_GET_SYSTEM_PEDAL_UP(reg)   (bool)	(reg\->d0 & 0x04)"
+
+.SS "#define PCB302_GET_SYSTEM_SMARTUP_TARGET(reg)   (bool)	(reg\->d2 & 0x08)"
+
+.SS "#define PCB302_GET_SYSTEM_UNLOCK_ACTIVATION(reg)   (bool)	(reg\->d1 & 0x40)"
+
+.SS "#define PCB302_GET_SYSTEM_UPWARD_DIRECTION(reg)   (bool)	(reg\->d1 & 0x10)"
+
+.SS "#define PCB302_GET_SYSTEM_ZERO_COMPRESSION(reg)   (bool)	(reg\->d2 & 0x04)"
+
+.SS "#define PCB302_OPTIONS_DATA_FORCE_CALIBRATION(reg, stat)   reg\->D0(stat, 0x2)"
+
+.SS "#define PCB302_OPTIONS_DATA_MASTER_ENABLE(reg, stat)   reg\->D0(stat, 0x4)"
+
+.SS "#define PCB302_OPTIONS_DATA_POSITION_CALIBRATION(reg, stat)   reg\->D0(stat, 0x1)"
+
+.SS "#define PCB302_OPTIONS_DATA_ZERO_COMPRESSION(reg, stat)   reg\->D0(stat, 0x8)"
+
+.SS "#define PCB302_POSITION_LIMIT_DATA_HIGH(reg, stat)   reg\->d1 = (unsigned char) (val>>8);"
+
+.SS "#define PCB302_POSITION_LIMIT_DATA_LOW(reg, val)   reg\->d0 = (unsigned char) val;"
+
+.SS "#define PCB302_SET_UNLOCK_COMMAND   (System::Byte) Commandregister::SET_UNLOCK, (System::Byte) (0),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+
+.PP
+This is the SET_POSITIONER_COMMAND byte frame\&. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

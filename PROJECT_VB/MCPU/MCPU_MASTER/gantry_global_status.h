@@ -110,6 +110,8 @@ private:
     static ValuePopupForm^ valuePopupWindow;
     static System::String^ patient_name;
     
+    static bool operating_normal_status = false;
+    static bool operating_sym_status = false;
     static bool operating_demo_status = false;
     static bool pcb301_simulator = false;
     static bool pcb302_simulator = false;

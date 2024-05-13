@@ -1,4 +1,4 @@
-.TH "ExposureModule::exposure_pulse" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ExposureModule::exposure_pulse" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -19,25 +19,64 @@ ExposureModule::exposure_pulse
 .RI "\fBexposure_pulse\fP (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt)"
 .br
 .ti -1c
+.RI "\fBexposure_pulse\fP (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt, float ma, float mS, unsigned char fc, int samples)"
+.br
+.ti -1c
+.RI "\fBexposure_pulse\fP (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt, unsigned char fc, bool gd, bool sync)"
+.br
+.ti -1c
 .RI "double \fBgetKv\fP ()"
 .br
 .ti -1c
 .RI "double \fBgetmAs\fP ()"
 .br
 .ti -1c
+.RI "double \fBgetmA\fP ()"
+.br
+.ti -1c
+.RI "double \fBgetms\fP ()"
+.br
+.ti -1c
+.RI "double \fBgetSamples\fP ()"
+.br
+.ti -1c
+.RI "unsigned char \fBgetFocus\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisLargeFocus\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisSmallFocus\fP ()"
+.br
+.ti -1c
 .RI "\fBPCB315::filterMaterialCodes\fP \fBgetFilter\fP ()"
 .br
 .ti -1c
-.RI "bool \fBgetValidated\fP ()"
+.RI "bool \fBuseGrid\fP ()"
+.br
+.ti -1c
+.RI "bool \fBuseDetector\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisValid\fP ()"
 .br
 .in -1c
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
+.RI "unsigned char \fBfocus\fP"
+.br
+.ti -1c
 .RI "\fBPCB315::filterMaterialCodes\fP \fBfilter\fP"
 .br
 .RI "This is the assigned filter\&. "
+.ti -1c
+.RI "bool \fBuse_grid\fP"
+.br
+.ti -1c
+.RI "bool \fBsynch_det\fP"
+.br
 .ti -1c
 .RI "double \fBkV\fP"
 .br
@@ -46,6 +85,20 @@ ExposureModule::exposure_pulse
 .RI "double \fBmAs\fP"
 .br
 .RI "This is the selected mAs value\&. "
+.ti -1c
+.RI "float \fBmA\fP"
+.br
+.RI "anodic current used in mA "
+.ti -1c
+.RI "float \fBms\fP"
+.br
+.RI "pulse endurance in ms "
+.ti -1c
+.RI "int \fBpulse_samples\fP"
+.br
+.RI "Number of portion of the pulses received 
+.br
+ "
 .ti -1c
 .RI "bool \fBvalidated\fP"
 .br
@@ -59,15 +112,35 @@ ExposureModule::exposure_pulse
 This is the creator of the pulse data class\&. 
 .SS "ExposureModule::exposure_pulse::exposure_pulse (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt)\fC [inline]\fP"
 
+.SS "ExposureModule::exposure_pulse::exposure_pulse (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt, float ma, float mS, unsigned char fc, int samples)\fC [inline]\fP"
+
+.SS "ExposureModule::exposure_pulse::exposure_pulse (double kv, double mas, \fBPCB315::filterMaterialCodes\fP flt, unsigned char fc, bool gd, bool sync)\fC [inline]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "\fBPCB315::filterMaterialCodes\fP ExposureModule::exposure_pulse::getFilter ()\fC [inline]\fP"
 
+.SS "unsigned char ExposureModule::exposure_pulse::getFocus ()\fC [inline]\fP"
+
 .SS "double ExposureModule::exposure_pulse::getKv ()\fC [inline]\fP"
+
+.SS "double ExposureModule::exposure_pulse::getmA ()\fC [inline]\fP"
 
 .SS "double ExposureModule::exposure_pulse::getmAs ()\fC [inline]\fP"
 
-.SS "bool ExposureModule::exposure_pulse::getValidated ()\fC [inline]\fP"
+.SS "double ExposureModule::exposure_pulse::getms ()\fC [inline]\fP"
+
+.SS "double ExposureModule::exposure_pulse::getSamples ()\fC [inline]\fP"
+
+.SS "bool ExposureModule::exposure_pulse::isLargeFocus ()\fC [inline]\fP"
+
+.SS "bool ExposureModule::exposure_pulse::isSmallFocus ()\fC [inline]\fP"
+
+.SS "bool ExposureModule::exposure_pulse::isValid ()\fC [inline]\fP"
+
+.SS "bool ExposureModule::exposure_pulse::useDetector ()\fC [inline]\fP"
+
+.SS "bool ExposureModule::exposure_pulse::useGrid ()\fC [inline]\fP"
 
 .SH "Member Data Documentation"
 .PP 
@@ -75,14 +148,34 @@ This is the creator of the pulse data class\&.
 
 .PP
 This is the assigned filter\&. 
+.SS "unsigned char ExposureModule::exposure_pulse::focus"
+
 .SS "double ExposureModule::exposure_pulse::kV"
 
 .PP
 This is the selected kV value\&. 
+.SS "float ExposureModule::exposure_pulse::mA"
+
+.PP
+anodic current used in mA 
 .SS "double ExposureModule::exposure_pulse::mAs"
 
 .PP
 This is the selected mAs value\&. 
+.SS "float ExposureModule::exposure_pulse::ms"
+
+.PP
+pulse endurance in ms 
+.SS "int ExposureModule::exposure_pulse::pulse_samples"
+
+.PP
+Number of portion of the pulses received 
+.br
+ 
+.SS "bool ExposureModule::exposure_pulse::synch_det"
+
+.SS "bool ExposureModule::exposure_pulse::use_grid"
+
 .SS "bool ExposureModule::exposure_pulse::validated"
 
 .PP

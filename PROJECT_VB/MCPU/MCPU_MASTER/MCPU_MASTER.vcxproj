@@ -235,11 +235,11 @@
     <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
     <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
     <ClCompile Include="DEVICES\PCB326.cpp" />
-    <ClCompile Include="GENERATOR\DEMO\GeneratorDemo.cpp" />
     <ClCompile Include="GENERATOR\Exposure2DModule.cpp" />
     <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureAEModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureTest.cpp" />
     <ClCompile Include="MESSAGES\Log.cpp" />
     <ClCompile Include="MOTORS\ArmMotor.cpp" />

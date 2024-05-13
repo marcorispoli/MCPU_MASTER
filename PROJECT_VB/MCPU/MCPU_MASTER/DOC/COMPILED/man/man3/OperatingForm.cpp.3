@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/OperatingForm.cpp" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/OperatingForm.cpp" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -18,7 +18,17 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include 'ConfirmationWindow\&.h'\fP
 .br
+\fC#include 'IconWindow\&.h'\fP
+.br
+\fC#include 'VerticalMotor\&.h'\fP
+.br
 \fC#include 'ArmMotor\&.h'\fP
+.br
+\fC#include 'BodyMotor\&.h'\fP
+.br
+\fC#include 'SlideMotor\&.h'\fP
+.br
+\fC#include 'TiltMotor\&.h'\fP
 .br
 \fC#include 'ExposureModule\&.h'\fP
 .br
@@ -34,15 +44,14 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include '\&.\&./DEVICES/PCB326\&.h'\fP
 .br
+\fC#include 'awsProtocol\&.h'\fP
+.br
 
 .SS "Classes"
 
 .in +1c
 .ti -1c
 .RI "struct \fBOPERSTATUS::collimatorStatus\fP"
-.br
-.ti -1c
-.RI "struct \fBOPERSTATUS::paddleStatus\fP"
 .br
 .ti -1c
 .RI "struct \fBOPERSTATUS::exposureStatus\fP"
@@ -59,7 +68,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .in +1c
 .ti -1c
-.RI "#define \fBPROJ_SELCTION_BACKGROUND_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ProjSelectionButton\&.PNG')"
+.RI "#define \fBPROJ_NOT_SELECTED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\NoProjectionSelected\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBPROJ_SELECTED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ProjectionSelected\&.PNG')"
 .br
 .ti -1c
 .RI "#define \fBXRAY_ON_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\XOn\&.PNG')"
@@ -71,10 +83,22 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBXRAY_READY_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\XReady\&.PNG')"
 .br
 .ti -1c
+.RI "#define \fBDEMO_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\Demo\&.PNG')"
+.br
+.ti -1c
 .RI "#define \fBLAMP_OFF_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\LampOff\&.PNG')"
 .br
 .ti -1c
 .RI "#define \fBLAMP_ON_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\LampOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBSLIDE_0_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\Slide0\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBSLIDE_10_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\Slide10\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBINFO_BUTTON_ON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\InfoIcon\&.PNG')"
 .br
 .ti -1c
 .RI "#define \fBWARNING_BUTTON_ON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\WarningOn\&.PNG')"
@@ -86,13 +110,13 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBERROR_BUTTON_OFF\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\AlarmOff\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBCOMPRESSOR_DISABLED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CompressionNotEnabled\&.PNG')"
+.RI "#define \fBPADDLE_DISABLED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CompressionNotEnabled\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBCOMPRESSOR_ENABLE_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ActivePaddleDetected\&.PNG')"
+.RI "#define \fBPADDLE_ENABLE_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ActivePaddleDetected\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBCOMPRESSOR_NOT_DETECTED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\PaddleNotPresent\&.PNG')"
+.RI "#define \fBPADDLE_NOT_DETECTED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\PaddleNotPresent\&.PNG')"
 .br
 .ti -1c
 .RI "#define \fBTHICKNESS_DISABLED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ThicknessDisabled\&.PNG')"
@@ -107,7 +131,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBFORCE_DISABLED_COMPRESSED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceDisabledCompressed\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBFORCE_ENABLED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledCompressed\&.PNG')"
+.RI "#define \fBFORCE_ENABLED_COMPRESSED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledCompressed\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBFORCE_ENABLED_NOT_COMPRESSED_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledNotCompressed\&.PNG')"
 .br
 .ti -1c
 .RI "#define \fBCOLLIMATION_IMAGE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CollimationMode\&.PNG')"
@@ -142,21 +169,56 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBPROJ_INFO_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\info_64x64\&.PNG')"
 .br
-.in -1c
-.SS "Enumerations"
-
-.in +1c
 .ti -1c
-.RI "enum \fBOPERSTATUS::xray_status_t\fP { \fBOPERSTATUS::XRAY_STATUS_NOT_READY\fP = 1, \fBOPERSTATUS::XRAY_STATUS_READY\fP }"
+.RI "#define \fBXRAY_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\xrayIcon\&.PNG')"
 .br
 .ti -1c
-.RI "enum \fBOPERSTATUS::compressor_mode_t\fP { \fBOPERSTATUS::COMPRESSOR_DISABLED\fP = 1, \fBOPERSTATUS::COMPRESSOR_NOT_DETECTED\fP, \fBOPERSTATUS::COMPRESSOR_DETECTED\fP }"
+.RI "#define \fBCOMPRESSING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\COMPRESSING_ICON\&.PNG')"
 .br
 .ti -1c
-.RI "enum \fBOPERSTATUS::thickness_mode_t\fP { \fBOPERSTATUS::THICKNESS_DISABLED\fP = 1, \fBOPERSTATUS::THICKNESS_ENABLED\fP }"
+.RI "#define \fBARM_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\ARM_MOTOR_ICON\&.PNG')"
 .br
 .ti -1c
-.RI "enum \fBOPERSTATUS::force_mode_t\fP { \fBOPERSTATUS::FORCE_DISABLED_NOT_COMPRESSED\fP = 1, \fBOPERSTATUS::FORCE_DISABLED_COMPRESSED\fP, \fBOPERSTATUS::FORCE_ENABLED\fP }"
+.RI "#define \fBBODY_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\BODY_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBVERTICAL_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\VERTICAL_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBSLIDE_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\SLIDE_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTILT_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\TILT_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBPADDLE_DISABLED\fP   1"
+.br
+.ti -1c
+.RI "#define \fBPADDLE_NOT_DETECT\fP   2"
+.br
+.ti -1c
+.RI "#define \fBPADDLE_DETECTED\fP   3"
+.br
+.ti -1c
+.RI "#define \fBTHICKNESS_DISABLED\fP   1"
+.br
+.ti -1c
+.RI "#define \fBTHICKNESS_ENABLED\fP   2"
+.br
+.ti -1c
+.RI "#define \fBFORCE_DISABLED_NOT_COMPRESSED\fP   1"
+.br
+.ti -1c
+.RI "#define \fBFORCE_DISABLED_COMPRESSED\fP   2"
+.br
+.ti -1c
+.RI "#define \fBFORCE_ENABLED_NOT_COMPRESSED\fP   3"
+.br
+.ti -1c
+.RI "#define \fBFORCE_ENABLED_COMPRESSED\fP   4"
+.br
+.ti -1c
+.RI "#define \fBTMO\fP   20"
 .br
 .in -1c
 .SS "Variables"
@@ -166,13 +228,7 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "struct {"
 .br
 .ti -1c
-.RI "   \fBpaddleStatus\fP \fBOPERSTATUS::paddle\fP"
-.br
-.ti -1c
 .RI "   \fBcollimatorStatus\fP \fBOPERSTATUS::collimator\fP"
-.br
-.ti -1c
-.RI "   \fBxray_status_t\fP \fBOPERSTATUS::xray_status\fP"
 .br
 .ti -1c
 .RI "   \fBPCB301::door_options\fP \fBOPERSTATUS::door_status\fP"
@@ -187,16 +243,10 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "   bool \fBOPERSTATUS::warning\fP"
 .br
 .ti -1c
+.RI "   bool \fBOPERSTATUS::info\fP"
+.br
+.ti -1c
 .RI "   unsigned char \fBOPERSTATUS::mag_factor\fP"
-.br
-.ti -1c
-.RI "   bool \fBOPERSTATUS::compressor_release\fP"
-.br
-.ti -1c
-.RI "   unsigned char \fBOPERSTATUS::residual_exposures\fP"
-.br
-.ti -1c
-.RI "   bool \fBOPERSTATUS::projectionSelected\fP"
 .br
 .ti -1c
 .RI "} \fBOPERSTATUS::Registers\fP"
@@ -204,17 +254,19 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define ARM_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\ARM_MOTOR_ICON\&.PNG')"
+
+.SS "#define BODY_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\BODY_MOTOR_ICON\&.PNG')"
+
 .SS "#define COLLIMATION_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CollimationMode\&.PNG')"
+
+.SS "#define COMPRESSING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\COMPRESSING_ICON\&.PNG')"
 
 .SS "#define COMPRESSION_KEEP_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CompressionReleaseOff\&.PNG')"
 
 .SS "#define COMPRESSION_RELEASE_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CompressionReleaseOn\&.PNG')"
 
-.SS "#define COMPRESSOR_DISABLED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CompressionNotEnabled\&.PNG')"
-
-.SS "#define COMPRESSOR_ENABLE_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ActivePaddleDetected\&.PNG')"
-
-.SS "#define COMPRESSOR_NOT_DETECTED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\PaddleNotPresent\&.PNG')"
+.SS "#define DEMO_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\Demo\&.PNG')"
 
 .SS "#define DOOR_CLOSED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\DoorClosed\&.PNG')"
 
@@ -224,11 +276,23 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .SS "#define ERROR_BUTTON_ON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\AlarmOn\&.PNG')"
 
+.SS "#define FORCE_DISABLED_COMPRESSED   2"
+
 .SS "#define FORCE_DISABLED_COMPRESSED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceDisabledCompressed\&.PNG')"
+
+.SS "#define FORCE_DISABLED_NOT_COMPRESSED   1"
 
 .SS "#define FORCE_DISABLED_NOT_COMPRESSED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceDisabledNotCompressed\&.PNG')"
 
-.SS "#define FORCE_ENABLED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledCompressed\&.PNG')"
+.SS "#define FORCE_ENABLED_COMPRESSED   4"
+
+.SS "#define FORCE_ENABLED_COMPRESSED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledCompressed\&.PNG')"
+
+.SS "#define FORCE_ENABLED_NOT_COMPRESSED   3"
+
+.SS "#define FORCE_ENABLED_NOT_COMPRESSED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ForceEnabledNotCompressed\&.PNG')"
+
+.SS "#define INFO_BUTTON_ON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\InfoIcon\&.PNG')"
 
 .SS "#define LAMP_OFF_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\LampOff\&.PNG')"
 
@@ -236,23 +300,55 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .SS "#define MAGFACTOR_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\MagFactor\&.PNG')"
 
+.SS "#define PADDLE_DETECTED   3"
+
+.SS "#define PADDLE_DISABLED   1"
+
+.SS "#define PADDLE_DISABLED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\CompressionNotEnabled\&.PNG')"
+
+.SS "#define PADDLE_ENABLE_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ActivePaddleDetected\&.PNG')"
+
+.SS "#define PADDLE_NOT_DETECT   2"
+
+.SS "#define PADDLE_NOT_DETECTED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\PaddleNotPresent\&.PNG')"
+
 .SS "#define PROJ_INFO_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\info_64x64\&.PNG')"
 
-.SS "#define PROJ_SELCTION_BACKGROUND_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ProjSelectionButton\&.PNG')"
+.SS "#define PROJ_NOT_SELECTED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\NoProjectionSelected\&.PNG')"
+
+.SS "#define PROJ_SELECTED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ProjectionSelected\&.PNG')"
 
 .SS "#define RESIDUAL_EXPOSURE_NOK_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ExposureLeftNok\&.PNG')"
 
 .SS "#define RESIDUAL_EXPOSURE_OK_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ExposureLeftOk\&.PNG')"
 
+.SS "#define SLIDE_0_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\Slide0\&.PNG')"
+
+.SS "#define SLIDE_10_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\Slide10\&.PNG')"
+
+.SS "#define SLIDE_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\SLIDE_MOTOR_ICON\&.PNG')"
+
+.SS "#define THICKNESS_DISABLED   1"
+
 .SS "#define THICKNESS_DISABLED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ThicknessDisabled\&.PNG')"
 
+.SS "#define THICKNESS_ENABLED   2"
+
 .SS "#define THICKNESS_ENABLED_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\ThicknessEnabled\&.PNG')"
+
+.SS "#define TILT_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\TILT_MOTOR_ICON\&.PNG')"
+
+.SS "#define TMO   20"
 
 .SS "#define TUBE_TEMP_NOK_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\TubeNok\&.PNG')"
 
 .SS "#define TUBE_TEMP_OK_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\TubeOk\&.PNG')"
 
+.SS "#define VERTICAL_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\VERTICAL_MOTOR_ICON\&.PNG')"
+
 .SS "#define WARNING_BUTTON_ON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\WarningOn\&.PNG')"
+
+.SS "#define XRAY_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\xrayIcon\&.PNG')"
 
 .SS "#define XRAY_ON_IMAGE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'OperatingForm\\\\XOn\&.PNG')"
 

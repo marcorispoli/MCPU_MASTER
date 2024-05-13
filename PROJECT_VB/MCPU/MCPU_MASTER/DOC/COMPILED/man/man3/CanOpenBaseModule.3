@@ -1,4 +1,4 @@
-.TH "CanOpenBaseModule" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanOpenBaseModule" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -34,7 +34,11 @@ Handles the nanoj program uploading and activation;
 .IP "\(bu" 2
 Handles the CiA status machine management;
 .IP "\(bu" 2
-Handles the Positioning commands;
+Handles the Automatic Positioning commands;
+.IP "\(bu" 2
+Handles the Manual Positioning commands;
+.IP "\(bu" 2
+Handles the Homing commands;
 .PP
 .SH "Device initialization"
 .PP
@@ -42,16 +46,31 @@ When the Application calls the activateConfiguration() or in case of remote devi
 .PP
 During this configuration fase the module:
 .IP "\(bu" 2
-Upload if present the Nano-J prgram;
+Uploads if present the Nano-J program;
 .IP "\(bu" 2
 Uploads the object registers with the application object register values\&.
+.IP "\(bu" 2
+In case the registers should be differents, the value is stored into the device\&.
 .PP
-.SS "Custom register initialization"
 .SH "CiA Status machine management"
 .PP
-The CanOPEN based device internal status changes in a set of standard predefined status called CiA_ Status machine\&.
+The CanOPEN based device internal status changesaccording with a standard status called CiA_ Status machine\&.
 .PP
-Any status is characterized by a specific motor conditions\&. It is not possible to arbitrary change from any status to any status but a specific change status sequence shall be followed: the Module implements automatically all the steps to drive the internal status into the operating status: CiA_SwitchedOn status\&.
+.IP "\(bu" 2
+Any status is characterized by a specific motor conditions;
+.IP "\(bu" 2
+It is not possible to arbitrary change from any status to any status but a specific change status sequence shall be followed;
+.IP "\(bu" 2
+the Module implements automatically all the steps to drive the internal status into the operating status: CiA_SwitchedOn status;
+.IP "\(bu" 2
+In case of a fault condition should be present, the module automatically enters a special status called fault, untile the fault condition should reset\&.
+.PP
+NOTE: the module will drive the motor device in only two possible modes:
+.IP "\(bu" 2
+Switched ON (idle);
+.IP "\(bu" 2
+Fault;
+.PP
 .SH "Nano-J program handling"
 .PP
 The module allows to upload a special program running on the PD4/PD6 series of the nanotec motors\&. In order to upload a Nanoj program, the Application shall subclass this module declaring a vector of the program data pointer and passing it to the module in the Subclass constructor with the command setNanoJPtr();
@@ -94,7 +113,42 @@ activateAutomaticHoming(): starts automatic zero setting procedure;
 .IP "\(bu" 2
 activateManualPositioning(): starts the manual position procedure;
 .IP "\(bu" 2
-abortActivation(): aborts any pending activation; 
+abortActivation(): aborts any pending activation;
+.PP
+.SH "Interface callbacks"
+.PP
+The module provides a set of overridable callbacks that a derived module can implement to customize the behavior of the final motor controller module:
+.IP "\(bu" 2
+motionParameterCallback(): this callback is called just before to set the current activation speed, allowing to customize the activation paramters;
+.IP "\(bu" 2
+preparationCallback(): this callback is called just before to power the motor wires;
+.IP "\(bu" 2
+runningCallback(): this callback is called several time during the motion;
+.IP "\(bu" 2
+completedCallback(): this function is called as soon as the command is completed;
+.IP "\(bu" 2
+idleCallback(): this is the callback during the IDEL startus (CiA_Switched_On status);
+.IP "\(bu" 2
+faultCallback): this is the callback called during the fault status;
+.IP "\(bu" 2
+resetCallback(): this is a callback calle just after the driver reset;
+.IP "\(bu" 2
+initializeSpecificObjectDictionaryCallback(): this is the callback called during the initialization fase;
+.IP "\(bu" 2
+brakeCallback(): this is a callback called just after the activation is terminated, before to remove the power to the wires\&.
+.IP "\(bu" 2
+unbrakeCallback() : this callback is called at the beginning of the activation, just after the motor wire powering(torque presence)
+.PP
+.SH "Encoder Position validation"
+.PP
+The current encoder posiiton is stored into the MotorCalibration\&.cnf file;
+.PP
+.IP "\(bu" 2
+At the beginning of an activaiton the position is invalidated;
+.IP "\(bu" 2
+At the command completion the position is stored into the file;
+.PP
+Note: in case of an invalid software procedure should loos the command termination, the encoder position will remain invalidated, until a new homing procedure is executed\&. 
 .PP
 
 .SH "Author"

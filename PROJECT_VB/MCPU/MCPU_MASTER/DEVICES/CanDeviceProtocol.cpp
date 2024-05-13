@@ -2,11 +2,13 @@
 #include "CanDeviceProtocol.h"
 #include "gantry_global_status.h"
 #include <thread>
+#include <mutex>
 #include "Log.h"
 
 using namespace System::Diagnostics;
 using namespace System::Collections::Generic;
 
+static std::mutex command_wait_mutex; //!< Mutex used for command with waiting access
 
 CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
 
@@ -21,9 +23,7 @@ CanDeviceProtocol::CanDeviceProtocol(unsigned char devid, LPCWSTR devname) {
     run = false;
     simulator_mode = false;
     command_executing = false;
-
-    sent_messages = 0;
-    unreceived_messages = 0;
+    
     register_access_fault = 0;
     register_access_fault_counter = 0;
 
@@ -145,7 +145,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     
     // Activates the transmission
     rxOk = false;
-    sent_messages++;
+    communication.sent_messages++;
     long start = clock();
     if (!CanDriver::multithread_send(canid, buffer, 8))   return false;
     rx_pending = true;
@@ -156,62 +156,17 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
 
     // Checks if the Event has been signalled or it is a timeout event.
     if ((dwWaitResult != WAIT_OBJECT_0) || (!rxOk)) {
-        unreceived_messages++;
-        if (unreceived_messages > 5) communication_error = true;            
+        communication.unreceived_messages++;
+        if (communication.unreceived_messages > 5) communication_error = true;
         return false;
     }
-    unreceived_messages = 0;
+    communication.unreceived_messages = 0;
     communication_error = false;
 
     long stop = clock();
-    txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
+    communication.txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
+    communication.updateStatistics();
 
-    if (txrx_time < 0.005)  sent_5++;
-    else if (txrx_time < 0.010)  sent_10++;
-    else if (txrx_time < 0.015)  sent_15++;
-    else if (txrx_time < 0.020)  sent_20++;
-    else if (txrx_time < 0.025)  sent_25++;
-    else if (txrx_time < 0.030)  sent_30++;
-    else if (txrx_time >= 0.030)  sent_xx++;
-    meanTime += txrx_time;
-
-    if (sent_messages == 1000) {
-        perc5 = (double)sent_5 * 100 / (double)sent_messages;
-        perc10 = (double)sent_10 * 100 / (double)sent_messages;
-        perc15 = (double)sent_15 * 100 / (double)sent_messages;
-        perc20 = (double)sent_20 * 100 / (double)sent_messages;
-        perc25 = (double)sent_25 * 100 / (double)sent_messages;
-        perc30 = (double)sent_30 * 100 / (double)sent_messages;
-        percXX = (double)sent_xx * 100 / (double)sent_messages;
-
-        percMeanTime = meanTime * 1000 / (double)sent_messages;
-
-        meanTime = 0;
-        sent_5 = 0;
-        sent_10 = 0;
-        sent_15 = 0;
-        sent_20 = 0;
-        sent_25 = 0;
-        sent_30 = 0;
-        sent_xx = 0;
-        sent_messages = 0;
-
-        System::String^ stringa = "Device Board <" + System::Convert::ToString(device_id);
-        stringa += ">: T:" + ((int)percMeanTime).ToString();
-        stringa += " [5]:" + ((int)perc5).ToString();
-        stringa += " [10]:" + ((int)perc10).ToString();
-        stringa += " [15]:" + ((int)perc15).ToString();
-        stringa += " [20]:" + ((int)perc20).ToString();
-        stringa += " [25]:" + ((int)perc25).ToString();
-        stringa += " [30]:" + ((int)perc30).ToString();
-        stringa += " [>30]:" + ((int)percXX).ToString();
-
-        // Log of the can performances
-#ifdef _ACTIVATE_CAN_DEVICE_DIAGNOSTIC_LOG
-       LogClass::logInFile(stringa);
-#endif
-
-    }
 
     return true;
     
@@ -226,7 +181,7 @@ void CanDeviceProtocol::mainWorker(void) {
 
     // Demo mode activation
     if (simulator_mode) {
-        internal_status = status_options::DEVICE_DEMO;
+        internal_status = status_options::DEVICE_SIMULATOR;
         LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
         while (simulator_mode) {
             demoLoop();
@@ -300,108 +255,122 @@ void CanDeviceProtocol::mainWorker(void) {
 
 }
 
-
+/// <summary>
+/// This function handles the Module workflow.
+/// </summary>
+/// 
+/// The Module workflow is following described:
+/// + run the application loop;
+/// + handles the command execution;
+/// + if the command takes time to be completed, a nested loop waits for the command completion;
+///     + In the nested loop, every 100ms, he application loop is always called;
+/// 
+/// <param name=""></param>
 void CanDeviceProtocol::InternalRunningLoop(void) {
 
+    // Calls the application loop 
+    runningLoop();
    
-    // Command execution sequence
-    if (command_executing) {
-        int timeout = command_tmo;
+    if (!command_executing) return;
 
-        // Test if a command is currently running
+    // handles the command execution  
+    if (isCommunicationError()) {
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Communication error");
+        command_error = (System::Byte)CommandRegisterErrors::COMMAND_COMMUNICATION_ERROR;
+        command_executing = false;
+        return;
+    }
+       
+    int timeout = command_tmo;
+    
+    // Reads the command register of the remote device
+    if (!send(GET_COMMAND_REGISTER)) return;
+
+
+    if (getRxRegister()->b3 == (System::Byte) CommandRegisterStatus::COMMAND_EXECUTING) {
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Busy");
+        command_error = (System::Byte) CommandRegisterErrors::COMMAND_ERROR_BUSY;
+        command_executing = false;
+        return;
+    }
+
+    // Sends the Requested Command
+    if (!send(0, 10, command_code, command_d0, command_d1, command_d2, command_d3, 0, false)) {
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Not Executed");
+        command_error = (System::Byte)CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED;
+        command_executing = false;
+        return;
+    }
+        
+    // Gets the command returning code
+    if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_ERROR) {
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Error");
+        command_error = getRxRegister()->b6;
+        command_executing = false;
+        return;
+    }
+
+    // Command is immediate
+    if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_TERMINATED) {
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Immediate Executed");
+        command_error = (System::Byte) CommandRegisterErrors::COMMAND_NO_ERROR;
+        command_ris0 = getRxRegister()->b4;
+        command_ris1 = getRxRegister()->b5;
+        command_executing = false;
+        return;
+    }
+
+    // If the command takes time to be completed a new loop is handled here
+    while (true) {
+            
+        // During the command loop, the application loop shall continue to work!
+        runningLoop();
+
+        timeout--;
+        if (!timeout) {
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Timeout");
+            command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
+            command_executing = false;
+            return;
+        }
+
         while (!send(GET_COMMAND_REGISTER)) {
             if (isCommunicationError()) {
                 LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
                 command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
                 command_executing = false;
                 return;
-            }            
+            }
         }
 
-
-        if (getRxRegister()->b3 == (System::Byte) CommandRegisterStatus::COMMAND_EXECUTING) {
-            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Busy");
-            command_error = (System::Byte) CommandRegisterErrors::COMMAND_ERROR_BUSY;
-            command_executing = false;
-            return;
+            
+        // The command is still executing
+        if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_EXECUTING) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
         }
 
-        // Sends the command code
-        if (!send(0, 10, command_code, command_d0, command_d1, command_d2, command_d3, 0, false)) {
-            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Not Executed");
-            command_error = (System::Byte)CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED;
-            command_executing = false;
-            return;
-        }
-        
-        // Gets the command returning code
-        if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_ERROR) {
-            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Error");
-            command_error = getRxRegister()->b6;
-            command_executing = false;
-            return;
-        }
-
-        // Command is immediate
         if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_TERMINATED) {
-            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Immediate Executed");
-            command_error = (System::Byte) CommandRegisterErrors::COMMAND_NO_ERROR;
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Successfully Terminated");
+            command_error = (System::Byte)CommandRegisterErrors::COMMAND_NO_ERROR;
             command_ris0 = getRxRegister()->b4;
             command_ris1 = getRxRegister()->b5;
             command_executing = false;
             return;
         }
 
-        // Reads the Command Register to detect the command completion
-        while (true) {
-            timeout--;
-            if (!timeout) {
-                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Execution Timeout");
-                command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
-                command_executing = false;
-                return;
-            }
-
-            while (!send(GET_COMMAND_REGISTER)) {
-                if (isCommunicationError()) {
-                    LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Read Error");
-                    command_error = (System::Byte)CommandRegisterErrors::COMMAND_DEVICE_TMO;
-                    command_executing = false;
-                    return;
-                }
-            }
-
-            
-            // The command is still executing
-            if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_EXECUTING) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                continue;
-            }
-
-            if (getRxRegister()->b3 == (System::Byte)CommandRegisterStatus::COMMAND_TERMINATED) {
-                LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Successfully Terminated");
-                command_error = (System::Byte)CommandRegisterErrors::COMMAND_NO_ERROR;
-                command_ris0 = getRxRegister()->b4;
-                command_ris1 = getRxRegister()->b5;
-                command_executing = false;
-                return;
-            }
-
-            // Error condition
-            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Terminated in Error");
-            command_error = getRxRegister()->b6;
-            command_executing = false;
-            return;
+        // Error condition
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Terminated in Error");
+        command_error = getRxRegister()->b6;
+        command_executing = false;
+        return;
             
 
-            // Repeats the read command register
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-
+        // Repeats the read command register
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // Application runninig loop
-    runningLoop();
+    // Command completed
     return;
 }
 
@@ -420,7 +389,10 @@ bool CanDeviceProtocol::configurationLoop(void) {
     return true;
 }
 
-bool CanDeviceProtocol::command(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) {
+bool CanDeviceProtocol::commandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) {
+    // Protect the function with a mutex
+    const std::lock_guard<std::mutex> lock(command_wait_mutex);
+
     if (command_executing) return false;
     if (internal_status != status_options::DEVICE_RUNNING) return false;
 
@@ -435,9 +407,42 @@ bool CanDeviceProtocol::command(unsigned char code, unsigned char d0, unsigned c
 
     return true;
 }
-bool CanDeviceProtocol::isCommandCompleted(void) {
-    return !command_executing;
+
+CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src) {
+    
+    // Protect the function with a mutex
+    const std::lock_guard<std::mutex> lock(command_wait_mutex);
+
+    // Verifies that the calling module is different from the class implementing the communication with the device
+    if(src == (Object^) this) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_INVALID_DEVICE);
+
+    // Invalid Device Status 
+    if (internal_status != status_options::DEVICE_RUNNING) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED);
+
+    // Command Busy
+    if (command_executing)  return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_BUSY);
+    
+
+    // Command preparation
+    command_executing = true;
+    command_tmo = tmo;
+    command_code = code;
+    command_d0 = d0;
+    command_d1 = d1;
+    command_d2 = d2;
+    command_d3 = d3;
+    command_error = 0;
+
+    // Wait for command completion
+    while (!isCommandCompleted()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Returns the result
+    return gcnew CanDeviceCommandResult((CommandRegisterErrors) command_error, command_ris0, command_ris1);
+    
 }
+
+
+
 
 CanDeviceProtocol::Register^ CanDeviceProtocol::readCommandRegister(void) {
     return nullptr;

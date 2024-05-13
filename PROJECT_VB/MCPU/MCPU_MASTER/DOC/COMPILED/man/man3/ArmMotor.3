@@ -1,4 +1,4 @@
-.TH "ArmMotor" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "ArmMotor" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,12 +16,6 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .in +1c
 .ti -1c
 .RI "\fBArmMotor\fP (void)"
-.br
-.ti -1c
-.RI "delegate void \fBdelegate_target_change_callback\fP (int id, int target_position)"
-.br
-.ti -1c
-.RI "delegate void \fBdelegate_target_abort_callback\fP (void)"
 .br
 .ti -1c
 .RI "delegate void \fBdelegate_abort_projection_request_callback\fP (void)"
@@ -46,13 +40,12 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "static bool \fBisValidPosition\fP (void)"
 .br
 .ti -1c
-.RI "static bool \fBstartHoming\fP (void)"
+.RI "static bool \fBstartManualHoming\fP (int target_position)"
+.br
+.ti -1c
+.RI "static bool \fBstartAutoHoming\fP ()"
 .br
 .RI "This function activates the Automatic Homing procedure "
-.ti -1c
-.RI "static void \fBsetManualEnable\fP (bool status)"
-.br
-.RI "Enables / Disables the manual activation mode\&. "
 .ti -1c
 .RI "static bool \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
 .br
@@ -60,10 +53,19 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "static void \fBabortTarget\fP (void)"
 .br
 .ti -1c
+.RI "static bool \fBserviceAutoPosition\fP (int pos)"
+.br
+.ti -1c
+.RI "static bool \fBsetIdlePosition\fP (void)"
+.br
+.ti -1c
 .RI "static \fBProjectionOptions\fP ^ \fBgetProjectionsList\fP ()"
 .br
 .ti -1c
 .RI "static System::String ^ \fBgetSelectedProjection\fP (void)"
+.br
+.ti -1c
+.RI "static \fBProjectionOptions::options\fP \fBgetSelectedProjectionCode\fP (void)"
 .br
 .ti -1c
 .RI "static void \fBabortProjectionRequest\fP (void)"
@@ -83,31 +85,18 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .in +1c
 .ti -1c
-.RI "bool \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
+.RI "void \fBcompletedCallback\fP (int id, \fBMotorCommands\fP \fBcurrent_command\fP, int current_position, \fBMotorCompletedCodes\fP term_code) override"
 .br
-.RI "Sets specific registers for the Arm activation\&. "
+.RI "This function is called just before to Power the motor phases\&. "
 .ti -1c
-.RI "void \fBautomaticPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
+.RI "unsigned short \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
 .br
-.RI "Override the basic class to handle the Virtual isocentric function 
+.RI "Sets specific registers for the Arm activation 
 .br
  "
 .ti -1c
-.RI "\fBMotorCompletedCodes\fP \fBidleCallback\fP (void) override"
+.RI "void \fBfaultCallback\fP (bool errstat, bool data_changed, unsigned int \fBerror_class\fP, unsigned int \fBerror_code\fP) override"
 .br
-.RI "The \fBArmMotor\fP class override this function in order to handle the IDLE activities "
-.ti -1c
-.RI "void \fBautomaticHomingCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
-.br
-.RI "The \fBArmMotor\fP class override this function in order to handle the homing completion process\&. "
-.ti -1c
-.RI "void \fBmanualPositioningCompletedCallback\fP (\fBMotorCompletedCodes\fP error) override"
-.br
-.RI "This function is called when the command is terminated\&. "
-.ti -1c
-.RI "\fBMotorCompletedCodes\fP \fBmanualPositioningRunningCallback\fP (void) override"
-.br
-.RI "The \fBArmMotor\fP class override this function in order to handle the manual activation process\&. "
 .in -1c
 .SS "Protected Attributes"
 
@@ -120,12 +109,6 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "Events"
 
 .in +1c
-.ti -1c
-.RI "static \fBdelegate_target_change_callback\fP^ \fBtarget_change_event\fP"
-.br
-.ti -1c
-.RI "static \fBdelegate_target_abort_callback\fP^ \fBtarget_abort_event\fP"
-.br
 .ti -1c
 .RI "static \fBdelegate_abort_projection_request_callback\fP^ \fBabort_projection_request_event\fP"
 .br
@@ -158,14 +141,6 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 .RI "Automatic selected target 
 .br
  "
-.ti -1c
-.RI "static bool \fBmanual_activation_enabled\fP = false"
-.br
-.RI "This is the flag activating the body manual activation\&. "
-.ti -1c
-.RI "static bool \fBmanual_cw_direction\fP = false"
-.br
-.RI "Sets true if the CW manual command is executing, false if the CCW manual activation is executing\&. "
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Detailed Description"
@@ -183,70 +158,32 @@ Inherits \fBCANOPEN::CanOpenMotor\fP\&.
 
 .SS "void ArmMotor::abortTarget (void)\fC [static]\fP"
 
-.SS "void ArmMotor::automaticHomingCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "void ArmMotor::completedCallback (int id, \fBMotorCommands\fP current_command, int current_position, \fBMotorCompletedCodes\fP term_code)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-The \fBArmMotor\fP class override this function in order to handle the homing completion process\&. 
-.PP
-\fBReturns\fP
-.RS 4
-
-.RE
-.PP
-
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "void ArmMotor::automaticPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-Override the basic class to handle the Virtual isocentric function 
-.br
- The \fBArmMotor\fP class override this function in order to handle the Isocentric automatic activation code
-.PP
-\fBParameters\fP
-.RS 4
-\fILABEL_ERROR\fP 
-.RE
-.PP
-
+This function is called just before to Power the motor phases\&. 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "delegate void ArmMotor::delegate_abort_projection_request_callback (void)"
 
 .SS "delegate void ArmMotor::delegate_projection_request_callback (System::String^ str)"
 
-.SS "delegate void ArmMotor::delegate_target_abort_callback (void)"
+.SS "void ArmMotor::faultCallback (bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
-.SS "delegate void ArmMotor::delegate_target_change_callback (int id, int target_position)"
-
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "static \fBProjectionOptions\fP ^ ArmMotor::getProjectionsList ()\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static System::String ^ ArmMotor::getSelectedProjection (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "\fBArmMotor::MotorCompletedCodes\fP ArmMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "static \fBProjectionOptions::options\fP ArmMotor::getSelectedProjectionCode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "unsigned short ArmMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
-The \fBArmMotor\fP class override this function in order to handle the IDLE activities 
-.PP
-\fBReturns\fP
-.RS 4
-
-.RE
-.PP
-
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "bool ArmMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-Sets specific registers for the Arm activation\&. The \fBArmMotor\fP override this function in order to initialize specific motor registers
-.PP
-\fBReturns\fP
-.RS 4
-true if the initialization termines successfully
-.RE
-.PP
-
+Sets specific registers for the Arm activation 
+.br
+ 
 .PP
 Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "static bool ArmMotor::isInRange (void)\fC [inline]\fP, \fC [static]\fP"
@@ -257,34 +194,15 @@ Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 
 .SS "static bool ArmMotor::isValidTarget (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "void ArmMotor::manualPositioningCompletedCallback (\fBMotorCompletedCodes\fP error)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-This function is called when the command is terminated\&. 
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
-.SS "\fBArmMotor::MotorCompletedCodes\fP ArmMotor::manualPositioningRunningCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-
-.PP
-The \fBArmMotor\fP class override this function in order to handle the manual activation process\&. 
-.PP
-\fBReturns\fP
-.RS 4
-
-.RE
-.PP
-
-.PP
-Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
 .SS "static void ArmMotor::projectionRequest (System::String^ projection)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "static void ArmMotor::setManualEnable (bool status)\fC [inline]\fP, \fC [static]\fP"
+.SS "bool ArmMotor::serviceAutoPosition (int pos)\fC [static]\fP"
 
-.PP
-Enables / Disables the manual activation mode\&. 
+.SS "bool ArmMotor::setIdlePosition (void)\fC [static]\fP"
+
 .SS "bool ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fC [static]\fP"
 
-.SS "bool ArmMotor::startHoming (void)\fC [static]\fP"
+.SS "bool ArmMotor::startAutoHoming (void)\fC [static]\fP"
 
 .PP
 This function activates the Automatic Homing procedure 
@@ -294,6 +212,8 @@ This function activates the Automatic Homing procedure
 
 .RE
 .PP
+
+.SS "bool ArmMotor::startManualHoming (int target_position)\fC [static]\fP"
 
 .SH "Member Data Documentation"
 .PP 
@@ -311,14 +231,6 @@ Lower acceptable angle (°)
 
 .PP
 Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. 
-.SS "bool ArmMotor::manual_activation_enabled = false\fC [static]\fP, \fC [private]\fP"
-
-.PP
-This is the flag activating the body manual activation\&. 
-.SS "bool ArmMotor::manual_cw_direction = false\fC [static]\fP, \fC [private]\fP"
-
-.PP
-Sets true if the CW manual command is executing, false if the CCW manual activation is executing\&. 
 .SS "\fBProjectionOptions\fP ^ ArmMotor::projections = gcnew \fBProjectionOptions\fP\fC [static]\fP, \fC [private]\fP"
 
 .PP
@@ -338,10 +250,6 @@ True if the target is a valid target\&.
 .SS "\fBdelegate_abort_projection_request_callback\fP^ ArmMotor::abort_projection_request_event\fC [static]\fP"
 
 .SS "\fBdelegate_projection_request_callback\fP^ ArmMotor::projection_request_event\fC [static]\fP"
-
-.SS "\fBdelegate_target_abort_callback\fP^ ArmMotor::target_abort_event\fC [static]\fP"
-
-.SS "\fBdelegate_target_change_callback\fP^ ArmMotor::target_change_event\fC [static]\fP"
 
 
 .SH "Author"

@@ -224,7 +224,7 @@ System::String^ Notify::getListOfErrors(void) {
 
 		errlist += formatMsg((messages) i);
 		if (message_list[i]->extra) errlist += ":\n >" + message_list[i]->extra;
-		errlist += "----------------------------------------------------------------------------\n\n";
+		errlist += "\n----------------------------------------------------------------------------\n\n";
 	}
 
 

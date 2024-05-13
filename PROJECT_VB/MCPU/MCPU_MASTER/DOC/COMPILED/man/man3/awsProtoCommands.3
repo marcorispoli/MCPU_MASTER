@@ -1,4 +1,4 @@
-.TH "awsProtoCommands" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "awsProtoCommands" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -158,7 +158,7 @@ the Max shall be > Ange;
 .PP
 Possibly returned error codes:
 .PP
-ERROR CODE   ERROR STRING   DESCRIPTION    \fBreturn_errors::AWS_RET_WRONG_OPERATING_STATUS\fP   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    \fBreturn_errors::AWS_RET_WRONG_PARAMETERS\fP   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 4)    \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP   'ARM_BUSY'   The ARM is currently executing a rotation    \fBreturn_errors::AWS_RET_DATA_NOT_ALLOWED\fP   'WRONG_PROJECTION'   The projection name is not valid or it isn't in the list of selectable projections    \fBreturn_errors::AWS_RET_INVALID_PARAMETER_VALUE\fP   'WRONG_TARGET_DATA'   One of the angle parameter is not correct or out of range   
+ERROR CODE   ERROR STRING   DESCRIPTION    \fBreturn_errors::AWS_RET_WRONG_OPERATING_STATUS\fP   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    \fBreturn_errors::AWS_RET_WRONG_PARAMETERS\fP   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 4)    \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP   'MOTORS_BUSY'   One of the motors is running    \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP   'ARM_NOT_READY'   The ARM is not ready to execute an activation    \fBreturn_errors::AWS_RET_DATA_NOT_ALLOWED\fP   'WRONG_PROJECTION'   The projection name is not valid or it isn't in the list of selectable projections    \fBreturn_errors::AWS_RET_INVALID_PARAMETER_VALUE\fP   'WRONG_TARGET_DATA'   One of the angle parameter is not correct or out of range   
 .PP
 The Command always returns a <ID % EXECUTING%> frame in case of success, because the ARM requires some time to be positioned, even if the ARM should be already in the target position\&.
 .SS "void awsProtocol::EXEC_CloseStudy (void)\fC [private]\fP"
@@ -210,7 +210,7 @@ TRX TARGET VALUE   DESCRIPTION    'SCOUT'   Scout Position    'BP_R'   \fBBiopsy
 .PP
 Possibly returned error codes:
 .PP
-ERROR CODE   ERROR STRING   DESCRIPTION    \fBreturn_errors::AWS_RET_WRONG_OPERATING_STATUS\fP   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    \fBreturn_errors::AWS_RET_WRONG_PARAMETERS\fP   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP   'TRX_BUSY'   The TRX is currently executing a rotation    \fBreturn_errors::AWS_RET_INVALID_PARAMETER_VALUE\fP   'INVALID_TARGET'   One of the angle parameter is not correct or out of range    \fBreturn_errors::AWS_RET_DEVICE_ERROR\fP   'DEVICE_ERROR'   The Tilt Device cannot activate the command for an internal reason   
+ERROR CODE   ERROR STRING   DESCRIPTION    \fBreturn_errors::AWS_RET_WRONG_OPERATING_STATUS\fP   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    \fBreturn_errors::AWS_RET_WRONG_PARAMETERS\fP   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP   'MOTORS_BUSY'   One of the motors is running    \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP   'TRX_NOT_READY'   The TRX is not ready to execute an activation    \fBreturn_errors::AWS_RET_INVALID_PARAMETER_VALUE\fP   'INVALID_TARGET'   One of the angle parameter is not correct or out of range    \fBreturn_errors::AWS_RET_DEVICE_ERROR\fP   'DEVICE_ERROR'   The Tilt Device cannot activate the command for an internal reason   
 .PP
 \fBGantry\fP always returns <ID % EXECUTING%> frame: the TRX start executing;
 .SS "void awsProtocol::GET_Arm (void)\fC [private]\fP"

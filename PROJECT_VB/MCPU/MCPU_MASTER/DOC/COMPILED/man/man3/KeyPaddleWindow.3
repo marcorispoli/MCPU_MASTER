@@ -1,0 +1,279 @@
+.TH "KeyPaddleWindow" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+KeyPaddleWindow
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <KeyPaddle\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_button_callback\fP (System::String^ value)"
+.br
+.ti -1c
+.RI "void \fBopen\fP (void)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBformInitialization\fP (System::String^ info_title, System::String^ info_content)"
+.br
+.ti -1c
+.RI "\fBKeyPaddleWindow\fP (Form^ pp, System::String^ info_title, System::String^ info_content)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "System::String ^ \fBresult\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~KeyPaddleWindow\fP ()"
+.br
+.RI "Clean up any resources being used\&.  "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "\fBdelegate_button_callback\fP^ \fBbutton_ok_event\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "System::Void \fBInitializeComponent\fP ()"
+.br
+.ti -1c
+.RI "System::Void \fBCancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBOkButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk1_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk2_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk3_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk4_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk5_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk6_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk7_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk8_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk9_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBk0_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBkb_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBkp_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBkm_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBInfoTitleText\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk7\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk8\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk9\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBkb\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk4\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk6\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk1\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk3\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBk0\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBkp\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBkok\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBkm\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBInfoContentText\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBCancButton\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&.  "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "KeyPaddleWindow::KeyPaddleWindow (Form^ pp, System::String^ info_title, System::String^ info_content)\fC [inline]\fP"
+
+.SS "KeyPaddleWindow::~KeyPaddleWindow ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Clean up any resources being used\&.  
+.SH "Member Function Documentation"
+.PP 
+.SS "System::Void KeyPaddleWindow::CancButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void KeyPaddleWindow::close (void)"
+
+.SS "delegate void KeyPaddleWindow::delegate_button_callback (System::String^ value)"
+
+.SS "void KeyPaddleWindow::formInitialization (System::String^ info_title, System::String^ info_content)"
+
+.SS "System::Void KeyPaddleWindow::InitializeComponent ()\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k0_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k1_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k2_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k3_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k4_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k5_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k6_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k7_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k8_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::k9_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::kb_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::km_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::kp_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void KeyPaddleWindow::OkButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void KeyPaddleWindow::open (void)"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::Panel ^ KeyPaddleWindow::CancButton\fC [private]\fP"
+
+.SS "System::ComponentModel::Container ^ KeyPaddleWindow::components\fC [private]\fP"
+
+.PP
+Required designer variable\&.  
+.SS "System::Windows::Forms::Label ^ KeyPaddleWindow::InfoContentText\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ KeyPaddleWindow::InfoTitleText\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k0\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k1\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k2\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k3\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k4\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k5\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k6\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k7\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k8\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::k9\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::kb\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::km\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::kok\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ KeyPaddleWindow::kp\fC [private]\fP"
+
+.SS "bool KeyPaddleWindow::open_status"
+
+.SS "Form ^ KeyPaddleWindow::parent"
+
+.SS "System::String ^ KeyPaddleWindow::result"
+
+.SS "HWND KeyPaddleWindow::window"
+
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_button_callback\fP^ KeyPaddleWindow::button_ok_event"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

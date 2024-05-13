@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/IdleForm.cpp" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/WINDOWS/IdleForm.cpp" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,11 +8,15 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .PP
 \fC#include '\&.\&./AWS/awsProtocol\&.h'\fP
 .br
+\fC#include 'ConfirmationWindow\&.h'\fP
+.br
 \fC#include 'idleForm\&.h'\fP
 .br
-\fC#include 'ErrorForm\&.h'\fP
+\fC#include 'ValuePopup\&.h'\fP
 .br
 \fC#include 'operatingForm\&.h'\fP
+.br
+\fC#include 'ServiceForm\&.h'\fP
 .br
 \fC#include 'SystemConfig\&.h'\fP
 .br
@@ -32,7 +36,13 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include 'VerticalMotor\&.h'\fP
 .br
+\fC#include 'ArmMotor\&.h'\fP
+.br
 \fC#include 'BodyMotor\&.h'\fP
+.br
+\fC#include 'SlideMotor\&.h'\fP
+.br
+\fC#include 'TiltMotor\&.h'\fP
 .br
 \fC#include '\&.\&./gantry_global_status\&.h'\fP
 .br
@@ -64,6 +74,9 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBXRAY_MODE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
 .br
 .ti -1c
+.RI "#define \fBSERVICE_TOOL_MODE\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\ServiceToolMode\&.PNG')"
+.br
+.ti -1c
 .RI "#define \fBBATTERY_CONNECTED\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryConnected\&.PNG')"
 .br
 .ti -1c
@@ -91,7 +104,37 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "#define \fBERRORPANEL_ERRORICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
 .br
 .ti -1c
-.RI "#define \fBERROR_BUTTON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
+.RI "#define \fBINFO_BUTTON_ON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\InfoIcon\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBWARNING_BUTTON_ON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\WarningOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBERROR_BUTTON_ON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBERROR_BUTTON_OFF\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOff\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBCOMPRESSING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\COMPRESSING_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBARM_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\ARM_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBBODY_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\BODY_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBVERTICAL_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\VERTICAL_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBSLIDE_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\SLIDE_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTILT_EXECUTING_ICON\fP   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\TILT_MOTOR_ICON\&.PNG')"
+.br
+.ti -1c
+.RI "#define \fBTMO\fP   20"
 .br
 .in -1c
 .SS "Variables"
@@ -119,11 +162,22 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .RI "   bool \fBIDLESTATUS::peripherals_connected\fP"
 .br
 .ti -1c
+.RI "   bool \fBIDLESTATUS::alarm\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::warning\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::info\fP"
+.br
+.ti -1c
 .RI "} \fBIDLESTATUS::Registers\fP"
 .br
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define ARM_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\ARM_MOTOR_ICON\&.PNG')"
+
 .SS "#define AWS_CONNECTED   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AwsConnected\&.PNG')"
 
 .SS "#define BACKGROUND   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\IdleFormBackground\&.PNG')"
@@ -134,17 +188,37 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 
 .SS "#define BATTERY_POWERDOWN   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\Battery\\\\BatteryPowerdownFull\&.PNG')"
 
+.SS "#define BODY_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\BODY_MOTOR_ICON\&.PNG')"
+
+.SS "#define COMPRESSING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\COMPRESSING_ICON\&.PNG')"
+
 .SS "#define DOOR_CLOSED   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\DoorClosed\&.PNG')"
 
-.SS "#define ERROR_BUTTON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
+.SS "#define ERROR_BUTTON_OFF   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOff\&.PNG')"
+
+.SS "#define ERROR_BUTTON_ON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\AlarmOn\&.PNG')"
 
 .SS "#define ERRORPANEL_ERRORICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\error_160x145\&.PNG')"
 
+.SS "#define INFO_BUTTON_ON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\InfoIcon\&.PNG')"
+
 .SS "#define PERIPHERALS_CONNECTED   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\PeripheralsConnected\&.PNG')"
+
+.SS "#define SERVICE_TOOL_MODE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\ServiceToolMode\&.PNG')"
+
+.SS "#define SLIDE_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\SLIDE_MOTOR_ICON\&.PNG')"
+
+.SS "#define TILT_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\TILT_MOTOR_ICON\&.PNG')"
+
+.SS "#define TMO   20"
 
 .SS "#define TUBE_TEMP_NOK   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\tubeTempNok\&.PNG')"
 
 .SS "#define TUBE_TEMP_OK   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\tubeTempOk\&.PNG')"
+
+.SS "#define VERTICAL_EXECUTING_ICON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'Icons\\\\VERTICAL_MOTOR_ICON\&.PNG')"
+
+.SS "#define WARNING_BUTTON_ON   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\WarningOn\&.PNG')"
 
 .SS "#define XRAY_MODE   Image::FromFile(\fBGantry::applicationResourcePath\fP + 'IdleForm\\\\XrayMode\&.PNG')"
 

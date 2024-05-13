@@ -1,4 +1,4 @@
-.TH "PCB315" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -71,7 +71,7 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "Returns the Filter name\&. "
 .ti -1c
-.RI "static void \fBsetFilterAutoMode\fP (\fBfilterMaterialCodes\fP code)"
+.RI "static bool \fBsetFilterAutoMode\fP (\fBfilterMaterialCodes\fP code, bool wait_completion)"
 .br
 .RI "This function sets the Auto mode, assigning the filter to be selected\&. "
 .ti -1c
@@ -91,9 +91,19 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This function activates the Mirror Mode and the light (if requested) "
 .ti -1c
+.RI "static bool \fBwaitForValidFilter\fP (void)"
+.br
+.RI "This function waits that a valid filter is selected\&. "
+.ti -1c
 .RI "static bool \fBgetPowerLightStatus\fP (void)"
 .br
 .RI "This function returns the current status of the Power light  "
+.ti -1c
+.RI "static bool \fBisValidFilterSelected\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisFilterFault\fP (void)"
+.br
 .in -1c
 .in -1c
 .SS "Static Public Attributes"
@@ -189,7 +199,7 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This is the current anode temperature in percent of the maximum possible\&. "
 .ti -1c
-.RI "static bool \fBtube_high_temp_alarm\fP = false"
+.RI "static bool \fBtube_temp_alarm\fP = false"
 .br
 .RI "This is the current tube temperature alarm flag in case of fault detected\&. "
 .ti -1c
@@ -212,6 +222,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "void \fBresetLoop\fP (void) override"
 .br
 .RI "This is the Base class resetLoop override function\&. "
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
 .ti -1c
 .RI "bool \fBupdateStatusRegister\fP (void)"
 .br

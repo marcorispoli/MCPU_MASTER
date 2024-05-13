@@ -345,38 +345,47 @@ void OperatingForm::evaluateXrayStatus(void) {
 	static int ready_stat = 255;
 	int stat;
 
-	if (Notify::isError()) stat = 1;
-	else if (Notify::isWarning()) stat = 2;
-	else stat = 0;
-
+	if (Exposures::isXrayRunning()) stat = 3;
+	else if (Notify::isError()) stat = 0;// Not Ready for errors (Standby)
+	else if(Notify::isWarning()) stat = 1; // Not Ready for warnings (Standby)
+	else  stat = 2; // Ready for exposure
+	
 	if (ready_stat != stat) {
 		ready_stat = stat;
 
 		if (stat == 0) {
+			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
+			awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);			
+		}else if(stat == 1) {
+			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
+			awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
+		}else if (stat == 2) {
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
 			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
 			awsProtocol::EVENT_ReadyForExposure(true, (unsigned short)0);
 		}
 		else {
-			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
-			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
-			if (stat == 1) awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);
-			else  awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
+			xrayStat->BackgroundImage = XRAY_ON_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_X_RAY_ON);
 		}
 	}
 
-
+	
 	// Evaluate the Xray icon display activation during Exposure
+	/*
 	static bool xray_running = true;
-	if (xray_running != ExposureModule::isXrayRunning()) {
-		xray_running = ExposureModule::isXrayRunning();
+	if (xray_running != Exposures::isXrayRunning()) {
+		xray_running = Exposures::isXrayRunning();
 		if (xray_running) {
 			((IconWindow^)pXray)->open();
 		}
 		else {
 			((IconWindow^)pXray)->close();
 		}
-	}
+	}*/
+	
 
 }
 void OperatingForm::evaluateReadyWarnings(bool reset) {
@@ -396,7 +405,7 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 	static bool cmp_force_error = false;
 
 	// Compression Mode Warning
-	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
+	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
 		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
 
@@ -407,36 +416,36 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 	else patient_protection = false;
 	//else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) patient_protection = true;
 
-	if ((ExposureModule::getProtectionMode() != ExposureModule::patient_protection_option::PROTECTION_DIS) && (!patient_protection))
+	if ((Exposures::getProtectionMode() != Exposures::patient_protection_option::PROTECTION_DIS) && (!patient_protection))
 		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	else 
 		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	
 	// C-Arm Mode
 	if (
-		(ExposureModule::getArmMode() != ExposureModule::arm_mode_option::ARM_DIS) &&
+		(Exposures::getArmMode() != Exposures::arm_mode_option::ARM_DIS) &&
 		(!ArmMotor::device->isValidPosition())
 		) Notify::activate(Notify::messages::WARNING_ARM_POSITION_WARNING);
 	else Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
 
 	// Paddle identification
-	if ((ExposureModule::getCompressorMode() != ExposureModule::compression_mode_option::CMP_DISABLE) &&
+	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) &&
 		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE);
 	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
 
 	
 	// Exposure Mode selection	
-	if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
+	if (Exposures::getExposureMode() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	
 
 	// Valid Exposure Data present
-	if (!ExposureModule::getExposurePulse(0)->isValid()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
+	if (!Exposures::getExposurePulse(0)->isValid()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
 
 	
 	// Xray Push Button Enable
-	if (!ExposureModule::getXrayPushButtonEvent()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
+	if (!Exposures::getXrayPushButtonEvent()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 
 
@@ -515,7 +524,7 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 	}
 	
 
-	if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_DISABLE) {
+	if (Exposures::getCompressorMode() == Exposures::compression_mode_option::CMP_DISABLE) {
 		cur_paddle = PADDLE_DISABLED;
 		cur_thick = THICKNESS_DISABLED;
 
@@ -604,7 +613,7 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 }
 
 void OperatingForm::evaluateCompressorReleaseStatus(void) {
-	static  ExposureModule::compression_mode_option cmpmode = ExposureModule::compression_mode_option::CMP_DISABLE;
+	static  Exposures::compression_mode_option cmpmode = Exposures::compression_mode_option::CMP_DISABLE;
 	static bool init = true;
 	if (init) {
 		init = false;
@@ -612,10 +621,10 @@ void OperatingForm::evaluateCompressorReleaseStatus(void) {
 		return;
 	}
 	
-	if (cmpmode == ExposureModule::getCompressorMode()) return;
-	cmpmode = ExposureModule::getCompressorMode();
+	if (cmpmode == Exposures::getCompressorMode()) return;
+	cmpmode = Exposures::getCompressorMode();
 
-	if (cmpmode == ExposureModule::compression_mode_option::CMP_RELEASE) decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
+	if (cmpmode == Exposures::compression_mode_option::CMP_RELEASE) decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
 	else decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 	
 }
@@ -867,7 +876,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 	static int  timer = 0;
 
 	// With a panel already open do not continue;
-	if (ExposureModule::isXrayRunning() || Notify::isInstantOpen() || Notify::isErrorOpen()) {
+	if (/*Exposures::isXrayRunning() || */Notify::isInstantOpen() || Notify::isErrorOpen()) {
 		if(Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->close();
 		compression = false;
 		arm = false;

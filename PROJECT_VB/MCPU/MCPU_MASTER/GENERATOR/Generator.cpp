@@ -3,13 +3,7 @@
 #include "SystemConfig.h"
 #include "Generator.h"
 #include "gantry_global_status.h"
-#include "ExposureModule.h"
-#include "PCB301.h"
-#include "PCB302.h"
-#include "PCB304.h"
 #include "Notify.h"
-#include "awsProtocol.h"
-#include "ArmMotor.h"
 #include <thread>
 #include "Log.h"
 
@@ -36,12 +30,24 @@ int16_t Generator::sendCR2CPData(unsigned char* pMessage, unsigned short  datale
 
 
 
-Generator::Generator(void):TcpClientCLI( SH_IP_ADDRESS, SH_PORT) 
+/// <summary>
+/// This is the class constructor
+/// </summary>
+/// 
+/// The Constructor instances the base class with the Smart Hub IP and Port address
+/// <param name=""></param>
+Generator::Generator(void) :TcpClientCLI( SH_IP, SH_PORT)
 {
-    
-    
+    // gets the instance pointer for the non static functions
+    device = this;
+ 
 }
 
+/// <summary>
+/// This function starts the Generator Module in Normal (non simulated) mode
+/// </summary>
+/// 
+/// <param name=""></param>
 void Generator::startNormalMode(void) {
     device->simulator_mode = false;
     
@@ -65,6 +71,15 @@ void Generator::startNormalMode(void) {
 
 }
 
+/// <summary>
+/// This function starts the Generator Module in Simulation mode
+/// </summary>
+/// 
+/// The simulation mode provides a transparent Application interface
+/// that doesn't make use of the Generator device but allowing the 
+/// application to activate the exposure workflows in a simulated way.
+/// 
+/// <param name=""></param>
 void Generator::startSimulatorMode(void) {
     device->simulator_mode = true;
 
@@ -105,20 +120,48 @@ void Generator::rxData(cli::array<Byte>^ receiveBuffer, int rc) {
     return;
 }
 
+/// <summary>
+/// This method provides the current smart hub connection status
+/// </summary>
+/// <param name=""></param>
+/// <returns>True if a valid communication with the Smat Hub is present </returns>
 bool Generator::isSmartHubConnected(void) {
     if (!device->isConnected()) return false;
     return R2CP_Eth->smartHubConnected;
 }
+
+/// <summary>
+/// This method provides the current Generator connection status
+/// </summary>
+/// <param name=""></param>
+/// <returns>True if a valid communication with the Generator device is present</returns>
 bool Generator::isGeneratorConnected(void) {
     if (!device->isConnected()) return false;
     return R2CP_Eth->generatorConnected;
 }
+
+/// <summary>
+/// This method provides the current Service Tool detection status
+/// </summary>
+/// 
+/// If the External Service Tool software should be executed 
+/// the Generator module stop working unil the software should be 
+/// closed.
+/// 
+/// The Application can monitor this particolar running mode using 
+/// this method
+/// <param name=""></param>
+/// <returns>True if the Service Tool is running on the Gantry PC</returns>
 bool Generator::isServiceToolConnected(void) {
     if (device->simulator_mode) return false;
     return R2CP_Eth->serviceToolConnected;
 }
 
-
+/// <summary>
+/// This function tests if the whole communication with the Generator System is present
+/// </summary>
+/// <param name=""></param>
+/// <returns>True if the connection with the Smart hub and the Generator device is present</returns>
 bool Generator::connectionTest(void) {
     if (!isConnected()) return false;
     if (!R2CP_Eth->smartHubConnected)  return false;
@@ -127,36 +170,78 @@ bool Generator::connectionTest(void) {
 
 }
 
+/// <summary>
+/// This is the Simulation Mode Working thread
+/// </summary>
+/// 
+/// The Working Thread of the simulation mode 
+/// sets all the internal status in ready for exposure.
+/// 
+/// the exposureManagementLoop() is called every 100ms with the demo mode flag set to true.
+/// 
+/// <param name=""></param>
 void Generator::simulatorWork(void) {
     LogClass::logInFile("Generator Simulator Version!\n");
 
     while (true) {
-        setup_completed = true;
         idle_status = true;
         ready_for_exposure = true;
-        generatorSimulatorIdle();
+        exposureManagementLoop(true);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
+/// <summary>
+///  If the initial configuration of the Generator device should fail 
+///  the main thread call this routine every 1000 ms forever
+/// </summary>
+/// <param name=""></param>
 void Generator::errorLoop(void) {
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         return;
     }
 }
+
+/// <summary>
+/// If the Service Tool Software should be detected the module main thread 
+/// calls this loop routine until the Service Tool software is closed.
+/// 
+/// </summary>
+/// 
+/// 
+/// <param name=""></param>
 void Generator::serviceToolLoop(void) {
     LogClass::logInFile("Service tool detected!\n");
     
     while (isServiceToolConnected()) {
         //Activates the XRAY-ENA to allows the service tool activities
-        PCB301::set_xray_ena(true);
+        setXrayEnable(true);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     LogClass::logInFile("Service tool exited\n");
-    PCB301::set_xray_ena(false);
+    setXrayEnable(false);
 
 }
+
+/// <summary>
+/// This is the Normal Mode working thread
+/// </summary>
+/// 
+/// The Main Thread starts at the beginning of the program when in Normal Mode.
+/// 
+/// The Main thread executes:
+/// - Initial connection with the generator and smart hub;
+/// - Generator Setup;
+/// - Service Tool monitoring;
+/// 
+/// If all the previous condition temrines properly 
+/// the generatorIdleLoop() is called.
+/// 
+/// If the generatorIdleLoop() should return, the main thread repeats 
+/// all the previous steps, reinitializing the Generator and the Module.
+/// 
+/// <param name=""></param>
 void Generator::threadWork(void) {
   
     while (true) {
@@ -166,7 +251,6 @@ void Generator::threadWork(void) {
 
         R2CP_Eth->smartHubConnected = false;
         R2CP_Eth->generatorConnected = false;
-        setup_completed = false;
         idle_status = false;
         ready_for_exposure = false;
 
@@ -251,19 +335,16 @@ void Generator::threadWork(void) {
             LogClass::logInFile("Generator Setup Failed!\n");
             Notify::activate(Notify::messages::ERROR_GENERATOR_SETUP);
 
-            setup_completed = true;
             errorLoop();
             Notify::deactivate(Notify::messages::ERROR_GENERATOR_SETUP);
             continue;
         }
               
 
-        // Disables the Rx Message
-        R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(true);
-        handleCommandProcessedState(nullptr);
+        // Activates the Disables Rx Message         
+        setDisableRxMessage(true);
         
-        LogClass::logInFile("Generator Setup Completed: Idle mode activated.\n");
-        setup_completed = true;       
+        LogClass::logInFile("Generator Setup Completed: Idle mode activated.\n");       
         idle_status = true;        
         Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
 
@@ -276,6 +357,20 @@ void Generator::threadWork(void) {
        
 }
 
+/// <summary>
+/// This function processes the returned code of the last R2CP command.
+/// </summary>
+/// 
+/// Every command of the R2CP protocol returns a special code 
+/// at the command completion. 
+/// The code can be used by the module to determine if the command 
+/// has been properly executed.
+/// 
+/// The missing of the returned code usually should cause 
+/// a general communication error with the module. 
+/// 
+/// <param name="cd"></param>
+/// <returns></returns>
 bool  Generator::handleCommandProcessedState(unsigned char* cd) {
     static int cp_timeout = 100;
 
@@ -303,6 +398,15 @@ bool  Generator::handleCommandProcessedState(unsigned char* cd) {
     return true;
 }
 
+/// <summary>
+/// This routine is used to initialize the communication with the generator
+/// </summary>
+/// 
+/// The procedure initialize the Generator communication setting the proper protocol version 
+/// to V6.
+/// 
+/// <param name=""></param>
+/// <returns></returns>
 bool Generator::generatorInitialization(void) {
 
     // Sets the version 6 of the protocol
@@ -340,7 +444,6 @@ bool Generator::generatorInitialization(void) {
 
     return true;
 }
-
 
 bool Generator::generatorSetup(void) {
     LogClass::logInFile("GENERATOR: Setup procedure\n");
@@ -473,34 +576,17 @@ bool Generator::clearSystemMessages(void) {
     return true;
 }
 
-bool Generator::startExposure(void) {
 
-    // test if the Exposure mode is correctly set
-    if (ExposureModule::getExposureMode() == ExposureModule::exposure_type_options::EXP_NOT_DEFINED) return false;
-
-    // Test if the pulse 0 is actually valid
-    if (!ExposureModule::getExposurePulse(0)->validated) return false;
-
-    if (!idle_status) return false; // Only in Stand-by mode can be initiated
-    if (!ready_for_exposure) return false; // Only in Stand-by mode can be initiated
-    if (xray_processing) return false; // A X-RAY procedure is processing (busy condition)
-    xray_processing = true;
-    ExposureModule::clearXrayCompleted();
-    
-    // Invalidates the Pulse 0 because it is consumed.
-    ExposureModule::getExposurePulse(0)->validated = false;
-    return true;
-}
-
-bool Generator::getGeneratorStatus(void) {
+bool Generator::updateGeneratorStatus(void) {
 
     // Gets the current generator status
     R2CP::CaDataDicGen::GetInstance()->Generator_Get_StatusV6();
     if (!handleCommandProcessedState(nullptr)) return false;
-    if (current_status == R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus) return false;
-    current_status = R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus;
 
-    switch (current_status) {
+    if (current_generator_status == R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus) return true;
+    current_generator_status = R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus;
+
+    switch (current_generator_status) {
     case R2CP::Stat_Standby: LogClass::logInFile("GENERATOR STATUS: Stat_Standby"); break;
     case R2CP::Stat_Preparation: LogClass::logInFile("GENERATOR STATUS: Stat_Preparation"); break;
     case R2CP::Stat_ExpReq: LogClass::logInFile("GENERATOR STATUS: Stat_ExpReq"); break;
@@ -511,7 +597,7 @@ bool Generator::getGeneratorStatus(void) {
     case R2CP::Stat_Initialization:LogClass::logInFile("GENERATOR STATUS: Stat_Initialization"); break;
     case R2CP::Stat_ExpInProgress:LogClass::logInFile("GENERATOR STATUS: Stat_ExpInProgress"); break;
     case R2CP::Stat_Ready:LogClass::logInFile("GENERATOR STATUS: Stat_Ready"); break;
-    default: LogClass::logInFile("GENERATOR STATUS: (unknown name) > " + current_status.ToString());
+    default: LogClass::logInFile("GENERATOR STATUS: (unknown name) > " + current_generator_status.ToString());
     }
 
     return true;
@@ -608,119 +694,7 @@ bool Generator::generatorErrorMessagesLoop(void) {
     return false;
 }
 
-/// <summary>
-/// This function is called in the Generator Idle status in order to handle an Exposure procedure.
-/// 
-/// </summary>
-/// 
-/// The Procedure handle the activation and the completion of any exposure procedure:
-/// 
-/// The application should have used the dedicated API routine to activate an exposure sequence:
-/// the ExposureModule class provides all the API to prrepare and select the further exposure procedure.
-/// 
-/// This function:
-/// + Resets the internal and external Exposed-Pulse data structures:
-///     + Those structure will be filled, after the exposure completion,  with the actual exposed parameters like kV, mAs,..
-/// + Checks for the XRAY-push button activation;
-/// + Checks for the Tube temperature validity;
-/// + Pre-select the current filter that will be used;
-/// + Starts the dedicated exsposure procedure;
-/// + Evaluates the exposure completion code;
-/// + If requested, interact with the Acquisition software to signal the exposure completion event;
-/// + Handles the final status of the compressor device (keep compression or release);
-/// 
-/// 
-/// <param name=""></param>
-void Generator::handleExposureActivation(void) {
 
-    ExposureModule::exposure_completed_errors exposure_err_code;
-
-    // Resets of the Internal Generator Module exposed pulses for all data-banks    
-    R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
-
-    // Reset of the Application Exposure Pulses
-    ExposureModule::setExposedPulse(0, gcnew ExposureModule::exposure_pulse());
-    ExposureModule::setExposedPulse(1, gcnew ExposureModule::exposure_pulse());
-    ExposureModule::setExposedPulse(2, gcnew ExposureModule::exposure_pulse());
-    ExposureModule::setExposedPulse(3, gcnew ExposureModule::exposure_pulse());
-
-    // Common preparation Tests
-    exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;
-
-    if (!PCB301::getXrayPushButtonStat()) {
-        // Checks if the X-RAY push button is pressed
-        exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
-    }
-    else if (PCB315::isTubeAlarm()) {
-        // Checks for the Tube temperature
-        exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_TUBE_TEMPERATURE;
-    }
-    else {
-
-        // Preliminary selection of the filter without waiting the command completion. The given seqeunce will check for completion
-        PCB315::setFilterAutoMode(ExposureModule::getExposurePulse(0)->filter, false);
-
-        // Every Xray procedure return True if the seqeunce is completed if success.
-        // In case of false returned (error condition), the   xray_exposure_error is set properly
-        switch (ExposureModule::getExposureMode()) {
-        case ExposureModule::exposure_type_options::TEST_2D: exposure_err_code = test_exposure_procedure();  break;
-        case ExposureModule::exposure_type_options::MAN_2D: exposure_err_code = man_2d_exposure_procedure(); break;
-        case ExposureModule::exposure_type_options::AEC_2D: exposure_err_code = aec_2d_exposure_procedure(); break;
-        case ExposureModule::exposure_type_options::MAN_3D: exposure_err_code = man_3d_exposure_procedure(); break;
-        case ExposureModule::exposure_type_options::AEC_3D: exposure_err_code = aec_3d_exposure_procedure(); break;
-        case ExposureModule::exposure_type_options::MAN_COMBO: exposure_err_code = man_combo_exposure_procedure(); break;
-        case ExposureModule::exposure_type_options::AEC_COMBO: exposure_err_code = aec_combo_exposure_procedure(); break;
-        case ExposureModule::exposure_type_options::MAN_AE: exposure_err_code = man_ae_exposure_procedure(); break;
-        case ExposureModule::exposure_type_options::AEC_AE: exposure_err_code = aec_ae_exposure_procedure(); break;
-        default:
-            exposure_err_code = ExposureModule::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
-        }
-    }
-
-    // Removes the X-RAY ena signal 
-    PCB301::set_xray_ena(false);
-
-    ExposureModule::setCompletedError(exposure_err_code);
-
-    // The X-Ray procedure termines here: the complete event is generated
-    // In case of sequence not completed (partial or total) is App to the application 
-    // retrive the error code (xray_exposure_error).
-    if (exposure_err_code == ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS)  ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_SUCCESS);// xray_complete_event(exposure_completed_options::XRAY_SUCCESS);
-    else if (ExposureModule::getExposedPulse(0)->getmAs()) ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_PARTIAL_DOSE);
-    else ExposureModule::setCompletedCode(ExposureModule::exposure_completed_options::XRAY_NO_DOSE);
-    LogClass::logInFile("GENERATOR EXPOSURE RESULT:" + ExposureModule::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
-
-
-    // De-synch the grid device
-    PCB304::synchGridWithGenerator(false);
-
-    // Only in operating mode
-    if (ExposureModule::getExposureMode() != ExposureModule::exposure_type_options::TEST_2D) {
-
-        // Unlock the compressor if requested
-        if (ExposureModule::getCompressorMode() == ExposureModule::compression_mode_option::CMP_RELEASE) PCB302::setCompressorUnlock();
-
-        // Notify the AWS about the XRAY completed event
-        awsProtocol::EVENT_XraySequenceCompleted();
-
-        // Disable the Xray Button
-        ExposureModule::enableXrayPushButtonEvent(false);
-
-        // Invalidate the current projection
-        ArmMotor::abortTarget();
-    }
-
-
-    // Waits for the X-RAY button release
-    if (PCB301::getXrayPushButtonStat()) {
-        LogClass::logInFile("GENERATOR EXPOSURE WAITING BUTTON RELEASE");
-        while (PCB301::getXrayPushButtonStat()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-
-    LogClass::logInFile("GENERATOR EXPOSURE COMPLETED");
-    xray_processing = false;
-    ExposureModule::setXrayCompletedFlag(); // The Exposure is completed and the data are available
-}
 
 /// <summary>
 /// This function loop handles the Generator Idle status.
@@ -771,10 +745,13 @@ bool Generator::generatorIdleLoop(void) {
     
 
         // Handles the Application warning message related to the actual ready status
-        if (getGeneratorStatus()) {
+        unsigned char curstat = current_generator_status;
+        updateGeneratorStatus();
+
+        if (curstat != current_generator_status) {
             
             // Status changed
-            if (current_status == R2CP::Stat_Standby) {
+            if (current_generator_status == R2CP::Stat_Standby) {
                 Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
                 ready_for_exposure = true;
             }
@@ -785,8 +762,11 @@ bool Generator::generatorIdleLoop(void) {
         }
 
         // If not in Standby cannot be processed a request for an exposure sequence
-        if (current_status != R2CP::Stat_Standby) continue;
-        if (xray_processing) handleExposureActivation();
+        if (current_generator_status != R2CP::Stat_Standby) continue;
+        exposureManagementLoop(false);
+        
+        // ActivateDisables the safety disable RX message
+        if (!disable_rx_message) setDisableRxMessage(true);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
@@ -797,51 +777,16 @@ bool Generator::generatorIdleLoop(void) {
 }
 
 
-/// <summary>
-/// This function gets the data pulses received by the generator during the single Pulse sequence
-/// and store it into the exposure pulse sequence number data structure.
-/// </summary>
-/// 
-/// Every Exposure sequence can be composed with a max of four singlePulses.
-/// Those pulses are referred in the application as pulse-0 to pulse-3.
-/// 
-/// The application gets the executed pulse exposure data (kv, mAs, ..) reading 
-/// the data in the class ExposureModule::exposed after the exposure completed.
-/// 
-/// The actual exposed data are collected internally by the genberator module
-/// into the  R2CP::CaDataDicGen::GetInstance()->executed_pulses[i] vector 
-/// where i is the databank index passed to the Procedure definition.
-/// 
-/// This function is called after every single-pulse sequence 
-/// to properly upload the Application data structure with the internal collected
-/// exposure data.
-/// 
-/// 
-/// <param name="databank_index">
-/// This is the index assigned to the current data-bank in the procedure\n
-/// The index is not the number of the databank (i.e. R2CP::DB_Pre or R2CP::DB_Pulse)\n
-/// The index is the number assigned to it when the databank is assigne to a procedure
-/// 
-/// Example:\n
-/// R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Mammography_2D, 1);
-///     - in this example 1 is the index to be used!    
-/// 
-/// </param>
-/// <param name="pulse_seq">This is the current pulse sequence (0 to 3) </param>
-/// <param name="ft">Filter used in the exposure</param>
-/// <param name="fc">This is the focus used in the exposure</param>
-void Generator::setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc) {
-    if (R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples) {
-        ExposureModule::setExposedPulse(pulse_seq, gcnew ExposureModule::exposure_pulse(
-            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].kV,
-            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].mAs,
-            ft,
-            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].mA,
-            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].ms,
-            fc,
-            R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples
-        ));
+
+bool Generator::setDisableRxMessage(bool stat) {
+    R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(stat);
+    if (!handleCommandProcessedState(nullptr)) {
+        disable_rx_message = false; // set to false even if in an unknown state
+        return false;
     }
+    
+    disable_rx_message = stat;
+    return true;    
 }
 
 /// <summary>
@@ -868,75 +813,104 @@ void Generator::setExposedData(unsigned char databank_index, unsigned char pulse
 /// <param name="ExpName">A string used to log the name of the current exposure sequence</param>
 /// <param name="ms_timeout">the timeout assigned to the execution of a pulse in ms</param>
 /// <returns>The procedure returns the ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS  if csuccessfully completes</returns>
-ExposureModule::exposure_completed_errors Generator::pulseSequence(System::String^ ExpName, int ms_timeout) {
+Generator::generator_errors Generator::generatorExecutePulseSequence(System::String^ ExpName, int ms_timeout) {
     int time_interval = 50;
     int timeout_tic = ms_timeout / time_interval;
+
+    // Disables the safety disable RX message
+    if (!setDisableRxMessage(false)) {
+        LogClass::logInFile(ExpName + "SystemMessages_SetDisableRx error");
+        return generator_errors::GEN_COMMUNICATION_ERROR;
+    }
+
+    setXrayEnable(true);
 
     // Wait to exit from the generator standby status
     int timeout = timeout_tic;
     while (timeout--) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(time_interval));
+        
+        // Brake as soon a non standby condition is detected
+        updateGeneratorStatus();        
+        if (current_generator_status != R2CP::Stat_Standby) break;
 
         // Checks for the XRAY button
-        if (!R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.ExposureSwitches.Fields.ExpsignalStatus) {
+        if (!getXrayPushButton()) {
             LogClass::logInFile(ExpName + "push button release error");
-            return ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
+            setXrayEnable(false);
+            return generator_errors::GEN_BUTTON_RELEASE;
         }
 
         // Checks for error messages
         if (R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.SystemMessage.Fields.Active == R2CP::Stat_SystemMessageActive_Active) {
             LogClass::logInFile(ExpName + "generator system messages during exposure error");
-            return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
+            setXrayEnable(false);
+            return generator_errors::GEN_INTERNAL_ERROR;
         }
 
-        // Brake as soon a non standby condition is detected
-        getGeneratorStatus();
-        if (current_status != R2CP::Stat_Standby) break;
-        std::this_thread::sleep_for(std::chrono::milliseconds(time_interval));
+        
     }
     
     if (!timeout) {
         LogClass::logInFile(ExpName + "timeout waiting generator executing the xray sequence");
-        return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+        setXrayEnable(false);
+        return generator_errors::GEN_INVALID_STATUS;
     }
-
+    
     // The sequence will completes when generator returns in Standby or Stat_WaitFootRelease.
     // The sequence termines as sooon a wrong expected status should be detected
     timeout = timeout_tic;
+    unsigned char curstat;
     while (timeout--) {
+        
+        curstat = current_generator_status;
+        updateGeneratorStatus();
 
         // Checks for the XRAY button
-        if (!R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.ExposureSwitches.Fields.ExpsignalStatus) {
+        if (!getXrayPushButton()) {
             LogClass::logInFile(ExpName + "push button release error");
-            return ExposureModule::exposure_completed_errors::XRAY_BUTTON_RELEASE;
+            setXrayEnable(false);
+            return generator_errors::GEN_BUTTON_RELEASE;
         }
 
         // Checks for error messages
         if (R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.SystemMessage.Fields.Active == R2CP::Stat_SystemMessageActive_Active) {
             LogClass::logInFile(ExpName + "generator system messages during exposure error");
-            return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;
+            setXrayEnable(false);
+            return generator_errors::GEN_INTERNAL_ERROR;
         }
-       
-        if (getGeneratorStatus()) {
-            // Waits for the Exposure complete event
-            switch (current_status) {
+        
+        if (curstat != current_generator_status) {
+        
+            // The Stat is not a valid stat
+            if (current_generator_status >= R2CP::Stat_Unknown) {
+                LogClass::logInFile(ExpName + current_generator_status.ToString() + " Unknown Start");
+                setXrayEnable(false);
+                return generator_errors::GEN_INVALID_STATUS;
+            }
 
-            case R2CP::Stat_WaitFootRelease:
-            case R2CP::Stat_Standby:               
-                return ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;                
+            // Waits for the Exposure complete event
+            switch (current_generator_status) {
+            
+            case R2CP::Stat_Standby:
+            case R2CP::Stat_WaitFootRelease:                    
+                setXrayEnable(false);
+                return generator_errors::GEN_NO_ERRORS;
 
             case R2CP::Stat_Error:
                 LogClass::logInFile(ExpName + "generator R2CP::Stat_Error error ");
-                return ExposureModule::exposure_completed_errors::XRAY_GENERATOR_ERROR;               
+                setXrayEnable(false);
+                return generator_errors::GEN_INTERNAL_ERROR;
 
             case R2CP::Stat_GoigToShutdown:
             case R2CP::Stat_Service:
-            case R2CP::Stat_Initialization:
-                LogClass::logInFile(ExpName + current_status.ToString() + " status error ");
-                return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
-                
+            case R2CP::Stat_Initialization:            
+                LogClass::logInFile(ExpName + current_generator_status.ToString() + " status error ");
+                setXrayEnable(false);
+                return generator_errors::GEN_INVALID_STATUS;                
 
             default:
-                return ExposureModule::exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
+                break;
             }
         }
 
@@ -944,7 +918,8 @@ ExposureModule::exposure_completed_errors Generator::pulseSequence(System::Strin
     }
 
     LogClass::logInFile(ExpName + "generator sequence timeout error");
-    return ExposureModule::exposure_completed_errors::XRAY_TIMEOUT;
+    setXrayEnable(false);
+    return generator_errors::GEN_TIMEOUT;
 }
 
 /// <summary>
@@ -979,7 +954,7 @@ ExposureModule::exposure_completed_errors Generator::pulseSequence(System::Strin
 /// <param name="min_pulse">minimum time for pulse in ms</param>
 /// <param name="max_pulse">maximum pulse time (limited usually by the Max integration time of the Detector )</param>
 /// <returns>ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS for success</returns>
-ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int n_pulse, int min_pulse, int max_pulse) {
+Generator::generator_errors Generator::generatorSet3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int n_pulse, int min_pulse, int max_pulse) {
     
     unsigned short mas;
     // Rounding to the next integer value of the requested mAs 
@@ -990,7 +965,7 @@ ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned 
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(dbId, large_focus, KV, mas, n_pulse * max_pulse);
     if (!handleCommandProcessedState(nullptr)) {
         LogClass::logInFile("set3PointDatabank() - error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        return generator_errors::GEN_COMMUNICATION_ERROR;
     }
 
     // Gets the R10 time imposed by the generator
@@ -1005,7 +980,7 @@ ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned 
     // The maximum anodic current selected by Generator cannot fit into the Integration Window
     if (pulse_mS > max_pulse) {
         LogClass::logInFile("set3PointDatabank() - Invalid integration time for the current tomo pulse");
-        return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_mAs;
+        return generator_errors::GEN_INVALID_PARAMS;
     }
 
     // Recalculate the Anodic current that can fit with the R10 time slot
@@ -1015,7 +990,7 @@ ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned 
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_3D_Databank(dbId, large_focus, KV, mA, pulse_mS, max_pulse);
     if (!handleCommandProcessedState(nullptr)) {
         LogClass::logInFile("set3PointDatabank() - Generator_Set_3D_Databank() error");
-        return ExposureModule::exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
+        return generator_errors::GEN_COMMUNICATION_ERROR;
     }
 
     // Gets the Anodic current imposed by the generator
@@ -1025,13 +1000,13 @@ ExposureModule::exposure_completed_errors Generator::set3PointDatabank(unsigned 
     // Max allowed error is 1%
     if (err_100_mAs > 1.0) {
         LogClass::logInFile("set3PointDatabank(): ERROR! pulse_mA:" + pulse_mA + "; pulse_mS:" + pulse_mS + "; mAs Error (\%):" + err_100_mAs);
-        return ExposureModule::exposure_completed_errors::XRAY_INVALID_TOMO_mAs;
+        return  generator_errors::GEN_INVALID_PARAMS;
     }
     else {
         LogClass::logInFile("set3PointDatabank() -> pulse_mA:" + pulse_mA + "; pulse_mS:" + pulse_mS + "; mAs Error (\%):" + err_100_mAs);
     }
     
-    return ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS;
+    return  generator_errors::GEN_NO_ERRORS;
 }
 
 /**
@@ -1080,8 +1055,13 @@ float Generator::getR10Time(float ms, bool next) {
 /// <param name="errstr">This is the message identifier code in string format</param>
 /// <returns>A desciption string of the related system message</returns>
 System::String^ Generator::getGeneratorErrorString(System::String^ errstr) {
+    static bool sqlite_enabled = true;
 
-    SQLiteConnection conn("Data Source=C:\\OEM\\AppData\\system_messages.sqlite;");
+    // If any issue in accessing the database should disable the access, no more request will be processed
+    if (!sqlite_enabled) return "";
+
+    SQLiteConnection conn("Data Source=" + SYTEM_MESSAGE_DATABASE + "; ");
+    //    SQLiteConnection conn("Data Source=C:\\OEM\\AppData\\system_messages.sqlite;");
     
     try {
         conn.Open();
@@ -1099,7 +1079,226 @@ System::String^ Generator::getGeneratorErrorString(System::String^ errstr) {
         return result;
     }
     catch (...) {
+        sqlite_enabled = false;
+        LogClass::logInFile("Generator: Invalid access to the System Messages Database");
         return "";
     }
     
+}
+
+Generator::generator_errors Generator::generator2DPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, bool det_sync, bool grid_sync, int exp_time) {
+   
+    selected_anode_current = 150;
+
+    // Load Data Bank For pulse    
+    if (!simulator_mode) {
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, islargefocus, kV, mAs, exp_time);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Set_2D_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+    }
+   
+
+    System::String^ exposure_data_str;   
+    exposure_data_str = "kV:" + kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + selected_anode_current; LogClass::logInFile(exposure_data_str);
+    
+    if (islargefocus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
+
+    if (!simulator_mode) {
+        if (det_sync) grid_sync = true; // Procedure activation 
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DProcedurePulse(det_sync, grid_sync);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_Activate2DProcedurePulse error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Clear the active system messages
+        if (!clearSystemMessages()) {
+            LogClass::logInFile(exp_name + "SystemMessages_Clear_Message error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Status not in StandBy
+        updateGeneratorStatus();
+        if (current_generator_status != R2CP::Stat_Standby) {
+            LogClass::logInFile(exp_name + "generator not in standby error");
+            return generator_errors::GEN_INVALID_STATUS;
+        }
+
+    }
+
+    // Preparation completed
+    return generator_errors::GEN_NO_ERRORS;
+}
+
+Generator::generator_errors Generator::generator2DAecPrePulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time){
+    selected_anode_current = 150;
+
+    // Load Data Bank For pulse    
+    if (!simulator_mode) {
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pre, islargefocus, kV, mAs, exp_time);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Set_2D_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pre].mA100.value) / 100;
+    }
+
+
+    System::String^ exposure_data_str;
+    exposure_data_str = "kV:" + kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + selected_anode_current; LogClass::logInFile(exposure_data_str);
+
+    if (islargefocus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
+
+    if (!simulator_mode) {
+
+        // Procedure activation
+        LogClass::logInFile(exp_name + "procedure activation");
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DAecProcedurePre();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_Activate2DAecProcedurePre error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Clear the active system messages
+        if (!clearSystemMessages()) {
+            LogClass::logInFile(exp_name + "SystemMessages_Clear_Message error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Status not in StandBy
+        updateGeneratorStatus();
+        if (current_generator_status != R2CP::Stat_Standby) {
+            LogClass::logInFile(exp_name + "generator not in standby error");
+            return generator_errors::GEN_INVALID_STATUS;
+        }
+
+    }
+
+    // Preparation completed
+    return generator_errors::GEN_NO_ERRORS;
+}
+
+Generator::generator_errors Generator::generator2DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time) {
+
+    selected_anode_current = 150;
+
+    // Load Data Bank For pulse    
+    if (!simulator_mode) {
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, islargefocus, kV, mAs, exp_time);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Set_2D_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+    }
+
+
+    System::String^ exposure_data_str ;
+    exposure_data_str = "kV:" + kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + selected_anode_current; LogClass::logInFile(exposure_data_str);
+
+    if (islargefocus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
+
+    if (!simulator_mode) {
+        
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DAecProcedurePulse();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_Activate2DAecProcedurePulse error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+    }
+
+    // Preparation completed
+    return generator_errors::GEN_NO_ERRORS;
+}
+
+Generator::generator_errors Generator::generator3DPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time) {
+    selected_anode_current = 200;
+    generator_errors error;
+
+    if (!simulator_mode) {
+
+        //-------- Setup the 3D pulse using the 3 point approach procedure ---------------------------------------------           
+        error = generatorSet3PointDatabank(R2CP::DB_Pulse, true, kV, mAs / ((float) tomo_samples), tomo_samples, min_exp_time, max_exp_time);
+        if (error != generator_errors::GEN_NO_ERRORS) {
+            LogClass::logInFile(exp_name + "generatorSet3PointDatabank() error");
+            return error;
+        }
+
+        // Gets the Anodic current selected
+        selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+    }
+   
+    System::String^ exposure_data_str;
+    exposure_data_str = "kV:" + kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + selected_anode_current; LogClass::logInFile(exposure_data_str);
+
+    if (islargefocus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
+
+    if (!simulator_mode) {
+        // Setup the 3D Databank for Tomo skip pulses
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, tomo_skip);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Set_SkipPulse_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Setup the 3D Mammography procedure    
+        R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Mammography_3D, tomo_samples);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_SetupProcedureV6 error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Assignes the Skip-Pulse Databank to the Standard 3D Mammography procedure    
+        R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::ProcId_Standard_Mammography_3D, R2CP::DB_SkipPulse);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Assign_SkipPulse_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Assignes the Pulse Databank to the Index 2 of the Standard 3D Mammography with AEC procedure    
+        R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Mammography_3D, 1);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_AssignDbToProc error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Procedure activation
+        LogClass::logInFile(exp_name + " procedure activation");
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate3DProcedurePulse();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_Activate3DProcedurePulse error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Clear the active system messages
+        if (!clearSystemMessages()) {
+            LogClass::logInFile(exp_name + "SystemMessages_Clear_Message error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+
+
+    }
+
+    // Preparation completed
+    return generator_errors::GEN_NO_ERRORS;
 }

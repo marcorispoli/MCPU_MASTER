@@ -1,0 +1,152 @@
+.TH "protocolModule" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+protocolModule \- Private Module's communication protocol API
+.PP
+ \- This section provides methods and data structure to implement the communication protocol features\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCanDeviceProtocol::CommandRegisterStatus\fP { \fBCanDeviceProtocol::CommandRegisterStatus::COMMAND_EXECUTING\fP = 1, \fBCanDeviceProtocol::CommandRegisterStatus::COMMAND_TERMINATED\fP, \fBCanDeviceProtocol::CommandRegisterStatus::COMMAND_ERROR\fP }"
+.br
+.RI "Standard constructor\&. "
+.ti -1c
+.RI "enum class \fBCanDeviceProtocol::ProtocolFrameCode\fP { \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_ERROR\fP = 0, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_READ_REVISION\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_READ_ERRORS\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_READ_COMMAND\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_READ_STATUS\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_READ_DATA\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_READ_PARAM\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_WRITE_DATA\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_WRITE_PARAM\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_STORE_PARAMS\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_COMMAND_EXEC\fP, \fBCanDeviceProtocol::ProtocolFrameCode::FRAME_DEVICE_RESET\fP }"
+.br
+.RI "This is the command Code of the protocol frames "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBCanDeviceProtocol::send\fP (unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl)"
+.br
+.RI "This function sends a frame the the remote device  "
+.ti -1c
+.RI "void \fBCanDeviceProtocol::thread_can_rx_callback\fP (unsigned short canid, unsigned char *data, unsigned char len)"
+.br
+.RI "This is the callback to be connected to the CAN reception event\&.  "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This section provides methods and data structure to implement the communication protocol features\&. 
+
+This section provides all the internal methods and structures implementing the device module control\&. Those API are not accessible by the Application or the Subclass because is part of the communication protocol core implementation, shared with all the device specific modules\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBCanDeviceProtocol::CommandRegisterStatus\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+Standard constructor\&. This is the content of the Special Command Status register, reporting the execuion status of a pending command\&.
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOMMAND_EXECUTING \fP\fP
+The Command is still in execution\&. 
+.TP
+\fB\fICOMMAND_TERMINATED \fP\fP
+The Command is successfully terminated\&. 
+.TP
+\fB\fICOMMAND_ERROR \fP\fP
+The Command is terminated with an error condition\&. 
+.SS "enum class \fBCanDeviceProtocol::ProtocolFrameCode\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+This is the command Code of the protocol frames 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIFRAME_ERROR \fP\fP
+.TP
+\fB\fIFRAME_READ_REVISION \fP\fP
+Read Revision register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_ERRORS \fP\fP
+Read Error register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_COMMAND \fP\fP
+Read Command register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_STATUS \fP\fP
+Read Status register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_DATA \fP\fP
+Read Data register frame command code\&. 
+.TP
+\fB\fIFRAME_READ_PARAM \fP\fP
+Read Parameter register frame command code\&. 
+.TP
+\fB\fIFRAME_WRITE_DATA \fP\fP
+Write Data register frame command code\&. 
+.TP
+\fB\fIFRAME_WRITE_PARAM \fP\fP
+Write Parameter register frame command code\&. 
+.TP
+\fB\fIFRAME_STORE_PARAMS \fP\fP
+Store Parameters register frame command code\&. 
+.TP
+\fB\fIFRAME_COMMAND_EXEC \fP\fP
+Execute Command frame command code\&. 
+.TP
+\fB\fIFRAME_DEVICE_RESET \fP\fP
+Device Reset Code\&. 
+.SH "Function Documentation"
+.PP 
+.SS "bool CanDeviceProtocol::send (unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl)\fC [private]\fP"
+
+.PP
+This function sends a frame the the remote device  The function sends a frame to the remote device and waits for a valid answer or timeout condition\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fId0\fP Frame Data 0
+.br
+\fId1\fP Frame Data 1
+.br
+\fId2\fP Frame Data 2
+.br
+\fId3\fP Frame Data 3
+.br
+\fId4\fP Frame Data 4
+.br
+\fId5\fP Frame Data 5
+.br
+\fId6\fP Frame Data 6
+.br
+\fId7\fP Frame Data 7
+.br
+\fIbootl\fP True if the frame is destinated to the bootloader\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the frame is successfully sent
+.RE
+.PP
+
+.SS "void CanDeviceProtocol::thread_can_rx_callback (unsigned short canid, unsigned char * data, unsigned char len)\fC [private]\fP"
+
+.PP
+This is the callback to be connected to the CAN reception event\&.  This callback is called in a different thread than this module: precautions shall be implemented in order to be thread safe\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanid\fP This is the canId identifier address
+.br
+\fIdata\fP Thi is the pointer to the received data frame (8 bytes max) 
+.br
+\fIlen\fP This is the lenght of the buffer
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

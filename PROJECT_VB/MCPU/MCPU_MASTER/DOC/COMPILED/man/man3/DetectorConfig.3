@@ -1,0 +1,302 @@
+.TH "DetectorConfig" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DetectorConfig
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CalibrationConfig\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBdetector_model_option\fP { \fBGENERIC\fP = 0, \fBLMAM2V2\fP, \fBDRTECH\fP, \fBDETECTOR_LIST_SIZE\fP }"
+.br
+.RI "This is the enumeration of the possible Detectors used for exposures "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal int \fBMAX_TOMO_FPS\fP = 6"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILENAME\fP = 'DetecorConfiguration\&.cnf'"
+.br
+.ti -1c
+.RI "literal int \fBFILE_REVISION\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_PRE_TO_PULSE_AEC_WAITING_TIME\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_2D_INTEGRATION_TIME\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_2D_PRE_INTEGRATION_TIME\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_3D_INTEGRATION_TIME_1FPS\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_3D_INTEGRATION_TIME_2FPS\fP = 4"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_3D_INTEGRATION_TIME_3FPS\fP = 5"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_3D_INTEGRATION_TIME_4FPS\fP = 6"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_3D_INTEGRATION_TIME_5FPS\fP = 7"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_3D_INTEGRATION_TIME_6FPS\fP = 8"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_MAX_3D_FPS\fP = 9"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_CONFIG\fP = 'GENERIC'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_COMMENT\fP = 'This is the Generic Detector description'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_PRE_TO_PULSE_AEC_WAITING_TIME_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_2D_INTEGRATION_TIME_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_2D_PRE_INTEGRATION_TIME_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_3D_INTEGRATION_TIME_1FPS_DEFAULT\fP = '500'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_3D_INTEGRATION_TIME_2FPS_DEFAULT\fP = '250'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_3D_INTEGRATION_TIME_3FPS_DEFAULT\fP = '200'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_3D_INTEGRATION_TIME_4FPS_DEFAULT\fP = '120'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_3D_INTEGRATION_TIME_5FPS_DEFAULT\fP = '80'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT\fP = '33'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_GENERIC_MAX_3D_FPS_DEFAULT\fP = '4'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_CONFIG\fP = 'LMAM2V2'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_COMMENT\fP = 'This is the \fBLMAM2V2\fP Detector description'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_PRE_TO_PULSE_AEC_WAITING_TIME_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_2D_INTEGRATION_TIME_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_2D_PRE_INTEGRATION_TIME_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_1FPS_DEFAULT\fP = '500'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_2FPS_DEFAULT\fP = '250'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_3FPS_DEFAULT\fP = '200'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_4FPS_DEFAULT\fP = '120'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_5FPS_DEFAULT\fP = '80'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT\fP = '33'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_LMAM2V2_MAX_3D_FPS_DEFAULT\fP = '4'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_CONFIG\fP = 'DRTECH'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_COMMENT\fP = 'This is the \fBDRTECH\fP Detector description'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_PRE_TO_PULSE_AEC_WAITING_TIME_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_2D_INTEGRATION_TIME_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_2D_PRE_INTEGRATION_TIME_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_3D_INTEGRATION_TIME_1FPS_DEFAULT\fP = '500'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_3D_INTEGRATION_TIME_2FPS_DEFAULT\fP = '250'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_3D_INTEGRATION_TIME_3FPS_DEFAULT\fP = '200'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_3D_INTEGRATION_TIME_4FPS_DEFAULT\fP = '120'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_3D_INTEGRATION_TIME_5FPS_DEFAULT\fP = '80'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT\fP = '33'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_DRTECH_MAX_3D_FPS_DEFAULT\fP = '4'"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBDetectorConfig::detector_model_option\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the possible Detectors used for exposures 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIGENERIC \fP\fP
+Generic Detector Type\&. 
+.TP
+\fB\fILMAM2V2 \fP\fP
+Digital Analogic LMAM2 V2\&. 
+.TP
+\fB\fIDRTECH \fP\fP
+Digital DRTECH Detector\&. 
+.TP
+\fB\fIDETECTOR_LIST_SIZE \fP\fP
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBConfigFile\fP ^ DetectorConfig::Configuration\fC [static]\fP"
+
+.SS "literal int DetectorConfig::FILE_REVISION = 1"
+
+.SS "literal System::String ^ DetectorConfig::FILENAME = 'DetecorConfiguration\&.cnf'"
+
+.SS "literal int DetectorConfig::MAX_TOMO_FPS = 6"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_COMMENT = 'This is the \fBDRTECH\fP Detector description'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_CONFIG = 'DRTECH'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_2D_INTEGRATION_TIME_DEFAULT = '5000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_2D_PRE_INTEGRATION_TIME_DEFAULT = '1000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_3D_FPS_DEFAULT = '4'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_3D_INTEGRATION_TIME_1FPS_DEFAULT = '500'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_3D_INTEGRATION_TIME_2FPS_DEFAULT = '250'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_3D_INTEGRATION_TIME_3FPS_DEFAULT = '200'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_3D_INTEGRATION_TIME_4FPS_DEFAULT = '120'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_3D_INTEGRATION_TIME_5FPS_DEFAULT = '80'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT = '33'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_DRTECH_PRE_TO_PULSE_AEC_WAITING_TIME_DEFAULT = '5000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_COMMENT = 'This is the Generic Detector description'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_CONFIG = 'GENERIC'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_2D_INTEGRATION_TIME_DEFAULT = '5000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_2D_PRE_INTEGRATION_TIME_DEFAULT = '1000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_3D_FPS_DEFAULT = '4'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_3D_INTEGRATION_TIME_1FPS_DEFAULT = '500'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_3D_INTEGRATION_TIME_2FPS_DEFAULT = '250'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_3D_INTEGRATION_TIME_3FPS_DEFAULT = '200'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_3D_INTEGRATION_TIME_4FPS_DEFAULT = '120'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_3D_INTEGRATION_TIME_5FPS_DEFAULT = '80'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT = '33'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_GENERIC_PRE_TO_PULSE_AEC_WAITING_TIME_DEFAULT = '5000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_COMMENT = 'This is the \fBLMAM2V2\fP Detector description'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_CONFIG = 'LMAM2V2'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_2D_INTEGRATION_TIME_DEFAULT = '5000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_2D_PRE_INTEGRATION_TIME_DEFAULT = '1000'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_3D_FPS_DEFAULT = '4'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_1FPS_DEFAULT = '500'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_2FPS_DEFAULT = '250'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_3FPS_DEFAULT = '200'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_4FPS_DEFAULT = '120'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_5FPS_DEFAULT = '80'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT = '33'"
+
+.SS "literal System::String ^ DetectorConfig::PARAM_LMAM2V2_PRE_TO_PULSE_AEC_WAITING_TIME_DEFAULT = '5000'"
+
+.SS "literal int DetectorConfig::PARAM_MAX_2D_INTEGRATION_TIME = 1"
+
+.SS "literal int DetectorConfig::PARAM_MAX_2D_PRE_INTEGRATION_TIME = 2"
+
+.SS "literal int DetectorConfig::PARAM_MAX_3D_FPS = 9"
+
+.SS "literal int DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_1FPS = 3"
+
+.SS "literal int DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_2FPS = 4"
+
+.SS "literal int DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_3FPS = 5"
+
+.SS "literal int DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_4FPS = 6"
+
+.SS "literal int DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_5FPS = 7"
+
+.SS "literal int DetectorConfig::PARAM_MAX_3D_INTEGRATION_TIME_6FPS = 8"
+
+.SS "literal int DetectorConfig::PARAM_PRE_TO_PULSE_AEC_WAITING_TIME = 0"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

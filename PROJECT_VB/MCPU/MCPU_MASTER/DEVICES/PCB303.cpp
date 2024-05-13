@@ -34,8 +34,10 @@ void PCB303::formatCollimationManagement(void) {
     unsigned short current_front, current_back, current_left, current_right, current_trap;
     Register^ rxreg;
     ColliStandardSelections format;
-
     static bool collimation_select_error = false;
+
+    // No operation if a command is pending
+    if (!device->isCommandCompleted()) return;
 
     // No more attempts can be done after some collimation repetition.
     if (valid_collimation_format) format_collimation_attempt = 0;
@@ -79,7 +81,7 @@ void PCB303::formatCollimationManagement(void) {
         {
             valid_collimation_format = false;
             format_collimation_attempt++;
-            command(PCB303_COMMAND_STANDARD_FORMAT((int)getAutomaticStandardFormatIndex()), 30);
+            commandNoWaitCompletion(PCB303_COMMAND_STANDARD_FORMAT((int)getAutomaticStandardFormatIndex()), 30);
             return;
         }
         else valid_collimation_format = true;
@@ -103,7 +105,7 @@ void PCB303::formatCollimationManagement(void) {
         {
             valid_collimation_format = false;
             format_collimation_attempt++;
-            command(PCB303_COMMAND_STANDARD_FORMAT((int)customStandardSelection), 30);
+            commandNoWaitCompletion(PCB303_COMMAND_STANDARD_FORMAT((int)customStandardSelection), 30);
             return;
         }
         else valid_collimation_format = true;
@@ -173,7 +175,7 @@ void PCB303::formatCollimationManagement(void) {
         format_collimation_attempt++;
 
         // Executes the Calibration command
-        command(PCB303_COMMAND_CALIBRATION_FORMAT, 30);
+        commandNoWaitCompletion(PCB303_COMMAND_CALIBRATION_FORMAT, 30);
         return;
 
         break;
@@ -187,7 +189,7 @@ void PCB303::formatCollimationManagement(void) {
         if (collimation_status != CollimationStatusCode::COLLI_STATUS_OPEN_FORMAT) {
             valid_collimation_format = false;
             format_collimation_attempt++;
-            command(PCB303_COMMAND_OPEN_FORMAT, 30);
+            commandNoWaitCompletion(PCB303_COMMAND_OPEN_FORMAT, 30);
             return;
         }
         else  valid_collimation_format = true;

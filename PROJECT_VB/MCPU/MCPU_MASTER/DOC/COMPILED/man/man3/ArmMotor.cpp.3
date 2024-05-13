@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/ArmMotor.cpp" 3 "Fri Dec 15 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/ArmMotor.cpp" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,7 +10,11 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .br
 \fC#include 'ArmMotor\&.h'\fP
 .br
-\fC#include 'verticalMotor\&.h'\fP
+\fC#include 'VerticalMotor\&.h'\fP
+.br
+\fC#include 'TiltMotor\&.h'\fP
+.br
+\fC#include 'pd4_od\&.h'\fP
 .br
 \fC#include 'Notify\&.h'\fP
 .br
@@ -40,9 +44,24 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBHOMING_OFF_METHOD\fP   20"
 .br
+.ti -1c
+.RI "#define \fBARM_OD_CODE\fP   0x0001"
+.br
+.RI "The \fBArmMotor\fP override this function in order to initialize specific motor registers "
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
+.SS "#define ARM_OD_CODE   0x0001"
+
+.PP
+The \fBArmMotor\fP override this function in order to initialize specific motor registers 
+.PP
+\fBReturns\fP
+.RS 4
+true if the initialization termines successfully
+.RE
+.PP
+
 .SS "#define COMPRESSION_PLANE_MM   ((double) 100)"
 
 .PP

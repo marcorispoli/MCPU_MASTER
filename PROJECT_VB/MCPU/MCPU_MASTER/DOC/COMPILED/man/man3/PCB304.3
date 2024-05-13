@@ -1,4 +1,4 @@
-.TH "PCB304" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB304" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -83,9 +83,11 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "void \fBrunningLoop\fP (void) override"
 .br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
 .ti -1c
 .RI "void \fBdemoLoop\fP (void) override"
 .br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
 .in -1c
 .SS "Static Private Attributes"
 
@@ -183,6 +185,8 @@ This is the Device STATUS Register implementation
 .SS "void PCB304::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
+This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
+.PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "static System::String ^ PCB304::getMagnifierfactorString (void)\fC [inline]\fP, \fC [static]\fP"
 
@@ -227,6 +231,8 @@ True if the Magnifier device has been detected
 
 .SS "void PCB304::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "static void PCB304::setDisplay (bool on_off)\fC [inline]\fP, \fC [static]\fP"

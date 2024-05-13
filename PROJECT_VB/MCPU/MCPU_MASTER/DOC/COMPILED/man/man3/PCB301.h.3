@@ -1,4 +1,4 @@
-.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB301.h" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB301.h" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -148,6 +148,9 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .ti -1c
 .RI "#define \fBPCB301_OUTPUTS_DATA_KEEP_ALIVE\fP(reg,  stat)   reg\->D3(stat, 0x80)"
 .br
+.ti -1c
+.RI "#define \fBPCB301_SET_DEMO_TOMO_COMMAND\fP(samples,  fps)   (System::Byte) Commandregister::ACTIVATE_DEMO_TOMO, (System::Byte) (samples),(System::Byte) fps,(System::Byte) 0,(System::Byte) 0"
+.br
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
@@ -236,6 +239,8 @@ C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_M
 .SS "#define PCB301_OUTPUTS_DATA_XRAY_LAMP2(reg, stat)   reg\->D1(stat, 0x20)"
 
 .SS "#define PCB301_OUTPUTS_DATA_XRAY_LED(reg, stat)   reg\->D1(stat, 0x8)"
+
+.SS "#define PCB301_SET_DEMO_TOMO_COMMAND(samples, fps)   (System::Byte) Commandregister::ACTIVATE_DEMO_TOMO, (System::Byte) (samples),(System::Byte) fps,(System::Byte) 0,(System::Byte) 0"
 
 .SH "Author"
 .PP 

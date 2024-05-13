@@ -1,4 +1,4 @@
-.TH "Exposures" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "Exposures" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,6 +20,7 @@ Inherits \fBGenerator\fP\&.
 .ti -1c
 .RI "class \fBtomo_data\fP"
 .br
+.RI "Self module generation\&. "
 .in -1c
 .SS "Public Types"
 
@@ -53,7 +54,10 @@ Inherits \fBGenerator\fP\&.
 
 .in +1c
 .ti -1c
-.RI "static \fBGenerator\fP ^ \fBgetDevice\fP (void)"
+.RI "static void \fBstartSimulator\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBstartGenerator\fP (void)"
 .br
 .ti -1c
 .RI "static void \fBsetExposureMode\fP (\fBexposure_type_options\fP mode)"
@@ -147,6 +151,13 @@ Inherits \fBGenerator\fP\&.
 .RI "literal unsigned char \fBFOCUS_SMALL\fP = 1"
 .br
 .in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBExposures\fP ^ \fBpExposure\fP = gcnew \fBExposures\fP()"
+.br
+.in -1c
 .SS "Protected Member Functions"
 
 .in +1c
@@ -156,6 +167,9 @@ Inherits \fBGenerator\fP\&.
 .RI "This function is called in the \fBGenerator\fP Idle status in order to handle an Exposure procedure\&. "
 .ti -1c
 .RI "void \fBsetXrayEnable\fP (bool stat) override"
+.br
+.ti -1c
+.RI "bool \fBgetXrayPushButton\fP (void) override"
 .br
 .in -1c
 .SS "Private Member Functions"
@@ -190,6 +204,12 @@ Inherits \fBGenerator\fP\&.
 .br
 .ti -1c
 .RI "void \fBsetExposedData\fP (unsigned char databank_index, unsigned char pulse_seq, \fBPCB315::filterMaterialCodes\fP ft, unsigned char fc)"
+.br
+.ti -1c
+.RI "float \fBdemo2DPulse\fP (float mAs, float current)"
+.br
+.ti -1c
+.RI "float \fBdemo3DPulses\fP (float mAs, int samples, int fps)"
 .br
 .in -1c
 .SS "Static Private Attributes"
@@ -460,6 +480,10 @@ Disables the Patient protection check;
 
 .SS "static void Exposures::clearXrayCompleted ()\fC [inline]\fP, \fC [static]\fP"
 
+.SS "float Exposures::demo2DPulse (float mAs, float current)\fC [private]\fP"
+
+.SS "float Exposures::demo3DPulses (float mAs, int samples, int fps)\fC [private]\fP"
+
 .SS "static void Exposures::enableXrayPushButtonEvent (bool stat)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "void Exposures::exposureManagementLoop (bool demo)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
@@ -500,8 +524,6 @@ Reimplemented from \fBGenerator\fP\&.
 
 .SS "static \fBDetectorConfig::detector_model_option\fP Exposures::getDetectorType (void)\fC [inline]\fP, \fC [static]\fP"
 
-.SS "static \fBGenerator\fP ^ Exposures::getDevice (void)\fC [inline]\fP, \fC [static]\fP"
-
 .SS "static \fBexposure_pulse\fP ^ Exposures::getExposedPulse (unsigned char seq)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static \fBexposure_completed_options\fP Exposures::getExposureCompletedCode (void)\fC [inline]\fP, \fC [static]\fP"
@@ -516,6 +538,10 @@ Reimplemented from \fBGenerator\fP\&.
 
 .SS "static \fBtomo_data\fP ^ Exposures::getTomoExposure (void)\fC [inline]\fP, \fC [static]\fP"
 
+.SS "bool Exposures::getXrayPushButton (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBGenerator\fP\&.
 .SS "static bool Exposures::getXrayPushButtonEvent (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static bool Exposures::isXrayCompleted ()\fC [inline]\fP, \fC [static]\fP"
@@ -599,6 +625,10 @@ in this example 1 is the index to be used!
 Reimplemented from \fBGenerator\fP\&.
 .SS "bool Exposures::startExposure (void)\fC [static]\fP"
 
+.SS "static void Exposures::startGenerator (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void Exposures::startSimulator (void)\fC [inline]\fP, \fC [static]\fP"
+
 .SS "\fBExposures::exposure_completed_errors\fP Exposures::test_exposure_procedure (bool demo)\fC [private]\fP"
 
 .SH "Member Data Documentation"
@@ -616,6 +646,8 @@ Reimplemented from \fBGenerator\fP\&.
 .SS "literal unsigned char Exposures::FOCUS_LARGE = 0"
 
 .SS "literal unsigned char Exposures::FOCUS_SMALL = 1"
+
+.SS "\fBExposures\fP ^ Exposures::pExposure = gcnew \fBExposures\fP()\fC [static]\fP"
 
 .SS "\fBpatient_protection_option\fP Exposures::protection_mode = \fBpatient_protection_option::PROTECTION_ENA\fP\fC [static]\fP, \fC [private]\fP"
 

@@ -345,28 +345,36 @@ void OperatingForm::evaluateXrayStatus(void) {
 	static int ready_stat = 255;
 	int stat;
 
-	if (Notify::isError()) stat = 1;
-	else if (Notify::isWarning()) stat = 2;
-	else stat = 0;
-
+	if (Exposures::isXrayRunning()) stat = 3;
+	else if (Notify::isError()) stat = 0;// Not Ready for errors (Standby)
+	else if(Notify::isWarning()) stat = 1; // Not Ready for warnings (Standby)
+	else  stat = 2; // Ready for exposure
+	
 	if (ready_stat != stat) {
 		ready_stat = stat;
 
 		if (stat == 0) {
+			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
+			awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);			
+		}else if(stat == 1) {
+			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
+			awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
+		}else if (stat == 2) {
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
 			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
 			awsProtocol::EVENT_ReadyForExposure(true, (unsigned short)0);
 		}
 		else {
-			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
-			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
-			if (stat == 1) awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);
-			else  awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
+			xrayStat->BackgroundImage = XRAY_ON_IMAGE;
+			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_X_RAY_ON);
 		}
 	}
 
-
+	
 	// Evaluate the Xray icon display activation during Exposure
+	/*
 	static bool xray_running = true;
 	if (xray_running != Exposures::isXrayRunning()) {
 		xray_running = Exposures::isXrayRunning();
@@ -376,7 +384,8 @@ void OperatingForm::evaluateXrayStatus(void) {
 		else {
 			((IconWindow^)pXray)->close();
 		}
-	}
+	}*/
+	
 
 }
 void OperatingForm::evaluateReadyWarnings(bool reset) {
@@ -867,7 +876,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 	static int  timer = 0;
 
 	// With a panel already open do not continue;
-	if (Exposures::isXrayRunning() || Notify::isInstantOpen() || Notify::isErrorOpen()) {
+	if (/*Exposures::isXrayRunning() || */Notify::isInstantOpen() || Notify::isErrorOpen()) {
 		if(Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->close();
 		compression = false;
 		arm = false;

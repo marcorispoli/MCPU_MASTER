@@ -22,7 +22,7 @@ bool Exposures::startExposure(void) {
     if (!getExposurePulse(0)->validated) return false;
 
     // Test if the Generator is Ready to start a new exposure
-    if (!isReadyForExosure()) return false; 
+    if (!isReadyForExposure()) return false; 
     
     // Test if a pending exposure is requested
     if (xray_processing) return false; 
@@ -38,9 +38,12 @@ bool Exposures::startExposure(void) {
 
 void Exposures::setXrayEnable(bool stat)
 {
-    PCB301::set_xray_ena(stat); 
+    PCB301::setXrayEna(stat); 
 }
 
+bool Exposures::getXrayPushButton(void) {
+    return PCB301::getXrayPushButtonStat();
+}
 
 /// <summary>
 /// This function is called in the Generator Idle status in order to handle an Exposure procedure.
@@ -114,7 +117,7 @@ void Exposures::exposureManagementLoop(bool demo) {
     }
 
     // Removes the X-RAY ena signal 
-    PCB301::set_xray_ena(false);
+    Exposures::setXrayEnable(false);
 
     Exposures::setCompletedError(exposure_err_code);
 
@@ -205,3 +208,70 @@ void Exposures::setExposedData(unsigned char databank_index, unsigned char pulse
         ));
     }
 }
+
+
+float Exposures::demo2DPulse(float mAs, float current) {
+    
+    
+    // Calculates the time based on the exposure parameters
+    int demo_pulse;
+    try {
+        demo_pulse = (mAs * 1000 / current);
+        if (demo_pulse < 100) demo_pulse = 100;
+    }
+    catch (...) {
+        demo_pulse = 100;
+    }
+
+    // Simulation of the preparation:
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    // Xray push button test
+    if (!PCB301::getXrayPushButtonStat()) return 0;
+
+    // Generation of the single pulse of 1 second       
+    PCB301::activationManualBuzzer(true);
+    int time_pulse = demo_pulse / 50;
+    while (time_pulse--) {        
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        if (!PCB301::getXrayPushButtonStat()) {
+            PCB301::activationManualBuzzer(false);
+            return -1 * ((demo_pulse - (time_pulse * 50)) * current) / 1000;
+        }
+    }
+
+    // Success 
+    PCB301::activationManualBuzzer(false);
+    return 1;
+}
+
+float Exposures::demo3DPulses(float mAs, int samples, int fps) {
+
+    // Simulation of the preparation:
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    // Calculates the time based on the exposure parameters
+    float mas_for_sample = mAs / samples;
+    int time_pulse = 1000 / fps;
+    if (time_pulse > 100) time_pulse -= 100;
+    if (time_pulse < 20) time_pulse = 0;
+
+    if (!PCB301::getXrayPushButtonStat()) return 0;
+
+    float tmas = 0;
+    for (int i = 0; i < samples; i++) {
+        PCB301::activationManualBuzzer(true);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        PCB301::activationManualBuzzer(false);
+        if(time_pulse) std::this_thread::sleep_for(std::chrono::milliseconds(time_pulse));
+        tmas += mas_for_sample;
+
+        if (!PCB301::getXrayPushButtonStat()) {            
+            return -1 * tmas;
+        }
+    }
+
+    // Success 
+    return 1;
+}
+

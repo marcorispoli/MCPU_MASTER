@@ -1,4 +1,4 @@
-.TH "PCB326" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB326" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -59,6 +59,7 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "void \fBrunningLoop\fP (void) override"
 .br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
 .ti -1c
 .RI "bool \fBconfigurationLoop\fP (void) override"
 .br
@@ -405,6 +406,8 @@ Reimplemented from \fBCanDeviceProtocol\fP\&.
 
 .SS "void PCB326::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "static \fBRegister\fP ^ PCB326::setControlDataRegister (bool reset, bool config)\fC [inline]\fP, \fC [static]\fP, \fC [private]\fP"

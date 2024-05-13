@@ -186,17 +186,12 @@ void PCB301::handleSystemStatusRegister(void) {
 
     pedal_up_stat = PCB301_GET_PEDAL_VERTICAL_UP(system_status_register);
     pedal_down_stat = PCB301_GET_PEDAL_VERTICAL_DOWN(system_status_register);
-
     button_body_cw = PCB301_GET_BUTTON_BODY_CW(system_status_register);
     button_body_ccw = PCB301_GET_BUTTON_BODY_CCW(system_status_register);
-
-    
-
     button_slide_up_stat = PCB301_GET_BUTTON_SLIDE_UP(system_status_register);
     button_slide_down_stat = PCB301_GET_BUTTON_SLIDE_DOWN(system_status_register);
-
     xray_push_button = PCB301_GET_XRAY_PUSH_BUTTON(system_status_register);
-    
+
 }
 
 void PCB301::handleBatteryStatusRegister(void) {

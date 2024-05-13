@@ -87,8 +87,8 @@ void MainForm::MainFormInitialize(void) {
 	Gantry::setStartup();
 
 	// Set the motor in safety condition
-	PCB301::set_motor_power_supply(true);
-	PCB301::set_motor_switch(true);
+	PCB301::setMotorPowerSupply(true);
+	PCB301::setMotorSwitch(true);
 
 	// Start the startup session
 	startupTimer = gcnew System::Timers::Timer(100);
@@ -126,7 +126,7 @@ bool MainForm::Startup_CanDriver(void) {
 		}
 
 		if (CanDriver::isConnected()) {
-			labelCanDriverActivity->Text = "CONNECTED AND RUNNING";
+			labelCanDriverActivity->Text = "RUN IN NORMAL MODE";
 			string =  "can driver revision: ";
 			string += " API:" + CanDriver::apirev_maj.ToString() + "." + CanDriver::apirev_min.ToString();
 			string += " SW:" + CanDriver::swrev_maj.ToString() + "." + CanDriver::swrev_min.ToString();
@@ -152,22 +152,22 @@ bool MainForm::Startup_PCB301(void) {
 		labelPcb301Activity->Text = "CONNECTION ..";
 		string =  "pcb301 initialization ..";
 		LogClass::logInFile(string);
-		if (Gantry::isPcb301Demo()) PCB301::device->demoMode();
+		if (Gantry::isPcb301Demo()) PCB301::device->simulMode();
 		else PCB301::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB301::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
-			labelPcb301Activity->Text = "RUNNING IN DEMO";
+		if (PCB301::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+			labelPcb301Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb301Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
 
-		if (PCB301::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB301::device->getModuleStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb301Activity->Text = "CONFIGURATION ..";
 			string =  "pcb301 firmware revision: ";
-			string += " BOOT:" + PCB301::device->getBootStatus() + ", REV:" + PCB301::device->getBootRevision();
+			string += " BOOT:" + PCB301::device->getBootStatus().ToString() + ", REV:" + PCB301::device->getBootRevision();
 			string += " APP:" + PCB301::device->getAppRevision();
 			LogClass::logInFile(string);
 			startupSubFase++;
@@ -175,8 +175,8 @@ bool MainForm::Startup_PCB301(void) {
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (PCB301::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb301Activity->Text = "CONNECTED AND RUNNING";
+		if (PCB301::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+			labelPcb301Activity->Text = "RUN IN NORMAL MODE";
 			labelPcb301Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -198,22 +198,22 @@ bool MainForm::Startup_PCB302(void) {
 		string = "pcb302 initialization ..\n";		
 		LogClass::logInFile(string);
 
-		if (Gantry::isPcb302Demo()) PCB302::device->demoMode();
+		if (Gantry::isPcb302Demo()) PCB302::device->simulMode();
 		else PCB302::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB302::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
-			labelPcb302Activity->Text = "RUNNING IN DEMO";
+		if (PCB302::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+			labelPcb302Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb302Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
 
-		if (PCB302::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB302::device->getModuleStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb302Activity->Text = "CONFIGURATION ..";
 			string = "pcb302 firmware revision: ";
-			string += " BOOT:" + PCB302::device->getBootStatus() + ", REV:" + PCB302::device->getBootRevision();
+			string += " BOOT:" + PCB302::device->getBootStatus().ToString() + ", REV:" + PCB302::device->getBootRevision();
 			string += " APP:" + PCB302::device->getAppRevision();
 			LogClass::logInFile(string);
 			startupSubFase++;
@@ -221,8 +221,8 @@ bool MainForm::Startup_PCB302(void) {
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (PCB302::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb302Activity->Text = "CONNECTED AND RUNNING";
+		if (PCB302::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+			labelPcb302Activity->Text = "RUN IN NORMAL MODE";
 			labelPcb302Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -242,22 +242,22 @@ bool MainForm::Startup_PCB303(void) {
 		labelPcb303Activity->Text = "CONNECTION ..";
 		string = "pcb303 initialization ..";
 		LogClass::logInFile(string);
-		if (Gantry::isPcb303Demo()) PCB303::device->demoMode();
+		if (Gantry::isPcb303Demo()) PCB303::device->simulMode();
 		else PCB303::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB303::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
-			labelPcb303Activity->Text = "RUNNING IN DEMO";
+		if (PCB303::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+			labelPcb303Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb303Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
 
-		if (PCB303::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB303::device->getModuleStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb303Activity->Text = "CONFIGURATION ..";
 			string = "pcb303 firmware revision: ";
-			string += " BOOT:" + PCB303::device->getBootStatus() + ", REV:" + PCB303::device->getBootRevision();
+			string += " BOOT:" + PCB303::device->getBootStatus().ToString() + ", REV:" + PCB303::device->getBootRevision();
 			string += " APP:" + PCB303::device->getAppRevision();
 			LogClass::logInFile(string);
 			startupSubFase++;
@@ -265,8 +265,8 @@ bool MainForm::Startup_PCB303(void) {
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (PCB303::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb303Activity->Text = "CONNECTED AND RUNNING";
+		if (PCB303::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+			labelPcb303Activity->Text = "RUN IN NORMAL MODE";
 			labelPcb303Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -286,22 +286,22 @@ bool MainForm::Startup_PCB304(void) {
 		labelPcb304Activity->Text = "CONNECTION ..";
 		string = "pcb304 initialization ..";
 		LogClass::logInFile(string);
-		if (Gantry::isPcb304Demo()) PCB304::device->demoMode();
+		if (Gantry::isPcb304Demo()) PCB304::device->simulMode();
 		else PCB304::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB304::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
-			labelPcb304Activity->Text = "RUNNING IN DEMO";
+		if (PCB304::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+			labelPcb304Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb304Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
 
-		if (PCB304::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB304::device->getModuleStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb304Activity->Text = "CONFIGURATION ..";
 			string = "pcb304 firmware revision: ";
-			string += " BOOT:" + PCB304::device->getBootStatus() + ", REV:" + PCB304::device->getBootRevision();
+			string += " BOOT:" + PCB304::device->getBootStatus().ToString() + ", REV:" + PCB304::device->getBootRevision();
 			string += " APP:" + PCB304::device->getAppRevision();
 			LogClass::logInFile(string);
 			startupSubFase++;
@@ -309,8 +309,8 @@ bool MainForm::Startup_PCB304(void) {
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (PCB304::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb304Activity->Text = "CONNECTED AND RUNNING";
+		if (PCB304::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+			labelPcb304Activity->Text = "RUN IN NORMAL MODE";
 			labelPcb304Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -330,22 +330,22 @@ bool MainForm::Startup_PCB315(void) {
 		labelPcb315Activity->Text = "CONNECTION ..";
 		string = "pcb315 initialization ..";		
 		LogClass::logInFile(string);
-		if (Gantry::isPcb315Demo()) PCB315::device->demoMode();
+		if (Gantry::isPcb315Demo()) PCB315::device->simulMode();
 		else PCB315::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB315::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
-			labelPcb315Activity->Text = "RUNNING IN DEMO";
+		if (PCB315::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+			labelPcb315Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb315Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
 
-		if (PCB315::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB315::device->getModuleStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb315Activity->Text = "CONFIGURATION ..";
 			string = "pcb315 firmware revision: ";
-			string += " BOOT:" + PCB315::device->getBootStatus() + ", REV:" + PCB315::device->getBootRevision();
+			string += " BOOT:" + PCB315::device->getBootStatus().ToString() + ", REV:" + PCB315::device->getBootRevision();
 			string += " APP:" + PCB315::device->getAppRevision();
 			LogClass::logInFile(string);
 			startupSubFase++;
@@ -353,8 +353,8 @@ bool MainForm::Startup_PCB315(void) {
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (PCB315::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb315Activity->Text = "CONNECTED AND RUNNING";
+		if (PCB315::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+			labelPcb315Activity->Text = "RUN IN NORMAL MODE";
 			labelPcb315Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -375,22 +375,22 @@ bool MainForm::Startup_PCB326(void) {
 		labelPcb326Activity->Text = "CONNECTION ..";
 		string = "pcb326 initialization ..";	
 		LogClass::logInFile(string);
-		if (Gantry::isPcb326Demo()) PCB326::device->demoMode();
+		if (Gantry::isPcb326Demo()) PCB326::device->simulMode();
 		else PCB326::device->runMode();
 		startupSubFase++;
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB326::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_DEMO) {
-			labelPcb326Activity->Text = "RUNNING IN DEMO";
+		if (PCB326::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+			labelPcb326Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb326Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
 
-		if (PCB326::device->getStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
+		if (PCB326::device->getModuleStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
 			labelPcb326Activity->Text = "CONFIGURATION ..";
 			string = "pcb326 firmware revision: ";
-			string += " BOOT:" + PCB326::device->getBootStatus() + ", REV:" + PCB326::device->getBootRevision();
+			string += " BOOT:" + PCB326::device->getBootStatus().ToString() + ", REV:" + PCB326::device->getBootRevision();
 			string += " APP:" + PCB326::device->getAppRevision();
 			LogClass::logInFile(string);
 			startupSubFase++;
@@ -398,8 +398,8 @@ bool MainForm::Startup_PCB326(void) {
 		break;
 
 	case 2: // Wait the connection and configuration		
-		if (PCB326::device->getStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb326Activity->Text = "CONNECTED AND RUNNING";
+		if (PCB326::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
+			labelPcb326Activity->Text = "RUN IN NORMAL MODE";
 			labelPcb326Activity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -422,7 +422,7 @@ bool MainForm::Startup_MotorBody(void) {
 
 		if (Gantry::isMotorBodyDemo()) {
 			BodyMotor::device->demoMode();
-			labelMotorBodyActivity->Text = "DEMO MODE";
+			labelMotorBodyActivity->Text = "RUN IN SIMULATION MODE";
 			labelMotorBodyActivity->ForeColor = Color::LightGreen;
 			return true;
 		}else BodyMotor::device->runMode();
@@ -451,7 +451,7 @@ bool MainForm::Startup_MotorBody(void) {
 			return true;
 		}
 		
-		labelMotorBodyActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorBodyActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorBodyActivity->ForeColor = Color::LightGreen;
 		return true;
 		
@@ -473,7 +473,7 @@ bool MainForm::Startup_MotorTilt(void) {
 
 		if (Gantry::isMotorTiltDemo()) {
 			TiltMotor::device->demoMode();
-			labelMotorTiltActivity->Text = "DEMO MODE";
+			labelMotorTiltActivity->Text = "RUN IN SIMULATION MODE";
 			labelMotorTiltActivity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -503,7 +503,7 @@ bool MainForm::Startup_MotorTilt(void) {
 			return true;
 		}
 
-		labelMotorTiltActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorTiltActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorTiltActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -526,7 +526,7 @@ bool MainForm::Startup_MotorArm(void) {
 
 		if (Gantry::isMotorArmDemo()) {
 			ArmMotor::device->demoMode();
-			labelMotorArmActivity->Text = "DEMO MODE";
+			labelMotorArmActivity->Text = "RUN IN SIMULATION MODE";
 			labelMotorArmActivity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -556,7 +556,7 @@ bool MainForm::Startup_MotorArm(void) {
 			return true;
 		}
 
-		labelMotorArmActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorArmActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorArmActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -577,7 +577,7 @@ bool MainForm::Startup_MotorShift(void) {
 		LogClass::logInFile(string);
 		if (Gantry::isMotorSlideDemo()) {
 			SlideMotor::device->demoMode();
-			labelMotorShiftActivity->Text = "DEMO MODE";
+			labelMotorShiftActivity->Text = "RUN IN SIMULATION MODE";
 			labelMotorShiftActivity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -609,7 +609,7 @@ bool MainForm::Startup_MotorShift(void) {
 			return true;
 		}
 
-		labelMotorShiftActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorShiftActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorShiftActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -632,7 +632,7 @@ bool MainForm::Startup_MotorVertical(void) {
 
 		if (Gantry::isMotorVerticalDemo()) {
 			VerticalMotor::device->demoMode();
-			labelMotorUpDownActivity->Text = "DEMO MODE";
+			labelMotorUpDownActivity->Text = "RUN IN SIMULATION MODE";
 			labelMotorUpDownActivity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -662,7 +662,7 @@ bool MainForm::Startup_MotorVertical(void) {
 			return true;
 		}
 
-		labelMotorUpDownActivity->Text = "CONNECTED AND CONFIGURED";
+		labelMotorUpDownActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorUpDownActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -681,10 +681,10 @@ bool MainForm::Startup_Generator(void) {
 	case 0: 
 
 		if (Gantry::isGeneratorDemo()) {
-			Exposures::getDevice()->startSimulatorMode();
+			Exposures::startSimulator();
 			return true;
 		}
-		else Exposures::getDevice()->startNormalMode();
+		else Exposures::startGenerator();
 
 		// Smart Hub Connection
 		labelShActivity->Text = "WAIT SMART HUB CONNECTION..";
@@ -694,7 +694,7 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 1: // Wait Generator connection
-		if (!Exposures::getDevice()->isSmartHubConnected()) break;
+		if (!Exposures::isSmartHubConnected()) break;
 		labelShActivity->Text = "CONNECTED AND RUNNING";
 		labelShActivity->ForeColor = Color::LightGreen;
 
@@ -705,28 +705,21 @@ bool MainForm::Startup_Generator(void) {
 		break;
 
 	case 2: // Wait Generator setup
-		if (!Exposures::getDevice()->isGeneratorConnected()) break;
+		if (!Exposures::isGeneratorConnected()) break;
 		labelGeneratorActivity->Text = "WAIT GENERATOR SETUP..";
 		string = "Generator: setup protocol ..";
 		LogClass::logInFile(string);
 		startupSubFase++;
 		break;
 
-	case 3: // Wait Clear System Messages
-		if (!Exposures::getDevice()->isGeneratorSetupCompleted()) break;
+	case 3: // Wait Generator Idle		
+		if (!Exposures::isGeneratorIdle()) break;
 		startupSubFase++;
 		break;
 
 	case 4: // Wait Generator Idle
-		if (Exposures::getDevice()->isGeneratorIdle()) {
-			labelGeneratorActivity->Text = "CONNECTED AND CONFIGURED";
-			labelGeneratorActivity->ForeColor = Color::LightGreen;
-		}
-		else {
-			startupError = true;
-			labelGeneratorActivity->Text = "SETUP FAILED";
-			labelGeneratorActivity->ForeColor = Color::Red;
-		}
+		labelGeneratorActivity->Text = "RUN IN NORMAL MODE";
+		labelGeneratorActivity->ForeColor = Color::LightGreen;
 		
 		return true;
 	}

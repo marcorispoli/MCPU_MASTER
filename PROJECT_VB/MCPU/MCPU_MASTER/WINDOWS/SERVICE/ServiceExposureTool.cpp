@@ -74,7 +74,7 @@ void ServiceExposureTool::initPanel(void) {
 	exposureLog->Clear();
 	exposureLog->Show();
 	focusSelection->Select(0, 0);
-	PCB301::set_xray_ena(false);
+	PCB301::setXrayEna(false);
 
 	// Start the startup session	
 	serviceTimer->Start();	

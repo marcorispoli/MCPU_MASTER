@@ -1,4 +1,4 @@
-.TH "Gantry" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "Gantry" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -190,6 +190,12 @@ Gantry
 .br
 .ti -1c
 .RI "static System::String ^ \fBpatient_name\fP"
+.br
+.ti -1c
+.RI "static bool \fBoperating_normal_status\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBoperating_sym_status\fP = false"
 .br
 .ti -1c
 .RI "static bool \fBoperating_demo_status\fP = false"
@@ -418,10 +424,14 @@ Pointer to the Monitor Y0 position\&.
 
 .SS "bool Gantry::operating_demo_status = false\fC [static]\fP, \fC [private]\fP"
 
+.SS "bool Gantry::operating_normal_status = false\fC [static]\fP, \fC [private]\fP"
+
 .SS "const cli::array<System::String^> ^ Gantry::operating_status_tags = gcnew cli::array<System::String^> { 'GANTRY_STARTUP', 'GANTRY_IDLE', 'GANTRY_OPEN_STUDY', 'GANTRY_SERVICE', 'UNDEF' }\fC [static]\fP"
 
 .PP
 This is the option-tags static array\&. 
+.SS "bool Gantry::operating_sym_status = false\fC [static]\fP, \fC [private]\fP"
+
 .SS "System::String ^ Gantry::patient_name\fC [static]\fP, \fC [private]\fP"
 
 .SS "bool Gantry::pcb301_simulator = false\fC [static]\fP, \fC [private]\fP"

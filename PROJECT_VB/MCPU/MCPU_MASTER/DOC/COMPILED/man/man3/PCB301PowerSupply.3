@@ -1,0 +1,310 @@
+.TH "PCB301PowerSupply" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB301PowerSupply \- PCB301 API to control the System Power Supply
+.PP
+ \- This section provides methods to monitor and control the system power supply\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBPCB301::getPowerdown\fP (void)"
+.br
+.RI "This function returns the PowerDown condition status  "
+.ti -1c
+.RI "static bool \fBPCB301::getMotorPowerSupply\fP (void)"
+.br
+.RI "This function returns the current status of the 48DVC power supply activation status\&.  "
+.ti -1c
+.RI "static void \fBPCB301::setMotorPowerSupply\fP (bool stat)"
+.br
+.RI "This method requests the board to disable the 48DVC power supply\&.  "
+.ti -1c
+.RI "static bool \fBPCB301::getMotorSwitch\fP (void)"
+.br
+.RI "This method requests the current status of the safety external solid state relay  "
+.ti -1c
+.RI "static void \fBPCB301::setMotorSwitch\fP (bool stat)"
+.br
+.RI "This method requests the board to disable the 48VDC safety solid state relay\&.  "
+.ti -1c
+.RI "static bool \fBPCB301::getBatteryEna\fP (void)"
+.br
+.RI "This method gets the current status of the Battery Enable External button\&.  "
+.ti -1c
+.RI "static bool \fBPCB301::getBatteryAlarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery malfunction\&.  "
+.ti -1c
+.RI "static bool \fBPCB301::getBatt1Alarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery 1 malfunction\&.  "
+.ti -1c
+.RI "static bool \fBPCB301::getBatt2Alarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery 2 malfunction\&.  "
+.ti -1c
+.RI "static unsigned char \fBPCB301::getVoltageBatt1\fP (void)"
+.br
+.RI "This method provides the info about the battery 1 voltage level in 0\&.1V units \&.  "
+.ti -1c
+.RI "static unsigned char \fBPCB301::getVoltageBatt2\fP (void)"
+.br
+.RI "This method provides the info about the battery 2 voltage level in 0\&.1V units \&.  "
+.ti -1c
+.RI "static bool \fBPCB301::getSoftPowerOffRequest\fP (void)"
+.br
+.RI "This method provides the status of the current soft power off request coming from the pcb301 board  "
+.ti -1c
+.RI "static void \fBPCB301::setPowerOff\fP (bool stat)"
+.br
+.RI "This method provides the Application to initiate a soft power off sequence\&.  "
+.ti -1c
+.RI "static bool \fBPCB301::getPowerLockStatus\fP (void)"
+.br
+.RI "This method provides the current status of the Programming Power Lock  "
+.ti -1c
+.RI "static void \fBPCB301::setPowerLock\fP (bool stat)"
+.br
+.RI "This method provides the Application to activate the Programming Power Lock circuit\&.  "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This section provides methods to monitor and control the system power supply\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "static bool PCB301::getBatt1Alarm (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the info about a possible battery 1 malfunction\&.  
+.PP
+\fBReturns\fP
+.RS 4
+True: the battery 1 is in alarm condition
+.RE
+.PP
+
+.SS "static bool PCB301::getBatt2Alarm (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the info about a possible battery 2 malfunction\&.  
+.PP
+\fBReturns\fP
+.RS 4
+True: the battery 2 is in alarm condition
+.RE
+.PP
+
+.SS "static bool PCB301::getBatteryAlarm (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the info about a possible battery malfunction\&.  The pcb301 board monitors the current voltage of the batteries (if present and enabled)\&.
+.PP
+If the level of the batteries drops below an alarm level, the board signals the malfunction\&.
+.PP
+The Application gets the actual status of a possible fault condition with this method\&.
+.PP
+See also:
+.IP "\(bu" 2
+\fBPCB301::getBatt1Alarm()\fP;
+.IP "\(bu" 2
+\fBPCB301::getBatt2Alarm()\fP;
+.PP
+.PP
+\fBReturns\fP
+.RS 4
+True: one or both the batteries are in alarm condition
+.RE
+.PP
+
+.SS "static bool PCB301::getBatteryEna (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method gets the current status of the Battery Enable External button\&.  The system provides an external Button to hardware enable the presence and usage of the backup batteries\&.
+.PP
+If this button should set to disable the Backup batteries, in case of powerdown condition the system will switche off\&.
+.PP
+The Application can monitor the status of the button with this method\&.
+.PP
+\fBReturns\fP
+.RS 4
+True: the batteries are enabled
+.RE
+.PP
+
+.SS "static bool PCB301::getMotorPowerSupply (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the current status of the 48DVC power supply activation status\&.  The 48VDC status is read directly from the power supply device\&.
+.PP
+The Reason to have a 48DVC status Off are:
+.IP "\(bu" 2
+The Application requested to disable the Power Supply for safety reason ( see \fBPCB301::setMotorPowerSupply()\fP );
+.IP "\(bu" 2
+The Emergency button has been activated: the pcb301 board disables the power supply via hardware;
+.IP "\(bu" 2
+The Safety Cabinet hardware input is active: the pcb301 board disables the power supply via hardware;
+.IP "\(bu" 2
+A short is present on the load side and the Power Supply is in protection;
+.PP
+.PP
+\fBReturns\fP
+.RS 4
+True: the 48DVC power supply is active at the nominal level (48VDC) 
+.RE
+.PP
+
+.SS "static bool PCB301::getMotorSwitch (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method requests the current status of the safety external solid state relay  The 48VDC output line is partially protected with a solid state relay for a subset of load devices that shall be momentary disabled for safety condition\&.
+.PP
+The Application gets the actual status of this relay with this method\&.
+.PP
+The reason of a False activation status can be one of:
+.IP "\(bu" 2
+The Application requested to disable this relay with the PCB301::setMotorSwitch(false) method;
+.IP "\(bu" 2
+The Safety Cabinet hardware input is active: the pcb301 board disables the power supply via hardware;
+.IP "\(bu" 2
+Compression hardware input is active: the pcb301 board disables the power supply via hardware;
+.PP
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "static bool PCB301::getPowerdown (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the PowerDown condition status  
+.PP
+\fBReturns\fP
+.RS 4
+True: a power down condition has been detected
+.RE
+.PP
+
+.SS "static bool PCB301::getPowerLockStatus (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the current status of the Programming Power Lock  The Programming power lock is a special hardware circuit that locks, when activated, the 24VDC power supply output to be active irrspective of the pcb301 microcontroller activity\&.
+.PP
+This feature is necessary to allow the system to upgrade the pcb301 board controller firmware by mean of a software procedure that runs on the system PC\&. Because during the firmware upload the board microcontroller resets, without this circuit, the entire system will switch off in case of reprogramming attempt\&.
+.PP
+NOTE: when this circuit should be activated (see \fBPCB301::setPowerLock()\fP) the only method to switch off the system is to remove the Main AC power supply and to disable the backup Batteries!!
+.PP
+The Application should signal a Warning condition in case it should detect this circuit active in an Operating status\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "static bool PCB301::getSoftPowerOffRequest (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the status of the current soft power off request coming from the pcb301 board  The \fBPCB301\fP board monitors a dedicated external hardware input button used to request a system power off\&.
+.PP
+A short time pression detection causes a soft power off request\&.
+.PP
+The Application may ignore this request if there are not the right conditions to switch off the system\&. In case the Application should proceed with the power off sequence, the PCB301::setPowerOff(true) method should be used\&.
+.PP
+See \fBPCB301::setPowerOff()\fP for details\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "static unsigned char PCB301::getVoltageBatt1 (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the info about the battery 1 voltage level in 0\&.1V units \&.  The battery is a 12VDC nominal battery with a full charge level of 13\&.8V (138 units) 
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "static unsigned char PCB301::getVoltageBatt2 (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the info about the battery 2 voltage level in 0\&.1V units \&.  The battery is a 12VDC nominal battery with a full charge level of 13\&.8V (138 units) 
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "static void PCB301::setMotorPowerSupply (bool stat)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method requests the board to disable the 48DVC power supply\&.  The Application can request the pcb301 board to disable the 48VDC power Supply\&.
+.PP
+If the Application should set the Power Supply status to True (power presence) the effective status can depend by other internal hardware conditions that may prevent to activate the Power Supply (see \fBPCB301::getMotorPowerSupply\fP )
+.PP
+The Application can monitor the effective status with the method \fBPCB301::getMotorPowerSupply()\fP
+.PP
+\fBParameters\fP
+.RS 4
+\fIstat\fP The requested activation status 
+.RE
+.PP
+
+.SS "static void PCB301::setMotorSwitch (bool stat)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method requests the board to disable the 48VDC safety solid state relay\&.  The Application can request the pcb301 board to disable the safety solid state relay for safety reason\&.
+.PP
+Although the Application should request to activate the solid state relay, the effective status can depend by other internal hardware conditions that may prevent the activation\&. See the \fBPCB301::getMotorSwitch()\fP for details
+.PP
+\fBParameters\fP
+.RS 4
+\fIstat\fP The requested activation status 
+.RE
+.PP
+
+.SS "static void PCB301::setPowerLock (bool stat)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the Application to activate the Programming Power Lock circuit\&.  See the \fBPCB301::getPowerLockStatus()\fP for details about this circuit\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIstat\fP 
+.RE
+.PP
+
+.SS "static void PCB301::setPowerOff (bool stat)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This method provides the Application to initiate a soft power off sequence\&.  When the Application should initiate a soft power off seqeunce, it should use the PCB301::setPowerOff(true) method:
+.IP "\(bu" 2
+the pcb301 will wait for a given time to allow the system to properly shutdown the operating system and all the system devices\&.
+.PP
+.PP
+If the Application should abort the sequence, it is enough to set again the method with a False parameter:
+.IP "\(bu" 2
+PCB301::setPowerOff(false);
+.PP
+.PP
+NOTE: The Power Off sequence can be Aborted ONLY if the waiting timr is not yest expired!
+.PP
+\fBParameters\fP
+.RS 4
+\fIstat\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

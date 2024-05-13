@@ -5,36 +5,65 @@ ref class SystemConfig
 {
 public:
     literal System::String^ FILENAME = "SystemInit.cnf";
-    literal int     FILE_REVISION = 1;
+    literal int     FILE_REVISION = 2;
+
+    literal int     PARAM_MODE_CAN = 0;
+    literal int     PARAM_MODE_GENERATOR = 1;
+    literal int     PARAM_MODE_TILT = 2;
+    literal int     PARAM_MODE_ARM = 3;
+    literal int     PARAM_MODE_BODY = 4;
+    literal int     PARAM_MODE_VERTICAL = 5;
+    literal int     PARAM_MODE_SLIDE = 6;
+    literal int     PARAM_MODE_PCB301 = 7;
+    literal int     PARAM_MODE_PCB302 = 8;
+    literal int     PARAM_MODE_PCB303 = 9;
+    literal int     PARAM_MODE_PCB304 = 10;
+    literal int     PARAM_MODE_PCB315 = 11;
+    literal int     PARAM_MODE_PCB326 = 12;
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_RUNNING_MODE = "RUNNING_MODE";
-    literal System::String^ PARAM_RUNNING_MODE_COMMENT = "[1=Run, 0=Sim]: tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,315,326";
-    literal int     PARAM_RUNNING_MODE_TILT = 0;
-    literal int     PARAM_RUNNING_MODE_ARM = 1;
-    literal int     PARAM_RUNNING_MODE_BODY = 2;
-    literal int     PARAM_RUNNING_MODE_VERTICAL = 3;
-    literal int     PARAM_RUNNING_MODE_SLIDE = 4;
-    literal int     PARAM_RUNNING_MODE_PCB301 = 5;
-    literal int     PARAM_RUNNING_MODE_PCB302 = 6;
-    literal int     PARAM_RUNNING_MODE_PCB303 = 7;
-    literal int     PARAM_RUNNING_MODE_PCB304 = 8;
-    literal int     PARAM_RUNNING_MODE_PCB315 = 9;
-    literal int     PARAM_RUNNING_MODE_PCB326 = 10;
+    literal System::String^ PARAM_RUNNING_MODE_COMMENT = "This is the Gantry Running Mode Definition: NORMAL, DEMO, SYM";
+    literal int             PARAM_RUNNING_MODE_STATUS = 0;
+    literal System::String^ PARAM_RUNNING_MODE_STATUS_DEFAULT = "NORMAL";
+    
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_DEMO_MODE = "DEMO_MODE";
+    literal System::String^ PARAM_DEMO_MODE_COMMENT = "Demo Mode Setting: [1=Run, 0=Sim]: can-driver, generator, tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,315,326";
+   
 
+    literal System::String^ PARAM_DEMO_MODE_CAN_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_GENERATOR_DEFAULT = "0";
+    literal System::String^ PARAM_DEMO_MODE_TILT_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_ARM_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_BODY_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_VERTICAL_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_SLIDE_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_PCB301_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_PCB302_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_PCB303_DEFAULT = "0";
+    literal System::String^ PARAM_DEMO_MODE_PCB304_DEFAULT = "1";
+    literal System::String^ PARAM_DEMO_MODE_PCB315_DEFAULT = "0";
+    literal System::String^ PARAM_DEMO_MODE_PCB326_DEFAULT = "1";
 
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_SYM_MODE = "SYM_MODE";
+    literal System::String^ PARAM_SYM_MODE_COMMENT = "SYM Mode Setting: [1=Run, 0=Sim]: can-driver, generator, tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,315,326";
+    
 
-    literal System::String^ PARAM_RUNNING_MODE_TILT_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_ARM_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_BODY_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_VERTICAL_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_SLIDE_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_PCB301_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_PCB302_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_PCB303_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_PCB304_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_PCB315_DEFAULT = "1";
-    literal System::String^ PARAM_RUNNING_MODE_PCB326_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_CAN_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_GENERATOR_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_TILT_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_ARM_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_BODY_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_VERTICAL_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_SLIDE_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_PCB301_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_PCB302_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_PCB303_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_PCB304_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_PCB315_DEFAULT = "0";
+    literal System::String^ PARAM_SYM_MODE_PCB326_DEFAULT = "0";
 
 
 
@@ -77,11 +106,8 @@ public:
     literal System::String^    PARAM_AWS_CONNECTIONS_PORT_COMMAND_DEFAULT = "10000";
     literal System::String^    PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = "10001";
 
-    //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_DEMO_MODE = "DEMO_MODE";
-    literal System::String^ PARAM_DEMO_MODE_COMMENT = "This is the Demo Mode activation ";
-    literal int             PARAM_DEMO_MODE_STATUS = 0;
-    literal System::String^ PARAM_DEMO_MODE_DEFAULT = "1";
+    
+    
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_LOG_DIRECTORY = "LOG_DIRECTORY";
@@ -96,17 +122,39 @@ public:
         CONFIG_FILE_DESCRIPTOR
         {
             CONFIG_FILE_ITEM(PARAM_RUNNING_MODE, PARAM_RUNNING_MODE_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_RUNNING_MODE_TILT_DEFAULT,
-            PARAM_RUNNING_MODE_ARM_DEFAULT,
-            PARAM_RUNNING_MODE_BODY_DEFAULT,
-            PARAM_RUNNING_MODE_VERTICAL_DEFAULT,
-            PARAM_RUNNING_MODE_SLIDE_DEFAULT,
-            PARAM_RUNNING_MODE_PCB301_DEFAULT,
-            PARAM_RUNNING_MODE_PCB302_DEFAULT,
-            PARAM_RUNNING_MODE_PCB303_DEFAULT,
-            PARAM_RUNNING_MODE_PCB304_DEFAULT,
-            PARAM_RUNNING_MODE_PCB315_DEFAULT,
-            PARAM_RUNNING_MODE_PCB326_DEFAULT
+            PARAM_RUNNING_MODE_STATUS_DEFAULT,
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_DEMO_MODE, PARAM_DEMO_MODE_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_DEMO_MODE_CAN_DEFAULT,
+            PARAM_DEMO_MODE_GENERATOR_DEFAULT,
+            PARAM_DEMO_MODE_TILT_DEFAULT,
+            PARAM_DEMO_MODE_ARM_DEFAULT,
+            PARAM_DEMO_MODE_BODY_DEFAULT,
+            PARAM_DEMO_MODE_VERTICAL_DEFAULT,
+            PARAM_DEMO_MODE_SLIDE_DEFAULT,
+            PARAM_DEMO_MODE_PCB301_DEFAULT,
+            PARAM_DEMO_MODE_PCB302_DEFAULT,
+            PARAM_DEMO_MODE_PCB303_DEFAULT,
+            PARAM_DEMO_MODE_PCB304_DEFAULT,
+            PARAM_DEMO_MODE_PCB315_DEFAULT,
+            PARAM_DEMO_MODE_PCB326_DEFAULT
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_SYM_MODE, PARAM_SYM_MODE_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_SYM_MODE_CAN_DEFAULT,
+            PARAM_SYM_MODE_GENERATOR_DEFAULT,
+            PARAM_SYM_MODE_TILT_DEFAULT,
+            PARAM_SYM_MODE_ARM_DEFAULT,
+            PARAM_SYM_MODE_BODY_DEFAULT,
+            PARAM_SYM_MODE_VERTICAL_DEFAULT,
+            PARAM_SYM_MODE_SLIDE_DEFAULT,
+            PARAM_SYM_MODE_PCB301_DEFAULT,
+            PARAM_SYM_MODE_PCB302_DEFAULT,
+            PARAM_SYM_MODE_PCB303_DEFAULT,
+            PARAM_SYM_MODE_PCB304_DEFAULT,
+            PARAM_SYM_MODE_PCB315_DEFAULT,
+            PARAM_SYM_MODE_PCB326_DEFAULT
             }),
 
 
@@ -132,9 +180,6 @@ public:
             PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT,           
             }),
 
-            CONFIG_FILE_ITEM(PARAM_DEMO_MODE, PARAM_DEMO_MODE_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_DEMO_MODE_DEFAULT,            
-            }),
 
             CONFIG_FILE_ITEM(PARAM_LOG_DIRECTORY, PPARAM_LOG_DIRECTORY_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_LOG_DIRECTORY_DEFAULT,

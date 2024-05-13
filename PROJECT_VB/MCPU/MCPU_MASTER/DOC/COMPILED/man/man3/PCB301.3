@@ -1,4 +1,4 @@
-.TH "PCB301" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB301" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -30,113 +30,161 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "static bool \fBgetPowerdown\fP (void)"
 .br
-.ti -1c
-.RI "static bool \fBgetEmergency\fP (void)"
-.br
-.ti -1c
-.RI "static bool \fBgetCabinetSafety\fP (void)"
-.br
-.ti -1c
-.RI "static bool \fBgetMotorSwitch\fP (void)"
-.br
+.RI "This function returns the PowerDown condition status  "
 .ti -1c
 .RI "static bool \fBgetMotorPowerSupply\fP (void)"
 .br
+.RI "This function returns the current status of the 48DVC power supply activation status\&.  "
 .ti -1c
-.RI "static bool \fBgetCompressionStatus\fP (void)"
+.RI "static void \fBsetMotorPowerSupply\fP (bool stat)"
 .br
+.RI "This method requests the board to disable the 48DVC power supply\&.  "
 .ti -1c
-.RI "static bool \fBgetBurningJumper\fP (void)"
+.RI "static bool \fBgetMotorSwitch\fP (void)"
 .br
+.RI "This method requests the current status of the safety external solid state relay  "
 .ti -1c
-.RI "static bool \fBgetSoftPowerOffRequest\fP (void)"
+.RI "static void \fBsetMotorSwitch\fP (bool stat)"
 .br
-.ti -1c
-.RI "static bool \fBgetPowerLockStatus\fP (void)"
-.br
-.ti -1c
-.RI "static \fBdoor_options\fP \fBgetDoorStatus\fP (void)"
-.br
+.RI "This method requests the board to disable the 48VDC safety solid state relay\&.  "
 .ti -1c
 .RI "static bool \fBgetBatteryEna\fP (void)"
 .br
+.RI "This method gets the current status of the Battery Enable External button\&.  "
 .ti -1c
 .RI "static bool \fBgetBatteryAlarm\fP (void)"
 .br
+.RI "This method provides the info about a possible battery malfunction\&.  "
+.ti -1c
+.RI "static bool \fBgetBatt1Alarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery 1 malfunction\&.  "
+.ti -1c
+.RI "static bool \fBgetBatt2Alarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery 2 malfunction\&.  "
 .ti -1c
 .RI "static unsigned char \fBgetVoltageBatt1\fP (void)"
 .br
+.RI "This method provides the info about the battery 1 voltage level in 0\&.1V units \&.  "
 .ti -1c
 .RI "static unsigned char \fBgetVoltageBatt2\fP (void)"
 .br
+.RI "This method provides the info about the battery 2 voltage level in 0\&.1V units \&.  "
 .ti -1c
-.RI "static bool \fBgetXrayPushButtonStat\fP (void)"
+.RI "static bool \fBgetSoftPowerOffRequest\fP (void)"
 .br
+.RI "This method provides the status of the current soft power off request coming from the pcb301 board  "
+.ti -1c
+.RI "static void \fBsetPowerOff\fP (bool stat)"
+.br
+.RI "This method provides the Application to initiate a soft power off sequence\&.  "
+.ti -1c
+.RI "static bool \fBgetPowerLockStatus\fP (void)"
+.br
+.RI "This method provides the current status of the Programming Power Lock  "
+.ti -1c
+.RI "static void \fBsetPowerLock\fP (bool stat)"
+.br
+.RI "This method provides the Application to activate the Programming Power Lock circuit\&.  "
+.ti -1c
+.RI "static bool \fBgetEmergency\fP (void)"
+.br
+.RI "This function returns the Emergency Input circuit line activation status\&.  "
+.ti -1c
+.RI "static bool \fBgetCabinetSafety\fP (void)"
+.br
+.RI "This function returns the Cabinet Safety Input circuit line activation status\&.  "
+.ti -1c
+.RI "static bool \fBgetCompressionStatus\fP (void)"
+.br
+.RI "This function returns the Compression Pending Status Input circuit line activation status\&.  "
+.ti -1c
+.RI "static \fBdoor_options\fP \fBgetDoorStatus\fP (void)"
+.br
+.RI "This function returns the Door Study Status Input circuit line activation status\&.  "
+.ti -1c
+.RI "static void \fBSetCompressorEna\fP (bool stat)"
+.br
+.RI "This method sets the Compressor Enable Output line on the \fBPCB301\fP board\&.  "
+.ti -1c
+.RI "static void \fBSetCompressorCalib\fP (bool stat)"
+.br
+.RI "This method sets the Compressor Calibration Output line on the \fBPCB301\fP board\&.  "
+.ti -1c
+.RI "static bool \fBgetBurningJumper\fP (void)"
+.br
+.RI "This function returns the status of the Burning Jumper detected presence  "
 .ti -1c
 .RI "static bool \fBget_pedal_up_stat\fP (void)"
 .br
+.RI "This function returns the Pedal Board Vertical-Up Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_pedal_down_stat\fP (void)"
 .br
+.RI "This function returns the Pedal Board Vertical-Down Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_cmp_up_stat\fP (void)"
 .br
+.RI "This function returns the Pedal Board Compression-Up Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_cmp_down_stat\fP (void)"
 .br
+.RI "This function returns the Pedal Board Compression-Down Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_arm_cw_stat\fP (void)"
 .br
+.RI "This function returns the Manual Keypad Arm-CW Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_arm_ccw_stat\fP (void)"
 .br
+.RI "This function returns the Manual Keypad Arm-CCW Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_up_stat\fP (void)"
 .br
+.RI "This function returns the Manual Keypad Vertical-Up Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_down_stat\fP (void)"
 .br
+.RI "This function returns the Manual Keypad Vertical-Down Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_body_cw\fP (void)"
 .br
+.RI "This function returns the Manual Body-CW Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_body_ccw\fP (void)"
 .br
+.RI "This function returns the Manual Body-CCW Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_slide_up_stat\fP (void)"
 .br
+.RI "This function returns the Manual Slide-Up Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_slide_down_stat\fP (void)"
 .br
+.RI "This function returns the Manual Slide-Down Hardware Input Line status\&.  "
 .ti -1c
-.RI "static void \fBset_power_lock\fP (bool stat)"
+.RI "static bool \fBgetXrayPushButtonStat\fP (void)"
 .br
+.RI "This method returns the current status of the X-RAY push button activation status\&.  "
 .ti -1c
-.RI "static void \fBset_motor_power_supply\fP (bool stat)"
+.RI "static void \fBsetXrayEna\fP (bool stat)"
 .br
+.RI "This method requests to activate the x-ray enable hardware signal on the generator external interface\&.  "
 .ti -1c
-.RI "static void \fBset_motor_switch\fP (bool stat)"
+.RI "static void \fBsetBuzzerManualMode\fP (bool stat)"
 .br
+.RI "This method sets the working mode of the Buzzer in Manual Mode or Automatic Mode  "
 .ti -1c
-.RI "static void \fBset_compressor_ena\fP (bool stat)"
+.RI "static void \fBactivationManualBuzzer\fP (bool stat)"
 .br
+.RI "This method, when the buzzer is set in manual mode, sets the current status of the Buzzer device\&.  "
 .ti -1c
-.RI "static void \fBset_compressor_calib\fP (bool stat)"
+.RI "static \fBCanDeviceCommandResult\fP ^ \fBactivateManualBuzzerTomoMode\fP (int samples, int fps, int tmo, Object^ \fBdevice\fP)"
 .br
-.ti -1c
-.RI "static void \fBset_xray_ena\fP (bool stat)"
-.br
-.ti -1c
-.RI "static void \fBset_manual_buzzer\fP (bool stat)"
-.br
-.ti -1c
-.RI "static void \fBset_activation_buzzer\fP (bool stat)"
-.br
+.RI "This method, when the buzzer is set in manual mode, activates the buzzer in Tomo mode, providing a given number of consecutive pulses at a given rate\&.  "
 .ti -1c
 .RI "static void \fBset_manual_rot_ena_led\fP (bool stat)"
-.br
-.ti -1c
-.RI "static void \fBset_power_off\fP (bool stat)"
 .br
 .in -1c
 .SS "Static Public Attributes"
@@ -152,9 +200,17 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "void \fBrunningLoop\fP (void) override"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Slide-Down input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "void \fBdemoLoop\fP (void) override"
 .br
+.RI "This is the Demo Loop overriden procedure\&. "
 .in -1c
 .SS "Private Types"
 
@@ -167,6 +223,12 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "enum class \fBDataRegisters\fP { \fBOUTPUTS_DATA_REGISTER\fP = 0 }"
 .br
 .RI "This is the Device DATA Register implementation  "
+.ti -1c
+.RI "enum class \fBCommandregister\fP { \fBABORT_COMMAND\fP = 0, \fBACTIVATE_SOFT_POWEROFF\fP, \fBACTIVATE_DEMO_TOMO\fP }"
+.br
+.RI "
+.br
+ This enumeration class defines the Indexes of the Command Execution "
 .in -1c
 .SS "Private Member Functions"
 
@@ -266,40 +328,137 @@ This is the current X-RAY status
 .ti -1c
 .RI "static bool \fBpedal_down_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Pedal Board - Vertical Up input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBcmp_up_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Pedal Board - Vertical Down input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBcmp_down_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Pedal Board - Compressor Up input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_arm_cw_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Pedal Board - Compressor Down input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_arm_ccw_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Arm CW input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_up_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Arm CCW input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_down_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Vertical Up input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_body_cw\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Vertical Down input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_body_ccw\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Body-CW input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_slide_up_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Body-CCW input line 
+.RE
+.PP
+"
 .ti -1c
 .RI "static bool \fBbutton_slide_down_stat\fP = false"
 .br
+.RI "
+.PP
+.RS 4
+This is the current status of the Manual Slide-Up input line 
+.RE
+.PP
+"
 .in -1c
 .SS "Additional Inherited Members"
 .SH "Member Enumeration Documentation"
 .PP 
+.SS "enum class \fBPCB301::Commandregister\fP\fC [strong]\fP, \fC [private]\fP"
+
+.PP
+
+.br
+ This enumeration class defines the Indexes of the Command Execution 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIABORT_COMMAND \fP\fP
+Abort Command (mandatory as for device protocol) 
+.TP
+\fB\fIACTIVATE_SOFT_POWEROFF \fP\fP
+Soft power off activation\&. 
+.TP
+\fB\fIACTIVATE_DEMO_TOMO \fP\fP
+Buzzer pulse for tomo 
+.br
+ 
 .SS "enum class \fBPCB301::DataRegisters\fP\fC [strong]\fP, \fC [private]\fP"
 
 .PP
@@ -336,12 +495,6 @@ This is the System Status register index
 .RE
 .PP
 
-.PP
-.RS 4
-This is the Battery level Status register index 
-.RE
-.PP
-
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "PCB301::PCB301 ()\fC [inline]\fP"
@@ -351,62 +504,10 @@ This is the Battery level Status register index
 .SS "void PCB301::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
+This is the Demo Loop overriden procedure\&. 
+.PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "void PCB301::evaluateEvents (void)\fC [private]\fP"
-
-.SS "static bool PCB301::get_button_arm_ccw_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_button_arm_cw_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_button_body_ccw (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_button_body_cw (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_button_down_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_button_slide_down_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_button_slide_up_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_button_up_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_cmp_down_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_cmp_up_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_pedal_down_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::get_pedal_up_stat (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getBatteryAlarm (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getBatteryEna (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getBurningJumper (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getCabinetSafety (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getCompressionStatus (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static \fBdoor_options\fP PCB301::getDoorStatus (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getEmergency (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getMotorPowerSupply (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getMotorSwitch (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getPowerdown (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getPowerLockStatus (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getSoftPowerOffRequest (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static unsigned char PCB301::getVoltageBatt1 (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static unsigned char PCB301::getVoltageBatt2 (void)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static bool PCB301::getXrayPushButtonStat (void)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "void PCB301::handleBatteryStatusRegister (void)\fC [private]\fP"
 
@@ -415,26 +516,16 @@ Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "void PCB301::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
+
+.PP
+.RS 4
+This is the current status of the Manual Slide-Down input line 
+.RE
+.PP
+This is the Running Loop overriden procedure 
+.PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
-.SS "static void PCB301::set_activation_buzzer (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_compressor_calib (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_compressor_ena (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_manual_buzzer (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
 .SS "static void PCB301::set_manual_rot_ena_led (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_motor_power_supply (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_motor_switch (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_power_lock (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_power_off (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
-.SS "static void PCB301::set_xray_ena (bool stat)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "void PCB301::toggleKeepalive (void)\fC [private]\fP"
 
@@ -458,19 +549,83 @@ Battery enabled system button status\&.
 Burning jumper present in the system\&. 
 .SS "bool PCB301::button_arm_ccw_stat = false\fC [static]\fP, \fC [private]\fP"
 
+.PP
+
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Arm CW input line 
+.RE
+.PP
+
 .SS "bool PCB301::button_arm_cw_stat = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+
+.PP
+.RS 4
+This is the current status of the Pedal Board - Compressor Down input line 
+.RE
+.PP
 
 .SS "bool PCB301::button_body_ccw = false\fC [static]\fP, \fC [private]\fP"
 
+.PP
+
+.PP
+.RS 4
+This is the current status of the Manual Body-CW input line 
+.RE
+.PP
+
 .SS "bool PCB301::button_body_cw = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Vertical Down input line 
+.RE
+.PP
 
 .SS "bool PCB301::button_down_stat = false\fC [static]\fP, \fC [private]\fP"
 
+.PP
+
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Vertical Up input line 
+.RE
+.PP
+
 .SS "bool PCB301::button_slide_down_stat = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+
+.PP
+.RS 4
+This is the current status of the Manual Slide-Up input line 
+.RE
+.PP
 
 .SS "bool PCB301::button_slide_up_stat = false\fC [static]\fP, \fC [private]\fP"
 
+.PP
+
+.PP
+.RS 4
+This is the current status of the Manual Body-CCW input line 
+.RE
+.PP
+
 .SS "bool PCB301::button_up_stat = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+
+.PP
+.RS 4
+This is the current status of the Manual Keypad - Arm CCW input line 
+.RE
+.PP
 
 .SS "bool PCB301::cabinet_safety_status = false\fC [static]\fP, \fC [private]\fP"
 
@@ -478,7 +633,23 @@ Burning jumper present in the system\&.
 The Cabinet safety input status\&. 
 .SS "bool PCB301::cmp_down_stat = false\fC [static]\fP, \fC [private]\fP"
 
+.PP
+
+.PP
+.RS 4
+This is the current status of the Pedal Board - Compressor Up input line 
+.RE
+.PP
+
 .SS "bool PCB301::cmp_up_stat = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+
+.PP
+.RS 4
+This is the current status of the Pedal Board - Vertical Down input line 
+.RE
+.PP
 
 .SS "bool PCB301::compression_on_status = false\fC [static]\fP, \fC [private]\fP"
 
@@ -505,6 +676,14 @@ Safety switch of the 48V status\&.
 .SS "\fBRegister\fP ^ PCB301::outputs_data_register = gcnew \fBRegister\fP()\fC [static]\fP, \fC [private]\fP"
 
 .SS "bool PCB301::pedal_down_stat = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+
+.PP
+.RS 4
+This is the current status of the Pedal Board - Vertical Up input line 
+.RE
+.PP
 
 .SS "bool PCB301::pedal_up_stat = false\fC [static]\fP, \fC [private]\fP"
 

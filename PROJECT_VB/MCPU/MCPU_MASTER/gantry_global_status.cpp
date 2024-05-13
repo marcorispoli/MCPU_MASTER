@@ -52,65 +52,91 @@ Gantry::Gantry() {
 
 void Gantry::initialize(void) {
     
-   
     // Initializes the Operating Demo status
-    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEMO_MODE)[SystemConfig::PARAM_DEMO_MODE_STATUS] == "1")
-        operating_demo_status = true;
-    else  operating_demo_status = false;
+    operating_normal_status = false;
+    operating_sym_status = false;
+    operating_demo_status = false;
+    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_STATUS] == "NORMAL") operating_normal_status = true;
+    else if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_STATUS] == "DEMO") operating_demo_status = true;
+    else operating_sym_status = true;
 
-    // Force some process to be in demo status when the operating is in demo
-    if (operating_demo_status) {       
-        generator_simulator = true;
-    }
-    generator_simulator = false;
-    
-    can_driver_simulator = false;   
-    
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB301]) == 1)
+    System::String^ param;
+    if (operating_normal_status) {
+        can_driver_simulator = false;
+        generator_simulator = false;
         pcb301_simulator = false;
-    else pcb301_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB302]) == 1)
         pcb302_simulator = false;
-    else pcb302_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB303]) == 1)
         pcb303_simulator = false;
-    else pcb303_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB304]) == 1)
         pcb304_simulator = false;
-    else pcb304_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB315]) == 1)
         pcb315_simulator = false;
-    else pcb315_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_PCB326]) == 1)
         pcb326_simulator = false;
-    else pcb326_simulator = true;
-
-    if( System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_TILT]) == 1)
         motor_tilt_simulator = false;
-    else motor_tilt_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_ARM]) == 1)
         motor_arm_simulator = false;
-    else motor_arm_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_SLIDE]) == 1)
         motor_slide_simulator = false;
-    else motor_slide_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_BODY]) == 1)
         motor_body_simulator = false;
-    else motor_body_simulator = true;
-
-    if (System::Convert::ToByte(SystemConfig::Configuration->getParam(SystemConfig::PARAM_RUNNING_MODE)[SystemConfig::PARAM_RUNNING_MODE_VERTICAL]) == 1)
         motor_vertical_simulator = false;
-    else motor_vertical_simulator = true;
+    }
+    else{
+        if (operating_demo_status) param = SystemConfig::PARAM_DEMO_MODE;
+        else param = SystemConfig::PARAM_SYM_MODE;
 
-   
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_CAN]) == 1)
+            can_driver_simulator = false;
+        else can_driver_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_GENERATOR]) == 1)
+            generator_simulator = false;
+        else generator_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB301]) == 1)
+            pcb301_simulator = false;
+        else pcb301_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB302]) == 1)
+            pcb302_simulator = false;
+        else pcb302_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB303]) == 1)
+            pcb303_simulator = false;
+        else pcb303_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB304]) == 1)
+            pcb304_simulator = false;
+        else pcb304_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB315]) == 1)
+            pcb315_simulator = false;
+        else pcb315_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB326]) == 1)
+            pcb326_simulator = false;
+        else pcb326_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_TILT]) == 1)
+            motor_tilt_simulator = false;
+        else motor_tilt_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_ARM]) == 1)
+            motor_arm_simulator = false;
+        else motor_arm_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_SLIDE]) == 1)
+            motor_slide_simulator = false;
+        else motor_slide_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_BODY]) == 1)
+            motor_body_simulator = false;
+        else motor_body_simulator = true;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_VERTICAL]) == 1)
+            motor_vertical_simulator = false;
+        else motor_vertical_simulator = true;
+    }
+    
+    
+
+    
+    
 
     // Set the current language for messages and GUI
     Notify::setLanguage("ENG");

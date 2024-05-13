@@ -1,0 +1,244 @@
+.TH "CanDeviceProtocol::CanDeviceCommunicationMonitor" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanDeviceProtocol::CanDeviceCommunicationMonitor \- This class provides an interface to monitor the communication performance with the device\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CanDeviceProtocol\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommunicationMonitor\fP (void)"
+.br
+.RI "Initializes the internal caounters  "
+.ti -1c
+.RI "void \fBupdateStatistics\fP (void)"
+.br
+.RI "Updates the communication statistics at the point of the call  "
+.ti -1c
+.RI "System::String ^ \fBgetStatFormattedString\fP (void)"
+.br
+.RI "Returns a formatted string with the calculated statistics  "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "double \fBtxrx_time\fP"
+.br
+.RI "Last Send - Receive time\&. "
+.ti -1c
+.RI "unsigned long \fBsent_messages\fP"
+.br
+.RI "Total number of sent frames\&. "
+.ti -1c
+.RI "unsigned long \fBsent_5\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 5ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_10\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 10ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_15\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 15ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_20\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 20ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_25\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 25ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_30\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 30ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_xx\fP"
+.br
+.RI "Total number of sent frames with a reception time exceeding 30ms\&. "
+.ti -1c
+.RI "double \fBperc5\fP"
+.br
+.RI "Percent of messages with less than 5ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc10\fP"
+.br
+.RI "Percent of messages with less than 10ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc15\fP"
+.br
+.RI "Percent of messages with less than 15ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc20\fP"
+.br
+.RI "Percent of messages with less than 20ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc25\fP"
+.br
+.RI "Percent of messages with less than 25ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc30\fP"
+.br
+.RI "Percent of messages with less than 30ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBpercXX\fP"
+.br
+.RI "Percent of messages exceeding 30ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBmeanTime\fP"
+.br
+.RI "Total Rx-Tx Mean time\&. "
+.ti -1c
+.RI "double \fBpercMeanTime\fP"
+.br
+.RI "Percent of the Tx-Rx mean time\&. "
+.ti -1c
+.RI "unsigned long \fBunreceived_messages\fP"
+.br
+.RI "Number of unreceived messages\&. "
+.ti -1c
+.RI "System::String ^ \fBlog_string\fP"
+.br
+.RI "Pre formatted string statistic\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class provides an interface to monitor the communication performance with the device\&. 
+
+Every frame is sent and after every message received, the internal statistic is updated with the following infos:
+.IP "\(bu" 2
+Tx-Rx mean time: this is the mean time of the time elapsed from the Tx event to the Rx event;
+.IP "\(bu" 2
+Perc5: this is the percentage of elapsed time less than 5ms;
+.IP "\(bu" 2
+Perc10: this is the percentage of elapsed time less than 10ms;
+.IP "\(bu" 2
+Perc15: this is the percentage of elapsed time less than 15ms;
+.IP "\(bu" 2
+Perc20: this is the percentage of elapsed time less than 20ms;
+.IP "\(bu" 2
+Perc25: this is the percentage of elapsed time less than 25ms;
+.IP "\(bu" 2
+Perc30: this is the percentage of elapsed time less than 30ms;
+.IP "\(bu" 2
+Percxx: this is the percentage of elapsed time exceeding 30ms;
+.PP
+.PP
+The Statistics are updated every 100 messages\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CanDeviceProtocol::CanDeviceCommunicationMonitor::CanDeviceCommunicationMonitor (void)\fC [inline]\fP"
+
+.PP
+Initializes the internal caounters  
+.SH "Member Function Documentation"
+.PP 
+.SS "System::String ^ CanDeviceProtocol::CanDeviceCommunicationMonitor::getStatFormattedString (void)\fC [inline]\fP"
+
+.PP
+Returns a formatted string with the calculated statistics  
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "void CanDeviceProtocol::CanDeviceCommunicationMonitor::updateStatistics (void)\fC [inline]\fP"
+
+.PP
+Updates the communication statistics at the point of the call  Every 1000 sent messages the internal percentuals statistics are calculated\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "System::String ^ CanDeviceProtocol::CanDeviceCommunicationMonitor::log_string"
+
+.PP
+Pre formatted string statistic\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::meanTime"
+
+.PP
+Total Rx-Tx Mean time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::perc10"
+
+.PP
+Percent of messages with less than 10ms of tx-rx time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::perc15"
+
+.PP
+Percent of messages with less than 15ms of tx-rx time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::perc20"
+
+.PP
+Percent of messages with less than 20ms of tx-rx time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::perc25"
+
+.PP
+Percent of messages with less than 25ms of tx-rx time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::perc30"
+
+.PP
+Percent of messages with less than 30ms of tx-rx time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::perc5"
+
+.PP
+Percent of messages with less than 5ms of tx-rx time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::percMeanTime"
+
+.PP
+Percent of the Tx-Rx mean time\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::percXX"
+
+.PP
+Percent of messages exceeding 30ms of tx-rx time\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_10"
+
+.PP
+Total number of sent frames with a reception time lower than 10ms\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_15"
+
+.PP
+Total number of sent frames with a reception time lower than 15ms\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_20"
+
+.PP
+Total number of sent frames with a reception time lower than 20ms\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_25"
+
+.PP
+Total number of sent frames with a reception time lower than 25ms\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_30"
+
+.PP
+Total number of sent frames with a reception time lower than 30ms\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_5"
+
+.PP
+Total number of sent frames with a reception time lower than 5ms\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_messages"
+
+.PP
+Total number of sent frames\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::sent_xx"
+
+.PP
+Total number of sent frames with a reception time exceeding 30ms\&. 
+.SS "double CanDeviceProtocol::CanDeviceCommunicationMonitor::txrx_time"
+
+.PP
+Last Send - Receive time\&. 
+.SS "unsigned long CanDeviceProtocol::CanDeviceCommunicationMonitor::unreceived_messages"
+
+.PP
+Number of unreceived messages\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

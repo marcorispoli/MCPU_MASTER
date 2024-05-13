@@ -1,4 +1,4 @@
-.TH "PCB315_Internal" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB315_Internal" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -85,6 +85,7 @@ PCB315_Internal \- Internal implementation section
 .ti -1c
 .RI "void \fBPCB315::demoLoop\fP (void) override"
 .br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
 .ti -1c
 .RI "bool \fBPCB315::updateStatusRegister\fP (void)"
 .br
@@ -121,7 +122,9 @@ The routine never exit in the case of communication issues
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "void PCB315::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
-DA MODIFICARE----------------------------------------
+
+.PP
+This routine shall be overridden by the subclass module in order to implement the simulated features\&. DA MODIFICARE----------------------------------------
 .PP
 .PP
 

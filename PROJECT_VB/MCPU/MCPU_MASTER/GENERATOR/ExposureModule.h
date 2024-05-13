@@ -28,7 +28,7 @@ public:
     literal unsigned char  FOCUS_LARGE = 0;
     literal unsigned char  FOCUS_SMALL = 1;
     static Exposures^ pExposure = gcnew Exposures(); //! Self module generation
-    static inline  Generator^ getDevice(void) { return device; }
+    
 	
     ref class tomo_data {
     public:
@@ -268,7 +268,9 @@ public:
 
     };
 
-    
+    static void startSimulator(void) { getDevice()->startSimulatorMode(); }
+    static void startGenerator(void) { getDevice()->startNormalMode(); }
+
     static void inline setExposureMode(exposure_type_options mode) { exposure_type = mode; }
     static exposure_type_options inline getExposureMode(void) { return exposure_type; }
 
@@ -308,10 +310,12 @@ public:
         return  pulse[seq];
     }
 
+    
     inline static bool isXrayCompleted() { return xray_completed; }
     inline static bool isXrayRunning() { return !xray_completed; }
     inline static void clearXrayCompleted() { xray_completed = false; }
     inline static void setXrayCompletedFlag() { xray_completed = true; }
+
 
     inline static exposure_completed_errors getExposureCompletedError(void) { return xray_exposure_error; }
     inline static exposure_completed_options getExposureCompletedCode(void) { return xray_completed_code; }
@@ -343,7 +347,7 @@ public:
 protected:
     void exposureManagementLoop(bool demo) override; 
     void setXrayEnable(bool stat) override ;
-
+    bool getXrayPushButton(void) override;
 
 private:
 
@@ -377,6 +381,7 @@ private:
 
     void setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc);
         
-   
+    float demo2DPulse(float mAs, float current);
+    float demo3DPulses(float mAs,  int samples, int fps);
 };
 

@@ -121,9 +121,9 @@ ref class PCB326 : public CanDeviceProtocol
 		NO_COMMAND 
 	};
 
-	private: inline bool resetCommand(void) { return command((unsigned char)CommandRegister::RESET_COMMAND, 0, 0, 0, 0, 10); }
-	private: inline bool configCommand(void) { return command((unsigned char)CommandRegister::CONFIG_COMMAND, 0, 0, 0, 0, 10); }
-	private: inline bool calibrateCommand(void) { return command((unsigned char)CommandRegister::CALIBRATE_COMMAND, 0, 0, 0, 0, 10); }
+	private: inline bool resetCommand(void) { return commandNoWaitCompletion((unsigned char)CommandRegister::RESET_COMMAND, 0, 0, 0, 0, 10); }
+	private: inline bool configCommand(void) { return commandNoWaitCompletion((unsigned char)CommandRegister::CONFIG_COMMAND, 0, 0, 0, 0, 10); }
+	private: inline bool calibrateCommand(void) { return commandNoWaitCompletion((unsigned char)CommandRegister::CALIBRATE_COMMAND, 0, 0, 0, 0, 10); }
 
 public:
 

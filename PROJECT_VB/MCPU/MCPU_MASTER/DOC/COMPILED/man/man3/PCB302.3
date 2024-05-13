@@ -1,4 +1,4 @@
-.TH "PCB302" 3 "Thu May 2 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB302" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -114,9 +114,11 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .ti -1c
 .RI "void \fBrunningLoop\fP (void) override"
 .br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
 .ti -1c
 .RI "void \fBdemoLoop\fP (void) override"
 .br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
 .ti -1c
 .RI "bool \fBconfigurationLoop\fP (void) override"
 .br
@@ -326,6 +328,8 @@ Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "void PCB302::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
 .PP
+This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
+.PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "void PCB302::evaluateEvents (void)\fC [private]\fP"
 
@@ -421,6 +425,8 @@ This function returnrs the current compression force in N\&.
 
 .SS "void PCB302::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
 
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
 .SS "static void PCB302::setCompressorUnlock (void)\fC [inline]\fP, \fC [static]\fP"

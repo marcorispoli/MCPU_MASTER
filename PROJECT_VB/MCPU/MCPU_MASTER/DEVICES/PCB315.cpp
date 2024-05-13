@@ -7,6 +7,9 @@
 
 void PCB315::manageFilterSelection(void) {
     static bool filter_select_error = false;
+    
+    // No operation if a command is pending
+    if (!device->isCommandCompleted()) return;
 
     // No more attempts can be done after some collimation repetition.
     if (valid_filter_format) filter_selection_attempt = 0;
@@ -50,16 +53,16 @@ void PCB315::manageFilterSelection(void) {
             // Calls the proper command based on the filter requested
             switch (auto_filter_selected) {
             case FilterSlotCodes::FILTER1_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER1), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER1), 30);
                 break;
             case FilterSlotCodes::FILTER2_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER2), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER2), 30);
                 break;
             case FilterSlotCodes::FILTER3_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER3), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER3), 30);
                 break;
             case FilterSlotCodes::FILTER4_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER4), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER4), 30);
                 break;
             }
             return;
@@ -89,16 +92,16 @@ void PCB315::manageFilterSelection(void) {
             // Calls the proper command based on the filter requested
             switch (manual_filter_selected) {
             case FilterSlotCodes::FILTER1_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER1), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER1), 30);
                 break;
             case FilterSlotCodes::FILTER2_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER2), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER2), 30);
                 break;
             case FilterSlotCodes::FILTER3_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER3), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER3), 30);
                 break;
             case FilterSlotCodes::FILTER4_SELECTION:
-                command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER4), 30);
+                commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_FILTER4), 30);
                 break;
             }
             return;
@@ -113,7 +116,7 @@ void PCB315::manageFilterSelection(void) {
         // Executes a pending light activation request
         if (request_light_activation) {
             request_light_activation = false;
-            command(PCB315_SET_LIGH_COMMAND(LightCommands::LIGHT_ON), 10);
+            commandNoWaitCompletion(PCB315_SET_LIGH_COMMAND(LightCommands::LIGHT_ON), 10);
         }
         return;
         /// ----------------------------------------
@@ -126,7 +129,7 @@ void PCB315::manageFilterSelection(void) {
             valid_filter_format = false;
             request_light_activation = false; // The light is already activated when the mirror is selected
             filter_selection_attempt++;
-            command(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_MIRROR), 30);
+            commandNoWaitCompletion(PCB315_SET_POSITIONER_COMMAND(PositionerCommands::POSITIONER_SELECT_MIRROR), 30);
         }
         else {
             valid_filter_format = true;
@@ -134,7 +137,7 @@ void PCB315::manageFilterSelection(void) {
             // Executes a pending light activation request
             if (request_light_activation) {
                 request_light_activation = false;
-                command(PCB315_SET_LIGH_COMMAND(LightCommands::LIGHT_ON), 10);
+                commandNoWaitCompletion(PCB315_SET_LIGH_COMMAND(LightCommands::LIGHT_ON), 10);
             }
         }
         return;

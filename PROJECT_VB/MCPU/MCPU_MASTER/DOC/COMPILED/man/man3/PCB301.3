@@ -1,4 +1,4 @@
-.TH "PCB301" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB301" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -132,21 +132,21 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .br
 .RI "This function returns the Pedal Board Compression-Down Hardware Input Line status\&.  "
 .ti -1c
-.RI "static bool \fBget_button_arm_cw_stat\fP (void)"
+.RI "static bool \fBget_button_cw_stat\fP (void)"
 .br
-.RI "This function returns the Manual Keypad Arm-CW Hardware Input Line status\&.  "
+.RI "This function returns the Manual Keypad CW Hardware Input Line status\&.  "
 .ti -1c
-.RI "static bool \fBget_button_arm_ccw_stat\fP (void)"
+.RI "static bool \fBget_button_ccw_stat\fP (void)"
 .br
-.RI "This function returns the Manual Keypad Arm-CCW Hardware Input Line status\&.  "
+.RI "This function returns the Manual Keypad CCW Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_up_stat\fP (void)"
 .br
-.RI "This function returns the Manual Keypad Vertical-Up Hardware Input Line status\&.  "
+.RI "This function returns the Manual Keypad Up Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_down_stat\fP (void)"
 .br
-.RI "This function returns the Manual Keypad Vertical-Down Hardware Input Line status\&.  "
+.RI "This function returns the Manual Keypad Down Hardware Input Line status\&.  "
 .ti -1c
 .RI "static bool \fBget_button_body_cw\fP (void)"
 .br
@@ -163,6 +163,10 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static bool \fBget_button_slide_down_stat\fP (void)"
 .br
 .RI "This function returns the Manual Slide-Down Hardware Input Line status\&.  "
+.ti -1c
+.RI "static void \fBset_keypad_led\fP (bool stat)"
+.br
+.RI "This function controls the status of the Keypad led  "
 .ti -1c
 .RI "static bool \fBgetXrayPushButtonStat\fP (void)"
 .br
@@ -183,9 +187,6 @@ Inherits \fBCanDeviceProtocol\fP\&.
 .RI "static \fBCanDeviceCommandResult\fP ^ \fBactivateManualBuzzerTomoMode\fP (int samples, int fps, int tmo, Object^ \fBdevice\fP)"
 .br
 .RI "This method, when the buzzer is set in manual mode, activates the buzzer in Tomo mode, providing a given number of consecutive pulses at a given rate\&.  "
-.ti -1c
-.RI "static void \fBset_manual_rot_ena_led\fP (bool stat)"
-.br
 .in -1c
 .SS "Static Public Attributes"
 
@@ -525,8 +526,6 @@ This is the current status of the Manual Slide-Down input line
 This is the Running Loop overriden procedure 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
-.SS "static void PCB301::set_manual_rot_ena_led (bool stat)\fC [inline]\fP, \fC [static]\fP"
-
 .SS "void PCB301::toggleKeepalive (void)\fC [private]\fP"
 
 .SH "Member Data Documentation"

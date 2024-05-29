@@ -1,8 +1,8 @@
-.TH "CppCLRWinFormsProject::MainForm" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CppCLRWinFormsProject::MainForm" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-CppCLRWinFormsProject::MainForm \- Summary for \fBMainForm\fP   
+CppCLRWinFormsProject::MainForm \- This is the Class implementing the Startup Operating mode\&.   
 
 .SH SYNOPSIS
 .br
@@ -17,6 +17,9 @@ Inherits System::Windows::Forms::Form\&.
 .ti -1c
 .RI "\fBMainForm\fP (void)"
 .br
+.ti -1c
+.RI "\fB~MainForm\fP ()"
+.br
 .in -1c
 .SS "Public Attributes"
 
@@ -24,29 +27,31 @@ Inherits System::Windows::Forms::Form\&.
 .ti -1c
 .RI "System::Timers::Timer ^ \fBstartupTimer\fP"
 .br
+.RI "This is the Timer to step the workflow\&. "
 .ti -1c
 .RI "HWND \fBwindow\fP"
 .br
+.RI "This is the handle of the windw for the windows message exchange\&. "
 .ti -1c
 .RI "int \fBstartupFase\fP"
 .br
+.RI "This is the current fase of the startup\&. "
 .ti -1c
 .RI "int \fBstartupSubFase\fP"
 .br
+.RI "This is the current sub-fase of the startup\&. "
 .ti -1c
 .RI "bool \fBstartupCompleted\fP"
 .br
+.RI "The Startup completed flag\&. "
 .ti -1c
 .RI "bool \fBstartupError\fP"
 .br
+.RI "The Startup completed in error condition\&. "
 .in -1c
 .SS "Protected Member Functions"
 
 .in +1c
-.ti -1c
-.RI "\fB~MainForm\fP ()"
-.br
-.RI "Clean up any resources being used\&.  "
 .ti -1c
 .RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
 .br
@@ -54,6 +59,12 @@ Inherits System::Windows::Forms::Form\&.
 .SS "Private Member Functions"
 
 .in +1c
+.ti -1c
+.RI "void \fBMainFormInitialize\fP (void)"
+.br
+.ti -1c
+.RI "void \fBStartupProcedure\fP (void)"
+.br
 .ti -1c
 .RI "bool \fBStartup_CanDriver\fP (void)"
 .br
@@ -94,26 +105,11 @@ Inherits System::Windows::Forms::Form\&.
 .RI "bool \fBStartup_Generator\fP (void)"
 .br
 .ti -1c
-.RI "void \fBMainFormInitialize\fP (void)"
-.br
-.ti -1c
-.RI "void \fBStartupProcedure\fP (void)"
-.br
-.ti -1c
 .RI "void \fBInitializeComponent\fP (void)"
 .br
 .RI "Required method for Designer support - do not modify the contents of this method with the code editor\&.  "
 .ti -1c
 .RI "System::Void \fBonStartupTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
-.br
-.ti -1c
-.RI "System::Void \fBlabelPcb315Activity_Click\fP (System::Object^ sender, System::EventArgs^ e)"
-.br
-.ti -1c
-.RI "System::Void \fBlabelGeneratorActivity_Click\fP (System::Object^ sender, System::EventArgs^ e)"
-.br
-.ti -1c
-.RI "System::Void \fBlabel10_Click\fP (System::Object^ sender, System::EventArgs^ e)"
 .br
 .in -1c
 .SS "Private Attributes"
@@ -216,27 +212,19 @@ Inherits System::Windows::Forms::Form\&.
 .in -1c
 .SH "Detailed Description"
 .PP 
-Summary for \fBMainForm\fP  
+This is the Class implementing the Startup Operating mode\&.  
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "CppCLRWinFormsProject::MainForm::MainForm (void)\fC [inline]\fP"
 
-.SS "CppCLRWinFormsProject::MainForm::~MainForm ()\fC [inline]\fP, \fC [protected]\fP"
+.SS "CppCLRWinFormsProject::MainForm::~MainForm ()\fC [inline]\fP"
 
-.PP
-Clean up any resources being used\&.  
 .SH "Member Function Documentation"
 .PP 
 .SS "void CppCLRWinFormsProject::MainForm::InitializeComponent (void)\fC [inline]\fP, \fC [private]\fP"
 
 .PP
 Required method for Designer support - do not modify the contents of this method with the code editor\&.  
-.SS "System::Void CppCLRWinFormsProject::MainForm::label10_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
-
-.SS "System::Void CppCLRWinFormsProject::MainForm::labelGeneratorActivity_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
-
-.SS "System::Void CppCLRWinFormsProject::MainForm::labelPcb315Activity_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
-
 .SS "void MainForm::MainFormInitialize (void)\fC [private]\fP"
 
 .SS "System::Void CppCLRWinFormsProject::MainForm::onStartupTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
@@ -337,18 +325,30 @@ Required designer variable\&.
 
 .SS "bool CppCLRWinFormsProject::MainForm::startupCompleted"
 
+.PP
+The Startup completed flag\&. 
 .SS "bool CppCLRWinFormsProject::MainForm::startupError"
 
+.PP
+The Startup completed in error condition\&. 
 .SS "int CppCLRWinFormsProject::MainForm::startupFase"
 
+.PP
+This is the current fase of the startup\&. 
 .SS "System::Windows::Forms::PictureBox ^ CppCLRWinFormsProject::MainForm::startupIcon\fC [private]\fP"
 
 .SS "int CppCLRWinFormsProject::MainForm::startupSubFase"
 
+.PP
+This is the current sub-fase of the startup\&. 
 .SS "System::Timers::Timer ^ CppCLRWinFormsProject::MainForm::startupTimer"
 
+.PP
+This is the Timer to step the workflow\&. 
 .SS "HWND CppCLRWinFormsProject::MainForm::window"
 
+.PP
+This is the handle of the windw for the windows message exchange\&. 
 
 .SH "Author"
 .PP 

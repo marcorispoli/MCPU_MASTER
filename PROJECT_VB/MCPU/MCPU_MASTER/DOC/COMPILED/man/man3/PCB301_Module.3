@@ -1,4 +1,4 @@
-.TH "PCB301_Module" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB301_Module" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,7 +21,7 @@ PCB301_Module \- PCB301 Module: power service board module control
 .br
 .RI ""
 .ti -1c
-.RI "\fBPCB301 API to control the Motors activation\fP"
+.RI "\fBPCB301 API to control the Motor activation\fP"
 .br
 .RI "This section provides methods to monitor and control the system motor activation\&. "
 .ti -1c
@@ -49,13 +49,13 @@ System Power Supply management: see the \fBPCB301 API to control the System Powe
 .IP "\(bu" 2
 System Safety management: see the \fBPCB301 API to control the Module's Safety\fP section;
 .IP "\(bu" 2
-System Motor Activation Input Management: see the \fBPCB301 API to control the Motors activation\fP section;
+System Motor Activation Input Management: see the \fBPCB301 API to control the Motor activation\fP section;
 .IP "\(bu" 2
 System Exposure Tools: see \fBPCB301 API for Exposure handling\fP section;
 .PP
 .SH "Module Initialization and Setup"
 .PP
-This module executes the remote device initial setting always when:
+This module executes the remote device initial setting always in the following scenarios:
 .IP "\(bu" 2
 at the system startup (application start);
 .IP "\(bu" 2
@@ -64,7 +64,7 @@ in case of remote device reset event (as for communication protocol specificatio
 .PP
 During the module initialization all the protocol Parameters are uploaded to the device\&.
 .PP
-As soon as this fase completes, the running workflow starts normally\&.
+As soon as this fase completes, the running workflow will start normally\&.
 .SH "Alarm And Warning activation"
 .PP
 The module every about 20ms gets the \fBPCB301\fP Status registers\&.

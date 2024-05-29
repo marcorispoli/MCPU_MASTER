@@ -3,20 +3,31 @@
 
 /// <summary>
 /// \defgroup CanDevice_Module Device board modules based on CAN bus protocol
-/// 
 /// This module implements the genera device communication protocol based on the CAN bus
 /// 
 /// </summary>
 
 /// <summary>
-/// \defgroup moduleControl Public Module's Control API
-/// 
-/// This group provides API to control the current Module operating status.
-/// 
-/// 
+/// \defgroup CanDevice_BaseClass Can Device protocol Base Class
+/// This class implements all the common features in order to implement the 
+/// device communication protocol.
 /// 
 /// </summary>
 /// \ingroup CanDevice_Module 
+/// 
+/// Every module implementing a communication with a device shall be derived 
+/// from this Base Class. 
+/// 
+/// Publics and Private API methods and structures will be described. 
+/// 
+
+
+/// <summary>
+/// \defgroup moduleControl Public Module's Control API
+/// This group provides API to control the current Module operating status.
+/// 
+/// </summary>
+/// \ingroup CanDevice_BaseClass 
 /// 
 /// The Module provides methods to:
 /// + Start the module in Normal mode;
@@ -27,11 +38,10 @@
 
 /// <summary>
 /// \defgroup commanControl Public Module's Command Execution API
-/// 
 /// This group provides API to send protocol commands to the remote device.
 /// </summary>
 /// 
-/// \ingroup CanDevice_Module 
+/// \ingroup CanDevice_BaseClass 
 /// 
 /// # General description
 /// 
@@ -99,7 +109,7 @@
 /// This group provides API to access remote register in read write modes
 /// 
 /// </summary> 
-/// \ingroup CanDevice_Module 
+/// \ingroup CanDevice_BaseClass 
 /// 
 /// Since the access to the remote device should be made only by the 
 /// class handling the communication with that module, the API for the data access 
@@ -119,7 +129,7 @@
 /// This section provides methods and data structure to implement the communication protocol features.
 /// 
 /// </summary>
-/// \ingroup CanDevice_Module 
+/// \ingroup CanDevice_BaseClass 
 /// 
 /// This section provides all the internal methods and structures implementing 
 /// the device module control. Those API are not accessible by the Application 
@@ -131,11 +141,10 @@
 
 /// <summary>
 /// \defgroup subclassModule Protected Subclasses methods
-/// 
 /// This section provides the method and structures to subclass the CanDeviceProtocol base class .
 /// 
 /// </summary>
-/// \ingroup CanDevice_Module 
+/// \ingroup CanDevice_BaseClass 
 /// 
 /// 
 /// 
@@ -143,12 +152,11 @@
 
 /// <summary>
 /// \defgroup debugModule Public Debug Methods
-/// 
 /// This section provides debug feature to monitor the communication with the 
 /// remote device and in general internal module performances.
 /// 
 /// </summary>
-///  \ingroup CanDevice_Module 
+///  \ingroup CanDevice_BaseClass 
 /// 
 /// The available tools are:
 /// + CanDeviceCommunicationMonitor: this is a dedicated class that makes statistics 
@@ -162,7 +170,7 @@ using namespace System::Collections::Generic;
 using namespace System::Threading;
 
 /// <summary>
-/// \ingroup CanDevice_Module 
+/// \ingroup CanDevice_BaseClass 
 /// 
 /// </summary>
 ref class CanDeviceProtocol //: public System::Windows::Forms::Form

@@ -26,13 +26,13 @@
 /// 
 /// # Module Initialization and Setup
 /// 
-/// This module executes the remote device initial setting always when: 
+/// This module executes the remote device initial setting always in the following scenarios: 
 /// - at the system startup (application start);
 /// - in case of remote device reset event (as for communication protocol specification);
 /// 
 /// During the module initialization all the protocol Parameters are uploaded to the device.
 /// 
-/// As soon as this fase completes, the running workflow starts normally.
+/// As soon as this fase completes, the running workflow will start normally.
 ///  
 /// 
 /// # Alarm And Warning activation
@@ -94,31 +94,51 @@
 /// 
 /// The PCB301 board implements hardware circuits in order to provides the system  with a level of safety related to:
 /// 
-/// + Emergency Push Button Input Line
+/// + Emergency Input Line
 /// + Motor Rotation protection;
 /// + X-RAY execution protection;
 /// + Compressor activation;
 /// 
 /// 
+/// # Emergency Input
 /// 
-/// # Emergency Input 
-///   
-/// This is a dedicated hardware input line that, in case it should be open,
-/// disables:
+/// The PCB301 board provides a dedicated hardware output to control the coil of the Main Contactor.\n
+/// The MainContactor is a power switch providing the power supply to the X-RAY generator and Motors.
 /// 
-/// + The external power contactor;
-/// + The external 48VDC power Supply (used to power the motors);
+/// The output is controlled with a series of dedicated inputs connected with the 
+/// generator device and the Emergency button that can disable the coil activation in the following scenarios:
+/// + Emergency Push Button activation: if the operator should press one of predisposed emergency buttons
+/// the contactor is hardware disabled;
+/// + Generator initialization fase: during the initialization, the generator disables the AC power supply 
+/// to prevent damages to its internal power circuit;
 /// 
-/// # Open Cabinet Input Protection 
+/// The status of the inputs line are monitored by the PCB301 and passed to this module
+/// in order to be properly handled. 
 /// 
-/// This is a dedicated hardware input line that, in case it should be open,
-/// disables the 48DVC power supply (used to power the motors);
+/// # Open Cabinet Input 
 /// 
+/// The PCB301 board provides a dedicated hardware input line that, in case it should be open,
+/// disables the 48DVC power supply (used to power the motors).
+/// 
+/// The input line should be connected to a series of cabinet switches that should prevent the 
+/// unwanted motor activation when one of motor protection should be removed.
+/// 
+/// The status of the input is monitored by the PCB301 and passed to this module
+/// in order to be properly handled.  
 ///  
-/// # Compression Pending Input
+/// # Compression Detected Input
 ///
-/// This is a dedicated hardware input line that, in case it should be activated,
+/// The PCB301 board provides a dedicated hardware input line that, in case it should be activated,
 /// disables the Safety Solid State Relay 48DVC power supply (used to power a subset of motors);
+/// 
+/// The input line should be connected with the Compressor board (PCB302) that is responsible
+/// to detect the compression. 
+/// 
+/// When the compression is present some motor shall be disabled to prevent 
+/// a breast injury.
+/// 
+/// The status of the input is monitored by the PCB301 and passed to this module
+/// in order to be properly handled.  
 /// 
 /// # Open Study Input
 /// 
@@ -126,34 +146,44 @@
 /// prevents to activate the X-RAY enable signal of the Generator device and,
 /// consequently, preventing to activate the X-RAY's.
 /// 
-/// # Compressor Activation
+/// This line should be connected to the Door of the Exposure Room to prevent 
+/// unexpected entrance of persons during an exposure sequence.
 /// 
-/// The PCB301 board controls two dedicated hardware lines to enable 
-/// the external compressor device to be activated or calibrated:
+/// The status of the input is monitored by the PCB301 and passed to this module
+/// in order to be properly handled.  
+/// 
+/// # Compressor Enable Outputs
+/// 
+/// The PCB301 board controls two dedicated output hardware lines to enable 
+/// the compressor board (PCB302) to activate a compression on a breast or to calibrate the force measurement.
 /// 
 /// + Compressor Enable Line: this line enables/disables  the compressor motor  to be activated; 
 /// + Compressor Calibration Line: this line enables/disables  the calibration procedure on the compressor device;
 /// 
-/// The compressor motor should be disabled in the following conditions:
+/// The compression activation should be disabled in the following conditions:
 /// + During an exposure to prevent to loose the current compression;
-/// + In case of system fault, to prevent to allow an invalid compression to the patient;
+/// + In case of system fault, to prevent an invalid compression activation;
 /// 
 /// The Calibration line should be activated only in service mode.
 /// 
-/// NOTE: the pcb301 and this module don't activate this lines directly.
-/// Other modules in this Application shall make use of the controlling methods.
+/// This module provides API's to control those output lines.
 /// 
-/// # Burning Jumper Detection
+/// # Burning Jumper Input
 /// 
-/// The PCB301 allows to makes use of a hardware jumper that enables the Application to 
-/// activate the X-RAY push Button input via a software command. 
+/// The PCB301 allows to make use of an hardware jumper enabling the software 
+/// activation of the X-RAY push Button line.
 /// 
 /// This feature is useful in production to activate special test procedures that can be 
 /// executed in automatic mode without the operator. 
 /// 
 /// This jumper however shall be removed when the System is set in operating condition
-/// for safety reason. If the jumper should detcted present the System shall prevent to 
-/// enter in an operating fase.
+/// for safety reason. If the jumper should be detected the System should prevent to 
+/// enter in an operating mode.
+/// 
+/// In order to prevent an exposure event, this module activates a proper WARNING 
+/// messagge when the jumper should be detected. 
+/// 
+/// This module provides API to check the current status of the jumper detection status.
 /// 
 /// 
 
@@ -161,27 +191,20 @@
 
 
 /// <summary>
-/// \defgroup PCB301MotorActivation PCB301 API to control the Motors activation
+/// \defgroup PCB301MotorActivation PCB301 API to control the Motor activation
 /// This section provides methods to monitor and control the system motor activation.
 /// 
 /// </summary>
 /// \ingroup PCB301_Module 
 /// 
 /// The PCB301 board handle several hardware input lines 
-/// devoted to activate the system motorizations.
+/// dedicated to request a particolar motor activation.
 /// 
-/// NOTE: the pcb301 board as well this module controlling it 
-/// don't activate any motorization directly.
+/// NOTE: the pcb301 board nor this module directly activate any motorization.
+///  
+/// # External Pedalboard Activation Inputs
 /// 
-/// The module only provides the actual status of the hardware inputs 
-/// the system has reserved for motor activation. 
-/// 
-/// What is motor should be activated, in which way and when it should be activated is performed in other modules 
-/// of this Application.
-/// 
-/// # Pedalboard Motor Activation
-/// 
-/// The module controls four inputs coming from the external pedalboard:
+/// The PCB301 board provides four inputs coming from the external pedalboard:
 /// + Pedal Up: see PCB301::get_pedal_up_stat();
 /// + Pedal Down: see PCB301::get_pedal_down_stat();
 /// + Compression Up: see PCB301::get_cmp_up_stat();
@@ -189,14 +212,23 @@
 /// 
 /// # Manual Button Keypad 
 /// 
-/// The sytem provides a special Keypad device that provides four 
-/// activation input lines:
+/// The system provides a set of manual buttons to request a motor activation.
+/// Those buttons are mounted into a keypad in a cross geometry:
+/// + Vertical disposition: Manual-Up and Manual-Down buttons;
+/// + Horizontal disposition: Manual-CCW and Manual-CW buttons;
 /// 
-/// + Arm CW: see PCB301::get_button_arm_cw_stat();
-/// + Arm CCW: see PCB301::get_button_arm_ccw_stat();
-/// + Vertical Up: see PCB301::get_button_up_stat();
-/// + Vertical Down: see PCB301::get_button_down_stat();
+/// The PCB301 board reads those input luines and provide the current status 
+/// to this module:
 ///  
+/// + Manual-CW: see PCB301::get_button_cw_stat();
+/// + Manual-CCW: see PCB301::get_button_ccw_stat();
+/// + Manual-Up: see PCB301::get_button_up_stat();
+/// + Manual-Down: see PCB301::get_button_down_stat();
+///  
+/// The Keypad device provides a status LED that can be activated:
+/// + Keypad-LED: see PCB301::set_keypad_led();
+/// 
+/// 
 /// # Manual Slide Motor Activation
 /// 
 /// The system provides dedicated hardware input lines to control the 
@@ -295,7 +327,7 @@ ref class PCB301 :  public CanDeviceProtocol
 	#define PCB301_OUTPUTS_DATA_MAN_ROT_LED(reg,stat)	reg->D1(stat, 0x40) 
 	
 	#define PCB301_OUTPUTS_DATA_POWER_OFF(reg,stat)		reg->D3(stat, 0x40) 
-		#define PCB301_GET_OUTPUTS_DATA_POWER_OFF(reg)	(reg->d3 & 0x40) 
+	#define PCB301_GET_OUTPUTS_DATA_POWER_OFF(reg)		(reg->d3 & 0x40) 
 	#define PCB301_OUTPUTS_DATA_KEEP_ALIVE(reg,stat)	reg->D3(stat, 0x80)
 
 	/// <summary>	
@@ -690,25 +722,25 @@ public:
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
-	/// This function returns the Manual Keypad Arm-CW Hardware Input Line status.
+	/// This function returns the Manual Keypad CW Hardware Input Line status.
 	/// </summary>
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_arm_cw_stat(void) { return button_arm_cw_stat; }
+	inline static bool get_button_cw_stat(void) { return button_arm_cw_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
-	/// This function returns the Manual Keypad Arm-CCW Hardware Input Line status.
+	/// This function returns the Manual Keypad CCW Hardware Input Line status.
 	/// </summary>
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_arm_ccw_stat(void) { return button_arm_ccw_stat; }
+	inline static bool get_button_ccw_stat(void) { return button_arm_ccw_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
-	/// This function returns the Manual Keypad Vertical-Up Hardware Input Line status.
+	/// This function returns the Manual Keypad Up Hardware Input Line status.
 	/// </summary>
 	/// 
 	/// <param name=""></param>
@@ -717,7 +749,7 @@ public:
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
-	/// This function returns the Manual Keypad Vertical-Down Hardware Input Line status.
+	/// This function returns the Manual Keypad Down Hardware Input Line status.
 	/// </summary>
 	/// 
 	/// <param name=""></param>
@@ -760,9 +792,18 @@ public:
 	/// <returns>True: the input line is detected active</returns>
 	inline static bool get_button_slide_down_stat(void) { return button_slide_down_stat; }
 
-
-	 	
-	
+	/// <summary>
+	/// \ingroup PCB301MotorActivation
+	/// This function controls the status of the Keypad led 
+	/// </summary>
+	/// 
+	/// The Keypad device provides a green led that can be activated whenever needed.
+	/// 
+	/// Usually this led should be activated whenever a manual motor activation can be requested 
+	/// by the operator.
+	/// 
+	/// <param name="stat">True: led is switched ON</param>
+	inline static void set_keypad_led(bool stat) { PCB301_OUTPUTS_DATA_MAN_ROT_LED(outputs_data_register, stat); }
 
 
 	/// <summary>
@@ -856,8 +897,6 @@ public:
 	
 	
 	
-	inline static void set_manual_rot_ena_led(bool stat) { PCB301_OUTPUTS_DATA_MAN_ROT_LED(outputs_data_register, stat); }
-
 private:
 	
 

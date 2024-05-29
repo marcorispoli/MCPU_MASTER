@@ -1,4 +1,4 @@
-.TH "PCB301Safety" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "PCB301Safety" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -47,7 +47,7 @@ This section provides methods to monitor and control the Safety tools implemente
 The \fBPCB301\fP board implements hardware circuits in order to provides the system with a level of safety related to:
 .PP
 .IP "\(bu" 2
-Emergency Push Button Input Line
+Emergency Input Line
 .IP "\(bu" 2
 Motor Rotation protection;
 .IP "\(bu" 2
@@ -57,25 +57,47 @@ Compressor activation;
 .PP
 .SH "Emergency Input"
 .PP
-This is a dedicated hardware input line that, in case it should be open, disables:
+The \fBPCB301\fP board provides a dedicated hardware output to control the coil of the Main Contactor\&.
+.br
+The MainContactor is a power switch providing the power supply to the X-RAY generator and Motors\&.
 .PP
+The output is controlled with a series of dedicated inputs connected with the generator device and the Emergency button that can disable the coil activation in the following scenarios:
 .IP "\(bu" 2
-The external power contactor;
+Emergency Push Button activation: if the operator should press one of predisposed emergency buttons the contactor is hardware disabled;
 .IP "\(bu" 2
-The external 48VDC power Supply (used to power the motors);
+\fBGenerator\fP initialization fase: during the initialization, the generator disables the AC power supply to prevent damages to its internal power circuit;
 .PP
-.SH "Open Cabinet Input Protection"
 .PP
-This is a dedicated hardware input line that, in case it should be open, disables the 48DVC power supply (used to power the motors);
-.SH "Compression Pending Input"
+The status of the inputs line are monitored by the \fBPCB301\fP and passed to this module in order to be properly handled\&.
+.SH "Open Cabinet Input"
 .PP
-This is a dedicated hardware input line that, in case it should be activated, disables the Safety Solid State Relay 48DVC power supply (used to power a subset of motors);
+The \fBPCB301\fP board provides a dedicated hardware input line that, in case it should be open, disables the 48DVC power supply (used to power the motors)\&.
+.PP
+The input line should be connected to a series of cabinet switches that should prevent the unwanted motor activation when one of motor protection should be removed\&.
+.PP
+The status of the input is monitored by the \fBPCB301\fP and passed to this module in order to be properly handled\&. 
+.br
+.SH "Compression Detected Input"
+.PP
+The \fBPCB301\fP board provides a dedicated hardware input line that, in case it should be activated, disables the Safety Solid State Relay 48DVC power supply (used to power a subset of motors);
+.PP
+The input line should be connected with the Compressor board (\fBPCB302\fP) that is responsible to detect the compression\&.
+.PP
+When the compression is present some motor shall be disabled to prevent a breast injury\&.
+.PP
+The status of the input is monitored by the \fBPCB301\fP and passed to this module in order to be properly handled\&. 
+.br
 .SH "Open Study Input"
 .PP
 This is a dedicated hardware input line that, in case it should be activated, prevents to activate the X-RAY enable signal of the \fBGenerator\fP device and, consequently, preventing to activate the X-RAY's\&.
-.SH "Compressor Activation"
 .PP
-The \fBPCB301\fP board controls two dedicated hardware lines to enable the external compressor device to be activated or calibrated:
+This line should be connected to the Door of the Exposure Room to prevent unexpected entrance of persons during an exposure sequence\&.
+.PP
+The status of the input is monitored by the \fBPCB301\fP and passed to this module in order to be properly handled\&. 
+.br
+.SH "Compressor Enable Outputs"
+.PP
+The \fBPCB301\fP board controls two dedicated output hardware lines to enable the compressor board (\fBPCB302\fP) to activate a compression on a breast or to calibrate the force measurement\&.
 .PP
 .IP "\(bu" 2
 Compressor Enable Line: this line enables/disables the compressor motor to be activated;
@@ -83,23 +105,27 @@ Compressor Enable Line: this line enables/disables the compressor motor to be ac
 Compressor Calibration Line: this line enables/disables the calibration procedure on the compressor device;
 .PP
 .PP
-The compressor motor should be disabled in the following conditions:
+The compression activation should be disabled in the following conditions:
 .IP "\(bu" 2
 During an exposure to prevent to loose the current compression;
 .IP "\(bu" 2
-In case of system fault, to prevent to allow an invalid compression to the patient;
+In case of system fault, to prevent an invalid compression activation;
 .PP
 .PP
 The Calibration line should be activated only in service mode\&.
 .PP
-NOTE: the pcb301 and this module don't activate this lines directly\&. Other modules in this Application shall make use of the controlling methods\&.
-.SH "Burning Jumper Detection"
+This module provides API's to control those output lines\&.
+.SH "Burning Jumper Input"
 .PP
-The \fBPCB301\fP allows to makes use of a hardware jumper that enables the Application to activate the X-RAY push Button input via a software command\&.
+The \fBPCB301\fP allows to make use of an hardware jumper enabling the software activation of the X-RAY push Button line\&.
 .PP
 This feature is useful in production to activate special test procedures that can be executed in automatic mode without the operator\&.
 .PP
-This jumper however shall be removed when the System is set in operating condition for safety reason\&. If the jumper should detcted present the System shall prevent to enter in an operating fase\&. 
+This jumper however shall be removed when the System is set in operating condition for safety reason\&. If the jumper should be detected the System should prevent to enter in an operating mode\&.
+.PP
+In order to prevent an exposure event, this module activates a proper WARNING messagge when the jumper should be detected\&.
+.PP
+This module provides API to check the current status of the jumper detection status\&. 
 .SH "Function Documentation"
 .PP 
 .SS "static bool PCB301::getBurningJumper (void)\fC [inline]\fP, \fC [static]\fP"

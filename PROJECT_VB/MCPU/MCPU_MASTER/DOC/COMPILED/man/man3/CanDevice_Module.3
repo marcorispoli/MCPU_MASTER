@@ -1,8 +1,11 @@
-.TH "CanDevice_Module" 3 "Mon May 13 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.TH "CanDevice_Module" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 CanDevice_Module \- Device board modules based on CAN bus protocol
+.PP
+ \- This module implements the genera device communication protocol based on the CAN bus  
+
 .SH SYNOPSIS
 .br
 .PP
@@ -10,29 +13,9 @@ CanDevice_Module \- Device board modules based on CAN bus protocol
 
 .in +1c
 .ti -1c
-.RI "\fBPublic Module's Control API\fP"
+.RI "\fBCan Device protocol Base Class\fP"
 .br
-.RI ""
-.ti -1c
-.RI "\fBPublic Module's Command Execution API\fP"
-.br
-.RI ""
-.ti -1c
-.RI "\fBProtected Module's Data Access API\fP"
-.br
-.RI "This group provides API to access remote register in read write modes "
-.ti -1c
-.RI "\fBPrivate Module's communication protocol API\fP"
-.br
-.RI "This section provides methods and data structure to implement the communication protocol features\&. "
-.ti -1c
-.RI "\fBProtected Subclasses methods\fP"
-.br
-.RI ""
-.ti -1c
-.RI "\fBPublic Debug Methods\fP"
-.br
-.RI ""
+.RI "This class implements all the common features in order to implement the device communication protocol\&. "
 .ti -1c
 .RI "\fBPCB301 Module: power service board module control\fP"
 .br
@@ -58,18 +41,11 @@ CanDevice_Module \- Device board modules based on CAN bus protocol
 .br
 .RI ""
 .in -1c
-.SS "Classes"
-
-.in +1c
-.ti -1c
-.RI "class \fBCanDeviceProtocol\fP"
-.br
-.in -1c
 .SH "Detailed Description"
 .PP 
+This module implements the genera device communication protocol based on the CAN bus 
 
 
-This module implements the genera device communication protocol based on the CAN bus
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

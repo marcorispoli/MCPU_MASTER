@@ -1,7 +1,19 @@
 /// <summary>
-/// \defgroup GUI_Module Gantry GUI modules
+/// \defgroup OperatingMode_Section Operating Mode Modules
+/// This section groups all the modules controlling the system operating modes.
 ///   
 /// </summary>
+/// The system operations are dived in a subset of operating modes:
+/// + Startup Mode: the initial status after system power on;
+/// + Idle Mode: the system idle mode management;
+/// + Operative Mode: the system operating mode management;
+/// + Service Mode: the system service mode management;
+/// 
+/// Every Operating mode is associated to a given graphical GUI 
+/// and a given functional workflow.
+/// 
+/// See to the related Operating Mode sections for details.
+/// 
 
 
 #pragma once
@@ -11,9 +23,71 @@ extern  double dtempo;
 
 
 /// <summary>
-/// \defgroup StartupGUI Startup GUI Module 
-/// \ingroup GUI_Module Gantry GUI modules
+/// \defgroup Startup_Module Startup Module 
+/// This module implements the Workflow and GUI to handle 
+/// the system startup workflow.
+/// 
 /// </summary>
+/// \ingroup OperatingMode_Section
+/// 
+/// At the program beginning several operation shall be initiated 
+/// before to enter any of the Operating modes:
+/// 
+/// + System Initialization;
+/// + Device Module initialization;
+/// + Revision check;
+/// 
+/// # System Initialization
+/// 
+/// The module setup and operation depends by several parameters stroed into the SystemConfig file.
+/// 
+/// This file determines:
+/// + The current system running mode: DEMO, SIMULATED, RUNNING modes;
+/// + The current modules operation mode for any of the possible system running modes;
+/// + The current set of expected device revision codes;
+/// + The communication connection addresses for some of the module;
+/// 
+/// In the System Initialization all the Operating modules will be instantiated.
+/// 
+/// # Device Module Initialization
+/// 
+/// Based on the System running mode and related module's operating mode,
+/// every device module is activated in real or simulated mode.
+/// 
+/// The following device modules will be activated in the given sequence:
+/// 
+///  + CanDriver Module: this is the first to be activated, in order to open the CAN communication driver;
+///  + PCB301 Module: this module initializes the PCB301 communication or the board simulation;
+///  + PCB302 Module: this module initializes the PCB302 communication or the board simulation;
+///  + PCB303 Module: this module initializes the PCB303 communication or the board simulation;
+///  + PCB315 Module: this module initializes the PCB315 communication or the board simulation;
+///  + PCB304 Module: this module initializes the PCB304 communication or the board simulation;
+///  + PCB326 Module: this module initializes the PCB326 communication or the board simulation;
+///  + Generator Module: this module initializes the Generator communication or the device simulation;
+///  + TiltMotor Module: this module initializes the Tilt Motor communication or the board simulation;
+///  + ArmMotor Module: this module initializes the Arm Motor communication or the board simulation;
+///  + SlideMotor Module: this module initializes the Slide Motor communication or the board simulation;
+///  + BodyMotor Module: this module initializes the Body Motor communication or the board simulation;
+///  + VerticalMotor Module: this module initializes the Vertical Motor communication or the board simulation; 
+/// 
+/// # Revision Check
+/// 
+/// Every connected module provides the current bootloader and firmware revision code.
+/// This module checks the validity of the detected revision code with a list of 
+/// valid revision codes from the SystemConfig file.
+/// 
+/// If a revision code should not match with the expected, a general error message is activated 
+/// preventing the system to enter an operating mode.
+/// 
+/// # Startup Completion 
+/// 
+/// When the startup completes, even if an error should happen, \n
+/// the system automatically selects the Idle status.
+///  
+/// 
+/// 
+
+
 namespace CppCLRWinFormsProject {
 
 	
@@ -25,28 +99,40 @@ namespace CppCLRWinFormsProject {
 	
 
 	/// <summary>
-	/// Summary for MainForm
+	/// This is the Class implementing the Startup Operating mode.
 	/// </summary>
+	/// \ingroup Startup_Module
+	/// 
+	/// 
 	public ref class MainForm : public System::Windows::Forms::Form
 	{
+	public:
+		MainForm(void)
+		{
+			InitializeComponent();
+			window = static_cast<HWND>(Handle.ToPointer());
+			MainFormInitialize();
+
+		}
+		
+		~MainForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
 	
-	public:System::Timers::Timer^ startupTimer;
-	public:HWND window;
-	public:int startupFase;
-	public:int startupSubFase;
 
-	public:bool startupCompleted;
-	public:bool startupError;
+	System::Timers::Timer^ startupTimer; //!< This is the Timer to step the workflow
+	HWND window;//!< This is the handle of the windw for the windows message exchange
+	int startupFase; //!< This is the current fase of the startup
+	int startupSubFase;//!< This is the current sub-fase of the startup
+	bool startupCompleted;//!< The Startup completed flag
+	bool startupError;//!< The Startup completed in error condition
 
-
-
-	private: System::Windows::Forms::Label^ labelPcb326Activity;
-	private: System::Windows::Forms::Label^ label1;
-	private: System::Windows::Forms::Label^ labelGeneratorActivity;
-
-	private: System::Windows::Forms::Label^ label17;
-	private: System::Windows::Forms::PictureBox^ startupIcon;
-
+	private: void MainFormInitialize(void);
+	private: void StartupProcedure(void);
 
 	private: bool Startup_CanDriver(void);
 	private: bool Startup_PCB301(void);
@@ -62,93 +148,40 @@ namespace CppCLRWinFormsProject {
 	private: bool Startup_MotorVertical(void);
 	private: bool Startup_Generator(void);
 		   
+	
+	
 
-
-
-	public:
-		MainForm(void)
-		{
-			InitializeComponent();
-			window = static_cast<HWND>(Handle.ToPointer());
-			MainFormInitialize();
-
-		}
-
-	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		~MainForm()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
-	private: void MainFormInitialize(void);
-	private: void StartupProcedure(void);
+	private: System::Windows::Forms::Label^ labelPcb326Activity;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ labelGeneratorActivity;
+	private: System::Windows::Forms::Label^ label17;
+	private: System::Windows::Forms::PictureBox^ startupIcon;
 	private: System::Windows::Forms::GroupBox^ infoPanel;
-
-
-
-
 	private: System::Windows::Forms::Label^ labelBoardInitialization;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	private: System::Windows::Forms::Label^ labelPcb301Activity;
 	private: System::Windows::Forms::Label^ labelPcb303Activity;
-
 	private: System::Windows::Forms::Label^ label6;
 	private: System::Windows::Forms::Label^ labelPcb302Activity;
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::Label^ labelCanDriverActivity;
-
 	private: System::Windows::Forms::Label^ label9;
 	private: System::Windows::Forms::Label^ labelPcb315Activity;
 	private: System::Windows::Forms::Label^ label8;
 	private: System::Windows::Forms::Label^ labelPcb304Activity;
 	private: System::Windows::Forms::Label^ label7;
 	private: System::Windows::Forms::Label^ labelShActivity;
-
-
-
-
 	private: System::Windows::Forms::Label^ label10;
 	private: System::Windows::Forms::Label^ labelMotorArmActivity;
-
 	private: System::Windows::Forms::Label^ label12;
 	private: System::Windows::Forms::Label^ labelMotorTiltActivity;
-
 	private: System::Windows::Forms::Label^ label11;
 	private: System::Windows::Forms::Label^ labelMotorUpDownActivity;
-
 	private: System::Windows::Forms::Label^ label15;
 	private: System::Windows::Forms::Label^ labelMotorShiftActivity;
-
 	private: System::Windows::Forms::Label^ label14;
 	private: System::Windows::Forms::Label^ labelMotorBodyActivity;
 	private: System::Windows::Forms::Label^ label13;
 
-
-
-	protected:
 
 	private:
 		/// <summary>
@@ -340,8 +373,7 @@ namespace CppCLRWinFormsProject {
 			this->labelShActivity->Name = L"labelShActivity";
 			this->labelShActivity->Size = System::Drawing::Size(86, 16);
 			this->labelShActivity->TabIndex = 13;
-			this->labelShActivity->Text = L"Connection ...";
-			this->labelShActivity->Click += gcnew System::EventHandler(this, &MainForm::labelGeneratorActivity_Click);
+			this->labelShActivity->Text = L"Connection ...";			
 			// 
 			// label13
 			// 
@@ -359,8 +391,7 @@ namespace CppCLRWinFormsProject {
 			this->label10->Name = L"label10";
 			this->label10->Size = System::Drawing::Size(83, 16);
 			this->label10->TabIndex = 12;
-			this->label10->Text = L"Smart HUB";
-			this->label10->Click += gcnew System::EventHandler(this, &MainForm::label10_Click);
+			this->label10->Text = L"Smart HUB";			
 			// 
 			// labelMotorArmActivity
 			// 
@@ -422,8 +453,7 @@ namespace CppCLRWinFormsProject {
 			this->labelPcb315Activity->Name = L"labelPcb315Activity";
 			this->labelPcb315Activity->Size = System::Drawing::Size(86, 16);
 			this->labelPcb315Activity->TabIndex = 9;
-			this->labelPcb315Activity->Text = L"Connection ...";
-			this->labelPcb315Activity->Click += gcnew System::EventHandler(this, &MainForm::labelPcb315Activity_Click);
+			this->labelPcb315Activity->Text = L"Connection ...";			
 			// 
 			// label11
 			// 
@@ -568,13 +598,6 @@ namespace CppCLRWinFormsProject {
 		SendMessageA(window, WM_USER + 1, 0, 0);
 	}
 	
-
-private: System::Void labelPcb315Activity_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void labelGeneratorActivity_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void label10_Click(System::Object^ sender, System::EventArgs^ e) {
-}
 };
 
 

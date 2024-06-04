@@ -130,6 +130,8 @@ using namespace CANOPEN;
 // Motor Drive Parameter Set
 #define OD_3210_01  0x3210, 0x01 ,ODRegister::SDODataDimension::R4B  // Position Loop, Proportional Gain (closed Loop)
 #define OD_3210_02  0x3210, 0x02 ,ODRegister::SDODataDimension::R4B  // Position Loop, Integral Gain (closed Loop)
+#define OD_3210_05  0x3210, 0x05 ,ODRegister::SDODataDimension::R4B  // I Loop, Proportional Gain (closed Loop)
+#define OD_3210_06  0x3210, 0x06 ,ODRegister::SDODataDimension::R4B  // I Loop, Integral Gain (closed Loop)
 
 // Analogue Inputs Control
 #define OD_3220_01  0x3220, 0x01 ,ODRegister::SDODataDimension::R2B  // Analogue Inputs 1 value (0:1024)

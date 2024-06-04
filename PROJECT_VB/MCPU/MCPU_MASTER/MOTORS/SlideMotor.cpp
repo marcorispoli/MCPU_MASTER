@@ -22,14 +22,21 @@
 /// 
 /// <param name=""></param>
 /// <returns>true if the initialization termines successfully</returns>
-#define SLIDE_OD_CODE 0x0001
+#define SLIDE_OD_CODE 0x0002
 unsigned short SlideMotor::initializeSpecificObjectDictionaryCallback(void) {
 
     
     // Motor Drive Parameter Set
-    while (!blocking_writeOD(OD_3210_01, 10000)); 
-    while (!blocking_writeOD(OD_3210_02, 10));	 
+//    while (!blocking_writeOD(OD_3210_01, 10000)); 
+//    while (!blocking_writeOD(OD_3210_02, 10));	 
 
+    // PI-POSITION
+    while (!blocking_writeOD(OD_3210_01, 2048)); // 2048
+    while (!blocking_writeOD(OD_3210_02, 0));   // 0
+
+    // PI-CURRENT
+    while (!blocking_writeOD(OD_3210_05, 420000)); //420000
+    while (!blocking_writeOD(OD_3210_06, 48000));      //12000
 
     return SLIDE_OD_CODE;
 }

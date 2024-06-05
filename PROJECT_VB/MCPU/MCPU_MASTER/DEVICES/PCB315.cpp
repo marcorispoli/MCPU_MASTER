@@ -174,7 +174,7 @@ bool PCB315::updateStatusRegister(void) {
     
     // If an error condition is signaled gets the error register 
     bool temp_fault = false;
-    if ((PCB315_GET_ERROR_FLAG(flags_status)) && (!Gantry::isOperatingDemo())) {
+    if (PCB315_GET_ERROR_FLAG(flags_status) ) {
         error_status = true;        
         Register^ error_register = readErrorRegister();
         

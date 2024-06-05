@@ -62,6 +62,7 @@ void Gantry::initialize(void) {
 
     System::String^ param;
     if (operating_normal_status) {
+        // System in normal operating mode
         can_driver_simulator = false;
         generator_simulator = false;
         pcb301_simulator = false;
@@ -76,9 +77,27 @@ void Gantry::initialize(void) {
         motor_body_simulator = false;
         motor_vertical_simulator = false;
     }
-    else{
-        if (operating_demo_status) param = SystemConfig::PARAM_DEMO_MODE;
-        else param = SystemConfig::PARAM_SYM_MODE;
+    else if (operating_demo_status) {
+        // System in Demo Mode
+        
+        can_driver_simulator = false; // The can driver shall be present in demo mode
+        pcb301_simulator = false; // The PCB301 board shall be operating
+        pcb302_simulator = false; // The PCB302 board shall be operating
+        motor_tilt_simulator = false;
+        motor_arm_simulator = false;
+        motor_body_simulator = false;
+        motor_vertical_simulator = false;
+        motor_slide_simulator = false;
+
+        generator_simulator = true;   // The generator shall be emulated 
+        pcb303_simulator = true;  // The PCB303 board shall be emulated
+        pcb304_simulator = true;  // The PCB304 board shall be emulated
+        pcb315_simulator = true;  // The PCB315 board shall be emulated
+        pcb326_simulator = true;  // The PCB326 board shall be emulated
+
+    }else{
+        // System in Simulation mode
+         param = SystemConfig::PARAM_SYM_MODE;
 
         if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_CAN]) == 1)
             can_driver_simulator = false;
@@ -132,10 +151,6 @@ void Gantry::initialize(void) {
             motor_vertical_simulator = false;
         else motor_vertical_simulator = true;
     }
-    
-    
-
-    
     
 
     // Set the current language for messages and GUI

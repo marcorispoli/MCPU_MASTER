@@ -563,7 +563,7 @@ void IdleForm::onPowerOffOkCallback(void) {
 	// Request the AWS to power off the system
 	awsProtocol::EVENT_Poweroff();
 
-	if (Gantry::isOperatingDemo()) {
+	if (!Gantry::isOperatingNormal()) {
 		LogClass::logInFile("APPLICATION DEMO POWER OFF COMMAND");
 		Application::Exit();
 		return;

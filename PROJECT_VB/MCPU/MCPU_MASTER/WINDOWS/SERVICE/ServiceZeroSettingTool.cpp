@@ -522,6 +522,8 @@ System::Void ServiceZeroSettingTool::zeroSettingBody_Click(System::Object^ sende
 
 System::Void ServiceZeroSettingTool::zeroSettingVertical_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
+	max_target_angle = VerticalMotor::device->getMaxPosition() * 1;
+	min_target_angle = VerticalMotor::device->getMinPosition() * 1;
 
 	current_panel = zero_panels::ZERO_VERTICAL_PANEL;
 	executeIcon->BackgroundImage = VERTICAL_ICON_IMAGE;
@@ -549,6 +551,8 @@ System::Void ServiceZeroSettingTool::zeroSettingVertical_Click(System::Object^ s
 }
 System::Void ServiceZeroSettingTool::zeroSettingArm_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
+	max_target_angle = ArmMotor::device->getMaxPosition() * 0.01;
+	min_target_angle = ArmMotor::device->getMinPosition() * 0.01;
 
 	current_panel = zero_panels::ZERO_ARM_PANEL;
 	executeIcon->BackgroundImage = ARM_ICON_IMAGE;
@@ -576,6 +580,8 @@ System::Void ServiceZeroSettingTool::zeroSettingArm_Click(System::Object^ sender
 }
 System::Void ServiceZeroSettingTool::zeroSettingTilt_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
+	max_target_angle = TiltMotor::device->getMaxPosition() * 0.01;
+	min_target_angle = TiltMotor::device->getMinPosition() * 0.01;
 
 	current_panel = zero_panels::ZERO_TILT_PANEL;
 	executeIcon->BackgroundImage = TILT_ICON_IMAGE;
@@ -603,6 +609,8 @@ System::Void ServiceZeroSettingTool::zeroSettingTilt_Click(System::Object^ sende
 
 System::Void ServiceZeroSettingTool::zeroSettingSlide_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
+	max_target_angle = SlideMotor::device->getMaxPosition() * 0.01;
+	min_target_angle = SlideMotor::device->getMinPosition() * 0.01;
 
 	current_panel = zero_panels::ZERO_SLIDE_PANEL;
 	executeIcon->BackgroundImage = SLIDE_ICON_IMAGE;

@@ -89,6 +89,9 @@ public:static CANOPEN::CanOpenMotor::motor_rotation_activations getManualActivat
     static inline ValuePopupForm^ getValuePopupWindow() { return valuePopupWindow; }
     
     static inline bool isOperatingDemo(void) { return operating_demo_status; }
+    static inline bool isOperatingSym(void) { return operating_sym_status; }
+    static inline bool isOperatingNormal(void) { return operating_normal_status; }
+
     static inline bool isPcb301Demo(void) { return pcb301_simulator; }
     static inline bool isPcb302Demo(void) { return pcb302_simulator; }
     static inline bool isPcb303Demo(void) { return pcb303_simulator; }

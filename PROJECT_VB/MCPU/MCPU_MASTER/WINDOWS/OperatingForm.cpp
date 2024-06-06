@@ -274,6 +274,10 @@ void OperatingForm::initOperatingStatus(void) {
 	// Activate the Operating Status  manual modes
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_STANDARD_STATUS_MANUAL_ROTATION);
 
+	// Activates the compressor
+	PCB301::SetCompressorEna(true);
+	PCB302::setMasterEna(true);
+
 	// initialize the evaluation function
 	evaluateCompressorStatus(true);
 

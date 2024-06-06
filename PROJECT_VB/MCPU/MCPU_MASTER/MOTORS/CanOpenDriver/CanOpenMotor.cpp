@@ -1140,6 +1140,9 @@ void CanOpenMotor::demoLoop(void) {
             return;
         }
 
+        // Assignes the current motor direction
+        if (command_target > encoder_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
+        else motor_direction = motor_rotation_activations::MOTOR_DECREASE;
 
         // Starts
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: START DEMO MANUAL POSITIONING");
@@ -1157,7 +1160,9 @@ void CanOpenMotor::demoLoop(void) {
             for (int i = 0; i < abs(_100ms_time); i++) {
                 uposition += unit_step;                
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            
+                external_uposition = encoder_uposition = uposition;
+                encoder_eposition = convert_User_To_Encoder(uposition);
+
                 termination_code = runningCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, uposition, command_target);
                 if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
 

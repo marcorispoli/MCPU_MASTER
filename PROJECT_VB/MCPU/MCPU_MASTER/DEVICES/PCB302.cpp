@@ -1,8 +1,9 @@
 
 #include "PCB303.h"
 #include "PCB302.h"
-#include "./DEMO/pcb302_simulator.h"
+#include "Simulator.h"
 #include "CalibrationConfig.h"
+#include "../gantry_global_status.h"
 #include "Notify.h"
 #include <thread>
 
@@ -227,31 +228,92 @@ void PCB302::runningLoop(void) {
 }
 
 void PCB302::demoLoop(void) {
-	if (!DemoPcb302::Configuration->loadFile()) {
-		std::this_thread::sleep_for(std::chrono::microseconds(100));
-		return;
-	}
+	
 	std::this_thread::sleep_for(std::chrono::microseconds(100));
 
-	detected_paddle = getPaddleCode(DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_PADDLE_STAT)[0]);
-	
+	// Detected Paddle
+	detected_paddle = (paddleCodes) from_simulator[(int)simul_rx_struct::PADDLE_CODE];
 
-	current_paddle_position = System::Convert::ToUInt16(DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_THICKNESS)[0]);
-	current_force = System::Convert::ToUInt16(DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_FORCE)[0]);
+	// Thickness 
+	current_paddle_position = from_simulator[(int)simul_rx_struct::THICKNESS];
 	
-	if (current_force) compression_on = true;
-	else compression_on = false;
+	// Force
+	current_force = from_simulator[(int)simul_rx_struct::FORCE];
 	
-	if (DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_COMPRESSING)[0] == "1") compression_executing = true;
-	else compression_executing = false;
+	// Compression On 
+	compression_on = from_simulator[(int)simul_rx_struct::COMPRESSION_ON];
+	
+	// Compression Executing 
+	compression_executing = from_simulator[(int)simul_rx_struct::COMPRESSION_EXECUTING]; 
 
-	if (DemoPcb302::Configuration->getParam(DemoPcb302::PARAM_DOWNWARD)[0] == "1") downward_activation_status = true;
-	else downward_activation_status = false;
+	// Downward activation status
+	downward_activation_status = from_simulator[(int)simul_rx_struct::DOWNWARD_ACTIVATION];
 
-	patient_protection_detected = true;
-	patient_protection_shifted = false;
+	// Patient Protection detected
+	patient_protection_detected = from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_DETECTED];
+	
+	// Patient protection shifted
+	patient_protection_shifted = from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_SHIFTED];
 
 	evaluateEvents();
 
 	return;
+}
+
+void PCB302::simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc) {
+	if (rc != (int)simul_rx_struct::BUFLEN) return;
+
+	for (int i = 0; i < rc; i++) device->from_simulator[i] = receiveBuffer[index + i];
+}
+
+void PCB302::simulSend(void) {
+
+	to_simulator[0] = 0x3;
+	to_simulator[1] = (int)simul_tx_struct::BUFLEN;
+	to_simulator[(int)simul_tx_struct::DEVICE_ID] = PCB302_DEVID;
+	to_simulator[(int)simul_tx_struct::ENDFRAME] = 0x2;
+
+	// Sends the buffer
+	((Simulator^)Gantry::pSimulator)->send(to_simulator);
+}
+
+void PCB302::simulInit(void) {
+
+	// Create the Simulator structure if shuld be  necessary
+	from_simulator = gcnew cli::array<System::Byte>((int)PCB302::simul_rx_struct::BUFLEN);
+	to_simulator = gcnew cli::array<System::Byte>((int)PCB302::simul_tx_struct::BUFLEN);
+	to_simulator_previous = gcnew cli::array<System::Byte>((int)PCB302::simul_tx_struct::BUFLEN);
+
+	from_simulator[(int)simul_rx_struct::PADDLE_CODE] = (System::Byte) paddleCodes::PADDLE_NOT_DETECTED;
+	from_simulator[(int)simul_rx_struct::THICKNESS] = 0;
+	from_simulator[(int)simul_rx_struct::FORCE] = 0;
+	from_simulator[(int)simul_rx_struct::COMPRESSION_ON] = 0;
+	from_simulator[(int)simul_rx_struct::COMPRESSION_EXECUTING] = 0;
+	from_simulator[(int)simul_rx_struct::DOWNWARD_ACTIVATION] = 0;
+	from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_DETECTED] = false;
+	from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_SHIFTED] = false;
+
+	// Connects the reception event
+	((Simulator^)Gantry::pSimulator)->pcb302_rx_event += gcnew Simulator::rxData_slot(&PCB302::simulRx);
+
+}
+
+bool PCB302::simulCommandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) {
+	
+	cli::array<System::Byte>^ buffer = gcnew cli::array<System::Byte>(9);
+
+	buffer[0] = 0x4; // Command code
+	buffer[1] = 9; // len
+	buffer[2] = PCB302_DEVID;
+	buffer[3] = code;
+	buffer[4] = d0;
+	buffer[5] = d1;
+	buffer[6] = d2;
+	buffer[7] = d3;
+	buffer[8] = 0x2;
+
+	// Sends the buffer
+	((Simulator^)Gantry::pSimulator)->send(buffer);
+
+	return true;
 }

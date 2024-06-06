@@ -393,6 +393,8 @@ bool CanDeviceProtocol::commandNoWaitCompletion(unsigned char code, unsigned cha
     // Protect the function with a mutex
     const std::lock_guard<std::mutex> lock(command_wait_mutex);
 
+    if (isSimulatorMode())  return simulCommandNoWaitCompletion(code, d0, d1, d2, d3, tmo);
+
     if (command_executing) return false;
     if (internal_status != status_options::DEVICE_RUNNING) return false;
 
@@ -415,6 +417,9 @@ CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitComplet
 
     // Verifies that the calling module is different from the class implementing the communication with the device
     if(src == (Object^) this) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_INVALID_DEVICE);
+
+    if (isSimulatorMode())  return simulCommandWaitCompletion(code, d0, d1, d2, d3, tmo, src);
+
 
     // Invalid Device Status 
     if (internal_status != status_options::DEVICE_RUNNING) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED);

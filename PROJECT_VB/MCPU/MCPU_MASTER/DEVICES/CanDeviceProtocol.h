@@ -918,7 +918,32 @@ protected:
 	/// <param name=""></param>
 	virtual bool configurationLoop(void);
 
-	
+	/// <summary>
+	/// This function is called in case of simulation, when the commandNoWaitCompletion() should be used by the application
+	/// See the  commandNoWaitCompletion() for details. 
+	/// </summary>
+	/// <param name="code"></param>
+	/// <param name="d0"></param>
+	/// <param name="d1"></param>
+	/// <param name="d2"></param>
+	/// <param name="d3"></param>
+	/// <param name="tmo"></param>
+	/// <returns></returns>
+	virtual bool simulCommandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) { return false; }
+
+	/// <summary>
+	/// This function is called in case of simulation, when the commandWaitCompletion() should be used by the application
+	/// See the  commandWaitCompletion() for details. 
+	/// </summary>
+	/// <param name="code"></param>
+	/// <param name="d0"></param>
+	/// <param name="d1"></param>
+	/// <param name="d2"></param>
+	/// <param name="d3"></param>
+	/// <param name="tmo"></param>
+	/// <param name="src"></param>
+	/// <returns></returns>
+	virtual CanDeviceCommandResult^ simulCommandWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src) { return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED); }
 
 private:
 	

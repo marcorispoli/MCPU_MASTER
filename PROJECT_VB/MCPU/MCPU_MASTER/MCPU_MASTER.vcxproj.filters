@@ -191,12 +191,6 @@
     <ClInclude Include="WINDOWS\ValuePopup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DEVICES\DEMO\PCB301_Simulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DEVICES\DEMO\PCB302_Simulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MESSAGES\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -213,6 +207,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WINDOWS\SERVICE\ServiceZeroSettingTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SIMULATOR\Simulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -395,6 +392,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GENERATOR\ExposureModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SIMULATOR\Simulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

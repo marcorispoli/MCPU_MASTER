@@ -93,6 +93,8 @@ public:
 	PCB302() : CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE")
 	{
 		detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;
+		simulInit();
+
 	}
 	static PCB302^ device = gcnew PCB302();
 
@@ -102,7 +104,7 @@ public:
 	///  
 	/// </summary>
 	enum class  paddleCodes {
-	PADDLE_PROSTHESIS, //!< Paddle PROSTHESIS format
+	PADDLE_PROSTHESIS=0, //!< Paddle PROSTHESIS format
 	PADDLE_BIOP2D, //!< Paddle BIOPSY 2D format
 	PADDLE_BIOP3D, //!< Paddle BIOPSY STEREO format
 	PADDLE_TOMO, //!< Paddle TOMO 24x30 format
@@ -148,8 +150,8 @@ public:
 	static inline bool getCompressionActivationStatus(void) { return downward_activation_status; }
 
 	static inline void setMasterEna(bool stat) { PCB302_OPTIONS_DATA_MASTER_ENABLE(options_data_register, stat); }
-	static inline void setPositionLimit(unsigned short val) { PCB302_POSITION_LIMIT_DATA_LOW(position_limit_data_register, val); PCB302_POSITION_LIMIT_DATA_HIGH(position_limit_data_register, val);}
-	static void setCompressorUnlock(void) { if (!device->isSimulatorMode()) device->commandNoWaitCompletion(PCB302_SET_UNLOCK_COMMAND, 30); } //!< This function unlocks the compression
+	static inline void setPositionLimit(unsigned short val) { PCB302_POSITION_LIMIT_DATA_LOW(position_limit_data_register, val); PCB302_POSITION_LIMIT_DATA_HIGH(position_limit_data_register, val);}	
+	static void setCompressorUnlock(void) { device->commandNoWaitCompletion(PCB302_SET_UNLOCK_COMMAND, 30); } //!< This function unlocks the compression
 
 public:
 	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
@@ -190,11 +192,40 @@ private:
 	void evaluateEvents(void);
 
 
-//_________________________________________________________________________// 
-// To be implemented
+	// Simulation Section
+	enum class simul_rx_struct {
+		STX = 0,
+		LENGHT,
+		DEVICE_ID,
+		PADDLE_CODE,
+		THICKNESS,
+		FORCE,
+		COMPRESSION_ON,
+		COMPRESSION_EXECUTING,
+		DOWNWARD_ACTIVATION,
+		PATIENT_PROTECTION_DETECTED,
+		PATIENT_PROTECTION_SHIFTED,
+		ENDFRAME,
+		BUFLEN
+	};
+
+	enum class simul_tx_struct {
+		STX = 0,
+		LENGHT,
+		DEVICE_ID,
+		
+		ENDFRAME,
+		BUFLEN
+	};
+
+	void simulInit(void);
+	static void simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc);
+	void simulSend(void);
+	cli::array<System::Byte>^ from_simulator;
+	cli::array<System::Byte>^ to_simulator;
+	cli::array<System::Byte>^ to_simulator_previous;
 	
-	
-	
+	protected: bool simulCommandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) override;
 };
 
 

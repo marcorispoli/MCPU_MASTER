@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -140,8 +140,6 @@
     <ClInclude Include="CONFIGURATION\CalibrationConfig.h" />
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
     <ClInclude Include="CONFIGURATION\SystemConfig.h" />
-    <ClInclude Include="DEVICES\DEMO\PCB301_Simulator.h" />
-    <ClInclude Include="DEVICES\DEMO\PCB302_Simulator.h" />
     <ClInclude Include="DEVICES\PCB326.h" />
     <ClInclude Include="GENERATOR\ExposureModule.h" />
     <ClInclude Include="MESSAGES\Log.h" />
@@ -149,6 +147,7 @@
     <ClInclude Include="MOTORS\BodyMotor.h" />
     <ClInclude Include="MOTORS\SlideMotor.h" />
     <ClInclude Include="MOTORS\VerticalMotor.h" />
+    <ClInclude Include="SIMULATOR\Simulator.h" />
     <ClInclude Include="WINDOWS\ConfirmationWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -251,6 +250,7 @@
     <ClCompile Include="MOTORS\CanOpenDriver\CanOpenNanoJ.cpp" />
     <ClCompile Include="MOTORS\SlideMotor.cpp" />
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
+    <ClCompile Include="SIMULATOR\Simulator.cpp" />
     <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
     <ClCompile Include="DEVICES\CanDeviceProtocol.cpp" />

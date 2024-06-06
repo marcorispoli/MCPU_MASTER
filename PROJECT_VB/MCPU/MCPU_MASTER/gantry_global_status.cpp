@@ -16,6 +16,7 @@
 #include "SlideMotor.h"
 #include "BodyMotor.h"
 #include "VerticalMotor.h"
+#include "Simulator.h"
 
 
 
@@ -96,6 +97,8 @@ void Gantry::initialize(void) {
         pcb326_simulator = true;  // The PCB326 board shall be emulated
 
     }else{
+        Gantry::pSimulator = gcnew Simulator("127.0.0.1", 20000);
+
         // System in Simulation mode
          param = SystemConfig::PARAM_SYM_MODE;
 

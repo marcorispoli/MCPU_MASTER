@@ -345,7 +345,7 @@ public:
 
 	PCB301(): CanDeviceProtocol(0x10, L"POWER_SERVICE")
 	{
-
+		simulInit();
 	}
 	static PCB301^ device = gcnew PCB301();
 
@@ -948,5 +948,71 @@ private:
 		void toggleKeepalive(void);
 		void evaluateEvents(void);
 
+		// Simulation Section
+		enum class simul_rx_struct {
+			STX = 0,
+			LENGHT,
+			DEVICE_ID,
+			EMERGENCY_STAT,
+			POWERDOWN_STAT,
+			CABINET_STAT,
+			SOFT_POWEROFF_STAT,
+			BATT1_LOW_STAT,
+			BATT2_LOW_STAT,
+			BATT_ENA_STAT,
+			KEYPAD_UP_STAT,
+			KEYPAD_DOWN_STAT,
+			KEYPAD_CW_STAT,
+			KEYPAD_CCW_STAT,
+			SLIDE_UP_STAT,
+			SLIDE_DOWN_STAT,
+			BODY_CW_STAT,
+			BODY_CCW_STAT,
+			V48_OK_STAT,
+			V48SW_STAT,
+			COMPRESSION_ON_STAT,
+			XRAY_PUSH_BUTTON_STAT,
+			DOOR_STAT,
+			BURNING_JUMPER_STAT,
+			POWERLOCK_STAT,
+			PEDALBOARD_UP_STAT,
+			PEDALBOARD_DOWN_STAT,
+			PEDALBOARD_CMP_UP_STAT,
+			PEDALBOARD_CMP_DOWN_STAT,
+			VBATT1,
+			VBATT2,
+			ENDFRAME,
+			BUFLEN
+			};
+
+		enum class simul_tx_struct {
+			STX = 0,
+			LENGHT,
+			DEVICE_ID,
+			PROGRAMMING_POWER_LOCK,
+			MOTOR_POWER_ENA,
+			MOTOR_SW_ENA,
+			COMPRESSOR_ENA,
+			CALIBRATION_ENA,
+			XRAY_ENA,
+			BURNING_STAT,
+			XLED_STAT,
+			XLAMP1_STAT,
+			XLAMP2_STAT,
+			BUZZER_STAT,
+			MANUAL_BUZZER_STAT,
+			ROTATION_LED,
+			POWER_OFF_STAT,
+			KEEP_ALIVE_STAT,
+			ENDFRAME,
+			BUFLEN
+		};
+
+		void simulInit(void);
+		static void simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc);
+		void simulSend(void);
+		cli::array<System::Byte>^ from_simulator;
+		cli::array<System::Byte>^ to_simulator;
+		cli::array<System::Byte>^ to_simulator_previous;
 };
 

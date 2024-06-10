@@ -17,6 +17,7 @@
 #include "BodyMotor.h"
 #include "VerticalMotor.h"
 #include "Simulator.h"
+#include "Debugger.h"
 
 
 
@@ -25,34 +26,40 @@ using namespace System::Diagnostics;
 using namespace System::Windows::Forms;
 
 Gantry::Gantry() {
- 
-        // Sets the resource path
-        applicationResourcePath = System::IO::Directory::GetCurrentDirectory() + "\\RESOURCES\\";
 
-        // Monitor Identification
-        int monitors = Screen::AllScreens->Length;
+    // Sets the resource path
+    applicationResourcePath = System::IO::Directory::GetCurrentDirectory() + "\\RESOURCES\\";
 
-        // Gets the Monitors position
-        for (int i = 0; i < monitors; i++) {
-            
-            int H = Screen::AllScreens[i]->Bounds.Height;
-            int W = Screen::AllScreens[i]->Bounds.Width;
+    // Monitor Identification
+    int monitors = Screen::AllScreens->Length;
 
-            if (W == 600) {
-                monitor_X0 = Screen::AllScreens[i]->Bounds.Left;
-                monitor_Y0 = Screen::AllScreens[i]->Bounds.Top;                
-            }
+    // Gets the Monitors position
+    for (int i = 0; i < monitors; i++) {
+
+        int H = Screen::AllScreens[i]->Bounds.Height;
+        int W = Screen::AllScreens[i]->Bounds.Width;
+
+        if (W == 600) {
+            monitor_X0 = Screen::AllScreens[i]->Bounds.Left;
+            monitor_Y0 = Screen::AllScreens[i]->Bounds.Top;
         }
-        LogClass::logInFile("SELECTED MONITOR: X0 = " + monitor_X0.ToString() + ", Y0 = " + monitor_Y0.ToString());
-         
+    }
+    LogClass::logInFile("SELECTED MONITOR: X0 = " + monitor_X0.ToString() + ", Y0 = " + monitor_Y0.ToString());
 
-        
-    
+
+
+
 }
 
 
 void Gantry::initialize(void) {
-    
+
+    // Debugger Tool Activation if requested 
+    if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEBUG)[SystemConfig::PARAM_DEBUG_ENA] == "ON") {
+        Gantry::pDebugger = gcnew DebuggerCLI(SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEBUG)[SystemConfig::PARAM_DEBUG_IP], System::Convert::ToInt16(SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEBUG)[SystemConfig::PARAM_DEBUG_PORT]));
+    }
+
+
     // Initializes the Operating Demo status
     operating_normal_status = false;
     operating_sym_status = false;
@@ -80,7 +87,7 @@ void Gantry::initialize(void) {
     }
     else if (operating_demo_status) {
         // System in Demo Mode
-        
+
         can_driver_simulator = false; // The can driver shall be present in demo mode
         pcb301_simulator = false; // The PCB301 board shall be operating
         pcb302_simulator = false; // The PCB302 board shall be operating
@@ -96,61 +103,64 @@ void Gantry::initialize(void) {
         pcb315_simulator = true;  // The PCB315 board shall be emulated
         pcb326_simulator = true;  // The PCB326 board shall be emulated
 
-    }else{
-        Gantry::pSimulator = gcnew Simulator("127.0.0.1", 20000);
+    }
+    else {
+
+        // Starts the Simulator activities
+        Simulator::device->startSimulator();
 
         // System in Simulation mode
          param = SystemConfig::PARAM_SYM_MODE;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_CAN]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_CAN]) == 1)
             can_driver_simulator = false;
         else can_driver_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_GENERATOR]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_GENERATOR]) == 1)
             generator_simulator = false;
         else generator_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB301]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB301]) == 1)
             pcb301_simulator = false;
         else pcb301_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB302]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB302]) == 1)
             pcb302_simulator = false;
         else pcb302_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB303]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB303]) == 1)
             pcb303_simulator = false;
         else pcb303_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB304]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB304]) == 1)
             pcb304_simulator = false;
         else pcb304_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB315]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB315]) == 1)
             pcb315_simulator = false;
         else pcb315_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_PCB326]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB326]) == 1)
             pcb326_simulator = false;
         else pcb326_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_TILT]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_TILT]) == 1)
             motor_tilt_simulator = false;
         else motor_tilt_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_ARM]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_ARM]) == 1)
             motor_arm_simulator = false;
         else motor_arm_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_SLIDE]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_SLIDE]) == 1)
             motor_slide_simulator = false;
         else motor_slide_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_BODY]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_BODY]) == 1)
             motor_body_simulator = false;
         else motor_body_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::PARAM_MODE_VERTICAL]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_VERTICAL]) == 1)
             motor_vertical_simulator = false;
         else motor_vertical_simulator = true;
     }

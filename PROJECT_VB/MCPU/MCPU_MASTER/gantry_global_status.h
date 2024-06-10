@@ -31,7 +31,7 @@ public:
     static Object^ pIdleForm; //!< Pointer to the IdleForm 
     static Object^ pOperatingForm; //!< Pointer to the OperatingForm 
     static Object^ pServiceForm; //!< Pointer to the ServiceForm 
-    static Object^ pSimulator = nullptr; //!< Pointer to the Simulator if activated
+    static Object^ pDebugger = nullptr; //!< Pointer to the Debugger if activated
     
     enum class operating_status_options {
         GANTRY_STARTUP = 0, //!< Gantry is in the Startup operating mode

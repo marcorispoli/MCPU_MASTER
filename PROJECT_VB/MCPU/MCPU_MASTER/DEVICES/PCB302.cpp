@@ -274,7 +274,7 @@ void PCB302::simulSend(void) {
 	to_simulator[(int)simul_tx_struct::ENDFRAME] = 0x2;
 
 	// Sends the buffer
-	((Simulator^)Gantry::pSimulator)->send(to_simulator);
+	Simulator::device->send(to_simulator);
 }
 
 void PCB302::simulInit(void) {
@@ -294,7 +294,7 @@ void PCB302::simulInit(void) {
 	from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_SHIFTED] = false;
 
 	// Connects the reception event
-	((Simulator^)Gantry::pSimulator)->pcb302_rx_event += gcnew Simulator::rxData_slot(&PCB302::simulRx);
+	Simulator::device->pcb302_rx_event += gcnew Simulator::rxData_slot(&PCB302::simulRx);
 
 }
 
@@ -313,7 +313,7 @@ bool PCB302::simulCommandNoWaitCompletion(unsigned char code, unsigned char d0, 
 	buffer[8] = 0x2;
 
 	// Sends the buffer
-	((Simulator^)Gantry::pSimulator)->send(buffer);
+	Simulator::device->send(buffer);
 
 	return true;
 }

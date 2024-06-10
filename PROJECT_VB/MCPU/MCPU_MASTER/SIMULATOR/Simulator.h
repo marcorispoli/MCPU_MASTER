@@ -27,33 +27,37 @@ public:
 
 
 	delegate void rxData_slot(cli::array<System::Byte>^ receiveBuffer, int index, int rc);
-	event rxData_slot^ pcb301_rx_event; //!< Reception event 
-	event rxData_slot^ pcb302_rx_event; //!< Reception event 
-	event rxData_slot^ pcb303_rx_event; //!< Reception event 
-	event rxData_slot^ pcb304_rx_event; //!< Reception event 
-	event rxData_slot^ pcb315_rx_event; //!< Reception event 
-	event rxData_slot^ pcb326_rx_event; //!< Reception event 
+	static event rxData_slot^ pcb301_rx_event; //!< Reception event 
+	static event rxData_slot^ pcb302_rx_event; //!< Reception event 
+	static event rxData_slot^ pcb303_rx_event; //!< Reception event 
+	static event rxData_slot^ pcb304_rx_event; //!< Reception event 
+	static event rxData_slot^ pcb315_rx_event; //!< Reception event 
+	static event rxData_slot^ pcb326_rx_event; //!< Reception event 
 
 	delegate void connection_slot(bool status); //!< This is the delegate of the connection handler
 	event connection_slot^ connection_event; //!< Connection event
 
-	Simulator(System::String^ ip, int port); //!< This is the class constructor
+	Simulator(void); //!< This is the class constructor
+	static Simulator^ device = gcnew Simulator();
+
+	void startSimulator(void);	
 	void send(cli::array<System::Byte>^ buffer);//!< This is function to send data in the BUS
 
 
 private:
-	void threadWork(void);//!< This is the worker thread for the connection management
-
+	static bool started = false;
+	static bool connection_status = false;//!< This is the current connection status
+	
+	void threadWork(void);//!< This is the worker thread for the connection management	
 	System::Threading::Thread^ running_thread;//!< This is the worker thread handler
 	System::Net::Sockets::Socket^ serverSocket;//!< This is the server socket handler
 	System::Net::Sockets::Socket^ clientSocket;//!< This is the connected client socket handler
 
 
-	bool connection_status;//!< This is the current connection status
 
-	int rx_rc;//!< This is the number of the received bytes
-	cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer
-	void handleBuffer(void);
+	static int rx_rc;//!< This is the number of the received bytes
+	static cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer
+	static void handleBuffer(void);
 
 	
 };

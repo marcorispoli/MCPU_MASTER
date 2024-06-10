@@ -87,7 +87,10 @@ void CanDeviceProtocol::thread_can_rx_callback(unsigned short canid, unsigned ch
 
     // Invalid sequence number
     if(bootloader && (rx_register->b0 != 0xFF) && (rx_register->b0 != tx_register->b0) ) return;
-    if (!bootloader && (rx_register->b0 != tx_register->b0)) return;
+    if (!bootloader && (rx_register->b0 != tx_register->b0)) {
+        can_communication_monitor.repeated_messages++;
+        return;
+    }
 
     
     // Invalid register access
@@ -145,7 +148,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     
     // Activates the transmission
     rxOk = false;
-    communication.sent_messages++;
+    can_communication_monitor.sent_messages++;
     long start = clock();
     if (!CanDriver::multithread_send(canid, buffer, 8))   return false;
     rx_pending = true;
@@ -156,16 +159,16 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
 
     // Checks if the Event has been signalled or it is a timeout event.
     if ((dwWaitResult != WAIT_OBJECT_0) || (!rxOk)) {
-        communication.unreceived_messages++;
-        if (communication.unreceived_messages > 5) communication_error = true;
+        can_communication_monitor.unreceived_messages++;
+        if (can_communication_monitor.unreceived_messages > 5) communication_error = true;
         return false;
     }
-    communication.unreceived_messages = 0;
+    can_communication_monitor.unreceived_messages = 0;
     communication_error = false;
 
     long stop = clock();
-    communication.txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
-    communication.updateStatistics();
+    can_communication_monitor.txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
+    can_communication_monitor.updateStatistics();
 
 
     return true;

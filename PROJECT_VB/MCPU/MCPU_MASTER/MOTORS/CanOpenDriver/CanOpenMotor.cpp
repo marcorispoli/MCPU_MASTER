@@ -52,13 +52,7 @@ CanOpenMotor::CanOpenMotor(unsigned char devid,
     home_initialized = false;
     reverse_direction = reverse;
 
-    // For Can Diagnose
-    read_sdo_tmo = false;
-    write_sdo_tmo = false;
-    sent_messages = 0;
-    unreceived_messages = 0;
-    meanTime = 0;
-
+    
     // Gets the handler of the class instance to be used for the Post/Send message functions.
     //hwnd = static_cast<HWND>(Handle.ToPointer());    
     device_id = devid;
@@ -205,15 +199,18 @@ bool CanOpenMotor::update_external_position(void) {
 void CanOpenMotor::thread_canopen_rx_sdo_callback(unsigned short canid, unsigned char* data, unsigned char len) {
     // Be careful!! This call is runing into the program thread pull, out of the class thread.
     
-    // No data is expected
-    if ((!sdo_rx_pending) && (!nanoj_rx_pending)) return;
-
-    // Only 8-byte frame is accepted
-    if(len < 8) return; // Invalid message length
-
     // Checks the canId address
     if (canid != device_id + 0x580) return; // This frame is not a SDO or is not addressed to this device!
-   
+
+    // Only 8-byte frame is accepted
+    if (len < 8) return; // Invalid message length
+
+    // No data is expected
+    if ((!sdo_rx_pending) && (!nanoj_rx_pending)) {
+        can_communication_monitor.repeated_messages++;
+        return;
+    }
+
     if (sdo_rx_pending) {
         if (!rxSdoRegister->validateSdo(data)) return;
         sdo_rx_pending = false;
@@ -286,7 +283,7 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODR
 
     // Activates the transmission
     long start = clock();
-    sent_messages++;
+    can_communication_monitor.sent_messages++;
     CanDriver::multithread_send(0x600 + device_id, buffer, 8);
     sdo_rx_pending = true;
 
@@ -296,53 +293,12 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODR
 
     // Checks if the Event has been signalled or it is a timeout event.
     if ((dwWaitResult != WAIT_OBJECT_0) || (!rxSdoRegister->valid)) {
-        unreceived_messages++;
+        can_communication_monitor.unreceived_messages++;
         return false;
     }
     long stop = clock();
-    txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
-
-    if (txrx_time < 0.005)  sent_5++;
-    else if (txrx_time < 0.010)  sent_10++;
-    else if (txrx_time < 0.015)  sent_15++;
-    else if (txrx_time < 0.020)  sent_20++;
-    else if (txrx_time < 0.025)  sent_25++;
-    else if (txrx_time < 0.030)  sent_30++;
-    else if (txrx_time >= 0.030)  sent_xx++;
-    meanTime += txrx_time;
-
-    if (sent_messages == 1000) {
-        perc5 = (double)sent_5 * 100 / (double)sent_messages;
-        perc10 = (double)sent_10 * 100 / (double)sent_messages;
-        perc15 = (double)sent_15 * 100 / (double)sent_messages;
-        perc20 = (double)sent_20 * 100 / (double)sent_messages;
-        perc25 = (double)sent_25 * 100 / (double)sent_messages;
-        perc30 = (double)sent_30 * 100 / (double)sent_messages;
-        percXX = (double)sent_xx * 100 / (double)sent_messages;
-
-        percMeanTime = meanTime * 1000 / (double)sent_messages;
-
-        meanTime = 0;
-        sent_5 = 0;
-        sent_10 = 0;
-        sent_15 = 0;
-        sent_20 = 0;
-        sent_25 = 0;
-        sent_30 = 0;
-        sent_xx = 0;
-        sent_messages = 100;
-        System::String^ stringa = "Motor Device <" + System::Convert::ToString(device_id);
-        stringa += ">: T:" + ((int)percMeanTime).ToString();
-        stringa += " [5]:" + ((int)perc5).ToString();
-        stringa += " [10]:" + ((int)perc10).ToString();
-        stringa += " [15]:" + ((int)perc15).ToString();
-        stringa += " [20]:" + ((int)perc20).ToString();
-        stringa += " [25]:" + ((int)perc25).ToString();
-        stringa += " [30]:" + ((int)perc30).ToString();
-        stringa += " [>30]:" + ((int)percXX).ToString();
-        // LogClass::logInFile(stringa);
-    }
-
+    can_communication_monitor.txrx_time = ((double)(stop - start)) / (double)CLOCKS_PER_SEC;
+    can_communication_monitor.updateStatistics();
     return true;
     
 }
@@ -373,7 +329,7 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
 
     // Activates the transmission
     long start = clock();
-    sent_messages++;
+    can_communication_monitor.sent_messages++;
         
     // Sends the message
     CanDriver::multithread_send(0x600 + device_id, buffer, 8);        
@@ -385,57 +341,14 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
 
     // Checks if the Event has been signalled or it is a timeout event.
     if ( (dwWaitResult != WAIT_OBJECT_0) || (!rxSdoRegister->valid) ) {
-        unreceived_messages++;
+        can_communication_monitor.unreceived_messages++;
         return false;
     }
     
     long stop = clock();    
-    txrx_time = ((double)( stop - start)) / (double) CLOCKS_PER_SEC;
-
-    if (txrx_time < 0.005)  sent_5++;
-    else if (txrx_time < 0.010)  sent_10++;
-    else if (txrx_time < 0.015)  sent_15++;
-    else if (txrx_time < 0.020)  sent_20++;
-    else if (txrx_time < 0.025)  sent_25++;
-    else if (txrx_time < 0.030)  sent_30++;
-    else if (txrx_time >= 0.030)  sent_xx++;
-    meanTime += txrx_time;
-
-    if (sent_messages == 1000) {
-        perc5 = (double)sent_5 * 100 / (double)sent_messages;
-        perc10 = (double)sent_10 * 100 / (double)sent_messages;
-        perc15 = (double)sent_15 * 100 / (double)sent_messages;
-        perc20 = (double)sent_20 * 100 / (double)sent_messages;
-        perc25 = (double)sent_25 * 100 / (double)sent_messages;
-        perc30 = (double)sent_30 * 100 / (double)sent_messages;
-        percXX = (double)sent_xx * 100 / (double)sent_messages;
-
-        percMeanTime = meanTime * 1000 / (double)sent_messages;
-        
-        meanTime = 0;
-        sent_5 = 0;
-        sent_10 = 0;
-        sent_15 = 0;
-        sent_20 = 0;
-        sent_25 = 0;
-        sent_30 = 0;
-        sent_xx = 0;
-        sent_messages = 0;
-
-        
-        System::String^ stringa = "Motor Device <" + System::Convert::ToString(device_id);
-        stringa +=">: T:" + ((int)percMeanTime).ToString();
-        stringa += " [5]:" + ((int)perc5).ToString();
-        stringa += " [10]:" + ((int)perc10).ToString();
-        stringa += " [15]:" + ((int)perc15).ToString();
-        stringa += " [20]:" + ((int)perc20).ToString();
-        stringa += " [25]:" + ((int)perc25).ToString();
-        stringa += " [30]:" + ((int)perc30).ToString();
-        stringa += " [>30]:" + ((int)percXX).ToString();
-        // LogClass::logInFile(stringa);
-        
-    }
-
+    can_communication_monitor.txrx_time = ((double)( stop - start)) / (double) CLOCKS_PER_SEC;
+    can_communication_monitor.updateStatistics();
+    
     return true;
 }
 
@@ -593,8 +506,7 @@ void CanOpenMotor::mainWorker(void) {
         // Read the status word
         if (!blocking_readOD(OD_6041_00)) {
             internal_status = status_options::MOTOR_NOT_CONNECTED;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            unreceived_messages = 0;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));            
             continue;
         }
 

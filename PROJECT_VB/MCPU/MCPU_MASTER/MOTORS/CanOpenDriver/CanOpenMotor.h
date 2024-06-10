@@ -341,7 +341,120 @@ namespace CANOPEN {
 		
 	};
 	
-	
+	ref class CanMotorCommunicationMonitor {
+	public:
+
+		/// <summary>
+		/// Initializes the internal caounters
+		/// </summary>
+		/// <param name=""></param>
+		CanMotorCommunicationMonitor(void) {
+
+			sent_messages = 0;
+			sent_5 = 0;
+			sent_10 = 0;
+			sent_15 = 0;
+			sent_20 = 0;
+			sent_25 = 0;
+			sent_30 = 0;
+			sent_xx = 0;
+			repeated_messages = 0;
+
+			meanTime = 0;
+			percMeanTime = 0;
+			unreceived_messages = 0;
+			log_string = "";
+		}
+
+		/// <summary>
+		/// Updates the communication statistics at the point of the call
+		/// </summary>
+		/// 
+		/// Every 1000 sent messages the internal percentuals statistics are calculated.
+		/// 
+		/// <param name=""></param>
+		void updateStatistics(void) {
+			if (txrx_time < 0.005)  sent_5++;
+			else if (txrx_time < 0.010)  sent_10++;
+			else if (txrx_time < 0.015)  sent_15++;
+			else if (txrx_time < 0.020)  sent_20++;
+			else if (txrx_time < 0.025)  sent_25++;
+			else if (txrx_time < 0.030)  sent_30++;
+			else if (txrx_time >= 0.030)  sent_xx++;
+			meanTime += txrx_time;
+
+			if (sent_messages == 1000) {
+				perc5 = (double)sent_5 * 100 / (double)sent_messages;
+				perc10 = (double)sent_10 * 100 / (double)sent_messages;
+				perc15 = (double)sent_15 * 100 / (double)sent_messages;
+				perc20 = (double)sent_20 * 100 / (double)sent_messages;
+				perc25 = (double)sent_25 * 100 / (double)sent_messages;
+				perc30 = (double)sent_30 * 100 / (double)sent_messages;
+				percXX = (double)sent_xx * 100 / (double)sent_messages;
+				percMeanTime = meanTime * 1000 / (double)sent_messages;
+				percRepeated = (double)repeated_messages * 100 / (double)sent_messages;
+
+
+
+				meanTime = 0;
+				sent_5 = 0;
+				sent_10 = 0;
+				sent_15 = 0;
+				sent_20 = 0;
+				sent_25 = 0;
+				sent_30 = 0;
+				sent_xx = 0;
+				repeated_messages = 0;
+				sent_messages = 0;
+
+			};
+		}
+
+		/// <summary>
+		/// Returns a formatted string with the calculated statistics
+		/// </summary>
+		/// <param name=""></param>
+		/// <returns></returns>
+		System::String^ getStatFormattedString(void) {
+			log_string = " [T]:" + ((int)percMeanTime).ToString();
+			log_string += " [<5]:" + ((int)perc5).ToString();
+			log_string += " [<10]:" + ((int)perc10).ToString();
+			log_string += " [<15]:" + ((int)perc15).ToString();
+			log_string += " [<20]:" + ((int)perc20).ToString();
+			log_string += " [<25]:" + ((int)perc25).ToString();
+			log_string += " [<30]:" + ((int)perc30).ToString();
+			log_string += " [>30]:" + ((int)percXX).ToString();
+			log_string += " [RPT]:" + ((int)percRepeated).ToString();
+			return log_string;
+		}
+
+		double txrx_time; //!< Last Send - Receive time
+
+		unsigned long sent_messages; //!< Total number of sent frames
+		unsigned long sent_5;	//!< Total number of sent frames with a reception time lower than 5ms
+		unsigned long sent_10;	//!< Total number of sent frames with a reception time lower than 10ms
+		unsigned long sent_15;	//!< Total number of sent frames with a reception time lower than 15ms
+		unsigned long sent_20;  //!< Total number of sent frames with a reception time lower than 20ms
+		unsigned long sent_25;  //!< Total number of sent frames with a reception time lower than 25ms
+		unsigned long sent_30;  //!< Total number of sent frames with a reception time lower than 30ms
+		unsigned long sent_xx;  //!< Total number of sent frames with a reception time exceeding 30ms
+		unsigned long repeated_messages; //!< A repeated answer message (discarded)  due to a can frame repeatition
+
+		double perc5;	//!< Percent of messages with less than 5ms of tx-rx time 
+		double perc10;	//!< Percent of messages with less than 10ms of tx-rx time 
+		double perc15;  //!< Percent of messages with less than 15ms of tx-rx time 
+		double perc20;  //!< Percent of messages with less than 20ms of tx-rx time 
+		double perc25;	//!< Percent of messages with less than 25ms of tx-rx time 
+		double perc30;	//!< Percent of messages with less than 30ms of tx-rx time 
+		double percXX;  //!< Percent of messages exceeding 30ms of tx-rx time 
+		double percRepeated; //!< Percent of repeated messages
+
+		double meanTime;	//!< Total Rx-Tx Mean time 
+		double percMeanTime;//!< Percent of the Tx-Rx mean time
+
+		unsigned long unreceived_messages; //!< Number of unreceived messages
+		System::String^ log_string;//!< Pre formatted string statistic
+	};
 
 	/// <summary>
 	/// This is the Class implementing the CanOPEN Motor Device control protocol.
@@ -489,6 +602,7 @@ namespace CANOPEN {
 
 		void runMode(void) { simulator_mode = false; run = true; }
 		void demoMode(void) { simulator_mode = true; run = true; }
+		inline bool isSimulatorMode(void) { return simulator_mode; }
 
 		delegate void delegate_fault_callback(int code); //!< Delegate for the callback related to the Fault condition
 		event delegate_fault_callback^ fault_event; //!< Event generated when a Driver fault condition is detected
@@ -696,6 +810,8 @@ namespace CANOPEN {
 		inline int getMinPosition(void) { return min_position; }
 		inline int getMaxPosition(void) { return max_position; }
 		
+		inline System::String^ getCanCommunicationMonitorString(void) { return can_communication_monitor.getStatFormattedString(); }
+
 
 		///@} End of the API section ________________________________________________________________________
 
@@ -896,6 +1012,8 @@ protected:
 	
 	bool fault_activation;
 private:
+		CanMotorCommunicationMonitor can_communication_monitor; //!< This is the debug class 
+
 		bool run;
 		bool reset_node;
 		int max_position;			//!< This is the maximum target selectable
@@ -1014,31 +1132,6 @@ private:
 		bool autostart_mode; //!< Set to tru if the activation ommand is automatically started
 		motor_rotation_activations motor_direction; //!< The current direction of the motor activation
 
-		// Diagnostic
-		double txrx_time;
-		bool read_sdo_tmo;
-		bool write_sdo_tmo;		
-		unsigned long sent_messages;
-		unsigned long sent_5;
-		unsigned long sent_10;
-		unsigned long sent_15;
-		unsigned long sent_20;
-		unsigned long sent_25;
-		unsigned long sent_30;
-		unsigned long sent_xx;
-
-		double perc5;
-		double perc10;
-		double perc15;
-		double perc20;
-		double perc25;
-		double perc30;
-		double percXX;
-
-		double meanTime;
-		double percMeanTime;
-		unsigned long unreceived_messages;
-			
 	};
 
 }; 

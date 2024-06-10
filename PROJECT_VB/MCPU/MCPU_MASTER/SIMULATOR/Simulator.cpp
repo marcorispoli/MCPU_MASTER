@@ -3,6 +3,7 @@
 #include "Simulator.h"
 #include "mutex"
 #include "Log.h"
+#include "SystemConfig.h"
 
 using namespace System;
 using namespace System::Net::Sockets;
@@ -25,34 +26,46 @@ static std::mutex send_mutex;
 /// </summary>
 /// <param name="ip">This is a String for the IP address</param>
 /// <param name="port">This is an integer value for thr server port</param>
-Simulator::Simulator(String^ ip, int port)
+Simulator::Simulator(void)
 {
 	// Gets the Handler of the Form parent class, to be used for the message exchange
 	connection_status = false;
+	started = false;
 
 	// Sets the Tcp/Ip data for the socket
-	IPAddress^ localAddress = IPAddress::Parse(ip);
+	IPAddress^ localAddress = IPAddress::Parse(SystemConfig::Configuration->getParam(SystemConfig::PARAM_SYM_MODE)[SystemConfig::SYM_MODE_IP]);
 	SocketType sockType = SocketType::Stream;
 	ProtocolType sockProtocol = ProtocolType::Tcp;
 	serverSocket = nullptr;
 
-	IPEndPoint^ localEndPoint = gcnew IPEndPoint(localAddress, port);
+
+	IPEndPoint^ localEndPoint = gcnew IPEndPoint(localAddress, System::Convert::ToInt16(SystemConfig::Configuration->getParam(SystemConfig::PARAM_SYM_MODE)[SystemConfig::SYM_MODE_PORT]));
 	IPEndPoint^ senderAddress = gcnew IPEndPoint(localAddress, 0);
 
 	clientSocket = nullptr;
 	rxBuffer = gcnew cli::array<System::Byte>(4096);
-
+	rx_rc = 0;
 
 	// Create the server socket
 	serverSocket = gcnew Socket(localAddress->AddressFamily, sockType, sockProtocol);
 	serverSocket->Bind(localEndPoint);
 
-	// Start the reception thread
-	running_thread = gcnew Thread(gcnew ThreadStart(this, &Simulator::threadWork));
-	running_thread->Name = "Loop Simulator Server";
-	running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
-	running_thread->Start();
+}
 
+/// <summary>
+/// This function starts the activities of the simulator
+/// </summary>
+/// <param name=""></param>
+void Simulator::startSimulator(void) {
+
+	//Already Started
+	if (started) return; 
+
+	// Start the reception thread
+	device->running_thread = gcnew Thread(gcnew ThreadStart(this, &Simulator::threadWork));
+	device->running_thread->Name = "Loop Simulator Server";
+	device->running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
+	device->running_thread->Start();
 }
 
 void Simulator::threadWork(void) {
@@ -124,8 +137,6 @@ void Simulator::handleBuffer(void) {
 void Simulator::send(cli::array<System::Byte>^ buffer) {
 	if (!connection_status) return;
 	if (clientSocket == nullptr) return;
-
-
 	clientSocket->Send(buffer);
 }
 

@@ -5,33 +5,34 @@ ref class SystemConfig
 {
 public:
     literal System::String^ FILENAME = "SystemInit.cnf";
-    literal int     FILE_REVISION = 2;
-
-    literal int     PARAM_MODE_CAN = 0;
-    literal int     PARAM_MODE_GENERATOR = 1;
-    literal int     PARAM_MODE_TILT = 2;
-    literal int     PARAM_MODE_ARM = 3;
-    literal int     PARAM_MODE_BODY = 4;
-    literal int     PARAM_MODE_VERTICAL = 5;
-    literal int     PARAM_MODE_SLIDE = 6;
-    literal int     PARAM_MODE_PCB301 = 7;
-    literal int     PARAM_MODE_PCB302 = 8;
-    literal int     PARAM_MODE_PCB303 = 9;
-    literal int     PARAM_MODE_PCB304 = 10;
-    literal int     PARAM_MODE_PCB315 = 11;
-    literal int     PARAM_MODE_PCB326 = 12;
+    literal int     FILE_REVISION = 1;
 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_RUNNING_MODE = "RUNNING_MODE";
     literal System::String^ PARAM_RUNNING_MODE_COMMENT = "This is the Gantry Running Mode Definition: NORMAL, DEMO, SYM";
     literal int             PARAM_RUNNING_MODE_STATUS = 0;
     literal System::String^ PARAM_RUNNING_MODE_STATUS_DEFAULT = "NORMAL";
-   
+
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_SYM_MODE = "SYM_MODE";
     literal System::String^ PARAM_SYM_MODE_COMMENT = "SYM Mode Setting: [1=Run, 0=Sim]: can-driver, generator, tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,315,326";
-    
-
+    literal int     SYM_MODE_IP = 0;
+    literal int     SYM_MODE_PORT = 1;
+    literal int     SYM_MODE_CAN = 2;
+    literal int     SYM_MODE_GENERATOR = 3;
+    literal int     SYM_MODE_TILT = 4;
+    literal int     SYM_MODE_ARM = 5;
+    literal int     SYM_MODE_BODY = 6;
+    literal int     SYM_MODE_VERTICAL = 7;
+    literal int     SYM_MODE_SLIDE = 8;
+    literal int     SYM_MODE_PCB301 = 9;
+    literal int     SYM_MODE_PCB302 = 10;
+    literal int     SYM_MODE_PCB303 = 11;
+    literal int     SYM_MODE_PCB304 = 12;
+    literal int     SYM_MODE_PCB315 = 13;
+    literal int     SYM_MODE_PCB326 = 14;
+    literal System::String^ PARAM_SYM_MODE_IP_DEFAULT = "127.0.0.1";
+    literal System::String^ PARAM_SYM_MODE_PORT_DEFAULT = "20000";
     literal System::String^ PARAM_SYM_MODE_CAN_DEFAULT = "0";
     literal System::String^ PARAM_SYM_MODE_GENERATOR_DEFAULT = "0";
     literal System::String^ PARAM_SYM_MODE_TILT_DEFAULT = "0";
@@ -88,25 +89,34 @@ public:
     literal System::String^    PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT = "10001";
 
     
-    
-
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_LOG_DIRECTORY = "LOG_DIRECTORY";
-    literal System::String^ PPARAM_LOG_DIRECTORY_COMMENT = "The directory reserved for logs ";
+    literal System::String^ PARAM_LOG_DIRECTORY_COMMENT = "The directory reserved for logs ";
     literal int PARAM_DIR = 0;
     literal int PARAM_ENA = 1;
     literal System::String^ PARAM_LOG_DIRECTORY_DEFAULT = "\\GANTRY_LOGS";
     literal System::String^ PARAM_LOG_ENA_DEFAULT = "ON";
 
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_DEBUG = "DEBUG";
+    literal System::String^ PARAM_DEBUG_COMMENT = "This is the Debug fetaures";
+    literal int PARAM_DEBUG_ENA = 0;
+    literal int PARAM_DEBUG_IP = 1;
+    literal int PARAM_DEBUG_PORT = 2;
+    literal System::String^ PARAM_DEBUG_ENA_DEFAULT = "OFF";
+    literal System::String^ PARAM_DEBUG_ENA_IP_DEFAULT = "127.0.0.1";
+    literal System::String^ PARAM_DEBUG_ENA_PORT_DEFAULT = "20001";
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
             CONFIG_FILE_ITEM(PARAM_RUNNING_MODE, PARAM_RUNNING_MODE_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_RUNNING_MODE_STATUS_DEFAULT,
+            PARAM_RUNNING_MODE_STATUS_DEFAULT,           
             }),
 
-            CONFIG_FILE_ITEM(PARAM_SYM_MODE, PARAM_SYM_MODE_COMMENT, CONFIG_FILE_DEFAULT{
+            CONFIG_FILE_ITEM(PARAM_SYM_MODE, PARAM_SYM_MODE_COMMENT, CONFIG_FILE_DEFAULT{            
+            PARAM_SYM_MODE_IP_DEFAULT,
+            PARAM_SYM_MODE_PORT_DEFAULT,
             PARAM_SYM_MODE_CAN_DEFAULT,
             PARAM_SYM_MODE_GENERATOR_DEFAULT,
             PARAM_SYM_MODE_TILT_DEFAULT,
@@ -145,10 +155,15 @@ public:
             PARAM_AWS_CONNECTIONS_PORT_EVENTS_DEFAULT,           
             }),
 
-
-            CONFIG_FILE_ITEM(PARAM_LOG_DIRECTORY, PPARAM_LOG_DIRECTORY_COMMENT, CONFIG_FILE_DEFAULT{
+            CONFIG_FILE_ITEM(PARAM_LOG_DIRECTORY, PARAM_LOG_DIRECTORY_COMMENT, CONFIG_FILE_DEFAULT{
             PARAM_LOG_DIRECTORY_DEFAULT,
             PARAM_LOG_ENA_DEFAULT,
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_DEBUG, PARAM_DEBUG_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_DEBUG_ENA_DEFAULT,
+            PARAM_DEBUG_ENA_IP_DEFAULT,
+            PARAM_DEBUG_ENA_PORT_DEFAULT
             }),
             
         }

@@ -447,7 +447,7 @@ public:
 			sent_25 = 0;
 			sent_30 = 0;
 			sent_xx = 0;
-
+			repeated_messages = 0;
 			
 			meanTime = 0;
 			percMeanTime = 0;
@@ -480,8 +480,10 @@ public:
 				perc25 = (double)sent_25 * 100 / (double)sent_messages;
 				perc30 = (double)sent_30 * 100 / (double)sent_messages;
 				percXX = (double)sent_xx * 100 / (double)sent_messages;
-
 				percMeanTime = meanTime * 1000 / (double)sent_messages;
+				percRepeated = (double)repeated_messages * 100 / (double)sent_messages;
+
+				
 
 				meanTime = 0;
 				sent_5 = 0;
@@ -491,6 +493,7 @@ public:
 				sent_25 = 0;
 				sent_30 = 0;
 				sent_xx = 0;
+				repeated_messages = 0;
 				sent_messages = 0;
 
 			};
@@ -502,14 +505,15 @@ public:
 		/// <param name=""></param>
 		/// <returns></returns>
 		System::String^ getStatFormattedString(void) {
-			log_string += " [T]:" + ((int)percMeanTime).ToString();
-			log_string += " [5]:" + ((int)perc5).ToString();
-			log_string += " [10]:" + ((int)perc10).ToString();
-			log_string += " [15]:" + ((int)perc15).ToString();
-			log_string += " [20]:" + ((int)perc20).ToString();
-			log_string += " [25]:" + ((int)perc25).ToString();
-			log_string += " [30]:" + ((int)perc30).ToString();
+			log_string  = " [T]:" + ((int)percMeanTime).ToString();
+			log_string += " [<5]:" + ((int)perc5).ToString();
+			log_string += " [<10]:" + ((int)perc10).ToString();
+			log_string += " [<15]:" + ((int)perc15).ToString();
+			log_string += " [<20]:" + ((int)perc20).ToString();
+			log_string += " [<25]:" + ((int)perc25).ToString();
+			log_string += " [<30]:" + ((int)perc30).ToString();
 			log_string += " [>30]:" + ((int)percXX).ToString();
+			log_string += " [RPT]:" + ((int)percRepeated).ToString();
 			return log_string;
 		}
 
@@ -523,6 +527,7 @@ public:
 		unsigned long sent_25;  //!< Total number of sent frames with a reception time lower than 25ms
 		unsigned long sent_30;  //!< Total number of sent frames with a reception time lower than 30ms
 		unsigned long sent_xx;  //!< Total number of sent frames with a reception time exceeding 30ms
+		unsigned long repeated_messages; //!< A repeated answer message (discarded)  due to a can frame repeatition
 
 		double perc5;	//!< Percent of messages with less than 5ms of tx-rx time 
 		double perc10;	//!< Percent of messages with less than 10ms of tx-rx time 
@@ -531,6 +536,7 @@ public:
 		double perc25;	//!< Percent of messages with less than 25ms of tx-rx time 
 		double perc30;	//!< Percent of messages with less than 30ms of tx-rx time 
 		double percXX;  //!< Percent of messages exceeding 30ms of tx-rx time 
+		double percRepeated; //!< Percent of repeated messages
 
 		double meanTime;	//!< Total Rx-Tx Mean time 
 		double percMeanTime;//!< Percent of the Tx-Rx mean time
@@ -775,9 +781,11 @@ public:
 	/// <returns>Command completed error code</returns>
 	inline CommandRegisterErrors getCommandError(void) { return (CommandRegisterErrors) command_error; }
 
+	inline System::String^ getCanCommunicationMonitorString(void) { return can_communication_monitor.getStatFormattedString(); }
+
 protected:
 	
-	CanDeviceCommunicationMonitor communication; //!< This is the debug class 
+	CanDeviceCommunicationMonitor can_communication_monitor; //!< This is the debug class 
 
 	/// <summary>
 	/// This function executes the read of the special device command register.

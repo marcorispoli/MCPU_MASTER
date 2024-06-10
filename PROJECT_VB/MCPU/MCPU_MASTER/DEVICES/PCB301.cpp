@@ -421,7 +421,7 @@ void PCB301::simulSend(void) {
     to_simulator[(int)simul_tx_struct::ENDFRAME] = 0x2;
 
     // Sends the buffer
-    ((Simulator^) Gantry::pSimulator)->send(to_simulator);
+    Simulator::device->send(to_simulator);
 }
 
 void PCB301::simulInit(void) {
@@ -460,6 +460,6 @@ void PCB301::simulInit(void) {
 
 
     // Connects the reception event
-    ((Simulator^) Gantry::pSimulator)->pcb301_rx_event += gcnew Simulator::rxData_slot(&PCB301::simulRx);
+    Simulator::device->pcb301_rx_event += gcnew Simulator::rxData_slot(&PCB301::simulRx);
     
 }

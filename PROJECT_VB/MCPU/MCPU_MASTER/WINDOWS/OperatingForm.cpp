@@ -661,7 +661,7 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 
 void OperatingForm::evaluateMagStatus(void) {
 
-	labelMag->Text = PCB304::getMagnifierfactorString();
+	labelMag->Text = PCB302::getMagnifierfactorString();
 
 }
 

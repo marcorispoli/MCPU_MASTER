@@ -82,7 +82,7 @@ void awsProtocol::EVENT_Components(void) {
     if (Biopsy::isBiopsy()) {
         potter_type = "BIOPSY";
     }
-    else  if (PCB304::isMagnifierDeviceDetected()) {
+    else  if (PCB302::isMagnifierDeviceDetected()) {
         potter_type = "MAGNIFIER";
     }
     else {
@@ -90,7 +90,7 @@ void awsProtocol::EVENT_Components(void) {
     }
 
     // Magnification factor
-    mag_factor = PCB304::getMagnifierfactorString();
+    mag_factor = PCB302::getMagnifierfactorString();
 
     // Compressor paddle
     paddle = PCB302::getDetectedPaddleCode().ToString();

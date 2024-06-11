@@ -5,6 +5,7 @@
 #include "CaDataDicGen.h"
 #include "PCB304.h"
 #include "PCB301.h"
+#include "PCB302.h"
 #include "PCB303.h"
 #include <thread>
 #include "Log.h"
@@ -45,7 +46,7 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
     }
 
     // Determines if the Focus is Small or large based on the presence of the Magnifier device
-    if (PCB304::isMagnifierDeviceDetected()) large_focus = false;
+    if (PCB302::isMagnifierDeviceDetected()) large_focus = false;
     else large_focus = true;
 
     
@@ -135,7 +136,7 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     }
 
     // Determines if the Focus is Small or large based on the presence of the Magnifier device
-    if (PCB304::isMagnifierDeviceDetected()) large_focus = false;
+    if (PCB302::isMagnifierDeviceDetected()) large_focus = false;
     else large_focus = true;
 
 

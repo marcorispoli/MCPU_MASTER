@@ -273,7 +273,7 @@ void PCB303::runningLoop(void) {
 
     // Updates the Status register
     if (updateStatusRegister()) {
-        formatCollimationManagement(); // Format collimation management
+        //formatCollimationManagement(); // Format collimation management
     }
 
     std::this_thread::sleep_for(std::chrono::microseconds(10000));

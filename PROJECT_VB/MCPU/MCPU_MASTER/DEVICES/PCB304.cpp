@@ -1,6 +1,7 @@
 
 #include "PCB304.h"
 #include "Notify.h"
+#include "Simulator.h"
 
 #include <thread>
 
@@ -67,16 +68,40 @@ void PCB304::demoLoop(void) {
         
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-   
-    magnifier_device_detected = false;
-    magnifier_factor_string = "1.0";
-
     if (grid_on_field) grid_on_field_ready = true;
     else grid_off_field_ready = true;
-    
-    grid_sync_ready = true;
-    error = false; 
 
+    grid_sync_ready = true;
+    error = false;
+
+    // Sets the display outputs to the simulator
+    PCB304_DISPLAY_ON(display_data_register, display_on);
+    PCB304_DISPLAY_BLINK(display_data_register, display_blink);
+    PCB304_DISPLAY_DOT_POSITION(display_data_register, display_decimals);
+    PCB304_DISPLAY_INTENSITY(display_data_register, display_intensity);
+
+    short val = display_val;
+    PCB304_DISPLAY_CONTENT_LOW(display_data_register, val);
+    PCB304_DISPLAY_CONTENT_HIGH(display_data_register, val);
+
+    to_simulator[(int)simul_tx_struct::DISPLAY_D0] = display_data_register->d0;
+    to_simulator[(int)simul_tx_struct::DISPLAY_D1] = display_data_register->d1;
+    to_simulator[(int)simul_tx_struct::DISPLAY_D2] = display_data_register->d2;
+    to_simulator[(int)simul_tx_struct::DISPLAY_D3] = display_data_register->d3;
+
+
+    // Sets the grid outputs to the simulator ... to be done
+
+    // Evaluates i fthe data has been changed to update the Simulator     
+    bool changed = false;
+    for (int i = 0; i < to_simulator->Length; i++) {
+        if (to_simulator[i] != to_simulator_previous[i]) {
+            changed = true;
+            to_simulator_previous[i] = to_simulator[i];
+        }
+    }
+
+    if (changed) simulSend();
     return;
 }
 
@@ -134,3 +159,36 @@ bool PCB304::setGridOffField(bool wait_completion) {
 
 }
 
+
+
+void PCB304::simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc) {
+    if (rc != (int)simul_rx_struct::BUFLEN) return;
+
+    for (int i = 0; i < rc; i++) device->from_simulator[i] = receiveBuffer[index + i];
+}
+
+void PCB304::simulSend(void) {
+
+    to_simulator[0] = 0x3;
+    to_simulator[1] = (int)simul_tx_struct::BUFLEN;
+    to_simulator[(int)simul_tx_struct::DEVICE_ID] = PCB304_DEVID;
+    to_simulator[(int)simul_tx_struct::ENDFRAME] = 0x2;
+
+    // Sends the buffer
+    Simulator::device->send(to_simulator);
+}
+
+void PCB304::simulInit(void) {
+
+    // Create the Simulator structure if shuld be  necessary
+    from_simulator = gcnew cli::array<System::Byte>((int)PCB304::simul_rx_struct::BUFLEN);
+    to_simulator = gcnew cli::array<System::Byte>((int)PCB304::simul_tx_struct::BUFLEN);
+    to_simulator_previous = gcnew cli::array<System::Byte>((int)PCB304::simul_tx_struct::BUFLEN);
+
+    // Initialize the from_simulator vector..
+    //from_simulator[(int)simul_rx_struct::PADDLE_CODE] = (System::Byte)paddleCodes::PADDLE_NOT_DETECTED;
+    
+    // Connects the simulator reception event
+    Simulator::device->pcb304_rx_event += gcnew Simulator::rxData_slot(&PCB304::simulRx);
+
+}

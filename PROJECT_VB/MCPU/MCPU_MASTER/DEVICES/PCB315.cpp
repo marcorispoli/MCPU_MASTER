@@ -278,7 +278,7 @@ void PCB315::runningLoop(void) {
 
     // Updates the Status register
     if (updateStatusRegister()) {
-        manageFilterSelection(); // manages the filter selection on the device
+        // manageFilterSelection(); // manages the filter selection on the device
     }
 
     

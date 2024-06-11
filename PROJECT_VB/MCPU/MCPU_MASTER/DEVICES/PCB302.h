@@ -159,6 +159,9 @@ public:
 	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
 	static int getDetectedPaddleCollimationFormat(void); //!< This function returns he collimation format index associated to the detected paddle
 	
+	inline static bool isMagnifierDeviceDetected(void) { return magnifier_device_detected; }
+	static System::String^ getMagnifierfactorString(void) { return magnifier_factor_string; }
+
 
 protected: 	
 	void runningLoop(void) override;
@@ -183,8 +186,8 @@ private:
 
 	static bool patient_protection_detected = false; //!< Is set if the patient protection should be detcted
 	static bool patient_protection_shifted = false; //!< Is set if the patient protection should be shifted out of standard position
-
-
+	static bool magnifier_device_detected = false; //!< Is set if the magnifier device has been detected
+	static System::String^ magnifier_factor_string = "1.0"; //!< This is the current magnification factor detected in string format
 
 
 	void handleSystemStatusRegister(void);
@@ -205,6 +208,7 @@ private:
 		DOWNWARD_ACTIVATION,
 		PATIENT_PROTECTION_DETECTED,
 		PATIENT_PROTECTION_SHIFTED,
+		MAGNIFIER_DEVICE,
 		ENDFRAME,
 		BUFLEN
 	};

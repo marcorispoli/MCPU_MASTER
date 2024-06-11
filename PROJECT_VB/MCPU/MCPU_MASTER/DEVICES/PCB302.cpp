@@ -217,6 +217,11 @@ void PCB302::runningLoop(void) {
 	handlePaddleStatusRegister();
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
+	// To be done
+	magnifier_device_detected = false;
+	patient_protection_detected = true; 
+	patient_protection_shifted = false; 
+
 	// Refresh the Data register
 	setPositionLimit(200);
 	writeDataRegister((unsigned char)DataRegisters::POSITION_LIMIT_DATA_REGISTER, position_limit_data_register);
@@ -255,6 +260,16 @@ void PCB302::demoLoop(void) {
 	// Patient protection shifted
 	patient_protection_shifted = from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_SHIFTED];
 
+	// Magnifier device
+	if (from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE]) {
+		magnifier_device_detected = from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE];
+		int magfactor = from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE];
+		if (magfactor == 15) magnifier_factor_string = "1.5";
+		else if (magfactor == 18) magnifier_factor_string = "1.8";
+		else magnifier_factor_string = "2.0";
+	}else  magnifier_factor_string = "1.0";
+	
+
 	evaluateEvents();
 
 	return;
@@ -292,6 +307,7 @@ void PCB302::simulInit(void) {
 	from_simulator[(int)simul_rx_struct::DOWNWARD_ACTIVATION] = 0;
 	from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_DETECTED] = false;
 	from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_SHIFTED] = false;
+	from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE] = false;
 
 	// Connects the reception event
 	Simulator::device->pcb302_rx_event += gcnew Simulator::rxData_slot(&PCB302::simulRx);

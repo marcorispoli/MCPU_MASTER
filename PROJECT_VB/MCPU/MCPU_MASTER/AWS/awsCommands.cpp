@@ -521,14 +521,14 @@ void   awsProtocol::GET_Components(void) {
     // Potter Type parameter
     if (Biopsy::isBiopsy()) {
         lista->Add("BIOPSY");
-    }else  if (PCB304::isMagnifierDeviceDetected()) {
+    }else  if (PCB302::isMagnifierDeviceDetected()) {
         lista->Add("MAGNIFIER");
     }else  {
         lista->Add("POTTER");
     }
 
     // Magnification factor
-    lista->Add(PCB304::getMagnifierfactorString());
+    lista->Add(PCB302::getMagnifierfactorString());
 
     // Compressor paddle
     lista->Add(PCB302::getDetectedPaddleCode().ToString());

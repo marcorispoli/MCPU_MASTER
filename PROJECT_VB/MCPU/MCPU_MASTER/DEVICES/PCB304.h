@@ -23,8 +23,8 @@ public:
 	///	 This is the Device DATA Register implementation 
 	/// </summary>
 	enum class DataRegisters {
-		DISPLAY_DATA_REGISTER = 0, //!> This is the Display Data register index
-		GRID_DATA_REGISTER //!< This is the control of the Grid status
+		DISPLAY_DATA_REGISTER = 0,	//!> This is the Display Data register index
+		GRID_DATA_REGISTER			//!< This is the control of the Grid status
 	};
 
 	#define PCB304_DISPLAY_ON(reg,stat)	reg->D0(stat, 0x1)
@@ -41,20 +41,12 @@ public:
 
 	PCB304() : CanDeviceProtocol(0x14, L"POTTER_DEVICE")
 	{
-
+		simulInit();
 	}
 	static PCB304^ device = gcnew PCB304();
 
 	
-	/// <summary>
-	/// This function returns the presence of the magnifier device
-	/// 
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns>True if the Magnifier device has been detected </returns>
-	inline static bool isMagnifierDeviceDetected(void) { return magnifier_device_detected; }
-	static System::String^  getMagnifierfactorString(void) { return magnifier_factor_string; }
-
+	
 	
 	static bool setGridOnField(bool wait_completion);
 	static bool setGridOffField(bool wait_completion);
@@ -112,9 +104,8 @@ protected:
 	void demoLoop(void) override;
 
 private:
-	static bool magnifier_device_detected = false; //!< Is set if the Magnifier device has been detected
-	static System::String^  magnifier_factor_string = "1.0"; //!< This is the current magnification factor detected in string format
 	
+		
 	static bool grid_on_field = false; //!< This is the status of the current grid position.
 	static bool grid_on_field_ready = false; //!< This flag stands for grid correctly positioned in Field
 	static bool grid_off_field_ready = false; //!< This flag stands for grid correctly positioned out of Field
@@ -131,5 +122,40 @@ private:
 	static unsigned char display_intensity = 0;
 	static Register^ display_data_register = gcnew Register();
 	static Register^ grid_data_register = gcnew Register();
+
+
+	// Simulation Section
+	enum class simul_rx_struct {
+		STX = 0,
+		LENGHT,
+		DEVICE_ID,
+
+		ENDFRAME,
+		BUFLEN
+	};
+
+	enum class simul_tx_struct {
+		STX = 0,
+		LENGHT,
+		DEVICE_ID,
+		DISPLAY_D0,
+		DISPLAY_D1,
+		DISPLAY_D2,
+		DISPLAY_D3,
+		GRID_D0,
+		GRID_D1,
+		GRID_D2,
+		GRID_D3,
+		ENDFRAME,
+		BUFLEN
+	};
+
+	void simulInit(void);
+	static void simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc);
+	void simulSend(void);
+	cli::array<System::Byte>^ from_simulator;
+	cli::array<System::Byte>^ to_simulator;
+	cli::array<System::Byte>^ to_simulator_previous;
+
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include "CanSimulator.h"
 
 
 #define DEVICE_PROTOCOL_DISPATCH_MESSAGE (WM_USER + 1)
@@ -31,8 +32,16 @@ public:
     static event delegate_can_rx_frame^ canrx_canopen_sync_event;
     static event delegate_can_rx_frame^ canrx_device_event;
 
-    static bool multithread_send(unsigned short canId, unsigned char* data, unsigned char len);
-    static inline bool isConnected(void) { return can_connected; }
+    // Simulator callbacks
+    static void canrx_simulator_canopen_sdo_event(void) ; 
+    static void canrx_simulator_device_event(void) ;
+
+    static bool multithread_send(unsigned short canId, unsigned char* data, unsigned char len, bool simul);
+    static inline bool isConnected(bool simul) { 
+        if(simul) return CanSimulator::connection_status;
+        else return can_connected;
+    }
+ 
 
     static inline bool isError(void) { return error; }
     static inline bool isWarning(void) { return warning; }
@@ -53,13 +62,11 @@ private:
     System::Threading::Thread^ running_thread;
     void threadWork(void);
     static bool can_connected = false;
-
     static bool error = false;
     static System::String^ ErrorString = "";
 
     static bool warning = false;
-    static System::String^ WarningString = "";
-  
+    static System::String^ WarningString = "";   
     static bool simulator_mode;
 };
 

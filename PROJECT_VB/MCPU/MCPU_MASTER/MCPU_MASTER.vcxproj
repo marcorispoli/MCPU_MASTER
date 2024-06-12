@@ -148,7 +148,7 @@
     <ClInclude Include="MOTORS\BodyMotor.h" />
     <ClInclude Include="MOTORS\SlideMotor.h" />
     <ClInclude Include="MOTORS\VerticalMotor.h" />
-    <ClInclude Include="SIMULATOR\Simulator.h" />
+    <ClInclude Include="VSCAN\CanSimulator.h" />
     <ClInclude Include="WINDOWS\ConfirmationWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -252,7 +252,7 @@
     <ClCompile Include="MOTORS\CanOpenDriver\CanOpenNanoJ.cpp" />
     <ClCompile Include="MOTORS\SlideMotor.cpp" />
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
-    <ClCompile Include="SIMULATOR\Simulator.cpp" />
+    <ClCompile Include="VSCAN\CanSimulator.cpp" />
     <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
     <ClCompile Include="DEVICES\CanDeviceProtocol.cpp" />

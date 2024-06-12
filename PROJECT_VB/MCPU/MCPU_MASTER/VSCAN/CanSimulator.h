@@ -13,11 +13,11 @@
 /// 
 ///	
 /// \ingroup Exposure_Module  
-ref class Simulator
+ref class CanSimulator
 {
 public:
-	static const Byte STX = 0x3;
-	static const Byte ETX = 0x4;
+	static const System::Byte STX = 0x3;
+	static const System::Byte ETX = 0x4;
 
 	enum class can_buf_struct {
 		STX = 0,
@@ -43,27 +43,28 @@ public:
 	static event rxData_slot^ canrx_device_event; //!< Metaltronica Buffer
 
 	delegate void connection_slot(bool status); //!< This is the delegate of the connection handler
-	event connection_slot^ connection_event; //!< Connection event
+	static event connection_slot^ connection_event; //!< Connection event
 
-	Simulator(void); //!< This is the class constructor
-	static Simulator^ device = gcnew Simulator();
+	CanSimulator(void); //!< This is the class constructor
+	static CanSimulator^ device = gcnew CanSimulator();
 
-	void startSimulator(void);	
+		
 	static bool send(unsigned short canId, unsigned char* data, unsigned char len);//!< This is function to send data in the BUS
-
+	static unsigned char datalen;
+	static unsigned short canId;
+	static cli::array<System::Byte>^ canDataBuffer;//!< This is the data buffer decoded
+	static bool connection_status = false;//!< This is the current connection status
 
 private:
 	static bool started = false;
-	static bool connection_status = false;//!< This is the current connection status
 	
-	void threadWork(void);//!< This is the worker thread for the connection management	
-	System::Threading::Thread^ running_thread;//!< This is the worker thread handler
-	System::Net::Sockets::Socket^ serverSocket;//!< This is the server socket handler
-	System::Net::Sockets::Socket^ clientSocket;//!< This is the connected client socket handler
+	
+	static void threadWork(void);//!< This is the worker thread for the connection management	
+	static System::Threading::Thread^ running_thread;//!< This is the worker thread handler
+	static System::Net::Sockets::Socket^ serverSocket;//!< This is the server socket handler
+	static System::Net::Sockets::Socket^ clientSocket;//!< This is the connected client socket handler
 
-
-	static unsigned char datalen;
-	static unsigned short canId;
+	
 
 	static int rx_rc;//!< This is the number of the received bytes
 	static cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer

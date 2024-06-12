@@ -93,7 +93,7 @@ public:
 	PCB302() : CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE")
 	{
 		detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;
-		simulInit();
+		
 
 	}
 	static PCB302^ device = gcnew PCB302();
@@ -195,41 +195,6 @@ private:
 	void evaluateEvents(void);
 
 
-	// Simulation Section
-	enum class simul_rx_struct {
-		STX = 0,
-		LENGHT,
-		DEVICE_ID,
-		PADDLE_CODE,
-		THICKNESS,
-		FORCE,
-		COMPRESSION_ON,
-		COMPRESSION_EXECUTING,
-		DOWNWARD_ACTIVATION,
-		PATIENT_PROTECTION_DETECTED,
-		PATIENT_PROTECTION_SHIFTED,
-		MAGNIFIER_DEVICE,
-		ENDFRAME,
-		BUFLEN
-	};
-
-	enum class simul_tx_struct {
-		STX = 0,
-		LENGHT,
-		DEVICE_ID,
-		
-		ENDFRAME,
-		BUFLEN
-	};
-
-	void simulInit(void);
-	static void simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc);
-	void simulSend(void);
-	cli::array<System::Byte>^ from_simulator;
-	cli::array<System::Byte>^ to_simulator;
-	cli::array<System::Byte>^ to_simulator_previous;
-	
-	protected: bool simulCommandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) override;
 };
 
 

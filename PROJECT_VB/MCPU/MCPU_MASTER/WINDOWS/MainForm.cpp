@@ -125,7 +125,7 @@ bool MainForm::Startup_CanDriver(void) {
 			break;
 		}
 
-		if (CanDriver::isConnected()) {
+		if (CanDriver::isConnected(false)) {
 			labelCanDriverActivity->Text = "RUN IN NORMAL MODE";
 			string =  "can driver revision: ";
 			string += " API:" + CanDriver::apirev_maj.ToString() + "." + CanDriver::apirev_min.ToString();
@@ -158,7 +158,7 @@ bool MainForm::Startup_PCB301(void) {
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB301::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+		if (PCB301::device->isSimulatorMode()) {
 			labelPcb301Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb301Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -204,7 +204,7 @@ bool MainForm::Startup_PCB302(void) {
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB302::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+		if (PCB302::device->isSimulatorMode()) {
 			labelPcb302Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb302Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -248,7 +248,7 @@ bool MainForm::Startup_PCB303(void) {
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB303::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+		if (PCB303::device->isSimulatorMode()) {
 			labelPcb303Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb303Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -292,7 +292,7 @@ bool MainForm::Startup_PCB304(void) {
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB304::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+		if (PCB304::device->isSimulatorMode()) {
 			labelPcb304Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb304Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -336,7 +336,7 @@ bool MainForm::Startup_PCB315(void) {
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB315::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+		if (PCB315::device->isSimulatorMode()) {
 			labelPcb315Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb315Activity->ForeColor = Color::LightGreen;
 			return true;
@@ -381,7 +381,7 @@ bool MainForm::Startup_PCB326(void) {
 		break;
 
 	case 1: // Wait the connection and configuration
-		if (PCB326::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_SIMULATOR) {
+		if (PCB326::device->isSimulatorMode()) {
 			labelPcb326Activity->Text = "RUN IN SIMULATION MODE";
 			labelPcb326Activity->ForeColor = Color::LightGreen;
 			return true;

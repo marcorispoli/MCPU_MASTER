@@ -16,9 +16,7 @@
 #include "SlideMotor.h"
 #include "BodyMotor.h"
 #include "VerticalMotor.h"
-#include "Simulator.h"
 #include "Debugger.h"
-
 
 
 using namespace System;
@@ -105,9 +103,7 @@ void Gantry::initialize(void) {
 
     }
     else {
-
-        // Starts the Simulator activities
-        Simulator::device->startSimulator();
+      
 
         // System in Simulation mode
          param = SystemConfig::PARAM_SYM_MODE;

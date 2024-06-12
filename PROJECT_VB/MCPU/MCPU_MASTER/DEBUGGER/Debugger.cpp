@@ -138,12 +138,12 @@ void DebuggerCLI::rxHandler(void){
 
 	// Can Statistics
 	if (sFrame->Contains("CANSTAT")) {
-		if (!PCB301::device->isSimulatorMode()) result_string += "PCB301: " + PCB301::device->getCanCommunicationMonitorString() + "\n\r";
-		if (!PCB302::device->isSimulatorMode()) result_string += "PCB302: " + PCB302::device->getCanCommunicationMonitorString() + "\n\r";
-		if (!PCB303::device->isSimulatorMode()) result_string += "PCB303: " + PCB303::device->getCanCommunicationMonitorString() + "\n\r";
-		if (!PCB304::device->isSimulatorMode()) result_string += "PCB304: " + PCB304::device->getCanCommunicationMonitorString() + "\n\r";
-		if (!PCB315::device->isSimulatorMode()) result_string += "PCB315: " + PCB315::device->getCanCommunicationMonitorString() + "\n\r";
-		if (!PCB326::device->isSimulatorMode()) result_string += "PCB326: " + PCB326::device->getCanCommunicationMonitorString() + "\n\r";
+		result_string += "PCB301: " + PCB301::device->getCanCommunicationMonitorString() + "\n\r";
+		result_string += "PCB302: " + PCB302::device->getCanCommunicationMonitorString() + "\n\r";
+		result_string += "PCB303: " + PCB303::device->getCanCommunicationMonitorString() + "\n\r";
+		result_string += "PCB304: " + PCB304::device->getCanCommunicationMonitorString() + "\n\r";
+		result_string += "PCB315: " + PCB315::device->getCanCommunicationMonitorString() + "\n\r";
+		result_string += "PCB326: " + PCB326::device->getCanCommunicationMonitorString() + "\n\r";
 
 		if (!TiltMotor::device->isSimulatorMode()) result_string += "TiltMotor: " + TiltMotor::device->getCanCommunicationMonitorString() + "\n\r";
 		if (!ArmMotor::device->isSimulatorMode()) result_string += "ArmMotor: " + ArmMotor::device->getCanCommunicationMonitorString() + "\n\r";

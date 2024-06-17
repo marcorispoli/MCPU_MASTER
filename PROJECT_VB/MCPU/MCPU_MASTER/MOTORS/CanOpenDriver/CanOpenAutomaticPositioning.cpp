@@ -197,11 +197,11 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         }
     }
     else updateCurrentPosition();
-          
+    previous_uposition = encoder_uposition;
 
     // Test if the actual position is already in target position
     if (isTarget()) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (ALREADY IN POSITION)");
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING COMPLETED (ALREADY IN POSITION)");        
         setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
         return;
     }
@@ -264,7 +264,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     if (command_target > encoder_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
     else motor_direction = motor_rotation_activations::MOTOR_DECREASE;
     
-        // Allows the application to prepare for the motor activation
+    // Allows the application to prepare for the motor activation
     MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_AUTO_POSITIONING, encoder_uposition, command_target);
     if (preparation_error != MotorCompletedCodes::COMMAND_PROCEED) {
         setCommandCompletedCode(preparation_error);
@@ -275,8 +275,6 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
     MotorConfig::Configuration->storeFile();
 
-    // Update the previous position
-    previous_uposition = encoder_uposition;
     
     // Unbrake 
     if (!unbrakeCallback()) {
@@ -284,7 +282,8 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         setCommandCompletedCode(MotorCompletedCodes::ERROR_BRAKE_DEVICE);
         return;
     }
-
+    
+    
     // Set the start bit (BIT4) in the control word register for autostart mode
     if (autostart_mode) {
         if(!startRotation()){

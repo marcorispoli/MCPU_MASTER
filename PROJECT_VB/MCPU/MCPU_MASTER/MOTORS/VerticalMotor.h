@@ -150,6 +150,7 @@ protected:
 
 	bool high_photocell;
 	bool low_photocell;
+	bool zero_photocell;
 	void testLimitSwitch(void); //!< True if the limit switch is engaged
 };
 

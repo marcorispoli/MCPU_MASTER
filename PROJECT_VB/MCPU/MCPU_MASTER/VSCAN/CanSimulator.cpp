@@ -1,9 +1,22 @@
 
 #include <thread>
-#include "Simulator.h"
+#include "CanSimulator.h"
 #include "mutex"
 #include "Log.h"
 #include "SystemConfig.h"
+
+#include "PCB301.h"
+#include "PCB302.h"
+#include "PCB303.h"
+#include "PCB304.h"
+#include "PCB315.h"
+#include "PCB326.h"
+#include "ArmMotor.h"
+#include "TiltMotor.h"
+#include "SlideMotor.h"
+#include "BodyMotor.h"
+#include "VerticalMotor.h"
+
 
 using namespace System;
 using namespace System::Net::Sockets;
@@ -26,11 +39,13 @@ static std::mutex send_mutex;
 /// </summary>
 /// <param name="ip">This is a String for the IP address</param>
 /// <param name="port">This is an integer value for thr server port</param>
-Simulator::Simulator(void)
+CanSimulator::CanSimulator(void)
 {
 	// Gets the Handler of the Form parent class, to be used for the message exchange
 	connection_status = false;
 	started = false;
+
+	canDataBuffer = gcnew cli::array<Byte>(8);
 
 	// Sets the Tcp/Ip data for the socket
 	IPAddress^ localAddress = IPAddress::Parse(SystemConfig::Configuration->getParam(SystemConfig::PARAM_SYM_MODE)[SystemConfig::SYM_MODE_IP]);
@@ -50,25 +65,14 @@ Simulator::Simulator(void)
 	serverSocket = gcnew Socket(localAddress->AddressFamily, sockType, sockProtocol);
 	serverSocket->Bind(localEndPoint);
 
-}
-
-/// <summary>
-/// This function starts the activities of the simulator
-/// </summary>
-/// <param name=""></param>
-void Simulator::startSimulator(void) {
-
-	//Already Started
-	if (started) return; 
-
 	// Start the reception thread
-	device->running_thread = gcnew Thread(gcnew ThreadStart(this, &Simulator::threadWork));
-	device->running_thread->Name = "Loop Simulator Server";
-	device->running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
-	device->running_thread->Start();
+	running_thread = gcnew Thread(gcnew ThreadStart(&CanSimulator::threadWork));
+	running_thread->Name = "Loop Simulator Server";
+	running_thread->IsBackground = true; // Important!!! This is necessary to allow the thread to exit when the program exits !!!
+	running_thread->Start();
 }
 
-void Simulator::threadWork(void) {
+void CanSimulator::threadWork(void) {
 	DWORD dwWaitResult;
 
 	while (true) {
@@ -79,6 +83,9 @@ void Simulator::threadWork(void) {
 
 		// Notifies the connection status
 		connection_event(true);
+
+		// Sends the system configuration to the simulator application
+		sendConfiguration();
 
 		while (true) {
 			try {
@@ -104,8 +111,43 @@ void Simulator::threadWork(void) {
 	}
 
 }
+void CanSimulator::sendConfiguration() {
+	cli::array<Byte>^ buffer = gcnew cli::array<Byte>((int)can_buf_struct::BUFLEN);
 
-void Simulator::handleBuffer(void) {
+	buffer[(Byte)can_buf_struct::STX] = CanSimulator::STX;
+	buffer[(Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
+	buffer[(Byte)can_buf_struct::CAN_IDL] = 0;
+	buffer[(Byte)can_buf_struct::CAN_IDH] = 0;
+	buffer[(Byte)can_buf_struct::DATALEN] = 8;
+	
+	// Board Simulation bit
+	buffer[(Byte)can_buf_struct::D0] = 0;
+	if (PCB301::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 1;
+	if (PCB302::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 2;
+	if (PCB303::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 4;
+	if (PCB304::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 8;
+	if (PCB315::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 0x10;
+	if (PCB326::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 0x20;
+
+	// Motor Simulation Bit
+	buffer[(Byte)can_buf_struct::D1] = 0;
+	if (VerticalMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 1;
+	if (BodyMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 2;
+	if (ArmMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 4;
+	if (TiltMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 8;
+	if (SlideMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 0x10;
+	
+	try {
+		device->clientSocket->Send(buffer);
+	}
+	catch (...) {
+		LogClass::logInFile("Simulator Server: failed sending the configuration word !\n");
+	}
+
+	return;
+}
+
+void CanSimulator::handleBuffer(void) {
 
 	
 	// Scroll for possible concatenated frames
@@ -114,14 +156,14 @@ void Simulator::handleBuffer(void) {
 		if (rx_rc - j < 4) continue;
 
 		// Start byte
-		if (rxBuffer[j + (int)can_buf_struct::STX] != (int)Simulator::STX)  continue;
+		if (rxBuffer[j + (int)can_buf_struct::STX] != (int)CanSimulator::STX)  continue;
 
 		// Lenght of frame
 		int len = rxBuffer[j + (int)can_buf_struct::LENGHT];
 		if (len > rx_rc - j) continue;
 
 		// End of frame
-		if (rxBuffer[j + (int)can_buf_struct::ETX] != (int)Simulator::ETX) continue;
+		if (rxBuffer[j + (int)can_buf_struct::ETX] != (int)CanSimulator::ETX) continue;
 
 		// can Data Len
 		datalen = (unsigned char)rxBuffer[j + (int)can_buf_struct::DATALEN];
@@ -130,6 +172,8 @@ void Simulator::handleBuffer(void) {
 		// Destination address
 		canId = (unsigned short)rxBuffer[j + (int)can_buf_struct::CAN_IDL] + 256 * (unsigned short)rxBuffer[j + (int)can_buf_struct::CAN_IDH];
 
+		// Destination buffer
+		for (int i = 0; i < datalen; i++) canDataBuffer[i] = rxBuffer[j + (int)can_buf_struct::D0 + i];
 
 		if ((canId >= 0x100) && (canId <= 0x17F)) {
 			canrx_device_event();
@@ -146,22 +190,28 @@ void Simulator::handleBuffer(void) {
 }
 
 
-bool Simulator::send(unsigned short canId, unsigned char* data, unsigned char len) {
-	// Lock the mutex to prevemt multi thread race access to the send function.
-	const std::lock_guard<std::mutex> lock(send_mutex);
+bool CanSimulator::send(unsigned short canId, unsigned char* data, unsigned char len) {
+	
 	if (!connection_status) return false;
 
 	if (len > 8) len = 8;
 
 	cli::array<Byte>^ buffer = gcnew cli::array<Byte>((int) can_buf_struct::BUFLEN);
-	buffer[(Byte)can_buf_struct::STX] = Simulator::STX;
+	buffer[(Byte)can_buf_struct::STX] = CanSimulator::STX;
 	buffer[(Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
 	buffer[(Byte)can_buf_struct::CAN_IDL] = (Byte) (canId & 0xff);
 	buffer[(Byte)can_buf_struct::CAN_IDH] = (Byte)((canId>>8) & 0xff);
+	buffer[(Byte)can_buf_struct::DATALEN] = len;
 	for (unsigned char i = 0; i < len; i++) buffer[(Byte)can_buf_struct::D0 + i] = data[i];	
-	buffer[(Byte)can_buf_struct::ETX] = Simulator::ETX;
+	buffer[(Byte)can_buf_struct::ETX] = CanSimulator::ETX;
 
-	device->clientSocket->Send(buffer);
+	try{
+		device->clientSocket->Send(buffer);
+	}
+	catch (...) {
+		return false;
+	}
+	
 	return true;
 	
 }

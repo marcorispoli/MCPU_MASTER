@@ -273,7 +273,7 @@ void PCB303::runningLoop(void) {
 
     // Updates the Status register
     if (updateStatusRegister()) {
-        //formatCollimationManagement(); // Format collimation management
+        formatCollimationManagement(); // Format collimation management
     }
 
     std::this_thread::sleep_for(std::chrono::microseconds(10000));
@@ -283,11 +283,7 @@ void PCB303::runningLoop(void) {
    
 }
 
-void PCB303::demoLoop(void) {
-    valid_collimation_format = true;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    return;
-}
+
 
 /// <summary>
 /// This function returns the Collimation format assigned to a Paddle detected in the System 
@@ -516,4 +512,10 @@ void PCB303::setTomoCollimationMode(void)
 /// <param name=""></param>
 void PCB303::resetFaults(void) {
     format_collimation_attempt = 0;
+}
+
+void PCB303::demoLoop(void) {
+    valid_collimation_format = true;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    return;
 }

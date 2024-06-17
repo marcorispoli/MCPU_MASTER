@@ -128,6 +128,7 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     unsigned char buffer[8];
     DWORD dwWaitResult;
     unsigned short canid;
+    static int count = 0;
 
     // No more transaction with a register access fault activated
     if (register_access_fault) return false;
@@ -150,15 +151,18 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     rxOk = false;
     can_communication_monitor.sent_messages++;
     long start = clock();
-    if (!CanDriver::multithread_send(canid, buffer, 8))   return false;
+    if (!CanDriver::multithread_send(canid, buffer, 8, simulator_mode))   return false;
     rx_pending = true;
 
+    count++;
+
     // Waits to be signalled: waits for 100ms
-    dwWaitResult = WaitForSingleObject(rxEvent, 2000);
+    dwWaitResult = WaitForSingleObject(rxEvent, 100);
     rx_pending = false;
 
     // Checks if the Event has been signalled or it is a timeout event.
     if ((dwWaitResult != WAIT_OBJECT_0) || (!rxOk)) {
+        count = 0;
         can_communication_monitor.unreceived_messages++;
         if (can_communication_monitor.unreceived_messages > 5) communication_error = true;
         return false;
@@ -182,34 +186,35 @@ void CanDeviceProtocol::mainWorker(void) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // Demo mode activation
-    if (simulator_mode) {
-        internal_status = status_options::DEVICE_SIMULATOR;
-        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
-        while (simulator_mode) {
-            demoLoop();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    }
-    
     // Add the callback handling the  reception
     CanDriver::canrx_device_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanDeviceProtocol::thread_can_rx_callback);
     internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
 
-    LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run mode");
+    // Demo mode activation
+    if (simulator_mode) {
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Simulated mode");
+    }
+    else {
+        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Normal mode");
+    }
+    
+   
     while (1) {
         
-        if (!CanDriver::isConnected()) internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
-
+        if (!CanDriver::isConnected(simulator_mode)) internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
+      
         switch (internal_status) {
         
         case status_options::WAITING_CAN_DRIVER_CONNECTION: // Waits for the CAN DRIVER connection
-            if (CanDriver::isConnected()) {
+            if (CanDriver::isConnected(simulator_mode)) {
                 internal_status = status_options::WAITING_REVISION;
                 LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Wait Revision");
             }else{
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            }            
+            }    
+            
+            // When not connected the demo Loop is used to set some standard device status 
+            if(simulator_mode) demoLoop();
             break;
         
 
@@ -396,7 +401,7 @@ bool CanDeviceProtocol::commandNoWaitCompletion(unsigned char code, unsigned cha
     // Protect the function with a mutex
     const std::lock_guard<std::mutex> lock(command_wait_mutex);
 
-    if (isSimulatorMode())  return simulCommandNoWaitCompletion(code, d0, d1, d2, d3, tmo);
+    if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandNoWaitCompletion(code, d0, d1, d2, d3, tmo);
 
     if (command_executing) return false;
     if (internal_status != status_options::DEVICE_RUNNING) return false;
@@ -421,7 +426,7 @@ CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitComplet
     // Verifies that the calling module is different from the class implementing the communication with the device
     if(src == (Object^) this) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_INVALID_DEVICE);
 
-    if (isSimulatorMode())  return simulCommandWaitCompletion(code, d0, d1, d2, d3, tmo, src);
+    if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandWaitCompletion(code, d0, d1, d2, d3, tmo, src);
 
 
     // Invalid Device Status 

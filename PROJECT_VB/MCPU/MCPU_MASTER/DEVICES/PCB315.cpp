@@ -278,7 +278,7 @@ void PCB315::runningLoop(void) {
 
     // Updates the Status register
     if (updateStatusRegister()) {
-        // manageFilterSelection(); // manages the filter selection on the device
+        manageFilterSelection(); // manages the filter selection on the device
     }
 
     
@@ -605,139 +605,16 @@ System::String^ PCB315::getTagFromFilter(filterMaterialCodes filter) {
 
 
 void PCB315::demoLoop(void) {
-    static int filter_demo_selection_time = 0;
-    static int filter_light_activation_timer = 0;
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    filter_fault = false;
-
+    
+    valid_filter_format = true;
+   
     stator_perc = 0;
     bulb_perc = 0;
     anode_perc = 0;
     tube_temp_alarm = false;
+    filter_fault = false;
 
-    // Sets the flag status related to the Power light activation
-    if (filter_light_activation_timer) {
-        filter_light_activation_timer--;
-        if (!filter_light_activation_timer) flags_status &=~ 0x1;
-        else flags_status |= 0x1;
-    }
-
-    // Verifies the correct calibration format
-    switch (filter_working_mode) {
-
-        // Auto Filter selection mode (AWS) 
-    case filterWorkingMode::FILTER_AUTO_MODE:
-
-        // No Filter activation in case of invalid filter code
-        if (auto_filter_selected == FilterSlotCodes::FILTER_INVALID) {
-            valid_filter_format = false;
-            return;
-
-        }
-
-        // If a command is executing  
-        if (filter_status == FilterSlotCodes::FILTER_SELECTION_PENDING) {
-            if (filter_demo_selection_time) {
-                filter_demo_selection_time--;
-                if (!filter_demo_selection_time) {
-                    filter_status = auto_filter_selected;
-                    valid_filter_format = true;
-                    return;
-                }
-            }
-            return;
-        }
-
-        // Start the simulation timer for filter selection
-        if (filter_status != auto_filter_selected)
-        {
-            filter_demo_selection_time = 10; // 1 second simulated selection time
-            valid_filter_format = false;
-            filter_status = FilterSlotCodes::FILTER_SELECTION_PENDING;
-            return;
-        }
-
-        valid_filter_format = true;
-        return;
-
-        // Manual Filter selection mode (test/calibration)  
-    case filterWorkingMode::FILTER_MANUAL_MODE:
-
-        // No Filter activation in case of invalid filter code
-        if (manual_filter_selected == FilterSlotCodes::FILTER_INVALID) {
-            valid_filter_format = false;
-            return;
-
-        }
-
-        // If a command is executing  
-        if (filter_status == FilterSlotCodes::FILTER_SELECTION_PENDING) {
-            if (filter_demo_selection_time) {
-                filter_demo_selection_time--;
-                if (!filter_demo_selection_time) {
-                    filter_status = manual_filter_selected;
-                    valid_filter_format = true;
-                    LogClass::logInFile("PCB315-SYM: manaul filter selected");
-                    return;
-                }
-            }
-            return;
-        }
-
-        // Start the simulation timer for filter selection
-        if (filter_status != manual_filter_selected)
-        {
-            LogClass::logInFile("PCB315-SYM: selection manual filter");
-            filter_demo_selection_time = 10; // 1 second simulated selection time
-            valid_filter_format = false;
-            filter_status = FilterSlotCodes::FILTER_SELECTION_PENDING;
-            return;
-        }
-
-        valid_filter_format = true;
-        return;
-
-    case filterWorkingMode::FILTER_MIRROR_MODE:
-
-        /// DA MODIFICARE----------------------------------------
-        // Executes a pending light activation request
-        if (request_light_activation) {
-            request_light_activation = false;   
-            filter_light_activation_timer = 100;
-            LogClass::logInFile("PCB315 Simulator: Light On");
-        }
-
-        /// ----------------------------------------         
-        if (filter_status == FilterSlotCodes::FILTER_SELECTION_PENDING) {
-            if (filter_demo_selection_time) {
-                filter_demo_selection_time--;
-                if (!filter_demo_selection_time) {
-                    filter_status = FilterSlotCodes::MIRROR_SELECTION;
-                    valid_filter_format = true;
-                    return;
-                }
-            }
-            return;
-        }
-
-        // Start the simulation timer for filter selection
-        if (filter_status != FilterSlotCodes::MIRROR_SELECTION)
-        {
-            filter_demo_selection_time = 10;    // 1 second simulated selection time
-            filter_light_activation_timer = 100;// 10 seconds for the light simulation
-            LogClass::logInFile("PCB315 Simulator: Light On");
-            request_light_activation = false;
-            valid_filter_format = false;
-            filter_status = FilterSlotCodes::FILTER_SELECTION_PENDING;
-            return;
-        }
-
-        valid_filter_format = true;
-        return;
-
-    }
-
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));    
     return;
 }
    

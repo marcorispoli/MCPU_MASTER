@@ -482,7 +482,7 @@ public:
 				percXX = (double)sent_xx * 100 / (double)sent_messages;
 				percMeanTime = meanTime * 1000 / (double)sent_messages;
 				percRepeated = (double)repeated_messages * 100 / (double)sent_messages;
-
+				percUnreceived = (double)unreceived_messages * 100 / (double)sent_messages;
 				
 
 				meanTime = 0;
@@ -494,6 +494,7 @@ public:
 				sent_30 = 0;
 				sent_xx = 0;
 				repeated_messages = 0;
+				unreceived_messages = 0;
 				sent_messages = 0;
 
 			};
@@ -513,6 +514,7 @@ public:
 			log_string += " [<25]:" + ((int)perc25).ToString();
 			log_string += " [<30]:" + ((int)perc30).ToString();
 			log_string += " [>30]:" + ((int)percXX).ToString();
+			log_string += " [UNRCV]:" + ((int)percUnreceived).ToString();
 			log_string += " [RPT]:" + ((int)percRepeated).ToString();
 			return log_string;
 		}
@@ -537,6 +539,7 @@ public:
 		double perc30;	//!< Percent of messages with less than 30ms of tx-rx time 
 		double percXX;  //!< Percent of messages exceeding 30ms of tx-rx time 
 		double percRepeated; //!< Percent of repeated messages
+		double percUnreceived; //!< Percent of unreceived messages
 
 		double meanTime;	//!< Total Rx-Tx Mean time 
 		double percMeanTime;//!< Percent of the Tx-Rx mean time

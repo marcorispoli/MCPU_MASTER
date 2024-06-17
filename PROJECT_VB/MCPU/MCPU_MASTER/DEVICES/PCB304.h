@@ -41,7 +41,7 @@ public:
 
 	PCB304() : CanDeviceProtocol(0x14, L"POTTER_DEVICE")
 	{
-		simulInit();
+		
 	}
 	static PCB304^ device = gcnew PCB304();
 
@@ -124,38 +124,6 @@ private:
 	static Register^ grid_data_register = gcnew Register();
 
 
-	// Simulation Section
-	enum class simul_rx_struct {
-		STX = 0,
-		LENGHT,
-		DEVICE_ID,
-
-		ENDFRAME,
-		BUFLEN
-	};
-
-	enum class simul_tx_struct {
-		STX = 0,
-		LENGHT,
-		DEVICE_ID,
-		DISPLAY_D0,
-		DISPLAY_D1,
-		DISPLAY_D2,
-		DISPLAY_D3,
-		GRID_D0,
-		GRID_D1,
-		GRID_D2,
-		GRID_D3,
-		ENDFRAME,
-		BUFLEN
-	};
-
-	void simulInit(void);
-	static void simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc);
-	void simulSend(void);
-	cli::array<System::Byte>^ from_simulator;
-	cli::array<System::Byte>^ to_simulator;
-	cli::array<System::Byte>^ to_simulator_previous;
 
 };
 

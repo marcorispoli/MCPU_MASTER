@@ -49,6 +49,11 @@ public:
 
 	#define PCB302_GET_PADDLE_CODE(reg)						(reg->d3)
 
+	#define PCB302_GET_RAW_PADDLE_POSITION_LOW(reg)			(reg->d0)
+	#define PCB302_GET_RAW_PADDLE_POSITION_HIGH(reg)		(reg->d1&0x0F)
+	#define PCB302_GET_RAW_PADDLE_FORCE_LOW(reg)			((reg->d1&0xF0) >> 4)
+	#define PCB302_GET_RAW_PADDLE_FORCE_HIGH(reg)			(reg->d2)
+
 	/// <summary>
 	///	 This is the Device DATA Register implementation 
 	/// </summary>
@@ -93,7 +98,7 @@ public:
 	PCB302() : CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE")
 	{
 		detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;
-		simulInit();
+		
 
 	}
 	static PCB302^ device = gcnew PCB302();
@@ -144,6 +149,11 @@ public:
 	inline static bool isPatientProtection(void) { return patient_protection_detected; }
 	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
 
+	static inline unsigned short getRawPosition(void) { return current_raw_paddle_position; }; 
+	static inline unsigned short getRawForce(void) { return current_raw_force; }; 
+	static inline unsigned short getPaddlePosition(void) { return current_paddle_position; };
+	static inline unsigned short getPaddleForce(void) { return current_force; };
+
 	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
 	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
 	static inline bool isCompressing(void) { return compression_executing; }
@@ -171,7 +181,11 @@ protected:
 private: 
 	static paddleCodes detected_paddle;				//!< This is the current detected paddle
 	static int thickness_correction;
-	static unsigned short current_paddle_position;  //!< Current paddle position 
+
+	static unsigned short current_raw_paddle_position = 0;  //!< Current raw paddle position 
+	static unsigned short current_raw_force = 0;		//!< Raw Force as received from the device
+
+	static unsigned short current_paddle_position = 0;  //!< Current paddle position 
 	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm (0 if the compression_on should be false)
 
 	static unsigned short compression_force = 0;	//!< Evaluated compression force ( 0 if the compression_on should be false)
@@ -195,41 +209,6 @@ private:
 	void evaluateEvents(void);
 
 
-	// Simulation Section
-	enum class simul_rx_struct {
-		STX = 0,
-		LENGHT,
-		DEVICE_ID,
-		PADDLE_CODE,
-		THICKNESS,
-		FORCE,
-		COMPRESSION_ON,
-		COMPRESSION_EXECUTING,
-		DOWNWARD_ACTIVATION,
-		PATIENT_PROTECTION_DETECTED,
-		PATIENT_PROTECTION_SHIFTED,
-		MAGNIFIER_DEVICE,
-		ENDFRAME,
-		BUFLEN
-	};
-
-	enum class simul_tx_struct {
-		STX = 0,
-		LENGHT,
-		DEVICE_ID,
-		
-		ENDFRAME,
-		BUFLEN
-	};
-
-	void simulInit(void);
-	static void simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc);
-	void simulSend(void);
-	cli::array<System::Byte>^ from_simulator;
-	cli::array<System::Byte>^ to_simulator;
-	cli::array<System::Byte>^ to_simulator_previous;
-	
-	protected: bool simulCommandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) override;
 };
 
 

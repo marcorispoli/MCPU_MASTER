@@ -284,7 +284,7 @@ bool CanOpenMotor::blocking_writeOD(unsigned short index, unsigned char sub, ODR
     // Activates the transmission
     long start = clock();
     can_communication_monitor.sent_messages++;
-    CanDriver::multithread_send(0x600 + device_id, buffer, 8);
+    CanDriver::multithread_send(0x600 + device_id, buffer, 8, simulator_mode);
     sdo_rx_pending = true;
 
     // Waits to be signalled: waits for 50ms
@@ -332,7 +332,7 @@ bool CanOpenMotor::blocking_readOD(unsigned short index, unsigned char sub, ODRe
     can_communication_monitor.sent_messages++;
         
     // Sends the message
-    CanDriver::multithread_send(0x600 + device_id, buffer, 8);        
+    CanDriver::multithread_send(0x600 + device_id, buffer, 8, simulator_mode);
     sdo_rx_pending = true;
 
     // Waits to be signalled: waits for 50ms
@@ -369,7 +369,7 @@ void CanOpenMotor::write_resetNode(void) {
     buffer[1] = device_id;
 
     // Activates the transmission
-    CanDriver::multithread_send(0, buffer, 2);
+    CanDriver::multithread_send(0, buffer, 2, simulator_mode);
 }
 
 
@@ -486,7 +486,7 @@ void CanOpenMotor::mainWorker(void) {
         if (current_command != MotorCommands::MOTOR_IDLE) setCommandCompletedCode(MotorCompletedCodes::ERROR_UNEXPECTED_STATUS);
 
         // Wait for the CAN DRIVER connection
-        while (!CanDriver::isConnected()) {
+        while (!CanDriver::isConnected(false)) {
             // Pause waiting for the connection
             internal_status = status_options::MOTOR_NOT_CONNECTED;
             std::this_thread::sleep_for(std::chrono::milliseconds(500));

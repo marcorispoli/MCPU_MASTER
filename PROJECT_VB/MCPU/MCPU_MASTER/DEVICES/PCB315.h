@@ -407,6 +407,7 @@ private:
 	protected: 	bool configurationLoop(void) override;//!< This is the Base class configurationLoop override function
 	protected: 	void resetLoop(void) override;//!< This is the Base class resetLoop override function
 	protected:  void demoLoop(void) override;
+	
 
 	// Tube Monitoring
 	private: static unsigned char stator_perc = 0;//!< This is the current stator temperature in percent of the maximum possible

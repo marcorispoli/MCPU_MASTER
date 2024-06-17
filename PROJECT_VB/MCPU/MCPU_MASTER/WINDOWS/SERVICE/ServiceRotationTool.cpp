@@ -485,7 +485,7 @@ System::Void ServiceRotationTool::rotationTool_slide_Click(System::Object^ sende
 	rotationToolSelectAngle2->Location = System::Drawing::Point(53, 152);
 
 	rotationToolSelectAngle3->Show(); // 90°
-	rotationToolSelectAngle3->Tag = "89";
+	rotationToolSelectAngle3->Tag = "90";
 	rotationToolSelectAngle3->Location = System::Drawing::Point(350, 336);
 
 	rotationToolSelectAngle4->Hide();

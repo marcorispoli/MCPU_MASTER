@@ -392,13 +392,14 @@ public: static ColliStandardSelections getColliFormatIndexFromParam(System::Stri
 	/// \ingroup PCB303_Internal
 	///@{
 	/// 
-	protected: 	void resetLoop(void) override;//!< This is the Base class resetLoop override function
-	protected: 	virtual void runningLoop(void) override;//!< This is the Base Class override function to handle the normal operation workflow 
-	protected: 	bool configurationLoop(void) override;//!< This is the Base Class override function to handle the device configuration
-				void demoLoop(void) override;
+	protected: 	
+		void resetLoop(void) override;//!< This is the Base class resetLoop override function
+		void runningLoop(void) override;//!< This is the Base Class override function to handle the normal operation workflow 
+		bool configurationLoop(void) override;//!< This is the Base Class override function to handle the device configuration
+		void demoLoop(void) override;
 
 	private:	bool updateStatusRegister(void); //! Read the status registers and handle the related bytes
-	private:	void formatCollimationManagement(void);//!< This is the Base Class override function to handle the device configuration
+	private:	void formatCollimationManagement(void);
 
 	///@}
 	

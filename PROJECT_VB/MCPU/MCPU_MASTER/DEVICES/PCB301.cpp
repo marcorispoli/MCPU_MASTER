@@ -1,6 +1,5 @@
 #include "PCB301.h"
 #include "ExposureModule.h"
-#include "Simulator.h"
 #include "Notify.h"
 #include "awsProtocol.h"
 #include "../gantry_global_status.h"
@@ -247,219 +246,41 @@ void PCB301::runningLoop(void) {
 
 
 
-
+/// <summary>
+/// This callback is called whenever the Symulator device should not be connected.
+/// </summary>
+/// <param name=""></param>
 void PCB301::demoLoop(void) {
+   
+    power_down_status = false;
+    emergency_status = false;
+    cabinet_safety_status = false;
+    motor_safety_switch = true;
+    motor_48V_ok = true;
+    compression_on_status = false;
+    burning_jumper_present = false;
+    soft_power_off_request = false;
+    battery_enabled_status = false;
+    batt1_low_alarm = false;
+    batt2_low_alarm = false;
+    door_status = door_options::CLOSED_DOOR;
+    button_up_stat = false;
+    button_down_stat = false;
+    button_arm_cw_stat = false;
+    button_arm_ccw_stat = false;
 
-    
-    std::this_thread::sleep_for(std::chrono::microseconds(100));
-    
+    pedal_up_stat = false;
+    pedal_down_stat = false;
+    button_body_cw = false;
+    button_body_ccw = false;
+    button_slide_up_stat = false;
+    button_slide_down_stat = false;
+    xray_push_button = false;
 
-    // Power Down Condition Monitor
-    if(from_simulator[(int) simul_rx_struct::POWERDOWN_STAT]) power_down_status = true;
-    else power_down_status = false;
-
-
-    // Emergency
-    if (from_simulator[(int)simul_rx_struct::EMERGENCY_STAT]) emergency_status = true;
-    else emergency_status = false;
+    voltage_batt1 = 12;
+    voltage_batt2 = 12;
 
 
-    // Cabinet safety
-    if (from_simulator[(int)simul_rx_struct::CABINET_STAT]) cabinet_safety_status = true;
-    else cabinet_safety_status = false;
-
-    // Door closed
-    if (from_simulator[(int)simul_rx_struct::DOOR_STAT]) door_status = door_options::CLOSED_DOOR;
-    else door_status = door_options::OPEN_DOOR;
-
-    // Compressor On
-    if (from_simulator[(int)simul_rx_struct::COMPRESSION_ON_STAT]) compression_on_status = true;
-    else compression_on_status = false;
-        
-    // handles the X-RAY push button    
-    if (from_simulator[(int)simul_rx_struct::XRAY_PUSH_BUTTON_STAT]) xray_push_button = true;
-    else xray_push_button = false;
-
-    // Motor 48V
-    if (from_simulator[(int)simul_rx_struct::V48_OK_STAT ])   motor_48V_ok  = true;
-    else motor_48V_ok = false;
-
-    // Motor safety swittch
-    if (from_simulator[(int)simul_rx_struct::V48SW_STAT])   motor_safety_switch = true;
-    else motor_safety_switch = false;
-
-    // Pedal Up/Down
-    if (from_simulator[(int)simul_rx_struct::PEDALBOARD_UP_STAT])   pedal_up_stat = true;
-    else pedal_up_stat = false;
-    if (from_simulator[(int)simul_rx_struct::PEDALBOARD_DOWN_STAT])   pedal_down_stat = true;
-    else pedal_down_stat = false;
-
-    // Burning Jumper
-    if (from_simulator[(int)simul_rx_struct::BURNING_JUMPER_STAT])   burning_jumper_present = true;
-    else burning_jumper_present = false;
-
-    // Soft Power Off
-    if (from_simulator[(int)simul_rx_struct::SOFT_POWEROFF_STAT])   soft_power_off_request = true;
-    else soft_power_off_request = false;
-
-    // Battery Enable
-    if (from_simulator[(int)simul_rx_struct::BATT_ENA_STAT])   battery_enabled_status = true;
-    else battery_enabled_status = false;
-
-    // BAttery Alarm
-    if (from_simulator[(int)simul_rx_struct::BATT1_LOW_STAT])   batt1_low_alarm = true;
-    else batt1_low_alarm = false;
-    if (from_simulator[(int)simul_rx_struct::BATT2_LOW_STAT])   batt2_low_alarm = true;
-    else batt2_low_alarm = false;
-
-    // Keypad 
-    if (from_simulator[(int)simul_rx_struct::KEYPAD_UP_STAT])   button_up_stat = true;
-    else button_up_stat = false;
-    if (from_simulator[(int)simul_rx_struct::KEYPAD_DOWN_STAT])   button_down_stat = true;
-    else button_down_stat = false;
-    if (from_simulator[(int)simul_rx_struct::KEYPAD_CW_STAT])   button_arm_cw_stat = true;
-    else button_arm_cw_stat = false;
-    if (from_simulator[(int)simul_rx_struct::KEYPAD_CCW_STAT])   button_arm_ccw_stat = true;
-    else button_arm_ccw_stat = false;
-
-    if (from_simulator[(int)simul_rx_struct::BODY_CW_STAT])   button_body_cw = true;
-    else button_body_cw = false;
-    if (from_simulator[(int)simul_rx_struct::BODY_CCW_STAT])   button_body_ccw = true;
-    else button_body_ccw = false;
-
-    if (from_simulator[(int)simul_rx_struct::SLIDE_UP_STAT])   button_slide_up_stat = true;
-    else button_slide_up_stat = false;
-    if (from_simulator[(int)simul_rx_struct::SLIDE_DOWN_STAT])   button_slide_down_stat = true;
-    else button_slide_down_stat = false;
-
-    
-    voltage_batt1 = from_simulator[(int)simul_rx_struct::VBATT1];
-    voltage_batt1 = from_simulator[(int)simul_rx_struct::VBATT2];
-
+    std::this_thread::sleep_for(std::chrono::microseconds(1000));
     evaluateEvents();
-
-    toggleKeepalive();
-
-    // Data Outputs
-
-    if (outputs_data_register->d0 & 0x1) to_simulator[(int)simul_tx_struct::PROGRAMMING_POWER_LOCK] = 1;
-    else to_simulator[(int)simul_tx_struct::PROGRAMMING_POWER_LOCK] = 0;
-
-    if (outputs_data_register->d0 & 0x2) to_simulator[(int)simul_tx_struct::MOTOR_POWER_ENA] = 1;
-    else to_simulator[(int)simul_tx_struct::MOTOR_POWER_ENA] = 0;
-
-    if (outputs_data_register->d0 & 0x4) to_simulator[(int)simul_tx_struct::MOTOR_SW_ENA] = 1;
-    else to_simulator[(int)simul_tx_struct::MOTOR_SW_ENA] = 0;
-
-    if (outputs_data_register->d0 & 0x8) to_simulator[(int)simul_tx_struct::COMPRESSOR_ENA] = 1;
-    else to_simulator[(int)simul_tx_struct::COMPRESSOR_ENA] = 0;
-
-    if (outputs_data_register->d0 & 0x10) to_simulator[(int)simul_tx_struct::CALIBRATION_ENA] = 1;
-    else to_simulator[(int)simul_tx_struct::CALIBRATION_ENA] = 0;
-
-    if (outputs_data_register->d0 & 0x20) to_simulator[(int)simul_tx_struct::XRAY_ENA] = 1;
-    else to_simulator[(int)simul_tx_struct::XRAY_ENA] = 0;
-
-
-    if (outputs_data_register->d1 & 0x01) to_simulator[(int)simul_tx_struct::BURNING_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::BURNING_STAT] = 0;
-
-    if (outputs_data_register->d1 & 0x02) to_simulator[(int)simul_tx_struct::BUZZER_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::BUZZER_STAT] = 0;
-
-    if (outputs_data_register->d1 & 0x04) to_simulator[(int)simul_tx_struct::MANUAL_BUZZER_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::MANUAL_BUZZER_STAT] = 0;
-
-    if (outputs_data_register->d1 & 0x08) to_simulator[(int)simul_tx_struct::XLED_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::XLED_STAT] = 0;
-
-    if (outputs_data_register->d1 & 0x10) to_simulator[(int)simul_tx_struct::XLAMP1_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::XLAMP1_STAT] = 0;
-
-    if (outputs_data_register->d1 & 0x20) to_simulator[(int)simul_tx_struct::XLAMP2_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::XLAMP2_STAT] = 0;
-
-    if (outputs_data_register->d1 & 0x40) to_simulator[(int)simul_tx_struct::ROTATION_LED] = 1;
-    else to_simulator[(int)simul_tx_struct::ROTATION_LED] = 0;
-
-    if (outputs_data_register->d3 & 0x40) to_simulator[(int)simul_tx_struct::POWER_OFF_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::POWER_OFF_STAT] = 0;
-
-    if (outputs_data_register->d3 & 0x80) to_simulator[(int)simul_tx_struct::KEEP_ALIVE_STAT] = 1;
-    else to_simulator[(int)simul_tx_struct::KEEP_ALIVE_STAT] = 0;
-
-
-    // Evaluates i fthe data has been changed to update the Simulator     
-    bool changed = false;
-    for (int i = 0; i < to_simulator->Length; i++) {
-        if (to_simulator[i] != to_simulator_previous[i]) {
-            changed = true;
-            to_simulator_previous[i] = to_simulator[i];
-        }
-    }
-
-    if (changed) simulSend();
-
-    // Evaluates the soft power-off bit
-    if (PCB301_GET_OUTPUTS_DATA_POWER_OFF(outputs_data_register)) {
-        LogClass::logInFile("PCB301 DEMO POWER OFF COMMAND");
-        Application::Exit();
-    }
-}
-
-void PCB301::simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc) {
-    if (rc != (int) simul_rx_struct::BUFLEN) return;
-    
-    for (int i = 0; i < rc; i++) device->from_simulator[i] = receiveBuffer[index + i];
-}
-
-void PCB301::simulSend(void) {
-
-    to_simulator[0] = 0x3;
-    to_simulator[1] = (int) simul_tx_struct::BUFLEN;
-    to_simulator[(int)simul_tx_struct::DEVICE_ID] = PCB301_DEVID;
-    to_simulator[(int)simul_tx_struct::ENDFRAME] = 0x2;
-
-    // Sends the buffer
-    Simulator::device->send(to_simulator);
-}
-
-void PCB301::simulInit(void) {
-
-    // Create the Simulator structure if shuld be  necessary
-    from_simulator = gcnew cli::array<System::Byte>( (int)PCB301::simul_rx_struct::BUFLEN);
-    to_simulator = gcnew cli::array<System::Byte>((int)PCB301::simul_tx_struct::BUFLEN);
-    to_simulator_previous = gcnew cli::array<System::Byte>((int)PCB301::simul_tx_struct::BUFLEN);
-
-
-    from_simulator[(int)simul_rx_struct::POWERDOWN_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::EMERGENCY_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::CABINET_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::DOOR_STAT] = 1;
-    from_simulator[(int)simul_rx_struct::COMPRESSION_ON_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::XRAY_PUSH_BUTTON_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::V48_OK_STAT] = 1;
-    from_simulator[(int)simul_rx_struct::V48SW_STAT] = 1;
-    from_simulator[(int)simul_rx_struct::PEDALBOARD_UP_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::PEDALBOARD_DOWN_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::BURNING_JUMPER_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::SOFT_POWEROFF_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::BATT_ENA_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::BATT1_LOW_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::BATT2_LOW_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::KEYPAD_UP_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::KEYPAD_DOWN_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::KEYPAD_CW_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::KEYPAD_CCW_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::BODY_CW_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::BODY_CCW_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::SLIDE_UP_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::SLIDE_DOWN_STAT] = 0;
-    from_simulator[(int)simul_rx_struct::VBATT1] = 12;
-    from_simulator[(int)simul_rx_struct::VBATT2] = 12;
-
-
-    // Connects the reception event
-    Simulator::device->pcb301_rx_event += gcnew Simulator::rxData_slot(&PCB301::simulRx);
-    
 }

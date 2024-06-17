@@ -1,7 +1,6 @@
 
 #include "PCB303.h"
 #include "PCB302.h"
-#include "Simulator.h"
 #include "CalibrationConfig.h"
 #include "../gantry_global_status.h"
 #include "Notify.h"
@@ -125,6 +124,12 @@ void PCB302::handlePaddleStatusRegister(void) {
 	current_paddle_position = PCB302_GET_PADDLE_POSITION_LOW(paddle_status_register) + 256 * PCB302_GET_PADDLE_POSITION_HIGH(paddle_status_register);
 	current_force = PCB302_GET_PADDLE_FORCE_LOW(paddle_status_register) + 16 * PCB302_GET_PADDLE_FORCE_HIGH(paddle_status_register);
 
+	Register^ raw_paddle_status_register = readStatusRegister((unsigned char)StatusRegisters::RAW_PADDLE_STATUS_REGISTER);
+	if (raw_paddle_status_register == nullptr) return;
+
+	current_raw_paddle_position = PCB302_GET_RAW_PADDLE_POSITION_LOW(raw_paddle_status_register) + 256 * PCB302_GET_RAW_PADDLE_POSITION_HIGH(raw_paddle_status_register);
+	current_raw_force = PCB302_GET_RAW_PADDLE_FORCE_LOW(raw_paddle_status_register) + 16 * PCB302_GET_RAW_PADDLE_FORCE_HIGH(raw_paddle_status_register);
+
 	// To be modified
 	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;
 }
@@ -234,102 +239,21 @@ void PCB302::runningLoop(void) {
 
 void PCB302::demoLoop(void) {
 	
-	std::this_thread::sleep_for(std::chrono::microseconds(100));
+	// To be done
+	magnifier_device_detected = false;
+	patient_protection_detected = true;
+	patient_protection_shifted = false;
 
-	// Detected Paddle
-	detected_paddle = (paddleCodes) from_simulator[(int)simul_rx_struct::PADDLE_CODE];
+	compression_on = false;
+	downward_activation_status = false;
+	compression_executing = compression_on && downward_activation_status;
 
-	// Thickness 
-	current_paddle_position = from_simulator[(int)simul_rx_struct::THICKNESS];
-	
-	// Force
-	current_force = from_simulator[(int)simul_rx_struct::FORCE];
-	
-	// Compression On 
-	compression_on = from_simulator[(int)simul_rx_struct::COMPRESSION_ON];
-	
-	// Compression Executing 
-	compression_executing = from_simulator[(int)simul_rx_struct::COMPRESSION_EXECUTING]; 
+	current_paddle_position = 0;
+	current_force = 0;
 
-	// Downward activation status
-	downward_activation_status = from_simulator[(int)simul_rx_struct::DOWNWARD_ACTIVATION];
 
-	// Patient Protection detected
-	patient_protection_detected = from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_DETECTED];
-	
-	// Patient protection shifted
-	patient_protection_shifted = from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_SHIFTED];
-
-	// Magnifier device
-	if (from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE]) {
-		magnifier_device_detected = from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE];
-		int magfactor = from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE];
-		if (magfactor == 15) magnifier_factor_string = "1.5";
-		else if (magfactor == 18) magnifier_factor_string = "1.8";
-		else magnifier_factor_string = "2.0";
-	}else  magnifier_factor_string = "1.0";
-	
-
+	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;
 	evaluateEvents();
-
+	std::this_thread::sleep_for(std::chrono::microseconds(1000));
 	return;
-}
-
-void PCB302::simulRx(cli::array<System::Byte>^ receiveBuffer, int index, int rc) {
-	if (rc != (int)simul_rx_struct::BUFLEN) return;
-
-	for (int i = 0; i < rc; i++) device->from_simulator[i] = receiveBuffer[index + i];
-}
-
-void PCB302::simulSend(void) {
-
-	to_simulator[0] = 0x3;
-	to_simulator[1] = (int)simul_tx_struct::BUFLEN;
-	to_simulator[(int)simul_tx_struct::DEVICE_ID] = PCB302_DEVID;
-	to_simulator[(int)simul_tx_struct::ENDFRAME] = 0x2;
-
-	// Sends the buffer
-	Simulator::device->send(to_simulator);
-}
-
-void PCB302::simulInit(void) {
-
-	// Create the Simulator structure if shuld be  necessary
-	from_simulator = gcnew cli::array<System::Byte>((int)PCB302::simul_rx_struct::BUFLEN);
-	to_simulator = gcnew cli::array<System::Byte>((int)PCB302::simul_tx_struct::BUFLEN);
-	to_simulator_previous = gcnew cli::array<System::Byte>((int)PCB302::simul_tx_struct::BUFLEN);
-
-	from_simulator[(int)simul_rx_struct::PADDLE_CODE] = (System::Byte) paddleCodes::PADDLE_NOT_DETECTED;
-	from_simulator[(int)simul_rx_struct::THICKNESS] = 0;
-	from_simulator[(int)simul_rx_struct::FORCE] = 0;
-	from_simulator[(int)simul_rx_struct::COMPRESSION_ON] = 0;
-	from_simulator[(int)simul_rx_struct::COMPRESSION_EXECUTING] = 0;
-	from_simulator[(int)simul_rx_struct::DOWNWARD_ACTIVATION] = 0;
-	from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_DETECTED] = false;
-	from_simulator[(int)simul_rx_struct::PATIENT_PROTECTION_SHIFTED] = false;
-	from_simulator[(int)simul_rx_struct::MAGNIFIER_DEVICE] = false;
-
-	// Connects the reception event
-	Simulator::device->pcb302_rx_event += gcnew Simulator::rxData_slot(&PCB302::simulRx);
-
-}
-
-bool PCB302::simulCommandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo) {
-	
-	cli::array<System::Byte>^ buffer = gcnew cli::array<System::Byte>(9);
-
-	buffer[0] = 0x4; // Command code
-	buffer[1] = 9; // len
-	buffer[2] = PCB302_DEVID;
-	buffer[3] = code;
-	buffer[4] = d0;
-	buffer[5] = d1;
-	buffer[6] = d2;
-	buffer[7] = d3;
-	buffer[8] = 0x2;
-
-	// Sends the buffer
-	Simulator::device->send(buffer);
-
-	return true;
 }

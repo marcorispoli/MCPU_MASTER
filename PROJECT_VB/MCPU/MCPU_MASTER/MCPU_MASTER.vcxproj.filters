@@ -209,10 +209,10 @@
     <ClInclude Include="WINDOWS\SERVICE\ServiceZeroSettingTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SIMULATOR\Simulator.h">
+    <ClInclude Include="DEBUGGER\Debugger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DEBUGGER\Debugger.h">
+    <ClInclude Include="VSCAN\CanSimulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -397,10 +397,10 @@
     <ClCompile Include="GENERATOR\ExposureModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SIMULATOR\Simulator.cpp">
+    <ClCompile Include="DEBUGGER\Debugger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DEBUGGER\Debugger.cpp">
+    <ClCompile Include="VSCAN\CanSimulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

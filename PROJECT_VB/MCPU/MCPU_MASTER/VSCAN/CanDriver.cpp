@@ -26,7 +26,9 @@ CanDriver::CanDriver() {
     warning = false;
     WarningString = "";
 
-    
+    // Connects the simulator events
+    CanSimulator::canrx_device_event += gcnew CanSimulator::rxData_slot(&CanDriver::canrx_simulator_device_event);
+    CanSimulator::canrx_canopen_sdo_event += gcnew CanSimulator::rxData_slot(&CanDriver::canrx_simulator_canopen_sdo_event);
    
 }
 
@@ -51,10 +53,12 @@ void CanDriver::threadWork(void) {
     driver_thread();
 }*/
 
-bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsigned char len) {
+bool CanDriver::multithread_send(unsigned short canId, unsigned char* data, unsigned char len, bool simul) {
     
     // Lock the mutex to prevemt multi thread race access to the send function.
     const std::lock_guard<std::mutex> lock(send_mutex);
+    if (simul)   return CanSimulator::send(canId, data, len);
+   
     if (!can_connected) return false;
 
     VSCAN_MSG msg;
@@ -290,4 +294,19 @@ void CanDriver::threadWork(void) {
     }
 
 }
+
+void CanDriver::canrx_simulator_device_event(void) {
+    unsigned char rxbuffer[8];
+
+    for (int i = 0; i < (int)CanSimulator::datalen; i++) rxbuffer[i] = CanSimulator::canDataBuffer[i];
+    canrx_device_event((unsigned short) CanSimulator::canId, rxbuffer, (unsigned char) CanSimulator::datalen);
+};
+
+void CanDriver::canrx_simulator_canopen_sdo_event(void) {
+    unsigned char rxbuffer[8];
+
+    for (int i = 0; i < (int)CanSimulator::datalen; i++) rxbuffer[i] = CanSimulator::canDataBuffer[i];
+    canrx_canopen_sdo_event((unsigned short)CanSimulator::canId, rxbuffer, (unsigned char)CanSimulator::datalen);
+};
+
 

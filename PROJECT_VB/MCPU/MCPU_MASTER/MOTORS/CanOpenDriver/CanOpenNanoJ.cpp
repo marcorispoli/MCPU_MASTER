@@ -28,7 +28,7 @@ bool CanOpenMotor::initNanojDataRegister(void) {
     rxSdoRegister->getWriteBuffer(buffer);
 
     // Activates the transmission
-    CanDriver::multithread_send(0x600 + device_id, buffer, 8);
+    CanDriver::multithread_send(0x600 + device_id, buffer, 8, simulator_mode);
     sdo_rx_pending = true;
 
     // Waits to be signalled: waits for 50ms
@@ -85,7 +85,7 @@ bool CanOpenMotor::nanojWrite1024Block(int vectorIndex, int block_size) {
         rxNanojAckValid = false;
 
         // Activates the transmission
-        CanDriver::multithread_send(0x600 + device_id, buffer, 8);
+        CanDriver::multithread_send(0x600 + device_id, buffer, 8, simulator_mode);
         nanoj_rx_pending = true;
 
         // Waits to be signalled: waits for 50ms

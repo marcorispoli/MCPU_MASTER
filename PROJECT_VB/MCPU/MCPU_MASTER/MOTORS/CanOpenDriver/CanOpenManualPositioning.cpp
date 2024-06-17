@@ -320,6 +320,7 @@ void CanOpenMotor::manageManualPositioning(void) {
         }
     }
     else updateCurrentPosition();
+    previous_uposition = encoder_uposition;
 
     // Test if the actual position is already in target position
     if (isTarget()) {

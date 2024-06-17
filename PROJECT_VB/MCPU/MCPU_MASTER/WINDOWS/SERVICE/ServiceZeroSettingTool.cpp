@@ -497,6 +497,8 @@ System::Void ServiceZeroSettingTool::zeroSettingBody_Click(System::Object^ sende
 	
 	max_target_angle = BodyMotor::device->getMaxPosition() * 0.1;
 	min_target_angle = BodyMotor::device->getMinPosition() * 0.1;
+	runButton->Enabled = true;
+
 	executeIcon->BackgroundImage = BODY_ICON_IMAGE;
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_BODY_MANUAL_ROTATION);
 	BodyMotor::device->setServiceMode(true);	
@@ -524,6 +526,7 @@ System::Void ServiceZeroSettingTool::zeroSettingVertical_Click(System::Object^ s
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
 	max_target_angle = VerticalMotor::device->getMaxPosition() * 1;
 	min_target_angle = VerticalMotor::device->getMinPosition() * 1;
+	runButton->Enabled = true;
 
 	current_panel = zero_panels::ZERO_VERTICAL_PANEL;
 	executeIcon->BackgroundImage = VERTICAL_ICON_IMAGE;
@@ -553,7 +556,7 @@ System::Void ServiceZeroSettingTool::zeroSettingArm_Click(System::Object^ sender
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
 	max_target_angle = ArmMotor::device->getMaxPosition() * 0.01;
 	min_target_angle = ArmMotor::device->getMinPosition() * 0.01;
-
+	runButton->Enabled = false;
 	current_panel = zero_panels::ZERO_ARM_PANEL;
 	executeIcon->BackgroundImage = ARM_ICON_IMAGE;
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_ARM_MANUAL_ROTATION);
@@ -582,7 +585,7 @@ System::Void ServiceZeroSettingTool::zeroSettingTilt_Click(System::Object^ sende
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
 	max_target_angle = TiltMotor::device->getMaxPosition() * 0.01;
 	min_target_angle = TiltMotor::device->getMinPosition() * 0.01;
-
+	runButton->Enabled = true;
 	current_panel = zero_panels::ZERO_TILT_PANEL;
 	executeIcon->BackgroundImage = TILT_ICON_IMAGE;
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_TILT_MANUAL_ROTATION);
@@ -611,6 +614,7 @@ System::Void ServiceZeroSettingTool::zeroSettingSlide_Click(System::Object^ send
 	if (current_zero_command != zero_commands::NO_COMMAND) return;
 	max_target_angle = SlideMotor::device->getMaxPosition() * 0.01;
 	min_target_angle = SlideMotor::device->getMinPosition() * 0.01;
+	runButton->Enabled = false;
 
 	current_panel = zero_panels::ZERO_SLIDE_PANEL;
 	executeIcon->BackgroundImage = SLIDE_ICON_IMAGE;

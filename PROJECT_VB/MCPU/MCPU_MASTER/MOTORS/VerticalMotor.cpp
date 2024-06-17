@@ -9,15 +9,15 @@
 #define ROT_PER_MM ((double) 1/ (double) 0.714 ) //!< Defines the position user units in mm
 
 #define LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI1) //!< Sets the limit photocell switch input
-#define UP_LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI1) //!< Sets the limit photocell switch input
-#define DOWN_LIMIT_INPUT_MASK(x) (x & PD4_MOTOR_DI4) //!< Sets the limit photocell switch input
-#define ZERO_INPUT_MASK(x) (x & PD4_MOTOR_DI3) //!< Sets the Zero photocell switch input
+#define UP_LIMIT_INPUT_MASK(x) !(x & PD4_MOTOR_DI1) //!< Sets the limit photocell switch input
+#define DOWN_LIMIT_INPUT_MASK(x) !(x & PD4_MOTOR_DI4) //!< Sets the limit photocell switch input
+#define ZERO_INPUT_MASK(x) !(x & PD4_MOTOR_DI3) //!< Sets the Zero photocell switch input
 
-#define MAX_POSITION 764    //!< Defines the Maximum software position respect the zero setting point
-#define MIN_POSITION 100   //!< Defines the Minimum software position respect the zero setting point
+#define MAX_POSITION 634    //!< Defines the Maximum software position respect the zero setting point
+#define MIN_POSITION -30   //!< Defines the Minimum software position respect the zero setting point
 
-#define HOMING_ON_METHOD 22 //!< Zero setting approaching method starting with the Zero photocell ON
-#define HOMING_OFF_METHOD 21//!< Zero setting approaching method starting with the Zero photocell OFF
+#define HOMING_ON_METHOD 20 //!< Zero setting approaching method starting with the Zero photocell ON
+#define HOMING_OFF_METHOD 19//!< Zero setting approaching method starting with the Zero photocell OFF
 
 /// <summary>
 /// This function test high and low limit switches.
@@ -29,16 +29,22 @@
 /// <param name=""></param>
 /// <returns></returns>
 void VerticalMotor::testLimitSwitch(void) {
-    return;
+    
 
     if (!blocking_readOD(OD_60FD_00)) return ; // reads the Motor GPIO inputs
 
-    if (UP_LIMIT_INPUT_MASK(getRxReg()->data)) high_photocell = true;
-    else high_photocell = false;
+    // Not used for prototype
+    high_photocell = false;
+//    if (UP_LIMIT_INPUT_MASK(getRxReg()->data)) high_photocell = true;
+//    else high_photocell = false;
 
     if (DOWN_LIMIT_INPUT_MASK(getRxReg()->data)) low_photocell = true;
     else low_photocell = false;
  
+
+    if (ZERO_INPUT_MASK(getRxReg()->data)) zero_photocell = true;
+    else zero_photocell = false;
+
     return;
 }
 

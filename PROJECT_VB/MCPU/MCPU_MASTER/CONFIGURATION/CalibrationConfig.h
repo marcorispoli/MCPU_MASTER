@@ -435,7 +435,7 @@ public:
     literal int     PARAM_POSITION_CALIBRATION_GAIN = 1;
     literal int     PARAM_THICKNESS_CORRECTION = 2;
 
-    literal System::String^ PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT = "2932"; 
+    literal System::String^ PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT = "2850"; 
     literal System::String^ PARAM_POSITION_CALIBRATION_GAIN_DEFAULT = "1703";
     literal System::String^ PARAM_THICKNESS_CORRECTION_DEFAULT = "-120";
     

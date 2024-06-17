@@ -5,6 +5,19 @@
 #include "Log.h"
 #include "SystemConfig.h"
 
+#include "PCB301.h"
+#include "PCB302.h"
+#include "PCB303.h"
+#include "PCB304.h"
+#include "PCB315.h"
+#include "PCB326.h"
+#include "ArmMotor.h"
+#include "TiltMotor.h"
+#include "SlideMotor.h"
+#include "BodyMotor.h"
+#include "VerticalMotor.h"
+
+
 using namespace System;
 using namespace System::Net::Sockets;
 using namespace System::Net;
@@ -71,6 +84,9 @@ void CanSimulator::threadWork(void) {
 		// Notifies the connection status
 		connection_event(true);
 
+		// Sends the system configuration to the simulator application
+		sendConfiguration();
+
 		while (true) {
 			try {
 				rx_rc = clientSocket->Receive(rxBuffer);
@@ -94,6 +110,41 @@ void CanSimulator::threadWork(void) {
 		connection_event(false);
 	}
 
+}
+void CanSimulator::sendConfiguration() {
+	cli::array<Byte>^ buffer = gcnew cli::array<Byte>((int)can_buf_struct::BUFLEN);
+
+	buffer[(Byte)can_buf_struct::STX] = CanSimulator::STX;
+	buffer[(Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
+	buffer[(Byte)can_buf_struct::CAN_IDL] = 0;
+	buffer[(Byte)can_buf_struct::CAN_IDH] = 0;
+	buffer[(Byte)can_buf_struct::DATALEN] = 8;
+	
+	// Board Simulation bit
+	buffer[(Byte)can_buf_struct::D0] = 0;
+	if (PCB301::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 1;
+	if (PCB302::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 2;
+	if (PCB303::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 4;
+	if (PCB304::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 8;
+	if (PCB315::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 0x10;
+	if (PCB326::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 0x20;
+
+	// Motor Simulation Bit
+	buffer[(Byte)can_buf_struct::D1] = 0;
+	if (VerticalMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 1;
+	if (BodyMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 2;
+	if (ArmMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 4;
+	if (TiltMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 8;
+	if (SlideMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 0x10;
+	
+	try {
+		device->clientSocket->Send(buffer);
+	}
+	catch (...) {
+		LogClass::logInFile("Simulator Server: failed sending the configuration word !\n");
+	}
+
+	return;
 }
 
 void CanSimulator::handleBuffer(void) {

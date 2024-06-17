@@ -2,7 +2,8 @@
 
 <10%EXEC_OpenStudy "Studio per Demo ECR"%>
 <10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
-<10%EXEC_ArmPosition LCC 0 -10 10%>
+<10%EXEC_ArmPosition RMLO 0 -10 10%>
+<10%EXEC_ArmPosition RMLO 45 -10 10%>
 
 <10%SET_ExposureMode MAN_2D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_ENA ARM_DIS%>
 

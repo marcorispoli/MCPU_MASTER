@@ -154,5 +154,13 @@ void DebuggerCLI::rxHandler(void){
 		return;
 	}
 
+	if (sFrame->Contains("COMPRESSOR")) {
+		result_string += "PCB302> RAW POS:" + PCB302::device->getRawPosition().ToString() + "\n\r";
+		result_string += "PCB302> RAW FORCE:" + PCB302::device->getRawForce().ToString() + "\n\r";
+		result_string += "PCB302> PADDLE POS:" + PCB302::device->getPaddlePosition().ToString() + "\n\r";
+		result_string += "PCB302> PADDLE FORCE:" + PCB302::device->getPaddleForce().ToString() + "\n\r";
+		send(System::Text::Encoding::Unicode->GetBytes(result_string));
+	}
+
 }
 

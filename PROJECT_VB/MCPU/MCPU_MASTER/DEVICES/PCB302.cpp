@@ -124,6 +124,12 @@ void PCB302::handlePaddleStatusRegister(void) {
 	current_paddle_position = PCB302_GET_PADDLE_POSITION_LOW(paddle_status_register) + 256 * PCB302_GET_PADDLE_POSITION_HIGH(paddle_status_register);
 	current_force = PCB302_GET_PADDLE_FORCE_LOW(paddle_status_register) + 16 * PCB302_GET_PADDLE_FORCE_HIGH(paddle_status_register);
 
+	Register^ raw_paddle_status_register = readStatusRegister((unsigned char)StatusRegisters::RAW_PADDLE_STATUS_REGISTER);
+	if (raw_paddle_status_register == nullptr) return;
+
+	current_raw_paddle_position = PCB302_GET_RAW_PADDLE_POSITION_LOW(raw_paddle_status_register) + 256 * PCB302_GET_RAW_PADDLE_POSITION_HIGH(raw_paddle_status_register);
+	current_raw_force = PCB302_GET_RAW_PADDLE_FORCE_LOW(raw_paddle_status_register) + 16 * PCB302_GET_RAW_PADDLE_FORCE_HIGH(raw_paddle_status_register);
+
 	// To be modified
 	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;
 }

@@ -69,7 +69,7 @@ private:
 	static int rx_rc;//!< This is the number of the received bytes
 	static cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer
 	static void handleBuffer(void);
-
+	static void sendConfiguration(void);
 	
 };
 

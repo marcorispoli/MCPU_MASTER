@@ -9,7 +9,7 @@
 // User Units are in 0.01°
 #define GEAR_RATIO ((double) 1 / (double) 29.1) // 1 turn == 0.291° 
 
-#define MAX_ROTATION_ANGLE 8900
+#define MAX_ROTATION_ANGLE 9000
 #define MIN_ROTATION_ANGLE 0
 #define HOMING_ON_METHOD 19
 #define HOMING_OFF_METHOD 20

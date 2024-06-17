@@ -49,6 +49,11 @@ public:
 
 	#define PCB302_GET_PADDLE_CODE(reg)						(reg->d3)
 
+	#define PCB302_GET_RAW_PADDLE_POSITION_LOW(reg)			(reg->d0)
+	#define PCB302_GET_RAW_PADDLE_POSITION_HIGH(reg)		(reg->d1&0x0F)
+	#define PCB302_GET_RAW_PADDLE_FORCE_LOW(reg)			((reg->d1&0xF0) >> 4)
+	#define PCB302_GET_RAW_PADDLE_FORCE_HIGH(reg)			(reg->d2)
+
 	/// <summary>
 	///	 This is the Device DATA Register implementation 
 	/// </summary>
@@ -144,6 +149,11 @@ public:
 	inline static bool isPatientProtection(void) { return patient_protection_detected; }
 	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
 
+	static inline unsigned short getRawPosition(void) { return current_raw_paddle_position; }; 
+	static inline unsigned short getRawForce(void) { return current_raw_force; }; 
+	static inline unsigned short getPaddlePosition(void) { return current_paddle_position; };
+	static inline unsigned short getPaddleForce(void) { return current_force; };
+
 	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
 	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
 	static inline bool isCompressing(void) { return compression_executing; }
@@ -171,7 +181,11 @@ protected:
 private: 
 	static paddleCodes detected_paddle;				//!< This is the current detected paddle
 	static int thickness_correction;
-	static unsigned short current_paddle_position;  //!< Current paddle position 
+
+	static unsigned short current_raw_paddle_position = 0;  //!< Current raw paddle position 
+	static unsigned short current_raw_force = 0;		//!< Raw Force as received from the device
+
+	static unsigned short current_paddle_position = 0;  //!< Current paddle position 
 	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm (0 if the compression_on should be false)
 
 	static unsigned short compression_force = 0;	//!< Evaluated compression force ( 0 if the compression_on should be false)

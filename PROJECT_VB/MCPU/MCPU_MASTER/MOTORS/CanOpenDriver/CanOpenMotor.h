@@ -22,7 +22,7 @@ namespace CANOPEN {
 	#define VMM_DATA_OD OD_1F50_02
 	#define VMM_STATUS_OD OD_1F57_02
 	#define DRIVER_POLLING_MS 100
-	#define SEND_TMO          1000 // ms waiting the reception
+	#define SEND_TMO          100 // 1000 ms waiting the reception
 
 
 	/// <summary>
@@ -927,6 +927,20 @@ protected:
 		/// <returns> the user position </returns>
 		int convert_Encoder_To_User(int x);
 
+		/// <summary>
+		/// This function translate internal encoder position to the unit position value
+		/// </summary>
+		/// 
+		/// This function makes use of the rotation/Unit factor 
+		/// the subclass passes to the module constructor in order to 
+		/// define what will be the user position unit.
+		///
+		/// The value can be positive or negative based on the current direction 
+		/// selected in the motor constructor.
+		///   
+		/// <param name="x">the encoder internal position</param>
+		/// <returns> the user position </returns>
+		int convert_Absolute_Encoder_To_User(int x);
 
 		/// <summary>
 		/// This function translate the user position to the encoder position 
@@ -936,9 +950,27 @@ protected:
 		/// the subclass passes to the module constructor in order to 
 		/// define what will be the user position unit.
 		/// 
+		/// The value can be positive or negative based on the current direction 
+		/// selected in the motor constructor.
+		/// 
 		/// <param name="x">the user position</param>
 		/// <returns> the encoder position </returns>
 		int convert_User_To_Encoder(int x);
+		
+		// <summary>
+		/// This function translate the user position to the encoder position
+		/// without the direction correction.
+		///  
+		/// </summary>
+		/// 
+		/// This function makes use of the rotation/Unit factor 
+		/// the subclass passes to the module constructor in order to 
+		/// define what will be the user position unit.
+		/// 
+		/// <param name="x">the user position</param>
+		/// <returns> the encoder position </returns>
+		int convert_Absolute_User_To_Encoder(int x);
+		
 
 		/// <summary>
 		/// This function is used to transform the user defined speed or acceleration 
@@ -954,6 +986,8 @@ protected:
 		bool blocking_readOD(unsigned short index, unsigned char sub, ODRegister::SDODataDimension dim);
 		bool writeControlWord(unsigned int mask, unsigned int val);
 		bool readControlWord(unsigned int* ctrlw);
+		bool readStatusWord(unsigned int* stw);
+
 		bool startRotation(void);
 		bool startNanoj(void);
 		bool stopNanoj(void);
@@ -1021,8 +1055,8 @@ private:
 		bool service_mode;
 
 		HANDLE rxSDOEvent;			//!< Event object signaled by the SDO receiving callback
-		bool sdo_rx_pending;		//!< A SDO reception fdata is pending 
-		bool nanoj_rx_pending;		//!< A SDO reception fdata is pending 
+		volatile bool sdo_rx_pending;		//!< A SDO reception fdata is pending 
+		volatile bool nanoj_rx_pending;		//!< A SDO reception fdata is pending 
 		ODRegister^ rxSdoRegister;	//!< SDO receiving data
 		unsigned char rxNanojAck;	//!< Nanoj ack byte
 		bool rxNanojAckValid;		//!< Nano-j Ack vaild
@@ -1112,6 +1146,7 @@ private:
 		void manageManualHoming(int zero_position);
 		void manageExternalHoming(int zero_position);//!< This function gets the external zero position sensor	   
 
+		bool CiA402_activateOperationEnable(void);
 
 		MotorCommands request_command; //!< Application request command code
 		bool abort_request; //!< This flag active causes an immediate command abort

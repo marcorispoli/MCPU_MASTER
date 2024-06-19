@@ -42,6 +42,11 @@ bool CanOpenMotor::activateManualHoming(int current_uposition) {
 
 bool CanOpenMotor::activateAutomaticHoming(int method_on, int method_off, int speed, int acc) {
     
+    // In simulation mode only manual mode is possible
+    if (simulator_mode) {
+        return activateManualHoming(0);
+    }
+
     // Command not valid for the external position mode
     if (external_position_mode) {
         command_completed_code = MotorCompletedCodes::ERROR_INVALID_COMMAND;
@@ -85,7 +90,6 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     // Sets the Speed activation
     error_condition = false;
 
-   
     // Read the inputs before to proceed
     bool current_homing_input = false;
     if (blocking_readOD(OD_60FD_00)) {
@@ -120,27 +124,13 @@ void CanOpenMotor::manageAutomaticHoming(void) {
     }
 
 
-    // Tries to activate the Operation Enabled 
-    error_condition = true;
-    for (int i = 0; i < 5; i++) {
-
-        if (!writeControlWord(OD_6040_00_ENABLEOP_MASK, OD_6040_00_ENABLEOP_VAL)) continue;
-
-        // Read the status word
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        if (!blocking_readOD(OD_6041_00)) continue;
-        if (getCiAStatus(rxSdoRegister->data) == _CiA402Status::CiA402_OperationEnabled) {
-            error_condition = false;
-            break;
-        }
-
-    }
-
-    if (error_condition) {
+    // Tries to activate the Operation Enabled      
+    if (!CiA402_activateOperationEnable()) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO HOMING OPERATION ENABLE SETTING");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
+    
 
     // Allows the application to prepare for the motor activation
     MotorCompletedCodes preparation_error = preparationCallback(MotorCommands::MOTOR_AUTO_HOMING, encoder_uposition, 0);
@@ -421,7 +411,8 @@ bool CanOpenMotor::setEncoderCommand(int initial_eposition) {
         return false;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    if(simulator_mode)  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    else  std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     // Clear the start bit (BIT4) in the control word register
     if (!writeControlWord(0x10, 0)) {

@@ -116,8 +116,9 @@ void CanSimulator::sendConfiguration() {
 
 	buffer[(Byte)can_buf_struct::STX] = CanSimulator::STX;
 	buffer[(Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
-	buffer[(Byte)can_buf_struct::CAN_IDL] = 0;
-	buffer[(Byte)can_buf_struct::CAN_IDH] = 0;
+	buffer[(Byte)can_buf_struct::CAN_IDL] = 0xFF;
+	buffer[(Byte)can_buf_struct::CAN_IDH] = 0xFF;
+	buffer[(Byte)can_buf_struct::ETX] = CanSimulator::ETX;
 	buffer[(Byte)can_buf_struct::DATALEN] = 8;
 	
 	// Board Simulation bit

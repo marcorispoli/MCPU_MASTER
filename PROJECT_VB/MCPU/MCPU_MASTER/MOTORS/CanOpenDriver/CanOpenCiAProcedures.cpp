@@ -337,3 +337,44 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
     return;
 }
 
+/// <summary>
+/// This function calls the motor to activate the Operation Enabled status
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+bool CanOpenMotor::CiA402_activateOperationEnable(void) {
+
+    int i, repeat = 5, attempt = 2;
+
+    while (true) {
+        // Writes the control Word
+        for (i = repeat; i > 0; i--) { 
+            if (writeControlWord(OD_6040_00_ENABLEOP_MASK, OD_6040_00_ENABLEOP_VAL)) break; 
+            if (simulator_mode)  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+        if (!i) return false;
+
+        // Waits the driver execution
+        if (simulator_mode)  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        else  std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+        // Read the status
+        for (i = repeat; i > 0; i--) {
+            if (blocking_readOD(OD_6041_00)) break; 
+            if (simulator_mode)  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+        if (!i) return false;
+
+        // Test if the Operating status is changed
+        if (getCiAStatus(rxSdoRegister->data) == _CiA402Status::CiA402_OperationEnabled) return true;
+
+        attempt--;
+        if (!attempt) return false;
+
+        // Waits the driver execution and repeat ones more
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+
+    return false;
+
+}

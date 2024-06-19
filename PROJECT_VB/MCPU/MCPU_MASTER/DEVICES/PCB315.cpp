@@ -263,6 +263,9 @@ bool PCB315::updateStatusRegister(void) {
 /// 
 /// <param name=""></param>
 void PCB315::runningLoop(void) {
+    demoLoop();
+    return;
+
     static bool commerr = false;
 
     // Test the communication status
@@ -317,7 +320,8 @@ void PCB315::resetLoop(void) {
 /// <param name=""></param>
 /// <returns></returns>
 bool PCB315::configurationLoop(void) {
-    
+    if (isSimulatorMode()) return true;
+
     // 0.1mm position of the filters and mirror in the filter slots
     unsigned short calibrated_filter_1 = System::Convert::ToInt16(FilterConfig::Configuration->getParam(FilterConfig::PARAM_FILTER_CALIBRATION)[FilterConfig::PARAM_FILTER_CALIBRATION_FILTER1]);
     unsigned short calibrated_filter_2 = System::Convert::ToInt16(FilterConfig::Configuration->getParam(FilterConfig::PARAM_FILTER_CALIBRATION)[FilterConfig::PARAM_FILTER_CALIBRATION_FILTER2]);

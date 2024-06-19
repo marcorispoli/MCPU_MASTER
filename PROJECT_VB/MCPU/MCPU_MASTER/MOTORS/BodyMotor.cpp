@@ -112,42 +112,44 @@ unsigned short BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
     while (!blocking_writeOD(OD_3221_00, 0));     // 0 , Voltage, 1, Current
 
 
-    // Writes 0s of both outputs    
-    if (!blocking_writeOD(OD_60FE_01, 0)) return 0;
+    if (!simulator_mode) {
 
-    bool brake_activated = true;
-    for (int i = 0; i < 10; i++) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        if (!blocking_readOD(OD_60FD_00)) continue; // Reads the Inputs
+        // Writes 0s of both outputs    
+        if (!blocking_writeOD(OD_60FE_01, 0)) return 0;
 
-        if (!BRAKE_INPUT_MASK(getRxReg()->data)) {
-            brake_activated = false;
-            break;
+        bool brake_activated = true;
+        for (int i = 0; i < 10; i++) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if (!blocking_readOD(OD_60FD_00)) continue; // Reads the Inputs
+
+            if (!BRAKE_INPUT_MASK(getRxReg()->data)) {
+                brake_activated = false;
+                break;
+            }
+        }
+
+        if (brake_activated) {
+            brake_alarm = true;
+            LogClass::logInFile("BodyMotor: Failed test output off, off");
+            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
+
+            // Clear the OUTPUTS
+            blocking_writeOD(OD_60FE_01, 0);
+            return BODY_OD_CODE;
+        }
+
+        if (!activateBrake()) {
+            LogClass::logInFile("BodyMotor: Failed test output on, on");
+            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
+            return BODY_OD_CODE;
+        }
+
+        if (!deactivateBrake()) {
+            LogClass::logInFile("BodyMotor: Failed test output off, on");
+            Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
         }
     }
 
-    if (brake_activated) {
-        brake_alarm = true;
-        LogClass::logInFile("BodyMotor: Failed test output off, off");
-        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
-        
-        // Clear the OUTPUTS
-        blocking_writeOD(OD_60FE_01, 0);
-        return BODY_OD_CODE;
-    }
-
-    if (!activateBrake()) {
-        LogClass::logInFile("BodyMotor: Failed test output on, on");
-        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);
-        return BODY_OD_CODE;
-    }
-
-    if (!deactivateBrake()) {
-        LogClass::logInFile("BodyMotor: Failed test output off, on");
-        Notify::activate(Notify::messages::ERROR_BODY_MOTOR_BRAKE_FAULT);        
-    }
-
-   
 
     return BODY_OD_CODE;
 }
@@ -155,6 +157,7 @@ unsigned short BodyMotor::initializeSpecificObjectDictionaryCallback(void) {
 
 
 bool BodyMotor::activateBrake(void) {
+    if (simulator_mode) return true;
 
     // Sets the OUTPUT2 ON and OUTPUT1 ON and test again the Brake input
     if (!blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK | OUPUT1_OUT_MASK)) {
@@ -177,6 +180,7 @@ bool BodyMotor::activateBrake(void) {
 }
 
 bool  BodyMotor::deactivateBrake(void) {
+    if (simulator_mode) return true;
 
     // Sets the OUTPUT2 ON and OUTPUT1 OFF and test again the Brake input   
     if (!blocking_writeOD(OD_60FE_01, OUPUT2_OUT_MASK)) {

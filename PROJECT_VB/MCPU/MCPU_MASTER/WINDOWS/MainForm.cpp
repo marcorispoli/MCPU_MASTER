@@ -420,12 +420,8 @@ bool MainForm::Startup_MotorBody(void) {
 		string = "Motor Body initialization ..";	
 		LogClass::logInFile(string);
 
-		if (Gantry::isMotorBodyDemo()) {
-			BodyMotor::device->demoMode();
-			labelMotorBodyActivity->Text = "RUN IN SIMULATION MODE";
-			labelMotorBodyActivity->ForeColor = Color::LightGreen;
-			return true;
-		}else BodyMotor::device->runMode();
+		if (Gantry::isMotorBodyDemo()) BodyMotor::device->demoMode();
+		else BodyMotor::device->runMode();
 		startupSubFase++;
 		break;
 
@@ -451,7 +447,8 @@ bool MainForm::Startup_MotorBody(void) {
 			return true;
 		}
 		
-		labelMotorBodyActivity->Text = "RUN IN NORMAL MODE";
+		if (BodyMotor::device->isSimulatorMode()) labelMotorBodyActivity->Text = "RUN IN SIMULATION MODE";
+		else labelMotorBodyActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorBodyActivity->ForeColor = Color::LightGreen;
 		return true;
 		
@@ -471,13 +468,9 @@ bool MainForm::Startup_MotorTilt(void) {
 		string = "Motor Tilt initialization ..";
 		LogClass::logInFile(string);
 
-		if (Gantry::isMotorTiltDemo()) {
-			TiltMotor::device->demoMode();
-			labelMotorTiltActivity->Text = "RUN IN SIMULATION MODE";
-			labelMotorTiltActivity->ForeColor = Color::LightGreen;
-			return true;
-		}
+		if (Gantry::isMotorTiltDemo()) TiltMotor::device->demoMode();
 		else TiltMotor::device->runMode();
+
 		startupSubFase++;
 		break;
 
@@ -503,7 +496,8 @@ bool MainForm::Startup_MotorTilt(void) {
 			return true;
 		}
 
-		labelMotorTiltActivity->Text = "RUN IN NORMAL MODE";
+		if (TiltMotor::device->isSimulatorMode()) labelMotorTiltActivity->Text = "RUN IN SIMULATION MODE";
+		else labelMotorTiltActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorTiltActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -524,13 +518,9 @@ bool MainForm::Startup_MotorArm(void) {
 		string = "Motor Arm initialization ..";
 		LogClass::logInFile(string);
 
-		if (Gantry::isMotorArmDemo()) {
-			ArmMotor::device->demoMode();
-			labelMotorArmActivity->Text = "RUN IN SIMULATION MODE";
-			labelMotorArmActivity->ForeColor = Color::LightGreen;
-			return true;
-		}
+		if (Gantry::isMotorArmDemo()) ArmMotor::device->demoMode();
 		else ArmMotor::device->runMode();
+
 		startupSubFase++;
 		break;
 
@@ -556,7 +546,8 @@ bool MainForm::Startup_MotorArm(void) {
 			return true;
 		}
 
-		labelMotorArmActivity->Text = "RUN IN NORMAL MODE";
+		if (ArmMotor::device->isSimulatorMode()) labelMotorArmActivity->Text = "RUN IN SIMULATION MODE";
+		else labelMotorArmActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorArmActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -575,13 +566,9 @@ bool MainForm::Startup_MotorShift(void) {
 		labelMotorShiftActivity->Text = "CONNECTION ..";
 		string = "Motor Slide initialization ..";	
 		LogClass::logInFile(string);
-		if (Gantry::isMotorSlideDemo()) {
-			SlideMotor::device->demoMode();
-			labelMotorShiftActivity->Text = "RUN IN SIMULATION MODE";
-			labelMotorShiftActivity->ForeColor = Color::LightGreen;
-			return true;
-		}
+		if (Gantry::isMotorSlideDemo()) SlideMotor::device->demoMode();
 		else SlideMotor::device->runMode();
+
 		startupSubFase++;
 		break;
 
@@ -609,7 +596,8 @@ bool MainForm::Startup_MotorShift(void) {
 			return true;
 		}
 
-		labelMotorShiftActivity->Text = "RUN IN NORMAL MODE";
+		if (SlideMotor::device->isSimulatorMode()) labelMotorShiftActivity->Text = "RUN IN SIMULATION MODE";
+		else labelMotorUpDownActivity->Text = "RUN IN NORMAL MODE";
 		labelMotorShiftActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -630,13 +618,9 @@ bool MainForm::Startup_MotorVertical(void) {
 		string = "Motor Vertical initialization ..\n";
 		LogClass::logInFile(string);
 
-		if (Gantry::isMotorVerticalDemo()) {
-			VerticalMotor::device->demoMode();
-			labelMotorUpDownActivity->Text = "RUN IN SIMULATION MODE";
-			labelMotorUpDownActivity->ForeColor = Color::LightGreen;
-			return true;
-		}
+		if (Gantry::isMotorVerticalDemo()) VerticalMotor::device->demoMode();
 		else VerticalMotor::device->runMode();
+
 		startupSubFase++;
 		break;
 
@@ -662,7 +646,9 @@ bool MainForm::Startup_MotorVertical(void) {
 			return true;
 		}
 
-		labelMotorUpDownActivity->Text = "RUN IN NORMAL MODE";
+		if (VerticalMotor::device->isSimulatorMode()) labelMotorUpDownActivity->Text = "RUN IN SIMULATION MODE";
+		else labelMotorUpDownActivity->Text = "RUN IN NORMAL MODE";	
+		
 		labelMotorUpDownActivity->ForeColor = Color::LightGreen;
 		return true;
 
@@ -750,11 +736,11 @@ void MainForm::StartupProcedure(void) {
 	case 5: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
 	case 6: if (Startup_PCB326()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
 	case 7: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
-	case 8: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
+	case 8: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 9: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 10: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
 	case 11: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 12: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process	
+	case 12: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process	
 	case 13: startupFase++; startupSubFase = 0;
 		break;
 

@@ -255,92 +255,285 @@
 /// 
 
 
+
 ref class PCB301 :  public CanDeviceProtocol
 {
 
-	
 	/// <summary>
-	///	This is the Device STATUS Register implementation 
+	/// This class implement the protocol data structure as described in the protocol specification.
 	/// </summary>
-	private:enum class StatusRegisters {
-		SYSTEM_STATUS_REGISTER = 0, //!> This is the System Status register index
-		BATTERY_STATUS_REGISTER,		//!> This is the Battery level Status register index		
+	ref class ProtocolStructure {
+	public:
+
+		ref class StatusRegister {
+		public:
+
+			enum class register_index {
+				SYSTEM_REGISTER = 0,	//!> This is the System Status register index
+				BATTERY_REGISTER,		//!> This is the Battery level Status register index		
+			};
+
+			static bool decodeSystemRegister(CanDeviceProtocol::Register^ sys) {
+				if (sys == nullptr) return false;
+
+				// Byte 0 of the register
+				system_error = sys->d0 & 0x1;
+				system_emergency = sys->d0 & 0x2;
+				system_power_down = sys->d0 & 0x4;
+				cabinet_safety_alarm = sys->d0 & 0x8;
+				soft_power_off_request = sys->d0 & 0x10;
+				batt1_low_alarm = sys->d0 & 0x20;
+				batt2_low_alarm = sys->d0 & 0x40;
+				battery_enabled = sys->d0 & 0x80;
+
+				// Byte 1 of the register
+				button_up_stat = sys->d1 & 0x1;
+				button_down_stat = sys->d1 & 0x2;
+				button_slide_up_stat = sys->d1 & 0x4;
+				button_slide_down_stat = sys->d1 & 0x8;
+				button_cw_stat = sys->d1 & 0x10;
+				button_ccw_stat = sys->d1 & 0x20;
+				button_body_cw = sys->d1 & 0x40;
+				button_body_ccw = sys->d1 & 0x80;
+
+				// Byte 2
+				motor_48V_ok = sys->d2 & 0x1;
+				motor_safety_switch = sys->d2 & 0x2;
+				compression_on_status = sys->d2 & 0x4;
+				xray_push_button = sys->d2 & 0x8;
+				closed_door = sys->d2 & 0x10;
+				burning_jumper_present = sys->d2 & 0x20;
+				power_lock_status = sys->d2 & 0x40;
+
+				// Byte 3
+				pedal_up_stat = sys->d3 & 0x1;
+				pedal_down_stat = sys->d3 & 0x2;
+				pedal_cmp_up_stat = sys->d3 & 0x4;
+				pedal_cmp_down_stat = sys->d3 & 0x8;
+
+				return true;
+			}
+
+			static Register^ encodeSystemRegister(void) {
+				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
+
+				// Byte 0 of the register
+				if(system_error)			sys->d0 |= 0x1;
+				if(system_emergency)		sys->d0 |= 0x2;
+				if(system_power_down)		sys->d0 |= 0x4;
+				if(cabinet_safety_alarm)	sys->d0 |= 0x8;
+				if(soft_power_off_request) sys->d0 |= 0x10;
+				if(batt1_low_alarm)		sys->d0 |= 0x20;
+				if(batt2_low_alarm)		sys->d0 |= 0x40;
+				if(battery_enabled)		sys->d0 |= 0x80;
+
+				// Byte 1 of the register
+				if(button_up_stat) sys->d1 |= 0x1;
+				if(button_down_stat)  sys->d1 |= 0x2;
+				if(button_slide_up_stat)  sys->d1 |= 0x4;
+				if(button_slide_down_stat) sys->d1 |= 0x8;
+				if(button_cw_stat)  sys->d1 |= 0x10;
+				if(button_ccw_stat)  sys->d1 |= 0x20;
+				if(button_body_cw)  sys->d1 |= 0x40;
+				if(button_body_ccw)  sys->d1 |= 0x80;
+
+				// Byte 2
+				if(motor_48V_ok) sys->d2 |= 0x1;
+				if (motor_safety_switch) sys->d2 |= 0x2;
+				if (compression_on_status) sys->d2 |= 0x4;
+				if (xray_push_button) sys->d2 |= 0x8;
+				if (closed_door) sys->d2 |= 0x10;
+				if (burning_jumper_present) sys->d2 |= 0x20;
+				if (power_lock_status)sys->d2 |= 0x40;
+
+				// Byte 3
+				if (pedal_up_stat) sys->d3 |= 0x1;
+				if (pedal_down_stat) sys->d3 |= 0x2;
+				if (pedal_cmp_up_stat) sys->d3 |= 0x4;
+				if (pedal_cmp_down_stat) sys->d3 |= 0x8;
+
+				return sys;
+			}
+
+
+
+			// System Status register definition
+			static bool system_error = false;		//!< An error condition is present 
+			static bool system_emergency = false;			//!< Current Emergency Status
+			static bool system_power_down = false;			//!< Current Powerdown Status 
+			static bool cabinet_safety_alarm = false;				//!< The Cabinet safety input status 
+			static bool soft_power_off_request = false;		//!< A power Off sequence is requested
+			static bool batt1_low_alarm = false;		//!< Low voltage of battery 1
+			static bool batt2_low_alarm = false;		//!< Low voltage of battery 2
+			static bool battery_enabled = false; //!< Battery enabled system button status
+			static bool button_up_stat = false;		//!> This is the current status of the Manual Keypad - Vertical Up input line
+			static bool button_down_stat = false;	//!> This is the current status of the Manual Keypad - Vertical Down input line
+			static bool button_slide_up_stat = false;//!> This is the current status of the Manual Slide-Up input line
+			static bool button_slide_down_stat = false;//!> This is the current status of the Manual Slide-Down input line
+			static bool button_cw_stat = false;	//!> This is the current status of the Manual Keypad - Arm CW input line
+			static bool button_ccw_stat = false;//!> This is the current status of the Manual Keypad - Arm CCW input line
+			static bool button_body_cw = false;		//!> This is the current status of the Manual Body-CW input line
+			static bool button_body_ccw = false;	//!> This is the current status of the Manual Body-CCW input line		
+			static bool motor_48V_ok = false;				//!< Feedback from the motor power supply
+			static bool motor_safety_switch = false;		//!< Safety switch of the 48V status
+			static bool compression_on_status = false;		//!< Actual compression signal
+			static bool xray_push_button = false;	//!> This is the current X-RAY status 
+			static bool closed_door = false;		//!> This is the current closed door status
+			static bool burning_jumper_present = false;		//!< Burning jumper present in the system
+			static bool power_lock_status = false;			//!< The power supply lock condition (for programming)
+			static bool pedal_up_stat = false;		//!> This is the current status of the Pedal Board - Vertical Up input line 
+			static bool pedal_down_stat = false;	//!> This is the current status of the Pedal Board - Vertical Down input line 
+			static bool pedal_cmp_up_stat = false;		//!> This is the current status of the Pedal Board - Compressor Up input line 
+			static bool pedal_cmp_down_stat = false;		//!> This is the current status of the Pedal Board - Compressor Down input line
+
+			static bool decodeBatteryRegister(CanDeviceProtocol::Register^ sys) {
+				if (sys == nullptr) return false;
+
+				// Byte 0 of the register
+				voltage_batt1 = sys->d0;
+
+				// Byte 1 of the register
+				voltage_batt2 = sys->d1;
+
+				return true;
+			}
+			static Register^ encodeBatteryRegister(void) {
+				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
+
+				// Byte 0 of the register
+				sys->d0 = voltage_batt1;
+				sys->d1 = voltage_batt2;
+			
+				return sys;
+			}
+
+			static unsigned char voltage_batt1 = 0;		//!< 10 * voltage level of battery 1
+			static unsigned char voltage_batt2 = 0;		//!< 10 * voltage level of battery 2
+
+		};
+
+
+		ref class DataRegister {
+		public:
+
+			enum class register_index {
+				OUTPUTS = 0,	//!> This is the System Status register index			
+			};
+
+			CanDeviceProtocol::Register^ encodeOutputRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ out = gcnew CanDeviceProtocol::Register;
+
+				// Assignes the output bit status
+				if (power_lock) out->d0 |= 0x1;
+				if (motor_power_supply_ena) out->d0 |= 0x2;
+				if (motor_power_switch_ena) out->d0 |= 0x4;
+				if (compression_enable) out->d0 |= 0x8;
+				if (compression_calibration) out->d0 |= 0x10;
+				if (xray_enable) out->d0 |= 0x20;
+
+				if (burning_activation) out->d1 |= 0x1;
+				if (manual_buzzer_status) out->d1 |= 0x2;
+				if (manual_buzzer_mode) out->d1 |= 0x4;
+				if (xray_led_status) out->d1 |= 0x8;
+				if (xray_lamp1_status) out->d1 |= 0x10;
+				if (xray_lamp2_status) out->d1 |= 0x20;
+				if (button_rotation_led) out->d1 |= 0x40;
+
+
+				if (soft_power_off_request) out->d3 |= 0x40;
+				if (keep_alive) out->d3 |= 0x80;
+
+				// Returns the formatted register
+				return out;
+			}
+
+			static bool decodeOutputRegister(CanDeviceProtocol::Register^ reg) {
+				if (reg == nullptr) return false;
+
+				power_lock = reg->d0 & 0x1;
+				motor_power_supply_ena = reg->d0 & 0x2;
+				motor_power_switch_ena = reg->d0 & 0x4;
+				compression_enable = reg->d0 & 0x8;
+				compression_calibration = reg->d0 & 0x10;
+				xray_enable = reg->d0 & 0x20;
+
+				burning_activation = reg->d1 & 0x1;
+				manual_buzzer_status = reg->d1 & 0x2;
+				manual_buzzer_mode = reg->d1 & 0x4;
+				xray_led_status = reg->d1 & 0x8;
+				xray_lamp1_status = reg->d1 & 0x10;
+				xray_lamp2_status = reg->d1 & 0x20;
+				button_rotation_led = reg->d1 & 0x40;
+
+				soft_power_off_request = reg->d3 & 0x40;
+				keep_alive = reg->d3 & 0x80;
+
+				return true;
+			}
+
+			// Data 0
+			static bool power_lock = false; //!< Activates the power lock status in the remote board
+			static bool motor_power_supply_ena = false; //!< Enables the Power supply for all motors
+			static bool motor_power_switch_ena = false; //!< Enables the Switch relay on the motor power supply safe line
+			static bool compression_enable = false;//!< Enables the compressor-enable bus hardware line
+			static bool compression_calibration = false;//!< Enables the calibration bus hardware line
+			static bool xray_enable = false; //!< Enables the activation of the X-RAY enable for the generator interface 
+
+			// Data 1
+			static bool burning_activation = false; //!< Request to activate the x-ray button via software
+			static bool manual_buzzer_status = false; //!< In case of Manual Buzzer Mode active, this is the buzzer status
+			static bool manual_buzzer_mode = false; //!< activates the Buzzer manual mode
+			static bool xray_led_status = false; //!< activates the xray led output
+			static bool xray_lamp1_status = false; //!< activates the xray lamp-1 output
+			static bool xray_lamp2_status = false; //!< activates the xray lamp-2 output
+			static bool button_rotation_led = false; //!< activates the button_rotation led output
+
+			// Data2
+			// Not implemented
+
+			// Data 3
+			static bool soft_power_off_request = false; //!< requests the power off sequence activation
+			static bool keep_alive = false; //!< keep alive bit to be toggled 
+
+		};
+
+		ref class ParameterRegister {
+		public:
+			enum class command_index {
+				PARAM_REGISTER = 0,
+			};
+
+			//writeParamRegister(unsigned char idx, Register^ reg)
+
+			Register^ encodeParamRegister(void) {
+				return gcnew Register(0, 0, 0, 0);
+			}
+
+		};
+
+
+		ref class Commands {
+		public:
+			enum class command_index {
+				ABORT_COMMAND = 0,		//!< Abort Command (mandatory as for device protocol)
+				ACTIVATE_SOFT_POWEROFF,	//!< Soft power off activation
+				ACTIVATE_DEMO_TOMO,		//!< Buzzer pulse for tomo		
+			};
+
+			CanDeviceProtocol::CanDeviceCommand^ encodeActivateDemoCommand(unsigned char samples, unsigned char fps) {
+				return gcnew CanDeviceProtocol::CanDeviceCommand((unsigned char)command_index::ACTIVATE_SOFT_POWEROFF, samples, fps, 0, 0);
+			}
+
+		};
+
+		static StatusRegister status_register;
+		static DataRegister data_register;
+		static Commands command;
 	};
 
-	#define PCB301_GET_SYSTEM_ERROR_STATUS(reg)			(bool)	(reg->d0 & 0x01)
-	#define PCB301_GET_SYSTEM_EMERGENCY_STATUS(reg)		(bool)	(reg->d0 & 0x02)
-	#define PCB301_GET_SYSTEM_POWERDOWN(reg)			(bool)	(reg->d0 & 0x04)
-	#define PCB301_GET_SYSTEM_CABINET_SAFETY(reg)		(bool)	(reg->d0 & 0x08)
-	#define PCB301_GET_SYSTEM_POWER_OFF_REQ(reg)		(bool)	(reg->d0 & 0x10)
-	#define PCB301_GET_SYSTEM_BATT1LOW(reg)				(bool)	(reg->d0 & 0x20)
-	#define PCB301_GET_SYSTEM_BATT2LOW(reg)				(bool)	(reg->d0 & 0x40)
-	#define PCB301_GET_SYSTEM_BATTENA(reg)				(bool)	(reg->d0 & 0x80)
 	
-	#define PCB301_GET_BUTTON_VERTICAL_UP(reg)			(bool)	(reg->d1 & 0x1)
-	#define PCB301_GET_BUTTON_VERTICAL_DOWN(reg)		(bool)	(reg->d1 & 0x2)
-	#define PCB301_GET_BUTTON_SLIDE_UP(reg)				(bool)	(reg->d1 & 0x4)
-	#define PCB301_GET_BUTTON_SLIDE_DOWN(reg)			(bool)	(reg->d1 & 0x8)
-	#define PCB301_GET_BUTTON_ARM_CW(reg)				(bool)	(reg->d1 & 0x10)
-	#define PCB301_GET_BUTTON_ARM_CCW(reg)				(bool)	(reg->d1 & 0x20)
-	#define PCB301_GET_BUTTON_BODY_CW(reg)				(bool)	(reg->d1 & 0x40)
-	#define PCB301_GET_BUTTON_BODY_CCW(reg)				(bool)	(reg->d1 & 0x80)
-	
-	#define PCB301_GET_SYSTEM_MOTOR_OK(reg)				(bool) (reg->d2 & 0x01)
-	#define PCB301_GET_SYSTEM_MOTOR_SWITCH(reg)			(bool) (reg->d2 & 0x02)
-	#define PCB301_GET_SYSTEM_COMPRESSION(reg)			(bool) (reg->d2 & 0x04)
-	#define PCB301_GET_XRAY_PUSH_BUTTON(reg)			(bool) (reg->d2 & 0x08)
-	#define PCB301_GET_SYSTEM_CLOSEDOOR(reg)			(bool) (reg->d2 & 0x10)
-	#define PCB301_GET_SYSTEM_BURNING_JMP(reg)			(bool) (reg->d2 & 0x20)
-	#define PCB301_GET_SYSTEM_POWER_LOCK(reg)			(bool) (reg->d2 & 0x40)
-	
-	#define PCB301_GET_PEDAL_VERTICAL_UP(reg)			(bool) (reg->d3 & 0x1)
-	#define PCB301_GET_PEDAL_VERTICAL_DOWN(reg)			(bool) (reg->d3 & 0x2)
-	
-	// This is the BATTERY SECTION
-	#define PCB301_GET_BATTERY_VBATT1(reg) (unsigned char) (reg->d0)
-	#define PCB301_GET_BATTERY_VBATT2(reg) (unsigned char) (reg->d1)
-
-
-	
-
-	/// <summary>
-	///	 This is the Device DATA Register implementation 
-	/// </summary>
-	private:enum class DataRegisters {
-		OUTPUTS_DATA_REGISTER = 0, //!> This is the Outputs Data register index
-	};
-
-	#define PCB301_OUTPUTS_DATA_POWER_LOCK(reg,stat)				reg->D0(stat, 0x1) 
-	#define PCB301_OUTPUTS_DATA_MOTOR_POWER_SUPPLY_ENABLE(reg,stat)	reg->D0(stat, 0x2)
-	#define PCB301_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE(reg,stat)		reg->D0(stat, 0x4)
-	#define PCB301_OUTPUTS_DATA_COMPRESSOR_ENABLE(reg,stat)			reg->D0(stat, 0x8)
-	#define PCB301_OUTPUTS_DATA_COMPRESSOR_CALIBRATION(reg,stat)	reg->D0(stat, 0x10)
-	#define PCB301_OUTPUTS_DATA_XRAY_ENA(reg,stat)					reg->D0(stat, 0x20)
-	
-
-	#define PCB301_OUTPUTS_DATA_BURNING_STAT(reg,stat)	reg->D1(stat, 0x1) 
-	#define PCB301_OUTPUTS_DATA_BUZZER_STAT(reg,stat)	reg->D1(stat, 0x2) 
-	#define PCB301_OUTPUTS_DATA_MANUAL_BUZZER(reg,stat)	reg->D1(stat, 0x4) 
-	#define PCB301_OUTPUTS_DATA_XRAY_LED(reg,stat)		reg->D1(stat, 0x8) 
-	#define PCB301_OUTPUTS_DATA_XRAY_LAMP1(reg,stat)	reg->D1(stat, 0x10) 
-	#define PCB301_OUTPUTS_DATA_XRAY_LAMP2(reg,stat)	reg->D1(stat, 0x20) 
-	#define PCB301_OUTPUTS_DATA_MAN_ROT_LED(reg,stat)	reg->D1(stat, 0x40) 
-	
-	#define PCB301_OUTPUTS_DATA_POWER_OFF(reg,stat)		reg->D3(stat, 0x40) 
-	#define PCB301_GET_OUTPUTS_DATA_POWER_OFF(reg)		(reg->d3 & 0x40) 
-	#define PCB301_OUTPUTS_DATA_KEEP_ALIVE(reg,stat)	reg->D3(stat, 0x80)
-
-	/// <summary>	
-	/// This enumeration class defines the Indexes of the Command Execution
-	///
-	/// </summary>
-	private:enum class Commandregister {
-		ABORT_COMMAND = 0, //!< Abort Command (mandatory as for device protocol)
-		ACTIVATE_SOFT_POWEROFF,//!< Soft power off activation
-		ACTIVATE_DEMO_TOMO,		//!< Buzzer pulse for tomo		
-	};
-	#define PCB301_SET_DEMO_TOMO_COMMAND(samples,fps) (System::Byte) Commandregister::ACTIVATE_DEMO_TOMO, (System::Byte) (samples),(System::Byte) fps,(System::Byte) 0,(System::Byte) 0 
-			   
 public:
 
 	PCB301(): CanDeviceProtocol(0x10, L"POWER_SERVICE")
@@ -349,13 +542,6 @@ public:
 	}
 	static PCB301^ device = gcnew PCB301();
 
-
-	public: enum class door_options {
-		CLOSED_DOOR = 0,
-		OPEN_DOOR
-	};
-
-public:	
 	
 	
 	/// <summary>
@@ -365,7 +551,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: a power down condition has been detected</returns>
-	static inline bool getPowerdown(void) { return power_down_status; }
+	static inline bool getPowerdown(void) { return protocol.status_register.system_power_down; }
 
 	
 	/// <summary>
@@ -384,7 +570,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the 48DVC power supply is active at the nominal level (48VDC) </returns>
-	static inline bool getMotorPowerSupply(void) { return motor_48V_ok; }
+	static inline bool getMotorPowerSupply(void) { return protocol.status_register.motor_48V_ok; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -401,7 +587,7 @@ public:
 	/// 
 	/// 
 	/// <param name="stat">The requested activation status </param>
-	static inline void setMotorPowerSupply(bool stat) { PCB301_OUTPUTS_DATA_MOTOR_POWER_SUPPLY_ENABLE(outputs_data_register, stat); }
+	static inline void setMotorPowerSupply(bool stat) { protocol.data_register.motor_power_supply_ena = stat; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -420,7 +606,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns></returns>
-	static inline bool getMotorSwitch(void) { return motor_safety_switch; }
+	static inline bool getMotorSwitch(void) { return protocol.status_register.motor_safety_switch; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -436,7 +622,7 @@ public:
 	/// 
 	/// 
 	/// <param name="stat">The requested activation status </param>
-	static inline void setMotorSwitch(bool stat) { PCB301_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE(outputs_data_register, stat); }
+	static inline void setMotorSwitch(bool stat) { protocol.data_register.motor_power_switch_ena = stat; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -453,7 +639,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the batteries are enabled</returns>
-	static inline bool getBatteryEna(void) { return battery_enabled_status; }
+	static inline bool getBatteryEna(void) { return protocol.status_register.battery_enabled; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -473,7 +659,7 @@ public:
 	///
 	/// <param name=""></param>
 	/// <returns>True: one or both the batteries are in alarm condition</returns>
-	static inline bool getBatteryAlarm(void) { return (batt1_low_alarm || batt2_low_alarm); }
+	static inline bool getBatteryAlarm(void) { return (protocol.status_register.batt1_low_alarm || protocol.status_register.batt2_low_alarm); }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -481,7 +667,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>True: the battery 1 is in alarm condition</returns>
-	static inline bool getBatt1Alarm(void) { return batt1_low_alarm; }
+	static inline bool getBatt1Alarm(void) { return protocol.status_register.batt1_low_alarm; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -489,7 +675,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>True: the battery 2 is in alarm condition</returns>
-	static inline bool getBatt2Alarm(void) { return batt2_low_alarm; }
+	static inline bool getBatt2Alarm(void) { return protocol.status_register.batt2_low_alarm; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -499,7 +685,7 @@ public:
 	/// The battery is a 12VDC nominal battery with a full charge level of 13.8V (138 units)
 	/// <param name=""></param>
 	/// <returns></returns>
-	static inline unsigned char getVoltageBatt1(void) { return voltage_batt1; }
+	static inline unsigned char getVoltageBatt1(void) { return protocol.status_register.voltage_batt1; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -509,7 +695,7 @@ public:
 	/// The battery is a 12VDC nominal battery with a full charge level of 13.8V (138 units)
 	/// <param name=""></param>
 	/// <returns></returns>
-	static inline unsigned char getVoltageBatt2(void) { return voltage_batt2; }
+	static inline unsigned char getVoltageBatt2(void) { return protocol.status_register.voltage_batt2; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -529,7 +715,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns></returns>
-	static inline bool getSoftPowerOffRequest(void) { return soft_power_off_request; }
+	static inline bool getSoftPowerOffRequest(void) { return protocol.status_register.soft_power_off_request; }
 
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -547,7 +733,7 @@ public:
 	/// NOTE: The Power Off sequence can be Aborted ONLY if the waiting timr is not yest expired!
 	/// 
 	/// <param name="stat"></param>
-	static inline void setPowerOff(bool stat) { PCB301_OUTPUTS_DATA_POWER_OFF(outputs_data_register, stat); }
+	static inline void setPowerOff(bool stat) { protocol.data_register.soft_power_off_request = stat;  }
 
 
 	/// <summary>
@@ -574,7 +760,7 @@ public:
 	///  
 	/// <param name=""></param>
 	/// <returns></returns>
-	static inline bool getPowerLockStatus(void) { return power_lock_status; }
+	static inline bool getPowerLockStatus(void) { return protocol.status_register.power_lock_status; }
 	
 	/// <summary>
 	/// \ingroup PCB301PowerSupply
@@ -584,7 +770,7 @@ public:
 	/// See the PCB301::getPowerLockStatus() for details about this circuit.
 	/// 
 	/// <param name="stat"></param>
-	static inline void setPowerLock(bool stat) { PCB301_OUTPUTS_DATA_POWER_LOCK(outputs_data_register, stat); }
+	static inline void setPowerLock(bool stat) { protocol.data_register.power_lock = stat; }
 	
 	
 
@@ -601,7 +787,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the emergency input has been detected activated</returns>
-	static inline bool getEmergency(void) { return emergency_status; }
+	static inline bool getEmergency(void) { return protocol.status_register.system_emergency; }
 
 	/// <summary>
 	/// \ingroup PCB301Safety
@@ -616,7 +802,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the cabinet input circuit is detected active</returns>
-	static inline bool getCabinetSafety(void) { return cabinet_safety_status; }
+	static inline bool getCabinetSafety(void) { return protocol.status_register.cabinet_safety_alarm; }
 
 	/// <summary>
 	/// \ingroup PCB301Safety
@@ -631,7 +817,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the compression line is detected active</returns>
-	static inline bool getCompressionStatus(void) { return compression_on_status; }
+	static inline bool getCompressionStatus(void) { return protocol.status_register.compression_on_status; }
 	
 	/// <summary>
 	/// \ingroup PCB301Safety
@@ -646,7 +832,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the study's door is detected open</returns>
-	static door_options getDoorStatus(void) { return door_status; }
+	static bool isClosedDoor(void) { return protocol.status_register.closed_door; }
 
 	/// <summary>
 	/// \ingroup PCB301Safety
@@ -657,7 +843,7 @@ public:
 	/// preventing any unwanted motor activation.
 	///  
 	/// <param name="stat"></param>
-	inline static void SetCompressorEna(bool stat) { PCB301_OUTPUTS_DATA_COMPRESSOR_ENABLE(outputs_data_register, stat); }
+	inline static void SetCompressorEna(bool stat) { protocol.data_register.compression_enable = stat; }
 
 	/// <summary>
 	/// \ingroup PCB301Safety
@@ -668,7 +854,7 @@ public:
 	/// force sensor of the copressor device.
 	///  
 	/// <param name="stat"></param>
-	inline static void SetCompressorCalib(bool stat) { PCB301_OUTPUTS_DATA_COMPRESSOR_CALIBRATION(outputs_data_register, stat); }
+	inline static void SetCompressorCalib(bool stat) { protocol.data_register.compression_calibration = stat; }
 
 	/// <summary>
 	/// \ingroup PCB301Safety
@@ -682,7 +868,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True if the Jumper is detected present</returns>
-	inline static bool getBurningJumper(void) { return burning_jumper_present; }
+	inline static bool getBurningJumper(void) { return protocol.status_register.burning_jumper_present; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -691,7 +877,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_pedal_up_stat(void) { return pedal_up_stat; }
+	inline static bool get_pedal_up_stat(void) { return protocol.status_register.pedal_up_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -700,7 +886,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_pedal_down_stat(void) { return pedal_down_stat; }
+	inline static bool get_pedal_down_stat(void) { return protocol.status_register.pedal_down_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -709,7 +895,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_cmp_up_stat(void) { return cmp_up_stat; }
+	inline static bool get_cmp_up_stat(void) { return protocol.status_register.pedal_cmp_up_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -718,7 +904,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_cmp_down_stat(void) { return cmp_down_stat; }
+	inline static bool get_cmp_down_stat(void) { return protocol.status_register.pedal_cmp_down_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -727,7 +913,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_cw_stat(void) { return button_arm_cw_stat; }
+	inline static bool get_button_cw_stat(void) { return protocol.status_register.button_cw_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -736,7 +922,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_ccw_stat(void) { return button_arm_ccw_stat; }
+	inline static bool get_button_ccw_stat(void) { return protocol.status_register.button_ccw_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -745,7 +931,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_up_stat(void) { return button_up_stat; }
+	inline static bool get_button_up_stat(void) { return protocol.status_register.button_up_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -754,7 +940,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_down_stat(void) { return button_down_stat; }
+	inline static bool get_button_down_stat(void) { return protocol.status_register.button_down_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -763,7 +949,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_body_cw(void) { return button_body_cw; }
+	inline static bool get_button_body_cw(void) { return protocol.status_register.button_body_cw; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -772,7 +958,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_body_ccw(void) { return button_body_ccw; }
+	inline static bool get_button_body_ccw(void) { return protocol.status_register.button_body_ccw; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -781,7 +967,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_slide_up_stat(void) { return button_slide_up_stat; }
+	inline static bool get_button_slide_up_stat(void) { return protocol.status_register.button_slide_up_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -790,7 +976,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool get_button_slide_down_stat(void) { return button_slide_down_stat; }
+	inline static bool get_button_slide_down_stat(void) { return protocol.status_register.button_slide_down_stat; }
 
 	/// <summary>
 	/// \ingroup PCB301MotorActivation
@@ -803,7 +989,7 @@ public:
 	/// by the operator.
 	/// 
 	/// <param name="stat">True: led is switched ON</param>
-	inline static void set_keypad_led(bool stat) { PCB301_OUTPUTS_DATA_MAN_ROT_LED(outputs_data_register, stat); }
+	inline static void set_keypad_led(bool stat) { protocol.data_register.button_rotation_led = stat; }
 
 
 	/// <summary>
@@ -813,7 +999,7 @@ public:
 	/// 
 	/// <param name=""></param>
 	/// <returns>True: the input line is detected active</returns>
-	inline static bool getXrayPushButtonStat(void) { return xray_push_button; }
+	inline static bool getXrayPushButtonStat(void) { return protocol.status_register.xray_push_button; }
 
 	/// <summary>
 	/// \ingroup PCB301Exposure
@@ -830,7 +1016,7 @@ public:
 	/// 
 	/// 
 	/// <param name="stat">True: requests to activate the external X-RAY enable (or Generator Xray request)</param>
-	inline static void setXrayEna(bool stat) { PCB301_OUTPUTS_DATA_XRAY_ENA(outputs_data_register, stat); }
+	inline static void setXrayEna(bool stat) { protocol.data_register.xray_enable = stat; }
 
 	/// <summary>
 	/// \ingroup PCB301Exposure
@@ -846,7 +1032,7 @@ public:
 	/// When in Manual Mode 
 	/// 
 	/// <param name="stat"></param>
-	inline static void setBuzzerManualMode(bool stat) { PCB301_OUTPUTS_DATA_MANUAL_BUZZER(outputs_data_register,stat); }
+	inline static void setBuzzerManualMode(bool stat) { protocol.data_register.manual_buzzer_mode = stat; }
 
 	/// <summary>
 	/// \ingroup PCB301Exposure
@@ -855,7 +1041,7 @@ public:
 	/// 
 	/// This function has no effect if the Buzzer is set to Automatic Mode.
 	/// <param name="stat"></param>
-	inline static void activationManualBuzzer(bool stat) { PCB301_OUTPUTS_DATA_BUZZER_STAT(outputs_data_register, stat); }
+	inline static void activationManualBuzzer(bool stat) { protocol.data_register.manual_buzzer_status = stat;}
 
 
 	/// <summary>
@@ -893,60 +1079,17 @@ public:
 	/// will provide a number of executed pulses lower than expected.
 	/// 
 	/// </returns>
-	inline static CanDeviceCommandResult^ activateManualBuzzerTomoMode(int samples, int fps, int tmo, Object^ device) { return PCB301::device->commandWaitCompletion(PCB301_SET_DEMO_TOMO_COMMAND(samples, fps), tmo, device); }
+	inline static CanDeviceCommandResult^ activateManualBuzzerTomoMode(int samples, int fps, int tmo, Object^ device) { return PCB301::device->commandWaitCompletion(protocol.command.encodeActivateDemoCommand(samples, fps), tmo, device); }
 	
 	
 	
-private:
-	
-
-	static Register^ outputs_data_register = gcnew Register(); 
-	static door_options door_status = door_options::OPEN_DOOR; //!< This is the current status of the Study door
-	
-	static bool power_down_status = false;			//!< Current Powerdown Status 
-	static bool emergency_status = false;			//!< Current Emergency Status
-	static bool cabinet_safety_status = false;		//!< The Cabinet safety input status 
-	static bool motor_safety_switch = false;		//!< Safety switch of the 48V status
-	static bool motor_48V_ok = false;				//!< Feedback from the motor power supply
-	static bool compression_on_status = false;		//!< Actual compression signal
-	static bool burning_jumper_present = false;		//!< Burning jumper present in the system
-	static bool soft_power_off_request = false;		//!< A power Off sequence is requested
-	static bool power_lock_status = false;			//!< The power supply lock condition (for programming)
-
-
-	// Battery management
-	static bool battery_enabled_status = false; //!< Battery enabled system button status
-	static bool batt1_low_alarm = false;		//!< Low voltage of battery 1
-	static bool batt2_low_alarm = false;		//!< Low voltage of battery 2
-	static unsigned char voltage_batt1 = 0;		//!< 10 * voltage level of battery 1
-	static unsigned char voltage_batt2 = 0;		//!< 10 * voltage level of battery 2
-
-	// X-RAY push button handling
-	static bool xray_push_button = false; //!> This is the current X-RAY status 
-	
-	static bool pedal_up_stat = false;		//!> This is the current status of the Pedal Board - Vertical Up input line 
-	static bool pedal_down_stat = false;	//!> This is the current status of the Pedal Board - Vertical Down input line 
-	static bool cmp_up_stat = false;		//!> This is the current status of the Pedal Board - Compressor Up input line 
-	static bool cmp_down_stat = false;		//!> This is the current status of the Pedal Board - Compressor Down input line
-	static bool button_arm_cw_stat = false;	//!> This is the current status of the Manual Keypad - Arm CW input line
-	static bool button_arm_ccw_stat = false;//!> This is the current status of the Manual Keypad - Arm CCW input line
-	static bool button_up_stat = false;		//!> This is the current status of the Manual Keypad - Vertical Up input line
-	static bool button_down_stat = false;	//!> This is the current status of the Manual Keypad - Vertical Down input line
-	static bool button_body_cw = false;		//!> This is the current status of the Manual Body-CW input line
-	static bool button_body_ccw = false;	//!> This is the current status of the Manual Body-CCW input line
-	static bool button_slide_up_stat = false;//!> This is the current status of the Manual Slide-Up input line
-	static bool button_slide_down_stat = false;//!> This is the current status of the Manual Slide-Down input line
-	
-
 protected: 	
 	    void runningLoop(void) override;	//!< This is the Running Loop overriden procedure
 		void demoLoop(void) override;		//!< This is the Demo Loop overriden procedure
 
 private:
-		void handleSystemStatusRegister(void);
-		void handleBatteryStatusRegister(void);
-		void toggleKeepalive(void);
-		void evaluateEvents(void);
+	static ProtocolStructure protocol; // This is the structure with the Status register info
+	void evaluateEvents(void);
 
 };
 

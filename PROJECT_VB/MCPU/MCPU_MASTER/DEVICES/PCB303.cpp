@@ -258,7 +258,8 @@ bool PCB303::updateStatusRegister(void) {
 /// <param name=""></param>
 void PCB303::runningLoop(void) {
     static bool commerr = false;
-    
+    demoLoop();
+    return;
     
     // Test the communication status
     if (commerr != isCommunicationError()) {
@@ -334,6 +335,7 @@ void PCB303::resetLoop(void) {
 /// <returns>true if the configuration success</returns>
 bool PCB303::configurationLoop(void) {
     unsigned short front, trap, left, right, back;
+  if (isSimulatorMode()) return true;
 
     front = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD_FT)[CollimatorConfig::PARAM_COLLI_STANDARD_FT_FRONT]);
     trap = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD_FT)[CollimatorConfig::PARAM_COLLI_STANDARD_FT_TRAP]);

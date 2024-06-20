@@ -113,50 +113,46 @@ void CanOpenMotor::manageManualServicePositioning(void) {
     // repeat the configuration in case of error
     configuration_command = true;
 
-   
-    // Position Range Limit
-    if (!blocking_writeOD(OD_607B_01, 0x80000000)) error_condition = true; // Min Position Range Limit 
-    if (!blocking_writeOD(OD_607B_02, 0x7FFFFFFF)) error_condition = true; // Max Position Range Limit
-    if (!blocking_writeOD(OD_607D_01, 0x80000000)) error_condition = true; // Min Position  Limit 
-    if (!blocking_writeOD(OD_607D_02, 0x7FFFFFFF)) error_condition = true; // Max Position  Limit
+    int i, repeat = 20;
+    for (i = repeat; i > 0; i--) {
+        
+        // With simulation adds 50ms every attempt
+        if(simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
+        // Position Range Limit
+        if (!blocking_writeOD(OD_607B_01, 0x80000000)) continue; // Min Position Range Limit 
+        if (!blocking_writeOD(OD_607B_02, 0x7FFFFFFF)) continue; // Max Position Range Limit
+        if (!blocking_writeOD(OD_607D_01, 0x80000000)) continue; // Min Position  Limit 
+        if (!blocking_writeOD(OD_607D_02, 0x7FFFFFFF)) continue; // Max Position  Limit
 
-    // Sets the Speed activation
-    error_condition = false;
-    if (!blocking_writeOD(OD_6081_00, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Sets the Rotation speed 
-    if (!blocking_writeOD(OD_6083_00, 0)) error_condition = true; // Sets the Rotation Acc
-    if (!blocking_writeOD(OD_6084_00, 0)) error_condition = true; // Sets the Rotation Dec
-    if (!blocking_writeOD(OD_607A_00, command_target)) error_condition = true; // Set the target position
-    if (!blocking_writeOD(OD_6060_00, 1)) error_condition = true;// Set the Activation mode to Profile Positioning Mode
-    if (!writeControlWord(POSITION_SETTING_CTRL_INIT_MASK, POSITION_SETTING_CTRL_INIT_VAL)) error_condition = true;// Sets the Position control bits in the control word
-    if (error_condition) {
+        if (!blocking_writeOD(OD_6081_00, convert_UserSec_To_Speed(command_speed))) continue; // Sets the Rotation speed 
+        if (!blocking_writeOD(OD_6083_00, 0)) continue; // Sets the Rotation Acc
+        if (!blocking_writeOD(OD_6084_00, 0)) continue; // Sets the Rotation Dec
+        if (!blocking_writeOD(OD_607A_00, command_target)) continue; // Set the target position
+        if (!blocking_writeOD(OD_6060_00, 1)) continue;// Set the Activation mode to Profile Positioning Mode
+
+        break;
+    }
+
+    if (!i) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: manageManualServicePositioning() - ERROR IN MANUAL POSITIONING PREPARATION");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
+        return;
+    }
+    
+    if (!writeControlWord(POSITION_SETTING_CTRL_INIT_MASK, POSITION_SETTING_CTRL_INIT_VAL)){
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: manageManualServicePositioning() - ERROR IN MANUAL POSITIONING PREPARATION");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);                
         return;
     }
 
-
-    // Tries to activate the Operation Enabled 
-    error_condition = true;
-    for (int i = 0; i < 5; i++) {
-
-        if (!writeControlWord(OD_6040_00_ENABLEOP_MASK, OD_6040_00_ENABLEOP_VAL)) continue;
-
-        // Read the status word
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        if (!blocking_readOD(OD_6041_00)) continue;
-        if (getCiAStatus(rxSdoRegister->data) == _CiA402Status::CiA402_OperationEnabled) {
-            error_condition = false;
-            break;
-        }
-
-    }
-
-    if (error_condition) {
+    // Tries to activate the Operation Enabled      
+    if (!CiA402_activateOperationEnable()) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: manageManualServicePositioning() - ERROR IN MANUAL POSITIONING OPERATION ENABLE SETTING");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
+
 
     // Assignes the current motor direction
     if (command_target == 0x7FFFFFFF) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
@@ -188,23 +184,6 @@ void CanOpenMotor::manageManualServicePositioning(void) {
             break;
         }
 
-        // Reads the status to be sure that it is still Operation Enabled 
-        if (!blocking_readOD(OD_6041_00)) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
-            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
-            break;
-        }
-
-        unsigned short statw = rxSdoRegister->data;
-
-        // In case the status should be changed, the internal fault is activated
-        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
-            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
-            break;
-        }
-
-
         MotorCompletedCodes termination_condition = MotorCompletedCodes::COMMAND_PROCEED;
 
         // If the safety condition prevent the command execution it is immediatelly aborted
@@ -227,6 +206,20 @@ void CanOpenMotor::manageManualServicePositioning(void) {
             break;
         }
 
+        // Reads the status to be sure that it is still Operation Enabled 
+        unsigned int statw;
+        if (!readStatusWord(&statw)) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
+            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
+            break;
+        }
+
+        // In case the status should be changed, the internal fault is activated
+        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
+            break;
+        }
 
         if (((statw & 0x1400) == 0x1400)  || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
@@ -255,13 +248,13 @@ void CanOpenMotor::manageManualServicePositioning(void) {
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
-    // Read the status word
+    // Waits in case a Quick Stop should be active
+    unsigned int statw;
     while (true) {
-        if (!blocking_readOD(OD_6041_00)) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            continue;
+        if (readStatusWord(&statw)) {
+            if (getCiAStatus(statw) != _CiA402Status::CiA402_QuickStopActive) break;
         }
-        if (getCiAStatus(rxSdoRegister->data) != _CiA402Status::CiA402_QuickStopActive) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     // Activates the brakes
@@ -283,23 +276,27 @@ void CanOpenMotor::manageManualServicePositioning(void) {
     setCommandCompletedCode(termination_code);
 
 
-    // Position Range Limit
-    error_condition = false;
-    if(!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(min_position - 10))) error_condition = true; 	// Min Position Range Limit
-    if (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(max_position + 10))) error_condition = true;	// Max Position Range Limit
+    // Position Range Limit reconfiguration
+    repeat = 10;
+    for (i = repeat; i > 0; i--) {
+        if (simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
-    // Software Position Limit
-    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(min_position))) error_condition = true; 	// Min Position Limit
-    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(max_position))) error_condition = true; 	    // Max PositionLimit
+        if (!blocking_writeOD(OD_607B_01, convert_Absolute_User_To_Encoder(min_position - 10))) continue; 	// Min Position Range Limit
+        if (!blocking_writeOD(OD_607B_02, convert_Absolute_User_To_Encoder(max_position + 10))) continue;	// Max Position Range Limit
 
-    if (error_condition) return;
+        // Software Position Limit
+        if (!blocking_writeOD(OD_607D_01, convert_Absolute_User_To_Encoder(min_position))) continue; 	// Min Position Limit
+        if (!blocking_writeOD(OD_607D_02, convert_Absolute_User_To_Encoder(max_position))) continue; 	    // Max PositionLimit
+        break;
+    }
+
+    if (!i) return;
+
+    // All right: no reconfiguration is requested!
     configuration_command = false;
     return;
 
 }
-
-
-
 
 
 
@@ -334,42 +331,37 @@ void CanOpenMotor::manageManualPositioning(void) {
     // The function should change the command_speed, command_acc and command_dec
     motionParameterCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, encoder_uposition, command_target);
 
-    // Sets the Speed activation
-    error_condition = false;
-    if (!blocking_writeOD(OD_6081_00, convert_UserSec_To_Speed(command_speed))) error_condition = true; // Sets the Rotation speed 
-    if (!blocking_writeOD(OD_6083_00, convert_UserSec_To_Speed(command_acc))) error_condition = true; // Sets the Rotation Acc
-    if (!blocking_writeOD(OD_6084_00, convert_UserSec_To_Speed(command_dec))) error_condition = true; // Sets the Rotation Dec
-    if (!blocking_writeOD(OD_607A_00, convert_User_To_Encoder(command_target))) error_condition = true; // Set the target position
-    if (!blocking_writeOD(OD_6060_00, 1)) error_condition = true;// Set the Activation mode to Profile Positioning Mode
-    if (!writeControlWord(POSITION_SETTING_CTRL_INIT_MASK, POSITION_SETTING_CTRL_INIT_VAL)) error_condition = true;// Sets the Position control bits in the control word
-    if (error_condition) {
+    int i, repeat = 10;
+    for (i = repeat; i > 0; i--)
+    {
+        if (simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+        if (!blocking_writeOD(OD_6081_00, convert_UserSec_To_Speed(command_speed))) continue; // Sets the Rotation speed 
+        if (!blocking_writeOD(OD_6083_00, convert_UserSec_To_Speed(command_acc))) continue;   // Sets the Rotation Acc
+        if (!blocking_writeOD(OD_6084_00, convert_UserSec_To_Speed(command_dec))) continue;   // Sets the Rotation Dec
+        if (!blocking_writeOD(OD_607A_00, convert_User_To_Encoder(command_target))) continue; // Set the target position
+        if (!blocking_writeOD(OD_6060_00, 1)) continue;// Set the Activation mode to Profile Positioning Mode
+        break;
+    }
+    if (!i) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN MANUAL POSITIONING PREPARATION");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
 
-
-    // Tries to activate the Operation Enabled 
-    error_condition = true;
-    for (int i = 0; i < 5; i++) {
-
-        if (!writeControlWord(OD_6040_00_ENABLEOP_MASK, OD_6040_00_ENABLEOP_VAL)) continue;
-
-        // Read the status word
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        if (!blocking_readOD(OD_6041_00)) continue;
-        if (getCiAStatus(rxSdoRegister->data) == _CiA402Status::CiA402_OperationEnabled) {
-            error_condition = false;
-            break;
-        }
-
+    if (!writeControlWord(POSITION_SETTING_CTRL_INIT_MASK, POSITION_SETTING_CTRL_INIT_VAL)) {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN MANUAL POSITIONING PREPARATION");
+        setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
+        return;
     }
 
-    if (error_condition) {
+    // Tries to activate the Operation Enabled      
+    if (!CiA402_activateOperationEnable()) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN MANUAL POSITIONING OPERATION ENABLE SETTING");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
     }
+
 
     // Assignes the current motor direction
     if (command_target > encoder_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
@@ -415,27 +407,10 @@ void CanOpenMotor::manageManualPositioning(void) {
             break;
         }
 
-        // Reads the status to be sure that it is still Operation Enabled 
-        if (!blocking_readOD(OD_6041_00)) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
-            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
-            break;
-        }
-
-        unsigned short statw = rxSdoRegister->data;
-
-        // In case the status should be changed, the internal fault is activated
-        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
-            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;            
-            break;
-        }
-
         // Read the current position 
         updateCurrentPosition();
 
         MotorCompletedCodes termination_condition = runningCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, encoder_uposition, command_target);
-        
 
         // If the safety condition prevent the command execution it is immediatelly aborted
         Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
@@ -457,6 +432,34 @@ void CanOpenMotor::manageManualPositioning(void) {
             break;
         }
 
+        // Reads the status to be sure that it is still Operation Enabled 
+        unsigned int statw;
+        if (!readStatusWord(&statw)) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR READING STATUS REGISTER");
+            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
+            break;
+        }
+
+        // In case the status should be changed, the internal fault is activated
+        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
+            break;
+        }
+        
+        // In case the status should be changed, the internal fault is activated
+        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR POSSIBLE FAULT");
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
+            break;
+        }
+
+        // In case the status should be changed, the internal fault is activated
+        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MANUAL POSITIONING ERROR POSSIBLE FAULT");
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
+            break;
+        }
        
         if (((statw & 0x1400) == 0x1400) || (encoder_uposition == command_target) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
@@ -485,13 +488,13 @@ void CanOpenMotor::manageManualPositioning(void) {
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
-    // Read the status word
-    while (true) {        
-        if (!blocking_readOD(OD_6041_00)) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            continue;
+    // Waits in case a Quick Stop should be active
+    unsigned int statw;
+    while (true) {
+        if (readStatusWord(&statw)) {
+            if (getCiAStatus(statw) != _CiA402Status::CiA402_QuickStopActive) break;
         }
-        if (getCiAStatus(rxSdoRegister->data) != _CiA402Status::CiA402_QuickStopActive) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     
     // Activates the brakes
@@ -499,6 +502,7 @@ void CanOpenMotor::manageManualPositioning(void) {
 
     // Read the current position 
     updateCurrentPosition();
+
     if (external_position_mode) {
         update_external_position();
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: CURRENT ENCODER UPOSITION = " + encoder_uposition.ToString() + ", CURRENT EXTERNAL UPOSITION = " + external_uposition.ToString());

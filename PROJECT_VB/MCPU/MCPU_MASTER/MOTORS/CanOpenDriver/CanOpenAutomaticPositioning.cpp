@@ -238,23 +238,8 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         return;
     }
 
-    // Tries to activate the Operation Enabled 
-    error_condition = true;
-    for (int i = 0; i < 5; i++) {
-
-        if (!writeControlWord(OD_6040_00_ENABLEOP_MASK, OD_6040_00_ENABLEOP_VAL)) continue;
-
-        // Read the status word
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        if (!blocking_readOD(OD_6041_00)) continue;
-        if (getCiAStatus(rxSdoRegister->data) == _CiA402Status::CiA402_OperationEnabled) {
-            error_condition = false;
-            break;
-        }
-
-    }
-
-    if (error_condition) {
+    // Tries to activate the Operation Enabled
+    if (!CiA402_activateOperationEnable()) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ERROR IN AUTO POSITIONING OPERATION ENABLE SETTING");
         setCommandCompletedCode(MotorCompletedCodes::ERROR_INITIALIZATION);
         return;
@@ -274,7 +259,6 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Invalidate the stored encoder position
     MotorConfig::Configuration->setParam(config_param, MotorConfig::PARAM_CURRENT_POSITION, MotorConfig::MOTOR_UNDEFINED_POSITION);
     MotorConfig::Configuration->storeFile();
-
     
     // Unbrake 
     if (!unbrakeCallback()) {
@@ -282,7 +266,6 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         setCommandCompletedCode(MotorCompletedCodes::ERROR_BRAKE_DEVICE);
         return;
     }
-    
     
     // Set the start bit (BIT4) in the control word register for autostart mode
     if (autostart_mode) {
@@ -339,22 +322,6 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
             break;
         }
 
-        // Reads the status to be sure that it is still Operation Enabled 
-        if (!blocking_readOD(OD_6041_00)) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR READING STATUS REGISTER");
-            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;            
-            break;
-        }
-
-        unsigned short statw = rxSdoRegister->data;
-
-        // In case the status should be changed, the internal fault is activated
-        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR POSSIBLE FAULT");
-            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
-            break;
-        }
-
         // Test the Timeout condition
         if ((timeout) && (!isTarget())) {
             LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING TIMEOUT ERROR");
@@ -385,6 +352,22 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         }
 
 
+        // Reads the status to be sure that it is still Operation Enabled 
+        unsigned int statw;
+        if (!readStatusWord(&statw)) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR READING STATUS REGISTER");
+            termination_code = MotorCompletedCodes::ERROR_ACCESS_REGISTER;
+            break;
+        }
+
+        // In case the status should be changed, the internal fault is activated
+        if (getCiAStatus(statw) != _CiA402Status::CiA402_OperationEnabled) {
+            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: AUTOMATIC POSITIONING ERROR POSSIBLE FAULT");
+            termination_code = MotorCompletedCodes::ERROR_INTERNAL_FAULT;
+            break;
+        }
+
+        
         if (((statw & 0x1400) == 0x1400) || (encoder_uposition == command_target) || (timeout) || (termination_condition == MotorCompletedCodes::COMMAND_MANUAL_TERMINATION)) {
 
             // Calculates the effective duration time
@@ -419,17 +402,16 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     } // End of main controlling loop
     
 
-    
     // resets the OMS bit of the control word
     writeControlWord(0x0270, 0);
 
-    // Read the status word
+    // Waits in case a Quick Stop should be active
+    unsigned int statw;
     while (true) {
-        if (!blocking_readOD(OD_6041_00)) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            continue;
-        }
-        if (getCiAStatus(rxSdoRegister->data) != _CiA402Status::CiA402_QuickStopActive) break;
+        if (readStatusWord(&statw)) {
+            if (getCiAStatus(statw) != _CiA402Status::CiA402_QuickStopActive) break;
+        }        
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     // Activates the brakes

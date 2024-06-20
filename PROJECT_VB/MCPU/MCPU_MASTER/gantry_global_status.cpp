@@ -89,6 +89,7 @@ void Gantry::initialize(void) {
         can_driver_simulator = false; // The can driver shall be present in demo mode
         pcb301_simulator = false; // The PCB301 board shall be operating
         pcb302_simulator = false; // The PCB302 board shall be operating
+        pcb304_simulator = false;  // The PCB304 board shall be emulated
         motor_tilt_simulator = false;
         motor_arm_simulator = false;
         motor_body_simulator = false;
@@ -96,8 +97,7 @@ void Gantry::initialize(void) {
         motor_slide_simulator = false;
 
         generator_simulator = true;   // The generator shall be emulated 
-        pcb303_simulator = true;  // The PCB303 board shall be emulated
-        pcb304_simulator = true;  // The PCB304 board shall be emulated
+        pcb303_simulator = true;  // The PCB303 board shall be emulated        
         pcb315_simulator = true;  // The PCB315 board shall be emulated
         pcb326_simulator = true;  // The PCB326 board shall be emulated
 

@@ -435,6 +435,7 @@ bool TiltMotor::startManualHoming(int target_position) {
 /// <param name=""></param>
 /// <returns></returns>
 bool TiltMotor::unlockBrake(void) {
+    if (simulator_mode) return true;
 
     // Sets the OUTPUT 1 properly
     if (!blocking_writeOD(OD_60FE_01, UNLOCK_BRAKE_OUT_MASK)) {
@@ -465,6 +466,7 @@ bool TiltMotor::unlockBrake(void) {
 /// <param name=""></param>
 /// <returns></returns>
 bool  TiltMotor::lockBrake(void) {
+    if (simulator_mode) return true;
 
     // Sets the OUTPUT 1 properly   
     if (!blocking_writeOD(OD_60FE_01, LOCK_BRAKE_OUT_MASK)) {        

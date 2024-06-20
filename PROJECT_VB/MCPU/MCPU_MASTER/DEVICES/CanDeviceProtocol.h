@@ -264,15 +264,69 @@ public:
 		BOOTLOADER_UNCKNOWN_STAT//<! Invalid bootloader status
 	};
 
+/*
+	ref class Register {
+	public:
+		enum class exceptions {
+			INDEX_OUT_OF_RANGE = 1,
+			NULLPTR_REGISTER = 2,
+		};
 
+		// Used to detect an exception
+		ref struct regException : public System::Exception {
+		public:
+			regException(exceptions val) { code = val; }
+			exceptions code;
+		};
+
+		Register() { data = gcnew cli::array<System::Byte>(4); }
+		cli::array<System::Byte>^ data;
+
+		unsigned char getByte(unsigned char i) {
+			if (i >= 4) throw gcnew regException(exceptions::INDEX_OUT_OF_RANGE);
+			else return data[i];
+		}
+
+		void setByte(unsigned char i, unsigned char val) {
+			if (i >= 4) throw gcnew regException(exceptions::INDEX_OUT_OF_RANGE);
+			else data[i] = val;
+		}
+
+		bool getBit(unsigned char i, unsigned char mask) {
+			if (i >= 4) throw gcnew regException(exceptions::INDEX_OUT_OF_RANGE);
+			else { return ((data[i] & mask) != 0) ? true : false; }
+		}
+
+		void setBit(unsigned char i, unsigned char mask, unsigned char val) {
+			if (i >= 4) throw gcnew regException(exceptions::INDEX_OUT_OF_RANGE);
+			else {
+				data[i] &= ~mask;
+				data[i] |= (val & mask);
+				return;
+			}
+		}
+	};
+	*/
+	
 	/// <summary>
 	/// This is the data structure handling the protocol device register data.
 	/// 
 	/// \ingroup dataAccess
 	/// </summary>	
-	protected:ref class Register {
+	public:ref class Register {
 	public:
-		
+		enum class exceptions {
+			INDEX_OUT_OF_RANGE = 1,
+			NULLPTR_REGISTER = 2,
+		};
+
+		// Used to detect an exception
+		ref struct regException : public System::Exception {
+		public:
+			regException(exceptions val) { code = val; }
+			exceptions code;
+		};
+
 		/// <summary>
 		/// Creates a register assigning all the internal data
 		/// </summary>
@@ -338,6 +392,7 @@ public:
 		}
 
 	};
+	
 
 	/// <summary>
 	/// This class provides a data structure for the can device frame communication protocol.
@@ -548,6 +603,25 @@ public:
 		System::String^ log_string;//!< Pre formatted string statistic
 	};
 
+	public:ref class CanDeviceCommand {
+	public:
+		
+		CanDeviceCommand(unsigned char cd) {
+			code = cd;
+			d0 = d1 = d2 = d3 = 0;
+		}
+		CanDeviceCommand(unsigned char cd, unsigned char id0, unsigned char id1, unsigned char id2, unsigned char id3) {
+			code = cd;
+			d0 = id0;
+			d1 = id1;
+			d2 = id2;
+			d3 = id3;
+		}
+
+		unsigned char code;
+		unsigned char d0,d1,d2,d3;
+	};
+
 	/// <summary>
 	/// This class provides a data structure to handle a command result.
 	/// 
@@ -701,7 +775,7 @@ public:
 	/// <param name="tmo">this is the timeout in milliseconds for the command completion</param>
 	/// <returns>true if the command can be executed</returns>
 	bool commandNoWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo);
-	
+	bool commandNoWaitCompletion(CanDeviceCommand^ command, int tmo);
 	
 	/// <summary>
 	/// This is a blocking thread safe function sending a command to the remote device.
@@ -732,6 +806,7 @@ public:
 	/// <param name="src">This is the device handler calling the procedure</param>
 	/// <returns>The handler to the result class</returns>
 	CanDeviceCommandResult^ commandWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src);
+	CanDeviceCommandResult^ commandWaitCompletion(CanDeviceCommand^ command, int tmo, Object^ src);
 
 	/// <summary>
 	/// This function returns the current status of the pending command.

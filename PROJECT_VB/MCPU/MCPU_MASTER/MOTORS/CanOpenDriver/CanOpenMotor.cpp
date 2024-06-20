@@ -139,6 +139,11 @@ int CanOpenMotor::convert_User_To_Encoder(int x) {
     else return (int)((double) x * rot_per_unit * (double) 2000 );
 }
 
+int CanOpenMotor::convert_Absolute_User_To_Encoder(int x) {
+
+    return (int)((double)x * rot_per_unit * (double)2000);
+}
+
 /// <summary>
 /// This function convert the Encoder units to Application (user)  units.
 /// 
@@ -152,6 +157,10 @@ int CanOpenMotor::convert_User_To_Encoder(int x) {
 int CanOpenMotor::convert_Encoder_To_User(int x) {
     if (reverse_direction) return -1* (int)((double)x / (rot_per_unit * (double)2000));
     else return (int)( (double) x / (rot_per_unit * (double) 2000) );
+}
+
+int CanOpenMotor::convert_Absolute_Encoder_To_User(int x) {
+    return (int)((double)x / (rot_per_unit * (double)2000));
 }
 
 /// <summary>
@@ -384,11 +393,24 @@ void CanOpenMotor::write_resetNode(void) {
 /// <returns>true if success</returns>
 bool CanOpenMotor::writeControlWord(unsigned int mask, unsigned int val) {
     unsigned int ctrlw;
-    if (!blocking_readOD(OD_6040_00)) return false;
+    int i, repeat = 5;
+
+    for (i = repeat; i > 0; i--) {
+        if (blocking_readOD(OD_6040_00)) break;
+        if(simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    if (!i) return false;
+    
     ctrlw = (unsigned int)rxSdoRegister->data;
     ctrlw &= ~mask;
     ctrlw |= val;
-    if (!blocking_writeOD(OD_6040_00, ctrlw)) return false;
+
+    for (i = repeat; i > 0; i--) {
+        if (blocking_writeOD(OD_6040_00, ctrlw)) break;
+        if (simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    if (!i) return false;
+    
     return true;
 }
 
@@ -398,11 +420,39 @@ bool CanOpenMotor::writeControlWord(unsigned int mask, unsigned int val) {
 /// </summary>
 /// <param name="ctrlw">This is the pointer to the variable where the control word will be copied in</param>
 /// <returns>true if the register is successfully read</returns>
-bool CanOpenMotor::readControlWord(unsigned int* ctrlw) {    
-    if (!blocking_readOD(OD_6040_00)) return false;
+bool CanOpenMotor::readControlWord(unsigned int* ctrlw) {        
+    int i, repeat = 5;
+
+    // Read the control word
+    for (i = repeat; i > 0; i--) {
+        if (blocking_readOD(OD_6040_00)) break;
+        if (simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    if (!i) return false;
     *ctrlw = (unsigned int) rxSdoRegister->data;
     return true;
 }
+
+/// <summary>
+/// This function reads the status word.
+/// 
+/// </summary>
+/// <param name="stw">This is the pointer to the status word</param>
+/// <returns>true if the register is successfully read</returns>
+bool CanOpenMotor::readStatusWord(unsigned int* stw) {
+    int i, repeat = 5;
+
+    // Read the status
+    for (i = repeat; i > 0; i--) { 
+        if (blocking_readOD(OD_6041_00)) break;
+        if(simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    if (!i) return false;
+
+    *stw = rxSdoRegister->data;
+    return true;
+}
+
 
 /// <summary>
 /// This function starts the motor rotation.
@@ -445,6 +495,7 @@ void CanOpenMotor::mainWorker(void) {
     }
 
     // Demo mode activation
+    /*
     if (simulator_mode) {
         internal_status = status_options::MOTOR_READY;
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Module Run in Demo mode");
@@ -466,9 +517,10 @@ void CanOpenMotor::mainWorker(void) {
             demoLoop();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-    }
+    }*/
 
-    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: RUNNING MODE STARTED");
+    if(simulator_mode) LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: Module Run in Simulation mode");
+    else LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: RUNNING MODE STARTED");
     
     // Add the callback handling the SDO reception
     CanDriver::canrx_canopen_sdo_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanOpenMotor::thread_canopen_rx_sdo_callback);
@@ -486,7 +538,7 @@ void CanOpenMotor::mainWorker(void) {
         if (current_command != MotorCommands::MOTOR_IDLE) setCommandCompletedCode(MotorCompletedCodes::ERROR_UNEXPECTED_STATUS);
 
         // Wait for the CAN DRIVER connection
-        while (!CanDriver::isConnected(false)) {
+        while (!CanDriver::isConnected(simulator_mode)) {
             // Pause waiting for the connection
             internal_status = status_options::MOTOR_NOT_CONNECTED;
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -515,9 +567,15 @@ void CanOpenMotor::mainWorker(void) {
             internal_status = status_options::MOTOR_CONFIGURATION;            
             service_mode = false;
 
-            // If the nanoj program is not present (pNanoj = nullptr)  the nanoj_initialized flag  shall be set to true !
-            if (pNanoj) nanoj_initialized = uploadNanojProgram();
-            else nanoj_initialized = true;
+            if (!simulator_mode) {
+                // If the nanoj program is not present (pNanoj = nullptr)  the nanoj_initialized flag  shall be set to true !
+                if (pNanoj) nanoj_initialized = uploadNanojProgram();
+                else nanoj_initialized = true;
+            }
+            else {
+                nanoj_initialized = true;
+            }
+           
 
             // Initializes the object dictionary
             od_initialized = initializeObjectDictionary();
@@ -666,9 +724,10 @@ System::String^ CanOpenMotor::getErrorCode1003(unsigned int val) {
 /// <returns>true in case of success</returns>
 bool CanOpenMotor::initializeObjectDictionary(void) {
     const std::lock_guard<std::mutex> lock(init_mutex);
-    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZATION");
-
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: OD GENERAL INITIALIZATION");    
     
+    if (simulator_mode) CanSimulator::sendMotorRotConfiguration(device_id, rot_per_unit);
+
     while(!blocking_writeOD(OD_4013_01,1)) ; // Hardware configuration : 1 = EXTERNAL VCC LOGIC ON
     while (!blocking_writeOD(OD_2300_00, 0)); // Stops early the NanoJ program
     
@@ -742,12 +801,12 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_6068_00, 100)) ;	// Time
 
     // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(min_position - 10))); 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(max_position + 10)));	// Max Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_Absolute_User_To_Encoder(min_position - 10))); 	// Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_Absolute_User_To_Encoder(max_position + 10)));	// Max Position Range Limit
 
     // Software Position Limit
-    while (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(min_position))); 	// Min Position Limit
-    while (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(max_position)));	    // Max Position Limit
+    while (!blocking_writeOD(OD_607D_01, convert_Absolute_User_To_Encoder(min_position))); 	// Min Position Limit
+    while (!blocking_writeOD(OD_607D_02, convert_Absolute_User_To_Encoder(max_position)));	    // Max Position Limit
 
     // Polarity
     while (!blocking_writeOD(OD_607E_00, 0)) ;	// b7:1-> inverse rotation
@@ -770,18 +829,19 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     while (!blocking_writeOD(OD_607C_00, 0));
     
     // Specific register set for the Subclassed motor
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">:OD SPECIFIC INITIALIZATION " );
     unsigned short od_code = initializeSpecificObjectDictionaryCallback();
     if(od_code == 0) return false;
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">:OD INITIALIZED WITH IDENTIFIER CODE =" + od_code.ToString());
 
-    // Read the Object dictionary flag initialization
-    while (!blocking_readOD(CONFIG_USER_PARAM)) ; // Reads the user parameter containing the stored nanoj checksum
-    if (rxSdoRegister->data == od_code) {
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: INITIALIZED TO " + od_code.ToString());
+    // Read the Object dictionary flag initialization    
+    while (!blocking_readOD(CONFIG_USER_PARAM)); // Reads the user parameter containing the stored nanoj checksum
+    if (rxSdoRegister->data == od_code) {       
         return true;
     }
-    
+
     LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: STORING DATA IN FLASH WITH OD-CODE=" + od_code.ToString());
-    
+
     // Save the Flag in the User Param register and store the User param space
     blocking_writeOD(CONFIG_USER_PARAM, od_code);
     blocking_writeOD(OD_2700_01, 1);
@@ -789,14 +849,21 @@ bool CanOpenMotor::initializeObjectDictionary(void) {
     // Save the whole object dictionary
     blocking_writeOD(OD_1010_01, OD_SAVE_CODE);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    
-    int i;
-    for (i = 30; i > 0; i--) {
-        if((blocking_readOD(OD_1010_01)) && (rxSdoRegister->data == 1)) break;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    if (!simulator_mode) {
+
+        int i;
+        for (i = 30; i > 0; i--) {
+            if ((blocking_readOD(OD_1010_01)) && (rxSdoRegister->data == 1)) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        if (i) LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: OBJECT DICTIONARY STORED IN FLASH");
+        else LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED STORING OD IN FLASH");
     }
-    if (i) LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: OBJECT DICTIONARY STORED IN FLASH");
-    else LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: FAILED STORING OD IN FLASH");    
+    else {
+        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: OBJECT DICTIONARY STORED IN FLASH");
+    }
+
     return true;
 }
 
@@ -895,6 +962,7 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
 
 
 
+
 /// <summary>
 /// This command requests for an immediate activation abort.
 /// </summary>
@@ -906,228 +974,3 @@ void CanOpenMotor::setCommandCompletedCode(MotorCompletedCodes term_code) {
 void CanOpenMotor::abortActivation(void) {
     abort_request = true;
 }
-
-void CanOpenMotor::demoLoop(void) {
-    MotorCompletedCodes returned_code, termination_code;
-    int _100ms_time;
-    int unit_step;
-    bool error_safety = false;
-    int uposition;
-
-    returned_code = idleCallback();
-    
-    // Test if the manual activation can be done
-    if (returned_code == MotorCompletedCodes::COMMAND_PROCEED) {
-
-        // If the safety condition prevent the command execution it is immediatelly aborted
-        Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-        if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-            returned_code = MotorCompletedCodes::ERROR_SAFETY; // Priority over the limit switch
-        }
-
-        // Evaluates the manual termination condition
-        if (returned_code == MotorCompletedCodes::COMMAND_PROCEED) {
-            // handle the manual hardware inputs
-            motor_rotation_activations manual_req = Gantry::getManualActivationRequestState(device_id);
-            if (manual_req == motor_rotation_activations::MOTOR_INCREASE) {
-                if (!activateManualPositioning(max_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-            else if (manual_req == motor_rotation_activations::MOTOR_DECREASE) {
-                if (!activateManualPositioning(min_position)) Notify::instant(Notify::messages::INFO_ACTIVATION_MOTOR_ERROR_DISABLE);
-            }
-        }
-
-    }
-
-
-
-    // Initiate a requested command
-    switch (request_command) {
-    case MotorCommands::MOTOR_AUTO_POSITIONING:
-        uposition = getCurrentUposition();
-
-        // Idle status prevents to proceed
-        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING FAILED DUE TO IDLE");
-            encoder_eposition = convert_User_To_Encoder(uposition);
-            setCommandCompletedCode(returned_code);
-            request_command = MotorCommands::MOTOR_IDLE;
-            return;
-            
-        }
-         
-        motionParameterCallback(MotorCommands::MOTOR_AUTO_POSITIONING, uposition, command_target);
-
-        // Preparation
-        returned_code = preparationCallback(MotorCommands::MOTOR_AUTO_POSITIONING, uposition, command_target);
-
-        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING PREPARATION FAILED!");
-            encoder_eposition = convert_User_To_Encoder(uposition);
-            setCommandCompletedCode(returned_code);
-            request_command = MotorCommands::MOTOR_IDLE;
-            return;
-        }
-
-        // Starts
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: START DEMO AUTO POSITIONING");
-        current_command = request_command;
-        abort_request = false;
-        previous_uposition = uposition;
-
-        
-        _100ms_time = ((command_target - uposition) * 10) / command_speed;
-        if (_100ms_time) {
-            unit_step = (command_target - uposition) / abs(_100ms_time);
-
-            termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
-            for (int i = 0; i < abs(_100ms_time); i++) {
-                uposition += unit_step;                
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                
-                // Test the abort request flag
-                if (abort_request) {
-                    abort_request = false;
-                    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: ABORT REQUEST!");
-                    termination_code = MotorCompletedCodes::ERROR_COMMAND_ABORTED;
-                    break;
-                }
-
-                termination_code = runningCallback(MotorCommands::MOTOR_AUTO_POSITIONING, uposition, command_target);
-                if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
-
-                // If the safety condition prevent the command execution it is immediatelly aborted
-                Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-                if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-                    LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-                    termination_code = MotorCompletedCodes::ERROR_SAFETY;
-                    break;
-                }
-
-                // Gets the obstacle condition
-                if (Gantry::getObstacleRotationStatus(device_id, motor_direction)) {
-                    LogClass::logInFile("Motor <" + device_id.ToString() + ">: obstacle condition error");
-                    termination_code = MotorCompletedCodes::ERROR_OBSTACLE_DETECTED;
-                    break;
-                }
-
-                external_uposition = encoder_uposition = uposition;
-                encoder_eposition = convert_User_To_Encoder(uposition);
-            }
-        }
-
-        external_uposition = encoder_uposition = uposition;
-        if (termination_code == MotorCompletedCodes::COMMAND_SUCCESS) {
-            external_uposition = encoder_uposition = uposition = command_target;
-        }        
-        encoder_eposition = convert_User_To_Encoder(uposition);
-        
-        setCommandCompletedCode(termination_code);
-        request_command = MotorCommands::MOTOR_IDLE;
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO AUTO POSITIONING COMPLETED TO TARGET:" + uposition.ToString());
-        break;
-
-    case MotorCommands::MOTOR_MANUAL_POSITIONING:
-        
-        uposition = getCurrentUposition();
-
-        // Idle status prevents to proceed
-        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING FAILED DUE TO IDLE");
-            encoder_eposition = convert_User_To_Encoder(uposition);
-            setCommandCompletedCode(returned_code);
-            request_command = MotorCommands::MOTOR_IDLE;
-            return;
-        }
-
-        motionParameterCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, uposition, command_target);
-
-        // Preparation
-        returned_code = preparationCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, uposition, command_target);
-        if (returned_code != MotorCompletedCodes::COMMAND_PROCEED) {
-            LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING PREPARATION FAILED!");
-            encoder_eposition = convert_User_To_Encoder(uposition);
-            setCommandCompletedCode(returned_code);
-            request_command = MotorCommands::MOTOR_IDLE;
-            return;
-        }
-
-        // Assignes the current motor direction
-        if (command_target > encoder_uposition) motor_direction = motor_rotation_activations::MOTOR_INCREASE;
-        else motor_direction = motor_rotation_activations::MOTOR_DECREASE;
-
-        // Starts
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: START DEMO MANUAL POSITIONING");
-        current_command = request_command;
-        abort_request = false;
-        previous_uposition = uposition;
-
-
-        _100ms_time = ((command_target - uposition) * 10) / command_speed;
-        if (_100ms_time) {
-            unit_step = (command_target - uposition) / abs(_100ms_time);
-
-            termination_code = MotorCompletedCodes::COMMAND_SUCCESS;
-            
-            for (int i = 0; i < abs(_100ms_time); i++) {
-                uposition += unit_step;                
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                external_uposition = encoder_uposition = uposition;
-                encoder_eposition = convert_User_To_Encoder(uposition);
-
-                termination_code = runningCallback(MotorCommands::MOTOR_MANUAL_POSITIONING, uposition, command_target);
-                if (termination_code != MotorCompletedCodes::COMMAND_PROCEED) break;
-
-                // If the safety condition prevent the command execution it is immediatelly aborted
-                Gantry::safety_rotation_conditions safety = Gantry::getSafetyRotationStatus(device_id);
-                if (safety != Gantry::safety_rotation_conditions::GANTRY_SAFETY_OK) {
-                    LogClass::logInFile("Motor <" + device_id.ToString() + ">: safety condition error > " + safety.ToString());
-                    termination_code = MotorCompletedCodes::ERROR_SAFETY;
-                    break;
-                }
-                
-                // handle the manual hardware inputs
-                motor_rotation_activations manual_req = Gantry::getManualActivationRequestState(device_id);
-                if (motor_direction != manual_req) {
-                    termination_code = MotorCompletedCodes::COMMAND_MANUAL_TERMINATION;
-                    break;
-                }
-            }
-        }
-
-        external_uposition = encoder_uposition = uposition;
-        if (termination_code == MotorCompletedCodes::COMMAND_SUCCESS) {
-            external_uposition = encoder_uposition = uposition = command_target;
-        }
-        encoder_eposition = convert_User_To_Encoder(uposition);
-
-        setCommandCompletedCode(termination_code);
-        request_command = MotorCommands::MOTOR_IDLE;
-        LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: DEMO MANUAL POSITIONING COMPLETED TO TARGET:" + uposition.ToString());
-        break;
-
-    case MotorCommands::MOTOR_EXTERNAL_HOMING:
-    case MotorCommands::MOTOR_MANUAL_HOMING:
-    case MotorCommands::MOTOR_AUTO_HOMING:
-        if (external_position_mode) {
-            external_uposition = encoder_uposition = command_target;
-            external_raw_position = 0;
-            external_zero_setting = 0;
-            encoder_eposition = convert_User_To_Encoder(command_target);            
-        }
-        else {
-            external_uposition = encoder_uposition = encoder_eposition = 0;
-        }
-        current_command = request_command;
-        abort_request = false;
-        home_initialized = true;
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        setCommandCompletedCode(MotorCompletedCodes::COMMAND_SUCCESS);
-        request_command = MotorCommands::MOTOR_IDLE;
-        break;
-    
-    }
-
-    return;
-};

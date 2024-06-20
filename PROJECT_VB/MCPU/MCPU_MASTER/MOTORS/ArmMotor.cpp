@@ -40,14 +40,7 @@ unsigned short ArmMotor::initializeSpecificObjectDictionaryCallback(void) {
     while (!blocking_writeOD(OD_3210_01, 50000)); // Position Loop, Proportional Gain (closed Loop)
     while (!blocking_writeOD(OD_3210_02, 10));	 // Position Loop, Integral Gain (closed Loop)
 
-    // Position Range Limit
-    while (!blocking_writeOD(OD_607B_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE - 1000))); 	// Min Position Range Limit
-    while (!blocking_writeOD(OD_607B_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE + 1000)));	// Max Position Range Limit
-
-    // Software Position Limit
-    if (!blocking_writeOD(OD_607D_01, convert_User_To_Encoder(MIN_ROTATION_ANGLE))) return 0;	// Min Position Limit
-    if (!blocking_writeOD(OD_607D_02, convert_User_To_Encoder(MAX_ROTATION_ANGLE))) return 0;	// Max Position Limit
-
+  
     return ARM_OD_CODE;
 }
 

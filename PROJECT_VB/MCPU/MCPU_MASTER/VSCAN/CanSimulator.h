@@ -39,7 +39,7 @@ public:
 
 	delegate void rxData_slot(void);
 	static event rxData_slot^ canrx_canopen_sdo_event; //!< CanOpen SDO received buffer
-	static event rxData_slot^ canrx_canopen_reset_event;
+	static event rxData_slot^ canrx_canopen_bootup_event;
 	static event rxData_slot^ canrx_device_event; //!< Metaltronica Buffer
 
 	delegate void connection_slot(bool status); //!< This is the delegate of the connection handler
@@ -54,7 +54,7 @@ public:
 	static unsigned short canId;
 	static cli::array<System::Byte>^ canDataBuffer;//!< This is the data buffer decoded
 	static bool connection_status = false;//!< This is the current connection status
-
+	static void sendMotorRotConfiguration(unsigned char devId, double rot_convertion);
 private:
 	static bool started = false;
 	

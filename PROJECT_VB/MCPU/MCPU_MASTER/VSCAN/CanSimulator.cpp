@@ -116,26 +116,27 @@ void CanSimulator::sendConfiguration() {
 
 	buffer[(Byte)can_buf_struct::STX] = CanSimulator::STX;
 	buffer[(Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
-	buffer[(Byte)can_buf_struct::CAN_IDL] = 0;
-	buffer[(Byte)can_buf_struct::CAN_IDH] = 0;
+	buffer[(Byte)can_buf_struct::CAN_IDL] = 0x00;
+	buffer[(Byte)can_buf_struct::CAN_IDH] = 0xFF;
+	buffer[(Byte)can_buf_struct::ETX] = CanSimulator::ETX;
 	buffer[(Byte)can_buf_struct::DATALEN] = 8;
 	
 	// Board Simulation bit
 	buffer[(Byte)can_buf_struct::D0] = 0;
-	if (PCB301::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 1;
-	if (PCB302::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 2;
-	if (PCB303::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 4;
-	if (PCB304::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 8;
-	if (PCB315::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 0x10;
-	if (PCB326::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D0] |= 0x20;
+	if (Gantry::isPcb301Demo()) buffer[(Byte)can_buf_struct::D0] |= 1;
+	if (Gantry::isPcb302Demo()) buffer[(Byte)can_buf_struct::D0] |= 2;
+	if (Gantry::isPcb303Demo()) buffer[(Byte)can_buf_struct::D0] |= 4;
+	if (Gantry::isPcb304Demo()) buffer[(Byte)can_buf_struct::D0] |= 8;
+	if (Gantry::isPcb315Demo()) buffer[(Byte)can_buf_struct::D0] |= 0x10;
+	if (Gantry::isPcb326Demo()) buffer[(Byte)can_buf_struct::D0] |= 0x20;
 
 	// Motor Simulation Bit
 	buffer[(Byte)can_buf_struct::D1] = 0;
-	if (VerticalMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 1;
-	if (BodyMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 2;
-	if (ArmMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 4;
-	if (TiltMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 8;
-	if (SlideMotor::device->isSimulatorMode()) buffer[(Byte)can_buf_struct::D1] |= 0x10;
+	if (Gantry::isMotorVerticalDemo()) buffer[(Byte)can_buf_struct::D1] |= 1;
+	if (Gantry::isMotorBodyDemo()) buffer[(Byte)can_buf_struct::D1] |= 2;
+	if (Gantry::isMotorArmDemo()) buffer[(Byte)can_buf_struct::D1] |= 4;
+	if (Gantry::isMotorTiltDemo()) buffer[(Byte)can_buf_struct::D1] |= 8;
+	if (Gantry::isMotorSlideDemo()) buffer[(Byte)can_buf_struct::D1] |= 0x10;
 	
 	try {
 		device->clientSocket->Send(buffer);
@@ -147,6 +148,28 @@ void CanSimulator::sendConfiguration() {
 	return;
 }
 
+void CanSimulator::sendMotorRotConfiguration(unsigned char devId, double rot_convertion) {
+	
+	cli::array<System::Byte>^ buffer = gcnew cli::array<System::Byte>((int)can_buf_struct::BUFLEN);
+	char* byteArray = reinterpret_cast<char*>(&rot_convertion);
+	for (int i = 0; i < 8; i++) buffer[(Byte)can_buf_struct::D0 + i] = byteArray[i];
+
+	buffer[(System::Byte)can_buf_struct::STX] = CanSimulator::STX;
+	buffer[(System::Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
+	buffer[(System::Byte)can_buf_struct::CAN_IDL] = devId;
+	buffer[(System::Byte)can_buf_struct::CAN_IDH] = 0xFF;
+	buffer[(System::Byte)can_buf_struct::ETX] = CanSimulator::ETX;
+	buffer[(Byte)can_buf_struct::DATALEN] = 8;
+
+	try {
+		device->clientSocket->Send(buffer);
+	}
+	catch (...) {
+		LogClass::logInFile("Simulator Server: failed sending the motor configuration word !\n");
+	}
+
+	return;
+}
 void CanSimulator::handleBuffer(void) {
 
 	
@@ -183,6 +206,11 @@ void CanSimulator::handleBuffer(void) {
 		if ((canId >= 0x580) && (canId <= 0x5FF)) {
 
 			canrx_canopen_sdo_event();
+			continue;
+		}
+
+		if ((canId >= 0x700) && (canId <= 0x707)) {
+			canrx_canopen_bootup_event();
 			continue;
 		}
 

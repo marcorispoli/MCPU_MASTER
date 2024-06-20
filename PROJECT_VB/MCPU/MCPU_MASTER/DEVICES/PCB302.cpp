@@ -105,34 +105,8 @@ int PCB302::getDetectedPaddleCollimationFormat(void) {
 }; 
 
 
-void PCB302::handleSystemStatusRegister(void) {
-	Register^ reg = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_STATUS_REGISTER);
-	if (reg == nullptr) return;
-
-	compression_on = PCB302_GET_SYSTEM_CMP_ON(reg);
-	downward_activation_status = (PCB302_GET_SYSTEM_UPWARD_DIRECTION(reg) || PCB302_GET_SYSTEM_DOWNWARD_DIRECTION(reg));
-	compression_executing = compression_on && downward_activation_status;
 
 
-}
-
-void PCB302::handlePaddleStatusRegister(void) {
-
-	Register^ paddle_status_register = readStatusRegister((unsigned char)StatusRegisters::PADDLE_STATUS_REGISTER);
-	if (paddle_status_register == nullptr) return;
-
-	current_paddle_position = PCB302_GET_PADDLE_POSITION_LOW(paddle_status_register) + 256 * PCB302_GET_PADDLE_POSITION_HIGH(paddle_status_register);
-	current_force = PCB302_GET_PADDLE_FORCE_LOW(paddle_status_register) + 16 * PCB302_GET_PADDLE_FORCE_HIGH(paddle_status_register);
-
-	Register^ raw_paddle_status_register = readStatusRegister((unsigned char)StatusRegisters::RAW_PADDLE_STATUS_REGISTER);
-	if (raw_paddle_status_register == nullptr) return;
-
-	current_raw_paddle_position = PCB302_GET_RAW_PADDLE_POSITION_LOW(raw_paddle_status_register) + 256 * PCB302_GET_RAW_PADDLE_POSITION_HIGH(raw_paddle_status_register);
-	current_raw_force = PCB302_GET_RAW_PADDLE_FORCE_LOW(raw_paddle_status_register) + 16 * PCB302_GET_RAW_PADDLE_FORCE_HIGH(raw_paddle_status_register);
-
-	// To be modified
-	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;
-}
 
 void PCB302::evaluateEvents(void) {
 	
@@ -144,9 +118,9 @@ void PCB302::evaluateEvents(void) {
 	}
 
 	// Assignes the breast_thickness based on the current paddle and the paddle offset
-	if (compression_on) {
-		breast_thickness = (int)current_paddle_position - thickness_correction;
-		compression_force = current_force;
+	if (protocol.status_register.compression_on) {
+		breast_thickness = (int) protocol.status_register.paddle_position - thickness_correction;
+		compression_force = protocol.status_register.paddle_force;
 	}
 	else {
 		breast_thickness = 0;
@@ -175,27 +149,16 @@ bool PCB302::configurationLoop(void) {
 	unsigned short force_gain = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_CALIBRATION_GAIN]);
 	unsigned short force_limit = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_LIMIT]);
 	unsigned short force_target = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_TARGET]);
-
 	thickness_correction = System::Convert::ToInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_POSITION_CALIBRATION)[CompressorConfig::PARAM_THICKNESS_CORRECTION]);
 	
-	// Upload calibration registers
-	unsigned char d0 = (unsigned char) position_offset;
-	unsigned char d1 = (unsigned char) (position_offset >> 8) ;
-	unsigned char d2 = (unsigned char) position_gain;
-	unsigned char d3 = (unsigned char) (position_gain >> 8);
-	while (!writeParamRegister((int) ParamRegisters::POSITION_PARAM_REGISTER,d0,d1,d2,d3));
+	// Upload Position parameter
+	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::POSITION_PARAM_REGISTER,protocol.parameter_register.encodePositionParamRegister(position_offset, position_gain));
 
-	d0 = (unsigned char)force_offset;
-	d1 = (unsigned char)(force_offset >> 8);
-	d2 = (unsigned char)force_gain;
-	d3 = (unsigned char)(force_gain >> 8);
-	while (!writeParamRegister((int)ParamRegisters::FORCE_CALIBRATION_PARAM_REGISTER, d0, d1, d2, d3));
+	// Upload Force parameter
+	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::FORCE_CALIBRATION_PARAM_REGISTER, protocol.parameter_register.encodeForceParamRegister(force_offset, force_gain));
 
-	d0 = (unsigned char)force_limit;	
-	d1 = (unsigned char)force_target;
-	d2 = 0;
-	d3 = 0;
-	while (!writeParamRegister((int)ParamRegisters::COMPRESSION_PARAM_REGISTER, d0, d1, d2, d3));
+	// Compression parameter
+	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::COMPRESSION_PARAM_REGISTER, protocol.parameter_register.encodeCompressionParamRegister(force_limit, force_target));
 
 
 	return true;
@@ -216,21 +179,30 @@ void PCB302::runningLoop(void) {
 		}
 	}
 
-	handleSystemStatusRegister();
+	//	Status Register
+	protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER));
+	compression_executing = protocol.status_register.compression_on && protocol.status_register.downward_direction;
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	
-	handlePaddleStatusRegister();
+	// Paddle Register
+	protocol.status_register.decodePaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::PADDLE_REGISTER));
+	
+	// Raw Paddle Register
+	protocol.status_register.decodeRawPaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::RAW_PADDLE_REGISTER));
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-	// To be done
+	// To be modified
+	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;		
 	magnifier_device_detected = false;
 	patient_protection_detected = true; 
 	patient_protection_shifted = false; 
+	setPositionLimit(200);// To be modified
+	
+	
+	writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::POSITION_LIMIT_REGISTER, protocol.data_register.encodePositionLimitRegister());
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-	// Refresh the Data register
-	setPositionLimit(200);
-	writeDataRegister((unsigned char)DataRegisters::POSITION_LIMIT_DATA_REGISTER, position_limit_data_register);
-	writeDataRegister((unsigned char)DataRegisters::OPTIONS_DATA_REGISTER, options_data_register);
+	writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::OPTIONS_REGISTER, protocol.data_register.encodeOptionsRegister());
 
 	evaluateEvents();
 
@@ -244,12 +216,12 @@ void PCB302::demoLoop(void) {
 	patient_protection_detected = true;
 	patient_protection_shifted = false;
 
-	compression_on = false;
-	downward_activation_status = false;
-	compression_executing = compression_on && downward_activation_status;
+	protocol.status_register.compression_on = false;
+	protocol.status_register.downward_direction = false;
+	compression_executing = false;
 
-	current_paddle_position = 0;
-	current_force = 0;
+	protocol.status_register.paddle_position = 0;
+	protocol.status_register.paddle_force = 0;
 
 
 	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;

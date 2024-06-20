@@ -328,12 +328,11 @@ void CanOpenMotor::CiA402_FaultCallback(void) {
     
 
     // Tries to reset the error condition
-    if (!blocking_readOD(OD_6040_00)) return;
-    ctrlw = rxSdoRegister->data;
-    ctrlw |= 0x80;
-    if (!blocking_writeOD(OD_6040_00, ctrlw)) return;
-    ctrlw &= ~0x80;
-    if (!blocking_writeOD(OD_6040_00, ctrlw)) return;    
+
+    // Toggles the bit 0x80 of the control word
+    if (!writeControlWord(0x80, 0x80)) return;
+    if(simulator_mode) std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    if (!writeControlWord(0x80, 0)) return;
     return;
 }
 

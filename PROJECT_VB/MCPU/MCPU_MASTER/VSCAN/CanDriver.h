@@ -35,6 +35,8 @@ public:
     // Simulator callbacks
     static void canrx_simulator_canopen_sdo_event(void) ; 
     static void canrx_simulator_device_event(void) ;
+    static void canrx_simulator_canopen_bootup_event(void);
+    
 
     static bool multithread_send(unsigned short canId, unsigned char* data, unsigned char len, bool simul);
     static inline bool isConnected(bool simul) { 

@@ -1006,10 +1006,7 @@ protected:
 		virtual void resetCallback(void) { return ; } //!< Called whenever the boot message is received from the device
 		virtual unsigned short initializeSpecificObjectDictionaryCallback(void) { return 0x0001; } //!< Override this function to initialize specific registers of the target Motor Device
 		virtual bool unbrakeCallback(void) { return true; } //!< Called whenever the optional brake device should be released
-		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated
-		
-		virtual void demoLoop(void);
-
+		virtual bool brakeCallback(void) { return true; } //!< Called whenever the optional brake device should be reactivated		
 		inline void setCommandCompleted(MotorCompletedCodes error) { command_completed_code = error; }
 
 		/// <summary>
@@ -1047,7 +1044,7 @@ protected:
 	bool fault_activation;
 private:
 		CanMotorCommunicationMonitor can_communication_monitor; //!< This is the debug class 
-
+		
 		bool run;
 		bool reset_node;
 		int max_position;			//!< This is the maximum target selectable

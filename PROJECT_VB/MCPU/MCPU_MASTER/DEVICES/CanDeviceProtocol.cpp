@@ -418,6 +418,30 @@ bool CanDeviceProtocol::commandNoWaitCompletion(unsigned char code, unsigned cha
     return true;
 }
 
+bool CanDeviceProtocol::commandNoWaitCompletion(CanDeviceCommand^ command, int tmo) {
+    // Protect the function with a mutex
+    const std::lock_guard<std::mutex> lock(command_wait_mutex);
+    if (command == nullptr) return false;
+
+    if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandNoWaitCompletion(command->code, command->d0, command->d1, command->d2, command->d3, tmo);
+
+    if (command_executing) return false;
+    if (internal_status != status_options::DEVICE_RUNNING) return false;
+
+    command_executing = true;
+    command_tmo = tmo;
+    command_code = command->code;
+    command_d0 = command->d0;
+    command_d1 = command->d1;
+    command_d2 = command->d2;
+    command_d3 = command->d3;
+    command_error = 0;
+
+    return true;
+}
+
+
+
 CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitCompletion(unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src) {
     
     // Protect the function with a mutex
@@ -454,7 +478,42 @@ CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitComplet
     
 }
 
+CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitCompletion(CanDeviceCommand^ command, int tmo, Object^ src) {
 
+    // Protect the function with a mutex
+    const std::lock_guard<std::mutex> lock(command_wait_mutex);
+
+    // Verifies that the calling module is different from the class implementing the communication with the device
+    if (src == (Object^)this) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_INVALID_DEVICE);
+    if(command == nullptr) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM);
+
+    if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandWaitCompletion(command->code, command->d0, command->d1, command->d2, command->d3, tmo, src);
+
+
+    // Invalid Device Status 
+    if (internal_status != status_options::DEVICE_RUNNING) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED);
+
+    // Command Busy
+    if (command_executing)  return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_BUSY);
+
+
+    // Command preparation
+    command_executing = true;
+    command_tmo = tmo;
+    command_code = command->code;
+    command_d0 = command->d0;
+    command_d1 = command->d1;
+    command_d2 = command->d2;
+    command_d3 = command->d3;
+    command_error = 0;
+
+    // Wait for command completion
+    while (!isCommandCompleted()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Returns the result
+    return gcnew CanDeviceCommandResult((CommandRegisterErrors)command_error, command_ris0, command_ris1);
+
+}
 
 
 CanDeviceProtocol::Register^ CanDeviceProtocol::readCommandRegister(void) {

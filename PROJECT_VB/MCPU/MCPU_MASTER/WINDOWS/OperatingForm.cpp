@@ -105,7 +105,7 @@ namespace OPERSTATUS {
 		
 		collimatorStatus collimator;
 		
-		PCB301::door_options door_status;		
+		bool closed_door;		
 		unsigned char currentPanel;
 		bool alarm;
 		bool warning;
@@ -218,7 +218,7 @@ void OperatingForm::formInitialization(void) {
 	tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
 
 	// Door Status 
-	OPERSTATUS::Registers.door_status = PCB301::door_options::OPEN_DOOR;
+	OPERSTATUS::Registers.closed_door = false;
 	doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
 
 	// Magnification factor
@@ -667,10 +667,10 @@ void OperatingForm::evaluateMagStatus(void) {
 
 void OperatingForm::evaluateDoorStatus(void) {
 
-	if (PCB301::getDoorStatus() != OPERSTATUS::Registers.door_status) {
-		OPERSTATUS::Registers.door_status = PCB301::getDoorStatus();
+	if (PCB301::isClosedDoor() != OPERSTATUS::Registers.closed_door) {
+		OPERSTATUS::Registers.closed_door = PCB301::isClosedDoor();
 
-		if (OPERSTATUS::Registers.door_status == PCB301::door_options::CLOSED_DOOR) {
+		if (OPERSTATUS::Registers.closed_door ) {
 			doorStatus->BackgroundImage = DOOR_CLOSED_IMAGE;
 		}
 		else {

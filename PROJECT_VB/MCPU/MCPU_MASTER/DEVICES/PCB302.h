@@ -9,91 +9,292 @@ ref class PCB302 : public CanDeviceProtocol
 {
 public:
 
-#define PCB302_GET_STATUS_SYSTEM_REGISTER (System::Byte) 0, (System::Byte) 4,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0, (System::Byte) 0,(System::Byte) 0, false
-
 	/// <summary>
-	///		This is the Device STATUS Register implementation 
+	/// This class implement the protocol data structure as described in the protocol specification.
 	/// </summary>
-	enum class StatusRegisters {
-		SYSTEM_STATUS_REGISTER = 0, //!> This is the System Status register index
-		SYSTEM_ERROR_REGISTER,
-		PADDLE_STATUS_REGISTER,
-		RAW_PADDLE_STATUS_REGISTER		
+	ref class ProtocolStructure {
+	public:
+
+		ref class StatusRegister {
+		public:
+
+			enum class register_index {
+				SYSTEM_REGISTER = 0, //!> This is the System Status register index
+				ERROR_REGISTER,
+				PADDLE_REGISTER,
+				RAW_PADDLE_REGISTER
+			};
+
+			static bool decodeSystemRegister(CanDeviceProtocol::Register^ sys) {
+				if (sys == nullptr) return false;
+
+				// Byte 0 of the register
+				manual_servo_up = sys->d0 & 0x1;
+				manual_servo_down = sys->d0 & 0x2;
+				manual_pedal_up = sys->d0 & 0x4;
+				manual_pedal_down = sys->d0 & 0x8;
+
+				// Byte 1
+				idle_status = sys->d1 & 0x1;
+				manual_activation = sys->d1 & 0x2;
+				pedal_activation = sys->d1 & 0x4;
+				command_activation = sys->d1 & 0x8;
+				upward_direction = sys->d1 & 0x10;
+				downward_direction = sys->d1 & 0x20;
+				unlock_activation = sys->d1 & 0x40;
+				device_fault = sys->d1 & 0x80;
+
+				// Byte 2
+				compression_ena = sys->d2 & 0x1;
+				compression_on = sys->d2 & 0x2;
+				zero_compression_mode = sys->d2 & 0x4;
+				smart_target = sys->d2 & 0x8;
+				force_target = sys->d2 & 0x10;
+				limit_compression = sys->d2 & 0x20;
+
+				// Byte 3
+				// Not implemented
+				return true;
+			}
+			CanDeviceProtocol::Register^ encodeSystemRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
+
+				// Byte 0 of the register
+				if(manual_servo_up) sys->d0 |= 0x1;
+				if (manual_servo_down) sys->d0 |= 0x2;
+				if (manual_pedal_up)sys->d0 |= 0x4;
+				if (manual_pedal_down)sys->d0 |= 0x8;
+
+				// Byte 1
+				if (idle_status)sys->d1 |= 0x1;
+				if (manual_activation)sys->d1 |= 0x2;
+				if (pedal_activation) sys->d1 |= 0x4;
+				if (command_activation) sys->d1 |= 0x8;
+				if (upward_direction) sys->d1 |= 0x10;
+				if (downward_direction) sys->d1 |= 0x20;
+				if (unlock_activation) sys->d1 |= 0x40;
+				if (device_fault) sys->d1 |= 0x80;
+
+				// Byte 2
+				if (compression_ena) sys->d2 |= 0x1;
+				if (compression_on) sys->d2 |= 0x2;
+				if (zero_compression_mode) sys->d2 |= 0x4;
+				if (smart_target)sys->d2 |= 0x8;
+				if (force_target) sys->d2 |= 0x10;
+				if (limit_compression)sys->d2 |= 0x20;
+
+				// Returns the formatted register
+				return sys;
+			}
+
+
+			static bool decodeErrorRegister(CanDeviceProtocol::Register^ err) {
+				if (err == nullptr) return false;
+				return true;
+			}
+
+
+			static bool decodePaddleRegister(CanDeviceProtocol::Register^ pad) {
+				if (pad == nullptr) return false;
+				paddle_position = (int)pad->d0 + 256 * (int)(pad->d1 & 0x0f);
+				paddle_force = (int) ((pad->d1 & 0xF0) >> 4) + 16 * (int) pad->d2;
+				paddle_code = pad->d3;
+				return true;
+			}
+			CanDeviceProtocol::Register^ encodePaddleRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ pad = gcnew CanDeviceProtocol::Register;
+
+				pad->d0 = (unsigned char) (paddle_position & 0xFF);
+				pad->d1 = (unsigned char) ((paddle_position>>8) & 0x0f);				
+				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) >> 4);
+				pad->d2 = (unsigned char)((paddle_force >> 4) & 0xff);
+				pad->d3 = paddle_code;
+
+				// Returns the formatted register
+				return pad;
+			}
+
+			static bool decodeRawPaddleRegister(CanDeviceProtocol::Register^ rpad) {
+				if (rpad == nullptr) return false;
+
+				paddle_raw_position = (int)rpad->d0 + 256 * (int)(rpad->d1 & 0x0f);
+				paddle_raw_force = (int)((rpad->d1 & 0xF0) >> 4) + 16 * (int)rpad->d2;
+				paddle_raw_code = rpad->d3;
+				return true;
+			}
+
+			CanDeviceProtocol::Register^ encodeRawPaddleRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ pad = gcnew CanDeviceProtocol::Register;
+
+				pad->d0 = (unsigned char)(paddle_raw_position & 0xFF);
+				pad->d1 = (unsigned char)((paddle_raw_position >> 8) & 0x0f);
+				pad->d1 |= ((unsigned char)(paddle_raw_force & 0x0F) >> 4);
+				pad->d2 = (unsigned char)((paddle_raw_force >> 4) & 0xff);
+				pad->d3 = paddle_raw_code;
+
+				// Returns the formatted register
+				return pad;
+			}
+
+
+			static bool manual_servo_up = false;
+			static bool manual_servo_down = false;
+			static bool manual_pedal_up = false;
+			static bool manual_pedal_down = false;
+
+			static bool idle_status = false;
+			static bool manual_activation = false;
+			static bool pedal_activation = false;
+			static bool command_activation = false;
+			static bool upward_direction = false;
+			static bool downward_direction = false;
+			static bool unlock_activation = false;
+			static bool device_fault = false;
+
+			static bool compression_ena = false;
+			static bool compression_on = false;
+			static bool zero_compression_mode = false;
+			static bool smart_target = false;
+			static bool force_target = false;
+			static bool limit_compression = false;
+
+			
+			static int paddle_position = 0;
+			static int paddle_force = 0;
+			static unsigned char paddle_code = 0;
+
+			static int paddle_raw_position = 0;
+			static int paddle_raw_force = 0;
+			static unsigned char paddle_raw_code = 0;
+
+		};
+
+
+		ref class DataRegister {
+		public:
+
+			enum class register_index {
+				POSITION_LIMIT_REGISTER = 0,
+				OPTIONS_REGISTER,
+			};
+
+			CanDeviceProtocol::Register^ encodePositionLimitRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ out = gcnew CanDeviceProtocol::Register;
+
+				out->d0 = position_limit & 0xFF;
+				out->d1 = (unsigned char) (position_limit>>8) & 0xFF;
+
+				// Returns the formatted register
+				return out;
+			}
+			static bool decodePositionLimitRegister(CanDeviceProtocol::Register^ reg) {
+				if (reg == nullptr) return false;
+				position_limit = reg->d0 + 256 * reg->d1;
+				return true;
+			}
+
+			CanDeviceProtocol::Register^ encodeOptionsRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ out = gcnew CanDeviceProtocol::Register;
+
+				if (position_calibration) out->d0 |= 0x1;
+				if (force_calibration) out->d0 |= 0x2;
+				if (master_enable) out->d0 |= 0x4;
+				if (zero_compression_mode) out->d0 |= 0x8;
+
+
+				// Returns the formatted register
+				return out;
+			}
+			static bool decodeOptionsRegister(CanDeviceProtocol::Register^ reg) {
+				if (reg == nullptr) return false;
+				
+				position_calibration = reg->d0 & 0x1;
+				force_calibration = reg->d0 & 0x2;
+				master_enable = reg->d0 & 0x4;
+				zero_compression_mode = reg->d0 & 0x8;
+				return true;
+			}
+			
+			static unsigned int  position_limit = 0;
+			static bool position_calibration = false;
+			static bool force_calibration = false;
+			static bool master_enable = false;
+			static bool zero_compression_mode = false;
+
+
+		};
+
+		ref class ParameterRegister {
+		public:
+			enum class command_index {
+				POSITION_PARAM_REGISTER = 0,
+				FORCE_CALIBRATION_PARAM_REGISTER,
+				COMPRESSION_PARAM_REGISTER,
+				UPWARD_PARAM_REGISTER,
+				DOWNWARD_PARAM_REGISTER,
+			};
+
+			//writeParamRegister(unsigned char idx, Register^ reg)
+			
+			Register^ encodePositionParamRegister(unsigned int offset, unsigned int gain) {
+				unsigned char d0 = (unsigned char)offset;
+				unsigned char d1 = (unsigned char)(offset >> 8);
+				unsigned char d2 = (unsigned char)gain;
+				unsigned char d3 = (unsigned char)(gain >> 8);
+
+				return gcnew Register(d0, d1, d2, d3);
+			}
+
+			Register^ encodeForceParamRegister(unsigned int offset, unsigned int gain) {
+				unsigned char d0 = (unsigned char)offset;
+				unsigned char d1 = (unsigned char)(offset >> 8);
+				unsigned char d2 = (unsigned char)gain;
+				unsigned char d3 = (unsigned char)(gain >> 8);
+				return gcnew Register(d0, d1, d2, d3);
+			}
+
+			Register^ encodeCompressionParamRegister(unsigned char limit, unsigned char target) {
+				unsigned char d0 = (unsigned char)limit;
+				unsigned char d1 = (unsigned char)target;
+				unsigned char d2 = 0;
+				unsigned char d3 = 0;
+				return gcnew Register(d0, d1, d2, d3);
+			}
+
+			
+		};
+
+		ref class Commands {
+		public:
+			enum class command_index {
+				ABORT_COMMAND = 0, //!< Abort Command (mandatory as for device protocol)
+				SET_TRIMMERS_COMMAND,
+				SET_COMPRESSION,
+				SET_UNLOCK,
+			};
+
+			CanDeviceProtocol::CanDeviceCommand^ encodeSetUnlockCommand(void) {
+				return gcnew CanDeviceProtocol::CanDeviceCommand((unsigned char)command_index::SET_UNLOCK, 0, 0, 0, 0);
+			}
+
+		};
+
+		static StatusRegister status_register;
+		static DataRegister data_register;
+		static ParameterRegister parameter_register;
+		static Commands command;
 	};
 
-	#define PCB302_GET_SYSTEM_MANUAL_SERVO_UP(reg)			(bool)	(reg->d0 & 0x01)
-	#define PCB302_GET_SYSTEM_MANUAL_SERVO_DWN(reg)			(bool)	(reg->d0 & 0x02)
-	#define PCB302_GET_SYSTEM_PEDAL_UP(reg)					(bool)	(reg->d0 & 0x04)
-	#define PCB302_GET_SYSTEM_PEDAL_DWN(reg)				(bool)	(reg->d0 & 0x08)
-
-	#define PCB302_GET_SYSTEM_IDLE(reg)						(bool)	(reg->d1 & 0x01)
-	#define PCB302_GET_SYSTEM_MANUAL_ACTIVATION(reg)		(bool)	(reg->d1 & 0x02)
-	#define PCB302_GET_SYSTEM_PEDAL_ACTIVATION(reg)			(bool)	(reg->d1 & 0x04)
-	#define PCB302_GET_SYSTEM_COMMAND_ACTIVATION(reg)		(bool)	(reg->d1 & 0x08)
-	#define PCB302_GET_SYSTEM_UPWARD_DIRECTION(reg)			(bool)	(reg->d1 & 0x10)
-	#define PCB302_GET_SYSTEM_DOWNWARD_DIRECTION(reg)		(bool)	(reg->d1 & 0x20)
-	#define PCB302_GET_SYSTEM_UNLOCK_ACTIVATION(reg)		(bool)	(reg->d1 & 0x40)
-	#define PCB302_GET_SYSTEM_FAULT(reg)					(bool)	(reg->d1 & 0x80)
-
-	#define PCB302_GET_SYSTEM_CMP_ENA(reg)					(bool)	(reg->d2 & 0x01)
-	#define PCB302_GET_SYSTEM_CMP_ON(reg)					(bool)	(reg->d2 & 0x02)
-	#define PCB302_GET_SYSTEM_ZERO_COMPRESSION(reg)			(bool)	(reg->d2 & 0x04)
-	#define PCB302_GET_SYSTEM_SMARTUP_TARGET(reg)			(bool)	(reg->d2 & 0x08)
-	#define PCB302_GET_SYSTEM_FORCE_TARGET(reg)				(bool)	(reg->d2 & 0x10)
-	#define PCB302_GET_SYSTEM_LIMIT_COMPRESSION(reg)		(bool)	(reg->d2 & 0x20)
-
-	#define PCB302_GET_PADDLE_POSITION_LOW(reg)				(reg->d0)
-	#define PCB302_GET_PADDLE_POSITION_HIGH(reg)			(reg->d1&0x0F)
-	#define PCB302_GET_PADDLE_FORCE_LOW(reg)				((reg->d1&0xF0) >> 4)
-	#define PCB302_GET_PADDLE_FORCE_HIGH(reg)				(reg->d2)
-
-	#define PCB302_GET_PADDLE_CODE(reg)						(reg->d3)
-
-	#define PCB302_GET_RAW_PADDLE_POSITION_LOW(reg)			(reg->d0)
-	#define PCB302_GET_RAW_PADDLE_POSITION_HIGH(reg)		(reg->d1&0x0F)
-	#define PCB302_GET_RAW_PADDLE_FORCE_LOW(reg)			((reg->d1&0xF0) >> 4)
-	#define PCB302_GET_RAW_PADDLE_FORCE_HIGH(reg)			(reg->d2)
-
-	/// <summary>
-	///	 This is the Device DATA Register implementation 
-	/// </summary>
-	enum class DataRegisters {
-		POSITION_LIMIT_DATA_REGISTER = 0, 
-		OPTIONS_DATA_REGISTER, 
-	};
-	#define PCB302_POSITION_LIMIT_DATA_LOW(reg, val)					reg->d0 = (unsigned char) val;
-	#define PCB302_POSITION_LIMIT_DATA_HIGH(reg,stat)					reg->d1 = (unsigned char) (val>>8);
-
-	#define PCB302_OPTIONS_DATA_POSITION_CALIBRATION(reg,stat)				reg->D0(stat, 0x1) 
-	#define PCB302_OPTIONS_DATA_FORCE_CALIBRATION(reg,stat)					reg->D0(stat, 0x2) 
-	#define PCB302_OPTIONS_DATA_MASTER_ENABLE(reg,stat)						reg->D0(stat, 0x4) 
-	#define PCB302_OPTIONS_DATA_ZERO_COMPRESSION(reg,stat)					reg->D0(stat, 0x8) 
-
-
-	/// <summary>
-	/// This is the device protocol Parameters registers implementation 
-	/// </summary>
-	enum class ParamRegisters {
-		POSITION_PARAM_REGISTER = 0, 
-		FORCE_CALIBRATION_PARAM_REGISTER,
-		COMPRESSION_PARAM_REGISTER,		
-		UPWARD_PARAM_REGISTER,		
-		DOWNWARD_PARAM_REGISTER,			
-	};
-
-	
-	/// <summary>	
-	/// This enumeration class defines the Indexes of the Command Execution
-	///
-	/// </summary>
-	enum class Commandregister {
-		ABORT_COMMAND = 0, //!< Abort Command (mandatory as for device protocol)
-		SET_TRIMMERS_COMMAND,
-		
-		SET_COMPRESSION,
-		SET_UNLOCK,
-	};
-	#define PCB302_SET_UNLOCK_COMMAND (System::Byte) Commandregister::SET_UNLOCK, (System::Byte) (0),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0 //!< This is the SET_POSITIONER_COMMAND byte frame
 
 	PCB302() : CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE")
 	{
@@ -149,20 +350,20 @@ public:
 	inline static bool isPatientProtection(void) { return patient_protection_detected; }
 	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
 
-	static inline unsigned short getRawPosition(void) { return current_raw_paddle_position; }; 
-	static inline unsigned short getRawForce(void) { return current_raw_force; }; 
-	static inline unsigned short getPaddlePosition(void) { return current_paddle_position; };
-	static inline unsigned short getPaddleForce(void) { return current_force; };
+	static inline unsigned short getRawPosition(void) { return protocol.status_register.paddle_raw_position; };
+	static inline unsigned short getRawForce(void) { return protocol.status_register.paddle_raw_force; };
+	static inline unsigned short getPaddlePosition(void) { return protocol.status_register.paddle_position;};
+	static inline unsigned short getPaddleForce(void) { return protocol.status_register.paddle_force;};
 
 	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
 	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
 	static inline bool isCompressing(void) { return compression_executing; }
-	static inline bool getCompressionActivationStatus(void) { return downward_activation_status; }
+	static inline bool getCompressionActivationStatus(void) { return protocol.status_register.downward_direction; }
 
-	static inline void setMasterEna(bool stat) { PCB302_OPTIONS_DATA_MASTER_ENABLE(options_data_register, stat); }
-	static inline void setPositionLimit(unsigned short val) { PCB302_POSITION_LIMIT_DATA_LOW(position_limit_data_register, val); PCB302_POSITION_LIMIT_DATA_HIGH(position_limit_data_register, val);}	
-	static void setCompressorUnlock(void) { device->commandNoWaitCompletion(PCB302_SET_UNLOCK_COMMAND, 30); } //!< This function unlocks the compression
-
+	static inline void setMasterEna(bool stat) { protocol.data_register.master_enable = stat; }
+	static inline void setPositionLimit(unsigned short val) { protocol.data_register.position_limit = val;}
+	static void setCompressorUnlock(void) { PCB302::device->commandNoWaitCompletion(protocol.command.encodeSetUnlockCommand(), 30); } //!< This function unlocks the compression
+	
 public:
 	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
 	static paddleCodes getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name	
@@ -179,33 +380,20 @@ protected:
 	bool configurationLoop(void) override;
 
 private: 
+	static ProtocolStructure protocol; // This is the structure with the Status register info
+
 	static paddleCodes detected_paddle;				//!< This is the current detected paddle
 	static int thickness_correction;
 
-	static unsigned short current_raw_paddle_position = 0;  //!< Current raw paddle position 
-	static unsigned short current_raw_force = 0;		//!< Raw Force as received from the device
-
-	static unsigned short current_paddle_position = 0;  //!< Current paddle position 
 	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm (0 if the compression_on should be false)
-
 	static unsigned short compression_force = 0;	//!< Evaluated compression force ( 0 if the compression_on should be false)
-	static unsigned short current_force = 0;		//!< Force as received from the device
-
-	static bool downward_activation_status = false; //!< A downward activation has been detected
 	static bool compression_executing = false;		//!< A compression is executing
-	static bool compression_on = false;				//!< A compression is detected
-
-	static Register^ options_data_register = gcnew Register();
-	static Register^ position_limit_data_register = gcnew Register();
-
 	static bool patient_protection_detected = false; //!< Is set if the patient protection should be detcted
 	static bool patient_protection_shifted = false; //!< Is set if the patient protection should be shifted out of standard position
 	static bool magnifier_device_detected = false; //!< Is set if the magnifier device has been detected
 	static System::String^ magnifier_factor_string = "1.0"; //!< This is the current magnification factor detected in string format
 
 
-	void handleSystemStatusRegister(void);
-	void handlePaddleStatusRegister(void);
 	void evaluateEvents(void);
 
 

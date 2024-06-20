@@ -73,7 +73,7 @@ namespace IDLESTATUS {
 		tubeStatus	tube;
 
 		bool powerdown;
-		PCB301::door_options door_status;
+		bool closed_door;
 		bool aws_connected;
 		bool peripherals_connected;
 		
@@ -165,9 +165,9 @@ void IdleForm::initIdleStatus(void) {
 	this->peripheralsConnected->BackgroundImage = PERIPHERALS_CONNECTED;
 	this->peripheralsConnected->Hide();
 
-	IDLESTATUS::Registers.door_status = PCB301::getDoorStatus();
+	IDLESTATUS::Registers.closed_door = PCB301::isClosedDoor();
 	this->doorClosed->BackgroundImage = DOOR_CLOSED;
-	if (IDLESTATUS::Registers.door_status == PCB301::door_options::OPEN_DOOR) this->doorClosed->Hide();
+	if (!IDLESTATUS::Registers.closed_door) this->doorClosed->Hide();
 	else this->doorClosed->Show();
 
 
@@ -415,10 +415,10 @@ void IdleForm::idleStatusManagement(void) {
 	}
 
 	// Handles the Door Closed status
-	if (IDLESTATUS::Registers.door_status != PCB301::getDoorStatus())
+	if (IDLESTATUS::Registers.closed_door != PCB301::isClosedDoor())
 	{
-		IDLESTATUS::Registers.door_status = PCB301::getDoorStatus();
-		if (IDLESTATUS::Registers.door_status == PCB301::door_options::OPEN_DOOR) this->doorClosed->Hide();			
+		IDLESTATUS::Registers.closed_door = PCB301::isClosedDoor();
+		if (!IDLESTATUS::Registers.closed_door ) this->doorClosed->Hide();
 		else this->doorClosed->Show();				
 	}
 

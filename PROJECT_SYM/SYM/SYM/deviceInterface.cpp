@@ -14,11 +14,19 @@ deviceInterface::deviceInterface(unsigned short deviceid,unsigned int revision, 
 
 	device_reset_request = false;
 	
+	command_register = gcnew Register();
+	error_register = gcnew Register();
+	revision_register = gcnew Register(revision);
+
 	// Register creation
-	status_registers = gcnew cli::array<unsigned int>(num_status);
-	data_registers = gcnew cli::array<unsigned int>(num_data);
-	parameter_registers = gcnew cli::array<unsigned int>(num_parameters);
-	revision_register = revision;
+	status_registers = gcnew cli::array<Register^>(num_status);
+	for (int i = 0; i < num_status; i++) status_registers[i] = gcnew Register();
+	
+	data_registers = gcnew cli::array<Register^>(num_data);
+	for (int i = 0; i < num_data; i++) data_registers[i] = gcnew Register();
+
+	parameter_registers = gcnew cli::array<Register^>(num_parameters);
+	for (int i = 0; i < num_parameters; i++) parameter_registers[i] = gcnew Register();
 
 	// connect the reception handler
 	canInterface::canrx_device_event += gcnew canInterface::rxData_slot(this, &deviceInterface::canrx_device_event);
@@ -81,9 +89,9 @@ void deviceInterface::handle_bootloader_frame(void){
 		buffer[2] = 1;
 		buffer[3] = 0;
 		buffer[4] = 0;
-		buffer[5] = (Byte) (revision_register & 0xFF); // App maj
-		buffer[6] = (Byte) ((revision_register>>8) & 0xFF); // App min
-		buffer[7] = (Byte)((revision_register >> 16) & 0xFF); // App sub
+		buffer[5] = (Byte) revision_register->d0; // App maj
+		buffer[6] = (Byte) revision_register->d1; // App min
+		buffer[7] = (Byte) revision_register->d2; // App sub
 		canInterface::send(devId + 0x100, 8, buffer);
 	}
 }
@@ -110,24 +118,24 @@ void deviceInterface::handle_normal_frame(void) {
 	switch(frame_cmd) {
 	
 	case (Byte)ProtocolFrameCode::FRAME_READ_REVISION:
-		buffer[3] = (Byte)(revision_register & 0xFF);
-		buffer[4] = (Byte)((revision_register >> 8) & 0xFF);
-		buffer[5] = (Byte)((revision_register >> 16) & 0xFF);
-		buffer[6] = (Byte)((revision_register >> 24) & 0xFF);
+		buffer[3] = (Byte)(revision_register->d0);
+		buffer[4] = (Byte)(revision_register->d1);
+		buffer[5] = (Byte)(revision_register->d2);
+		buffer[6] = (Byte)(revision_register->d3);
 		break;
 
 	case (Byte) ProtocolFrameCode::FRAME_READ_ERRORS:
-		buffer[3] = (Byte)(error_register & 0xFF);
-		buffer[4] = (Byte)((error_register >> 8) & 0xFF);
-		buffer[5] = (Byte)((error_register >> 16) & 0xFF);
-		buffer[6] = (Byte)((error_register >> 24) & 0xFF);
+		buffer[3] = (Byte)(error_register->d0);
+		buffer[4] = (Byte)(error_register->d1);
+		buffer[5] = (Byte)(error_register->d2);
+		buffer[6] = (Byte)(error_register->d3);
 		break;
 
 	case (Byte)ProtocolFrameCode::FRAME_READ_COMMAND:
-		buffer[3] = (Byte)(command_register & 0xFF);
-		buffer[4] = (Byte)((command_register >> 8) & 0xFF);
-		buffer[5] = (Byte)((command_register >> 16) & 0xFF);
-		buffer[6] = (Byte)((command_register >> 24) & 0xFF);
+		buffer[3] = (Byte)(command_register->d0);
+		buffer[4] = (Byte)(command_register->d1);
+		buffer[5] = (Byte)(command_register->d2);
+		buffer[6] = (Byte)(command_register->d3);
 		break;
 
 	case (Byte)ProtocolFrameCode::FRAME_READ_STATUS:
@@ -138,10 +146,10 @@ void deviceInterface::handle_normal_frame(void) {
 			buffer[6] = 0;
 		}
 		else {
-			buffer[3] = (Byte)(status_registers[frame_index] & 0xFF);
-			buffer[4] = (Byte)((status_registers[frame_index] >> 8) & 0xFF);
-			buffer[5] = (Byte)((status_registers[frame_index] >> 16) & 0xFF);
-			buffer[6] = (Byte)((status_registers[frame_index] >> 24) & 0xFF);
+			buffer[3] = (Byte)(status_registers[frame_index]->d0);
+			buffer[4] = (Byte)(status_registers[frame_index]->d1);
+			buffer[5] = (Byte)(status_registers[frame_index]->d2);
+			buffer[6] = (Byte)(status_registers[frame_index]->d3);
 		}
 		break;
 
@@ -153,10 +161,10 @@ void deviceInterface::handle_normal_frame(void) {
 			buffer[6] = 0;
 		}
 		else {
-			buffer[3] = (Byte)(data_registers[frame_index] & 0xFF);
-			buffer[4] = (Byte)((data_registers[frame_index] >> 8) & 0xFF);
-			buffer[5] = (Byte)((data_registers[frame_index] >> 16) & 0xFF);
-			buffer[6] = (Byte)((data_registers[frame_index] >> 24) & 0xFF);
+			buffer[3] = (Byte)(data_registers[frame_index]->d0);
+			buffer[4] = (Byte)(data_registers[frame_index]->d1);
+			buffer[5] = (Byte)(data_registers[frame_index]->d2);
+			buffer[6] = (Byte)(data_registers[frame_index]->d3);
 		}
 		break;
 
@@ -168,12 +176,16 @@ void deviceInterface::handle_normal_frame(void) {
 			buffer[6] = 0;
 		}
 		else {
-			data_registers[frame_index] = (unsigned int)frame_d0 + (((unsigned int)frame_d1) << 8) + (((unsigned int)frame_d2) << 16) + (((unsigned int)frame_d3) << 24);
-
-			buffer[3] = (Byte)(data_registers[frame_index] & 0xFF);
-			buffer[4] = (Byte)((data_registers[frame_index] >> 8) & 0xFF);
-			buffer[5] = (Byte)((data_registers[frame_index] >> 16) & 0xFF);
-			buffer[6] = (Byte)((data_registers[frame_index] >> 24) & 0xFF);
+			
+			data_registers[frame_index]->d0 = (unsigned int)frame_d0;
+			data_registers[frame_index]->d1 = (unsigned int)frame_d1;
+			data_registers[frame_index]->d2 = (unsigned int)frame_d2;
+			data_registers[frame_index]->d3 = (unsigned int)frame_d3;
+			
+			buffer[3] = (Byte)(data_registers[frame_index]->d0);
+			buffer[4] = (Byte)(data_registers[frame_index]->d0);
+			buffer[5] = (Byte)(data_registers[frame_index]->d2);
+			buffer[6] = (Byte)(data_registers[frame_index]->d3);
 		}
 		break;
 
@@ -185,10 +197,10 @@ void deviceInterface::handle_normal_frame(void) {
 			buffer[6] = 0;
 		}
 		else {
-			buffer[3] = (Byte)(parameter_registers[frame_index] & 0xFF);
-			buffer[4] = (Byte)((parameter_registers[frame_index] >> 8) & 0xFF);
-			buffer[5] = (Byte)((parameter_registers[frame_index] >> 16) & 0xFF);
-			buffer[6] = (Byte)((parameter_registers[frame_index] >> 24) & 0xFF);
+			buffer[3] = (Byte)(parameter_registers[frame_index]->d0);
+			buffer[4] = (Byte)(parameter_registers[frame_index]->d1);
+			buffer[5] = (Byte)(parameter_registers[frame_index]->d2);
+			buffer[6] = (Byte)(parameter_registers[frame_index]->d3);
 		}
 		break;
 
@@ -201,12 +213,16 @@ void deviceInterface::handle_normal_frame(void) {
 			buffer[6] = 0;
 		}
 		else {
-			parameter_registers[frame_index] = (unsigned int)frame_d0 + (((unsigned int)frame_d1) << 8) + (((unsigned int)frame_d2) << 16) + (((unsigned int)frame_d3) << 24);
-
-			buffer[3] = (Byte)(parameter_registers[frame_index] & 0xFF);
-			buffer[4] = (Byte)((parameter_registers[frame_index] >> 8) & 0xFF);
-			buffer[5] = (Byte)((parameter_registers[frame_index] >> 16) & 0xFF);
-			buffer[6] = (Byte)((parameter_registers[frame_index] >> 24) & 0xFF);
+			
+			parameter_registers[frame_index]->d0 = (unsigned int)frame_d0;
+			parameter_registers[frame_index]->d1 = (unsigned int)frame_d1;
+			parameter_registers[frame_index]->d2 = (unsigned int)frame_d2;
+			parameter_registers[frame_index]->d3 = (unsigned int)frame_d3;
+			
+			buffer[3] = (Byte)(parameter_registers[frame_index]->d0);
+			buffer[4] = (Byte)(parameter_registers[frame_index]->d1);
+			buffer[5] = (Byte)(parameter_registers[frame_index]->d2);
+			buffer[6] = (Byte)(parameter_registers[frame_index]->d3);
 		}
 		break;
 
@@ -218,12 +234,11 @@ void deviceInterface::handle_normal_frame(void) {
 			buffer[6] = 0;
 		}
 		else {
-			parameter_registers[frame_index] = (unsigned int)frame_d0 + (((unsigned int)frame_d1) << 8) + (((unsigned int)frame_d2) << 16) + (((unsigned int)frame_d3) << 24);
 
-			buffer[3] = (Byte)(parameter_registers[frame_index] & 0xFF);
-			buffer[4] = (Byte)((parameter_registers[frame_index] >> 8) & 0xFF);
-			buffer[5] = (Byte)((parameter_registers[frame_index] >> 16) & 0xFF);
-			buffer[6] = (Byte)((parameter_registers[frame_index] >> 24) & 0xFF);
+			buffer[3] = (Byte)(parameter_registers[frame_index]->d0);
+			buffer[4] = (Byte)(parameter_registers[frame_index]->d1);
+			buffer[5] = (Byte)(parameter_registers[frame_index]->d2);
+			buffer[6] = (Byte)(parameter_registers[frame_index]->d3);
 		}
 		break;
 

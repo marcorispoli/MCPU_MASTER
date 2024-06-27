@@ -20,7 +20,7 @@ public:
 
 			enum class register_index {
 				SYSTEM_REGISTER = 0, //!> This is the System Status register index
-				ERROR_REGISTER,
+				SPARE_REGISTER,
 				PADDLE_REGISTER,
 				RAW_PADDLE_REGISTER
 			};
@@ -89,11 +89,6 @@ public:
 				return sys;
 			}
 
-
-			static bool decodeErrorRegister(CanDeviceProtocol::Register^ err) {
-				if (err == nullptr) return false;
-				return true;
-			}
 
 
 			static bool decodePaddleRegister(CanDeviceProtocol::Register^ pad) {

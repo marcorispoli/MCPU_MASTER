@@ -1,62 +1,19 @@
 #include "Pcb301.h"
 
-#define PCB301_SET_SYSTEM_ERROR_STATUS(stat) status_registers[0] = setRegBit(status_registers[0], 0x1, (stat))
-#define PCB301_SET_SYSTEM_EMERGENCY_STATUS(stat) status_registers[0] = setRegBit(status_registers[0], 0x2, (stat))
-#define PCB301_SET_SYSTEM_POWERDOWN(stat) status_registers[0] = setRegBit(status_registers[0], 0x4, (stat))
-#define PCB301_SET_SYSTEM_CABINET_SAFETY(stat) status_registers[0] = setRegBit(status_registers[0], 0x8, (stat))
-#define PCB301_SET_SYSTEM_POWER_OFF_REQ(stat) status_registers[0] = setRegBit(status_registers[0], 0x10, (stat))
-#define PCB301_SET_SYSTEM_BATT1LOW(stat) status_registers[0] = setRegBit(status_registers[0], 0x20, (stat))
-#define PCB301_SET_SYSTEM_BATT2LOW(stat) status_registers[0] = setRegBit(status_registers[0], 0x40, (stat))
-#define PCB301_SET_SYSTEM_BATTENA(stat) status_registers[0] = setRegBit(status_registers[0], 0x80, (stat))
-
-#define PCB301_SET_BUTTON_VERTICAL_UP(stat) status_registers[0] = setRegBit(status_registers[0], 0x100, (stat))
-#define PCB301_SET_BUTTON_VERTICAL_DOWN(stat) status_registers[0] = setRegBit(status_registers[0], 0x200, (stat))
-#define PCB301_SET_BUTTON_SLIDE_UP(stat) status_registers[0] = setRegBit(status_registers[0], 0x400, (stat))
-#define PCB301_SET_BUTTON_SLIDE_DOWN(stat) status_registers[0] = setRegBit(status_registers[0], 0x800, (stat))
-#define PCB301_SET_BUTTON_ARM_CW(stat) status_registers[0] = setRegBit(status_registers[0], 0x1000, (stat))
-#define PCB301_SET_BUTTON_ARM_CCW(stat) status_registers[0] = setRegBit(status_registers[0], 0x2000, (stat))
-#define PCB301_SET_BUTTON_BODY_CW(stat) status_registers[0] = setRegBit(status_registers[0], 0x4000, (stat))
-#define PCB301_SET_BUTTON_BODY_CCW(stat) status_registers[0] = setRegBit(status_registers[0], 0x8000, (stat))
-
-#define PCB301_SET_SYSTEM_MOTOR_OK(stat) status_registers[0] = setRegBit(status_registers[0], 0x10000, stat)
-#define PCB301_SET_SYSTEM_MOTOR_SWITCH(stat) status_registers[0] = setRegBit(status_registers[0], 0x20000, (stat))
-#define PCB301_SET_SYSTEM_COMPRESSION(stat) status_registers[0] = setRegBit(status_registers[0], 0x40000, (stat))
-#define PCB301_SET_XRAY_PUSH_BUTTON(stat) status_registers[0] = setRegBit(status_registers[0], 0x80000, (stat))
-#define PCB301_SET_SYSTEM_CLOSEDOOR(stat) status_registers[0] = setRegBit(status_registers[0], 0x100000, (stat))
-#define PCB301_SET_SYSTEM_BURNING_JMP(stat) status_registers[0] = setRegBit(status_registers[0], 0x200000, (stat))
-#define PCB301_SET_SYSTEM_POWER_LOCK(stat) status_registers[0] = setRegBit(status_registers[0], 0x400000, (stat))
-
-#define PCB301_SET_PEDAL_VERTICAL_UP(stat) status_registers[0] = setRegBit(status_registers[0], 0x1000000, (stat))
-#define PCB301_SET_PEDAL_VERTICAL_DOWN(stat) status_registers[0] = setRegBit(status_registers[0], 0x2000000, (stat))
-
-#define PCB301_SET_BATTERY_VBATT(x,y) status_registers[1] = setRegVal(x,y,0,0)
-
-
-#define PCB301_GET_OUTPUTS_DATA_POWER_LOCK ((getRegD0(data_registers[0]) & 0x1) ? true: false)
-#define PCB301_GET_OUTPUTS_DATA_MOTOR_POWER_SUPPLY_ENABLE ((getRegD0(data_registers[0]) & 0x2) ? true: false)
-#define PCB301_GET_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE ((getRegD0(data_registers[0]) & 0x4) ? true: false)
-#define PCB301_GET_OUTPUTS_DATA_COMPRESSOR_ENABLE ((getRegD0(data_registers[0]) & 0x8) ? true: false)
-#define PCB301_GET_OUTPUTS_DATA_COMPRESSOR_CALIBRATION ((getRegD0(data_registers[0]) & 0x10) ? true: false)
-#define PCB301_GET_OUTPUTS_DATA_XRAY_ENA ((getRegD0(data_registers[0]) & 0x20) ? true: false)
-
-#define  PCB301_GET_OUTPUTS_DATA_BURNING_STAT ((getRegD1(data_registers[0]) & 0x1) ? true: false)
-#define  PCB301_GET_OUTPUTS_DATA_BUZZER_STAT ((getRegD1(data_registers[0]) & 0x2) ? true: false)
-#define  PCB301_GET_OUTPUTS_DATA_MANUAL_BUZZER ((getRegD1(data_registers[0]) & 0x4) ? true: false)
-#define  PCB301_GET_OUTPUTS_DATA_XRAY_LED ((getRegD1(data_registers[0]) & 0x8) ? true: false)
-#define  PCB301_GET_OUTPUTS_DATA_XRAY_LAMP1 ((getRegD1(data_registers[0]) & 0x10) ? true: false)
-#define  PCB301_GET_OUTPUTS_DATA_XRAY_LAMP2 ((getRegD1(data_registers[0]) & 0x20) ? true: false)
-#define  PCB301_GET_OUTPUTS_DATA_MAN_ROT_LED ((getRegD1(data_registers[0]) & 0x40) ? true: false)
-
-#define  PCB301_GET_OUTPUTS_DATA_POWER_OFF ((getRegD3(data_registers[0]) & 0x40) ? true: false)
-#define  PCB301_GET_OUTPUTS_DATA_KEEP_ALIVE ((getRegD3(data_registers[0]) & 0x80) ? true: false)
-
 
 void PCB301::device_workflow_callback(void) {
 
+	// Decode the DATA registers ..
+	protocol.data_register.decodeOutputRegister(data_registers[(Byte)ProtocolStructure::DataRegister::register_index::OUTPUTS]);
+		
+	if (protocol.data_register.power_lock) device.powerlock_stat = true;
+
 	// Keep alive not implemented
+	
+	
 	// Sets the current Motor Power Supply status
 	if (
-		(PCB301_GET_OUTPUTS_DATA_MOTOR_POWER_SUPPLY_ENABLE) &&
+		(protocol.data_register.motor_power_supply_ena) &&
 		(!inputs.emergency) &&
 		(!inputs.cabinet_safety) &&
 		(!inputs.powerdown)
@@ -65,52 +22,51 @@ void PCB301::device_workflow_callback(void) {
 
 	// Sets the current Power Switch status
 	if (
-		(PCB301_GET_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE) &&
+		(protocol.data_register.motor_power_switch_ena) &&
 		(!inputs.cabinet_safety) &&
 		(!inputs.compression_detected)
 		) outputs.power_48SW_stat = true;
 	else outputs.power_48SW_stat = false;
 
 	// Rotation Led
-	if (PCB301_GET_OUTPUTS_DATA_MAN_ROT_LED) outputs.rotation_led = true;
+	if (protocol.data_register.button_rotation_led) outputs.rotation_led = true;
 	else outputs.rotation_led = false;
 
 	// Buzzer
-	if (PCB301_GET_OUTPUTS_DATA_MANUAL_BUZZER) {
-		if (PCB301_GET_OUTPUTS_DATA_BUZZER_STAT) device.buzzer_stat = true;
-		else device.buzzer_stat = false;
+	if (protocol.data_register.manual_buzzer_mode) {
+		device.buzzer_stat = protocol.data_register.manual_buzzer_status;
 	}
 
 	// Feedback of the power supply status
-	PCB301_SET_SYSTEM_MOTOR_OK(outputs.power_48VDC_stat);
+	protocol.status_register.motor_48V_ok = outputs.power_48VDC_stat;
 	
 	// Feedback of the power switch status
-	PCB301_SET_SYSTEM_MOTOR_SWITCH(outputs.power_48SW_stat);
+	protocol.status_register.motor_safety_switch = outputs.power_48SW_stat;
 
 	// Evaluates the Battery voltage for the alarmn status
-	PCB301_SET_SYSTEM_BATT1LOW((device.vbatt1 < 10));
-	PCB301_SET_SYSTEM_BATT1LOW((device.vbatt2 < 10));
+	protocol.status_register.batt1_low_alarm = (device.vbatt1 < 10);
+	protocol.status_register.batt2_low_alarm = (device.vbatt2 < 10);
 
 	// X-RAY button request
-	PCB301_SET_XRAY_PUSH_BUTTON(((inputs.xray_button_input) || (PCB301_GET_OUTPUTS_DATA_BURNING_STAT && inputs.burning_jumper)));
+	protocol.status_register.xray_push_button = ((inputs.xray_button_input) || (protocol.data_register.burning_activation && inputs.burning_jumper));
 
 	// Generator X-RAY enable output
 	if (
-		(((inputs.xray_button_input) || (PCB301_GET_OUTPUTS_DATA_BURNING_STAT && inputs.burning_jumper))) &&
+		(protocol.status_register.xray_push_button) &&
 		(inputs.closed_door) &&
-		(PCB301_GET_OUTPUTS_DATA_XRAY_ENA)
+		(protocol.data_register.xray_enable)
 		) outputs.generator_xray_ena = true;
 	else outputs.generator_xray_ena = false;
 
 	// Compression on 
-	PCB301_SET_SYSTEM_COMPRESSION(inputs.compression_detected);
+	protocol.status_register.compression_on_status = inputs.compression_detected;
 
 	// Compression ena
-	if (PCB301_GET_OUTPUTS_DATA_COMPRESSOR_ENABLE) outputs.compression_ena = true;
+	if (protocol.data_register.compression_enable) outputs.compression_ena = true;
 	else outputs.compression_ena = false;
 
 	// Calibration ena
-	if (PCB301_GET_OUTPUTS_DATA_COMPRESSOR_CALIBRATION) outputs.calibration_ena = true;
+	if (protocol.data_register.compression_calibration) outputs.calibration_ena = true;
 	else outputs.calibration_ena = false;
 
 	// Pedalboard Compression Up
@@ -125,36 +81,35 @@ void PCB301::device_workflow_callback(void) {
 	}
 	else power_off_count = 0;
 
-	
-	PCB301_SET_SYSTEM_ERROR_STATUS(false);
-	PCB301_SET_SYSTEM_EMERGENCY_STATUS(inputs.emergency);
-	PCB301_SET_SYSTEM_POWERDOWN(inputs.powerdown);
-	PCB301_SET_SYSTEM_CABINET_SAFETY(inputs.cabinet_safety);
-	PCB301_SET_SYSTEM_POWER_OFF_REQ(inputs.power_off_req);
-	PCB301_SET_SYSTEM_BATTENA(inputs.battery_enable);
+	protocol.status_register.system_error = false;
+	protocol.status_register.system_emergency = inputs.emergency;
+	protocol.status_register.system_power_down = inputs.powerdown;
+	protocol.status_register.cabinet_safety_alarm = inputs.cabinet_safety;
+	protocol.status_register.soft_power_off_request = inputs.power_off_req;
+	protocol.status_register.battery_enabled = inputs.battery_enable;
+	protocol.status_register.button_up_stat = inputs.keypad_up;
+	protocol.status_register.button_down_stat = inputs.keypad_down;
+	protocol.status_register.button_slide_up_stat = inputs.manual_slide_up;
+	protocol.status_register.button_slide_down_stat = inputs.manual_slide_down;
+	protocol.status_register.button_cw_stat = inputs.keypad_cw;
+	protocol.status_register.button_ccw_stat = inputs.keypad_ccw;
+	protocol.status_register.button_body_cw = inputs.manual_body_cw;
+	protocol.status_register.button_body_ccw = inputs.manual_body_ccw;
+	protocol.status_register.closed_door = inputs.closed_door;
+	protocol.status_register.burning_jumper_present = inputs.burning_jumper;
+	protocol.status_register.power_lock_status = device.powerlock_stat;
+	protocol.status_register.pedal_up_stat = inputs.pedalboard_up;
+	protocol.status_register.pedal_down_stat = inputs.pedalboard_down;
+	protocol.status_register.pedal_cmp_up_stat = inputs.pedalboard_cmp_up;
+	protocol.status_register.pedal_cmp_down_stat = inputs.pedalboard_cmp_down;
 
-	PCB301_SET_BUTTON_VERTICAL_UP(inputs.keypad_up);
-	PCB301_SET_BUTTON_VERTICAL_DOWN(inputs.keypad_down);
-	PCB301_SET_BUTTON_SLIDE_UP(inputs.manual_slide_up);
-	PCB301_SET_BUTTON_SLIDE_DOWN(inputs.manual_slide_down);
-	PCB301_SET_BUTTON_ARM_CW(inputs.keypad_cw);
-	PCB301_SET_BUTTON_ARM_CCW(inputs.keypad_ccw);
+	protocol.status_register.voltage_batt1 = device.vbatt1;
+	protocol.status_register.voltage_batt2 = device.vbatt2;
 
-	PCB301_SET_BUTTON_BODY_CW(inputs.manual_body_cw);
-	PCB301_SET_BUTTON_BODY_CCW(inputs.manual_body_ccw);
+	// Encode the Status registers SYSTEM_REGISTER = 0,	//!> This is the System Status register index
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER] = protocol.status_register.encodeSystemRegister();
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::BATTERY_REGISTER] = protocol.status_register.encodeBatteryRegister();
 
-	PCB301_SET_SYSTEM_CLOSEDOOR(inputs.closed_door);
-	PCB301_SET_SYSTEM_BURNING_JMP(inputs.burning_jumper);
-
-	// Power Lock stat: set only once until system swuitched off
-	if (PCB301_GET_OUTPUTS_DATA_POWER_LOCK) device.powerlock_stat = true;
-	PCB301_SET_SYSTEM_POWER_LOCK(device.powerlock_stat);
-
-	PCB301_SET_PEDAL_VERTICAL_UP(inputs.pedalboard_up);
-	PCB301_SET_PEDAL_VERTICAL_DOWN(inputs.pedalboard_down);
-
-	// Battery voltage
-	PCB301_SET_BATTERY_VBATT(device.vbatt1, device.vbatt2);
 }
 
 void PCB301::device_reset_callback(void) {

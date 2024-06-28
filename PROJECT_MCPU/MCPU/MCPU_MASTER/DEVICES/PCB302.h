@@ -25,7 +25,7 @@ public:
 				RAW_PADDLE_REGISTER
 			};
 
-			static bool decodeSystemRegister(CanDeviceProtocol::Register^ sys) {
+			static bool decodeSystemRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
 				// Byte 0 of the register
@@ -56,7 +56,7 @@ public:
 				// Not implemented
 				return true;
 			}
-			CanDeviceProtocol::Register^ encodeSystemRegister(void) {
+			Register^ encodeSystemRegister(void) {
 
 				// Creates a register with all bytes set to 0
 				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
@@ -91,21 +91,21 @@ public:
 
 
 
-			static bool decodePaddleRegister(CanDeviceProtocol::Register^ pad) {
+			static bool decodePaddleRegister(Register^ pad) {
 				if (pad == nullptr) return false;
 				paddle_position = (int)pad->d0 + 256 * (int)(pad->d1 & 0x0f);
 				paddle_force = (int) ((pad->d1 & 0xF0) >> 4) + 16 * (int) pad->d2;
 				paddle_code = pad->d3;
 				return true;
 			}
-			CanDeviceProtocol::Register^ encodePaddleRegister(void) {
+			Register^ encodePaddleRegister(void) {
 
 				// Creates a register with all bytes set to 0
-				CanDeviceProtocol::Register^ pad = gcnew CanDeviceProtocol::Register;
+				Register^ pad = gcnew Register;
 
 				pad->d0 = (unsigned char) (paddle_position & 0xFF);
 				pad->d1 = (unsigned char) ((paddle_position>>8) & 0x0f);				
-				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) >> 4);
+				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) << 4);
 				pad->d2 = (unsigned char)((paddle_force >> 4) & 0xff);
 				pad->d3 = paddle_code;
 
@@ -113,7 +113,7 @@ public:
 				return pad;
 			}
 
-			static bool decodeRawPaddleRegister(CanDeviceProtocol::Register^ rpad) {
+			static bool decodeRawPaddleRegister(Register^ rpad) {
 				if (rpad == nullptr) return false;
 
 				paddle_raw_position = (int)rpad->d0 + 256 * (int)(rpad->d1 & 0x0f);
@@ -122,10 +122,10 @@ public:
 				return true;
 			}
 
-			CanDeviceProtocol::Register^ encodeRawPaddleRegister(void) {
+		    Register^ encodeRawPaddleRegister(void) {
 
 				// Creates a register with all bytes set to 0
-				CanDeviceProtocol::Register^ pad = gcnew CanDeviceProtocol::Register;
+				Register^ pad = gcnew Register;
 
 				pad->d0 = (unsigned char)(paddle_raw_position & 0xFF);
 				pad->d1 = (unsigned char)((paddle_raw_position >> 8) & 0x0f);
@@ -179,10 +179,10 @@ public:
 				OPTIONS_REGISTER,
 			};
 
-			CanDeviceProtocol::Register^ encodePositionLimitRegister(void) {
+			Register^ encodePositionLimitRegister(void) {
 
 				// Creates a register with all bytes set to 0
-				CanDeviceProtocol::Register^ out = gcnew CanDeviceProtocol::Register;
+				Register^ out = gcnew Register;
 
 				out->d0 = position_limit & 0xFF;
 				out->d1 = (unsigned char) (position_limit>>8) & 0xFF;
@@ -190,16 +190,16 @@ public:
 				// Returns the formatted register
 				return out;
 			}
-			static bool decodePositionLimitRegister(CanDeviceProtocol::Register^ reg) {
+			static bool decodePositionLimitRegister(Register^ reg) {
 				if (reg == nullptr) return false;
 				position_limit = reg->d0 + 256 * reg->d1;
 				return true;
 			}
 
-			CanDeviceProtocol::Register^ encodeOptionsRegister(void) {
+			Register^ encodeOptionsRegister(void) {
 
 				// Creates a register with all bytes set to 0
-				CanDeviceProtocol::Register^ out = gcnew CanDeviceProtocol::Register;
+				Register^ out = gcnew Register;
 
 				if (position_calibration) out->d0 |= 0x1;
 				if (force_calibration) out->d0 |= 0x2;
@@ -210,7 +210,7 @@ public:
 				// Returns the formatted register
 				return out;
 			}
-			static bool decodeOptionsRegister(CanDeviceProtocol::Register^ reg) {
+			static bool decodeOptionsRegister(Register^ reg) {
 				if (reg == nullptr) return false;
 				
 				position_calibration = reg->d0 & 0x1;
@@ -278,8 +278,8 @@ public:
 				SET_UNLOCK,
 			};
 
-			CanDeviceProtocol::CanDeviceCommand^ encodeSetUnlockCommand(void) {
-				return gcnew CanDeviceProtocol::CanDeviceCommand((unsigned char)command_index::SET_UNLOCK, 0, 0, 0, 0);
+			CanDeviceCommand^ encodeSetUnlockCommand(void) {
+				return gcnew CanDeviceCommand((unsigned char)command_index::SET_UNLOCK, 0, 0, 0, 0);
 			}
 
 		};

@@ -194,7 +194,7 @@ void IdleForm::initIdleStatus(void) {
 	PCB301::setMotorPowerSupply(true);
 	PCB301::setMotorSwitch(true);
 
-	// Activate the Idle manual modes
+	// Activate the Rotation Idle manual modes
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
 	// Activates the compressor
@@ -210,7 +210,10 @@ void IdleForm::initIdleStatus(void) {
 		else this->xrayMode->BackgroundImage = XRAY_MODE;
 		this->xrayMode->Show();
 	}
-	 
+	
+	// Activate the Automatic Potter Grid with the Out-Field position and unsync the generator signals
+	PCB304::setAutoGridOutField();
+	PCB304::syncGeneratorOff();
 	
 	// Start the startup session	
 	idleTimer->Start();	

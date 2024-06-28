@@ -58,7 +58,7 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
         return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
-   
+    PCB304::syncGeneratorOff();
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here
     if (!PCB315::setFilterAutoMode(getExposurePulse(0)->filter, false)) {

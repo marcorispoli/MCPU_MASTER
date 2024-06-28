@@ -23,20 +23,10 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
   
     if (demo) ExpName = "Demo Exposure Test >";
     else ExpName = "Exposure Test >";
-
-    // Sets the Grid On/Off Field and wait for the ready condition
-    if (grid_synch) {        
-        PCB304::synchGridWithGenerator(true);
-        if (!PCB304::setGridOnField(true)) {
-            return exposure_completed_errors::XRAY_GRID_ERROR;
-        }       
-    }
-    else {        
-        //PCB304::synchGridWithGenerator(false);
-        //if (!PCB304::setGridOffField(true)) {
-        //    return ExposureModule::exposure_completed_errors::XRAY_GRID_ERROR;
-        //}        
-    }
+    
+    // Sets the Grid On Field (if not yet) : wait for the ready condition   
+    if (grid_synch) PCB304::syncGeneratorOn();
+    else PCB304::syncGeneratorOff();
 
     // Filter selection 
     filter = getExposurePulse(0)->filter;

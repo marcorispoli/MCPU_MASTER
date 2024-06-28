@@ -1,6 +1,5 @@
 #include "gantry_global_status.h"
 #include "mainForm.h"
-#include "Pcb304Simulator.h"
 #include "PCB301/PCB301.h"
 #include "PCB302/PCB302.h"
 #include "PCB303/PCB303.h"
@@ -296,41 +295,45 @@ void MainForm::pcb303Simulator(void) {
 
 }
 void MainForm::pcb304Simulator(void) {
-	static bool blink_stat = true;
-	static int blink_count = 0;
 
-	PCB304Simulator::board_elaboration();
+	// Display Section -------------------------------------------------------------------------
+	
+	// Display Intensity
+	DisplayIntensity->Value = PCB304::device.display_intensity;
 
-	// Display management
-	if (!PCB304Simulator::display_on) {
-		potter_display->Text = "";
-		blink_stat = true;
-		blink_count = 0;
+	// Display Value 
+	if (!PCB304::device.display_on) {
+		DisplayVal->Text = "";
 	}
 	else {
-		// intensity
-		potter_display_label->Text = "DISPLAY: Level=" + PCB304Simulator::display_intensity.ToString();
-
-		// Display mode and value
-		if (PCB304Simulator::display_blink) {
-			if (blink_count == 0) {
-				if (blink_stat) potter_display->Text = PCB304Simulator::display_val.ToString();
-				else potter_display->Text = "";
-			}
-
-			blink_count++;
-			if (blink_count > 2) {
-				blink_stat = !blink_stat;
-				blink_count = 0;
-			}
-			
-		}
-		else {
-			blink_stat = true;
-			blink_count = 0;
-			potter_display->Text = PCB304Simulator::display_val.ToString();
-		}
+		DisplayVal->Text = PCB304::device.display_value.ToString();
 	}
+
+	// Grid Section -------------------------------------------------------------------------
+	if (PCB304::device.grid_InOut_stat == PCB304::hardware_device::INOUT_UNDEF) {
+		UndefField->Checked = true;
+	}else if (PCB304::device.grid_InOut_stat == PCB304::hardware_device::INOUT_RUN) {
+		RunField->Checked = true;
+	}
+	else if (PCB304::device.grid_InOut_stat == PCB304::hardware_device::IN_FIELD) {
+		InField->Checked = true;
+	}
+	else if (PCB304::device.grid_InOut_stat == PCB304::hardware_device::OUT_FIELD) {
+		OutField->Checked = true;
+	}
+
+	if (PCB304::device.grid_Translation_stat == PCB304::hardware_device::TRANSLATION_UNDEF) {
+		UndefTrasv->Checked = true;
+	}else if (PCB304::device.grid_Translation_stat == PCB304::hardware_device::TRANSLATION_HOME) {
+		HomeTrasv->Checked = true;
+	}
+	else if (PCB304::device.grid_Translation_stat == PCB304::hardware_device::TRANSLATION_CENTER) {
+		CenterTrasv->Checked = true;
+	}
+	else if (PCB304::device.grid_Translation_stat == PCB304::hardware_device::TRANSLATION_RUN) {
+		RunTrasv->Checked = true;
+	}
+
 }
 void MainForm::pcb315Simulator(void) {
 

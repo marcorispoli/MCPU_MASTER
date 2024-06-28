@@ -96,9 +96,10 @@ namespace CppCLRWinFormsProject {
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::Button^ exit_simulator;
 
-	private: System::Windows::Forms::Label^ potter_display_label;
 
-	private: System::Windows::Forms::TextBox^ potter_display;
+
+
+
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::GroupBox^ pcb315_panel;
 
@@ -214,6 +215,29 @@ private: System::Windows::Forms::TextBox^ motor_slide_uconv;
 
 private: System::Windows::Forms::Label^ label44;
 private: System::Windows::Forms::TextBox^ motor_body_uconv;
+private: System::Windows::Forms::GroupBox^ InOutBox;
+private: System::Windows::Forms::RadioButton^ RunField;
+
+
+private: System::Windows::Forms::RadioButton^ InField;
+private: System::Windows::Forms::RadioButton^ OutField;
+
+
+
+private: System::Windows::Forms::GroupBox^ translationBox;
+private: System::Windows::Forms::RadioButton^ UndefTrasv;
+
+private: System::Windows::Forms::RadioButton^ RunTrasv;
+
+private: System::Windows::Forms::RadioButton^ HomeTrasv;
+private: System::Windows::Forms::RadioButton^ CenterTrasv;
+
+
+private: System::Windows::Forms::RadioButton^ UndefField;
+private: System::Windows::Forms::GroupBox^ DisplayBox;
+private: System::Windows::Forms::TextBox^ DisplayVal;
+private: System::Windows::Forms::ProgressBar^ DisplayIntensity;
+
 
 
 
@@ -328,12 +352,12 @@ private: System::Windows::Forms::GroupBox^ pcb304_panel;
 
 
 
-	private: System::Windows::Forms::PictureBox^ grid_in;
 
-	private: System::Windows::Forms::Label^ label14;
-	private: System::Windows::Forms::PictureBox^ grid_on;
 
-	private: System::Windows::Forms::Label^ label11;
+
+
+
+
 private: System::Windows::Forms::GroupBox^ pcb301_panel;
 
 
@@ -428,12 +452,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->paddle_list = (gcnew System::Windows::Forms::ComboBox());
 			this->pcb304_panel = (gcnew System::Windows::Forms::GroupBox());
-			this->potter_display_label = (gcnew System::Windows::Forms::Label());
-			this->potter_display = (gcnew System::Windows::Forms::TextBox());
-			this->grid_on = (gcnew System::Windows::Forms::PictureBox());
-			this->label11 = (gcnew System::Windows::Forms::Label());
-			this->grid_in = (gcnew System::Windows::Forms::PictureBox());
-			this->label14 = (gcnew System::Windows::Forms::Label());
 			this->pcb301_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->groupBox4 = (gcnew System::Windows::Forms::GroupBox());
 			this->power_button = (gcnew System::Windows::Forms::Button());
@@ -468,6 +486,13 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->bulb_high = (gcnew System::Windows::Forms::RadioButton());
 			this->filter_status = (gcnew System::Windows::Forms::Label());
 			this->motor_vertical_box = (gcnew System::Windows::Forms::GroupBox());
+			this->label40 = (gcnew System::Windows::Forms::Label());
+			this->motor_vertical_uconv = (gcnew System::Windows::Forms::TextBox());
+			this->label35 = (gcnew System::Windows::Forms::Label());
+			this->label30 = (gcnew System::Windows::Forms::Label());
+			this->motor_vertical_user = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_vertical_rot = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_vertical_tic = (gcnew System::Windows::Forms::RadioButton());
 			this->motor_vertical_max_val = (gcnew System::Windows::Forms::TextBox());
 			this->motor_vertical_min_val = (gcnew System::Windows::Forms::TextBox());
 			this->label10 = (gcnew System::Windows::Forms::Label());
@@ -475,6 +500,11 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->motor_vertical_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->motor_arm_box = (gcnew System::Windows::Forms::GroupBox());
+			this->label41 = (gcnew System::Windows::Forms::Label());
+			this->motor_arm_uconv = (gcnew System::Windows::Forms::TextBox());
+			this->motor_arm_user = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_arm_rot = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_arm_tic = (gcnew System::Windows::Forms::RadioButton());
 			this->label36 = (gcnew System::Windows::Forms::Label());
 			this->label31 = (gcnew System::Windows::Forms::Label());
 			this->motor_arm_max_val = (gcnew System::Windows::Forms::TextBox());
@@ -484,6 +514,11 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label22 = (gcnew System::Windows::Forms::Label());
 			this->motor_arm_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->motor_tilt_box = (gcnew System::Windows::Forms::GroupBox());
+			this->label42 = (gcnew System::Windows::Forms::Label());
+			this->motor_tilt_uconv = (gcnew System::Windows::Forms::TextBox());
+			this->motor_tilt_user = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_tilt_rot = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_tilt_tic = (gcnew System::Windows::Forms::RadioButton());
 			this->label37 = (gcnew System::Windows::Forms::Label());
 			this->label32 = (gcnew System::Windows::Forms::Label());
 			this->motor_tilt_max_val = (gcnew System::Windows::Forms::TextBox());
@@ -493,6 +528,11 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label25 = (gcnew System::Windows::Forms::Label());
 			this->motor_tilt_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->motor_slide_box = (gcnew System::Windows::Forms::GroupBox());
+			this->label43 = (gcnew System::Windows::Forms::Label());
+			this->motor_slide_uconv = (gcnew System::Windows::Forms::TextBox());
+			this->motor_slide_user = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_slide_rot = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_slide_tic = (gcnew System::Windows::Forms::RadioButton());
 			this->label38 = (gcnew System::Windows::Forms::Label());
 			this->label33 = (gcnew System::Windows::Forms::Label());
 			this->motor_slide_max_val = (gcnew System::Windows::Forms::TextBox());
@@ -502,6 +542,11 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label27 = (gcnew System::Windows::Forms::Label());
 			this->motor_slide_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->motor_body_box = (gcnew System::Windows::Forms::GroupBox());
+			this->label44 = (gcnew System::Windows::Forms::Label());
+			this->motor_body_uconv = (gcnew System::Windows::Forms::TextBox());
+			this->motor_body_user = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_body_rot = (gcnew System::Windows::Forms::RadioButton());
+			this->motor_body_tic = (gcnew System::Windows::Forms::RadioButton());
 			this->label39 = (gcnew System::Windows::Forms::Label());
 			this->label34 = (gcnew System::Windows::Forms::Label());
 			this->motor_body_max_val = (gcnew System::Windows::Forms::TextBox());
@@ -512,33 +557,19 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_body_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->pcb326_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->pcb303_panel = (gcnew System::Windows::Forms::GroupBox());
-			this->motor_vertical_tic = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_vertical_rot = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_vertical_user = (gcnew System::Windows::Forms::RadioButton());
-			this->label30 = (gcnew System::Windows::Forms::Label());
-			this->label35 = (gcnew System::Windows::Forms::Label());
-			this->motor_arm_user = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_arm_rot = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_arm_tic = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_tilt_user = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_tilt_rot = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_tilt_tic = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_slide_user = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_slide_rot = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_slide_tic = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_body_user = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_body_rot = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_body_tic = (gcnew System::Windows::Forms::RadioButton());
-			this->motor_vertical_uconv = (gcnew System::Windows::Forms::TextBox());
-			this->label40 = (gcnew System::Windows::Forms::Label());
-			this->label41 = (gcnew System::Windows::Forms::Label());
-			this->motor_arm_uconv = (gcnew System::Windows::Forms::TextBox());
-			this->label42 = (gcnew System::Windows::Forms::Label());
-			this->motor_tilt_uconv = (gcnew System::Windows::Forms::TextBox());
-			this->label43 = (gcnew System::Windows::Forms::Label());
-			this->motor_slide_uconv = (gcnew System::Windows::Forms::TextBox());
-			this->label44 = (gcnew System::Windows::Forms::Label());
-			this->motor_body_uconv = (gcnew System::Windows::Forms::TextBox());
+			this->InOutBox = (gcnew System::Windows::Forms::GroupBox());
+			this->RunField = (gcnew System::Windows::Forms::RadioButton());
+			this->InField = (gcnew System::Windows::Forms::RadioButton());
+			this->OutField = (gcnew System::Windows::Forms::RadioButton());
+			this->translationBox = (gcnew System::Windows::Forms::GroupBox());
+			this->RunTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->HomeTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->CenterTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->UndefTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->UndefField = (gcnew System::Windows::Forms::RadioButton());
+			this->DisplayIntensity = (gcnew System::Windows::Forms::ProgressBar());
+			this->DisplayVal = (gcnew System::Windows::Forms::TextBox());
+			this->DisplayBox = (gcnew System::Windows::Forms::GroupBox());
 			this->infoPanel->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotation_led))->BeginInit();
@@ -550,8 +581,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->calib_ena))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->cmp_ena))->BeginInit();
 			this->pcb304_panel->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->grid_on))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->grid_in))->BeginInit();
 			this->pcb301_panel->SuspendLayout();
 			this->groupBox4->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->vdc48_sw))->BeginInit();
@@ -567,6 +596,9 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_tilt_box->SuspendLayout();
 			this->motor_slide_box->SuspendLayout();
 			this->motor_body_box->SuspendLayout();
+			this->InOutBox->SuspendLayout();
+			this->translationBox->SuspendLayout();
+			this->DisplayBox->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// infoPanel
@@ -1113,85 +1145,18 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb304_panel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 				static_cast<System::Int32>(static_cast<System::Byte>(60)));
 			this->pcb304_panel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->pcb304_panel->Controls->Add(this->potter_display_label);
-			this->pcb304_panel->Controls->Add(this->potter_display);
-			this->pcb304_panel->Controls->Add(this->grid_on);
-			this->pcb304_panel->Controls->Add(this->label11);
-			this->pcb304_panel->Controls->Add(this->grid_in);
-			this->pcb304_panel->Controls->Add(this->label14);
+			this->pcb304_panel->Controls->Add(this->DisplayBox);
+			this->pcb304_panel->Controls->Add(this->translationBox);
+			this->pcb304_panel->Controls->Add(this->InOutBox);
 			this->pcb304_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->pcb304_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->pcb304_panel->Location = System::Drawing::Point(388, 433);
+			this->pcb304_panel->Location = System::Drawing::Point(12, 565);
 			this->pcb304_panel->Name = L"pcb304_panel";
-			this->pcb304_panel->Size = System::Drawing::Size(192, 122);
+			this->pcb304_panel->Size = System::Drawing::Size(361, 122);
 			this->pcb304_panel->TabIndex = 13;
 			this->pcb304_panel->TabStop = false;
 			this->pcb304_panel->Text = L"PCB304 - POTTER";
-			// 
-			// potter_display_label
-			// 
-			this->potter_display_label->AutoSize = true;
-			this->potter_display_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->potter_display_label->ForeColor = System::Drawing::Color::White;
-			this->potter_display_label->Location = System::Drawing::Point(74, 29);
-			this->potter_display_label->Name = L"potter_display_label";
-			this->potter_display_label->Size = System::Drawing::Size(52, 13);
-			this->potter_display_label->TabIndex = 20;
-			this->potter_display_label->Text = L"DISPLAY";
-			// 
-			// potter_display
-			// 
-			this->potter_display->Enabled = false;
-			this->potter_display->Location = System::Drawing::Point(77, 43);
-			this->potter_display->Name = L"potter_display";
-			this->potter_display->Size = System::Drawing::Size(100, 22);
-			this->potter_display->TabIndex = 19;
-			// 
-			// grid_on
-			// 
-			this->grid_on->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
-				static_cast<System::Int32>(static_cast<System::Byte>(224)));
-			this->grid_on->Location = System::Drawing::Point(20, 83);
-			this->grid_on->Name = L"grid_on";
-			this->grid_on->Size = System::Drawing::Size(44, 23);
-			this->grid_on->TabIndex = 14;
-			this->grid_on->TabStop = false;
-			// 
-			// label11
-			// 
-			this->label11->AutoSize = true;
-			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label11->ForeColor = System::Drawing::Color::White;
-			this->label11->Location = System::Drawing::Point(17, 67);
-			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(53, 13);
-			this->label11->TabIndex = 13;
-			this->label11->Text = L"GRID-ON";
-			// 
-			// grid_in
-			// 
-			this->grid_in->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
-				static_cast<System::Int32>(static_cast<System::Byte>(224)));
-			this->grid_in->Location = System::Drawing::Point(20, 43);
-			this->grid_in->Name = L"grid_in";
-			this->grid_in->Size = System::Drawing::Size(44, 23);
-			this->grid_in->TabIndex = 10;
-			this->grid_in->TabStop = false;
-			// 
-			// label14
-			// 
-			this->label14->AutoSize = true;
-			this->label14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label14->ForeColor = System::Drawing::Color::White;
-			this->label14->Location = System::Drawing::Point(17, 27);
-			this->label14->Name = L"label14";
-			this->label14->Size = System::Drawing::Size(51, 13);
-			this->label14->TabIndex = 9;
-			this->label14->Text = L"IN-FIELD";
 			// 
 			// pcb301_panel
 			// 
@@ -1637,6 +1602,87 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_vertical_box->TabStop = false;
 			this->motor_vertical_box->Text = L"VERTICAL-MOTOR";
 			// 
+			// label40
+			// 
+			this->label40->AutoSize = true;
+			this->label40->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label40->ForeColor = System::Drawing::Color::White;
+			this->label40->Location = System::Drawing::Point(127, 79);
+			this->label40->Name = L"label40";
+			this->label40->Size = System::Drawing::Size(55, 13);
+			this->label40->TabIndex = 35;
+			this->label40->Text = L"ROT-User";
+			// 
+			// motor_vertical_uconv
+			// 
+			this->motor_vertical_uconv->Enabled = false;
+			this->motor_vertical_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_vertical_uconv->Location = System::Drawing::Point(188, 78);
+			this->motor_vertical_uconv->Name = L"motor_vertical_uconv";
+			this->motor_vertical_uconv->Size = System::Drawing::Size(79, 20);
+			this->motor_vertical_uconv->TabIndex = 34;
+			// 
+			// label35
+			// 
+			this->label35->AutoSize = true;
+			this->label35->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label35->ForeColor = System::Drawing::Color::White;
+			this->label35->Location = System::Drawing::Point(12, 93);
+			this->label35->Name = L"label35";
+			this->label35->Size = System::Drawing::Size(30, 13);
+			this->label35->TabIndex = 33;
+			this->label35->Text = L"MAX";
+			// 
+			// label30
+			// 
+			this->label30->AutoSize = true;
+			this->label30->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label30->ForeColor = System::Drawing::Color::White;
+			this->label30->Location = System::Drawing::Point(12, 72);
+			this->label30->Name = L"label30";
+			this->label30->Size = System::Drawing::Size(27, 13);
+			this->label30->TabIndex = 32;
+			this->label30->Text = L"MIN";
+			// 
+			// motor_vertical_user
+			// 
+			this->motor_vertical_user->AutoSize = true;
+			this->motor_vertical_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_vertical_user->Location = System::Drawing::Point(218, 53);
+			this->motor_vertical_user->Name = L"motor_vertical_user";
+			this->motor_vertical_user->Size = System::Drawing::Size(49, 17);
+			this->motor_vertical_user->TabIndex = 31;
+			this->motor_vertical_user->TabStop = true;
+			this->motor_vertical_user->Text = L"user";
+			this->motor_vertical_user->UseVisualStyleBackColor = true;
+			// 
+			// motor_vertical_rot
+			// 
+			this->motor_vertical_rot->AutoSize = true;
+			this->motor_vertical_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_vertical_rot->Location = System::Drawing::Point(175, 53);
+			this->motor_vertical_rot->Name = L"motor_vertical_rot";
+			this->motor_vertical_rot->Size = System::Drawing::Size(40, 17);
+			this->motor_vertical_rot->TabIndex = 30;
+			this->motor_vertical_rot->TabStop = true;
+			this->motor_vertical_rot->Text = L"rot";
+			this->motor_vertical_rot->UseVisualStyleBackColor = true;
+			// 
+			// motor_vertical_tic
+			// 
+			this->motor_vertical_tic->AutoSize = true;
+			this->motor_vertical_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_vertical_tic->Location = System::Drawing::Point(130, 53);
+			this->motor_vertical_tic->Name = L"motor_vertical_tic";
+			this->motor_vertical_tic->Size = System::Drawing::Size(39, 17);
+			this->motor_vertical_tic->TabIndex = 29;
+			this->motor_vertical_tic->TabStop = true;
+			this->motor_vertical_tic->Text = L"tic";
+			this->motor_vertical_tic->UseVisualStyleBackColor = true;
+			// 
 			// motor_vertical_max_val
 			// 
 			this->motor_vertical_max_val->Enabled = false;
@@ -1724,6 +1770,63 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_arm_box->TabIndex = 19;
 			this->motor_arm_box->TabStop = false;
 			this->motor_arm_box->Text = L"ARM-MOTOR";
+			// 
+			// label41
+			// 
+			this->label41->AutoSize = true;
+			this->label41->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label41->ForeColor = System::Drawing::Color::White;
+			this->label41->Location = System::Drawing::Point(129, 77);
+			this->label41->Name = L"label41";
+			this->label41->Size = System::Drawing::Size(55, 13);
+			this->label41->TabIndex = 37;
+			this->label41->Text = L"ROT-User";
+			// 
+			// motor_arm_uconv
+			// 
+			this->motor_arm_uconv->Enabled = false;
+			this->motor_arm_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_arm_uconv->Location = System::Drawing::Point(190, 76);
+			this->motor_arm_uconv->Name = L"motor_arm_uconv";
+			this->motor_arm_uconv->Size = System::Drawing::Size(79, 20);
+			this->motor_arm_uconv->TabIndex = 36;
+			// 
+			// motor_arm_user
+			// 
+			this->motor_arm_user->AutoSize = true;
+			this->motor_arm_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_arm_user->Location = System::Drawing::Point(218, 53);
+			this->motor_arm_user->Name = L"motor_arm_user";
+			this->motor_arm_user->Size = System::Drawing::Size(49, 17);
+			this->motor_arm_user->TabIndex = 34;
+			this->motor_arm_user->TabStop = true;
+			this->motor_arm_user->Text = L"user";
+			this->motor_arm_user->UseVisualStyleBackColor = true;
+			// 
+			// motor_arm_rot
+			// 
+			this->motor_arm_rot->AutoSize = true;
+			this->motor_arm_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_arm_rot->Location = System::Drawing::Point(175, 53);
+			this->motor_arm_rot->Name = L"motor_arm_rot";
+			this->motor_arm_rot->Size = System::Drawing::Size(40, 17);
+			this->motor_arm_rot->TabIndex = 33;
+			this->motor_arm_rot->TabStop = true;
+			this->motor_arm_rot->Text = L"rot";
+			this->motor_arm_rot->UseVisualStyleBackColor = true;
+			// 
+			// motor_arm_tic
+			// 
+			this->motor_arm_tic->AutoSize = true;
+			this->motor_arm_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_arm_tic->Location = System::Drawing::Point(130, 53);
+			this->motor_arm_tic->Name = L"motor_arm_tic";
+			this->motor_arm_tic->Size = System::Drawing::Size(39, 17);
+			this->motor_arm_tic->TabIndex = 32;
+			this->motor_arm_tic->TabStop = true;
+			this->motor_arm_tic->Text = L"tic";
+			this->motor_arm_tic->UseVisualStyleBackColor = true;
 			// 
 			// label36
 			// 
@@ -1837,6 +1940,63 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_tilt_box->TabStop = false;
 			this->motor_tilt_box->Text = L"TILT-MOTOR";
 			// 
+			// label42
+			// 
+			this->label42->AutoSize = true;
+			this->label42->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label42->ForeColor = System::Drawing::Color::White;
+			this->label42->Location = System::Drawing::Point(131, 78);
+			this->label42->Name = L"label42";
+			this->label42->Size = System::Drawing::Size(55, 13);
+			this->label42->TabIndex = 37;
+			this->label42->Text = L"ROT-User";
+			// 
+			// motor_tilt_uconv
+			// 
+			this->motor_tilt_uconv->Enabled = false;
+			this->motor_tilt_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_tilt_uconv->Location = System::Drawing::Point(192, 77);
+			this->motor_tilt_uconv->Name = L"motor_tilt_uconv";
+			this->motor_tilt_uconv->Size = System::Drawing::Size(79, 20);
+			this->motor_tilt_uconv->TabIndex = 36;
+			// 
+			// motor_tilt_user
+			// 
+			this->motor_tilt_user->AutoSize = true;
+			this->motor_tilt_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_tilt_user->Location = System::Drawing::Point(220, 53);
+			this->motor_tilt_user->Name = L"motor_tilt_user";
+			this->motor_tilt_user->Size = System::Drawing::Size(49, 17);
+			this->motor_tilt_user->TabIndex = 34;
+			this->motor_tilt_user->TabStop = true;
+			this->motor_tilt_user->Text = L"user";
+			this->motor_tilt_user->UseVisualStyleBackColor = true;
+			// 
+			// motor_tilt_rot
+			// 
+			this->motor_tilt_rot->AutoSize = true;
+			this->motor_tilt_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_tilt_rot->Location = System::Drawing::Point(177, 53);
+			this->motor_tilt_rot->Name = L"motor_tilt_rot";
+			this->motor_tilt_rot->Size = System::Drawing::Size(40, 17);
+			this->motor_tilt_rot->TabIndex = 33;
+			this->motor_tilt_rot->TabStop = true;
+			this->motor_tilt_rot->Text = L"rot";
+			this->motor_tilt_rot->UseVisualStyleBackColor = true;
+			// 
+			// motor_tilt_tic
+			// 
+			this->motor_tilt_tic->AutoSize = true;
+			this->motor_tilt_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_tilt_tic->Location = System::Drawing::Point(132, 53);
+			this->motor_tilt_tic->Name = L"motor_tilt_tic";
+			this->motor_tilt_tic->Size = System::Drawing::Size(39, 17);
+			this->motor_tilt_tic->TabIndex = 32;
+			this->motor_tilt_tic->TabStop = true;
+			this->motor_tilt_tic->Text = L"tic";
+			this->motor_tilt_tic->UseVisualStyleBackColor = true;
+			// 
 			// label37
 			// 
 			this->label37->AutoSize = true;
@@ -1948,6 +2108,63 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_slide_box->TabIndex = 21;
 			this->motor_slide_box->TabStop = false;
 			this->motor_slide_box->Text = L"SLIDE-MOTOR";
+			// 
+			// label43
+			// 
+			this->label43->AutoSize = true;
+			this->label43->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label43->ForeColor = System::Drawing::Color::White;
+			this->label43->Location = System::Drawing::Point(131, 77);
+			this->label43->Name = L"label43";
+			this->label43->Size = System::Drawing::Size(55, 13);
+			this->label43->TabIndex = 37;
+			this->label43->Text = L"ROT-User";
+			// 
+			// motor_slide_uconv
+			// 
+			this->motor_slide_uconv->Enabled = false;
+			this->motor_slide_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_slide_uconv->Location = System::Drawing::Point(192, 76);
+			this->motor_slide_uconv->Name = L"motor_slide_uconv";
+			this->motor_slide_uconv->Size = System::Drawing::Size(79, 20);
+			this->motor_slide_uconv->TabIndex = 36;
+			// 
+			// motor_slide_user
+			// 
+			this->motor_slide_user->AutoSize = true;
+			this->motor_slide_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_slide_user->Location = System::Drawing::Point(220, 53);
+			this->motor_slide_user->Name = L"motor_slide_user";
+			this->motor_slide_user->Size = System::Drawing::Size(49, 17);
+			this->motor_slide_user->TabIndex = 34;
+			this->motor_slide_user->TabStop = true;
+			this->motor_slide_user->Text = L"user";
+			this->motor_slide_user->UseVisualStyleBackColor = true;
+			// 
+			// motor_slide_rot
+			// 
+			this->motor_slide_rot->AutoSize = true;
+			this->motor_slide_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_slide_rot->Location = System::Drawing::Point(177, 53);
+			this->motor_slide_rot->Name = L"motor_slide_rot";
+			this->motor_slide_rot->Size = System::Drawing::Size(40, 17);
+			this->motor_slide_rot->TabIndex = 33;
+			this->motor_slide_rot->TabStop = true;
+			this->motor_slide_rot->Text = L"rot";
+			this->motor_slide_rot->UseVisualStyleBackColor = true;
+			// 
+			// motor_slide_tic
+			// 
+			this->motor_slide_tic->AutoSize = true;
+			this->motor_slide_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_slide_tic->Location = System::Drawing::Point(132, 53);
+			this->motor_slide_tic->Name = L"motor_slide_tic";
+			this->motor_slide_tic->Size = System::Drawing::Size(39, 17);
+			this->motor_slide_tic->TabIndex = 32;
+			this->motor_slide_tic->TabStop = true;
+			this->motor_slide_tic->Text = L"tic";
+			this->motor_slide_tic->UseVisualStyleBackColor = true;
 			// 
 			// label38
 			// 
@@ -2061,6 +2278,63 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_body_box->TabStop = false;
 			this->motor_body_box->Text = L"BODY-MOTOR";
 			// 
+			// label44
+			// 
+			this->label44->AutoSize = true;
+			this->label44->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label44->ForeColor = System::Drawing::Color::White;
+			this->label44->Location = System::Drawing::Point(129, 77);
+			this->label44->Name = L"label44";
+			this->label44->Size = System::Drawing::Size(55, 13);
+			this->label44->TabIndex = 37;
+			this->label44->Text = L"ROT-User";
+			// 
+			// motor_body_uconv
+			// 
+			this->motor_body_uconv->Enabled = false;
+			this->motor_body_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_body_uconv->Location = System::Drawing::Point(190, 76);
+			this->motor_body_uconv->Name = L"motor_body_uconv";
+			this->motor_body_uconv->Size = System::Drawing::Size(79, 20);
+			this->motor_body_uconv->TabIndex = 36;
+			// 
+			// motor_body_user
+			// 
+			this->motor_body_user->AutoSize = true;
+			this->motor_body_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_body_user->Location = System::Drawing::Point(220, 53);
+			this->motor_body_user->Name = L"motor_body_user";
+			this->motor_body_user->Size = System::Drawing::Size(49, 17);
+			this->motor_body_user->TabIndex = 34;
+			this->motor_body_user->TabStop = true;
+			this->motor_body_user->Text = L"user";
+			this->motor_body_user->UseVisualStyleBackColor = true;
+			// 
+			// motor_body_rot
+			// 
+			this->motor_body_rot->AutoSize = true;
+			this->motor_body_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_body_rot->Location = System::Drawing::Point(177, 53);
+			this->motor_body_rot->Name = L"motor_body_rot";
+			this->motor_body_rot->Size = System::Drawing::Size(40, 17);
+			this->motor_body_rot->TabIndex = 33;
+			this->motor_body_rot->TabStop = true;
+			this->motor_body_rot->Text = L"rot";
+			this->motor_body_rot->UseVisualStyleBackColor = true;
+			// 
+			// motor_body_tic
+			// 
+			this->motor_body_tic->AutoSize = true;
+			this->motor_body_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
+			this->motor_body_tic->Location = System::Drawing::Point(132, 53);
+			this->motor_body_tic->Name = L"motor_body_tic";
+			this->motor_body_tic->Size = System::Drawing::Size(39, 17);
+			this->motor_body_tic->TabIndex = 32;
+			this->motor_body_tic->TabStop = true;
+			this->motor_body_tic->Text = L"tic";
+			this->motor_body_tic->UseVisualStyleBackColor = true;
+			// 
 			// label39
 			// 
 			this->label39->AutoSize = true;
@@ -2168,321 +2442,173 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb303_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->pcb303_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->pcb303_panel->Location = System::Drawing::Point(10, 565);
+			this->pcb303_panel->Location = System::Drawing::Point(596, 566);
 			this->pcb303_panel->Name = L"pcb303_panel";
 			this->pcb303_panel->Size = System::Drawing::Size(194, 122);
 			this->pcb303_panel->TabIndex = 24;
 			this->pcb303_panel->TabStop = false;
 			this->pcb303_panel->Text = L"PCB303 -COLLIMATOR";
 			// 
-			// motor_vertical_tic
+			// InOutBox
 			// 
-			this->motor_vertical_tic->AutoSize = true;
-			this->motor_vertical_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_vertical_tic->Location = System::Drawing::Point(130, 53);
-			this->motor_vertical_tic->Name = L"motor_vertical_tic";
-			this->motor_vertical_tic->Size = System::Drawing::Size(39, 17);
-			this->motor_vertical_tic->TabIndex = 29;
-			this->motor_vertical_tic->TabStop = true;
-			this->motor_vertical_tic->Text = L"tic";
-			this->motor_vertical_tic->UseVisualStyleBackColor = true;
+			this->InOutBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->InOutBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->InOutBox->Controls->Add(this->UndefField);
+			this->InOutBox->Controls->Add(this->RunField);
+			this->InOutBox->Controls->Add(this->InField);
+			this->InOutBox->Controls->Add(this->OutField);
+			this->InOutBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->InOutBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->InOutBox->Location = System::Drawing::Point(158, 12);
+			this->InOutBox->Name = L"InOutBox";
+			this->InOutBox->Size = System::Drawing::Size(86, 105);
+			this->InOutBox->TabIndex = 21;
+			this->InOutBox->TabStop = false;
+			this->InOutBox->Text = L"In/Out";
 			// 
-			// motor_vertical_rot
+			// RunField
 			// 
-			this->motor_vertical_rot->AutoSize = true;
-			this->motor_vertical_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_vertical_rot->Location = System::Drawing::Point(175, 53);
-			this->motor_vertical_rot->Name = L"motor_vertical_rot";
-			this->motor_vertical_rot->Size = System::Drawing::Size(40, 17);
-			this->motor_vertical_rot->TabIndex = 30;
-			this->motor_vertical_rot->TabStop = true;
-			this->motor_vertical_rot->Text = L"rot";
-			this->motor_vertical_rot->UseVisualStyleBackColor = true;
+			this->RunField->AutoSize = true;
+			this->RunField->Location = System::Drawing::Point(6, 56);
+			this->RunField->Name = L"RunField";
+			this->RunField->Size = System::Drawing::Size(52, 20);
+			this->RunField->TabIndex = 16;
+			this->RunField->TabStop = true;
+			this->RunField->Text = L"Run";
+			this->RunField->UseVisualStyleBackColor = true;
 			// 
-			// motor_vertical_user
+			// InField
 			// 
-			this->motor_vertical_user->AutoSize = true;
-			this->motor_vertical_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_vertical_user->Location = System::Drawing::Point(218, 53);
-			this->motor_vertical_user->Name = L"motor_vertical_user";
-			this->motor_vertical_user->Size = System::Drawing::Size(49, 17);
-			this->motor_vertical_user->TabIndex = 31;
-			this->motor_vertical_user->TabStop = true;
-			this->motor_vertical_user->Text = L"user";
-			this->motor_vertical_user->UseVisualStyleBackColor = true;
+			this->InField->AutoSize = true;
+			this->InField->Location = System::Drawing::Point(6, 18);
+			this->InField->Name = L"InField";
+			this->InField->Size = System::Drawing::Size(37, 20);
+			this->InField->TabIndex = 14;
+			this->InField->TabStop = true;
+			this->InField->Text = L"In";
+			this->InField->UseVisualStyleBackColor = true;
 			// 
-			// label30
+			// OutField
 			// 
-			this->label30->AutoSize = true;
-			this->label30->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label30->ForeColor = System::Drawing::Color::White;
-			this->label30->Location = System::Drawing::Point(12, 72);
-			this->label30->Name = L"label30";
-			this->label30->Size = System::Drawing::Size(27, 13);
-			this->label30->TabIndex = 32;
-			this->label30->Text = L"MIN";
+			this->OutField->AutoSize = true;
+			this->OutField->Location = System::Drawing::Point(6, 37);
+			this->OutField->Name = L"OutField";
+			this->OutField->Size = System::Drawing::Size(48, 20);
+			this->OutField->TabIndex = 15;
+			this->OutField->TabStop = true;
+			this->OutField->Text = L"Out";
+			this->OutField->UseVisualStyleBackColor = true;
 			// 
-			// label35
+			// translationBox
 			// 
-			this->label35->AutoSize = true;
-			this->label35->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label35->ForeColor = System::Drawing::Color::White;
-			this->label35->Location = System::Drawing::Point(12, 93);
-			this->label35->Name = L"label35";
-			this->label35->Size = System::Drawing::Size(30, 13);
-			this->label35->TabIndex = 33;
-			this->label35->Text = L"MAX";
+			this->translationBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->translationBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->translationBox->Controls->Add(this->UndefTrasv);
+			this->translationBox->Controls->Add(this->RunTrasv);
+			this->translationBox->Controls->Add(this->HomeTrasv);
+			this->translationBox->Controls->Add(this->CenterTrasv);
+			this->translationBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->translationBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->translationBox->Location = System::Drawing::Point(252, 13);
+			this->translationBox->Name = L"translationBox";
+			this->translationBox->Size = System::Drawing::Size(86, 105);
+			this->translationBox->TabIndex = 22;
+			this->translationBox->TabStop = false;
+			this->translationBox->Text = L"Tras";
 			// 
-			// motor_arm_user
+			// RunTrasv
 			// 
-			this->motor_arm_user->AutoSize = true;
-			this->motor_arm_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_arm_user->Location = System::Drawing::Point(218, 53);
-			this->motor_arm_user->Name = L"motor_arm_user";
-			this->motor_arm_user->Size = System::Drawing::Size(49, 17);
-			this->motor_arm_user->TabIndex = 34;
-			this->motor_arm_user->TabStop = true;
-			this->motor_arm_user->Text = L"user";
-			this->motor_arm_user->UseVisualStyleBackColor = true;
+			this->RunTrasv->AutoSize = true;
+			this->RunTrasv->Location = System::Drawing::Point(6, 56);
+			this->RunTrasv->Name = L"RunTrasv";
+			this->RunTrasv->Size = System::Drawing::Size(52, 20);
+			this->RunTrasv->TabIndex = 16;
+			this->RunTrasv->TabStop = true;
+			this->RunTrasv->Text = L"Run";
+			this->RunTrasv->UseVisualStyleBackColor = true;
 			// 
-			// motor_arm_rot
+			// HomeTrasv
 			// 
-			this->motor_arm_rot->AutoSize = true;
-			this->motor_arm_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_arm_rot->Location = System::Drawing::Point(175, 53);
-			this->motor_arm_rot->Name = L"motor_arm_rot";
-			this->motor_arm_rot->Size = System::Drawing::Size(40, 17);
-			this->motor_arm_rot->TabIndex = 33;
-			this->motor_arm_rot->TabStop = true;
-			this->motor_arm_rot->Text = L"rot";
-			this->motor_arm_rot->UseVisualStyleBackColor = true;
+			this->HomeTrasv->AutoSize = true;
+			this->HomeTrasv->Location = System::Drawing::Point(6, 18);
+			this->HomeTrasv->Name = L"HomeTrasv";
+			this->HomeTrasv->Size = System::Drawing::Size(66, 20);
+			this->HomeTrasv->TabIndex = 14;
+			this->HomeTrasv->TabStop = true;
+			this->HomeTrasv->Text = L"Home";
+			this->HomeTrasv->UseVisualStyleBackColor = true;
 			// 
-			// motor_arm_tic
+			// CenterTrasv
 			// 
-			this->motor_arm_tic->AutoSize = true;
-			this->motor_arm_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_arm_tic->Location = System::Drawing::Point(130, 53);
-			this->motor_arm_tic->Name = L"motor_arm_tic";
-			this->motor_arm_tic->Size = System::Drawing::Size(39, 17);
-			this->motor_arm_tic->TabIndex = 32;
-			this->motor_arm_tic->TabStop = true;
-			this->motor_arm_tic->Text = L"tic";
-			this->motor_arm_tic->UseVisualStyleBackColor = true;
+			this->CenterTrasv->AutoSize = true;
+			this->CenterTrasv->Location = System::Drawing::Point(6, 37);
+			this->CenterTrasv->Name = L"CenterTrasv";
+			this->CenterTrasv->Size = System::Drawing::Size(70, 20);
+			this->CenterTrasv->TabIndex = 15;
+			this->CenterTrasv->TabStop = true;
+			this->CenterTrasv->Text = L"Center";
+			this->CenterTrasv->UseVisualStyleBackColor = true;
 			// 
-			// motor_tilt_user
+			// UndefTrasv
 			// 
-			this->motor_tilt_user->AutoSize = true;
-			this->motor_tilt_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_tilt_user->Location = System::Drawing::Point(220, 53);
-			this->motor_tilt_user->Name = L"motor_tilt_user";
-			this->motor_tilt_user->Size = System::Drawing::Size(49, 17);
-			this->motor_tilt_user->TabIndex = 34;
-			this->motor_tilt_user->TabStop = true;
-			this->motor_tilt_user->Text = L"user";
-			this->motor_tilt_user->UseVisualStyleBackColor = true;
+			this->UndefTrasv->AutoSize = true;
+			this->UndefTrasv->Location = System::Drawing::Point(6, 76);
+			this->UndefTrasv->Name = L"UndefTrasv";
+			this->UndefTrasv->Size = System::Drawing::Size(66, 20);
+			this->UndefTrasv->TabIndex = 17;
+			this->UndefTrasv->TabStop = true;
+			this->UndefTrasv->Text = L"Undef";
+			this->UndefTrasv->UseVisualStyleBackColor = true;
 			// 
-			// motor_tilt_rot
+			// UndefField
 			// 
-			this->motor_tilt_rot->AutoSize = true;
-			this->motor_tilt_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_tilt_rot->Location = System::Drawing::Point(177, 53);
-			this->motor_tilt_rot->Name = L"motor_tilt_rot";
-			this->motor_tilt_rot->Size = System::Drawing::Size(40, 17);
-			this->motor_tilt_rot->TabIndex = 33;
-			this->motor_tilt_rot->TabStop = true;
-			this->motor_tilt_rot->Text = L"rot";
-			this->motor_tilt_rot->UseVisualStyleBackColor = true;
+			this->UndefField->AutoSize = true;
+			this->UndefField->Location = System::Drawing::Point(6, 76);
+			this->UndefField->Name = L"UndefField";
+			this->UndefField->Size = System::Drawing::Size(66, 20);
+			this->UndefField->TabIndex = 17;
+			this->UndefField->TabStop = true;
+			this->UndefField->Text = L"Undef";
+			this->UndefField->UseVisualStyleBackColor = true;
 			// 
-			// motor_tilt_tic
+			// DisplayIntensity
 			// 
-			this->motor_tilt_tic->AutoSize = true;
-			this->motor_tilt_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_tilt_tic->Location = System::Drawing::Point(132, 53);
-			this->motor_tilt_tic->Name = L"motor_tilt_tic";
-			this->motor_tilt_tic->Size = System::Drawing::Size(39, 17);
-			this->motor_tilt_tic->TabIndex = 32;
-			this->motor_tilt_tic->TabStop = true;
-			this->motor_tilt_tic->Text = L"tic";
-			this->motor_tilt_tic->UseVisualStyleBackColor = true;
+			this->DisplayIntensity->Location = System::Drawing::Point(12, 56);
+			this->DisplayIntensity->Maximum = 15;
+			this->DisplayIntensity->Name = L"DisplayIntensity";
+			this->DisplayIntensity->Size = System::Drawing::Size(100, 23);
+			this->DisplayIntensity->Step = 15;
+			this->DisplayIntensity->Style = System::Windows::Forms::ProgressBarStyle::Continuous;
+			this->DisplayIntensity->TabIndex = 25;
 			// 
-			// motor_slide_user
+			// DisplayVal
 			// 
-			this->motor_slide_user->AutoSize = true;
-			this->motor_slide_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_slide_user->Location = System::Drawing::Point(220, 53);
-			this->motor_slide_user->Name = L"motor_slide_user";
-			this->motor_slide_user->Size = System::Drawing::Size(49, 17);
-			this->motor_slide_user->TabIndex = 34;
-			this->motor_slide_user->TabStop = true;
-			this->motor_slide_user->Text = L"user";
-			this->motor_slide_user->UseVisualStyleBackColor = true;
+			this->DisplayVal->Enabled = false;
+			this->DisplayVal->Location = System::Drawing::Point(12, 27);
+			this->DisplayVal->Name = L"DisplayVal";
+			this->DisplayVal->Size = System::Drawing::Size(100, 22);
+			this->DisplayVal->TabIndex = 24;
 			// 
-			// motor_slide_rot
+			// DisplayBox
 			// 
-			this->motor_slide_rot->AutoSize = true;
-			this->motor_slide_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_slide_rot->Location = System::Drawing::Point(177, 53);
-			this->motor_slide_rot->Name = L"motor_slide_rot";
-			this->motor_slide_rot->Size = System::Drawing::Size(40, 17);
-			this->motor_slide_rot->TabIndex = 33;
-			this->motor_slide_rot->TabStop = true;
-			this->motor_slide_rot->Text = L"rot";
-			this->motor_slide_rot->UseVisualStyleBackColor = true;
-			// 
-			// motor_slide_tic
-			// 
-			this->motor_slide_tic->AutoSize = true;
-			this->motor_slide_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_slide_tic->Location = System::Drawing::Point(132, 53);
-			this->motor_slide_tic->Name = L"motor_slide_tic";
-			this->motor_slide_tic->Size = System::Drawing::Size(39, 17);
-			this->motor_slide_tic->TabIndex = 32;
-			this->motor_slide_tic->TabStop = true;
-			this->motor_slide_tic->Text = L"tic";
-			this->motor_slide_tic->UseVisualStyleBackColor = true;
-			// 
-			// motor_body_user
-			// 
-			this->motor_body_user->AutoSize = true;
-			this->motor_body_user->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_body_user->Location = System::Drawing::Point(220, 53);
-			this->motor_body_user->Name = L"motor_body_user";
-			this->motor_body_user->Size = System::Drawing::Size(49, 17);
-			this->motor_body_user->TabIndex = 34;
-			this->motor_body_user->TabStop = true;
-			this->motor_body_user->Text = L"user";
-			this->motor_body_user->UseVisualStyleBackColor = true;
-			// 
-			// motor_body_rot
-			// 
-			this->motor_body_rot->AutoSize = true;
-			this->motor_body_rot->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_body_rot->Location = System::Drawing::Point(177, 53);
-			this->motor_body_rot->Name = L"motor_body_rot";
-			this->motor_body_rot->Size = System::Drawing::Size(40, 17);
-			this->motor_body_rot->TabIndex = 33;
-			this->motor_body_rot->TabStop = true;
-			this->motor_body_rot->Text = L"rot";
-			this->motor_body_rot->UseVisualStyleBackColor = true;
-			// 
-			// motor_body_tic
-			// 
-			this->motor_body_tic->AutoSize = true;
-			this->motor_body_tic->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_body_tic->Location = System::Drawing::Point(132, 53);
-			this->motor_body_tic->Name = L"motor_body_tic";
-			this->motor_body_tic->Size = System::Drawing::Size(39, 17);
-			this->motor_body_tic->TabIndex = 32;
-			this->motor_body_tic->TabStop = true;
-			this->motor_body_tic->Text = L"tic";
-			this->motor_body_tic->UseVisualStyleBackColor = true;
-			// 
-			// motor_vertical_uconv
-			// 
-			this->motor_vertical_uconv->Enabled = false;
-			this->motor_vertical_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_vertical_uconv->Location = System::Drawing::Point(188, 78);
-			this->motor_vertical_uconv->Name = L"motor_vertical_uconv";
-			this->motor_vertical_uconv->Size = System::Drawing::Size(79, 20);
-			this->motor_vertical_uconv->TabIndex = 34;
-			// 
-			// label40
-			// 
-			this->label40->AutoSize = true;
-			this->label40->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label40->ForeColor = System::Drawing::Color::White;
-			this->label40->Location = System::Drawing::Point(127, 79);
-			this->label40->Name = L"label40";
-			this->label40->Size = System::Drawing::Size(55, 13);
-			this->label40->TabIndex = 35;
-			this->label40->Text = L"ROT-User";
-			// 
-			// label41
-			// 
-			this->label41->AutoSize = true;
-			this->label41->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label41->ForeColor = System::Drawing::Color::White;
-			this->label41->Location = System::Drawing::Point(129, 77);
-			this->label41->Name = L"label41";
-			this->label41->Size = System::Drawing::Size(55, 13);
-			this->label41->TabIndex = 37;
-			this->label41->Text = L"ROT-User";
-			// 
-			// motor_arm_uconv
-			// 
-			this->motor_arm_uconv->Enabled = false;
-			this->motor_arm_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_arm_uconv->Location = System::Drawing::Point(190, 76);
-			this->motor_arm_uconv->Name = L"motor_arm_uconv";
-			this->motor_arm_uconv->Size = System::Drawing::Size(79, 20);
-			this->motor_arm_uconv->TabIndex = 36;
-			// 
-			// label42
-			// 
-			this->label42->AutoSize = true;
-			this->label42->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label42->ForeColor = System::Drawing::Color::White;
-			this->label42->Location = System::Drawing::Point(131, 78);
-			this->label42->Name = L"label42";
-			this->label42->Size = System::Drawing::Size(55, 13);
-			this->label42->TabIndex = 37;
-			this->label42->Text = L"ROT-User";
-			// 
-			// motor_tilt_uconv
-			// 
-			this->motor_tilt_uconv->Enabled = false;
-			this->motor_tilt_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_tilt_uconv->Location = System::Drawing::Point(192, 77);
-			this->motor_tilt_uconv->Name = L"motor_tilt_uconv";
-			this->motor_tilt_uconv->Size = System::Drawing::Size(79, 20);
-			this->motor_tilt_uconv->TabIndex = 36;
-			// 
-			// label43
-			// 
-			this->label43->AutoSize = true;
-			this->label43->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label43->ForeColor = System::Drawing::Color::White;
-			this->label43->Location = System::Drawing::Point(131, 77);
-			this->label43->Name = L"label43";
-			this->label43->Size = System::Drawing::Size(55, 13);
-			this->label43->TabIndex = 37;
-			this->label43->Text = L"ROT-User";
-			// 
-			// motor_slide_uconv
-			// 
-			this->motor_slide_uconv->Enabled = false;
-			this->motor_slide_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_slide_uconv->Location = System::Drawing::Point(192, 76);
-			this->motor_slide_uconv->Name = L"motor_slide_uconv";
-			this->motor_slide_uconv->Size = System::Drawing::Size(79, 20);
-			this->motor_slide_uconv->TabIndex = 36;
-			// 
-			// label44
-			// 
-			this->label44->AutoSize = true;
-			this->label44->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label44->ForeColor = System::Drawing::Color::White;
-			this->label44->Location = System::Drawing::Point(129, 77);
-			this->label44->Name = L"label44";
-			this->label44->Size = System::Drawing::Size(55, 13);
-			this->label44->TabIndex = 37;
-			this->label44->Text = L"ROT-User";
-			// 
-			// motor_body_uconv
-			// 
-			this->motor_body_uconv->Enabled = false;
-			this->motor_body_uconv->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold));
-			this->motor_body_uconv->Location = System::Drawing::Point(190, 76);
-			this->motor_body_uconv->Name = L"motor_body_uconv";
-			this->motor_body_uconv->Size = System::Drawing::Size(79, 20);
-			this->motor_body_uconv->TabIndex = 36;
+			this->DisplayBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->DisplayBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->DisplayBox->Controls->Add(this->DisplayVal);
+			this->DisplayBox->Controls->Add(this->DisplayIntensity);
+			this->DisplayBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->DisplayBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->DisplayBox->Location = System::Drawing::Point(7, 21);
+			this->DisplayBox->Name = L"DisplayBox";
+			this->DisplayBox->Size = System::Drawing::Size(130, 95);
+			this->DisplayBox->TabIndex = 26;
+			this->DisplayBox->TabStop = false;
+			this->DisplayBox->Text = L"Display";
 			// 
 			// MainForm
 			// 
@@ -2528,9 +2654,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->calib_ena))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->cmp_ena))->EndInit();
 			this->pcb304_panel->ResumeLayout(false);
-			this->pcb304_panel->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->grid_on))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->grid_in))->EndInit();
 			this->pcb301_panel->ResumeLayout(false);
 			this->groupBox4->ResumeLayout(false);
 			this->groupBox4->PerformLayout();
@@ -2557,6 +2680,12 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_slide_box->PerformLayout();
 			this->motor_body_box->ResumeLayout(false);
 			this->motor_body_box->PerformLayout();
+			this->InOutBox->ResumeLayout(false);
+			this->InOutBox->PerformLayout();
+			this->translationBox->ResumeLayout(false);
+			this->translationBox->PerformLayout();
+			this->DisplayBox->ResumeLayout(false);
+			this->DisplayBox->PerformLayout();
 			this->ResumeLayout(false);
 
 		}

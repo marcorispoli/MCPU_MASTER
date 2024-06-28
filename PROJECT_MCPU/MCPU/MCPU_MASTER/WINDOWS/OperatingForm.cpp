@@ -698,6 +698,26 @@ void OperatingForm::evaluateSlideStatus(bool init) {
 	
 }
 
+void OperatingForm::evaluateGridStatus(void) {
+	// Evaluates the current selected Exposure mode to define what is the current grid position
+	bool inOut_Field = false; // Out Field
+
+	switch (Exposures::getExposureMode()) {
+	case Exposures::exposure_type_options::AEC_2D: inOut_Field = true; break; // In Field
+	case Exposures::exposure_type_options::AEC_3D: inOut_Field = false; break; // Out Field
+	case Exposures::exposure_type_options::AEC_AE: inOut_Field = true; break; // In Field
+	case Exposures::exposure_type_options::AEC_COMBO: inOut_Field = true; break; // In Field
+	case Exposures::exposure_type_options::MAN_2D: inOut_Field = true; break; // In Field
+	case Exposures::exposure_type_options::MAN_3D: inOut_Field = false; break; // Out Field
+	case Exposures::exposure_type_options::MAN_AE: inOut_Field = true; break; // In Field
+	case Exposures::exposure_type_options::MAN_COMBO: inOut_Field = true; break; // In Field
+	default:inOut_Field = true; break; // In Field
+	}
+
+	if(inOut_Field)	PCB304::setAutoGridInField();
+	else PCB304::setAutoGridOutField();
+}
+
 void OperatingForm::operatingStatusManagement(void) {
 	
 	System::DateTime date;
@@ -713,7 +733,7 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateSlideStatus(false);
 	evaluateProjectionStatus(false);
 	evaluateDigitDisplays();
-
+	evaluateGridStatus();
 
 	// This shall be posed at the end of the management
 	evaluateReadyWarnings(false);
@@ -827,8 +847,10 @@ void OperatingForm::evaluateDigitDisplays(void) {
 		// newtons
 		digits = 0;		
 		dspval = PCB302::getForce();
+
 		if (dspval < 30) blink = true;
 		else blink = false;
+		
 		PCB304::setDisplay(dspval, digits, blink, intensity);
 		return;
 	}
@@ -928,9 +950,10 @@ void OperatingForm::evaluatePopupPanels(void) {
 	}
 
 	
-	if (PCB302::isCompressing()) {
-		timer = TMO;
-		if (!compression) {
+	if (!compression) {
+		// Compressor Window Initialization
+		if (PCB302::isCompressing()) {
+			timer = TMO;
 			compression = true;
 			arm = false;
 			body = false;
@@ -939,17 +962,20 @@ void OperatingForm::evaluatePopupPanels(void) {
 			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
 			else Gantry::getValuePopupWindow()->open(this, COMPRESSING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_COMPRESSION_ACTIVATED), "(N)");
+			Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
+			return;
 		}
-
-		// Set the value to the current compression
-		Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
-		return;
 	}
-	else compression = false;
+	else{
+		// When the compressing timer is working the window keeps the value updated
+		Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
+		if (PCB302::isCompressing()) timer = TMO;
+	}
 
-	if (ArmMotor::device->isRunning()) {
-		timer = TMO;
-		if (!arm) {
+	if (!arm) {
+		// Compressor Window Initialization
+		if (ArmMotor::device->isRunning()) {
+			timer = TMO;
 			compression = false;
 			arm = true;
 			body = false;
@@ -958,20 +984,25 @@ void OperatingForm::evaluatePopupPanels(void) {
 			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
 			else Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
-
+			
+			// Set the value to the current compression
+			int position = ArmMotor::device->getCurrentPosition() / 100;
+			Gantry::getValuePopupWindow()->content(position.ToString());
+			return;
 		}
-
+	}
+	else {
 		// Set the value to the current compression
 		int position = ArmMotor::device->getCurrentPosition() / 100;
 		Gantry::getValuePopupWindow()->content(position.ToString());
-		return;
-
+		if (ArmMotor::device->isRunning()) timer = TMO;
 	}
-	else arm = false;
 
-	if (BodyMotor::device->isRunning()) {
-		timer = TMO;
-		if (!body) {
+	
+	if (!body) {
+		// Compressor Window Initialization
+		if (BodyMotor::device->isRunning()) {
+			timer = TMO;
 			compression = false;
 			arm = false;
 			body = true;
@@ -980,19 +1011,24 @@ void OperatingForm::evaluatePopupPanels(void) {
 			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
 			else Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
-		}
 
+			// Set the value to the current compression
+			float position = (float)BodyMotor::device->getCurrentPosition() / 10;
+			Gantry::getValuePopupWindow()->content(position.ToString());
+			return;
+		}
+	}
+	else {
 		// Set the value to the current compression
 		float position = (float)BodyMotor::device->getCurrentPosition() / 10;
 		Gantry::getValuePopupWindow()->content(position.ToString());
-		return;
+		if (BodyMotor::device->isRunning()) timer = TMO;
 	}
-	else body = false;
 
-	
-	if (VerticalMotor::device->isRunning()) {
-		timer = TMO;
-		if (!vertical) {
+	if (!vertical) {
+		// Compressor Window Initialization
+		if (VerticalMotor::device->isRunning()) {
+			timer = TMO;
 			compression = false;
 			arm = false;
 			body = false;
@@ -1001,19 +1037,25 @@ void OperatingForm::evaluatePopupPanels(void) {
 			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
 			else Gantry::getValuePopupWindow()->open(this, VERTICAL_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_VERTICAL_ACTIVATED), "(mm)");
-		}
 
+			// Set the value to the current compression
+			int position = (int)VerticalMotor::device->getCurrentPosition();
+			Gantry::getValuePopupWindow()->content(position.ToString());
+			return;
+		}
+	}
+	else {
 		// Set the value to the current compression
 		int position = (int)VerticalMotor::device->getCurrentPosition();
 		Gantry::getValuePopupWindow()->content(position.ToString());
-		return;
+		if (VerticalMotor::device->isRunning()) timer = TMO;
 	}
-	else vertical = false;
 	
-
-	if (SlideMotor::device->isRunning()) {
-		timer = TMO;
-		if (!slide) {
+	
+	if (!slide) {
+		// Compressor Window Initialization
+		if (SlideMotor::device->isRunning()) {
+			timer = TMO;
 			compression = false;
 			arm = false;
 			body = false;
@@ -1022,18 +1064,24 @@ void OperatingForm::evaluatePopupPanels(void) {
 			tilt = false;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
 			else Gantry::getValuePopupWindow()->open(this, SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
-		}
 
+			// Set the value to the current compression
+			int position = (int)SlideMotor::device->getCurrentPosition() / 100;
+			Gantry::getValuePopupWindow()->content(position.ToString());
+			return;
+		}
+	}
+	else {
 		// Set the value to the current compression
 		int position = (int)SlideMotor::device->getCurrentPosition() / 100;
 		Gantry::getValuePopupWindow()->content(position.ToString());
-		return;
+		if (SlideMotor::device->isRunning()) timer = TMO;
 	}
-	else slide = false;
-
-	if (TiltMotor::device->isRunning()) {
-		timer = TMO;
-		if (!tilt) {
+	
+	if (!tilt) {
+		// Compressor Window Initialization
+		if (TiltMotor::device->isRunning()) {
+			timer = TMO;
 			compression = false;
 			arm = false;
 			body = false;
@@ -1042,19 +1090,33 @@ void OperatingForm::evaluatePopupPanels(void) {
 			tilt = true;
 			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
 			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(°)");
-		}
 
-		// Set the value to the current compression
-		int position = (int)TiltMotor::device->getCurrentPosition()/100;
-		Gantry::getValuePopupWindow()->content(position.ToString());
-		return;
+			// Set the value to the current compression
+			int position = (int)TiltMotor::device->getCurrentPosition() / 100;
+			Gantry::getValuePopupWindow()->content(position.ToString());
+			return;
+		}
 	}
-	else tilt = false;
+	else {
+		// Set the value to the current compression
+		int position = (int)TiltMotor::device->getCurrentPosition() / 100;
+		Gantry::getValuePopupWindow()->content(position.ToString());
+		if (TiltMotor::device->isRunning()) timer = TMO;
+	}
+	
 
 	// Keeps the popup alive for extra time
 	if (timer) {
 		timer--;
-		if (!timer) Gantry::getValuePopupWindow()->close();
+		if (!timer) {
+			compression = false;
+			arm = false;
+			body = false;
+			vertical = false;
+			slide = false;
+			tilt = false;
+			Gantry::getValuePopupWindow()->close();			
+		}
 		return;
 	}
 

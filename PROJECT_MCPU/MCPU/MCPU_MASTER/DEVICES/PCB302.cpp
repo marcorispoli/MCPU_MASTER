@@ -181,7 +181,7 @@ void PCB302::runningLoop(void) {
 
 	//	Status Register
 	protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER));
-	compression_executing = protocol.status_register.compression_on && protocol.status_register.downward_direction;
+	compression_executing = protocol.status_register.compression_on && (protocol.status_register.downward_direction || protocol.status_register.upward_direction);
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	
 	// Paddle Register

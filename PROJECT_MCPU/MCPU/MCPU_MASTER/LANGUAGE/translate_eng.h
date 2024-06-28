@@ -45,6 +45,7 @@
 "E00038", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
 "E00039", Notify::messages::ERROR_GENERATOR_SETUP, "Generator Status Monitoring", "The Generator configuration is failed",
 "E00040", Notify::messages::ERROR_GENERATOR_SYS_MESSAGE, "Generator Messages", "There are error messages",
+"E00041", Notify::messages::ERROR_POTTER_GRID_POSITION, "Potter Messages", "The Grid device is in fault condition",
 
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
@@ -73,7 +74,8 @@
 "W00017", Notify::messages::WARNING_FILTER_OUT_OF_POSITION, "Filter Monitoring", "The Filter selector is not in a valid position",
 "W00018", Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, "Collimator Monitoring", "An invalid collimation format is detected",
 "W00018", Notify::messages::WARNING_GENERATOR_SERVICE_MODE, "Generator Monitoring", "The Generator is in Service Mode",
-
+"W00018", Notify::messages::WARNING_GRID_OUT_OF_POSITION, "Potter Monitoring", "The grid is not in the expected position",
+"W00018", Notify::messages::WARNING_GRID_GENERAL_ENABLE, "Potter Monitoring", "The grid activation is momentary disabled",
 
 
 /* -------- INFO ---------------------------*/
@@ -108,6 +110,8 @@
 "I00018", Notify::messages::INFO_SLIDE_DRIVER, "Slide Motor Monitoring", "The motor driver is in error condition",
 
 "I00019", Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION, "Power Off Request", "Proceed with the System Power Off?",
+"I00020", Notify::messages::INFO_GRID_INOUT_MANUAL_MODE, "Potter Monitoring", "The Grid positioning is set to manual mode (test mode)",
+
 
 
 

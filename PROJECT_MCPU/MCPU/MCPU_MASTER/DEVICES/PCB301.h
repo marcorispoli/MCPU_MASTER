@@ -271,9 +271,10 @@ ref class PCB301 :  public CanDeviceProtocol
 			enum class register_index {
 				SYSTEM_REGISTER = 0,	//!> This is the System Status register index
 				BATTERY_REGISTER,		//!> This is the Battery level Status register index		
+				NUM_REGISTER
 			};
 
-			static bool decodeSystemRegister(CanDeviceProtocol::Register^ sys) {
+			static bool decodeSystemRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
 				// Byte 0 of the register
@@ -315,7 +316,7 @@ ref class PCB301 :  public CanDeviceProtocol
 			}
 
 			static Register^ encodeSystemRegister(void) {
-				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
+				Register^ sys = gcnew Register;
 
 				// Byte 0 of the register
 				if(system_error)			sys->d0 |= 0x1;
@@ -386,7 +387,7 @@ ref class PCB301 :  public CanDeviceProtocol
 			static bool pedal_cmp_up_stat = false;		//!> This is the current status of the Pedal Board - Compressor Up input line 
 			static bool pedal_cmp_down_stat = false;		//!> This is the current status of the Pedal Board - Compressor Down input line
 
-			static bool decodeBatteryRegister(CanDeviceProtocol::Register^ sys) {
+			static bool decodeBatteryRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
 				// Byte 0 of the register
@@ -398,7 +399,7 @@ ref class PCB301 :  public CanDeviceProtocol
 				return true;
 			}
 			static Register^ encodeBatteryRegister(void) {
-				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
+				Register^ sys = gcnew Register;
 
 				// Byte 0 of the register
 				sys->d0 = voltage_batt1;
@@ -417,13 +418,14 @@ ref class PCB301 :  public CanDeviceProtocol
 		public:
 
 			enum class register_index {
-				OUTPUTS = 0,	//!> This is the System Status register index			
+				OUTPUTS = 0,	//!> This is the System Status register index		
+				NUM_REGISTER
 			};
 
-			CanDeviceProtocol::Register^ encodeOutputRegister(void) {
+			Register^ encodeOutputRegister(void) {
 
 				// Creates a register with all bytes set to 0
-				CanDeviceProtocol::Register^ out = gcnew CanDeviceProtocol::Register;
+				Register^ out = gcnew Register;
 
 				// Assignes the output bit status
 				if (power_lock) out->d0 |= 0x1;
@@ -449,7 +451,7 @@ ref class PCB301 :  public CanDeviceProtocol
 				return out;
 			}
 
-			static bool decodeOutputRegister(CanDeviceProtocol::Register^ reg) {
+			static bool decodeOutputRegister(Register^ reg) {
 				if (reg == nullptr) return false;
 
 				power_lock = reg->d0 & 0x1;
@@ -501,8 +503,9 @@ ref class PCB301 :  public CanDeviceProtocol
 
 		ref class ParameterRegister {
 		public:
-			enum class command_index {
+			enum class register_index {
 				PARAM_REGISTER = 0,
+				NUM_REGISTER
 			};
 
 			//writeParamRegister(unsigned char idx, Register^ reg)
@@ -522,8 +525,8 @@ ref class PCB301 :  public CanDeviceProtocol
 				ACTIVATE_DEMO_TOMO,		//!< Buzzer pulse for tomo		
 			};
 
-			CanDeviceProtocol::CanDeviceCommand^ encodeActivateDemoCommand(unsigned char samples, unsigned char fps) {
-				return gcnew CanDeviceProtocol::CanDeviceCommand((unsigned char)command_index::ACTIVATE_SOFT_POWEROFF, samples, fps, 0, 0);
+			CanDeviceCommand^ encodeActivateDemoCommand(unsigned char samples, unsigned char fps) {
+				return gcnew CanDeviceCommand((unsigned char)command_index::ACTIVATE_SOFT_POWEROFF, samples, fps, 0, 0);
 			}
 
 		};

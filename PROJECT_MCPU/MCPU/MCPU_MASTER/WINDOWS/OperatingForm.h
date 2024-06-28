@@ -55,6 +55,7 @@ public:
 	void evaluateProjectionStatus(bool init);
 	void evaluatePopupPanels(void);
 	void evaluateDigitDisplays(void);
+	void evaluateGridStatus(void);
 	void onArmTargetChangedCallback(int id, int target);
 	
 

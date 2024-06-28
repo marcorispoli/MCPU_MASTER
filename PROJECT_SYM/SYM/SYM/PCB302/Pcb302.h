@@ -124,7 +124,7 @@ public:
 
 				pad->d0 = (unsigned char)(paddle_position & 0xFF);
 				pad->d1 = (unsigned char)((paddle_position >> 8) & 0x0f);
-				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) >> 4);
+				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) << 4);
 				pad->d2 = (unsigned char)((paddle_force >> 4) & 0xff);
 				pad->d3 = paddle_code;
 
@@ -148,7 +148,7 @@ public:
 
 				pad->d0 = (unsigned char)(paddle_raw_position & 0xFF);
 				pad->d1 = (unsigned char)((paddle_raw_position >> 8) & 0x0f);
-				pad->d1 |= ((unsigned char)(paddle_raw_force & 0x0F) >> 4);
+				pad->d1 |= ((unsigned char)(paddle_raw_force & 0x0F) << 4 );
 				pad->d2 = (unsigned char)((paddle_raw_force >> 4) & 0xff);
 				pad->d3 = paddle_raw_code;
 

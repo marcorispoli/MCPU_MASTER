@@ -11,7 +11,7 @@ canInterface::canInterface(void)
 {
 
 	ipserver = "127.0.0.1";
-	portserver = 21000;
+	portserver = 20000;
 
 	// Gets the Handler of the Form parent class, to be used for the message exchange
 	connection_status = false;

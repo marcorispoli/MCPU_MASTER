@@ -40,11 +40,9 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
     }
 
     // Sets the Grid On Field (if not yet) : wait for the ready condition   
-    PCB304::synchGridWithGenerator(true);
-    if (!PCB304::setGridOnField(true)) {
-        return exposure_completed_errors::XRAY_GRID_ERROR;
-    }
-
+    if (grid_synch) PCB304::syncGeneratorOn();
+    else PCB304::syncGeneratorOff();
+   
     // Determines if the Focus is Small or large based on the presence of the Magnifier device
     if (PCB302::isMagnifierDeviceDetected()) large_focus = false;
     else large_focus = true;
@@ -130,10 +128,8 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     }
 
     // Sets the Grid On Field (if not yet) : wait for the ready condition   
-    PCB304::synchGridWithGenerator(true);
-    if (!PCB304::setGridOnField(true)) {
-        return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
-    }
+    if (grid_synch) PCB304::syncGeneratorOn();
+    else PCB304::syncGeneratorOff();
 
     // Determines if the Focus is Small or large based on the presence of the Magnifier device
     if (PCB302::isMagnifierDeviceDetected()) large_focus = false;

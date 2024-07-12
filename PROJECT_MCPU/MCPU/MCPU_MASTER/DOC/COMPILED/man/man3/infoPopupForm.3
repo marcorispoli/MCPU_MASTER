@@ -1,0 +1,143 @@
+.TH "infoPopupForm" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+infoPopupForm
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <infoPopup\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBopen\fP (Form^ parent_form, int msg, System::String^ extra)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "\fBinfoPopupForm\fP (void)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBinfoPanelTimer\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~infoPopupForm\fP ()"
+.br
+.RI "Clean up any resources being used\&.  "
+.ti -1c
+.RI "void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "System::Void \fBInitializeComponent\fP ()"
+.br
+.ti -1c
+.RI "System::Void \fBonInfoTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBinfoId\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBinfoTitle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::RichTextBox ^ \fBinfoContent\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBcancButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBinfoIcon\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&.  "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "infoPopupForm::infoPopupForm (void)\fC [inline]\fP"
+
+.SS "infoPopupForm::~infoPopupForm ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Clean up any resources being used\&.  
+.SH "Member Function Documentation"
+.PP 
+.SS "System::Void infoPopupForm::cancButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void infoPopupForm::close (void)"
+
+.SS "void infoPopupForm::formInitialization (void)"
+
+.SS "System::Void infoPopupForm::InitializeComponent ()\fC [inline]\fP, \fC [private]\fP"
+
+.SS "System::Void infoPopupForm::onInfoTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void infoPopupForm::open (Form^ parent_form, int msg, System::String^ extra)"
+
+.SS "void infoPopupForm::WndProc (System::Windows::Forms::Message% m)\fC [inline]\fP, \fC [override]\fP, \fC [protected]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::PictureBox ^ infoPopupForm::cancButton\fC [private]\fP"
+
+.SS "System::ComponentModel::Container ^ infoPopupForm::components\fC [private]\fP"
+
+.PP
+Required designer variable\&.  
+.SS "System::Windows::Forms::RichTextBox ^ infoPopupForm::infoContent\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ infoPopupForm::infoIcon\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ infoPopupForm::infoId\fC [private]\fP"
+
+.SS "System::Timers::Timer ^ infoPopupForm::infoPanelTimer"
+
+.SS "System::Windows::Forms::Label ^ infoPopupForm::infoTitle\fC [private]\fP"
+
+.SS "bool infoPopupForm::open_status"
+
+.SS "Form ^ infoPopupForm::parent"
+
+.SS "HWND infoPopupForm::window"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

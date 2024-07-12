@@ -1,0 +1,257 @@
+.TH "ArmMotor" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ArmMotor \-  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ArmMotor\&.h>\fP
+.PP
+Inherits \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBArmMotor\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_abort_projection_request_callback\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_projection_request_callback\fP (System::String^ str)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisTarget\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisValidTarget\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisInRange\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisValidPosition\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBstartManualHoming\fP (int target_position)"
+.br
+.ti -1c
+.RI "static bool \fBstartAutoHoming\fP ()"
+.br
+.RI "This function activates the Automatic Homing procedure "
+.ti -1c
+.RI "static bool \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
+.br
+.ti -1c
+.RI "static void \fBabortTarget\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBserviceAutoPosition\fP (int pos)"
+.br
+.ti -1c
+.RI "static bool \fBsetIdlePosition\fP (void)"
+.br
+.ti -1c
+.RI "static \fBProjectionOptions\fP ^ \fBgetProjectionsList\fP ()"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetSelectedProjection\fP (void)"
+.br
+.ti -1c
+.RI "static \fBProjectionOptions::options\fP \fBgetSelectedProjectionCode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBabortProjectionRequest\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBprojectionRequest\fP (System::String^ projection)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBArmMotor\fP ^ \fBdevice\fP = gcnew \fBArmMotor\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBcompletedCallback\fP (int id, \fBMotorCommands\fP \fBcurrent_command\fP, int current_position, \fBMotorCompletedCodes\fP term_code) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "unsigned short \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
+.br
+.RI "Sets specific registers for the Arm activation 
+.br
+ "
+.ti -1c
+.RI "void \fBfaultCallback\fP (bool errstat, bool data_changed, unsigned int \fBerror_class\fP, unsigned int \fBerror_code\fP) override"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBiso_activation_mode\fP"
+.br
+.RI "Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_abort_projection_request_callback\fP^ \fBabort_projection_request_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_projection_request_callback\fP^ \fBprojection_request_event\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBProjectionOptions\fP ^ \fBprojections\fP = gcnew \fBProjectionOptions\fP"
+.br
+.RI "This is the current selected projection\&. "
+.ti -1c
+.RI "static int \fBallowed_low\fP = 0"
+.br
+.RI "Lower acceptable angle (°) "
+.ti -1c
+.RI "static int \fBallowed_high\fP = 0"
+.br
+.RI "Higher acceptable angle (°) "
+.ti -1c
+.RI "static bool \fBvalid_target\fP = false"
+.br
+.RI "True if the target is a valid target\&. "
+.ti -1c
+.RI "static int \fBselected_target\fP"
+.br
+.RI "Automatic selected target 
+.br
+ "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+
+
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ArmMotor::ArmMotor (void)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static void ArmMotor::abortProjectionRequest (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "void ArmMotor::abortTarget (void)\fC [static]\fP"
+
+.SS "void ArmMotor::completedCallback (int id, \fBMotorCommands\fP current_command, int current_position, \fBMotorCompletedCodes\fP term_code)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "delegate void ArmMotor::delegate_abort_projection_request_callback (void)"
+
+.SS "delegate void ArmMotor::delegate_projection_request_callback (System::String^ str)"
+
+.SS "void ArmMotor::faultCallback (bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static \fBProjectionOptions\fP ^ ArmMotor::getProjectionsList ()\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static System::String ^ ArmMotor::getSelectedProjection (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBProjectionOptions::options\fP ArmMotor::getSelectedProjectionCode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "unsigned short ArmMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Sets specific registers for the Arm activation 
+.br
+ 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static bool ArmMotor::isInRange (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool ArmMotor::isTarget (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool ArmMotor::isValidPosition (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool ArmMotor::isValidTarget (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void ArmMotor::projectionRequest (System::String^ projection)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "bool ArmMotor::serviceAutoPosition (int pos)\fC [static]\fP"
+
+.SS "bool ArmMotor::setIdlePosition (void)\fC [static]\fP"
+
+.SS "bool ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fC [static]\fP"
+
+.SS "bool ArmMotor::startAutoHoming (void)\fC [static]\fP"
+
+.PP
+This function activates the Automatic Homing procedure 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "bool ArmMotor::startManualHoming (int target_position)\fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int ArmMotor::allowed_high = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Higher acceptable angle (°) 
+.SS "int ArmMotor::allowed_low = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Lower acceptable angle (°) 
+.SS "\fBArmMotor\fP ^ ArmMotor::device = gcnew \fBArmMotor\fP()\fC [static]\fP"
+
+.SS "bool ArmMotor::iso_activation_mode\fC [protected]\fP"
+
+.PP
+Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. 
+.SS "\fBProjectionOptions\fP ^ ArmMotor::projections = gcnew \fBProjectionOptions\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current selected projection\&. 
+.SS "int ArmMotor::selected_target\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Automatic selected target 
+.br
+ 
+.SS "bool ArmMotor::valid_target = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+True if the target is a valid target\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_abort_projection_request_callback\fP^ ArmMotor::abort_projection_request_event\fC [static]\fP"
+
+.SS "\fBdelegate_projection_request_callback\fP^ ArmMotor::projection_request_event\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

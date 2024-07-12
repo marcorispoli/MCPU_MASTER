@@ -1,0 +1,396 @@
+.TH "OperatingForm" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OperatingForm
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <OperatingForm\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBopen\fP (void)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBsuspend\fP (void)"
+.br
+.ti -1c
+.RI "void \fBresume\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonAbortConfirmOk\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonAbortConfirmCanc\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonConfirmOk\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonConfirmCanc\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonShiftConfirmOk\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonShiftConfirmCanc\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitOperatingStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBoperatingStatusManagement\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateXrayStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateReadyWarnings\fP (bool reset)"
+.br
+.ti -1c
+.RI "void \fBevaluateCompressorStatus\fP (bool init)"
+.br
+.ti -1c
+.RI "void \fBevaluateCompressorReleaseStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateCollimatorStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateMagStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateDoorStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateSlideStatus\fP (bool init)"
+.br
+.ti -1c
+.RI "void \fBevaluateProjectionStatus\fP (bool init)"
+.br
+.ti -1c
+.RI "void \fBevaluatePopupPanels\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevaluateDigitDisplays\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonArmTargetChangedCallback\fP (int id, int target)"
+.br
+.ti -1c
+.RI "\fBOperatingForm\fP (void)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "Object ^ \fBpXray\fP"
+.br
+.ti -1c
+.RI "Object ^ \fBpProj\fP"
+.br
+.ti -1c
+.RI "Object ^ \fBpAbort\fP"
+.br
+.ti -1c
+.RI "Object ^ \fBpShiftConf\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBoperatingTimer\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~OperatingForm\fP ()"
+.br
+.RI "Clean up any resources being used\&.  "
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&.  "
+.ti -1c
+.RI "System::Void \fBonOperatingTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBlampButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBerrorButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBviewSelection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBShiftSelection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBmainPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelDate\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPatientName\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTime\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBxrayStat\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelXrayStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBdemoIcon\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBprojSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBselectedIcon\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBangleText\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBlampButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBslideButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBalarmButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBcollimationStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelColli\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBpaddleStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPaddle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBthicknessStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelThickness\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBforceStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelForce\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBmagnifierStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelMag\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBdecompressionStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBtubeStatus\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTubeData\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBdoorStatus\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&.  "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "OperatingForm::OperatingForm (void)\fC [inline]\fP"
+
+.SS "OperatingForm::~OperatingForm ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Clean up any resources being used\&.  
+.SH "Member Function Documentation"
+.PP 
+.SS "void OperatingForm::close (void)"
+
+.SS "void OperatingForm::errorButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void OperatingForm::evaluateCollimatorStatus (void)"
+
+.SS "void OperatingForm::evaluateCompressorReleaseStatus (void)"
+
+.SS "void OperatingForm::evaluateCompressorStatus (bool init)"
+
+.SS "void OperatingForm::evaluateDigitDisplays (void)"
+
+.SS "void OperatingForm::evaluateDoorStatus (void)"
+
+.SS "void OperatingForm::evaluateMagStatus (void)"
+
+.SS "void OperatingForm::evaluatePopupPanels (void)"
+
+.SS "void OperatingForm::evaluateProjectionStatus (bool init)"
+
+.SS "void OperatingForm::evaluateReadyWarnings (bool reset)"
+
+.SS "void OperatingForm::evaluateSlideStatus (bool init)"
+
+.SS "void OperatingForm::evaluateXrayStatus (void)"
+
+.SS "void OperatingForm::formInitialization (void)\fC [private]\fP"
+
+.SS "void OperatingForm::InitializeComponent (void)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&.  
+.SS "void OperatingForm::initOperatingStatus (void)"
+
+.SS "void OperatingForm::lampButton_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void OperatingForm::onAbortConfirmCanc (void)"
+
+.SS "void OperatingForm::onAbortConfirmOk (void)"
+
+.SS "void OperatingForm::onArmTargetChangedCallback (int id, int target)"
+
+.SS "void OperatingForm::onConfirmCanc (void)"
+
+.SS "void OperatingForm::onConfirmOk (void)"
+
+.SS "System::Void OperatingForm::onOperatingTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fC [inline]\fP, \fC [private]\fP"
+
+.SS "void OperatingForm::onShiftConfirmCanc (void)"
+
+.SS "void OperatingForm::onShiftConfirmOk (void)"
+
+.SS "void OperatingForm::open (void)"
+
+.SS "void OperatingForm::operatingStatusManagement (void)"
+
+.SS "void OperatingForm::resume (void)"
+
+.SS "void OperatingForm::ShiftSelection_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void OperatingForm::suspend (void)"
+
+.SS "void OperatingForm::viewSelection_Click (System::Object^ sender, System::EventArgs^ e)\fC [private]\fP"
+
+.SS "void OperatingForm::WndProc (System::Windows::Forms::Message% m)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::Panel ^ OperatingForm::alarmButton\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::angleText\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::collimationStatus\fC [private]\fP"
+
+.SS "System::ComponentModel::Container ^ OperatingForm::components\fC [private]\fP"
+
+.PP
+Required designer variable\&.  
+.SS "System::Windows::Forms::Panel ^ OperatingForm::decompressionStatus\fC [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ OperatingForm::demoIcon\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::doorStatus\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::forceStatus\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelColli\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelDate\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelForce\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelMag\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelPaddle\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelPatientName\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelThickness\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelTime\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelTubeData\fC [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ OperatingForm::labelXrayStatus\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::lampButton\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::magnifierStatus\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::mainPanel\fC [private]\fP"
+
+.SS "bool OperatingForm::open_status"
+
+.SS "System::Timers::Timer ^ OperatingForm::operatingTimer"
+
+.SS "Object ^ OperatingForm::pAbort"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::paddleStatus\fC [private]\fP"
+
+.SS "Object ^ OperatingForm::pProj"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::projSelection\fC [private]\fP"
+
+.SS "Object ^ OperatingForm::pShiftConf"
+
+.SS "Object ^ OperatingForm::pXray"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::selectedIcon\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::slideButton\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::thicknessStatus\fC [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::tubeStatus\fC [private]\fP"
+
+.SS "HWND OperatingForm::window"
+
+.SS "System::Windows::Forms::Panel ^ OperatingForm::xrayStat\fC [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

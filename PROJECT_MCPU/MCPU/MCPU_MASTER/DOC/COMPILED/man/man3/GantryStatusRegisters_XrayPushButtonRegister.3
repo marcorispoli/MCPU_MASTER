@@ -1,0 +1,128 @@
+.TH "GantryStatusRegisters::XrayPushButtonRegister" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::XrayPushButtonRegister \- This class handles the Xray Push Button activation status and activities  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBenable_options\fP { \fBXRAYPUSH_DISABLED\fP = 0, \fBXRAYPUSH_ENABLED\fP = 1, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "Definition of the xray push button enable status\&. "
+.ti -1c
+.RI "enum class \fBactivation_options\fP { \fBXRAYPUSH_RELEASED\fP = 0, \fBXRAYPUSH_PRESSED\fP = 1, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "Definition of the xray push button current status\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisEnabled\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisDisabled\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetEnable\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetDisable\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetPressed\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetReleased\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< String^> ^ \fBtags\fP = gcnew cli::array<String^> {'OFF', 'ON', 'UNDEF'}"
+.br
+.RI "Definition of the register tags\&. "
+.ti -1c
+.RI "static \fBenumType\fP< \fBenable_options\fP > ^ \fBenableStatus\fP = gcnew \fBenumType\fP<\fBenable_options\fP>(\fBtags\fP)"
+.br
+.ti -1c
+.RI "static \fBenumType\fP< \fBactivation_options\fP > ^ \fBactivationStatus\fP = gcnew \fBenumType\fP<\fBactivation_options\fP>(\fBtags\fP)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class handles the Xray Push Button activation status and activities 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::XrayPushButtonRegister::activation_options\fP\fC [strong]\fP"
+
+.PP
+Definition of the xray push button current status\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIXRAYPUSH_RELEASED \fP\fP
+XRAY Push Button is released\&. 
+.TP
+\fB\fIXRAYPUSH_PRESSED \fP\fP
+XRAY Push Button is pressed\&. 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SS "enum class \fBGantryStatusRegisters::XrayPushButtonRegister::enable_options\fP\fC [strong]\fP"
+
+.PP
+Definition of the xray push button enable status\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIXRAYPUSH_DISABLED \fP\fP
+XRAY Push Button is enabled\&. 
+.TP
+\fB\fIXRAYPUSH_ENABLED \fP\fP
+XRAY Push Button is disabled\&. 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::isDisabled (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::isEnabled (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::setDisable (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatusRegisters::XrayPushButtonRegister::setEnable (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void GantryStatusRegisters::XrayPushButtonRegister::setPressed (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void GantryStatusRegisters::XrayPushButtonRegister::setReleased (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBenumType\fP<\fBactivation_options\fP> ^ GantryStatusRegisters::XrayPushButtonRegister::activationStatus = gcnew \fBenumType\fP<\fBactivation_options\fP>(\fBtags\fP)\fC [static]\fP"
+
+.SS "\fBenumType\fP<\fBenable_options\fP> ^ GantryStatusRegisters::XrayPushButtonRegister::enableStatus = gcnew \fBenumType\fP<\fBenable_options\fP>(\fBtags\fP)\fC [static]\fP"
+
+.SS "const cli::array<String^> ^ GantryStatusRegisters::XrayPushButtonRegister::tags = gcnew cli::array<String^> {'OFF', 'ON', 'UNDEF'}\fC [static]\fP"
+
+.PP
+Definition of the register tags\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

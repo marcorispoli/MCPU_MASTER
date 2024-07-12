@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{8557e6e1-7950-47e4-94d6-39f875bb06aa}</ProjectGuid>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>MCPU_MASTER</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>main</EntryPointSymbol>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SQL;$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>main</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>main</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>main</EntryPointSymbol>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SQL;$(ProjectDir)\VSCAN</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AWS\awsProtocol.h" />
+    <ClInclude Include="AWS\TcpIpServerCLI.h" />
+    <ClInclude Include="CONFIGURATION\CalibrationConfig.h" />
+    <ClInclude Include="CONFIGURATION\ConfigFile.h" />
+    <ClInclude Include="CONFIGURATION\SystemConfig.h" />
+    <ClInclude Include="DEBUGGER\Debugger.h" />
+    <ClInclude Include="DEVICES\PCB326.h" />
+    <ClInclude Include="GENERATOR\ExposureModule.h" />
+    <ClInclude Include="MESSAGES\Log.h" />
+    <ClInclude Include="MOTORS\ArmMotor.h" />
+    <ClInclude Include="MOTORS\BodyMotor.h" />
+    <ClInclude Include="MOTORS\SlideMotor.h" />
+    <ClInclude Include="MOTORS\VerticalMotor.h" />
+    <ClInclude Include="VSCAN\CanSimulator.h" />
+    <ClInclude Include="WINDOWS\ConfirmationWindow.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="DEVICES\CanDeviceProtocol.h" />
+    <ClInclude Include="DEVICES\PCB301.h" />
+    <ClInclude Include="DEVICES\PCB302.h" />
+    <ClInclude Include="DEVICES\PCB303.h" />
+    <ClInclude Include="DEVICES\PCB304.h" />
+    <ClInclude Include="DEVICES\PCB315.h" />
+    <ClInclude Include="GENERATOR\Generator.h" />
+    <ClInclude Include="GENERATOR\R2CP\api_log.h" />
+    <ClInclude Include="GENERATOR\R2CP\CaDataDic.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicHdlInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicNetworkInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicPatientInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicR2CPInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRadInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicRFInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicServiceInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicSystemInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\Interfaces\aDataDicTestInterface.h" />
+    <ClInclude Include="GENERATOR\R2CP\GenDataDic\R2CP_Index.h" />
+    <ClInclude Include="GENERATOR\R2CP\R2CP_Eth.h" />
+    <ClInclude Include="GENERATOR\R2CP\system_messages.h" />
+    <ClInclude Include="GENERATOR\TcpIpClientCLI.h" />
+    <ClInclude Include="LANGUAGE\translate_eng.h" />
+    <ClInclude Include="LANGUAGE\translate_esp.h" />
+    <ClInclude Include="LANGUAGE\translate_fra.h" />
+    <ClInclude Include="LANGUAGE\translate_ita.h" />
+    <ClInclude Include="LANGUAGE\translate_por.h" />
+    <ClInclude Include="LANGUAGE\translate_rus.h" />
+    <ClInclude Include="gantry_global_status.h" />
+    <ClInclude Include="MESSAGES\Notify.h" />
+    <ClInclude Include="MOTORS\CanOpenDriver\CanOpenMotor.h" />
+    <ClInclude Include="MOTORS\CanOpenDriver\pd4_od.h" />
+    <ClInclude Include="MOTORS\TiltMotor.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="VSCAN\CanDriver.h" />
+    <ClInclude Include="WINDOWS\ErrorForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\IconWindow.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\IdleForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\infoPopup.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\KeyPaddle.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\MainForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\OperatingForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\Projections.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceExposureTool.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceRotationTool.h" />
+    <ClInclude Include="WINDOWS\SERVICE\ServiceZeroSettingTool.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\ValuePopup.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="AWS\awsCommands.cpp" />
+    <ClCompile Include="AWS\awsEvents.cpp" />
+    <ClCompile Include="AWS\awsProtocol.cpp" />
+    <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
+    <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
+    <ClCompile Include="DEBUGGER\Debugger.cpp" />
+    <ClCompile Include="DEVICES\PCB326.cpp" />
+    <ClCompile Include="GENERATOR\Exposure2DModule.cpp" />
+    <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureAEModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureModule.cpp" />
+    <ClCompile Include="GENERATOR\ExposureTest.cpp" />
+    <ClCompile Include="MESSAGES\Log.cpp" />
+    <ClCompile Include="MOTORS\ArmMotor.cpp" />
+    <ClCompile Include="MOTORS\BodyMotor.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenAutomaticPositioning.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenCiAProcedures.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenHoming.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenManualPositioning.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenNanoJ.cpp" />
+    <ClCompile Include="MOTORS\SlideMotor.cpp" />
+    <ClCompile Include="MOTORS\VerticalMotor.cpp" />
+    <ClCompile Include="VSCAN\CanSimulator.cpp" />
+    <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
+    <ClCompile Include="CppCLR_WinFormsProject.cpp" />
+    <ClCompile Include="DEVICES\CanDeviceProtocol.cpp" />
+    <ClCompile Include="DEVICES\PCB301.cpp" />
+    <ClCompile Include="DEVICES\PCB302.cpp" />
+    <ClCompile Include="DEVICES\PCB303.cpp" />
+    <ClCompile Include="DEVICES\PCB304.cpp" />
+    <ClCompile Include="DEVICES\PCB315.cpp" />
+    <ClCompile Include="gantry_global_status.cpp" />
+    <ClCompile Include="GENERATOR\Generator.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\api_log.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\CaDataDic.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_GenIndex.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Network.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_PatientIndex.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_Service.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\GenDataDic\CaDataDicGen_SystemIndex.cpp" />
+    <ClCompile Include="GENERATOR\R2CP\R2CP_Eth.cpp" />
+    <ClCompile Include="GENERATOR\TcpIpClientCLI.cpp" />
+    <ClCompile Include="MESSAGES\Notify.cpp" />
+    <ClCompile Include="MOTORS\CanOpenDriver\CanOpenMotor.cpp" />
+    <ClCompile Include="MOTORS\TiltMotor.cpp" />
+    <ClCompile Include="VSCAN\CanDriver.cpp" />
+    <ClCompile Include="WINDOWS\ErrorForm.cpp" />
+    <ClCompile Include="WINDOWS\IconWindow.cpp" />
+    <ClCompile Include="WINDOWS\IdleForm.cpp" />
+    <ClCompile Include="WINDOWS\infoPopup.cpp" />
+    <ClCompile Include="WINDOWS\KeyPaddle.cpp" />
+    <ClCompile Include="WINDOWS\MainForm.cpp" />
+    <ClCompile Include="WINDOWS\OperatingForm.cpp" />
+    <ClCompile Include="WINDOWS\Projections.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE\ServiceExposureTool.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE\ServiceForm.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE\ServiceRotationTool.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE\ServiceZeroSettingTool.cpp" />
+    <ClCompile Include="WINDOWS\ValuePopup.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DOC\aws_interface_protocol_implementation.html" />
+    <None Include="DOC\aws_interface_protocol_implementation.md" />
+    <None Include="DOC\COMPILED\html\index.html" />
+    <None Include="DOC\mcpu_master_doxy" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WINDOWS\ConfirmationWindow.resx">
+      <DependentUpon>WINDOWS\ConfirmationWindow.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\ErrorForm.resx">
+      <DependentUpon>WINDOWS\ErrorForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\IdleForm.resx" />
+    <EmbeddedResource Include="WINDOWS\infoPopup.resx">
+      <DependentUpon>WINDOWS\infoPopup.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\KeyPaddle.resx">
+      <DependentUpon>WINDOWS\KeyPaddle.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\MainForm.resx" />
+    <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />
+    <EmbeddedResource Include="WINDOWS\Projections.resx">
+      <DependentUpon>WINDOWS\Projections.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\SERVICE\ServiceExposureTool.resx">
+      <DependentUpon>WINDOWS\SERVICE\ServiceExposureTool.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\SERVICE\ServiceForm.resx">
+      <DependentUpon>WINDOWS\SERVICE\ServiceForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\SERVICE\ServiceZeroSettingTool.resx">
+      <DependentUpon>WINDOWS\SERVICE\ServiceZeroSettingTool.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\ValuePopup.resx">
+      <DependentUpon>WINDOWS\ValuePopup.h</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,202 @@
+.TH "TcpIpServerCLI" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TcpIpServerCLI
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <TcpIpServerCLI\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBrxData_slot\fP (cli::array< System::Byte >^ receiveBuffer, int rc)"
+.br
+.RI "This is the delegate of the reception handler\&. "
+.ti -1c
+.RI "delegate void \fBconnection_slot\fP (bool status)"
+.br
+.RI "This is the delegate of the connection handler\&. "
+.ti -1c
+.RI "\fBTcpIpServerCLI\fP (System::String^ ip, int port)"
+.br
+.RI "This is the class constructor\&. "
+.ti -1c
+.RI "void \fBsend\fP (cli::array< System::Byte >^ buffer)"
+.br
+.RI "This is function to send data in the BUS\&. "
+.ti -1c
+.RI "bool \fBisConnected\fP (void)"
+.br
+.RI "Returns the current connection sattus  "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBthreadWork\fP (void)"
+.br
+.RI "This is the worker thread for the connection management\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "\fBrxData_slot\fP^ \fBrxData_event\fP"
+.br
+.RI "Reception event\&. "
+.ti -1c
+.RI "\fBconnection_slot\fP^ \fBconnection_event\fP"
+.br
+.RI "Connection event\&. "
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Threading::Thread ^ \fBrunning_thread\fP"
+.br
+.RI "This is the worker thread handler\&. "
+.ti -1c
+.RI "System::Net::Sockets::Socket ^ \fBserverSocket\fP"
+.br
+.RI "This is the server socket handler\&. "
+.ti -1c
+.RI "System::Net::Sockets::Socket ^ \fBclientSocket\fP"
+.br
+.RI "This is the connected client socket handler\&. "
+.ti -1c
+.RI "bool \fBconnection_status\fP"
+.br
+.RI "This is the current connection status\&. "
+.ti -1c
+.RI "int \fBrx_rc\fP"
+.br
+.RI "This is the number of the received bytes\&. "
+.ti -1c
+.RI "cli::array< System::Byte > ^ \fBrxBuffer\fP"
+.br
+.RI "This is the reception buffer\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "TcpIpServerCLI::TcpIpServerCLI (System::String^ ip, int port)"
+
+.PP
+This is the class constructor\&. This is the Class constructor
+.PP
+The constructor creates all the data necessaries to create the server socket\&.
+.PP
+After the data initialization the constructor runs the worker thread for the Listening and data reception\&. The thread is self destroying when the program closes\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIip\fP This is a String for the IP address
+.br
+\fIport\fP This is an integer value for thr server port
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void TcpIpServerCLI::connection_slot (bool status)"
+
+.PP
+This is the delegate of the connection handler\&. 
+.SS "bool TcpIpServerCLI::isConnected (void)\fC [inline]\fP"
+
+.PP
+Returns the current connection sattus  
+.PP
+\fBReturns\fP
+.RS 4
+true if the socket is connected 
+.RE
+.PP
+
+.SS "delegate void TcpIpServerCLI::rxData_slot (cli::array< System::Byte >^ receiveBuffer, int rc)"
+
+.PP
+This is the delegate of the reception handler\&. 
+.SS "void TcpIpServerCLI::send (cli::array< System::Byte >^ buffer)"
+
+.PP
+This is function to send data in the BUS\&. This function sends a buffer on the bus\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIbuffer\fP This is the data buffer to be sent
+.RE
+.PP
+
+.SS "void TcpIpServerCLI::threadWork (void)\fC [protected]\fP"
+
+.PP
+This is the worker thread for the connection management\&. This is the worker thread for the connection management\&.
+.PP
+There are a two nexted loops:
+.IP "\(bu" 2
+The first is for the listening and connection management;
+.br
+
+.IP "\(bu" 2
+The second is for the data reception\&.
+.PP
+.PP
+When a conmnection is closed, the first loop automatically enters in listening in order to wait for a further connection\&. Only one connection at a time is allowed!!
+.PP
+Whenever a connection status changes, the worjer thread update the Applicaition rising an event for the connection notify\&.
+.PP
+When a buffer is received, a semaphore is used to lock the thread until the previous received buffer has been dispatched\&. When the semaphore is ready, the received buffer is copied into the dispatch buffer in order to be safely sent to the destination\&.
+.PP
+The buffer is then dispatched in two steps:
+.IP "\(bu" 2
+1: a message with the data buffer from the worker thread is Posted to the main thread's message queue, where this class resides;
+.IP "\(bu" 2
+2: the message is self-received by the class that can safely rise an event handler;
+.IP "\(bu" 2
+3: the event handler with the received buffer can now be safely (thread safe) consumed by any class or Form residing into the Applicaiton Main Thread\&.
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Net::Sockets::Socket ^ TcpIpServerCLI::clientSocket\fC [private]\fP"
+
+.PP
+This is the connected client socket handler\&. 
+.SS "bool TcpIpServerCLI::connection_status\fC [private]\fP"
+
+.PP
+This is the current connection status\&. 
+.SS "System::Threading::Thread ^ TcpIpServerCLI::running_thread\fC [private]\fP"
+
+.PP
+This is the worker thread handler\&. 
+.SS "int TcpIpServerCLI::rx_rc\fC [private]\fP"
+
+.PP
+This is the number of the received bytes\&. 
+.SS "cli::array<System::Byte> ^ TcpIpServerCLI::rxBuffer\fC [private]\fP"
+
+.PP
+This is the reception buffer\&. 
+.SS "System::Net::Sockets::Socket ^ TcpIpServerCLI::serverSocket\fC [private]\fP"
+
+.PP
+This is the server socket handler\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBconnection_slot\fP^ TcpIpServerCLI::connection_event"
+
+.PP
+Connection event\&. 
+.SS "\fBrxData_slot\fP^ TcpIpServerCLI::rxData_event"
+
+.PP
+Reception event\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

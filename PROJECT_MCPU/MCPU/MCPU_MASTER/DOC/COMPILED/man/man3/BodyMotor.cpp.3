@@ -1,0 +1,137 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/BodyMotor.cpp" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/BodyMotor.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'CalibrationConfig\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
+.br
+\fC#include 'BodyMotor\&.h'\fP
+.br
+\fC#include 'CanOpenMotor\&.h'\fP
+.br
+\fC#include 'PCB301\&.h'\fP
+.br
+\fC#include 'pd4_od\&.h'\fP
+.br
+\fC#include '\&.\&.\\gantry_global_status\&.h'\fP
+.br
+\fC#include <thread>\fP
+.br
+\fC#include 'Log\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBROT_PER_DEGREE\fP   ((double) 80 / (double) 3600)"
+.br
+.RI "Defines the position user units in 0\&.1 degree\&. "
+.ti -1c
+.RI "#define \fBEXTERNAL_K\fP   ((double) 2\&.929)"
+.br
+.RI "Defines the external pot resolution per 0\&.1 degree\&. "
+.ti -1c
+.RI "#define \fBBRAKE_INPUT_MASK\fP(x)   (x & \fBPD4_MOTOR_DI4\fP)"
+.br
+.RI "Not in the Special region [00II][0000]\&. "
+.ti -1c
+.RI "#define \fBOUPUT1_OUT_MASK\fP   \fBPD4_MOTOR_DO1\fP"
+.br
+.RI "Not in the Special region [00II][0000]\&. "
+.ti -1c
+.RI "#define \fBOUPUT2_OUT_MASK\fP   \fBPD4_MOTOR_DO2\fP"
+.br
+.RI "Not in the Special region [00II][0000]\&. "
+.ti -1c
+.RI "#define \fBMAX_ROTATION_ANGLE\fP   880"
+.br
+.ti -1c
+.RI "#define \fBMIN_ROTATION_ANGLE\fP   \-880"
+.br
+.ti -1c
+.RI "#define \fBHOMING_ON_METHOD\fP   20"
+.br
+.ti -1c
+.RI "#define \fBHOMING_OFF_METHOD\fP   19"
+.br
+.ti -1c
+.RI "#define \fBBODY_OD_CODE\fP   0x0001"
+.br
+.RI "The \fBBodyMotor\fP override this function in order to initialize specific motor registers "
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define BODY_OD_CODE   0x0001"
+
+.PP
+The \fBBodyMotor\fP override this function in order to initialize specific motor registers The modules set the Digital Io as follows:
+.IP "\(bu" 2
+Output1 and output2: controls the e\&.m\&. brake activation\&. They are normally closed output;
+.IP "\(bu" 2
+Input1 and Input2: used for limit switches detection\&. They are active low inputs, 5V threshold;
+.IP "\(bu" 2
+Input3: homing\&. It is not inverted input, with 5V threshold
+.IP "\(bu" 2
+Input4: read back the actual brake activation status\&. It is not inverted input, with 5V threshold
+.PP
+.PP
+The module makes a test on the Brake control\&.
+.PP
+The sequence of the test is as follows:
+.IP "\(bu" 2
+Test OFF OFF;
+.IP "\(bu" 2
+Test OFF ON;
+.IP "\(bu" 2
+Test ON ON;
+.IP "\(bu" 2
+Test OFF OFF;
+.PP
+.PP
+If the test should fail, a relevant non resettable alarm is generated and no more activations can be executed\&.
+.PP
+>NOTE: the function returns false only if a communicaton issue should prevent to set or read the registers\&.
+.PP
+\fBReturns\fP
+.RS 4
+true if the initialization termines successfully
+.RE
+.PP
+
+.SS "#define BRAKE_INPUT_MASK(x)   (x & \fBPD4_MOTOR_DI4\fP)"
+
+.PP
+Not in the Special region [00II][0000]\&. 
+.SS "#define EXTERNAL_K   ((double) 2\&.929)"
+
+.PP
+Defines the external pot resolution per 0\&.1 degree\&. 
+.SS "#define HOMING_OFF_METHOD   19"
+
+.SS "#define HOMING_ON_METHOD   20"
+
+.SS "#define MAX_ROTATION_ANGLE   880"
+
+.SS "#define MIN_ROTATION_ANGLE   \-880"
+
+.SS "#define OUPUT1_OUT_MASK   \fBPD4_MOTOR_DO1\fP"
+
+.PP
+Not in the Special region [00II][0000]\&. 
+.SS "#define OUPUT2_OUT_MASK   \fBPD4_MOTOR_DO2\fP"
+
+.PP
+Not in the Special region [00II][0000]\&. 
+.SS "#define ROT_PER_DEGREE   ((double) 80 / (double) 3600)"
+
+.PP
+Defines the position user units in 0\&.1 degree\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

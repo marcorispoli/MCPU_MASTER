@@ -1,0 +1,137 @@
+.TH "awsProtoEvents" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsProtoEvents \- AWS Protocol Events
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_Executed\fP (int id, int error)"
+.br
+.RI "This is the event for command terminated notification\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_SelectProjection\fP (System::String^ proj)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to request a projection selection\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_AbortProjection\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to request a projection abort\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_GantryStatus\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about its internal operating status\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_Compressor\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about compressor data change\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_Components\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about component data change\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_ReadyForExposure\fP (bool ready, unsigned short code)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_XrayPushButton\fP (bool status)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_XraySequenceCompleted\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_exposurePulseCompleted\fP (unsigned char npulse)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_Poweroff\fP (void)"
+.br
+.RI "This Event is sent to AWS whenever the gantry requestes for a power-off sequence "
+.ti -1c
+.RI "static void \fBawsProtocol::EVENT_operatingStatusChange\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.br
+ 
+.SH "Function Documentation"
+.PP 
+.SS "void awsProtocol::EVENT_AbortProjection (void)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to request a projection abort\&. 
+.SS "void awsProtocol::EVENT_Components (void)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to notify about component data change\&. Vedere GET_Component 
+.SS "void awsProtocol::EVENT_Compressor (void)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to notify about compressor data change\&. 
+.SS "void awsProtocol::EVENT_Executed (int id, int error)\fC [static]\fP"
+
+.PP
+This is the event for command terminated notification\&. This is the EVENT the \fBGantry\fP shall generate when a delayed command completes\&.
+.PP
+The Id == 0 codes are rserved for internal activations that shall not be acknowledge to the AWS softwrae\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP Id > 0 is the ID of the pending AWS command, Id==0 is an internal command termination Event
+.br
+\fIerror\fP In case of error condition, it is the error code
+.RE
+.PP
+
+.SS "void awsProtocol::EVENT_exposurePulseCompleted (unsigned char npulse)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. 
+.SS "void awsProtocol::EVENT_GantryStatus (void)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to notify about its internal operating status\&. 
+.SS "static void awsProtocol::EVENT_operatingStatusChange (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "void awsProtocol::EVENT_Poweroff (void)\fC [static]\fP"
+
+.PP
+This Event is sent to AWS whenever the gantry requestes for a power-off sequence 
+.SS "void awsProtocol::EVENT_ReadyForExposure (bool ready, unsigned short code)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status\&. 
+.SS "void awsProtocol::EVENT_SelectProjection (System::String^ proj)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to request a projection selection\&. This is the EVENT requesting the selection of a given projection\&.
+.PP
+The projection shall belong to the projections list set by the AWS through the command SET_ProjectionList\&.
+.PP
+Syntax:
+.PP
+\fBParameters\fP
+.RS 4
+\fIprojname\fP This is the Tag of the requested projection
+.RE
+.PP
+
+.SS "void awsProtocol::EVENT_XrayPushButton (bool status)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. 
+.SS "void awsProtocol::EVENT_XraySequenceCompleted (void)\fC [static]\fP"
+
+.PP
+This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -1,0 +1,100 @@
+.TH "globalModule" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+globalModule \- Gantry Global Status Registers
+.PP
+ \- This is the module implementing the Gantry Global Status registers\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBGantryStatusRegisters\fP"
+.br
+.RI "This is the class implementing the AWS Interface Module "
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBGantryStatusRegisters::PaddleOption\fP"
+.br
+.RI "This register handles the Paddles identifiable by the compressor device "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::XrayPushButtonRegister\fP"
+.br
+.RI "This class handles the Xray Push Button activation status and activities "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::TomoConfigRegister\fP"
+.br
+.RI "This class implements the Tomo configuration selection options\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::OperatingStatusRegister\fP"
+.br
+.RI "This is the Gantry operating status register definition\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::ComponentRegister\fP"
+.br
+.RI "This register handle the Component that can be used during the exposure "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::CollimatorComponentRegister\fP"
+.br
+.RI "This register handles the component applicable to the collimator "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::CompressorRegister\fP"
+.br
+.RI "This is the register handling the compression force and thickness\&. "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::TrxStatusRegister\fP"
+.br
+.RI "This class handles the Trx motorization "
+.ti -1c
+.RI "class \fBGantryStatusRegisters::LanguageRegister\fP"
+.br
+.RI "This class handles the Interface language "
+.ti -1c
+.RI "class \fBVerticalMotor\fP"
+.br
+.RI "This is the Vertical Module class implementation"
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the module implementing the Gantry Global Status registers\&. 
+
+The Gantry internal status is defined by several data that represent the current status of some device item or system setting\&.
+.PP
+Every register status is implemented with a dedicated static class with the following commmon characteristics:
+.IP "\(bu" 2
+It is define an enumeration code;
+.IP "\(bu" 2
+It is defined an array of strings rapresenting the tags of every code;
+.IP "\(bu" 2
+It is defined a set of functions to access the internal data;
+.IP "\(bu" 2
+It is defined one or more event associated to the internal data changing\&.
+.PP
+.PP
+The class is commonly defined with:
+.IP "\(bu" 2
+some_class::options::<enumeration_value>
+.IP "\(bu" 2
+some_class::tags[] ={'tag0',\&.\&.,'tagn'}
+.IP "\(bu" 2
+some_class::getCode(String^ tag)
+.IP "\(bu" 2
+some_class::getTag(some_class::options::<enum value>)
+.IP "\(bu" 2
+some_class::setCode(String^ tag)
+.IP "\(bu" 2
+some_class::setTag(some_class::options::<enum value>)
+.IP "\(bu" 2
+some_class::isValid(String^ tag)
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

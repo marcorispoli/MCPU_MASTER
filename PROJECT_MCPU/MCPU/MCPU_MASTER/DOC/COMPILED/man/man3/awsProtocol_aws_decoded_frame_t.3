@@ -1,0 +1,91 @@
+.TH "awsProtocol::aws_decoded_frame_t" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsProtocol::aws_decoded_frame_t \- This structure stores the decoded command\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBCount\fP (void)"
+.br
+.RI "This function returns the number of decode parameters "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBvalid\fP"
+.br
+.RI "The decoded frame is valid\&. "
+.ti -1c
+.RI "unsigned short \fBID\fP"
+.br
+.RI "This is the command identifier\&. "
+.ti -1c
+.RI "System::String ^ \fBcommand\fP"
+.br
+.RI "This is the command code\&. "
+.ti -1c
+.RI "List< System::String^> ^ \fBparameters\fP"
+.br
+.RI "This is the list of command's parameters\&. "
+.ti -1c
+.RI "int \fBerrcode\fP"
+.br
+.RI "This is the error code assigned to the command\&. "
+.ti -1c
+.RI "System::String ^ \fBerrstr\fP"
+.br
+.RI "This is the error string assigned to the command\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This structure stores the decoded command\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool awsProtocol::aws_decoded_frame_t::Count (void)\fC [inline]\fP"
+
+.PP
+This function returns the number of decode parameters 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::String ^ awsProtocol::aws_decoded_frame_t::command"
+
+.PP
+This is the command code\&. 
+.SS "int awsProtocol::aws_decoded_frame_t::errcode"
+
+.PP
+This is the error code assigned to the command\&. 
+.SS "System::String ^ awsProtocol::aws_decoded_frame_t::errstr"
+
+.PP
+This is the error string assigned to the command\&. 
+.SS "unsigned short awsProtocol::aws_decoded_frame_t::ID"
+
+.PP
+This is the command identifier\&. 
+.SS "List<System::String^> ^ awsProtocol::aws_decoded_frame_t::parameters"
+
+.PP
+This is the list of command's parameters\&. 
+.SS "bool awsProtocol::aws_decoded_frame_t::valid"
+
+.PP
+The decoded frame is valid\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

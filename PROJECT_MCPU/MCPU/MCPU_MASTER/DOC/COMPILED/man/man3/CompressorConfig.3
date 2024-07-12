@@ -1,0 +1,150 @@
+.TH "CompressorConfig" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CompressorConfig
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CalibrationConfig\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal System::String ^ \fBFILENAME\fP = 'CompressorCalibration\&.cnf'"
+.br
+.ti -1c
+.RI "literal int \fBFILE_REVISION\fP = 1"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_POSITION_CALIBRATION\fP = 'POSITION_CALIBRATION'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_POSITION_CALIBRATION_COMMENT\fP = 'Defines the Position calibration data'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_POSITION_CALIBRATION_OFFSET\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_POSITION_CALIBRATION_GAIN\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_THICKNESS_CORRECTION\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_POSITION_CALIBRATION_OFFSET_DEFAULT\fP = '2932'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_POSITION_CALIBRATION_GAIN_DEFAULT\fP = '1703'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_THICKNESS_CORRECTION_DEFAULT\fP = '\-120'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FORCE_CALIBRATION\fP = 'FORCE_CALIBRATION'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FORCE_CALIBRATION_COMMENT\fP = 'Defines the Force calibration data'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORCE_CALIBRATION_OFFSET\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORCE_CALIBRATION_GAIN\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORCE_LIMIT\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORCE_TARGET\fP = 3"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FORCE_CALIBRATION_OFFSET_DEFAULT\fP = '385'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FORCE_CALIBRATION_GAIN_DEFAULT\fP = '1511'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FORCE_LIMIT_DEFAULT\fP = '200'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FORCE_TARGET_DEFAULT\fP = '150'"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBConfigFile\fP ^ CompressorConfig::Configuration\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= gcnew ConfigFile(FILENAME, FILE_REVISION,
+        CONFIG_FILE_DESCRIPTOR
+        {
+            CONFIG_FILE_ITEM(PARAM_POSITION_CALIBRATION, PARAM_POSITION_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT,
+            PARAM_POSITION_CALIBRATION_GAIN_DEFAULT,    
+            PARAM_THICKNESS_CORRECTION_DEFAULT
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_FORCE_CALIBRATION, PARAM_FORCE_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FORCE_CALIBRATION_OFFSET_DEFAULT,
+            PARAM_FORCE_CALIBRATION_GAIN_DEFAULT,
+            PARAM_FORCE_LIMIT_DEFAULT,
+            PARAM_FORCE_TARGET_DEFAULT,            
+            }),
+
+        }
+    )
+.fi
+.SS "literal int CompressorConfig::FILE_REVISION = 1"
+
+.SS "literal System::String ^ CompressorConfig::FILENAME = 'CompressorCalibration\&.cnf'"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_FORCE_CALIBRATION = 'FORCE_CALIBRATION'"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_FORCE_CALIBRATION_COMMENT = 'Defines the Force calibration data'"
+
+.SS "literal int CompressorConfig::PARAM_FORCE_CALIBRATION_GAIN = 1"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_FORCE_CALIBRATION_GAIN_DEFAULT = '1511'"
+
+.SS "literal int CompressorConfig::PARAM_FORCE_CALIBRATION_OFFSET = 0"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_FORCE_CALIBRATION_OFFSET_DEFAULT = '385'"
+
+.SS "literal int CompressorConfig::PARAM_FORCE_LIMIT = 2"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_FORCE_LIMIT_DEFAULT = '200'"
+
+.SS "literal int CompressorConfig::PARAM_FORCE_TARGET = 3"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_FORCE_TARGET_DEFAULT = '150'"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_POSITION_CALIBRATION = 'POSITION_CALIBRATION'"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_POSITION_CALIBRATION_COMMENT = 'Defines the Position calibration data'"
+
+.SS "literal int CompressorConfig::PARAM_POSITION_CALIBRATION_GAIN = 1"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_POSITION_CALIBRATION_GAIN_DEFAULT = '1703'"
+
+.SS "literal int CompressorConfig::PARAM_POSITION_CALIBRATION_OFFSET = 0"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT = '2932'"
+
+.SS "literal int CompressorConfig::PARAM_THICKNESS_CORRECTION = 2"
+
+.SS "literal System::String ^ CompressorConfig::PARAM_THICKNESS_CORRECTION_DEFAULT = '\-120'"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

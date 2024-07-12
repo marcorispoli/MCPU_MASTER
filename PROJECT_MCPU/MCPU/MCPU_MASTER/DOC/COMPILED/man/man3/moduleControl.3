@@ -1,0 +1,200 @@
+.TH "moduleControl" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+moduleControl \- Public Module's Control API
+.PP
+ \- This group provides API to control the current Module operating status\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCanDeviceProtocol::status_options\fP { \fBCanDeviceProtocol::status_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBCanDeviceProtocol::status_options::WAITING_REVISION\fP, \fBCanDeviceProtocol::status_options::DEVICE_CONFIGURATION\fP, \fBCanDeviceProtocol::status_options::DEVICE_RUNNING\fP, \fBCanDeviceProtocol::status_options::DEVICE_SIMULATOR\fP, \fBCanDeviceProtocol::status_options::LEN\fP, \fBCanDeviceProtocol::status_options::UNDEF\fP = LEN }"
+.br
+.ti -1c
+.RI "enum class \fBCanDeviceProtocol::bootloader_options\fP { \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_NOT_PRESENT\fP = 0, \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_RUNNING\fP = 1, \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_PRESENT\fP = 2, \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_UNCKNOWN_STAT\fP }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBCanDeviceProtocol::runMode\fP (void)"
+.br
+.RI "This function activate the Module in Real mode\&.  "
+.ti -1c
+.RI "void \fBCanDeviceProtocol::simulMode\fP (void)"
+.br
+.RI "This function activate the Module in Simulation mode  "
+.ti -1c
+.RI "bool \fBCanDeviceProtocol::isSimulatorMode\fP (void)"
+.br
+.RI "This function tests if the module is running in simulation mode  "
+.ti -1c
+.RI "bool \fBCanDeviceProtocol::isCommunicationError\fP (void)"
+.br
+.RI "This function tests if the module is in communication error condition  "
+.ti -1c
+.RI "\fBstatus_options\fP \fBCanDeviceProtocol::getModuleStatus\fP (void)"
+.br
+.RI "This function returns the Module operating status  "
+.ti -1c
+.RI "\fBbootloader_options\fP \fBCanDeviceProtocol::getBootStatus\fP (void)"
+.br
+.RI "This function returns the current status of the bootloader activities on the remote device\&.  "
+.ti -1c
+.RI "System::String ^ \fBCanDeviceProtocol::getBootRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected Bootloader revision code\&.  "
+.ti -1c
+.RI "System::String ^ \fBCanDeviceProtocol::getAppRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected remote firmware revision code\&.  "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This group provides API to control the current Module operating status\&. 
+
+The Module provides methods to:
+.IP "\(bu" 2
+Start the module in Normal mode;
+.IP "\(bu" 2
+Start the module in Simulation mode;
+.IP "\(bu" 2
+Get the current module operating status;
+.IP "\(bu" 2
+Get the connected remote device firmware and bootloader revision; 
+.PP
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBCanDeviceProtocol::bootloader_options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration calss defining the current status of the remote bootloader activity\&.  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIBOOTLOADER_NOT_PRESENT \fP\fP
+.TP
+\fB\fIBOOTLOADER_RUNNING \fP\fP
+.TP
+\fB\fIBOOTLOADER_PRESENT \fP\fP
+.TP
+\fB\fIBOOTLOADER_UNCKNOWN_STAT \fP\fP
+.SS "enum class \fBCanDeviceProtocol::status_options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the Module's internal operating status\&.
+.br
+See the \fBgetModuleStatus()\fP method\&.  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIWAITING_CAN_DRIVER_CONNECTION \fP\fP
+The Device is waiting the Can Driver connection 
+.br
+ 
+.TP
+\fB\fIWAITING_REVISION \fP\fP
+The module is waiting for the revision acquisition\&. 
+.TP
+\fB\fIDEVICE_CONFIGURATION \fP\fP
+The module is uploading the device parameters\&. 
+.TP
+\fB\fIDEVICE_RUNNING \fP\fP
+The module is Running 
+.br
+ 
+.TP
+\fB\fIDEVICE_SIMULATOR \fP\fP
+Device in Simulation mode\&. 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Function Documentation"
+.PP 
+.SS "System::String ^ CanDeviceProtocol::getAppRevision (void)\fC [inline]\fP"
+
+.PP
+This function returns a string with the current detected remote firmware revision code\&.  The firmware revision code is available only after the module startup when the module initialization is completed\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "System::String ^ CanDeviceProtocol::getBootRevision (void)\fC [inline]\fP"
+
+.PP
+This function returns a string with the current detected Bootloader revision code\&.  The bootloader revision code is available only after the module startup when the module initialization is completed\&.
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "\fBbootloader_options\fP CanDeviceProtocol::getBootStatus (void)\fC [inline]\fP"
+
+.PP
+This function returns the current status of the bootloader activities on the remote device\&.  
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "\fBstatus_options\fP CanDeviceProtocol::getModuleStatus (void)\fC [inline]\fP"
+
+.PP
+This function returns the Module operating status  
+.PP
+\fBReturns\fP
+.RS 4
+return the current module operating status\&. See the status_options status enumeration
+.RE
+.PP
+
+.SS "bool CanDeviceProtocol::isCommunicationError (void)\fC [inline]\fP"
+
+.PP
+This function tests if the module is in communication error condition  
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.br
+ 
+.SS "bool CanDeviceProtocol::isSimulatorMode (void)\fC [inline]\fP"
+
+.PP
+This function tests if the module is running in simulation mode  
+.PP
+\fBReturns\fP
+.RS 4
+return true if the moduleis in simulation mode
+.RE
+.PP
+
+.SS "void CanDeviceProtocol::runMode (void)\fC [inline]\fP"
+
+.PP
+This function activate the Module in Real mode\&.  
+.SS "void CanDeviceProtocol::simulMode (void)\fC [inline]\fP"
+
+.PP
+This function activate the Module in Simulation mode  
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

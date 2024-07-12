@@ -1,0 +1,195 @@
+.TH "BodyMotor" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BodyMotor \- This is the Body Module class implementation 
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <BodyMotor\&.h>\fP
+.PP
+Inherits \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBodyMotor\fP (void)"
+.br
+.RI "This is the class constructor\&.  "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBstartManualHoming\fP (int target_position)"
+.br
+.ti -1c
+.RI "static bool \fBstartAutoHoming\fP ()"
+.br
+.RI "This function activates the External Sensor calibration Homing procedure "
+.ti -1c
+.RI "static bool \fBserviceAutoPosition\fP (int pos)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBBodyMotor\fP ^ \fBdevice\fP = gcnew \fBBodyMotor\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "unsigned short \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
+.br
+.RI "Override this function to initialize specific registers of the target Motor Device\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBrunningCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBidleCallback\fP (void) override"
+.br
+.RI "The \fBBodyMotor\fP class override this function in order to handle the IDLE activities "
+.ti -1c
+.RI "void \fBfaultCallback\fP (bool errstat, bool data_changed, unsigned int \fBerror_class\fP, unsigned int \fBerror_code\fP) override"
+.br
+.ti -1c
+.RI "bool \fBbrakeCallback\fP (void) override"
+.br
+.RI "Called whenever the optional brake device should be reactivated\&. "
+.ti -1c
+.RI "bool \fBunbrakeCallback\fP (void) override"
+.br
+.RI "Called whenever the optional brake device should be released\&. "
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBactivateBrake\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBdeactivateBrake\fP (void)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBbrake_alarm\fP = false"
+.br
+.RI "This is the current brake malfunction alarm\&. "
+.ti -1c
+.RI "static bool \fBmanual_increment_direction\fP = false"
+.br
+.RI "Sets true if the increment manual command is executing, false if the decrement manual activation is executing\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This is the Body Module class implementation
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BodyMotor::BodyMotor (void)"
+
+.PP
+This is the class constructor\&.  The Constructor:
+.IP "\(bu" 2
+Initializes the CanOpenMotor base class:
+.IP "  \(bu" 4
+Set the motor address;
+.IP "  \(bu" 4
+Set The module name;
+.IP "  \(bu" 4
+Set The unit conversion coefficient
+.PP
+
+.IP "\(bu" 2
+Set the target acceptable precision range;
+.IP "\(bu" 2
+Initializes the encoder initial position from the configuration file;
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool BodyMotor::activateBrake (void)\fC [private]\fP"
+
+.SS "bool BodyMotor::brakeCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called whenever the optional brake device should be reactivated\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool BodyMotor::deactivateBrake (void)\fC [private]\fP"
+
+.SS "void BodyMotor::faultCallback (bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBCanOpenMotor::MotorCompletedCodes\fP BodyMotor::idleCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+The \fBBodyMotor\fP class override this function in order to handle the IDLE activities 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "unsigned short BodyMotor::initializeSpecificObjectDictionaryCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Override this function to initialize specific registers of the target Motor Device\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBBodyMotor::MotorCompletedCodes\fP BodyMotor::runningCallback (\fBMotorCommands\fP current_command, int current_position, int target_position)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool BodyMotor::serviceAutoPosition (int pos)\fC [static]\fP"
+
+.SS "bool BodyMotor::startAutoHoming (void)\fC [static]\fP"
+
+.PP
+This function activates the External Sensor calibration Homing procedure 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "bool BodyMotor::startManualHoming (int target_position)\fC [static]\fP"
+
+.SS "bool BodyMotor::unbrakeCallback (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Called whenever the optional brake device should be released\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool BodyMotor::brake_alarm = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the current brake malfunction alarm\&. 
+.SS "\fBBodyMotor\fP ^ BodyMotor::device = gcnew \fBBodyMotor\fP()\fC [static]\fP"
+
+.SS "bool BodyMotor::manual_increment_direction = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Sets true if the increment manual command is executing, false if the decrement manual activation is executing\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -1,0 +1,869 @@
+.TH "CollimatorConfig" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CollimatorConfig
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CalibrationConfig\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal System::String ^ \fBFILENAME\fP = 'CollimatorCalibration\&.cnf'"
+.br
+.ti -1c
+.RI "literal int \fBFILE_REVISION\fP = 1"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD_FT\fP = 'COLLI_STANDARD_FT'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD_FT_COMMENT\fP = 'Front and Trap blades for standard collimations'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD_FT_FRONT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD_FT_TRAP\fP = 1"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD_FT_FRONT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD_FT_TRAP_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD1\fP = 'COLLI_STANDARD1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD1_COMMENT\fP = 'left Right and Back blades for standard collimation 1'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD1_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD1_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD1_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD1_LEFT_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD1_RIGHT_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD1_BACK_DEFAULT\fP = '5000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD2\fP = 'COLLI_STANDARD2'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD2_COMMENT\fP = 'left Right and Back blades for standard collimation 2'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD2_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD2_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD2_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD2_LEFT_DEFAULT\fP = '10000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD2_RIGHT_DEFAULT\fP = '10000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD2_BACK_DEFAULT\fP = '10000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD3\fP = 'COLLI_STANDARD3'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD3_COMMENT\fP = 'left Right and Back blades for standard collimation 3'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD3_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD3_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD3_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD3_LEFT_DEFAULT\fP = '15000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD3_RIGHT_DEFAULT\fP = '15000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD3_BACK_DEFAULT\fP = '15000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD4\fP = 'COLLI_STANDARD4'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD4_COMMENT\fP = 'left Right and Back blades for standard collimation 4'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD4_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD4_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD4_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD4_LEFT_DEFAULT\fP = '20000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD4_RIGHT_DEFAULT\fP = '20000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD4_BACK_DEFAULT\fP = '20000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD5\fP = 'COLLI_STANDARD5'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD5_COMMENT\fP = 'left Right and Back blades for standard collimation 5'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD5_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD5_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD5_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD5_LEFT_DEFAULT\fP = '20000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD5_RIGHT_DEFAULT\fP = '20000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD5_BACK_DEFAULT\fP = '20000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD6\fP = 'COLLI_STANDARD6'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD6_COMMENT\fP = 'left Right and Back blades for standard collimation 6'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD6_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD6_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD6_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD6_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD6_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD6_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD7\fP = 'COLLI_STANDARD7'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD7_COMMENT\fP = 'left Right and Back blades for standard collimation 7'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD7_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD7_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD7_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD7_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD7_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD7_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD8\fP = 'COLLI_STANDARD8'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD8_COMMENT\fP = 'left Right and Back blades for standard collimation 8'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD8_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD8_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD8_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD8_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD8_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD8_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD9\fP = 'COLLI_STANDARD9'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD9_COMMENT\fP = 'left Right and Back blades for standard collimation 9'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD9_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD9_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD9_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD9_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD9_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD9_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD10\fP = 'COLLI_STANDARD10'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD10_COMMENT\fP = 'left Right and Back blades for standard collimation 10'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD10_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD10_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD10_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD10_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD10_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD10_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD11\fP = 'COLLI_STANDARD11'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD11_COMMENT\fP = 'left Right and Back blades for standard collimation 11'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD11_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD11_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD11_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD11_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD11_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD11_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD12\fP = 'COLLI_STANDARD12'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD12_COMMENT\fP = 'left Right and Back blades for standard collimation 12'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD12_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD12_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD12_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD12_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD12_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD12_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD13\fP = 'COLLI_STANDARD13'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD13_COMMENT\fP = 'left Right and Back blades for standard collimation 13'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD13_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD13_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD13_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD13_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD13_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD13_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD14\fP = 'COLLI_STANDARD14'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD14_COMMENT\fP = 'left Right and Back blades for standard collimation 14'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD14_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD14_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD14_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD14_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD14_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD14_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD15\fP = 'COLLI_STANDARD15'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD15_COMMENT\fP = 'left Right and Back blades for standard collimation 15'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD15_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD15_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD15_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD15_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD15_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD15_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD16\fP = 'COLLI_STANDARD16'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD16_COMMENT\fP = 'left Right and Back blades for standard collimation 16'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD16_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD16_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD16_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD16_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD16_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD16_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD17\fP = 'COLLI_STANDARD17'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD17_COMMENT\fP = 'left Right and Back blades for standard collimation 17'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD17_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD17_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD17_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD17_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD17_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD17_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD18\fP = 'COLLI_STANDARD18'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD18_COMMENT\fP = 'left Right and Back blades for standard collimation 18'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD18_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD18_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD18_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD18_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD18_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD18_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD19\fP = 'COLLI_STANDARD19'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD19_COMMENT\fP = 'left Right and Back blades for standard collimation 19'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD19_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD19_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD19_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD19_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD19_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD19_BACK_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD20\fP = 'COLLI_STANDARD20'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD20_COMMENT\fP = 'left Right and Back blades for standard collimation 20'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD20_LEFT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD20_RIGHT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_COLLI_STANDARD20_BACK\fP = 2"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD20_LEFT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD20_RIGHT_DEFAULT\fP = '1000'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_STANDARD20_BACK_DEFAULT\fP = '1000'"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBConfigFile\fP ^ CollimatorConfig::Configuration\fC [static]\fP"
+
+.SS "literal int CollimatorConfig::FILE_REVISION = 1"
+
+.SS "literal System::String ^ CollimatorConfig::FILENAME = 'CollimatorCalibration\&.cnf'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD1 = 'COLLI_STANDARD1'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD10 = 'COLLI_STANDARD10'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD10_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD10_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD10_COMMENT = 'left Right and Back blades for standard collimation 10'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD10_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD10_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD10_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD10_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD11 = 'COLLI_STANDARD11'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD11_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD11_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD11_COMMENT = 'left Right and Back blades for standard collimation 11'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD11_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD11_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD11_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD11_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD12 = 'COLLI_STANDARD12'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD12_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD12_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD12_COMMENT = 'left Right and Back blades for standard collimation 12'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD12_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD12_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD12_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD12_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD13 = 'COLLI_STANDARD13'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD13_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD13_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD13_COMMENT = 'left Right and Back blades for standard collimation 13'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD13_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD13_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD13_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD13_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD14 = 'COLLI_STANDARD14'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD14_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD14_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD14_COMMENT = 'left Right and Back blades for standard collimation 14'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD14_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD14_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD14_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD14_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD15 = 'COLLI_STANDARD15'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD15_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD15_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD15_COMMENT = 'left Right and Back blades for standard collimation 15'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD15_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD15_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD15_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD15_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD16 = 'COLLI_STANDARD16'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD16_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD16_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD16_COMMENT = 'left Right and Back blades for standard collimation 16'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD16_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD16_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD16_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD16_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD17 = 'COLLI_STANDARD17'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD17_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD17_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD17_COMMENT = 'left Right and Back blades for standard collimation 17'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD17_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD17_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD17_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD17_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD18 = 'COLLI_STANDARD18'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD18_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD18_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD18_COMMENT = 'left Right and Back blades for standard collimation 18'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD18_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD18_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD18_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD18_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD19 = 'COLLI_STANDARD19'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD19_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD19_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD19_COMMENT = 'left Right and Back blades for standard collimation 19'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD19_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD19_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD19_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD19_RIGHT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD1_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD1_BACK_DEFAULT = '5000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD1_COMMENT = 'left Right and Back blades for standard collimation 1'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT_DEFAULT = '5000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT_DEFAULT = '5000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD2 = 'COLLI_STANDARD2'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD20 = 'COLLI_STANDARD20'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD20_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD20_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD20_COMMENT = 'left Right and Back blades for standard collimation 20'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD20_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD20_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD20_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD20_RIGHT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD2_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD2_BACK_DEFAULT = '10000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD2_COMMENT = 'left Right and Back blades for standard collimation 2'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD2_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD2_LEFT_DEFAULT = '10000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD2_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD2_RIGHT_DEFAULT = '10000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD3 = 'COLLI_STANDARD3'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD3_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD3_BACK_DEFAULT = '15000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD3_COMMENT = 'left Right and Back blades for standard collimation 3'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD3_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD3_LEFT_DEFAULT = '15000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD3_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD3_RIGHT_DEFAULT = '15000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD4 = 'COLLI_STANDARD4'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD4_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD4_BACK_DEFAULT = '20000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD4_COMMENT = 'left Right and Back blades for standard collimation 4'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD4_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD4_LEFT_DEFAULT = '20000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD4_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD4_RIGHT_DEFAULT = '20000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD5 = 'COLLI_STANDARD5'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD5_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD5_BACK_DEFAULT = '20000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD5_COMMENT = 'left Right and Back blades for standard collimation 5'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD5_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD5_LEFT_DEFAULT = '20000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD5_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD5_RIGHT_DEFAULT = '20000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD6 = 'COLLI_STANDARD6'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD6_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD6_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD6_COMMENT = 'left Right and Back blades for standard collimation 6'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD6_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD6_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD6_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD6_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD7 = 'COLLI_STANDARD7'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD7_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD7_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD7_COMMENT = 'left Right and Back blades for standard collimation 7'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD7_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD7_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD7_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD7_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD8 = 'COLLI_STANDARD8'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD8_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD8_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD8_COMMENT = 'left Right and Back blades for standard collimation 8'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD8_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD8_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD8_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD8_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD9 = 'COLLI_STANDARD9'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD9_BACK = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD9_BACK_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD9_COMMENT = 'left Right and Back blades for standard collimation 9'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD9_LEFT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD9_LEFT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD9_RIGHT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD9_RIGHT_DEFAULT = '1000'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD_FT = 'COLLI_STANDARD_FT'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD_FT_COMMENT = 'Front and Trap blades for standard collimations'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD_FT_FRONT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD_FT_FRONT_DEFAULT = '1000'"
+
+.SS "literal int CollimatorConfig::PARAM_COLLI_STANDARD_FT_TRAP = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_STANDARD_FT_TRAP_DEFAULT = '1000'"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

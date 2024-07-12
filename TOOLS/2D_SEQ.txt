@@ -1,0 +1,16 @@
+------------ 2D MANUAL SEQUENCE -----------------------------------------------
+
+<10%EXEC_OpenStudy "Studio per Demo ECR"%>
+<10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
+<10%EXEC_ArmPosition RMLO 0 -10 10%>
+<10%EXEC_ArmPosition RMLO 45 30 60%>
+<10%EXEC_ArmPosition RMLO -45 -60 -30%>
+
+<10%SET_ExposureMode MAN_2D LMAM2V2 CMP_DISABLE COLLI_AUTO PROTECTION_ENA ARM_DIS%>
+
+<10%SET_ExposureData 0 28 200 Rh %>
+	
+<10%SET_EnableXrayPush ON%>
+<10% EXEC_StartXraySequence %>
+
+<10%EXEC_CloseStudy %>

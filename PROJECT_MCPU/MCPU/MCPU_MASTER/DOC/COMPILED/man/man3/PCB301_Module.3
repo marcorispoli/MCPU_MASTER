@@ -1,0 +1,105 @@
+.TH "PCB301_Module" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB301_Module \- PCB301 Module: power service board module control
+.PP
+ \- This Module implements the \fBPCB301\fP device protocol communication\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Modules"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB301 API to control the System Power Supply\fP"
+.br
+.RI "This section provides methods to monitor and control the system power supply\&. "
+.ti -1c
+.RI "\fBPCB301 API to control the Module's Safety\fP"
+.br
+.RI ""
+.ti -1c
+.RI "\fBPCB301 API to control the Motor activation\fP"
+.br
+.RI "This section provides methods to monitor and control the system motor activation\&. "
+.ti -1c
+.RI "\fBPCB301 API for Exposure handling\fP"
+.br
+.RI "This section provides methods useful during the Exposure workflow\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This Module implements the \fBPCB301\fP device protocol communication\&. 
+
+This module subclasses the \fBCanDeviceProtocol\fP base module in order to inherit the protocol implementation basics\&.
+.PP
+This module implements the specific functionalities related to the \fBPCB301\fP device\&.
+.PP
+See the \fBPCB301\fP specification documents for details\&.
+.SH "General Description"
+.PP
+The \fBPCB301\fP device board is responsible to handle the following system management:
+.PP
+.IP "\(bu" 2
+Remote device initialization: see the \fBPCB301Protocol\fP section;
+.IP "\(bu" 2
+System Power Supply management: see the \fBPCB301 API to control the System Power Supply\fP section;
+.IP "\(bu" 2
+System Safety management: see the \fBPCB301 API to control the Module's Safety\fP section;
+.IP "\(bu" 2
+System Motor Activation Input Management: see the \fBPCB301 API to control the Motor activation\fP section;
+.IP "\(bu" 2
+System Exposure Tools: see \fBPCB301 API for Exposure handling\fP section;
+.PP
+.SH "Module Initialization and Setup"
+.PP
+This module executes the remote device initial setting always in the following scenarios:
+.IP "\(bu" 2
+at the system startup (application start);
+.IP "\(bu" 2
+in case of remote device reset event (as for communication protocol specification);
+.PP
+.PP
+During the module initialization all the protocol Parameters are uploaded to the device\&.
+.PP
+As soon as this fase completes, the running workflow will start normally\&.
+.SH "Alarm And Warning activation"
+.PP
+The module every about 20ms gets the \fBPCB301\fP Status registers\&.
+.PP
+The Status Registers provide the Module with the current status of the board Inputs and diagnostic information as described in the Communication protocol sepcification\&.
+.PP
+Some of the Input data are used by this module to direct activate/deactivate system messages as following described:
+.PP
+.IP "\(bu" 2
+Notify::messages::ERROR_POWER_DOWN_ERROR: when the powerdown condition is detected;
+.IP "\(bu" 2
+Notify::messages::ERROR_CABINET_SAFETY: when the Safety Cabinet Input line is detected activated;
+.IP "\(bu" 2
+Notify::messages::ERROR_EMERGENCY_BUTTON: when the Emergency Input line is detected activated;
+.IP "\(bu" 2
+Notify::messages::INFO_MOTOR_48V_SAFETY_LINE_OFF: when the solid state relay is deactivated;
+.IP "\(bu" 2
+Notify::messages::INFO_MOTOR_48V_POWER_SUPPLY_OFF: when the 48VDC power supply is off;
+.IP "\(bu" 2
+Notify::messages::INFO_BURNING_JUMPER_PRESENT: when the Burning jumper is detected;
+.IP "\(bu" 2
+Notify::messages::INFO_BATTERY_DISABLED: when the Batteries are disabled;
+.IP "\(bu" 2
+Notify::messages::ERROR_BATTERY_LOW_ERROR: when the Batteries are at low level;
+.IP "\(bu" 2
+Notify::messages::WARNING_DOOR_STUDY_OPEN: when the Study Door is detected Open;
+.PP
+.SH "Keep Alive Module Implementation"
+.PP
+The \fBPCB301\fP board implements a safety function that disables the 48DVC line and the Solid State relay in case the communication with this module should drop for almost 1 second\&.
+.PP
+This Module toggles the proper bit in the Protocol Data Register to keeps the board Alive\&.
+.SH "Input and Output Update"
+.PP
+The Module gets the Input Status from the \fBPCB301\fP board and sets the Outputs every about 20ms in a polling ways\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

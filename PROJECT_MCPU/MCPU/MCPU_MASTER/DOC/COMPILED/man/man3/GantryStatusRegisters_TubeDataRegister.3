@@ -1,0 +1,137 @@
+.TH "GantryStatusRegisters::TubeDataRegister" 3 "Wed Oct 18 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::TubeDataRegister \- This class handles the Xray Tybe data and setting\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static unsigned char \fBgetAnode\fP (void)"
+.br
+.RI "This function returns the cumulated anode Hu  "
+.ti -1c
+.RI "static unsigned char \fBgetBulb\fP (void)"
+.br
+.RI "This function returns the cumulated bulb's heat  "
+.ti -1c
+.RI "static unsigned char \fBgetStator\fP (void)"
+.br
+.RI "This function returns the cumulated stator's heat  "
+.ti -1c
+.RI "static unsigned char \fBgetCumulated\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisAlarm\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetTubeTemp\fP (unsigned char stator, unsigned char bulb)"
+.br
+.ti -1c
+.RI "static void \fBsetAnodeHu\fP (unsigned char ahu)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static unsigned char \fBanodeHu\fP = 0"
+.br
+.RI "Cumulated Anode HU %\&. "
+.ti -1c
+.RI "static unsigned char \fBbulbHeat\fP = 0"
+.br
+.RI "Cumulated Bulb Heat %\&. "
+.ti -1c
+.RI "static unsigned char \fBstatorHeat\fP = 0"
+.br
+.RI "Cumulated Stator Heat %\&. "
+.ti -1c
+.RI "static unsigned char \fBcumulated\fP = 0"
+.br
+.RI "Cumulated Stator Heat %\&. "
+.ti -1c
+.RI "static bool \fBalarm\fP = false"
+.br
+.RI "One of the data exceeds the acceptable range\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class handles the Xray Tybe data and setting\&. 
+
+<>  
+.SH "Member Function Documentation"
+.PP 
+.SS "static unsigned char GantryStatusRegisters::TubeDataRegister::getAnode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the cumulated anode Hu  
+.PP
+\fBReturns\fP
+.RS 4
+Anode Hu in % respect the maximum
+.RE
+.PP
+
+.SS "static unsigned char GantryStatusRegisters::TubeDataRegister::getBulb (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the cumulated bulb's heat  
+.PP
+\fBReturns\fP
+.RS 4
+Bulb's heat in % respect the maximum
+.RE
+.PP
+
+.SS "static unsigned char GantryStatusRegisters::TubeDataRegister::getCumulated (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static unsigned char GantryStatusRegisters::TubeDataRegister::getStator (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function returns the cumulated stator's heat  
+.PP
+\fBReturns\fP
+.RS 4
+Stator's heat in % respect the maximum
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::TubeDataRegister::isAlarm (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "void GantryStatusRegisters::TubeDataRegister::setAnodeHu (unsigned char ahu)\fC [static]\fP"
+
+.SS "void GantryStatusRegisters::TubeDataRegister::setTubeTemp (unsigned char stator, unsigned char bulb)\fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "bool GantryStatusRegisters::TubeDataRegister::alarm = false\fC [static]\fP, \fC [private]\fP"
+
+.PP
+One of the data exceeds the acceptable range\&. 
+.SS "unsigned char GantryStatusRegisters::TubeDataRegister::anodeHu = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Cumulated Anode HU %\&. 
+.SS "unsigned char GantryStatusRegisters::TubeDataRegister::bulbHeat = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Cumulated Bulb Heat %\&. 
+.SS "unsigned char GantryStatusRegisters::TubeDataRegister::cumulated = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Cumulated Stator Heat %\&. 
+.SS "unsigned char GantryStatusRegisters::TubeDataRegister::statorHeat = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Cumulated Stator Heat %\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

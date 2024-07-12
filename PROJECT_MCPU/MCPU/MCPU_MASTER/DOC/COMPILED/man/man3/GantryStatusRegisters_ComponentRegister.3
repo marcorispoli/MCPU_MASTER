@@ -1,0 +1,87 @@
+.TH "GantryStatusRegisters::ComponentRegister" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::ComponentRegister \- This register handle the Component that can be used during the exposure  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBCOMPONENT_PROTECTION_3D\fP = 0, \fBCOMPONENT_MAG15\fP, \fBCOMPONENT_MAG18\fP, \fBCOMPONENT_MAG20\fP, \fBCOMPONENT_BIOPSY\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisProtection3Dpresent\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned char \fBgetMagFactor\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< String^> ^ \fBtags\fP = gcnew cli::array<String^> { 'PROTECTION_3D', 'MAG_15', 'MAG_18', 'MAG_20', 'BIOPSY', 'COMPONENT_UNDETECTED'}"
+.br
+.RI "This is the option-tags static array 
+.br
+ "
+.ti -1c
+.RI "static \fBenumType\fP< \fBoptions\fP > ^ \fBValue\fP = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This register handle the Component that can be used during the exposure 
+
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::ComponentRegister::options\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOMPONENT_PROTECTION_3D \fP\fP
+.TP
+\fB\fICOMPONENT_MAG15 \fP\fP
+.TP
+\fB\fICOMPONENT_MAG18 \fP\fP
+.TP
+\fB\fICOMPONENT_MAG20 \fP\fP
+.TP
+\fB\fICOMPONENT_BIOPSY \fP\fP
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "static unsigned char GantryStatusRegisters::ComponentRegister::getMagFactor (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static bool GantryStatusRegisters::ComponentRegister::isProtection3Dpresent (void)\fC [inline]\fP, \fC [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "const cli::array<String^> ^ GantryStatusRegisters::ComponentRegister::tags = gcnew cli::array<String^> { 'PROTECTION_3D', 'MAG_15', 'MAG_18', 'MAG_20', 'BIOPSY', 'COMPONENT_UNDETECTED'}\fC [static]\fP"
+
+.PP
+This is the option-tags static array 
+.br
+ 
+.SS "\fBenumType\fP<\fBoptions\fP> ^ GantryStatusRegisters::ComponentRegister::Value = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)\fC [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

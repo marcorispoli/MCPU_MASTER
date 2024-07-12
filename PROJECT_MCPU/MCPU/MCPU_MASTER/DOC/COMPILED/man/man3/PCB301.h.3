@@ -1,0 +1,247 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB301.h" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB301.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'CanDeviceProtocol\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBPCB301\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_ERROR_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x01)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_EMERGENCY_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x02)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_POWERDOWN\fP(reg)   (bool)	(reg\->d0 & 0x04)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_CABINET_SAFETY\fP(reg)   (bool)	(reg\->d0 & 0x08)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_POWER_OFF_REQ\fP(reg)   (bool)	(reg\->d0 & 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_BATT1LOW\fP(reg)   (bool)	(reg\->d0 & 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_BATT2LOW\fP(reg)   (bool)	(reg\->d0 & 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_BATTENA\fP(reg)   (bool)	(reg\->d0 & 0x80)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_VERTICAL_UP\fP(reg)   (bool)	(reg\->d1 & 0x1)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_VERTICAL_DOWN\fP(reg)   (bool)	(reg\->d1 & 0x2)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_SLIDE_UP\fP(reg)   (bool)	(reg\->d1 & 0x4)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_SLIDE_DOWN\fP(reg)   (bool)	(reg\->d1 & 0x8)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_ARM_CW\fP(reg)   (bool)	(reg\->d1 & 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_ARM_CCW\fP(reg)   (bool)	(reg\->d1 & 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_BODY_CW\fP(reg)   (bool)	(reg\->d1 & 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BUTTON_BODY_CCW\fP(reg)   (bool)	(reg\->d1 & 0x80)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_MOTOR_OK\fP(reg)   (bool) (reg\->d2 & 0x01)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_MOTOR_SWITCH\fP(reg)   (bool) (reg\->d2 & 0x02)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_COMPRESSION\fP(reg)   (bool) (reg\->d2 & 0x04)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_XRAY_PUSH_BUTTON\fP(reg)   (bool) (reg\->d2 & 0x08)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_CLOSEDOOR\fP(reg)   (bool) (reg\->d2 & 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_BURNING_JMP\fP(reg)   (bool) (reg\->d2 & 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_SYSTEM_POWER_LOCK\fP(reg)   (bool) (reg\->d2 & 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_PEDAL_VERTICAL_UP\fP(reg)   (bool) (reg\->d3 & 0x1)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_PEDAL_VERTICAL_DOWN\fP(reg)   (bool) (reg\->d3 & 0x2)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BATTERY_VBATT1\fP(reg)   (unsigned char) (reg\->d0)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_BATTERY_VBATT2\fP(reg)   (unsigned char) (reg\->d1)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_POWER_LOCK\fP(reg,  stat)   reg\->D0(stat, 0x1)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_MOTOR_POWER_SUPPLY_ENABLE\fP(reg,  stat)   reg\->D0(stat, 0x2)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE\fP(reg,  stat)   reg\->D0(stat, 0x4)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_COMPRESSOR_ENABLE\fP(reg,  stat)   reg\->D0(stat, 0x8)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_COMPRESSOR_CALIBRATION\fP(reg,  stat)   reg\->D0(stat, 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_XRAY_ENA\fP(reg,  stat)   reg\->D0(stat, 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_BURNING_STAT\fP(reg,  stat)   reg\->D1(stat, 0x1)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_BUZZER_STAT\fP(reg,  stat)   reg\->D1(stat, 0x2)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_MANUAL_BUZZER\fP(reg,  stat)   reg\->D1(stat, 0x4)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_XRAY_LED\fP(reg,  stat)   reg\->D1(stat, 0x8)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_XRAY_LAMP1\fP(reg,  stat)   reg\->D1(stat, 0x10)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_XRAY_LAMP2\fP(reg,  stat)   reg\->D1(stat, 0x20)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_MAN_ROT_LED\fP(reg,  stat)   reg\->D1(stat, 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_POWER_OFF\fP(reg,  stat)   reg\->D3(stat, 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_GET_OUTPUTS_DATA_POWER_OFF\fP(reg)   (reg\->d3 & 0x40)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_OUTPUTS_DATA_KEEP_ALIVE\fP(reg,  stat)   reg\->D3(stat, 0x80)"
+.br
+.ti -1c
+.RI "#define \fBPCB301_SET_DEMO_TOMO_COMMAND\fP(samples,  fps)   (System::Byte) Commandregister::ACTIVATE_DEMO_TOMO, (System::Byte) (samples),(System::Byte) fps,(System::Byte) 0,(System::Byte) 0"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define PCB301_GET_BATTERY_VBATT1(reg)   (unsigned char) (reg\->d0)"
+
+.SS "#define PCB301_GET_BATTERY_VBATT2(reg)   (unsigned char) (reg\->d1)"
+
+.SS "#define PCB301_GET_BUTTON_ARM_CCW(reg)   (bool)	(reg\->d1 & 0x20)"
+
+.SS "#define PCB301_GET_BUTTON_ARM_CW(reg)   (bool)	(reg\->d1 & 0x10)"
+
+.SS "#define PCB301_GET_BUTTON_BODY_CCW(reg)   (bool)	(reg\->d1 & 0x80)"
+
+.SS "#define PCB301_GET_BUTTON_BODY_CW(reg)   (bool)	(reg\->d1 & 0x40)"
+
+.SS "#define PCB301_GET_BUTTON_SLIDE_DOWN(reg)   (bool)	(reg\->d1 & 0x8)"
+
+.SS "#define PCB301_GET_BUTTON_SLIDE_UP(reg)   (bool)	(reg\->d1 & 0x4)"
+
+.SS "#define PCB301_GET_BUTTON_VERTICAL_DOWN(reg)   (bool)	(reg\->d1 & 0x2)"
+
+.SS "#define PCB301_GET_BUTTON_VERTICAL_UP(reg)   (bool)	(reg\->d1 & 0x1)"
+
+.SS "#define PCB301_GET_OUTPUTS_DATA_POWER_OFF(reg)   (reg\->d3 & 0x40)"
+
+.SS "#define PCB301_GET_PEDAL_VERTICAL_DOWN(reg)   (bool) (reg\->d3 & 0x2)"
+
+.SS "#define PCB301_GET_PEDAL_VERTICAL_UP(reg)   (bool) (reg\->d3 & 0x1)"
+
+.SS "#define PCB301_GET_SYSTEM_BATT1LOW(reg)   (bool)	(reg\->d0 & 0x20)"
+
+.SS "#define PCB301_GET_SYSTEM_BATT2LOW(reg)   (bool)	(reg\->d0 & 0x40)"
+
+.SS "#define PCB301_GET_SYSTEM_BATTENA(reg)   (bool)	(reg\->d0 & 0x80)"
+
+.SS "#define PCB301_GET_SYSTEM_BURNING_JMP(reg)   (bool) (reg\->d2 & 0x20)"
+
+.SS "#define PCB301_GET_SYSTEM_CABINET_SAFETY(reg)   (bool)	(reg\->d0 & 0x08)"
+
+.SS "#define PCB301_GET_SYSTEM_CLOSEDOOR(reg)   (bool) (reg\->d2 & 0x10)"
+
+.SS "#define PCB301_GET_SYSTEM_COMPRESSION(reg)   (bool) (reg\->d2 & 0x04)"
+
+.SS "#define PCB301_GET_SYSTEM_EMERGENCY_STATUS(reg)   (bool)	(reg\->d0 & 0x02)"
+
+.SS "#define PCB301_GET_SYSTEM_ERROR_STATUS(reg)   (bool)	(reg\->d0 & 0x01)"
+
+.SS "#define PCB301_GET_SYSTEM_MOTOR_OK(reg)   (bool) (reg\->d2 & 0x01)"
+
+.SS "#define PCB301_GET_SYSTEM_MOTOR_SWITCH(reg)   (bool) (reg\->d2 & 0x02)"
+
+.SS "#define PCB301_GET_SYSTEM_POWER_LOCK(reg)   (bool) (reg\->d2 & 0x40)"
+
+.SS "#define PCB301_GET_SYSTEM_POWER_OFF_REQ(reg)   (bool)	(reg\->d0 & 0x10)"
+
+.SS "#define PCB301_GET_SYSTEM_POWERDOWN(reg)   (bool)	(reg\->d0 & 0x04)"
+
+.SS "#define PCB301_GET_XRAY_PUSH_BUTTON(reg)   (bool) (reg\->d2 & 0x08)"
+
+.SS "#define PCB301_OUTPUTS_DATA_BURNING_STAT(reg, stat)   reg\->D1(stat, 0x1)"
+
+.SS "#define PCB301_OUTPUTS_DATA_BUZZER_STAT(reg, stat)   reg\->D1(stat, 0x2)"
+
+.SS "#define PCB301_OUTPUTS_DATA_COMPRESSOR_CALIBRATION(reg, stat)   reg\->D0(stat, 0x10)"
+
+.SS "#define PCB301_OUTPUTS_DATA_COMPRESSOR_ENABLE(reg, stat)   reg\->D0(stat, 0x8)"
+
+.SS "#define PCB301_OUTPUTS_DATA_KEEP_ALIVE(reg, stat)   reg\->D3(stat, 0x80)"
+
+.SS "#define PCB301_OUTPUTS_DATA_MAN_ROT_LED(reg, stat)   reg\->D1(stat, 0x40)"
+
+.SS "#define PCB301_OUTPUTS_DATA_MANUAL_BUZZER(reg, stat)   reg\->D1(stat, 0x4)"
+
+.SS "#define PCB301_OUTPUTS_DATA_MOTOR_POWER_SUPPLY_ENABLE(reg, stat)   reg\->D0(stat, 0x2)"
+
+.SS "#define PCB301_OUTPUTS_DATA_MOTOR_SWITCH_ENABLE(reg, stat)   reg\->D0(stat, 0x4)"
+
+.SS "#define PCB301_OUTPUTS_DATA_POWER_LOCK(reg, stat)   reg\->D0(stat, 0x1)"
+
+.SS "#define PCB301_OUTPUTS_DATA_POWER_OFF(reg, stat)   reg\->D3(stat, 0x40)"
+
+.SS "#define PCB301_OUTPUTS_DATA_XRAY_ENA(reg, stat)   reg\->D0(stat, 0x20)"
+
+.SS "#define PCB301_OUTPUTS_DATA_XRAY_LAMP1(reg, stat)   reg\->D1(stat, 0x10)"
+
+.SS "#define PCB301_OUTPUTS_DATA_XRAY_LAMP2(reg, stat)   reg\->D1(stat, 0x20)"
+
+.SS "#define PCB301_OUTPUTS_DATA_XRAY_LED(reg, stat)   reg\->D1(stat, 0x8)"
+
+.SS "#define PCB301_SET_DEMO_TOMO_COMMAND(samples, fps)   (System::Byte) Commandregister::ACTIVATE_DEMO_TOMO, (System::Byte) (samples),(System::Byte) fps,(System::Byte) 0,(System::Byte) 0"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

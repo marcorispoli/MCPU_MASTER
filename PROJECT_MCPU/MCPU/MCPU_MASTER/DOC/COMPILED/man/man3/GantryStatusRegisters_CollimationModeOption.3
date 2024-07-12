@@ -1,0 +1,113 @@
+.TH "GantryStatusRegisters::CollimationModeOption" 3 "Thu Nov 9 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::CollimationModeOption \-  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBCOLLI_AUTO\fP = 0, \fBCOLLI_24x30\fP, \fBCOLLI_18x24_C\fP, \fBCOLLI_18x24_L\fP, \fBCOLLI_18x24_R\fP, \fBCOLLI_9x21\fP, \fBCOLLI_10x24\fP, \fBCOLLI_PROSTHESIS\fP, \fBCOLLI_D75\fP, \fBCOLLI_BIOP2D\fP, \fBCOLLI_BIOP3D\fP, \fBCOLLI_TOMO\fP, \fBCOLLI_9x9\fP, \fBCOLLI_CUSTOM\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration option code  "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBenumType\fP< \fBoptions\fP > ^ \fBValue\fP = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const cli::array< String^> ^ \fBtags\fP"
+.br
+.RI "This is the option-tags static array\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+
+This class handles the option for the Collimation behavior during the exposure\&.
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::CollimationModeOption::options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration option code  
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOLLI_AUTO \fP\fP
+The Exposure uses the Automatic collimation set by the current detected Paddle\&. 
+.TP
+\fB\fICOLLI_24x30 \fP\fP
+Force the 24x30 format\&. 
+.TP
+\fB\fICOLLI_18x24_C \fP\fP
+Force the 18x24 CENTER format\&. 
+.TP
+\fB\fICOLLI_18x24_L \fP\fP
+Force the 18x24 LEFT format\&. 
+.TP
+\fB\fICOLLI_18x24_R \fP\fP
+Force the 18x24 RIGHT format\&. 
+.TP
+\fB\fICOLLI_9x21 \fP\fP
+Force the 9x21(MAG) format\&. 
+.TP
+\fB\fICOLLI_10x24 \fP\fP
+Force the 10x24 format\&. 
+.TP
+\fB\fICOLLI_PROSTHESIS \fP\fP
+Force the PROSTHESIS format\&. 
+.TP
+\fB\fICOLLI_D75 \fP\fP
+Force the D75(MAG) format\&. 
+.TP
+\fB\fICOLLI_BIOP2D \fP\fP
+Force the BIOPSY 2D format\&. 
+.TP
+\fB\fICOLLI_BIOP3D \fP\fP
+Force the BIOPSY STEREO format\&. 
+.TP
+\fB\fICOLLI_TOMO \fP\fP
+Force the TOMO 24x30 format\&. 
+.TP
+\fB\fICOLLI_9x9 \fP\fP
+Force the TOMO 9x9(MAG) format\&. 
+.TP
+\fB\fICOLLI_CUSTOM \fP\fP
+Force the custom format\&. 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Data Documentation"
+.PP 
+.SS "const cli::array<String^> ^ GantryStatusRegisters::CollimationModeOption::tags\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= gcnew cli::array<String^>  { "COLLI_AUTO", "COLLI_24x30", "COLLI_18x24_C", "COLLI_18x24_L", 
+            "COLLI_18x24_R", "COLLI_9x21", "COLLI_10x24", "COLLI_PROSTHESIS", 
+            "COLLI_D75", "COLLI_BIOP2D", "COLLI_BIOP3D", "COLLI_TOMO", 
+            "COLLI_9x9", "COLLI_CUSTOM", "UNDEF"}
+.fi
+.PP
+This is the option-tags static array\&. 
+.SS "\fBenumType\fP<\fBoptions\fP> ^ GantryStatusRegisters::CollimationModeOption::Value = gcnew \fBenumType\fP<\fBoptions\fP>(\fBtags\fP)"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -1,0 +1,125 @@
+.TH "GantryStatusRegisters" 3 "Mon Dec 4 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters \- This is the class implementing the AWS Interface Module  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCollimatorComponentRegister\fP"
+.br
+.RI "This register handles the component applicable to the collimator "
+.ti -1c
+.RI "class \fBComponentRegister\fP"
+.br
+.RI "This register handle the Component that can be used during the exposure "
+.ti -1c
+.RI "class \fBCompressorRegister\fP"
+.br
+.RI "This is the register handling the compression force and thickness\&. "
+.ti -1c
+.RI "class \fBenumType\fP"
+.br
+.ti -1c
+.RI "class \fBLanguageRegister\fP"
+.br
+.RI "This class handles the Interface language "
+.ti -1c
+.RI "class \fBOperatingStatusRegister\fP"
+.br
+.RI "This is the Gantry operating status register definition\&. "
+.ti -1c
+.RI "class \fBPaddleOption\fP"
+.br
+.RI "This register handles the Paddles identifiable by the compressor device "
+.ti -1c
+.RI "class \fBPowerStatusRegister\fP"
+.br
+.ti -1c
+.RI "class \fBSafetyStatusRegister\fP"
+.br
+.ti -1c
+.RI "class \fBTomoConfigRegister\fP"
+.br
+.RI "This class implements the Tomo configuration selection options\&. "
+.ti -1c
+.RI "class \fBTrxStatusRegister\fP"
+.br
+.RI "This class handles the Trx motorization "
+.ti -1c
+.RI "class \fBXrayPushButtonRegister\fP"
+.br
+.RI "This class handles the Xray Push Button activation status and activities "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdataLock\fP (void)"
+.br
+.ti -1c
+.RI "void \fBdataUnlock\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_void_callback\fP (void)"
+.br
+.RI "This is the delegate of the function with a void as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_string_callback\fP (String^ str)"
+.br
+.RI "This is the delegate of the function with a string as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_int_callback\fP (int i)"
+.br
+.RI "This is the delegate of the function with an integer as parameter();\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_activation_completed\fP (unsigned short id, int error)"
+.br
+.RI "This is the delegate of the activation_completed_event();\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "static std::mutex \fBgantry_status_mutex\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the class implementing the AWS Interface Module 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "static void GantryStatusRegisters::dataLock (void)"
+
+.SS "static void GantryStatusRegisters::dataUnlock (void)"
+
+.SS "delegate void GantryStatusRegisters::delegate_activation_completed (unsigned short id, int error)"
+
+.PP
+This is the delegate of the activation_completed_event();\&. 
+.SS "delegate void GantryStatusRegisters::delegate_int_callback (int i)"
+
+.PP
+This is the delegate of the function with an integer as parameter();\&. 
+.SS "delegate void GantryStatusRegisters::delegate_string_callback (String^ str)"
+
+.PP
+This is the delegate of the function with a string as parameter();\&. 
+.SS "delegate void GantryStatusRegisters::delegate_void_callback (void)"
+
+.PP
+This is the delegate of the function with a void as parameter();\&. 
+.SH "Variable Documentation"
+.PP 
+.SS "std::mutex GantryStatusRegisters::gantry_status_mutex\fC [static]\fP"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

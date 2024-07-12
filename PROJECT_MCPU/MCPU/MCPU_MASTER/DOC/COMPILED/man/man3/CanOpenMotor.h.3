@@ -1,0 +1,83 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.h" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <Windows\&.h>\fP
+.br
+\fC#include 'Log\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCANOPEN::ODRegister\fP"
+.br
+.RI "This is the class implementating the CanOPEN SDO object register\&. "
+.ti -1c
+.RI "class \fBCANOPEN::CanOpenMotor\fP"
+.br
+.in -1c
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBCANOPEN\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBSPEED_DENOMINATOR\fP   120"
+.br
+.RI "This is the Speed conversion denominator unit\&. "
+.ti -1c
+.RI "#define \fBVMM_CTRL_OD\fP   \fBOD_1F51_02\fP"
+.br
+.ti -1c
+.RI "#define \fBVMM_DATA_OD\fP   \fBOD_1F50_02\fP"
+.br
+.ti -1c
+.RI "#define \fBVMM_STATUS_OD\fP   \fBOD_1F57_02\fP"
+.br
+.ti -1c
+.RI "#define \fBDRIVER_POLLING_MS\fP   100"
+.br
+.ti -1c
+.RI "#define \fBSEND_TMO\fP   1000"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCANOPEN::MotorDeviceAddresses\fP { \fBCANOPEN::MotorDeviceAddresses::TILT_ID\fP = 0x3, \fBCANOPEN::MotorDeviceAddresses::ARM_ID\fP = 0x4, \fBCANOPEN::MotorDeviceAddresses::SLIDE_ID\fP = 0x5, \fBCANOPEN::MotorDeviceAddresses::BODY_ID\fP = 0x6, \fBCANOPEN::MotorDeviceAddresses::VERTICAL_ID\fP = 0x7 }"
+.br
+.RI "This is the enumeration of the Application Motor device addresses "
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define DRIVER_POLLING_MS   100"
+
+.SS "#define SEND_TMO   1000"
+
+.SS "#define SPEED_DENOMINATOR   120"
+
+.PP
+This is the Speed conversion denominator unit\&. 
+.SS "#define VMM_CTRL_OD   \fBOD_1F51_02\fP"
+
+.SS "#define VMM_DATA_OD   \fBOD_1F50_02\fP"
+
+.SS "#define VMM_STATUS_OD   \fBOD_1F57_02\fP"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

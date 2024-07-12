@@ -1,0 +1,80 @@
+.TH "IDLESTATUS" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IDLESTATUS
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBbatteryStatus\fP"
+.br
+.ti -1c
+.RI "struct \fBtubeStatus\fP"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "struct {"
+.br
+.ti -1c
+.RI "   \fBbatteryStatus\fP \fBIDLESTATUS::battery\fP"
+.br
+.ti -1c
+.RI "   \fBtubeStatus\fP \fBIDLESTATUS::tube\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::powerdown\fP"
+.br
+.ti -1c
+.RI "   \fBPCB301::door_options\fP \fBIDLESTATUS::door_status\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::aws_connected\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::peripherals_connected\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::alarm\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::warning\fP"
+.br
+.ti -1c
+.RI "   bool \fBIDLESTATUS::info\fP"
+.br
+.ti -1c
+.RI "} \fBRegisters\fP"
+.br
+.in -1c
+.SH "Variable Documentation"
+.PP 
+.SS "bool IDLESTATUS::alarm"
+
+.SS "bool IDLESTATUS::aws_connected"
+
+.SS "\fBbatteryStatus\fP IDLESTATUS::battery"
+
+.SS "\fBPCB301::door_options\fP IDLESTATUS::door_status"
+
+.SS "bool IDLESTATUS::info"
+
+.SS "bool IDLESTATUS::peripherals_connected"
+
+.SS "bool IDLESTATUS::powerdown"
+
+.SS "struct  { \&.\&.\&. }  IDLESTATUS::Registers\fC [static]\fP"
+
+.SS "\fBtubeStatus\fP IDLESTATUS::tube"
+
+.SS "bool IDLESTATUS::warning"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

@@ -1,0 +1,77 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB304.h" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/DEVICES/PCB304.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'CanDeviceProtocol\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBPCB304\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPCB304_GET_GRID_SYNC_STATUS\fP(reg)   (bool)	(reg\->d0 & 0x01)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_ON\fP(reg,  stat)   reg\->D0(stat, 0x1)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_BLINK\fP(reg,  stat)   reg\->D0(stat, 0x2)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_REVERSE\fP(reg,  stat)   reg\->D0(stat, 0x4)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_KEEPALIVE\fP(reg,  stat)   reg\->D0(stat, 0x8)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_DOT_POSITION\fP(reg,  val)   reg\->d0 |= ((unsigned char) val << 4)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_INTENSITY\fP(reg,  val)   reg\->d1 = ((unsigned char) val & 0xF)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_CONTENT_LOW\fP(reg,  val)   reg\->d2 = (unsigned char) (*((unsigned short*)&val))"
+.br
+.ti -1c
+.RI "#define \fBPCB304_DISPLAY_CONTENT_HIGH\fP(reg,  val)   reg\->d3 = (unsigned char) ((*((unsigned short*)&val)) >> 8)"
+.br
+.ti -1c
+.RI "#define \fBPCB304_GRID_SYNC\fP(reg,  stat)   reg\->D0(stat, 0x1)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define PCB304_DISPLAY_BLINK(reg, stat)   reg\->D0(stat, 0x2)"
+
+.SS "#define PCB304_DISPLAY_CONTENT_HIGH(reg, val)   reg\->d3 = (unsigned char) ((*((unsigned short*)&val)) >> 8)"
+
+.SS "#define PCB304_DISPLAY_CONTENT_LOW(reg, val)   reg\->d2 = (unsigned char) (*((unsigned short*)&val))"
+
+.SS "#define PCB304_DISPLAY_DOT_POSITION(reg, val)   reg\->d0 |= ((unsigned char) val << 4)"
+
+.SS "#define PCB304_DISPLAY_INTENSITY(reg, val)   reg\->d1 = ((unsigned char) val & 0xF)"
+
+.SS "#define PCB304_DISPLAY_KEEPALIVE(reg, stat)   reg\->D0(stat, 0x8)"
+
+.SS "#define PCB304_DISPLAY_ON(reg, stat)   reg\->D0(stat, 0x1)"
+
+.SS "#define PCB304_DISPLAY_REVERSE(reg, stat)   reg\->D0(stat, 0x4)"
+
+.SS "#define PCB304_GET_GRID_SYNC_STATUS(reg)   (bool)	(reg\->d0 & 0x01)"
+
+.SS "#define PCB304_GRID_SYNC(reg, stat)   reg\->D0(stat, 0x1)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

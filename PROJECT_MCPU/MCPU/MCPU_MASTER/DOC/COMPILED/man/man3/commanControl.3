@@ -1,0 +1,297 @@
+.TH "commanControl" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+commanControl \- Public Module's Command Execution API
+.PP
+ \- This group provides API to send protocol commands to the remote device\&.   
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCanDeviceProtocol::CanDeviceCommandResult\fP"
+.br
+.RI "This class provides a data structure to handle a command result\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCanDeviceProtocol::CommandRegisterErrors\fP { \fBCanDeviceProtocol::CommandRegisterErrors::COMMAND_NO_ERROR\fP = 0, \fBCanDeviceProtocol::CommandRegisterErrors::COMMAND_ERROR_BUSY\fP, \fBCanDeviceProtocol::CommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM\fP, \fBCanDeviceProtocol::CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCanDeviceProtocol::CommandRegisterErrors::COMMAND_INVALID_DEVICE\fP =253, \fBCanDeviceProtocol::CommandRegisterErrors::COMMAND_COMMUNICATION_ERROR\fP =254, \fBCanDeviceProtocol::CommandRegisterErrors::COMMAND_DEVICE_TMO\fP = 255 }"
+.br
+.RI "This is the enumeration of the possible command executed errors\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBCanDeviceProtocol::commandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This is a non blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBCanDeviceProtocol::commandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This is a blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "bool \fBCanDeviceProtocol::isCommandCompleted\fP (void)"
+.br
+.RI "This function returns the current status of the pending command\&.  "
+.ti -1c
+.RI "bool \fBCanDeviceProtocol::isCommandError\fP (void)"
+.br
+.RI "This function returns true if the command is terminated with an error condition\&.  "
+.ti -1c
+.RI "unsigned char \fBCanDeviceProtocol::getCommandResult0\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-0\&.  "
+.ti -1c
+.RI "unsigned char \fBCanDeviceProtocol::getCommandResult1\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-1\&.  "
+.ti -1c
+.RI "\fBCommandRegisterErrors\fP \fBCanDeviceProtocol::getCommandError\fP (void)"
+.br
+.RI "This function returns the last error condition of an executed command\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This group provides API to send protocol commands to the remote device\&.  
+
+
+.SH "General description"
+.PP
+The Module provides methods to:
+.IP "\(bu" 2
+Send a command to the device;
+.IP "\(bu" 2
+Wait for the result;
+.IP "\(bu" 2
+Test the resulting code and errors;
+.PP
+.SH "Command Management description"
+.PP
+The Can Protocol specification defines two types of Commands:
+.IP "\(bu" 2
+Immediate Commands: a command that is immediatelly exeuted by the remote device;
+.IP "\(bu" 2
+Delayed Commands: a command that takes more than 2ms to be completed\&.
+.PP
+.PP
+With the immediate command, the remote device provides the execution result in the Command Answer frame packet\&.
+.PP
+With the Delayed command, the remote device acknowledge the Command request and further update the special command register with the status of the execution\&.
+.PP
+The Module handles both the command execution types in a transparent way so that the caller thread shall only to makes use of the API in order to detect the command completion, wheather it is delayed or immediate command type\&.
+.PP
+There are two types of command API for the application:
+.PP
+.IP "\(bu" 2
+\fBCanDeviceProtocol::commandWaitCompletion()\fP: This is a non blocking method to send a Command frame to the remote device;
+.IP "\(bu" 2
+\fBCanDeviceProtocol::commandWaitCompletion()\fP: This is a blocking method to send a Command frame to the remote device;
+.PP
+.SS "commandNoWaitCompletion()"
+This is a non blocking method to send a Command frame to the remote device\&.
+.PP
+The caller thread shall poll the command completion status using the following methods:
+.IP "\(bu" 2
+\fBCanDeviceProtocol::isCommandCompleted()\fP: checks if the command is terminated;
+.IP "\(bu" 2
+\fBCanDeviceProtocol::isCommandError()\fP: checks if the command has been terminated with error condition;
+.PP
+.PP
+The caller thread shall rerive the command result with the following methods:
+.IP "\(bu" 2
+\fBCanDeviceProtocol::getCommandResult0()\fP: returns the result byte 0;
+.IP "\(bu" 2
+\fBCanDeviceProtocol::getCommandResult1()\fP: returns the result byte 1;
+.IP "\(bu" 2
+\fBCanDeviceProtocol::getCommandError()\fP: returns the error code;
+.PP
+.SS "commandWaitCompletion()"
+This is a blocking method to send a Command frame to the remote device\&.
+.PP
+Using this method the calling thread gets locked until the command completion is detected by the Base module class\&. The result is then available in the returned structure of the method\&.
+.PP
+WARNING! This method cannot be called inside the RunningLoop of the CanDevice Subclass module because it will generate a dead lock condition\&.
+.PP
+For that reason the method needs a pointer to the calling thread as input parameter to check if the condition should be violated\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBCanDeviceProtocol::CommandRegisterErrors\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration of the possible command executed errors\&. NOTE:
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOMMAND_NO_ERROR \fP\fP
+Protocol Reserved code for the command successfully completed\&. 
+.TP
+\fB\fICOMMAND_ERROR_BUSY \fP\fP
+Protocol Reserved code for the command busy\&. 
+.TP
+\fB\fICOMMAND_ERROR_INVALID_PARAM \fP\fP
+Protocol Reserved code for the command with invalid parameter\&. 
+.TP
+\fB\fICOMMAND_ERROR_MOMENTARY_DISABLED \fP\fP
+Protocol Reserved code for the command momentary disabled\&. 
+.TP
+\fB\fICOMMAND_INVALID_DEVICE \fP\fP
+Command requested from an invalid thread\&. 
+.TP
+\fB\fICOMMAND_COMMUNICATION_ERROR \fP\fP
+Command failed due to communication error\&. 
+.TP
+\fB\fICOMMAND_DEVICE_TMO \fP\fP
+Command execution timeout\&. 
+.SH "Function Documentation"
+.PP 
+.SS "bool CanDeviceProtocol::commandNoWaitCompletion (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+
+.PP
+This is a non blocking thread safe function sending a command to the remote device\&. The function prepares the data structures to allow the device module to handle the command execution\&.
+.PP
+The calling thread shall poll the command completion status using the following methods:
+.IP "\(bu" 2
+\fBCanDeviceProtocol::isCommandCompleted()\fP: checks if the command is terminated;
+.IP "\(bu" 2
+\fBCanDeviceProtocol::isCommandError()\fP: checks if the command has been terminated with error condition;
+.PP
+.PP
+The calling thread shall rerive the command result with the following methods:
+.IP "\(bu" 2
+\fBCanDeviceProtocol::getCommandResult0()\fP: returns the result byte 0;
+.IP "\(bu" 2
+\fBCanDeviceProtocol::getCommandResult1()\fP: returns the result byte 1;
+.IP "\(bu" 2
+\fBCanDeviceProtocol::getCommandError()\fP: returns the error code; 
+.br
+
+.PP
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP This is the protocol command code
+.br
+\fId0\fP this is the protocol data 0 of the command
+.br
+\fId1\fP this is the protocol data 1 of the command
+.br
+\fId2\fP this is the protocol data 2 of the command
+.br
+\fId3\fP this is the protocol data 3 of the command
+.br
+\fItmo\fP this is the timeout in milliseconds for the command completion
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the command can be executed
+.RE
+.PP
+
+.SS "\fBCanDeviceProtocol::CanDeviceCommandResult\fP CanDeviceProtocol::commandWaitCompletion (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+
+.PP
+This is a blocking thread safe function sending a command to the remote device\&. IMPORTANT: This function cannot be called inside the running loop of the sublcass thread handling the communication with the remote device!
+.PP
+This function is thrade safe so it can be called by more different threads, because it is protected by a mutex\&.
+.PP
+The function:
+.IP "\(bu" 2
+prepares for the command execution;
+.IP "\(bu" 2
+waits for the command completion;
+.IP "\(bu" 2
+returns the result in a proper data structure;
+.PP
+.PP
+NOTE: The calling thread remain locked during the command completion\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP This is the protocol command code
+.br
+\fId0\fP This is the data-0 passed to the command
+.br
+\fId1\fP This is the data-1 passed to the command
+.br
+\fId2\fP This is the data-2 passed to the command
+.br
+\fId3\fP This is the data-3 passed to the command
+.br
+\fItmo\fP This is the timeout in milliseconds
+.br
+\fIsrc\fP This is the device handler calling the procedure
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The handler to the result class
+.RE
+.PP
+
+.SS "\fBCommandRegisterErrors\fP CanDeviceProtocol::getCommandError (void)\fC [inline]\fP"
+
+.PP
+This function returns the last error condition of an executed command\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Command completed error code
+.RE
+.PP
+
+.SS "unsigned char CanDeviceProtocol::getCommandResult0 (void)\fC [inline]\fP"
+
+.PP
+In case of command completed without errors, this function returns the command returned data-0\&.  
+.PP
+\fBReturns\fP
+.RS 4
+Command completed returned data-0 code
+.RE
+.PP
+
+.SS "unsigned char CanDeviceProtocol::getCommandResult1 (void)\fC [inline]\fP"
+
+.PP
+In case of command completed without errors, this function returns the command returned data-1\&.  
+.PP
+\fBReturns\fP
+.RS 4
+Command completed returned data-1 code
+.RE
+.PP
+
+.SS "bool CanDeviceProtocol::isCommandCompleted (void)\fC [inline]\fP"
+
+.PP
+This function returns the current status of the pending command\&.  NOTE: the command is completed event when it completes with an error condition\&.
+.PP
+\fBReturns\fP
+.RS 4
+true if the command is completed
+.RE
+.PP
+
+.SS "bool CanDeviceProtocol::isCommandError (void)\fC [inline]\fP"
+
+.PP
+This function returns true if the command is terminated with an error condition\&.  This function should be called only when the command is terminated\&. See \fBisCommandCompleted()\fP
+.PP
+\fBReturns\fP
+.RS 4
+true if the command has been completed with an error condition
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

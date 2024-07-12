@@ -1,0 +1,149 @@
+.TH "VerticalMotor_Module" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+VerticalMotor_Module \- Vertical Module controller
+.PP
+ \- This module implements the Vertical activation requirements\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+This module implements the Vertical activation requirements\&. 
+
+
+.SH "Motor Mechanical Assembly setup"
+.PP
+.IP "\(bu" 2
+The Motor Rotation conversion ratio is 1 round -> 1mm;
+.IP "\(bu" 2
+When the motor rotates clockwise, the ARM moves downward;
+.IP "\(bu" 2
+Zero setting photocell:
+.IP "  \(bu" 4
+ON (Light) the motor has to rotate clockwise (Arm downward) to find the center;
+.IP "  \(bu" 4
+OFF (Dark) the motor has to rotate counter-clockwise (Arm upward) to find the center;
+.PP
+
+.IP "\(bu" 2
+Limit switch photocell:
+.IP "  \(bu" 4
+ON (Light): the limit switch is not detected
+.IP "  \(bu" 4
+OFF (Dark): the limit switch is detected
+.PP
+
+.PP
+.PP
+Zero Photocell   Limit Photocell   Position    x   ON   travel range    ON   OFF   Upper position    OFF   OFF   Lower position   
+.SH "Motor GPIO assignment"
+.PP
+.SS "Digital Inputs"
+.IP "\(bu" 2
+DIGITAL INPUT 1 and 2: Assigned to the limit switch photocell;
+.IP "\(bu" 2
+DIGITAL INPUT 3: Homing photocell;
+.PP
+.PP
+The Input1 and Input2 are assigned to the same photocell: the limit switch\&.
+.br
+The Input3 shall be assigned to the special function Homing switch\&.
+.SS "Digital Outputs"
+Not used 
+.br
+.SH "General module Specification"
+.PP
+.SS "Position control"
+.IP "\(bu" 2
+The position is set in mm/unit;
+.IP "\(bu" 2
+The speed is set in mm/sec;
+.IP "\(bu" 2
+The Acceleration and deceleration is set in mm/sec^2;
+.IP "\(bu" 2
+After the first system startup, the current position is invalidated:
+.IP "  \(bu" 4
+the \fBGantry\fP shall execute a Service/Zero setting procedure to validate the actual position;
+.PP
+
+.IP "\(bu" 2
+The current position will be further invalidated in the case the limit switch should be detected;
+.IP "\(bu" 2
+The current position is stored in the Motor Configuration File after any activation;
+.IP "\(bu" 2
+After a subsequent startup, the current position will be retrived from the Motor Configuration File without activate a zero settoing procedure;
+.PP
+.SS "Limit Switch detection"
+The module monitors the current limit switch photocell status\&.
+.PP
+In Idle status:
+.IP "\(bu" 2
+if the limit switch should be detected active, the current position will be invalidated and a relevant alarm is generated\&. Further activation will be rejected until the zero setting procedure will be successfully executed\&.
+.PP
+.PP
+During the activation:
+.IP "\(bu" 2
+if the limit switch should be detected active, the activation is quickly aborted\&. The position will be then invalidated (see Idle status)
+.PP
+.SS "Safety condition detection"
+The module handles the following safety conditions:
+.IP "\(bu" 2
+Obstacle detection: Gantry::getObstacleStatus();
+.IP "\(bu" 2
+Compression activation: Gantry::getCompressionStatus();
+.IP "\(bu" 2
+Open Cabinet: Gantry::getOpenCabinetStatus();
+.PP
+NOTE: All those conditions are under the control of the \fBGantry\fP module ant this module makes use of external functions to get the related status\&.
+.PP
+.PP
+For all the previous conditions:
+.IP "\(bu" 2
+Any activation is rejected;
+.IP "\(bu" 2
+The motor activation is immediatelly aborted if the safety condition should be activated after the command activation\&.
+.PP
+.SS "Manual Motor activation"
+.IP "\(bu" 2
+The module allows tio manually activate the motor Upwards or Downwards in the allowed activation range;
+.IP "\(bu" 2
+If the activation should reach the upper or lower position, the module softly stops the activation before to reach the Limit position;
+.IP "\(bu" 2
+The \fBGantry\fP module determines what are the current system inputs combinations that determines the manual activation upwards or downwards;
+.IP "  \(bu" 4
+Gantry::manualMotorActivationIncrease(): causes the activation upward;
+.IP "  \(bu" 4
+Gantry::manualMotorActivationDecrease(): causes the activation downward;
+.PP
+
+.PP
+.PP
+See the \fBGantry\fP module description for the input used in the different operating scenarios\&.
+.SH "Module Initialization"
+.PP
+.IP "\(bu" 2
+The module overrides the initializeSpecificObjectDictionaryCallback() in order to initialize specific registers of the Vertical Motor control\&.
+.PP
+.SH "Manual Activation"
+.PP
+The Module implements the manual activation, inheriting the Manual Activation feature from the CanOpenMotor Base Class\&. The module override the following callbacks:
+.IP "\(bu" 2
+manualPositioningRunningCallback(): during the manual activation the activation inputs, the limit swithc and the safety condition are monitored;
+.IP "\(bu" 2
+manualPositioningCompletedCallback(): at the command completion the encoder position is stored into the configuration file\&.
+.PP
+.PP
+The Module
+.SH "Automatic activation"
+.PP
+.SH "Zero Setting"
+.PP
+.SH "Safety"
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

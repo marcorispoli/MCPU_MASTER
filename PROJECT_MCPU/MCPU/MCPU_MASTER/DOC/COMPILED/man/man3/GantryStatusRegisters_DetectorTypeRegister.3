@@ -1,0 +1,176 @@
+.TH "GantryStatusRegisters::DetectorTypeRegister" 3 "Mon Jul 24 2023" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GantryStatusRegisters::DetectorTypeRegister \- This class handles the Detector model selection\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoptions\fP { \fBLMAM2V2\fP, \fBLMAM2FDIV2\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration option code "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_status_change\fP (void)"
+.br
+.RI "This is the delegate of the \fBstatus_change_event()\fP;\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBgetCode\fP (void)"
+.br
+.RI "Returns the option code of the register "
+.ti -1c
+.RI "static String ^ \fBgetTag\fP (void)"
+.br
+.RI "Returns the option tag of the register "
+.ti -1c
+.RI "static bool \fBsetCode\fP (\fBoptions\fP val)"
+.br
+.RI "This function set the register with the option code (and related tag)\&. "
+.ti -1c
+.RI "static bool \fBsetCode\fP (String^ val)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const array< String^> ^ \fBtags\fP = gcnew array<String^> { 'LMAM2V2', 'LMAM2FDIV2', 'UNDEF'}"
+.br
+.RI "This is the option-tags static array\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_status_change\fP^ \fBstatus_change_event\fP"
+.br
+.RI "This event is generated whenver the status of the register is changed\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoptions\fP \fBcode\fP = \fBoptions::UNDEF\fP"
+.br
+.RI "This is the register option-code\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class handles the Detector model selection\&. 
+
+The Detector model influences the behavior of the exposure sequence due to possibly differences in the synch signals and or timing\&.
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantryStatusRegisters::DetectorTypeRegister::options\fP\fC [strong]\fP"
+
+.PP
+This is the enumeration option code 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILMAM2V2 \fP\fP
+Analogic LMAM2 V2\&. 
+.TP
+\fB\fILMAM2FDIV2 \fP\fP
+Analogic LMAM2 FDI-V2 
+.br
+ 
+.TP
+\fB\fILEN \fP\fP
+.TP
+\fB\fIUNDEF \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void GantryStatusRegisters::DetectorTypeRegister::delegate_status_change (void)"
+
+.PP
+This is the delegate of the \fBstatus_change_event()\fP;\&. 
+.SS "static \fBoptions\fP GantryStatusRegisters::DetectorTypeRegister::getCode (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Returns the option code of the register 
+.PP
+\fBReturns\fP
+.RS 4
+the value of the option code 
+.RE
+.PP
+
+.SS "static String ^ GantryStatusRegisters::DetectorTypeRegister::getTag (void)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Returns the option tag of the register 
+.PP
+\fBReturns\fP
+.RS 4
+the value of the Tag 
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::DetectorTypeRegister::setCode (\fBoptions\fP val)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+This function set the register with the option code (and related tag)\&. The register is updated with the option code and related tag and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the option-code to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SS "static bool GantryStatusRegisters::DetectorTypeRegister::setCode (String^ val)\fC [inline]\fP, \fC [static]\fP"
+This function set the register with the option tag (and related code)\&.
+.PP
+The register is updated with the tag and the related option code and, in case of value change, the \fBstatus_change_event()\fP is generated\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP this is the tag to be set
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if success or false if the code doesn't exist
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBoptions\fP GantryStatusRegisters::DetectorTypeRegister::code = \fBoptions::UNDEF\fP\fC [static]\fP, \fC [private]\fP"
+
+.PP
+This is the register option-code\&. 
+.SS "const array<String^> ^ GantryStatusRegisters::DetectorTypeRegister::tags = gcnew array<String^> { 'LMAM2V2', 'LMAM2FDIV2', 'UNDEF'}\fC [static]\fP"
+
+.PP
+This is the option-tags static array\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_status_change\fP^ GantryStatusRegisters::DetectorTypeRegister::status_change_event\fC [static]\fP"
+
+.PP
+This event is generated whenver the status of the register is changed\&. Usage: \fBDetectorTypeRegister::status_change_event\fP += gcnew delegate_status_change(&some_class, some_class::func) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

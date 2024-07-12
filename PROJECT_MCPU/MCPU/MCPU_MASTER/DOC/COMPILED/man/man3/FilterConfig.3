@@ -1,0 +1,230 @@
+.TH "FilterConfig" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+FilterConfig
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CalibrationConfig\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal System::String ^ \fBFILTER_NOT_ASSIGNED\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER1_ASSIGNMENT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER2_ASSIGNMENT\fP = '2'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER3_ASSIGNMENT\fP = '3'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER4_ASSIGNMENT\fP = '4'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILENAME\fP = 'FilterCalibration\&.cnf'"
+.br
+.ti -1c
+.RI "literal int \fBFILE_REVISION\fP = 1"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG\fP = 'FILTER_CONFIG'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_COMMENT\fP = 'Defines the Filter assignment'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_RH_POSITION\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_AG_POSITION\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_AL_POSITION\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CU_POSITION\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_MO_POSITION\fP = 4"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_DEFAULT_POSITION\fP = 5"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_RH_POSITION_DEFAULT\fP = \fBFILTER1_ASSIGNMENT\fP"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_AG_POSITION_DEFAULT\fP = \fBFILTER2_ASSIGNMENT\fP"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_AL_POSITION_DEFAULT\fP = \fBFILTER3_ASSIGNMENT\fP"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CU_POSITION_DEFAULT\fP = \fBFILTER4_ASSIGNMENT\fP"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_MO_POSITION_DEFAULT\fP = \fBFILTER_NOT_ASSIGNED\fP"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_DEFAULT_POSITION_DEFAULT\fP = \fBFILTER4_ASSIGNMENT\fP"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION\fP = 'FILTER_CALIB'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_COMMENT\fP = 'Filter calibration fields'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER1\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER2\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER3\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER4\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_MIRROR\fP = 4"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_LIGHTON\fP = 5"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER1_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER2_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER3_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER4_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_MIRROR_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_LIGHTON_DEFAULT\fP = '20'"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBConfigFile\fP ^ FilterConfig::Configuration\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= gcnew ConfigFile(FILENAME, FILE_REVISION,
+        CONFIG_FILE_DESCRIPTOR
+        {
+            CONFIG_FILE_ITEM(PARAM_FILTER_CONFIG, PARAM_FILTER_CONFIG_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FILTER_RH_POSITION_DEFAULT,
+            PARAM_FILTER_AG_POSITION_DEFAULT,
+            PARAM_FILTER_AL_POSITION_DEFAULT,
+            PARAM_FILTER_CU_POSITION_DEFAULT,
+            PARAM_FILTER_MO_POSITION_DEFAULT,
+            PARAM_FILTER_DEFAULT_POSITION_DEFAULT,
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_FILTER_CALIBRATION, PARAM_FILTER_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FILTER_CALIBRATION_FILTER1_DEFAULT,
+            PARAM_FILTER_CALIBRATION_FILTER2_DEFAULT,
+            PARAM_FILTER_CALIBRATION_FILTER3_DEFAULT,
+            PARAM_FILTER_CALIBRATION_FILTER4_DEFAULT,
+            PARAM_FILTER_CALIBRATION_MIRROR_DEFAULT,
+            PARAM_FILTER_CALIBRATION_LIGHTON_DEFAULT
+            }),
+    
+        }
+    )
+.fi
+.SS "literal int FilterConfig::FILE_REVISION = 1"
+
+.SS "literal System::String ^ FilterConfig::FILENAME = 'FilterCalibration\&.cnf'"
+
+.SS "literal System::String ^ FilterConfig::FILTER1_ASSIGNMENT = '1'"
+
+.SS "literal System::String ^ FilterConfig::FILTER2_ASSIGNMENT = '2'"
+
+.SS "literal System::String ^ FilterConfig::FILTER3_ASSIGNMENT = '3'"
+
+.SS "literal System::String ^ FilterConfig::FILTER4_ASSIGNMENT = '4'"
+
+.SS "literal System::String ^ FilterConfig::FILTER_NOT_ASSIGNED = '0'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_AG_POSITION = 1"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_AG_POSITION_DEFAULT = \fBFILTER2_ASSIGNMENT\fP"
+
+.SS "literal int FilterConfig::PARAM_FILTER_AL_POSITION = 2"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_AL_POSITION_DEFAULT = \fBFILTER3_ASSIGNMENT\fP"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION = 'FILTER_CALIB'"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION_COMMENT = 'Filter calibration fields'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_CALIBRATION_FILTER1 = 0"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION_FILTER1_DEFAULT = '50'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_CALIBRATION_FILTER2 = 1"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION_FILTER2_DEFAULT = '50'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_CALIBRATION_FILTER3 = 2"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION_FILTER3_DEFAULT = '50'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_CALIBRATION_FILTER4 = 3"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION_FILTER4_DEFAULT = '50'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_CALIBRATION_LIGHTON = 5"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION_LIGHTON_DEFAULT = '20'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_CALIBRATION_MIRROR = 4"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CALIBRATION_MIRROR_DEFAULT = '50'"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CONFIG = 'FILTER_CONFIG'"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CONFIG_COMMENT = 'Defines the Filter assignment'"
+
+.SS "literal int FilterConfig::PARAM_FILTER_CU_POSITION = 3"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_CU_POSITION_DEFAULT = \fBFILTER4_ASSIGNMENT\fP"
+
+.SS "literal int FilterConfig::PARAM_FILTER_DEFAULT_POSITION = 5"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_DEFAULT_POSITION_DEFAULT = \fBFILTER4_ASSIGNMENT\fP"
+
+.SS "literal int FilterConfig::PARAM_FILTER_MO_POSITION = 4"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_MO_POSITION_DEFAULT = \fBFILTER_NOT_ASSIGNED\fP"
+
+.SS "literal int FilterConfig::PARAM_FILTER_RH_POSITION = 0"
+
+.SS "literal System::String ^ FilterConfig::PARAM_FILTER_RH_POSITION_DEFAULT = \fBFILTER1_ASSIGNMENT\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

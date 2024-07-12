@@ -1,0 +1,152 @@
+.TH "C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/TiltMotor.cpp" 3 "Wed May 29 2024" "MCPU_MASTER Software Description" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/m.rispoli/Documents/Workspace/Git/mcpu_master_vs/PROJECT_VB/MCPU/MCPU_MASTER/MOTORS/TiltMotor.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'CalibrationConfig\&.h'\fP
+.br
+\fC#include 'Notify\&.h'\fP
+.br
+\fC#include 'TiltMotor\&.h'\fP
+.br
+\fC#include 'SlideMotor\&.h'\fP
+.br
+\fC#include 'PCB301\&.h'\fP
+.br
+\fC#include 'pd4_od\&.h'\fP
+.br
+\fC#include '\&.\&.\\gantry_global_status\&.h'\fP
+.br
+\fC#include <thread>\fP
+.br
+\fC#include 'Log\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBGEAR_RATIO\fP   ((double) 1 / (double) 120)"
+.br
+.RI "1 turn == 1\&.2° "
+.ti -1c
+.RI "#define \fBEXPWIN_INPUT_MASK\fP(x)   (x & 0x00010000)"
+.br
+.RI "INPUT 1 == expwin input signal\&. "
+.ti -1c
+.RI "#define \fBUNLOCK_BRAKE_INPUT_MASK\fP(x)   (x & 0x00020000)"
+.br
+.RI "INPUT 2 == 1 is unlock condition\&. "
+.ti -1c
+.RI "#define \fBZEROSETTING_INPUT_MASK\fP(x)   (x & 0x00040000)"
+.br
+.RI "INPUT 3 Zero setting input photocell\&. "
+.ti -1c
+.RI "#define \fBSAFETY_ACTIVATION_INPUT_MASK\fP(x)   (x & 0x00080000)"
+.br
+.RI "INPUT 4 == 1 is unlock condition\&. "
+.ti -1c
+.RI "#define \fBLOCK_BRAKE_OUT_MASK\fP   0x00010000"
+.br
+.RI "OUTPUT 1 = 1\&. "
+.ti -1c
+.RI "#define \fBUNLOCK_BRAKE_OUT_MASK\fP   0x00000000"
+.br
+.RI "OUTPUT 1 = 0\&. "
+.ti -1c
+.RI "#define \fBMAX_ROTATION_ANGLE\fP   2700"
+.br
+.ti -1c
+.RI "#define \fBMIN_ROTATION_ANGLE\fP   \-2700"
+.br
+.ti -1c
+.RI "#define \fBHOMING_ON_METHOD\fP   19"
+.br
+.ti -1c
+.RI "#define \fBHOMING_OFF_METHOD\fP   20"
+.br
+.ti -1c
+.RI "#define \fBNANOJ_PROGRAM\fP"
+.br
+.ti -1c
+.RI "#define \fBTILT_OD_CODE\fP   0x0001"
+.br
+.RI "This is the override callback called during the initialization fase\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "static const unsigned char \fBnanojTrxProgram\fP []"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define EXPWIN_INPUT_MASK(x)   (x & 0x00010000)"
+
+.PP
+INPUT 1 == expwin input signal\&. 
+.SS "#define GEAR_RATIO   ((double) 1 / (double) 120)"
+
+.PP
+1 turn == 1\&.2° 
+.SS "#define HOMING_OFF_METHOD   20"
+
+.SS "#define HOMING_ON_METHOD   19"
+
+.SS "#define LOCK_BRAKE_OUT_MASK   0x00010000"
+
+.PP
+OUTPUT 1 = 1\&. 
+.SS "#define MAX_ROTATION_ANGLE   2700"
+
+.SS "#define MIN_ROTATION_ANGLE   \-2700"
+
+.SS "#define NANOJ_PROGRAM"
+
+.SS "#define SAFETY_ACTIVATION_INPUT_MASK(x)   (x & 0x00080000)"
+
+.PP
+INPUT 4 == 1 is unlock condition\&. 
+.SS "#define TILT_OD_CODE   0x0001"
+
+.PP
+This is the override callback called during the initialization fase\&. The Tilt motor device initializes here the specific device's register\&.
+.PP
+The module, after register initialization, set the brake device in order to evaluates the correct behavior:
+.IP "\(bu" 2
+Executes an unlock procedure;
+.IP "\(bu" 2
+Executes a lock procedure;
+.IP "\(bu" 2
+in case of wrong locking status the Notify::messages::ERROR_TILT_MOTOR_BRAKE_FAULT error is generated\&.
+.PP
+.PP
+\fBReturns\fP
+.RS 4
+true if the initialization termines successfully
+.RE
+.PP
+
+.SS "#define UNLOCK_BRAKE_INPUT_MASK(x)   (x & 0x00020000)"
+
+.PP
+INPUT 2 == 1 is unlock condition\&. 
+.SS "#define UNLOCK_BRAKE_OUT_MASK   0x00000000"
+
+.PP
+OUTPUT 1 = 0\&. 
+.SS "#define ZEROSETTING_INPUT_MASK(x)   (x & 0x00040000)"
+
+.PP
+INPUT 3 Zero setting input photocell\&. 
+.SH "Variable Documentation"
+.PP 
+.SS "const unsigned char nanojTrxProgram[]\fC [static]\fP"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU_MASTER Software Description from the source code\&.

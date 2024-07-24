@@ -415,10 +415,7 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 
 
 	// Patient Protection Mode Warning
-	bool patient_protection;
-	if ((PCB302::isPatientProtection()) && (!PCB302::isPatientProtectionShifted())) patient_protection = true;
-	else patient_protection = false;
-	//else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) patient_protection = true;
+	bool patient_protection = (PCB302::getPatientProtection() == PCB302::PatientProtection::POSITIONED);
 
 	if ((Exposures::getProtectionMode() != Exposures::patient_protection_option::PROTECTION_DIS) && (!patient_protection))
 		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
@@ -491,8 +488,8 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 	thick = PCB302::getThickness();
 	paddle = PCB302::getDetectedPaddleCode();
 	
-	if (colli_light != PCB302::getCompressionActivationStatus()) {
-		colli_light = PCB302::getCompressionActivationStatus();
+	if (colli_light != PCB302::isDownwardActivationStatus()) {
+		colli_light = PCB302::isDownwardActivationStatus();
 
 		// Activates the mirror (not during initialization)
 		if ((colli_light) && (!init)) PCB315::setMirrorMode(true);
@@ -661,7 +658,8 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 
 void OperatingForm::evaluateMagStatus(void) {
 
-	labelMag->Text = PCB302::getMagnifierfactorString();
+	float magfactor = (float)PCB302::getMagnifierFactor() / 10;
+	labelMag->Text = magfactor.ToString() +"x";
 
 }
 
@@ -841,7 +839,7 @@ void OperatingForm::evaluateDigitDisplays(void) {
 		blink = false;
 		intensity = 0;
 
-		if (PCB302::isCompressing()) intensity = 0xf;
+		if (PCB302::isDownwardActivationStatus()) intensity = 0xf;
 		else intensity = 0;
 
 		// newtons
@@ -952,7 +950,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 	
 	if (!compression) {
 		// Compressor Window Initialization
-		if (PCB302::isCompressing()) {
+		if ((!PCB302::isIdleStatus()) && (PCB302::getForce() > 0)) {
 			timer = TMO;
 			compression = true;
 			arm = false;
@@ -969,7 +967,7 @@ void OperatingForm::evaluatePopupPanels(void) {
 	else{
 		// When the compressing timer is working the window keeps the value updated
 		Gantry::getValuePopupWindow()->content(PCB302::getForce().ToString());
-		if (PCB302::isCompressing()) timer = TMO;
+		if ((!PCB302::isIdleStatus()) && (PCB302::getForce() > 0)) timer = TMO;
 	}
 
 	if (!arm) {

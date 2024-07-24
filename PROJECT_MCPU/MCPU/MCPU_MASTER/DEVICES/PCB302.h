@@ -15,6 +15,27 @@ public:
 	ref class ProtocolStructure {
 	public:
 
+		/// <summary>
+		/// This is the enumeration of the detected component.
+		/// </summary>
+		/// 
+		/// The Component can be one of the following device:
+		/// + PATIENT PROTECTION IN THE RIGHT POSITION;
+		/// + PATIENT PROTECTION SHIFTED;
+		/// + Magnifier Device with 1.5x factor;
+		/// + Magnifier Device with 1.8x factor;
+		/// + Magnifier Device with 2x factor;
+		/// 
+		enum class  ComponentCode {
+			SHORT_CIRCUIT = 0,
+			PATIENT_PROTECTION_SHITED,
+			PATIENT_PROTECTION_POSITIONED,
+			MAGNIFIER_DEVICE_15x,
+			MAGNIFIER_DEVICE_18x,
+			MAGNIFIER_DEVICE_20x,
+			UNDETECTED_COMPONENT
+		};
+
 		ref class StatusRegister {
 		public:
 
@@ -41,21 +62,23 @@ public:
 				command_activation = sys->d1 & 0x8;
 				upward_direction = sys->d1 & 0x10;
 				downward_direction = sys->d1 & 0x20;
-				unlock_activation = sys->d1 & 0x40;
+				
 				device_fault = sys->d1 & 0x80;
 
 				// Byte 2
 				compression_ena = sys->d2 & 0x1;
 				compression_on = sys->d2 & 0x2;
-				zero_compression_mode = sys->d2 & 0x4;
+				
 				smart_target = sys->d2 & 0x8;
 				force_target = sys->d2 & 0x10;
 				limit_compression = sys->d2 & 0x20;
 
 				// Byte 3
-				// Not implemented
+				if (sys->d3 >= (unsigned char)ComponentCode::UNDETECTED_COMPONENT) component = ComponentCode::UNDETECTED_COMPONENT;
+				else component = (ComponentCode)sys->d3;
 				return true;
 			}
+
 			Register^ encodeSystemRegister(void) {
 
 				// Creates a register with all bytes set to 0
@@ -74,16 +97,19 @@ public:
 				if (command_activation) sys->d1 |= 0x8;
 				if (upward_direction) sys->d1 |= 0x10;
 				if (downward_direction) sys->d1 |= 0x20;
-				if (unlock_activation) sys->d1 |= 0x40;
+				
 				if (device_fault) sys->d1 |= 0x80;
 
 				// Byte 2
 				if (compression_ena) sys->d2 |= 0x1;
 				if (compression_on) sys->d2 |= 0x2;
-				if (zero_compression_mode) sys->d2 |= 0x4;
+				
 				if (smart_target)sys->d2 |= 0x8;
 				if (force_target) sys->d2 |= 0x10;
 				if (limit_compression)sys->d2 |= 0x20;
+
+				// Byte 3
+				sys->d3 = (unsigned char)component;
 
 				// Returns the formatted register
 				return sys;
@@ -95,9 +121,10 @@ public:
 				if (pad == nullptr) return false;
 				paddle_position = (int)pad->d0 + 256 * (int)(pad->d1 & 0x0f);
 				paddle_force = (int) ((pad->d1 & 0xF0) >> 4) + 16 * (int) pad->d2;
-				paddle_code = pad->d3;
+				paddle_tag = pad->d3;
 				return true;
 			}
+
 			Register^ encodePaddleRegister(void) {
 
 				// Creates a register with all bytes set to 0
@@ -107,7 +134,7 @@ public:
 				pad->d1 = (unsigned char) ((paddle_position>>8) & 0x0f);				
 				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) << 4);
 				pad->d2 = (unsigned char)((paddle_force >> 4) & 0xff);
-				pad->d3 = paddle_code;
+				pad->d3 = paddle_tag;
 
 				// Returns the formatted register
 				return pad;
@@ -138,35 +165,36 @@ public:
 			}
 
 
-			static bool manual_servo_up = false;
-			static bool manual_servo_down = false;
-			static bool manual_pedal_up = false;
-			static bool manual_pedal_down = false;
+			static bool manual_servo_up = false; //!< The Manual Servo Up button is activated
+			static bool manual_servo_down = false;//!< The Manual Servo Down button is activated
+			static bool manual_pedal_up = false;//!< The Manual Compression Pedal Up button is activated
+			static bool manual_pedal_down = false;//!< The Manual Compression Pedal Down button is activated
 
-			static bool idle_status = false;
-			static bool manual_activation = false;
-			static bool pedal_activation = false;
-			static bool command_activation = false;
-			static bool upward_direction = false;
-			static bool downward_direction = false;
-			static bool unlock_activation = false;
-			static bool device_fault = false;
-
-			static bool compression_ena = false;
-			static bool compression_on = false;
-			static bool zero_compression_mode = false;
-			static bool smart_target = false;
-			static bool force_target = false;
-			static bool limit_compression = false;
-
+			static bool idle_status = false;//!< The Compressor is in Idle (no activation is pending)
+			static bool manual_activation = false;//!< The Servo manual activation is executing
+			static bool pedal_activation = false;//!< The Pedal manual activation is executing
+			static bool command_activation = false;//!< The Protocol command  activation is executing
+			static bool upward_direction = false;//!< The paddle is activated Upward
+			static bool downward_direction = false;//!< The paddle is activated Downward
 			
-			static int paddle_position = 0;
-			static int paddle_force = 0;
-			static unsigned char paddle_code = 0;
+			static bool device_fault = false;//!< The device is in fault condition (see the Error register)
 
-			static int paddle_raw_position = 0;
-			static int paddle_raw_force = 0;
-			static unsigned char paddle_raw_code = 0;
+			static bool compression_ena = false;//!< The compressor Ena hardware input is detected
+			static bool compression_on = false;	//!< A valid compression is detected (Compression-On)
+			
+			static bool smart_target = false;//!< The Smart uPress has been detected
+			static bool force_target = false;//!< The Target compression is detected
+			static bool limit_compression = false;//!< The Limit compression is detected
+			
+			static int paddle_position = 0; //! Current calibrated paddle position
+			static int paddle_force = 0;//! Current calibrated paddle force
+			static unsigned char paddle_tag = 0;//! Current detected paddle tag
+
+			static int paddle_raw_position = 0;//! Current sensor position value
+			static int paddle_raw_force = 0;//! Current sensor force value
+			static unsigned char paddle_raw_code = 0;//! Current paddle code
+
+			static ComponentCode component = ComponentCode::UNDETECTED_COMPONENT; //!< Current detected Component code
 
 		};
 
@@ -293,11 +321,21 @@ public:
 
 	PCB302() : CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE")
 	{
-		detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;
-		
+	
+
 
 	}
 	static PCB302^ device = gcnew PCB302();
+
+	/// <summary>
+	/// This is the enumeration of the possible Patient protection presence 
+	/// </summary>
+	/// 
+	enum class PatientProtection {
+		UNDETECTED = 0,
+		POSITIONED,
+		SHIFTED
+	};
 
 	/// <summary>
 	///  This enumeration class defines the Paddle identified by the Application
@@ -334,6 +372,7 @@ public:
 		"9x9 MAG",
 		"D75 MAG",
 	};
+
 	static System::String^ getPaddleName(paddleCodes paddle) {
 		if (paddle == paddleCodes::PADDLE_NOT_DETECTED) return "";
 		for (int i = 0; i < (int)paddleCodes::PADDLE_LEN; i++) {
@@ -342,8 +381,7 @@ public:
 		return "";
 	}
 
-	inline static bool isPatientProtection(void) { return patient_protection_detected; }
-	inline static bool isPatientProtectionShifted(void) { return patient_protection_shifted; }
+	
 
 	static inline unsigned short getRawPosition(void) { return protocol.status_register.paddle_raw_position; };
 	static inline unsigned short getRawForce(void) { return protocol.status_register.paddle_raw_force; };
@@ -352,8 +390,11 @@ public:
 
 	static inline unsigned short getThickness(void) { return breast_thickness; }; //!< This function returnrs the current thickness in mm
 	static inline unsigned short getForce(void) { return compression_force; }; //!< This function returnrs the current compression force in N
-	static inline bool isCompressing(void) { return compression_executing; }
-	static inline bool getCompressionActivationStatus(void) { return protocol.status_register.downward_direction; }
+	
+	static inline bool isDownwardActivationStatus(void) { return protocol.status_register.downward_direction; } 
+	static inline bool isUpwardActivationStatus(void) { return protocol.status_register.upward_direction; }
+	static inline bool isIdleStatus(void) { return protocol.status_register.idle_status; }
+
 
 	static inline void setMasterEna(bool stat) { protocol.data_register.master_enable = stat; }
 	static inline void setPositionLimit(unsigned short val) { protocol.data_register.position_limit = val;}
@@ -363,35 +404,71 @@ public:
 	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
 	static paddleCodes getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name	
 	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
-	static int getDetectedPaddleCollimationFormat(void); //!< This function returns he collimation format index associated to the detected paddle
+	static int getDetectedPaddleCollimationFormat(void); //!< This function returns the collimation format index associated to the detected paddle
 	
-	inline static bool isMagnifierDeviceDetected(void) { return magnifier_device_detected; }
-	static System::String^ getMagnifierfactorString(void) { return magnifier_factor_string; }
+	/// <summary>
+	/// This function returns the current status of the Patient Protection presence
+	/// </summary>
+	/// 
+	/// The Patient protection is a special component that can be mounted in the 
+	/// special slots of the Mammo Unit: its presence is detected by the compressor device.
+	/// 
+	/// The Patient Protection can be in one of the following status:
+	/// + Not Detected: the patient protectioon is not inserted in the Mammo Unit;
+	/// + Present and shifted;
+	/// + Present and in the correct position for the x-ray exposure.
+	/// 
+	/// <param name=""></param>
+	/// <returns>The status of the detected (or undetected) patient protection</returns>
+	static PatientProtection getPatientProtection(void) {
+		if (protocol.status_register.component == ProtocolStructure::ComponentCode::PATIENT_PROTECTION_POSITIONED) return PatientProtection::POSITIONED;
+		else if(protocol.status_register.component == ProtocolStructure::ComponentCode::PATIENT_PROTECTION_SHITED) return PatientProtection::SHIFTED;
+		else return PatientProtection::UNDETECTED;
+	}
+	
+	/// <summary>
+	/// This function return the current detected Magnifier Factor
+	/// </summary>
+	/// 
+	/// The Magnifier device is a special component that can be mounted in the 
+	/// special slots of the Mammo unit: its presence is detetced by the compressor device.
+	/// 
+	/// The Magnifier device can be set in one of the possible magnification factor:
+	/// +1.5x;
+	/// +1.8x;
+	/// +2.0x
+	/// 
+	/// This function returns the current magnification factor multiplied 10: (15, 18, 20)
+	/// 
+	/// In the case no Magnifier devioce should be detected the function will returns 10.
+	/// 
+	/// <param name=""></param>
+	/// <returns>The detected Magnifier Factor [10, 15, 18, 20] </returns>
+	static unsigned char getMagnifierFactor(void) {
+		if (protocol.status_register.component == ProtocolStructure::ComponentCode::MAGNIFIER_DEVICE_15x) return 15;
+		else if (protocol.status_register.component == ProtocolStructure::ComponentCode::MAGNIFIER_DEVICE_18x) return 18;
+		else if (protocol.status_register.component == ProtocolStructure::ComponentCode::MAGNIFIER_DEVICE_20x) return 20;
+		else return 10;
+	}
 
 
 protected: 	
 	void runningLoop(void) override;
-	void demoLoop(void) override;
 	bool configurationLoop(void) override;
 
 private: 
 	static ProtocolStructure protocol; // This is the structure with the Status register info
-
-	static paddleCodes detected_paddle;				//!< This is the current detected paddle
-	static int thickness_correction;
+	
+	void getDetectedPaddleData(void);
+	static paddleCodes detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;;	//!< This is the current detected paddle code
+	static unsigned char detected_paddle_weight = 0;//!< This is the weight in N of the detected paddle
+	static int detected_paddle_offset = 0;//!< This is the position offset of the detected paddle
 
 	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm (0 if the compression_on should be false)
 	static unsigned short compression_force = 0;	//!< Evaluated compression force ( 0 if the compression_on should be false)
-	static bool compression_executing = false;		//!< A compression is executing
-	static bool patient_protection_detected = false; //!< Is set if the patient protection should be detcted
-	static bool patient_protection_shifted = false; //!< Is set if the patient protection should be shifted out of standard position
-	static bool magnifier_device_detected = false; //!< Is set if the magnifier device has been detected
-	static System::String^ magnifier_factor_string = "1.0"; //!< This is the current magnification factor detected in string format
-
-
+	
 	void evaluateEvents(void);
 
-
+	static int thickness_correction;
 };
-
 

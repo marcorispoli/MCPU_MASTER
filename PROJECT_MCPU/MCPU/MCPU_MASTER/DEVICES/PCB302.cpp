@@ -106,26 +106,136 @@ int PCB302::getDetectedPaddleCollimationFormat(void) {
 
 
 
+void PCB302::getDetectedPaddleData(void) {
+	static unsigned char current_tag = 255;
+	if (protocol.status_register.paddle_tag == current_tag) return;
+	current_tag = protocol.status_register.paddle_tag;
 
+	// Find the data of the detected paddle exploring the configuration file
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_PROSTHESIS)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_PROSTHESIS;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_PROSTHESIS)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_PROSTHESIS)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP2D)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_BIOP2D;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP2D)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP2D)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP3D)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_BIOP3D;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP3D)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP3D)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_TOMO)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_TOMO;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_TOMO)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_TOMO)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_24x30_CONTACT)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_24x30_CONTACT)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_24x30_CONTACT)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_18x24_C_CONTACT;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_18x24_L_CONTACT;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_18x24_R_CONTACT;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_10x24_CONTACT)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_10x24_CONTACT;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_10x24_CONTACT)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_10x24_CONTACT)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x9_MAG)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_9x9_MAG;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x9_MAG)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x9_MAG)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x21_MAG)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_9x21_MAG;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x21_MAG)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x21_MAG)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_D75_MAG)[PaddleConfig::PADDLE_TAG]) == current_tag) {
+		detected_paddle = paddleCodes::PADDLE_D75_MAG;
+		detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_D75_MAG)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+		detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_D75_MAG)[PaddleConfig::PADDLE_WEIGHT]);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+		return;
+	}
+
+	detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;
+	detected_paddle_offset = 0;
+	detected_paddle_weight = 0;
+	Notify::activate(Notify::messages::WARNING_MISSING_PADDLE);
+	return;
+
+}
 
 void PCB302::evaluateEvents(void) {
-	
-	// Assignes the paddle detected code
-	if (detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) {
+
+	// Assignes the paddle Code from the protocol code
+	if ((detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) ||(!protocol.status_register.compression_on)) {
 		compression_force = 0;
 		breast_thickness = 0;		
 		return;
 	}
 
-	// Assignes the breast_thickness based on the current paddle and the paddle offset
-	if (protocol.status_register.compression_on) {
-		breast_thickness = (int) protocol.status_register.paddle_position - thickness_correction;
-		compression_force = protocol.status_register.paddle_force;
-	}
-	else {
-		breast_thickness = 0;
-		compression_force = 0;
-	}
+	// The magnifier correction (if present)
+	int magnifier_offset;
+	if (getMagnifierFactor() == 10) magnifier_offset = 0;
+	else if (getMagnifierFactor() == 15) magnifier_offset = 150;
+	else if (getMagnifierFactor() == 18) magnifier_offset = 180;
+	else  magnifier_offset = 200;
+
+	// Calculates the actual thickness and force 
+	breast_thickness = (int)protocol.status_register.paddle_position - magnifier_offset - detected_paddle_offset;
+	compression_force = protocol.status_register.paddle_force;
+
 
 }
 
@@ -160,6 +270,7 @@ bool PCB302::configurationLoop(void) {
 	// Compression parameter
 	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::COMPRESSION_PARAM_REGISTER, protocol.parameter_register.encodeCompressionParamRegister(force_limit, force_target));
 
+	//setPositionLimit(200);// To be modified	
 
 	return true;
 }
@@ -180,8 +291,7 @@ void PCB302::runningLoop(void) {
 	}
 
 	//	Status Register
-	protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER));
-	compression_executing = protocol.status_register.compression_on && (protocol.status_register.downward_direction || protocol.status_register.upward_direction);
+	protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER));	
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	
 	// Paddle Register
@@ -191,41 +301,18 @@ void PCB302::runningLoop(void) {
 	protocol.status_register.decodeRawPaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::RAW_PADDLE_REGISTER));
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-	// To be modified
-	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;		
-	magnifier_device_detected = false;
-	patient_protection_detected = true; 
-	patient_protection_shifted = false; 
-	setPositionLimit(200);// To be modified
-	
-	
-	writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::POSITION_LIMIT_REGISTER, protocol.data_register.encodePositionLimitRegister());
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	// Sets the paddle detected parameters
+	getDetectedPaddleData();
 
-	writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::OPTIONS_REGISTER, protocol.data_register.encodeOptionsRegister());
-
+	// Evaluates the received data in order to provide new Data Register updates to the compressor
 	evaluateEvents();
 
+	
+	//writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::POSITION_LIMIT_REGISTER, protocol.data_register.encodePositionLimitRegister());
+	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+	//writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::OPTIONS_REGISTER, protocol.data_register.encodeOptionsRegister());
+	
 	return;
 }
 
-void PCB302::demoLoop(void) {
-	
-	// To be done
-	magnifier_device_detected = false;
-	patient_protection_detected = true;
-	patient_protection_shifted = false;
-
-	protocol.status_register.compression_on = false;
-	protocol.status_register.downward_direction = false;
-	compression_executing = false;
-
-	protocol.status_register.paddle_position = 0;
-	protocol.status_register.paddle_force = 0;
-
-
-	detected_paddle = paddleCodes::PADDLE_24x30_CONTACT;
-	evaluateEvents();
-	std::this_thread::sleep_for(std::chrono::microseconds(1000));
-	return;
-}

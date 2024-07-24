@@ -82,7 +82,7 @@ void awsProtocol::EVENT_Components(void) {
     if (Biopsy::isBiopsy()) {
         potter_type = "BIOPSY";
     }
-    else  if (PCB302::isMagnifierDeviceDetected()) {
+    else  if (PCB302::getMagnifierFactor() != 10) {
         potter_type = "MAGNIFIER";
     }
     else {
@@ -90,14 +90,19 @@ void awsProtocol::EVENT_Components(void) {
     }
 
     // Magnification factor
-    mag_factor = PCB302::getMagnifierfactorString();
+    mag_factor = PCB302::getMagnifierFactor().ToString();
 
     // Compressor paddle
     paddle = PCB302::getDetectedPaddleCode().ToString();
 
+   
     // Protection Type
-    if (PCB302::isPatientProtection()) protection = "PROTECTION_3D";
-    //else if (PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) protection = "PROTECTION_2D";
+    if (PCB302::getPatientProtection() == PCB302::PatientProtection::POSITIONED) {
+        protection = "PROTECTION_POSITIONED";
+    }
+    else if (PCB302::getPatientProtection() == PCB302::PatientProtection::SHIFTED) {
+        protection = "PROTECTION_SHIFTED";
+    }
     else protection = "UNDETECTED_PROTECTION";
 
     // Collimation Tool

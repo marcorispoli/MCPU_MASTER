@@ -7,6 +7,22 @@
 #include <thread>
 
 
+void PCB302::moduleInitialize(void) {
+
+	// Checks if the position has been already calibrated	
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_POSITION_CALIBRATION)[PaddleConfig::POSITION_CALIBRATION_STATUS]) == 0) {
+		Notify::activate(Notify::messages::WARNING_POSITION_NOT_CALIBRATED);
+		calibrated = false;
+	}
+	else {
+		calibrated = true;
+		Notify::deactivate(Notify::messages::WARNING_POSITION_NOT_CALIBRATED);
+	}
+
+
+
+}
+
 /// <summary>
 /// This function returns the index of the collimation format associated at the paddle.
 /// 
@@ -218,23 +234,7 @@ void PCB302::getDetectedPaddleData(void) {
 
 void PCB302::evaluateEvents(void) {
 
-	// Assignes the paddle Code from the protocol code
-	if ((detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) ||(!protocol.status_register.compression_on)) {
-		compression_force = 0;
-		breast_thickness = 0;		
-		return;
-	}
-
-	// The magnifier correction (if present)
-	int magnifier_offset;
-	if (getMagnifierFactor() == 10) magnifier_offset = 0;
-	else if (getMagnifierFactor() == 15) magnifier_offset = 150;
-	else if (getMagnifierFactor() == 18) magnifier_offset = 180;
-	else  magnifier_offset = 200;
-
-	// Calculates the actual thickness and force 
-	breast_thickness = (int)protocol.status_register.paddle_position - magnifier_offset - detected_paddle_offset;
-	compression_force = protocol.status_register.paddle_force;
+	
 
 
 }
@@ -253,6 +253,7 @@ void PCB302::evaluateEvents(void) {
 bool PCB302::configurationLoop(void) {
 
 	// 0.1mm position of the filters and mirror in the filter slots
+	/*
 	unsigned short position_offset = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_POSITION_CALIBRATION)[CompressorConfig::PARAM_POSITION_CALIBRATION_OFFSET]);
 	unsigned short position_gain = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_POSITION_CALIBRATION)[CompressorConfig::PARAM_POSITION_CALIBRATION_GAIN]);
 	unsigned short force_offset = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_CALIBRATION_OFFSET]);
@@ -271,6 +272,7 @@ bool PCB302::configurationLoop(void) {
 	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::COMPRESSION_PARAM_REGISTER, protocol.parameter_register.encodeCompressionParamRegister(force_limit, force_target));
 
 	//setPositionLimit(200);// To be modified	
+	*/
 
 	return true;
 }
@@ -292,21 +294,46 @@ void PCB302::runningLoop(void) {
 
 	//	Status Register
 	protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER));	
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	
 	// Paddle Register
 	protocol.status_register.decodePaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::PADDLE_REGISTER));
-	
-	// Raw Paddle Register
-	protocol.status_register.decodeRawPaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::RAW_PADDLE_REGISTER));
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
-	// Sets the paddle detected parameters
+	// Raw Paddle Register
+	//protocol.status_register.decodeRawPaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::RAW_PADDLE_REGISTER));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+	// Gets the detected paddle parameters: code, weight and offset
 	getDetectedPaddleData();
 
-	// Evaluates the received data in order to provide new Data Register updates to the compressor
-	evaluateEvents();
+	// If calibrated, it is the current holder distance
+	if (calibrated) {
+		int holder_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_POSITION_CALIBRATION)[PaddleConfig::POSITION_HOLDER_OFFSET]);
+		holder_position = protocol.status_register.paddle_position - holder_offset;
+	}
+	else holder_position = 0;
 
+	// Assignes the paddle Code from the protocol code
+	if ((detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) || (!protocol.status_register.compression_on) || (!calibrated)) {
+		compression_force = 0;
+		breast_thickness = 0;
+	
+	}
+	else {
+		// The magnifier correction (if present)
+		int magnifier_offset;
+		if (getMagnifierFactor() == 10) magnifier_offset = 0;
+		else if (getMagnifierFactor() == 15) magnifier_offset = 150;
+		else if (getMagnifierFactor() == 18) magnifier_offset = 180;
+		else  magnifier_offset = 200;
+
+		// Calculates the actual thickness and force 
+		breast_thickness = holder_position - magnifier_offset - detected_paddle_offset;
+		compression_force = protocol.status_register.paddle_force;
+	}
+
+	
 	
 	//writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::POSITION_LIMIT_REGISTER, protocol.data_register.encodePositionLimitRegister());
 	//std::this_thread::sleep_for(std::chrono::milliseconds(10));

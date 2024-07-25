@@ -321,8 +321,7 @@ public:
 
 	PCB302() : CanDeviceProtocol(0x11, L"COMPRESSOR_DEVICE")
 	{
-	
-
+		moduleInitialize();
 
 	}
 	static PCB302^ device = gcnew PCB302();
@@ -457,13 +456,16 @@ protected:
 	bool configurationLoop(void) override;
 
 private: 
-	static ProtocolStructure protocol; // This is the structure with the Status register info
+	void moduleInitialize(void); //!< Initialize the module at the module creation
+	static bool calibrated = false; //!< This is the flag related to the position calibration status
+	static ProtocolStructure protocol; //!< This is the structure with the Status register info
 	
 	void getDetectedPaddleData(void);
 	static paddleCodes detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;;	//!< This is the current detected paddle code
 	static unsigned char detected_paddle_weight = 0;//!< This is the weight in N of the detected paddle
-	static int detected_paddle_offset = 0;//!< This is the position offset of the detected paddle
+	static int detected_paddle_offset = 0;//!< This is the offset from the holder position and the paddle compression plane 
 
+	static unsigned short holder_position = 0;		//!< This is the distance from the holder and the carbon fiber, when calibrated
 	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm (0 if the compression_on should be false)
 	static unsigned short compression_force = 0;	//!< Evaluated compression force ( 0 if the compression_on should be false)
 	

@@ -420,60 +420,6 @@ public:
     );
 };
 
-ref class CompressorConfig
-{
-public:
-
-  
-    literal System::String^ FILENAME = "CompressorCalibration.cnf";
-    literal int     FILE_REVISION = 1;
-
-    //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_POSITION_CALIBRATION = "POSITION_CALIBRATION";
-    literal System::String^ PARAM_POSITION_CALIBRATION_COMMENT = "Defines the Position calibration data";
-    literal int     PARAM_POSITION_CALIBRATION_OFFSET = 0;
-    literal int     PARAM_POSITION_CALIBRATION_GAIN = 1;
-    literal int     PARAM_THICKNESS_CORRECTION = 2;
-
-    literal System::String^ PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT = "2850"; 
-    literal System::String^ PARAM_POSITION_CALIBRATION_GAIN_DEFAULT = "1703";
-    literal System::String^ PARAM_THICKNESS_CORRECTION_DEFAULT = "-120";
-    
-    //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_FORCE_CALIBRATION = "FORCE_CALIBRATION";
-    literal System::String^ PARAM_FORCE_CALIBRATION_COMMENT = "Defines the Force calibration data";
-    literal int     PARAM_FORCE_CALIBRATION_OFFSET = 0;
-    literal int     PARAM_FORCE_CALIBRATION_GAIN = 1;
-    literal int     PARAM_FORCE_LIMIT = 2;
-    literal int     PARAM_FORCE_TARGET = 3;
-    
-
-    literal System::String^ PARAM_FORCE_CALIBRATION_OFFSET_DEFAULT = "385";
-    literal System::String^ PARAM_FORCE_CALIBRATION_GAIN_DEFAULT = "1511";
-    literal System::String^ PARAM_FORCE_LIMIT_DEFAULT = "200";
-    literal System::String^ PARAM_FORCE_TARGET_DEFAULT = "150";
-
-    static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
-        CONFIG_FILE_DESCRIPTOR
-        {
-            CONFIG_FILE_ITEM(PARAM_POSITION_CALIBRATION, PARAM_POSITION_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_POSITION_CALIBRATION_OFFSET_DEFAULT,
-            PARAM_POSITION_CALIBRATION_GAIN_DEFAULT,    
-            PARAM_THICKNESS_CORRECTION_DEFAULT
-            }),
-
-            CONFIG_FILE_ITEM(PARAM_FORCE_CALIBRATION, PARAM_FORCE_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_FORCE_CALIBRATION_OFFSET_DEFAULT,
-            PARAM_FORCE_CALIBRATION_GAIN_DEFAULT,
-            PARAM_FORCE_LIMIT_DEFAULT,
-            PARAM_FORCE_TARGET_DEFAULT,            
-            }),
-
-        }
-    );
-};
-
-
 ref class CollimatorConfig
 {
 public:
@@ -827,7 +773,19 @@ ref class PaddleConfig
 {
 public:
     literal System::String^ FILENAME = "PaddleCalibration.cnf";
-    literal int     FILE_REVISION = 2;
+    literal int     FILE_REVISION = 3;
+
+    //___________________________________________________________________________________________________//
+    //  Position caibration parameters
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_POSITION_CALIBRATION = "POSITION_CALIBRATION";
+    literal System::String^ PARAM_POSITION_CALIBRATION_COMMENT = "Position calibration parameters";
+    literal int     POSITION_CALIBRATION_STATUS = 0; //!< Set to 1 if the calibration has been executed
+    literal int     POSITION_MAX_HEIGHT = 1;        //!< Defines the maximum position in Compressor units
+    literal int     POSITION_HOLDER_OFFSET = 2;     //!< Holder calibration: converts the position to the distance from the holder and the carbon fiber
+    literal System::String^ POSITION_CALIBRATION_STATUS_DEFAULT = "0";  //!<  No calibrated as default
+    literal System::String^ POSITION_MAX_HEIGHT_DEFAULT = "3000";          //!<  Max heigh parameter in 0.1mm value
+    literal System::String^ POSITION_HOLDER_OFFSET_DEFAULT = "0";           //!<  Offset to convert the holder position in distance from the carbon fiber
 
     //___________________________________________________________________________________________________//
     //  Paddle parameter data position definition
@@ -930,6 +888,12 @@ public:
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
+            CONFIG_FILE_ITEM(PARAM_POSITION_CALIBRATION, PARAM_POSITION_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
+            POSITION_CALIBRATION_STATUS_DEFAULT,
+            POSITION_MAX_HEIGHT_DEFAULT,
+            POSITION_HOLDER_OFFSET_DEFAULT,            
+            }),
+
             CONFIG_FILE_ITEM(PARAM_PADDLE_PROSTHESIS, PARAM_PADDLE_PROSTHESIS_COMMENT, CONFIG_FILE_DEFAULT{
             PADDLE_PROSTHESIS_COLLIMATION_DEFAULT,
             PADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT,

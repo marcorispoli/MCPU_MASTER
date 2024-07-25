@@ -60,6 +60,7 @@
 "W00001", Notify::messages::WARNING_MISSING_COMPRESSION, "Compressor Monitoring", "Missing compression force.",
 "W00002", Notify::messages::WARNING_MISSING_PATIENT_PROTECTION, "Component Monitoring", "Undetected patient protection component.",
 "W00003", Notify::messages::WARNING_ARM_POSITION_WARNING, "Arm Position Monitoring", "C-ARM angle out of range. Repeat the C-ARM positioning.",
+"W00004", Notify::messages::WARNING_POSITION_NOT_CALIBRATED, "Compressor Monitoring", "The position is not calibrated.",
 "W00004", Notify::messages::WARNING_MISSING_PADDLE, "Compressor Monitoring", "A valid paddle is not detected.",
 "W00005", Notify::messages::WARNING_WRONG_PADDLE, "Compressor Monitoring", "Wrong Paddle model detected.",
 "W00006", Notify::messages::WARNING_MISSING_EXPOSURE_MODE, "Exposure Parameters Monitoring", "Missing exposure mode selection.",

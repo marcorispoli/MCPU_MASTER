@@ -521,22 +521,24 @@ void   awsProtocol::GET_Components(void) {
     // Potter Type parameter
     if (Biopsy::isBiopsy()) {
         lista->Add("BIOPSY");
-    }else  if (PCB302::isMagnifierDeviceDetected()) {
+    }else  if (PCB302::getMagnifierFactor() != 10) {
         lista->Add("MAGNIFIER");
     }else  {
         lista->Add("POTTER");
     }
 
     // Magnification factor
-    lista->Add(PCB302::getMagnifierfactorString());
+    lista->Add(PCB302::getMagnifierFactor().ToString());
 
     // Compressor paddle
     lista->Add(PCB302::getDetectedPaddleCode().ToString());
 
     // Protection Type
-    if(PCB302::isPatientProtection()) lista->Add("PROTECTION_3D");
-    //else if(PCB315::getComponent() == PCB315::component_options::PROTECTION_2D) lista->Add("PROTECTION_2D");
-    else lista->Add("UNDETECTED_PROTECTION");
+    if (PCB302::getPatientProtection() == PCB302::PatientProtection::POSITIONED) {
+        lista->Add("PROTECTION_POSITIONED");
+    }else if (PCB302::getPatientProtection() == PCB302::PatientProtection::SHIFTED) {
+        lista->Add("PROTECTION_SHIFTED");
+    }else lista->Add("UNDETECTED_PROTECTION");
 
     // Collimation Tool
     if (PCB315::getComponent() == PCB315::component_options::LEAD_SCREEN)  lista->Add("LEAD_SCREEN");

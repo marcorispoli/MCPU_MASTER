@@ -199,8 +199,7 @@ void IdleForm::initIdleStatus(void) {
 
 	// Activates the compressor
 	PCB301::SetCompressorEna(true);
-	PCB302::setMasterEna(true);
-
+	
 	// XRAY mode setting
 	if (Exposures::isSimulatorMode()) {
 		this->xrayMode->Hide();

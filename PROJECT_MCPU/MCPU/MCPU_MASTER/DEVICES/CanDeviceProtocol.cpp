@@ -190,7 +190,7 @@ void CanDeviceProtocol::mainWorker(void) {
     CanDriver::canrx_device_event += gcnew CanDriver::delegate_can_rx_frame(this, &CanDeviceProtocol::thread_can_rx_callback);
     internal_status = status_options::WAITING_CAN_DRIVER_CONNECTION;
 
-    // Demo mode activation
+    // Running Mode activation
     if (simulator_mode) {
         LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Module Run in Simulated mode");
     }

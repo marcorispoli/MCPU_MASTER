@@ -276,7 +276,7 @@ void OperatingForm::initOperatingStatus(void) {
 
 	// Activates the compressor
 	PCB301::SetCompressorEna(true);
-	PCB302::setMasterEna(true);
+	
 
 	// initialize the evaluation function
 	evaluateCompressorStatus(true);

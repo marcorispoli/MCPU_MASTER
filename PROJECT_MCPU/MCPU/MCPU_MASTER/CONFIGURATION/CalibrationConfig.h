@@ -776,16 +776,24 @@ public:
     literal int     FILE_REVISION = 3;
 
     //___________________________________________________________________________________________________//
-    //  Position caibration parameters
+    //  Compressor caibration parameters
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_POSITION_CALIBRATION = "POSITION_CALIBRATION";
-    literal System::String^ PARAM_POSITION_CALIBRATION_COMMENT = "Position calibration parameters";
-    literal int     POSITION_CALIBRATION_STATUS = 0; //!< Set to 1 if the calibration has been executed
-    literal int     POSITION_MAX_HEIGHT = 1;        //!< Defines the maximum position in Compressor units
-    literal int     POSITION_HOLDER_OFFSET = 2;     //!< Holder calibration: converts the position to the distance from the holder and the carbon fiber
-    literal System::String^ POSITION_CALIBRATION_STATUS_DEFAULT = "0";  //!<  No calibrated as default
-    literal System::String^ POSITION_MAX_HEIGHT_DEFAULT = "3000";          //!<  Max heigh parameter in 0.1mm value
-    literal System::String^ POSITION_HOLDER_OFFSET_DEFAULT = "0";           //!<  Offset to convert the holder position in distance from the carbon fiber
+    literal System::String^ PARAM_COMPRESSOR = "COMPRESSOR_DEVICE";
+    literal System::String^ PARAM_COMPRESSOR_COMMENT = "Compressor device general parameters";
+    literal int     COMPRESSOR_CALIBRATION_POSITION_STATUS = 0; //!< Set to 1 if the calibration position has been executed
+    literal int     COMPRESSOR_CALIBRATION_FORCE_STATUS = 1;    //!< Set to 1 if the calibration force has been executed
+    literal int     COMPRESSOR_MAX_POSITION = 2;                //!< Defines the maximum position in Compressor units
+    literal int     COMPRESSOR_HOLDER_OFFSET = 3;               //!< Holder calibration: converts the position to the distance from the holder and the carbon fiber
+    literal int     COMPRESSOR_TARGET_FORCE = 4;                //!< Sets the current automatic compression Target force in N
+    literal int     COMPRESSOR_MAX_FORCE = 5;                  //!< Sets the maximum applicable automatic compression force in N
+
+    literal System::String^ COMPRESSOR_CALIBRATION_POSITION_STATUS_DEFAULT = "0";  //!<  No calibrated as default
+    literal System::String^ COMPRESSOR_CALIBRATION_FORCE_STATUS_DEFAULT = "0";  //!<  No calibrated as default
+    literal System::String^ COMPRESSOR_MAX_POSITION_DEFAULT = "3000";  //!<  Max heigh parameter in 0.1mm value in compressor units
+    literal System::String^ COMPRESSOR_HOLDER_OFFSET_DEFAULT = "1000";  //!<  Offset from the compressor unit to holder units
+    literal System::String^ COMPRESSOR_TARGET_FORCE_DEFAULT = "150";  //!<  Target Force in N
+    literal System::String^ COMPRESSOR_MAX_FORCE_DEFAULT = "200";  //!<  Maximum applicable Force in N
+
 
     //___________________________________________________________________________________________________//
     //  Paddle parameter data position definition
@@ -888,10 +896,13 @@ public:
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
-            CONFIG_FILE_ITEM(PARAM_POSITION_CALIBRATION, PARAM_POSITION_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
-            POSITION_CALIBRATION_STATUS_DEFAULT,
-            POSITION_MAX_HEIGHT_DEFAULT,
-            POSITION_HOLDER_OFFSET_DEFAULT,            
+            CONFIG_FILE_ITEM(PARAM_COMPRESSOR, PARAM_COMPRESSOR_COMMENT, CONFIG_FILE_DEFAULT{
+            COMPRESSOR_CALIBRATION_POSITION_STATUS_DEFAULT,
+            COMPRESSOR_CALIBRATION_FORCE_STATUS_DEFAULT,
+            COMPRESSOR_MAX_POSITION_DEFAULT,
+            COMPRESSOR_HOLDER_OFFSET_DEFAULT,
+            COMPRESSOR_TARGET_FORCE_DEFAULT,
+            COMPRESSOR_MAX_FORCE_DEFAULT
             }),
 
             CONFIG_FILE_ITEM(PARAM_PADDLE_PROSTHESIS, PARAM_PADDLE_PROSTHESIS_COMMENT, CONFIG_FILE_DEFAULT{

@@ -3,6 +3,7 @@
 #include "PCB302.h"
 #include "CalibrationConfig.h"
 #include "../gantry_global_status.h"
+#include "ArmMotor.h"
 #include "Notify.h"
 #include <thread>
 
@@ -10,17 +11,57 @@
 void PCB302::moduleInitialize(void) {
 
 	// Checks if the position has been already calibrated	
-	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_POSITION_CALIBRATION)[PaddleConfig::POSITION_CALIBRATION_STATUS]) == 0) {
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_CALIBRATION_POSITION_STATUS]) == 0) {
 		Notify::activate(Notify::messages::WARNING_POSITION_NOT_CALIBRATED);
-		calibrated = false;
+		position_calibrated = false;
 	}
 	else {
-		calibrated = true;
+		position_calibrated = true;
 		Notify::deactivate(Notify::messages::WARNING_POSITION_NOT_CALIBRATED);
 	}
 
+	// Checks if the force has been already calibrated	
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_CALIBRATION_FORCE_STATUS]) == 0) {
+		Notify::activate(Notify::messages::WARNING_FORCE_NOT_CALIBRATED);
+		force_calibrated = false;
+	}
+	else {
+		force_calibrated = true;
+		Notify::deactivate(Notify::messages::WARNING_FORCE_NOT_CALIBRATED);
+	}
+}
 
 
+/// <summary>
+/// 
+/// </summary>
+/// 
+/// This function is called by the Base class before to call the runningLoop() 
+/// allowing the module to properly configure the device.
+/// 
+/// 
+/// <param name=""></param>
+/// <returns></returns>
+bool PCB302::configurationLoop(void) {
+
+	// Gets the limit compression force: the admittet limit is from 70 to 200N
+	protocol.parameter_register.limit_compression = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_MAX_FORCE]);
+	if (protocol.parameter_register.limit_compression > 200) protocol.parameter_register.limit_compression = 200;
+	if (protocol.parameter_register.limit_compression < 70) protocol.parameter_register.limit_compression = 70;
+
+	// Gets the Target compression force: the admittet value is from 70 to LIMIT
+	protocol.parameter_register.target_compression = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_TARGET_FORCE]);
+	if (protocol.parameter_register.target_compression >= protocol.parameter_register.limit_compression) protocol.parameter_register.target_compression = protocol.parameter_register.limit_compression;
+	if (protocol.parameter_register.target_compression < 70) protocol.parameter_register.target_compression = 70;
+
+	// Uploads the COMPRESSION parameters
+	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::COMPRESSION, protocol.parameter_register.encodeCompressionParamRegister());
+	
+	// Limit position Upload
+	protocol.parameter_register.limit_position = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_MAX_POSITION]);
+	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::POSITION, protocol.parameter_register.encodePositionParamRegister());
+
+	return true;
 }
 
 /// <summary>
@@ -232,50 +273,6 @@ void PCB302::getDetectedPaddleData(void) {
 
 }
 
-void PCB302::evaluateEvents(void) {
-
-	
-
-
-}
-
-
-/// <summary>
-/// 
-/// </summary>
-/// 
-/// This function is called by the Base class before to call the runningLoop() 
-/// allowing the module to properly configure the device.
-/// 
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-bool PCB302::configurationLoop(void) {
-
-	// 0.1mm position of the filters and mirror in the filter slots
-	/*
-	unsigned short position_offset = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_POSITION_CALIBRATION)[CompressorConfig::PARAM_POSITION_CALIBRATION_OFFSET]);
-	unsigned short position_gain = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_POSITION_CALIBRATION)[CompressorConfig::PARAM_POSITION_CALIBRATION_GAIN]);
-	unsigned short force_offset = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_CALIBRATION_OFFSET]);
-	unsigned short force_gain = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_CALIBRATION_GAIN]);
-	unsigned short force_limit = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_LIMIT]);
-	unsigned short force_target = System::Convert::ToUInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_FORCE_CALIBRATION)[CompressorConfig::PARAM_FORCE_TARGET]);
-	thickness_correction = System::Convert::ToInt16(CompressorConfig::Configuration->getParam(CompressorConfig::PARAM_POSITION_CALIBRATION)[CompressorConfig::PARAM_THICKNESS_CORRECTION]);
-	
-	// Upload Position parameter
-	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::POSITION_PARAM_REGISTER,protocol.parameter_register.encodePositionParamRegister(position_offset, position_gain));
-
-	// Upload Force parameter
-	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::FORCE_CALIBRATION_PARAM_REGISTER, protocol.parameter_register.encodeForceParamRegister(force_offset, force_gain));
-
-	// Compression parameter
-	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::COMPRESSION_PARAM_REGISTER, protocol.parameter_register.encodeCompressionParamRegister(force_limit, force_target));
-
-	//setPositionLimit(200);// To be modified	
-	*/
-
-	return true;
-}
 
 void PCB302::runningLoop(void) {
 	static int count = 0;
@@ -300,22 +297,19 @@ void PCB302::runningLoop(void) {
 	protocol.status_register.decodePaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::PADDLE_REGISTER));
 	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
-	// Raw Paddle Register
-	//protocol.status_register.decodeRawPaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::RAW_PADDLE_REGISTER));
-	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 	// Gets the detected paddle parameters: code, weight and offset
 	getDetectedPaddleData();
 
 	// If calibrated, it is the current holder distance
-	if (calibrated) {
-		int holder_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_POSITION_CALIBRATION)[PaddleConfig::POSITION_HOLDER_OFFSET]);
+	if (position_calibrated) {
+		int holder_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_OFFSET]);
 		holder_position = protocol.status_register.paddle_position - holder_offset;
 	}
 	else holder_position = 0;
 
 	// Assignes the paddle Code from the protocol code
-	if ((detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) || (!protocol.status_register.compression_on) || (!calibrated)) {
+	if ((detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) || (!protocol.status_register.compression_on) || (!position_calibrated) || (!force_calibrated)) {
 		compression_force = 0;
 		breast_thickness = 0;
 	
@@ -334,11 +328,28 @@ void PCB302::runningLoop(void) {
 	}
 
 	
-	
-	//writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::POSITION_LIMIT_REGISTER, protocol.data_register.encodePositionLimitRegister());
-	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	// Sets the Paddle Weight data only if they are changed or if it is the first 
+	// and if the Arm is properly initialized and calibrated
+	static bool update_weight = true;
 
-	//writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::OPTIONS_REGISTER, protocol.data_register.encodeOptionsRegister());
+	// If the motor is not ready or not initialized doesn't update the current weight
+	// In this case the update will be forced as soon as the motor returns to be ready and calibrated
+	if ( (!ArmMotor::device->isReady()) || (!ArmMotor::device->isZeroOk()))  {
+		update_weight = true;
+	}
+	else {
+		// When the Arm motor is ready and calibrated (no running) 
+		if (protocol.data_register.absolute_arm_angle != abs(ArmMotor::device->getCurrentPosition() / 100)) {
+			protocol.data_register.absolute_arm_angle = abs(ArmMotor::device->getCurrentPosition() / 100);
+			update_weight = true;
+		}
+		if (protocol.data_register.paddle_weight != detected_paddle_weight) {
+			protocol.data_register.paddle_weight = detected_paddle_weight;
+			update_weight = true;
+		}
+		if (update_weight) writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::PADDLE_WEIGHT, protocol.data_register.encodePaddleWeightRegister());
+		update_weight = false;
+	}
 	
 	return;
 }

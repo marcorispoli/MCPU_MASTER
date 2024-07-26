@@ -219,7 +219,12 @@
     <ClInclude Include="WINDOWS\SERVICE\ServiceForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="WINDOWS\SERVICE\ServiceRotationTool.h" />
+    <ClInclude Include="WINDOWS\SERVICE\ServicePaddleCalibration.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceRotationTool.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\SERVICE\ServiceZeroSettingTool.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -287,6 +292,7 @@
     <ClCompile Include="WINDOWS\Projections.cpp" />
     <ClCompile Include="WINDOWS\SERVICE\ServiceExposureTool.cpp" />
     <ClCompile Include="WINDOWS\SERVICE\ServiceForm.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE\ServicePaddleCalibration.cpp" />
     <ClCompile Include="WINDOWS\SERVICE\ServiceRotationTool.cpp" />
     <ClCompile Include="WINDOWS\SERVICE\ServiceZeroSettingTool.cpp" />
     <ClCompile Include="WINDOWS\ValuePopup.cpp" />
@@ -332,6 +338,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\SERVICE\ServiceForm.resx">
       <DependentUpon>WINDOWS\SERVICE\ServiceForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\SERVICE\ServicePaddleCalibration.resx">
+      <DependentUpon>WINDOWS\SERVICE\ServicePaddleCalibration.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\SERVICE\ServiceRotationTool.resx">
+      <DependentUpon>WINDOWS\SERVICE\ServiceRotationTool.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\SERVICE\ServiceZeroSettingTool.resx">
       <DependentUpon>WINDOWS\SERVICE\ServiceZeroSettingTool.h</DependentUpon>

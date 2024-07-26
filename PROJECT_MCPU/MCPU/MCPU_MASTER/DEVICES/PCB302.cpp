@@ -29,6 +29,21 @@ void PCB302::moduleInitialize(void) {
 		force_calibrated = true;
 		Notify::deactivate(Notify::messages::WARNING_FORCE_NOT_CALIBRATED);
 	}
+
+	// Initialize the limit compression and the Target compression
+	protocol.data_register.limit_compression = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_MAX_FORCE]);
+	if (protocol.data_register.limit_compression > 200) protocol.data_register.limit_compression = 200;
+	if (protocol.data_register.limit_compression < 70) protocol.data_register.limit_compression = 70;
+
+	
+	protocol.data_register.target_compression = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_TARGET_FORCE]);
+	if (protocol.data_register.target_compression >= protocol.data_register.limit_compression) protocol.data_register.target_compression = protocol.data_register.limit_compression;
+	if (protocol.data_register.target_compression < 70) protocol.data_register.target_compression = 70;
+
+	// Initializes the Holder data
+	protocol.data_register.max_position = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_MAX_POSITION]);
+	protocol.data_register.min_position = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_MIN_POSITION]);
+
 }
 
 
@@ -44,22 +59,18 @@ void PCB302::moduleInitialize(void) {
 /// <returns></returns>
 bool PCB302::configurationLoop(void) {
 
-	// Gets the limit compression force: the admittet limit is from 70 to 200N
-	protocol.parameter_register.limit_compression = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_MAX_FORCE]);
-	if (protocol.parameter_register.limit_compression > 200) protocol.parameter_register.limit_compression = 200;
-	if (protocol.parameter_register.limit_compression < 70) protocol.parameter_register.limit_compression = 70;
-
-	// Gets the Target compression force: the admittet value is from 70 to LIMIT
-	protocol.parameter_register.target_compression = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_TARGET_FORCE]);
-	if (protocol.parameter_register.target_compression >= protocol.parameter_register.limit_compression) protocol.parameter_register.target_compression = protocol.parameter_register.limit_compression;
-	if (protocol.parameter_register.target_compression < 70) protocol.parameter_register.target_compression = 70;
-
-	// Uploads the COMPRESSION parameters
-	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::COMPRESSION, protocol.parameter_register.encodeCompressionParamRegister());
+	if (position_calibrated) {
+		// Uploads the calibrated parameters
+		protocol.parameter_register.Kp = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_KP]);
+		protocol.parameter_register.Op = (unsigned short)System::Convert::ToInt32(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_KP]);
+		writeParamRegister((int)ProtocolStructure::ParameterRegister::register_index::HOLDER_CALIB, protocol.parameter_register.encodeHolderCalibRegister());
+	}
 	
-	// Limit position Upload
-	protocol.parameter_register.limit_position = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_MAX_POSITION]);
-	writeParamRegister((int)ProtocolStructure::ParameterRegister::command_index::POSITION, protocol.parameter_register.encodePositionParamRegister());
+	// Uploads the HOLDER CALIB REGISTER parameters
+	if (force_calibrated) {
+		writeParamRegister((int)ProtocolStructure::ParameterRegister::register_index::COMPRESSION_CALIB, protocol.parameter_register.encodeCompressionCalibRegister());
+	}
+	
 
 	return true;
 }
@@ -301,13 +312,6 @@ void PCB302::runningLoop(void) {
 	// Gets the detected paddle parameters: code, weight and offset
 	getDetectedPaddleData();
 
-	// If calibrated, it is the current holder distance
-	if (position_calibrated) {
-		int holder_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_OFFSET]);
-		holder_position = protocol.status_register.paddle_position - holder_offset;
-	}
-	else holder_position = 0;
-
 	// Assignes the paddle Code from the protocol code
 	if ((detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) || (!protocol.status_register.compression_on) || (!position_calibrated) || (!force_calibrated)) {
 		compression_force = 0;
@@ -323,7 +327,7 @@ void PCB302::runningLoop(void) {
 		else  magnifier_offset = 200;
 
 		// Calculates the actual thickness and force 
-		breast_thickness = holder_position - magnifier_offset - detected_paddle_offset;
+		breast_thickness = protocol.status_register.paddle_position - magnifier_offset - detected_paddle_offset;
 		compression_force = protocol.status_register.paddle_force;
 	}
 
@@ -351,6 +355,12 @@ void PCB302::runningLoop(void) {
 		update_weight = false;
 	}
 	
+	writeDataRegister((int)ProtocolStructure::DataRegister::register_index::COMPRESSOR_LIMITS, protocol.data_register.encodeCompressorLimitsRegister());
+	std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	
+	writeDataRegister((int)ProtocolStructure::DataRegister::register_index::HOLDER_LIMITS, protocol.data_register.encodeHolderLimitsRegister());
+	std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
 	return;
 }
 

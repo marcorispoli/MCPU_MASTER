@@ -150,7 +150,6 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolTiltButton))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolArmButton))->BeginInit();
 		this->SuspendLayout();
-		
 		// 
 		// labelDate
 		// 
@@ -190,7 +189,6 @@ private:
 		this->labelTime->Size = System::Drawing::Size(88, 24);
 		this->labelTime->TabIndex = 9;
 		this->labelTime->Text = L"10:35 PM";
-		
 		// 
 		// serviceCanc
 		// 
@@ -224,7 +222,7 @@ private:
 		this->rotationToolPanel->Controls->Add(this->rotationToolBodyButton);
 		this->rotationToolPanel->Controls->Add(this->rotationToolTiltButton);
 		this->rotationToolPanel->Controls->Add(this->rotationToolArmButton);
-		this->rotationToolPanel->Location = System::Drawing::Point(1000, 50);
+		this->rotationToolPanel->Location = System::Drawing::Point(0, 50);
 		this->rotationToolPanel->Name = L"rotationToolPanel";
 		this->rotationToolPanel->Size = System::Drawing::Size(600, 880);
 		this->rotationToolPanel->TabIndex = 21;
@@ -455,8 +453,7 @@ private:
 		this->Controls->Add(this->labelTime);
 		this->Controls->Add(this->serviceCanc);
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
-		this->Location = System::Drawing::Point(1000, 0);
-		this->Name = L"ServiceForm";
+		this->Name = L"ServiceRotationTool";
 		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->EndInit();
 		this->rotationToolPanel->ResumeLayout(false);
@@ -478,7 +475,6 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationToolArmButton))->EndInit();
 		this->ResumeLayout(false);
 		this->PerformLayout();
-
 
 	}
 #pragma endregion

@@ -782,17 +782,21 @@ public:
     literal System::String^ PARAM_COMPRESSOR_COMMENT = "Compressor device general parameters";
     literal int     COMPRESSOR_CALIBRATION_POSITION_STATUS = 0; //!< Set to 1 if the calibration position has been executed
     literal int     COMPRESSOR_CALIBRATION_FORCE_STATUS = 1;    //!< Set to 1 if the calibration force has been executed
-    literal int     COMPRESSOR_MAX_POSITION = 2;                //!< Defines the maximum position in Compressor units
-    literal int     COMPRESSOR_HOLDER_OFFSET = 3;               //!< Holder calibration: converts the position to the distance from the holder and the carbon fiber
-    literal int     COMPRESSOR_TARGET_FORCE = 4;                //!< Sets the current automatic compression Target force in N
-    literal int     COMPRESSOR_MAX_FORCE = 5;                  //!< Sets the maximum applicable automatic compression force in N
+    literal int     COMPRESSOR_HOLDER_OP = 2;                   //!< Holder calibration: Op parameter
+    literal int     COMPRESSOR_HOLDER_KP = 3;                   //!< Holder calibration: Kp parameter
+    literal int     COMPRESSOR_HOLDER_MAX_POSITION = 4;         //!< Maximum holder position (mm)
+    literal int     COMPRESSOR_HOLDER_MIN_POSITION = 5;         //!< Minimum Holder Position (mm)
+    literal int     COMPRESSOR_TARGET_FORCE = 6;                //!< Automatic Target force (mm)
+    literal int     COMPRESSOR_MAX_FORCE = 7;                   //!< Absolute automatic compression force
 
     literal System::String^ COMPRESSOR_CALIBRATION_POSITION_STATUS_DEFAULT = "0";  //!<  No calibrated as default
     literal System::String^ COMPRESSOR_CALIBRATION_FORCE_STATUS_DEFAULT = "0";  //!<  No calibrated as default
-    literal System::String^ COMPRESSOR_MAX_POSITION_DEFAULT = "3000";  //!<  Max heigh parameter in 0.1mm value in compressor units
-    literal System::String^ COMPRESSOR_HOLDER_OFFSET_DEFAULT = "1000";  //!<  Offset from the compressor unit to holder units
-    literal System::String^ COMPRESSOR_TARGET_FORCE_DEFAULT = "150";  //!<  Target Force in N
-    literal System::String^ COMPRESSOR_MAX_FORCE_DEFAULT = "200";  //!<  Maximum applicable Force in N
+    literal System::String^ COMPRESSOR_HOLDER_OP_DEFAULT = "0";  
+    literal System::String^ COMPRESSOR_HOLDER_KP_DEFAULT = "100";
+    literal System::String^ COMPRESSOR_HOLDER_MAX_POSITION_DEFAULT = "300";
+    literal System::String^ COMPRESSOR_HOLDER_MIN_POSITION_DEFAULT = "0";  
+    literal System::String^ COMPRESSOR_TARGET_FORCE_DEFAULT = "150";  
+    literal System::String^ COMPRESSOR_MAX_FORCE_DEFAULT = "200";  
 
 
     //___________________________________________________________________________________________________//
@@ -893,14 +897,17 @@ public:
     literal System::String^ PADDLE_D75_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_D75_MAG_TAG_DEFAULT = "12"; //  Tag Code
 
+
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
             CONFIG_FILE_ITEM(PARAM_COMPRESSOR, PARAM_COMPRESSOR_COMMENT, CONFIG_FILE_DEFAULT{
             COMPRESSOR_CALIBRATION_POSITION_STATUS_DEFAULT,
             COMPRESSOR_CALIBRATION_FORCE_STATUS_DEFAULT,
-            COMPRESSOR_MAX_POSITION_DEFAULT,
-            COMPRESSOR_HOLDER_OFFSET_DEFAULT,
+            COMPRESSOR_HOLDER_OP_DEFAULT,
+            COMPRESSOR_HOLDER_KP_DEFAULT,
+            COMPRESSOR_HOLDER_MAX_POSITION_DEFAULT,
+            COMPRESSOR_HOLDER_MIN_POSITION_DEFAULT,
             COMPRESSOR_TARGET_FORCE_DEFAULT,
             COMPRESSOR_MAX_FORCE_DEFAULT
             }),

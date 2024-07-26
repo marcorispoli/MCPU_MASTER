@@ -203,8 +203,59 @@ public:
 		public:
 
 			enum class register_index {
-				PADDLE_WEIGHT = 0,				
+				HOLDER_LIMITS = 0,
+				COMPRESSOR_LIMITS,
+				PADDLE_WEIGHT				
 			};
+
+			static bool decodeHolderLimitsRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+				max_position = reg->d0 + 256 * reg->d1;
+				min_position = reg->d2 + 256 * reg->d3;				
+				return true;
+			}
+
+			Register^ encodeHolderLimitsRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				Register^ out = gcnew Register;
+
+				out->d0 = (unsigned char) max_position;
+				out->d1 = (unsigned char) (max_position>>8);
+				out->d2 = (unsigned char)min_position;
+				out->d3 = (unsigned char)(min_position >> 8);
+
+
+				// Returns the formatted register
+				return out;
+			}
+			
+			static bool decodeCompressorLimitsRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+				limit_compression = reg->d0;
+				target_compression = reg->d1;				
+				return true;
+			}
+
+
+			Register^ encodeCompressorLimitsRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				Register^ out = gcnew Register;
+
+				out->d0 = (unsigned char)limit_compression;
+				out->d1 = (unsigned char)target_compression;
+
+				// Returns the formatted register
+				return out;
+			}
+			
+			static bool decodePaddleWeightRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+				absolute_arm_angle = reg->d0;
+				paddle_weight = reg->d1;
+				return true;
+			}
 
 			Register^ encodePaddleWeightRegister(void) {
 
@@ -217,59 +268,61 @@ public:
 				// Returns the formatted register
 				return out;
 			}
-			static bool decodePaddleWeightRegister(Register^ reg) {
-				if (reg == nullptr) return false;
-				absolute_arm_angle = reg->d0;
-				paddle_weight = reg->d1;
-				return true;
-			}
+			
 
 			static unsigned char  absolute_arm_angle = 0;
 			static unsigned char  paddle_weight = 0;
+
+			static unsigned char limit_compression = 200;
+			static unsigned char target_compression = 150;
+
+			static unsigned short max_position = 0;
+			static unsigned short min_position = 0;
+
 
 		};
 
 		ref class ParameterRegister {
 		public:
-			enum class command_index {
-				//POSITION_PARAM_REGISTER = 0,
-				COMPRESSION = 0,
-				POSITION				
+			enum class register_index {
+				HOLDER_CALIB = 0,
+				COMPRESSION_CALIB				
 			};
 			
-			static bool decodeCompressionParamRegister(Register^ reg) {
+			static bool decodeHolderCalibRegister(Register^ reg) {
 				if (reg == nullptr) return false;
-				limit_compression = reg->d0;
-				target_compression = reg->d1;				
+				Kp = reg->d0;
+				Op = reg->d1 + 256 * reg->d2;
 				return true;
 			}
 
-			Register^ encodeCompressionParamRegister(void) {
-				unsigned char d0 = limit_compression;
-				unsigned char d1 = target_compression;
+			Register^ encodeHolderCalibRegister(void) {
+				unsigned char d0 = Kp;
+				unsigned char d1 = (unsigned char)Op;
+				unsigned char d2 = (unsigned char)(Op >> 8);
+				unsigned char d3 = 0;
+				return gcnew Register(d0, d1, d2, d3);
+			}
+			
+			static bool decodeCompressionCalibRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+					
+				return true;
+			}
+
+			Register^ encodeCompressionCalibRegister(void) {
+
+				unsigned char d0 = 0 ;
+				unsigned char d1 = 0;
 				unsigned char d2 = 0;
 				unsigned char d3 = 0;
 				return gcnew Register(d0, d1, d2, d3);
 			}
 			
-			static bool decodePositionParamRegister(Register^ reg) {
-				if (reg == nullptr) return false;
-				limit_position = (unsigned short)reg->d0 + 256 * (unsigned short)reg->d1;				
-				return true;
-			}
-
-			Register^ encodePositionParamRegister(void) {
-
-				unsigned char d0 = (unsigned char) limit_position ;
-				unsigned char d1 = (unsigned char) (limit_position >>8);
-				unsigned char d2 = 0;
-				unsigned char d3 = 0;
-				return gcnew Register(d0, d1, d2, d3);
-			}
 			
-			static unsigned char limit_compression;
-			static unsigned char target_compression;
-			static unsigned short limit_position;
+			static unsigned char Kp;
+			static unsigned short Op;
+
 		};
 
 		ref class Commands {
@@ -442,7 +495,7 @@ private:
 	static unsigned char detected_paddle_weight = 0;//!< This is the weight in N of the detected paddle
 	static int detected_paddle_offset = 0;//!< This is the offset from the holder position and the paddle compression plane 
 
-	static unsigned short holder_position = 0;		//!< This is the distance from the holder and the carbon fiber, when calibrated
+	
 	static unsigned short breast_thickness = 0;		//!< Compressed breast thickness in mm (0 if the compression_on should be false)
 	static unsigned short compression_force = 0;	//!< Evaluated compression force ( 0 if the compression_on should be false)
 	

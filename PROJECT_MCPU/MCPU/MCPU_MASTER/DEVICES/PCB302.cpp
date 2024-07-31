@@ -327,10 +327,12 @@ void PCB302::runningLoop(void) {
 		else  magnifier_offset = 200;
 
 		// Calculates the actual thickness and force 
-		breast_thickness = protocol.status_register.paddle_position - magnifier_offset - detected_paddle_offset;
+		breast_thickness = protocol.status_register.paddle_position - magnifier_offset - detected_paddle_offset;		
 		compression_force = protocol.status_register.paddle_force;
 	}
 
+	// Returns to the compressor device the calculated paddle distance from the plane
+	protocol.data_register.paddle_distance_from_plane = breast_thickness;
 	
 	// Sets the Paddle Weight data only if they are changed or if it is the first 
 	// and if the Arm is properly initialized and calibrated

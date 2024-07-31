@@ -221,28 +221,26 @@ void MainForm::pcb301Simulator(void) {
 void MainForm::pcb302Simulator(void) {
 	
 	// Target Force 
-	try {
-		PCB302::device.target_force = System::Convert::ToInt16(compression_force->Text);
-	}
-	catch (...) {
-		PCB302::device.target_force = 150;
-		compression_force->Text = "150";
-	}
+	compression_force->Text = PCB302::protocol.data_register.target_compression.ToString();
 	
 	// Target Thickness 
-	try {
-		PCB302::device.target_thickness = System::Convert::ToInt16(compression_thickness->Text);
-	}
-	catch (...) {
-		PCB302::device.target_thickness = 50;
-		compression_thickness->Text = "50";
-	}
+	compression_thickness->Text = PCB302::device.breast_thickness.ToString();
+	
 	
 	// Assignes the external signals coming from the simulated boards
-	PCB302::inputs.compression_ena = PCB301::outputs.compression_ena;
-	PCB302::inputs.calibration_ena = PCB301::outputs.calibration_ena;
-	PCB302::inputs.compression_down = PCB301::outputs.pedalboard_compression_down;
-	PCB302::inputs.compression_up = PCB301::outputs.pedalboard_compression_up;
+	if (PCB301::board->active) {
+		PCB302::inputs.compression_ena = PCB301::outputs.compression_ena;
+		PCB302::inputs.calibration_ena = PCB301::outputs.calibration_ena;
+		PCB302::inputs.compression_down = PCB301::outputs.pedalboard_compression_down;
+		PCB302::inputs.compression_up = PCB301::outputs.pedalboard_compression_up;
+
+	}
+	else {
+		PCB302::inputs.compression_ena = true;
+		PCB302::inputs.calibration_ena = false;
+		PCB302::inputs.compression_down = false;
+		PCB302::inputs.compression_up = false;
+	}
 
 
 	// Patient protection

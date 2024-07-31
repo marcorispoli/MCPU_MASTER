@@ -452,6 +452,19 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->paddle_list = (gcnew System::Windows::Forms::ComboBox());
 			this->pcb304_panel = (gcnew System::Windows::Forms::GroupBox());
+			this->DisplayBox = (gcnew System::Windows::Forms::GroupBox());
+			this->DisplayVal = (gcnew System::Windows::Forms::TextBox());
+			this->DisplayIntensity = (gcnew System::Windows::Forms::ProgressBar());
+			this->translationBox = (gcnew System::Windows::Forms::GroupBox());
+			this->UndefTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->RunTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->HomeTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->CenterTrasv = (gcnew System::Windows::Forms::RadioButton());
+			this->InOutBox = (gcnew System::Windows::Forms::GroupBox());
+			this->UndefField = (gcnew System::Windows::Forms::RadioButton());
+			this->RunField = (gcnew System::Windows::Forms::RadioButton());
+			this->InField = (gcnew System::Windows::Forms::RadioButton());
+			this->OutField = (gcnew System::Windows::Forms::RadioButton());
 			this->pcb301_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->groupBox4 = (gcnew System::Windows::Forms::GroupBox());
 			this->power_button = (gcnew System::Windows::Forms::Button());
@@ -557,19 +570,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_body_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->pcb326_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->pcb303_panel = (gcnew System::Windows::Forms::GroupBox());
-			this->InOutBox = (gcnew System::Windows::Forms::GroupBox());
-			this->RunField = (gcnew System::Windows::Forms::RadioButton());
-			this->InField = (gcnew System::Windows::Forms::RadioButton());
-			this->OutField = (gcnew System::Windows::Forms::RadioButton());
-			this->translationBox = (gcnew System::Windows::Forms::GroupBox());
-			this->RunTrasv = (gcnew System::Windows::Forms::RadioButton());
-			this->HomeTrasv = (gcnew System::Windows::Forms::RadioButton());
-			this->CenterTrasv = (gcnew System::Windows::Forms::RadioButton());
-			this->UndefTrasv = (gcnew System::Windows::Forms::RadioButton());
-			this->UndefField = (gcnew System::Windows::Forms::RadioButton());
-			this->DisplayIntensity = (gcnew System::Windows::Forms::ProgressBar());
-			this->DisplayVal = (gcnew System::Windows::Forms::TextBox());
-			this->DisplayBox = (gcnew System::Windows::Forms::GroupBox());
 			this->infoPanel->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotation_led))->BeginInit();
@@ -581,6 +581,9 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->calib_ena))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->cmp_ena))->BeginInit();
 			this->pcb304_panel->SuspendLayout();
+			this->DisplayBox->SuspendLayout();
+			this->translationBox->SuspendLayout();
+			this->InOutBox->SuspendLayout();
 			this->pcb301_panel->SuspendLayout();
 			this->groupBox4->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->vdc48_sw))->BeginInit();
@@ -596,9 +599,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_tilt_box->SuspendLayout();
 			this->motor_slide_box->SuspendLayout();
 			this->motor_body_box->SuspendLayout();
-			this->InOutBox->SuspendLayout();
-			this->translationBox->SuspendLayout();
-			this->DisplayBox->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// infoPanel
@@ -1092,6 +1092,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			// 
 			// compression_thickness
 			// 
+			this->compression_thickness->Enabled = false;
 			this->compression_thickness->Location = System::Drawing::Point(186, 84);
 			this->compression_thickness->Name = L"compression_thickness";
 			this->compression_thickness->Size = System::Drawing::Size(100, 22);
@@ -1111,6 +1112,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			// 
 			// compression_force
 			// 
+			this->compression_force->Enabled = false;
 			this->compression_force->Location = System::Drawing::Point(186, 39);
 			this->compression_force->Name = L"compression_force";
 			this->compression_force->Size = System::Drawing::Size(100, 22);
@@ -1157,6 +1159,167 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb304_panel->TabIndex = 13;
 			this->pcb304_panel->TabStop = false;
 			this->pcb304_panel->Text = L"PCB304 - POTTER";
+			// 
+			// DisplayBox
+			// 
+			this->DisplayBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->DisplayBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->DisplayBox->Controls->Add(this->DisplayVal);
+			this->DisplayBox->Controls->Add(this->DisplayIntensity);
+			this->DisplayBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->DisplayBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->DisplayBox->Location = System::Drawing::Point(7, 21);
+			this->DisplayBox->Name = L"DisplayBox";
+			this->DisplayBox->Size = System::Drawing::Size(130, 95);
+			this->DisplayBox->TabIndex = 26;
+			this->DisplayBox->TabStop = false;
+			this->DisplayBox->Text = L"Display";
+			// 
+			// DisplayVal
+			// 
+			this->DisplayVal->Enabled = false;
+			this->DisplayVal->Location = System::Drawing::Point(12, 27);
+			this->DisplayVal->Name = L"DisplayVal";
+			this->DisplayVal->Size = System::Drawing::Size(100, 22);
+			this->DisplayVal->TabIndex = 24;
+			// 
+			// DisplayIntensity
+			// 
+			this->DisplayIntensity->Location = System::Drawing::Point(12, 56);
+			this->DisplayIntensity->Maximum = 15;
+			this->DisplayIntensity->Name = L"DisplayIntensity";
+			this->DisplayIntensity->Size = System::Drawing::Size(100, 23);
+			this->DisplayIntensity->Step = 15;
+			this->DisplayIntensity->Style = System::Windows::Forms::ProgressBarStyle::Continuous;
+			this->DisplayIntensity->TabIndex = 25;
+			// 
+			// translationBox
+			// 
+			this->translationBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->translationBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->translationBox->Controls->Add(this->UndefTrasv);
+			this->translationBox->Controls->Add(this->RunTrasv);
+			this->translationBox->Controls->Add(this->HomeTrasv);
+			this->translationBox->Controls->Add(this->CenterTrasv);
+			this->translationBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->translationBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->translationBox->Location = System::Drawing::Point(252, 13);
+			this->translationBox->Name = L"translationBox";
+			this->translationBox->Size = System::Drawing::Size(86, 105);
+			this->translationBox->TabIndex = 22;
+			this->translationBox->TabStop = false;
+			this->translationBox->Text = L"Tras";
+			// 
+			// UndefTrasv
+			// 
+			this->UndefTrasv->AutoSize = true;
+			this->UndefTrasv->Location = System::Drawing::Point(6, 76);
+			this->UndefTrasv->Name = L"UndefTrasv";
+			this->UndefTrasv->Size = System::Drawing::Size(66, 20);
+			this->UndefTrasv->TabIndex = 17;
+			this->UndefTrasv->TabStop = true;
+			this->UndefTrasv->Text = L"Undef";
+			this->UndefTrasv->UseVisualStyleBackColor = true;
+			// 
+			// RunTrasv
+			// 
+			this->RunTrasv->AutoSize = true;
+			this->RunTrasv->Location = System::Drawing::Point(6, 56);
+			this->RunTrasv->Name = L"RunTrasv";
+			this->RunTrasv->Size = System::Drawing::Size(52, 20);
+			this->RunTrasv->TabIndex = 16;
+			this->RunTrasv->TabStop = true;
+			this->RunTrasv->Text = L"Run";
+			this->RunTrasv->UseVisualStyleBackColor = true;
+			// 
+			// HomeTrasv
+			// 
+			this->HomeTrasv->AutoSize = true;
+			this->HomeTrasv->Location = System::Drawing::Point(6, 18);
+			this->HomeTrasv->Name = L"HomeTrasv";
+			this->HomeTrasv->Size = System::Drawing::Size(66, 20);
+			this->HomeTrasv->TabIndex = 14;
+			this->HomeTrasv->TabStop = true;
+			this->HomeTrasv->Text = L"Home";
+			this->HomeTrasv->UseVisualStyleBackColor = true;
+			// 
+			// CenterTrasv
+			// 
+			this->CenterTrasv->AutoSize = true;
+			this->CenterTrasv->Location = System::Drawing::Point(6, 37);
+			this->CenterTrasv->Name = L"CenterTrasv";
+			this->CenterTrasv->Size = System::Drawing::Size(70, 20);
+			this->CenterTrasv->TabIndex = 15;
+			this->CenterTrasv->TabStop = true;
+			this->CenterTrasv->Text = L"Center";
+			this->CenterTrasv->UseVisualStyleBackColor = true;
+			// 
+			// InOutBox
+			// 
+			this->InOutBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->InOutBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->InOutBox->Controls->Add(this->UndefField);
+			this->InOutBox->Controls->Add(this->RunField);
+			this->InOutBox->Controls->Add(this->InField);
+			this->InOutBox->Controls->Add(this->OutField);
+			this->InOutBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->InOutBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->InOutBox->Location = System::Drawing::Point(158, 12);
+			this->InOutBox->Name = L"InOutBox";
+			this->InOutBox->Size = System::Drawing::Size(86, 105);
+			this->InOutBox->TabIndex = 21;
+			this->InOutBox->TabStop = false;
+			this->InOutBox->Text = L"In/Out";
+			// 
+			// UndefField
+			// 
+			this->UndefField->AutoSize = true;
+			this->UndefField->Location = System::Drawing::Point(6, 76);
+			this->UndefField->Name = L"UndefField";
+			this->UndefField->Size = System::Drawing::Size(66, 20);
+			this->UndefField->TabIndex = 17;
+			this->UndefField->TabStop = true;
+			this->UndefField->Text = L"Undef";
+			this->UndefField->UseVisualStyleBackColor = true;
+			// 
+			// RunField
+			// 
+			this->RunField->AutoSize = true;
+			this->RunField->Location = System::Drawing::Point(6, 56);
+			this->RunField->Name = L"RunField";
+			this->RunField->Size = System::Drawing::Size(52, 20);
+			this->RunField->TabIndex = 16;
+			this->RunField->TabStop = true;
+			this->RunField->Text = L"Run";
+			this->RunField->UseVisualStyleBackColor = true;
+			// 
+			// InField
+			// 
+			this->InField->AutoSize = true;
+			this->InField->Location = System::Drawing::Point(6, 18);
+			this->InField->Name = L"InField";
+			this->InField->Size = System::Drawing::Size(37, 20);
+			this->InField->TabIndex = 14;
+			this->InField->TabStop = true;
+			this->InField->Text = L"In";
+			this->InField->UseVisualStyleBackColor = true;
+			// 
+			// OutField
+			// 
+			this->OutField->AutoSize = true;
+			this->OutField->Location = System::Drawing::Point(6, 37);
+			this->OutField->Name = L"OutField";
+			this->OutField->Size = System::Drawing::Size(48, 20);
+			this->OutField->TabIndex = 15;
+			this->OutField->TabStop = true;
+			this->OutField->Text = L"Out";
+			this->OutField->UseVisualStyleBackColor = true;
 			// 
 			// pcb301_panel
 			// 
@@ -2449,167 +2612,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb303_panel->TabStop = false;
 			this->pcb303_panel->Text = L"PCB303 -COLLIMATOR";
 			// 
-			// InOutBox
-			// 
-			this->InOutBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->InOutBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->InOutBox->Controls->Add(this->UndefField);
-			this->InOutBox->Controls->Add(this->RunField);
-			this->InOutBox->Controls->Add(this->InField);
-			this->InOutBox->Controls->Add(this->OutField);
-			this->InOutBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->InOutBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->InOutBox->Location = System::Drawing::Point(158, 12);
-			this->InOutBox->Name = L"InOutBox";
-			this->InOutBox->Size = System::Drawing::Size(86, 105);
-			this->InOutBox->TabIndex = 21;
-			this->InOutBox->TabStop = false;
-			this->InOutBox->Text = L"In/Out";
-			// 
-			// RunField
-			// 
-			this->RunField->AutoSize = true;
-			this->RunField->Location = System::Drawing::Point(6, 56);
-			this->RunField->Name = L"RunField";
-			this->RunField->Size = System::Drawing::Size(52, 20);
-			this->RunField->TabIndex = 16;
-			this->RunField->TabStop = true;
-			this->RunField->Text = L"Run";
-			this->RunField->UseVisualStyleBackColor = true;
-			// 
-			// InField
-			// 
-			this->InField->AutoSize = true;
-			this->InField->Location = System::Drawing::Point(6, 18);
-			this->InField->Name = L"InField";
-			this->InField->Size = System::Drawing::Size(37, 20);
-			this->InField->TabIndex = 14;
-			this->InField->TabStop = true;
-			this->InField->Text = L"In";
-			this->InField->UseVisualStyleBackColor = true;
-			// 
-			// OutField
-			// 
-			this->OutField->AutoSize = true;
-			this->OutField->Location = System::Drawing::Point(6, 37);
-			this->OutField->Name = L"OutField";
-			this->OutField->Size = System::Drawing::Size(48, 20);
-			this->OutField->TabIndex = 15;
-			this->OutField->TabStop = true;
-			this->OutField->Text = L"Out";
-			this->OutField->UseVisualStyleBackColor = true;
-			// 
-			// translationBox
-			// 
-			this->translationBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->translationBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->translationBox->Controls->Add(this->UndefTrasv);
-			this->translationBox->Controls->Add(this->RunTrasv);
-			this->translationBox->Controls->Add(this->HomeTrasv);
-			this->translationBox->Controls->Add(this->CenterTrasv);
-			this->translationBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->translationBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->translationBox->Location = System::Drawing::Point(252, 13);
-			this->translationBox->Name = L"translationBox";
-			this->translationBox->Size = System::Drawing::Size(86, 105);
-			this->translationBox->TabIndex = 22;
-			this->translationBox->TabStop = false;
-			this->translationBox->Text = L"Tras";
-			// 
-			// RunTrasv
-			// 
-			this->RunTrasv->AutoSize = true;
-			this->RunTrasv->Location = System::Drawing::Point(6, 56);
-			this->RunTrasv->Name = L"RunTrasv";
-			this->RunTrasv->Size = System::Drawing::Size(52, 20);
-			this->RunTrasv->TabIndex = 16;
-			this->RunTrasv->TabStop = true;
-			this->RunTrasv->Text = L"Run";
-			this->RunTrasv->UseVisualStyleBackColor = true;
-			// 
-			// HomeTrasv
-			// 
-			this->HomeTrasv->AutoSize = true;
-			this->HomeTrasv->Location = System::Drawing::Point(6, 18);
-			this->HomeTrasv->Name = L"HomeTrasv";
-			this->HomeTrasv->Size = System::Drawing::Size(66, 20);
-			this->HomeTrasv->TabIndex = 14;
-			this->HomeTrasv->TabStop = true;
-			this->HomeTrasv->Text = L"Home";
-			this->HomeTrasv->UseVisualStyleBackColor = true;
-			// 
-			// CenterTrasv
-			// 
-			this->CenterTrasv->AutoSize = true;
-			this->CenterTrasv->Location = System::Drawing::Point(6, 37);
-			this->CenterTrasv->Name = L"CenterTrasv";
-			this->CenterTrasv->Size = System::Drawing::Size(70, 20);
-			this->CenterTrasv->TabIndex = 15;
-			this->CenterTrasv->TabStop = true;
-			this->CenterTrasv->Text = L"Center";
-			this->CenterTrasv->UseVisualStyleBackColor = true;
-			// 
-			// UndefTrasv
-			// 
-			this->UndefTrasv->AutoSize = true;
-			this->UndefTrasv->Location = System::Drawing::Point(6, 76);
-			this->UndefTrasv->Name = L"UndefTrasv";
-			this->UndefTrasv->Size = System::Drawing::Size(66, 20);
-			this->UndefTrasv->TabIndex = 17;
-			this->UndefTrasv->TabStop = true;
-			this->UndefTrasv->Text = L"Undef";
-			this->UndefTrasv->UseVisualStyleBackColor = true;
-			// 
-			// UndefField
-			// 
-			this->UndefField->AutoSize = true;
-			this->UndefField->Location = System::Drawing::Point(6, 76);
-			this->UndefField->Name = L"UndefField";
-			this->UndefField->Size = System::Drawing::Size(66, 20);
-			this->UndefField->TabIndex = 17;
-			this->UndefField->TabStop = true;
-			this->UndefField->Text = L"Undef";
-			this->UndefField->UseVisualStyleBackColor = true;
-			// 
-			// DisplayIntensity
-			// 
-			this->DisplayIntensity->Location = System::Drawing::Point(12, 56);
-			this->DisplayIntensity->Maximum = 15;
-			this->DisplayIntensity->Name = L"DisplayIntensity";
-			this->DisplayIntensity->Size = System::Drawing::Size(100, 23);
-			this->DisplayIntensity->Step = 15;
-			this->DisplayIntensity->Style = System::Windows::Forms::ProgressBarStyle::Continuous;
-			this->DisplayIntensity->TabIndex = 25;
-			// 
-			// DisplayVal
-			// 
-			this->DisplayVal->Enabled = false;
-			this->DisplayVal->Location = System::Drawing::Point(12, 27);
-			this->DisplayVal->Name = L"DisplayVal";
-			this->DisplayVal->Size = System::Drawing::Size(100, 22);
-			this->DisplayVal->TabIndex = 24;
-			// 
-			// DisplayBox
-			// 
-			this->DisplayBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->DisplayBox->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->DisplayBox->Controls->Add(this->DisplayVal);
-			this->DisplayBox->Controls->Add(this->DisplayIntensity);
-			this->DisplayBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->DisplayBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->DisplayBox->Location = System::Drawing::Point(7, 21);
-			this->DisplayBox->Name = L"DisplayBox";
-			this->DisplayBox->Size = System::Drawing::Size(130, 95);
-			this->DisplayBox->TabIndex = 26;
-			this->DisplayBox->TabStop = false;
-			this->DisplayBox->Text = L"Display";
-			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -2654,6 +2656,12 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->calib_ena))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->cmp_ena))->EndInit();
 			this->pcb304_panel->ResumeLayout(false);
+			this->DisplayBox->ResumeLayout(false);
+			this->DisplayBox->PerformLayout();
+			this->translationBox->ResumeLayout(false);
+			this->translationBox->PerformLayout();
+			this->InOutBox->ResumeLayout(false);
+			this->InOutBox->PerformLayout();
 			this->pcb301_panel->ResumeLayout(false);
 			this->groupBox4->ResumeLayout(false);
 			this->groupBox4->PerformLayout();
@@ -2680,12 +2688,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_slide_box->PerformLayout();
 			this->motor_body_box->ResumeLayout(false);
 			this->motor_body_box->PerformLayout();
-			this->InOutBox->ResumeLayout(false);
-			this->InOutBox->PerformLayout();
-			this->translationBox->ResumeLayout(false);
-			this->translationBox->PerformLayout();
-			this->DisplayBox->ResumeLayout(false);
-			this->DisplayBox->PerformLayout();
 			this->ResumeLayout(false);
 
 		}

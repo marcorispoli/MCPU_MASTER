@@ -35,6 +35,27 @@ public:
 	ref class ProtocolStructure {
 	public:
 
+		/// <summary>
+		/// This is the enumeration of the detected component.
+		/// </summary>
+		/// 
+		/// The Component can be one of the following device:
+		/// + PATIENT PROTECTION IN THE RIGHT POSITION;
+		/// + PATIENT PROTECTION SHIFTED;
+		/// + Magnifier Device with 1.5x factor;
+		/// + Magnifier Device with 1.8x factor;
+		/// + Magnifier Device with 2x factor;
+		/// 
+		enum class  ComponentCode {
+			SHORT_CIRCUIT = 0,
+			PATIENT_PROTECTION_SHITED,
+			PATIENT_PROTECTION_POSITIONED,
+			MAGNIFIER_DEVICE_15x,
+			MAGNIFIER_DEVICE_18x,
+			MAGNIFIER_DEVICE_20x,
+			UNDETECTED_COMPONENT
+		};
+
 		ref class StatusRegister {
 		public:
 
@@ -42,8 +63,7 @@ public:
 				SYSTEM_REGISTER = 0, //!> This is the System Status register index
 				SPARE_REGISTER,
 				PADDLE_REGISTER,
-				RAW_PADDLE_REGISTER,
-				NUM_REGISTER
+				RAW_PADDLE_REGISTER
 			};
 
 			static bool decodeSystemRegister(Register^ sys) {
@@ -62,21 +82,23 @@ public:
 				command_activation = sys->d1 & 0x8;
 				upward_direction = sys->d1 & 0x10;
 				downward_direction = sys->d1 & 0x20;
-				unlock_activation = sys->d1 & 0x40;
+
 				device_fault = sys->d1 & 0x80;
 
 				// Byte 2
 				compression_ena = sys->d2 & 0x1;
 				compression_on = sys->d2 & 0x2;
-				zero_compression_mode = sys->d2 & 0x4;
+
 				smart_target = sys->d2 & 0x8;
 				force_target = sys->d2 & 0x10;
 				limit_compression = sys->d2 & 0x20;
 
 				// Byte 3
-				// Not implemented
+				if (sys->d3 >= (unsigned char)ComponentCode::UNDETECTED_COMPONENT) component = ComponentCode::UNDETECTED_COMPONENT;
+				else component = (ComponentCode)sys->d3;
 				return true;
 			}
+
 			Register^ encodeSystemRegister(void) {
 
 				// Creates a register with all bytes set to 0
@@ -95,28 +117,34 @@ public:
 				if (command_activation) sys->d1 |= 0x8;
 				if (upward_direction) sys->d1 |= 0x10;
 				if (downward_direction) sys->d1 |= 0x20;
-				if (unlock_activation) sys->d1 |= 0x40;
+
 				if (device_fault) sys->d1 |= 0x80;
 
 				// Byte 2
 				if (compression_ena) sys->d2 |= 0x1;
 				if (compression_on) sys->d2 |= 0x2;
-				if (zero_compression_mode) sys->d2 |= 0x4;
+
 				if (smart_target)sys->d2 |= 0x8;
 				if (force_target) sys->d2 |= 0x10;
 				if (limit_compression)sys->d2 |= 0x20;
+
+				// Byte 3
+				sys->d3 = (unsigned char)component;
 
 				// Returns the formatted register
 				return sys;
 			}
 
+
+
 			static bool decodePaddleRegister(Register^ pad) {
 				if (pad == nullptr) return false;
 				paddle_position = (int)pad->d0 + 256 * (int)(pad->d1 & 0x0f);
 				paddle_force = (int)((pad->d1 & 0xF0) >> 4) + 16 * (int)pad->d2;
-				paddle_code = pad->d3;
+				paddle_tag = pad->d3;
 				return true;
 			}
+
 			Register^ encodePaddleRegister(void) {
 
 				// Creates a register with all bytes set to 0
@@ -126,7 +154,7 @@ public:
 				pad->d1 = (unsigned char)((paddle_position >> 8) & 0x0f);
 				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) << 4);
 				pad->d2 = (unsigned char)((paddle_force >> 4) & 0xff);
-				pad->d3 = paddle_code;
+				pad->d3 = paddle_tag;
 
 				// Returns the formatted register
 				return pad;
@@ -148,7 +176,7 @@ public:
 
 				pad->d0 = (unsigned char)(paddle_raw_position & 0xFF);
 				pad->d1 = (unsigned char)((paddle_raw_position >> 8) & 0x0f);
-				pad->d1 |= ((unsigned char)(paddle_raw_force & 0x0F) << 4 );
+				pad->d1 |= ((unsigned char)(paddle_raw_force & 0x0F) >> 4);
 				pad->d2 = (unsigned char)((paddle_raw_force >> 4) & 0xff);
 				pad->d3 = paddle_raw_code;
 
@@ -157,35 +185,36 @@ public:
 			}
 
 
-			static bool manual_servo_up = false;
-			static bool manual_servo_down = false;
-			static bool manual_pedal_up = false;
-			static bool manual_pedal_down = false;
+			static bool manual_servo_up = false; //!< The Manual Servo Up button is activated
+			static bool manual_servo_down = false;//!< The Manual Servo Down button is activated
+			static bool manual_pedal_up = false;//!< The Manual Compression Pedal Up button is activated
+			static bool manual_pedal_down = false;//!< The Manual Compression Pedal Down button is activated
 
-			static bool idle_status = false;
-			static bool manual_activation = false;
-			static bool pedal_activation = false;
-			static bool command_activation = false;
-			static bool upward_direction = false;
-			static bool downward_direction = false;
-			static bool unlock_activation = false;
-			static bool device_fault = false;
+			static bool idle_status = false;//!< The Compressor is in Idle (no activation is pending)
+			static bool manual_activation = false;//!< The Servo manual activation is executing
+			static bool pedal_activation = false;//!< The Pedal manual activation is executing
+			static bool command_activation = false;//!< The Protocol command  activation is executing
+			static bool upward_direction = false;//!< The paddle is activated Upward
+			static bool downward_direction = false;//!< The paddle is activated Downward
 
-			static bool compression_ena = false;
-			static bool compression_on = false;
-			static bool zero_compression_mode = false;
-			static bool smart_target = false;
-			static bool force_target = false;
-			static bool limit_compression = false;
+			static bool device_fault = false;//!< The device is in fault condition (see the Error register)
 
+			static bool compression_ena = false;//!< The compressor Ena hardware input is detected
+			static bool compression_on = false;	//!< A valid compression is detected (Compression-On)
 
-			static int paddle_position = 0;
-			static int paddle_force = 0;
-			static unsigned char paddle_code = 0;
+			static bool smart_target = false;//!< The Smart uPress has been detected
+			static bool force_target = false;//!< The Target compression is detected
+			static bool limit_compression = false;//!< The Limit compression is detected
 
-			static int paddle_raw_position = 0;
-			static int paddle_raw_force = 0;
-			static unsigned char paddle_raw_code = 0;
+			static int paddle_position = 0; //! Current calibrated paddle position
+			static int paddle_force = 0;//! Current calibrated paddle force
+			static unsigned char paddle_tag = 0;//! Current detected paddle tag
+
+			static int paddle_raw_position = 0;//! Current sensor position value
+			static int paddle_raw_force = 0;//! Current sensor force value
+			static unsigned char paddle_raw_code = 0;//! Current paddle code
+
+			static ComponentCode component = ComponentCode::UNDETECTED_COMPONENT; //!< Current detected Component code
 
 		};
 
@@ -194,57 +223,86 @@ public:
 		public:
 
 			enum class register_index {
-				POSITION_LIMIT_REGISTER = 0,
-				OPTIONS_REGISTER,
-				NUM_REGISTER
+				HOLDER_LIMITS = 0,
+				COMPRESSOR_LIMITS,
+				PADDLE_WEIGHT
 			};
 
-			Register^ encodePositionLimitRegister(void) {
-
-				// Creates a register with all bytes set to 0
-				Register^ out = gcnew Register;
-
-				out->d0 = position_limit & 0xFF;
-				out->d1 = (unsigned char)(position_limit >> 8) & 0xFF;
-
-				// Returns the formatted register
-				return out;
-			}
-			static bool decodePositionLimitRegister(Register^ reg) {
+			static bool decodeHolderLimitsRegister(Register^ reg) {
 				if (reg == nullptr) return false;
-				position_limit = reg->d0 + 256 * reg->d1;
+				max_position = reg->d0 + 256 * reg->d1;
+				min_position = reg->d2 + 256 * reg->d3;
 				return true;
 			}
 
-			Register^ encodeOptionsRegister(void) {
+			Register^ encodeHolderLimitsRegister(void) {
 
 				// Creates a register with all bytes set to 0
 				Register^ out = gcnew Register;
 
-				if (position_calibration) out->d0 |= 0x1;
-				if (force_calibration) out->d0 |= 0x2;
-				if (master_enable) out->d0 |= 0x4;
-				if (zero_compression_mode) out->d0 |= 0x8;
+				out->d0 = (unsigned char)max_position;
+				out->d1 = (unsigned char)(max_position >> 8);
+				out->d2 = (unsigned char)min_position;
+				out->d3 = (unsigned char)(min_position >> 8);
 
 
 				// Returns the formatted register
 				return out;
 			}
-			static bool decodeOptionsRegister(Register^ reg) {
-				if (reg == nullptr) return false;
 
-				position_calibration = reg->d0 & 0x1;
-				force_calibration = reg->d0 & 0x2;
-				master_enable = reg->d0 & 0x4;
-				zero_compression_mode = reg->d0 & 0x8;
+			static bool decodeCompressorLimitsRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+				limit_compression = reg->d0;
+				target_compression = reg->d1;
 				return true;
 			}
 
-			static unsigned int  position_limit = 0;
-			static bool position_calibration = false;
-			static bool force_calibration = false;
-			static bool master_enable = false;
-			static bool zero_compression_mode = false;
+
+			Register^ encodeCompressorLimitsRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				Register^ out = gcnew Register;
+
+				out->d0 = (unsigned char)limit_compression;
+				out->d1 = (unsigned char)target_compression;
+
+				// Returns the formatted register
+				return out;
+			}
+
+			static bool decodePaddleWeightRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+				absolute_arm_angle = reg->d0;
+				paddle_weight = reg->d1;
+				paddle_distance_from_plane = (unsigned short)reg->d2 + 256 * (unsigned short)reg->d3;
+				return true;
+			}
+
+			Register^ encodePaddleWeightRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				Register^ out = gcnew Register;
+
+				out->d0 = absolute_arm_angle;
+				out->d1 = paddle_weight;
+				out->d2 = (unsigned char)paddle_distance_from_plane;
+				out->d3 = (unsigned char)(paddle_distance_from_plane >> 8);
+
+				// Returns the formatted register
+				return out;
+			}
+
+
+			static unsigned char  absolute_arm_angle = 0;//!< Current detected Arm angle
+			static unsigned char  paddle_weight = 0;//!< Current detected paddle weight
+
+			static unsigned char limit_compression = 200;//!< Current limit compression
+			static unsigned char target_compression = 150;//!< Current target compression
+
+			static unsigned short max_position = 0; //!< Max Holder position
+			static unsigned short min_position = 0; //!< Min holder position
+
+			static unsigned short paddle_distance_from_plane = 0; //!< Distance from the paddle plane to the compression plane
 
 
 		};
@@ -252,41 +310,43 @@ public:
 		ref class ParameterRegister {
 		public:
 			enum class register_index {
-				POSITION_PARAM_REGISTER = 0,
-				FORCE_CALIBRATION_PARAM_REGISTER,
-				COMPRESSION_PARAM_REGISTER,
-				UPWARD_PARAM_REGISTER,
-				DOWNWARD_PARAM_REGISTER,
-				NUM_REGISTER
+				HOLDER_CALIB = 0,
+				COMPRESSION_CALIB
 			};
 
-			//writeParamRegister(unsigned char idx, Register^ reg)
+			static bool decodeHolderCalibRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+				Kp = reg->d0;
+				Op = reg->d1 + 256 * reg->d2;
+				return true;
+			}
 
-			Register^ encodePositionParamRegister(unsigned int offset, unsigned int gain) {
-				unsigned char d0 = (unsigned char)offset;
-				unsigned char d1 = (unsigned char)(offset >> 8);
-				unsigned char d2 = (unsigned char)gain;
-				unsigned char d3 = (unsigned char)(gain >> 8);
-
+			Register^ encodeHolderCalibRegister(void) {
+				unsigned char d0 = Kp;
+				unsigned char d1 = (unsigned char)Op;
+				unsigned char d2 = (unsigned char)(Op >> 8);
+				unsigned char d3 = 0;
 				return gcnew Register(d0, d1, d2, d3);
 			}
 
-			Register^ encodeForceParamRegister(unsigned int offset, unsigned int gain) {
-				unsigned char d0 = (unsigned char)offset;
-				unsigned char d1 = (unsigned char)(offset >> 8);
-				unsigned char d2 = (unsigned char)gain;
-				unsigned char d3 = (unsigned char)(gain >> 8);
-				return gcnew Register(d0, d1, d2, d3);
+			static bool decodeCompressionCalibRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+
+				return true;
 			}
 
-			Register^ encodeCompressionParamRegister(unsigned char limit, unsigned char target) {
-				unsigned char d0 = (unsigned char)limit;
-				unsigned char d1 = (unsigned char)target;
+			Register^ encodeCompressionCalibRegister(void) {
+
+				unsigned char d0 = 0;
+				unsigned char d1 = 0;
 				unsigned char d2 = 0;
 				unsigned char d3 = 0;
 				return gcnew Register(d0, d1, d2, d3);
 			}
 
+
+			static unsigned char Kp;
+			static unsigned short Op;
 
 		};
 
@@ -297,7 +357,6 @@ public:
 				SET_TRIMMERS_COMMAND,
 				SET_COMPRESSION,
 				SET_UNLOCK,
-				NUM_COMMANDS
 			};
 
 			CanDeviceCommand^ encodeSetUnlockCommand(void) {
@@ -312,22 +371,22 @@ public:
 		static Commands command;
 	};
 
+
 	ref class hardware_device {
 	public:
 		hardware_device() { init(); }
 		void init() {
-			target_force = 150;
-			target_thickness = 50;
+			
+			breast_thickness = 50;
 			current_force = 0;
-			current_thickness = 0;
+			paddle_holder_position = 300;
 			current_paddle_code = paddleCodes::PADDLE_NOT_DETECTED;
 
 		}
-
-		int target_force;
-		int target_thickness;
-		int current_force;
-		int current_thickness;
+		
+		int breast_thickness;		//!< Sets the breast dimension put on the plane
+		int paddle_holder_position; //!< Current calibrated paddle holder
+		int current_force;			//!< Current sensor force
 		paddleCodes current_paddle_code;
 	
 	};

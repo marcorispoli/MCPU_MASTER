@@ -55,8 +55,8 @@ void MainForm::MainFormInitialize(void) {
 	// PCb302 Panel items Initializtion
 	cmp_ena->BackColor = COLOR_OFF;
 	calib_ena->BackColor = COLOR_OFF;
-	paddle_list->Text = paddle_list->Items[(int)PCB302::paddleCodes::PADDLE_TOMO]->ToString();
-	patient_protection->Text = "";// patient_protection->Items[(int)PCB302::protectionCodes::PROTECTION_SELECTED]->ToString();
+	paddle_list->Text = "NOT_DETECTED";
+	component_list->Text = "NOT_DETECTED";
 
 	startupFase = 0;
 	startupSubFase = 0;
@@ -220,6 +220,13 @@ void MainForm::pcb301Simulator(void) {
 }
 void MainForm::pcb302Simulator(void) {
 	
+	paddle_list->Enabled = true;
+
+	// Enable/Disable the component: only without pad can nbe selected a component
+	if (paddle_list->Text == "NOT_DETECTED") component_list->Enabled = true;
+	else component_list->Enabled = false;
+
+	 
 	// Target Force 
 	compression_force->Text = PCB302::protocol.data_register.target_compression.ToString();
 	
@@ -243,50 +250,15 @@ void MainForm::pcb302Simulator(void) {
 	}
 
 
-	// Patient protection
-	/*
-	PCB302Simulator::protectionCodes pt = (PCB302Simulator::protectionCodes)patient_protection->SelectedIndex;
-	if (pt == PCB302Simulator::protectionCodes::PROTECTION_SHIFTED) {
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_DETECTED] = 1;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_SHIFTED] = 1;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::MAGNIFIER_DEVICE] = 0;
-		
-	}
-	else if (pt == PCB302Simulator::protectionCodes::PROTECTION_SELECTED) {
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_DETECTED] = 1;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_SHIFTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::MAGNIFIER_DEVICE] = 0;
-	}
-	else if (pt == PCB302Simulator::protectionCodes::MAGNIFIER_DEVICE_15) {
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_DETECTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_SHIFTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::MAGNIFIER_DEVICE] = 15;
-	}
-	else if (pt == PCB302Simulator::protectionCodes::MAGNIFIER_DEVICE_18) {
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_DETECTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_SHIFTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::MAGNIFIER_DEVICE] = 18;
-	}
-	else if (pt == PCB302Simulator::protectionCodes::MAGNIFIER_DEVICE_20) {
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_DETECTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_SHIFTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::MAGNIFIER_DEVICE] = 20;
-	}
-	else{
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_DETECTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::PATIENT_PROTECTION_SHIFTED] = 0;
-		PCB302Simulator::to_master[(int)PCB302Simulator::simul_tx_struct::MAGNIFIER_DEVICE] = 0;
-	}
-	*/
-
 	// Paddle detected
-	PCB302::device.current_paddle_code = (PCB302::paddleCodes) paddle_list->SelectedIndex;
-	
+	PCB302::device.current_paddle_tag = (PCB302::paddleTags) (paddle_list->SelectedIndex + 1);
+	PCB302::device.current_component_code = component_list->SelectedIndex;
+
 	// Current compression force
 	current_force->Text = PCB302::device.current_force.ToString();
 
 	// Current compression Thickness
-	current_thickness->Text = PCB302::device.current_thickness.ToString();
+	current_thickness->Text = PCB302::device.paddle_holder_position.ToString();
 
 }
 void MainForm::pcb303Simulator(void) {

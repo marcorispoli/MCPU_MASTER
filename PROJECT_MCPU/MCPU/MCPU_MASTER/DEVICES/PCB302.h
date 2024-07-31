@@ -252,9 +252,10 @@ public:
 			
 			static bool decodePaddleWeightRegister(Register^ reg) {
 				if (reg == nullptr) return false;
-				absolute_arm_angle = reg->d0;
-				paddle_weight = reg->d1;
-				paddle_distance_from_plane = (unsigned short) reg->d2 + 256 * (unsigned short) reg->d3;
+				paddle_weight = reg->d0;
+				paddle_offset = reg->d1;
+				absolute_arm_angle = reg->d2 ;
+				magnifier_offset = reg->d3;
 				return true;
 			}
 
@@ -263,18 +264,16 @@ public:
 				// Creates a register with all bytes set to 0
 				Register^ out = gcnew Register;
 
-				out->d0 = absolute_arm_angle;
-				out->d1 = paddle_weight;
-				out->d2 = (unsigned char)paddle_distance_from_plane;
-				out->d3 = (unsigned char)(paddle_distance_from_plane >> 8);
+				out->d0 = paddle_weight;
+				out->d1 = paddle_offset;
+				out->d2 = absolute_arm_angle;
+				out->d3 = magnifier_offset;
+
 				
 				// Returns the formatted register
 				return out;
 			}
 			
-
-			static unsigned char  absolute_arm_angle = 0;//!< Current detected Arm angle
-			static unsigned char  paddle_weight = 0;//!< Current detected paddle weight
 
 			static unsigned char limit_compression = 200;//!< Current limit compression
 			static unsigned char target_compression = 150;//!< Current target compression
@@ -282,8 +281,10 @@ public:
 			static unsigned short max_position = 0; //!< Max Holder position
 			static unsigned short min_position = 0; //!< Min holder position
 
-			static unsigned short paddle_distance_from_plane = 0; //!< Distance from the paddle plane to the compression plane
-
+			static unsigned char paddle_weight = 0;//!< Current detected paddle weight
+			static unsigned char magnifier_offset = 0; //!< Offset in case of magnifier
+			static unsigned char paddle_offset = 0;	//!< Mechanical offset of the detected paddle
+			static unsigned char absolute_arm_angle = 0;//!< Current detected Arm angle
 
 		};
 

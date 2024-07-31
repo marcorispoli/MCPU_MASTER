@@ -41,8 +41,8 @@ void PCB302::moduleInitialize(void) {
 	if (protocol.data_register.target_compression < 70) protocol.data_register.target_compression = 70;
 
 	// Initializes the Holder data
-	protocol.data_register.max_position = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_MAX_POSITION]);
-	protocol.data_register.min_position = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_MIN_POSITION]);
+	protocol.data_register.max_position = (unsigned short) System::Convert::ToInt32(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_MAX_POSITION]);
+	protocol.data_register.min_position = (unsigned short) System::Convert::ToInt32(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_MIN_POSITION]);
 
 }
 
@@ -308,31 +308,30 @@ void PCB302::runningLoop(void) {
 	protocol.status_register.decodePaddleRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::PADDLE_REGISTER));
 	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
+	// The magnifier correction (if present)
+	if (getMagnifierFactor() == 10) protocol.data_register.magnifier_offset = 0;
+	else if (getMagnifierFactor() == 15) protocol.data_register.magnifier_offset = 150;
+	else if (getMagnifierFactor() == 18) protocol.data_register.magnifier_offset = 180;
+	else  protocol.data_register.magnifier_offset = 200;
 
 	// Gets the detected paddle parameters: code, weight and offset
 	getDetectedPaddleData();
 
-	// Assignes the paddle Code from the protocol code
-	if ((detected_paddle == paddleCodes::PADDLE_NOT_DETECTED) || (!protocol.status_register.compression_on) || (!position_calibrated) || (!force_calibrated)) {
-		compression_force = 0;
-		breast_thickness = 0;
-	
-	}
-	else {
-		// The magnifier correction (if present)
-		int magnifier_offset;
-		if (getMagnifierFactor() == 10) magnifier_offset = 0;
-		else if (getMagnifierFactor() == 15) magnifier_offset = 150;
-		else if (getMagnifierFactor() == 18) magnifier_offset = 180;
-		else  magnifier_offset = 200;
+	// Calculates the distance of the compression plate
+	if (detected_paddle != paddleCodes::PADDLE_NOT_DETECTED) protocol.data_register.paddle_offset = detected_paddle_offset;
+	else protocol.data_register.paddle_offset = 0;
 
-		// Calculates the actual thickness and force 
-		breast_thickness = protocol.status_register.paddle_position - magnifier_offset - detected_paddle_offset;		
+	// Sets the current breast thickness and force
+	if (protocol.status_register.compression_on) {
+
+		breast_thickness = protocol.status_register.paddle_position - protocol.data_register.magnifier_offset - detected_paddle_offset;
 		compression_force = protocol.status_register.paddle_force;
 	}
-
-	// Returns to the compressor device the calculated paddle distance from the plane
-	protocol.data_register.paddle_distance_from_plane = breast_thickness;
+	else {
+		compression_force = 0;
+		breast_thickness = 0;
+	}
+	
 	
 	// Sets the Paddle Weight data only if they are changed or if it is the first 
 	// and if the Arm is properly initialized and calibrated

@@ -339,7 +339,8 @@ private: System::Windows::Forms::GroupBox^ pcb302_panel;
 
 
 	private: System::Windows::Forms::Label^ label13;
-	private: System::Windows::Forms::ComboBox^ patient_protection;
+private: System::Windows::Forms::ComboBox^ component_list;
+
 private: System::Windows::Forms::GroupBox^ pcb304_panel;
 
 
@@ -439,7 +440,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->current_force = (gcnew System::Windows::Forms::TextBox());
 			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->paddle_up = (gcnew System::Windows::Forms::Button());
-			this->patient_protection = (gcnew System::Windows::Forms::ComboBox());
+			this->component_list = (gcnew System::Windows::Forms::ComboBox());
 			this->calib_ena = (gcnew System::Windows::Forms::PictureBox());
 			this->paddle_down = (gcnew System::Windows::Forms::Button());
 			this->label8 = (gcnew System::Windows::Forms::Label());
@@ -924,18 +925,18 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb302_panel->Controls->Add(this->current_force);
 			this->pcb302_panel->Controls->Add(this->label13);
 			this->pcb302_panel->Controls->Add(this->paddle_up);
-			this->pcb302_panel->Controls->Add(this->patient_protection);
+			this->pcb302_panel->Controls->Add(this->component_list);
 			this->pcb302_panel->Controls->Add(this->calib_ena);
 			this->pcb302_panel->Controls->Add(this->paddle_down);
 			this->pcb302_panel->Controls->Add(this->label8);
 			this->pcb302_panel->Controls->Add(this->cmp_ena);
 			this->pcb302_panel->Controls->Add(this->label7);
-			this->pcb302_panel->Controls->Add(this->label6);
-			this->pcb302_panel->Controls->Add(this->compression_thickness);
-			this->pcb302_panel->Controls->Add(this->label4);
 			this->pcb302_panel->Controls->Add(this->compression_force);
+			this->pcb302_panel->Controls->Add(this->label4);
+			this->pcb302_panel->Controls->Add(this->label6);
 			this->pcb302_panel->Controls->Add(this->label3);
 			this->pcb302_panel->Controls->Add(this->paddle_list);
+			this->pcb302_panel->Controls->Add(this->compression_thickness);
 			this->pcb302_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->pcb302_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
@@ -954,9 +955,9 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label16->ForeColor = System::Drawing::Color::White;
 			this->label16->Location = System::Drawing::Point(644, 70);
 			this->label16->Name = L"label16";
-			this->label16->Size = System::Drawing::Size(102, 13);
+			this->label16->Size = System::Drawing::Size(106, 13);
 			this->label16->TabIndex = 18;
-			this->label16->Text = L"CURR THICKNESS";
+			this->label16->Text = L"HOLDER POSITION";
 			// 
 			// current_thickness
 			// 
@@ -972,7 +973,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label5->ForeColor = System::Drawing::Color::White;
-			this->label5->Location = System::Drawing::Point(644, 22);
+			this->label5->Location = System::Drawing::Point(644, 27);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(77, 13);
 			this->label5->TabIndex = 16;
@@ -981,7 +982,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			// current_force
 			// 
 			this->current_force->Enabled = false;
-			this->current_force->Location = System::Drawing::Point(647, 38);
+			this->current_force->Location = System::Drawing::Point(647, 40);
 			this->current_force->Name = L"current_force";
 			this->current_force->Size = System::Drawing::Size(100, 22);
 			this->current_force->TabIndex = 15;
@@ -992,11 +993,11 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label13->ForeColor = System::Drawing::Color::White;
-			this->label13->Location = System::Drawing::Point(394, 22);
+			this->label13->Location = System::Drawing::Point(240, 22);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(126, 13);
+			this->label13->Size = System::Drawing::Size(76, 13);
 			this->label13->TabIndex = 2;
-			this->label13->Text = L"PATIENT PROTECTION";
+			this->label13->Text = L"COMPONENT";
 			// 
 			// paddle_up
 			// 
@@ -1010,25 +1011,25 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->paddle_up->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::paddle_up_MouseDown);
 			this->paddle_up->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::paddle_up_MouseUp);
 			// 
-			// patient_protection
+			// component_list
 			// 
-			this->patient_protection->FormattingEnabled = true;
-			this->patient_protection->Items->AddRange(gcnew cli::array< System::Object^  >(6) {
-				L"UNSELECTED", L"PROTECTION", L"PROT-SHIFTED",
-					L"MAGNIFIER_1.5x", L"MAGNIFIER_1.8x", L"MAGNIFIER_2x"
+			this->component_list->FormattingEnabled = true;
+			this->component_list->Items->AddRange(gcnew cli::array< System::Object^  >(7) {
+				L"SHORT-CIRCUIT", L"PROTECTION-SHIFTED", L"PROTECTION-POSITIONED",
+					L"MAGNIFIER_1.5x", L"MAGNIFIER_1.8x", L"MAGNIFIER_2x", L"NOT_DETECTED"
 			});
-			this->patient_protection->Location = System::Drawing::Point(397, 38);
-			this->patient_protection->Name = L"patient_protection";
-			this->patient_protection->Size = System::Drawing::Size(215, 24);
-			this->patient_protection->TabIndex = 0;
+			this->component_list->Location = System::Drawing::Point(243, 38);
+			this->component_list->Name = L"component_list";
+			this->component_list->Size = System::Drawing::Size(215, 24);
+			this->component_list->TabIndex = 0;
 			// 
 			// calib_ena
 			// 
 			this->calib_ena->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
 				static_cast<System::Int32>(static_cast<System::Byte>(224)));
-			this->calib_ena->Location = System::Drawing::Point(317, 85);
+			this->calib_ena->Location = System::Drawing::Point(176, 84);
 			this->calib_ena->Name = L"calib_ena";
-			this->calib_ena->Size = System::Drawing::Size(44, 23);
+			this->calib_ena->Size = System::Drawing::Size(54, 23);
 			this->calib_ena->TabIndex = 12;
 			this->calib_ena->TabStop = false;
 			// 
@@ -1050,7 +1051,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label8->ForeColor = System::Drawing::Color::White;
-			this->label8->Location = System::Drawing::Point(314, 69);
+			this->label8->Location = System::Drawing::Point(173, 68);
 			this->label8->Name = L"label8";
 			this->label8->Size = System::Drawing::Size(37, 13);
 			this->label8->TabIndex = 11;
@@ -1060,9 +1061,9 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			// 
 			this->cmp_ena->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
 				static_cast<System::Int32>(static_cast<System::Byte>(224)));
-			this->cmp_ena->Location = System::Drawing::Point(317, 39);
+			this->cmp_ena->Location = System::Drawing::Point(176, 38);
 			this->cmp_ena->Name = L"cmp_ena";
-			this->cmp_ena->Size = System::Drawing::Size(44, 23);
+			this->cmp_ena->Size = System::Drawing::Size(54, 23);
 			this->cmp_ena->TabIndex = 10;
 			this->cmp_ena->TabStop = false;
 			// 
@@ -1072,7 +1073,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label7->ForeColor = System::Drawing::Color::White;
-			this->label7->Location = System::Drawing::Point(314, 23);
+			this->label7->Location = System::Drawing::Point(173, 22);
 			this->label7->Name = L"label7";
 			this->label7->Size = System::Drawing::Size(57, 13);
 			this->label7->TabIndex = 9;
@@ -1084,16 +1085,15 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label6->ForeColor = System::Drawing::Color::White;
-			this->label6->Location = System::Drawing::Point(183, 68);
+			this->label6->Location = System::Drawing::Point(473, 23);
 			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(115, 13);
+			this->label6->Size = System::Drawing::Size(85, 13);
 			this->label6->TabIndex = 6;
-			this->label6->Text = L"TARGET THICKNESS";
+			this->label6->Text = L"BREAST THICK";
 			// 
 			// compression_thickness
 			// 
-			this->compression_thickness->Enabled = false;
-			this->compression_thickness->Location = System::Drawing::Point(186, 84);
+			this->compression_thickness->Location = System::Drawing::Point(475, 39);
 			this->compression_thickness->Name = L"compression_thickness";
 			this->compression_thickness->Size = System::Drawing::Size(100, 22);
 			this->compression_thickness->TabIndex = 5;
@@ -1104,7 +1104,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::White;
-			this->label4->Location = System::Drawing::Point(183, 23);
+			this->label4->Location = System::Drawing::Point(473, 72);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(90, 13);
 			this->label4->TabIndex = 4;
@@ -1113,7 +1113,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			// compression_force
 			// 
 			this->compression_force->Enabled = false;
-			this->compression_force->Location = System::Drawing::Point(186, 39);
+			this->compression_force->Location = System::Drawing::Point(476, 86);
 			this->compression_force->Name = L"compression_force";
 			this->compression_force->Size = System::Drawing::Size(100, 22);
 			this->compression_force->TabIndex = 3;
@@ -1124,11 +1124,11 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->ForeColor = System::Drawing::Color::White;
-			this->label3->Location = System::Drawing::Point(396, 67);
+			this->label3->Location = System::Drawing::Point(242, 67);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(50, 13);
+			this->label3->Size = System::Drawing::Size(75, 13);
 			this->label3->TabIndex = 2;
-			this->label3->Text = L"PADDLE";
+			this->label3->Text = L"PADDLE TAG";
 			// 
 			// paddle_list
 			// 
@@ -1137,7 +1137,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 				L"PROSTHESIS", L"BIOP2D", L"BIOP3D", L"TOMO",
 					L"24x30", L"18x24", L"18x24_L", L"18x24_R", L"10x24", L"MAG-9x21", L"MAG-9x9", L"MAG-D75", L"NOT_DETECTED"
 			});
-			this->paddle_list->Location = System::Drawing::Point(399, 83);
+			this->paddle_list->Location = System::Drawing::Point(245, 83);
 			this->paddle_list->Name = L"paddle_list";
 			this->paddle_list->Size = System::Drawing::Size(213, 24);
 			this->paddle_list->TabIndex = 0;

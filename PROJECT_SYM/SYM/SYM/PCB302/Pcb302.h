@@ -7,31 +7,6 @@ using namespace System;
 ref class PCB302: public deviceInterface
 {
 public:
-	
-	PCB302(void) :deviceInterface((unsigned short)0x11, setRegVal(1, 0, 0, 0), (Byte)ProtocolStructure::StatusRegister::register_index::NUM_REGISTER, (Byte)ProtocolStructure::DataRegister::register_index::NUM_REGISTER, (Byte)ProtocolStructure::ParameterRegister::register_index::NUM_REGISTER) {
-
-	}
-	static void  initialize(void) {};
-	static PCB302^ board = gcnew PCB302;
-	
-
-	enum class  paddleCodes {
-		PADDLE_PROSTHESIS = 0, //!< Paddle PROSTHESIS format
-		PADDLE_BIOP2D, //!< Paddle BIOPSY 2D format
-		PADDLE_BIOP3D, //!< Paddle BIOPSY STEREO format
-		PADDLE_TOMO, //!< Paddle TOMO 24x30 format
-		PADDLE_24x30_CONTACT, //!< Paddle 24x30 format
-		PADDLE_18x24_C_CONTACT, //!< Paddle 18x24 CENTER format
-		PADDLE_18x24_L_CONTACT, //!< Paddle 18x24 LEFT format
-		PADDLE_18x24_R_CONTACT, //!< Paddle 18x24 RIGHT format
-		PADDLE_10x24_CONTACT, //!< Paddle 10x24 format
-		PADDLE_9x21_MAG, //!< Paddle 9x21(MAG) format
-		PADDLE_9x9_MAG, //!< Paddle TOMO 9x9(MAG) format
-		PADDLE_D75_MAG, //!< Paddle D75(MAG) format
-		PADDLE_LEN,
-		PADDLE_NOT_DETECTED = PADDLE_LEN
-	};
-
 	ref class ProtocolStructure {
 	public:
 
@@ -63,7 +38,8 @@ public:
 				SYSTEM_REGISTER = 0, //!> This is the System Status register index
 				SPARE_REGISTER,
 				PADDLE_REGISTER,
-				RAW_PADDLE_REGISTER
+				RAW_PADDLE_REGISTER,
+				NUM_REGISTERS
 			};
 
 			static bool decodeSystemRegister(Register^ sys) {
@@ -225,7 +201,8 @@ public:
 			enum class register_index {
 				HOLDER_LIMITS = 0,
 				COMPRESSOR_LIMITS,
-				PADDLE_WEIGHT
+				PADDLE_WEIGHT,
+				NUM_REGISTERS
 			};
 
 			static bool decodeHolderLimitsRegister(Register^ reg) {
@@ -272,9 +249,10 @@ public:
 
 			static bool decodePaddleWeightRegister(Register^ reg) {
 				if (reg == nullptr) return false;
-				absolute_arm_angle = reg->d0;
-				paddle_weight = reg->d1;
-				paddle_distance_from_plane = (unsigned short)reg->d2 + 256 * (unsigned short)reg->d3;
+				paddle_weight = reg->d0;
+				paddle_offset = reg->d1;
+				absolute_arm_angle = reg->d2;
+				magnifier_offset = reg->d3;
 				return true;
 			}
 
@@ -283,18 +261,16 @@ public:
 				// Creates a register with all bytes set to 0
 				Register^ out = gcnew Register;
 
-				out->d0 = absolute_arm_angle;
-				out->d1 = paddle_weight;
-				out->d2 = (unsigned char)paddle_distance_from_plane;
-				out->d3 = (unsigned char)(paddle_distance_from_plane >> 8);
+				out->d0 = paddle_weight;
+				out->d1 = paddle_offset;
+				out->d2 = absolute_arm_angle;
+				out->d3 = magnifier_offset;
+
 
 				// Returns the formatted register
 				return out;
 			}
 
-
-			static unsigned char  absolute_arm_angle = 0;//!< Current detected Arm angle
-			static unsigned char  paddle_weight = 0;//!< Current detected paddle weight
 
 			static unsigned char limit_compression = 200;//!< Current limit compression
 			static unsigned char target_compression = 150;//!< Current target compression
@@ -302,8 +278,10 @@ public:
 			static unsigned short max_position = 0; //!< Max Holder position
 			static unsigned short min_position = 0; //!< Min holder position
 
-			static unsigned short paddle_distance_from_plane = 0; //!< Distance from the paddle plane to the compression plane
-
+			static unsigned char paddle_weight = 0;//!< Current detected paddle weight
+			static unsigned char magnifier_offset = 0; //!< Offset in case of magnifier
+			static unsigned char paddle_offset = 0;	//!< Mechanical offset of the detected paddle
+			static unsigned char absolute_arm_angle = 0;//!< Current detected Arm angle
 
 		};
 
@@ -311,7 +289,8 @@ public:
 		public:
 			enum class register_index {
 				HOLDER_CALIB = 0,
-				COMPRESSION_CALIB
+				COMPRESSION_CALIB,
+				NUM_REGISTERS
 			};
 
 			static bool decodeHolderCalibRegister(Register^ reg) {
@@ -357,6 +336,7 @@ public:
 				SET_TRIMMERS_COMMAND,
 				SET_COMPRESSION,
 				SET_UNLOCK,
+				NUM_COMMANDS
 			};
 
 			CanDeviceCommand^ encodeSetUnlockCommand(void) {
@@ -371,6 +351,31 @@ public:
 		static Commands command;
 	};
 
+	PCB302(void) :deviceInterface((unsigned short)0x11, setRegVal(1, 0, 0, 0), (Byte)ProtocolStructure::StatusRegister::register_index::NUM_REGISTERS, (Byte)ProtocolStructure::DataRegister::register_index::NUM_REGISTERS, (Byte)ProtocolStructure::ParameterRegister::register_index::NUM_REGISTERS) {
+
+	}
+	static void  initialize(void) {};
+	static PCB302^ board = gcnew PCB302;
+	
+
+	enum class  paddleTags {
+		PADDLE_PROSTHESIS = 1, //!< Paddle PROSTHESIS format
+		PADDLE_BIOP2D, //!< Paddle BIOPSY 2D format
+		PADDLE_BIOP3D, //!< Paddle BIOPSY STEREO format
+		PADDLE_TOMO, //!< Paddle TOMO 24x30 format
+		PADDLE_24x30_CONTACT, //!< Paddle 24x30 format
+		PADDLE_18x24_C_CONTACT, //!< Paddle 18x24 CENTER format
+		PADDLE_18x24_L_CONTACT, //!< Paddle 18x24 LEFT format
+		PADDLE_18x24_R_CONTACT, //!< Paddle 18x24 RIGHT format
+		PADDLE_10x24_CONTACT, //!< Paddle 10x24 format
+		PADDLE_9x21_MAG, //!< Paddle 9x21(MAG) format
+		PADDLE_9x9_MAG, //!< Paddle TOMO 9x9(MAG) format
+		PADDLE_D75_MAG, //!< Paddle D75(MAG) format
+		PADDLE_NOT_DETECTED
+	};
+
+	
+
 
 	ref class hardware_device {
 	public:
@@ -380,14 +385,15 @@ public:
 			breast_thickness = 50;
 			current_force = 0;
 			paddle_holder_position = 300;
-			current_paddle_code = paddleCodes::PADDLE_NOT_DETECTED;
+			current_paddle_tag = paddleTags::PADDLE_NOT_DETECTED;
 
 		}
 		
 		int breast_thickness;		//!< Sets the breast dimension put on the plane
 		int paddle_holder_position; //!< Current calibrated paddle holder
 		int current_force;			//!< Current sensor force
-		paddleCodes current_paddle_code;
+		paddleTags current_paddle_tag;
+		unsigned char current_component_code;
 	
 	};
 

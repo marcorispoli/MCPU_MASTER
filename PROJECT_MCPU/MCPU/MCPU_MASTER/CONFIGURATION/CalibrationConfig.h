@@ -879,21 +879,21 @@ public:
     literal System::String^ PARAM_PADDLE_9x9_MAG = "PADDLE_9x9_MAG";
     literal System::String^ PARAM_PADDLE_9x9_MAG_COMMENT = "PADDLE_9x9_MAG calibration data";
     literal System::String^ PADDLE_9x9_MAG_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD10; // Format Collimation index
-    literal System::String^ PADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
+    literal System::String^ PADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT = "0"; // mm offset 
     literal System::String^ PADDLE_9x9_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_9x9_MAG_TAG_DEFAULT = "10"; //  Tag Code
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_PADDLE_9x21_MAG = "PADDLE_9x21_MAG";
     literal System::String^ PARAM_PADDLE_9x21_MAG_COMMENT = "PADDLE_9x21_MAG calibration data";
     literal System::String^ PADDLE_9x21_MAG_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD11; // Format Collimation index
-    literal System::String^ PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
+    literal System::String^ PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT = "0"; // mm offset 
     literal System::String^ PADDLE_9x21_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_9x21_MAG_TAG_DEFAULT = "11"; //  Tag Code
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_PADDLE_D75_MAG = "PADDLE_D75_MAG";
     literal System::String^ PARAM_PADDLE_D75_MAG_COMMENT = "PADDLE_D75_MAG calibration data";
     literal System::String^ PADDLE_D75_MAG_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD12; // Format Collimation index
-    literal System::String^ PADDLE_D75_MAG_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
+    literal System::String^ PADDLE_D75_MAG_POSITION_OFFSET_DEFAULT = "0"; // mm offset 
     literal System::String^ PADDLE_D75_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_D75_MAG_TAG_DEFAULT = "12"; //  Tag Code
 

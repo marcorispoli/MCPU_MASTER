@@ -962,7 +962,7 @@ Generator::generator_errors Generator::generatorSet3PointDatabank(unsigned char 
     else mas = ((unsigned short) MAS);
 
     // Sets the 2D databank to force the generator to select the mA and mS(R10 tab) for an exposure with the requested mAs
-    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(dbId, large_focus, KV, mas, n_pulse * max_pulse);
+    R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(dbId, large_focus, KV, mas, max_pulse);
     if (!handleCommandProcessedState(nullptr)) {
         LogClass::logInFile("set3PointDatabank() - error");
         return generator_errors::GEN_COMMUNICATION_ERROR;

@@ -147,6 +147,7 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     exposure_data_str = "DETECTOR MAX AEC INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Filter Pre:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
 
+    exposure_time = 5000;
     error = (exposure_completed_errors)generator2DAecPrePulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, large_focus,  exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 

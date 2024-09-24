@@ -204,14 +204,7 @@ void MainForm::pcb301Simulator(void) {
 	if(PCB301::board->outputs.xray_lamp2) x_lmp2->BackColor = COLOR_ON;
 	else x_lmp2->BackColor = COLOR_OFF;
 
-	// Compressor Enable
-	if (PCB301::board->outputs.compression_ena) cmp_ena->BackColor = COLOR_ON;
-	else cmp_ena->BackColor = COLOR_OFF;
-
-	// Calibration Enable
-	if (PCB301::board->outputs.calibration_ena) calib_ena->BackColor = COLOR_ON;
-	else calib_ena->BackColor = COLOR_OFF;
-
+	
 	// Rotation Led
 	if (PCB301::board->outputs.rotation_led) rotation_led->BackColor = COLOR_ON;
 	else rotation_led->BackColor = COLOR_OFF;
@@ -239,11 +232,27 @@ void MainForm::pcb302Simulator(void) {
 	}
 	
 	// Assignes the external signals coming from the simulated boards
-	PCB302::inputs.compression_ena = PCB301::outputs.compression_ena;
-	PCB302::inputs.calibration_ena = PCB301::outputs.calibration_ena;
-	PCB302::inputs.compression_down = PCB301::outputs.pedalboard_compression_down;
-	PCB302::inputs.compression_up = PCB301::outputs.pedalboard_compression_up;
+	if (PCB301::board->active) {
+		PCB302::inputs.compression_ena = PCB301::outputs.compression_ena;
+		PCB302::inputs.calibration_ena = PCB301::outputs.calibration_ena;
+		PCB302::inputs.compression_down = PCB301::outputs.pedalboard_compression_down;
+		PCB302::inputs.compression_up = PCB301::outputs.pedalboard_compression_up;
 
+	}
+	else {
+		PCB302::inputs.compression_ena = true;
+		PCB302::inputs.calibration_ena = false;
+		PCB302::inputs.compression_down = false;
+		PCB302::inputs.compression_up = false;
+	}
+	
+	// Compressor Enable
+	if (PCB302::inputs.compression_ena) cmp_ena->BackColor = COLOR_ON;
+	else cmp_ena->BackColor = COLOR_OFF;
+
+	// Calibration Enable
+	if (PCB302::inputs.calibration_ena) calib_ena->BackColor = COLOR_ON;
+	else calib_ena->BackColor = COLOR_OFF;
 
 	// Patient protection
 	/*

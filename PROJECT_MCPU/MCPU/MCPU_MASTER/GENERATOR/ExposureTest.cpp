@@ -43,7 +43,7 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
 
     
     if (!demo) {
-        error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 15000);
+        error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
 
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!! 
         setExposedData(1, (unsigned char)0, filter, focus);

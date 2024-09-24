@@ -196,7 +196,8 @@ namespace R2CP
         pData[10] = (unsigned char ) ((mA >> 0) & 0xFF);
 
         // mS * 100
-        unsigned long mS = ((unsigned long) 5000 * 100.0);
+        //unsigned long mS = ((unsigned long) 5000 * 100.0);
+        unsigned long mS = ((unsigned long)tmo * 100.0);
         pData[11] = (unsigned char ) ((mS >> 16) & 0xFF);
         pData[12] = (unsigned char ) ((mS >> 8) & 0xFF);
         pData[13] = (unsigned char ) ((mS >> 0) & 0xFF);

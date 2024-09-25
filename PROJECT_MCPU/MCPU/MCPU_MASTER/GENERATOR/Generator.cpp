@@ -868,15 +868,13 @@ Generator::generator_errors Generator::generatorExecutePulseSequence(System::Str
 
         // Checks for the XRAY button
         if (!getXrayPushButton()) {
-            LogClass::logInFile(ExpName + "push button release error");
-            setXrayEnable(false);
+            LogClass::logInFile(ExpName + "push button release error");         
             return generator_errors::GEN_BUTTON_RELEASE;
         }
 
         // Checks for error messages
         if (R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.SystemMessage.Fields.Active == R2CP::Stat_SystemMessageActive_Active) {
             LogClass::logInFile(ExpName + "generator system messages during exposure error");
-            setXrayEnable(false);
             return generator_errors::GEN_INTERNAL_ERROR;
         }
         
@@ -885,7 +883,6 @@ Generator::generator_errors Generator::generatorExecutePulseSequence(System::Str
             // The Stat is not a valid stat
             if (current_generator_status >= R2CP::Stat_Unknown) {
                 LogClass::logInFile(ExpName + current_generator_status.ToString() + " Unknown Start");
-                setXrayEnable(false);
                 return generator_errors::GEN_INVALID_STATUS;
             }
 
@@ -893,20 +890,17 @@ Generator::generator_errors Generator::generatorExecutePulseSequence(System::Str
             switch (current_generator_status) {
             
             case R2CP::Stat_Standby:
-            case R2CP::Stat_WaitFootRelease:                    
-                setXrayEnable(false);
+            case R2CP::Stat_WaitFootRelease:                                    
                 return generator_errors::GEN_NO_ERRORS;
 
             case R2CP::Stat_Error:
                 LogClass::logInFile(ExpName + "generator R2CP::Stat_Error error ");
-                setXrayEnable(false);
                 return generator_errors::GEN_INTERNAL_ERROR;
 
             case R2CP::Stat_GoigToShutdown:
             case R2CP::Stat_Service:
             case R2CP::Stat_Initialization:            
                 LogClass::logInFile(ExpName + current_generator_status.ToString() + " status error ");
-                setXrayEnable(false);
                 return generator_errors::GEN_INVALID_STATUS;                
 
             default:
@@ -918,7 +912,6 @@ Generator::generator_errors Generator::generatorExecutePulseSequence(System::Str
     }
 
     LogClass::logInFile(ExpName + "generator sequence timeout error");
-    setXrayEnable(false);
     return generator_errors::GEN_TIMEOUT;
 }
 

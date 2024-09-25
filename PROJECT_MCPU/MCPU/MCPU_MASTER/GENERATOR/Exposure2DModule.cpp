@@ -71,6 +71,7 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
     
     if (!demo) {
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
+        setXrayEnable(false);
 
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
         if (large_focus) setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 1);
@@ -229,7 +230,8 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     if (!demo) {
 
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
-        
+        setXrayEnable(false);
+
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!! 
         if (large_focus) setExposedData(2, (unsigned char)0, getExposurePulse(1)->filter, 1);
         else setExposedData(2, (unsigned char)0, getExposurePulse(1)->filter, 0);

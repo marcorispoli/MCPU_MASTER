@@ -248,6 +248,17 @@ void MainForm::pcb302Simulator(void) {
 		PCB302::inputs.compression_down = false;
 		PCB302::inputs.compression_up = false;
 	}
+<<<<<<< HEAD
+=======
+	
+	// Compressor Enable
+	if (PCB302::inputs.compression_ena) cmp_ena->BackColor = COLOR_ON;
+	else cmp_ena->BackColor = COLOR_OFF;
+
+	// Calibration Enable
+	if (PCB302::inputs.calibration_ena) calib_ena->BackColor = COLOR_ON;
+	else calib_ena->BackColor = COLOR_OFF;
+>>>>>>> Test_Integrazione_Detector
 
 
 	// Paddle detected

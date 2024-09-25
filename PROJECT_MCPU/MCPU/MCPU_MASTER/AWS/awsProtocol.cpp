@@ -280,6 +280,7 @@ void awsProtocol::ackNa(void) {
     if (!command_server) return;
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %NA %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
     return;
 }
 
@@ -293,6 +294,7 @@ void awsProtocol::ackOk(void) {
     if (!command_server) return;
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %OK %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// <summary>
@@ -345,6 +347,7 @@ void awsProtocol::ackExecuting(void) {
     if (!command_server) return;
     String^ answer = "<" + pDecodedFrame->ID.ToString() + " %EXECUTING %>";
     command_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
     return;
 }
 
@@ -358,6 +361,7 @@ void awsProtocol::eventExecutedOk(unsigned short id) {
     event_counter++;
     String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " OK %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// <summary>
@@ -382,6 +386,7 @@ void awsProtocol::eventExecutedOk(unsigned short id, List<String^>^ params) {
 
     answer += " %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
     return;
 }
 
@@ -397,6 +402,7 @@ void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode) {
     event_counter++;
     String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " NOK " + errcode.ToString() + " %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// <summary>
@@ -411,4 +417,5 @@ void awsProtocol::eventExecutedNok(unsigned short id, unsigned short errcode, St
     event_counter++;
     String^ answer = "<" + event_counter.ToString() + " %EXECUTED  " + id.ToString() + " NOK " + errcode.ToString() + " " + errorstr + " %>";
     event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }

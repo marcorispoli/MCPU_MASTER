@@ -2,7 +2,7 @@
 #include "IdleForm.h"
 #include "OperatingForm.h"
 #include "ServiceForm.h"
-#include "SystemConfig.h"
+#include "ConfigurationFiles.h"
 #include "Notify.h"
 #include <mutex>
 #include "PCB301.h"
@@ -17,7 +17,7 @@
 #include "BodyMotor.h"
 #include "VerticalMotor.h"
 #include "Debugger.h"
-
+#include "PCB326.h"
 
 using namespace System;
 using namespace System::Diagnostics;

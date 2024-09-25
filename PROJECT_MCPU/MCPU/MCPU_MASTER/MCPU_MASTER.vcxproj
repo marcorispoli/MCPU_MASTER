@@ -137,9 +137,15 @@
   <ItemGroup>
     <ClInclude Include="AWS\awsProtocol.h" />
     <ClInclude Include="AWS\TcpIpServerCLI.h" />
-    <ClInclude Include="CONFIGURATION\CalibrationConfig.h" />
+    <ClInclude Include="CONFIGURATION\CollimatorConfig.h" />
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
+    <ClInclude Include="CONFIGURATION\ConfigurationFiles.h" />
+    <ClInclude Include="CONFIGURATION\DetectorConfig.h" />
+    <ClInclude Include="CONFIGURATION\FilterConfig.h" />
+    <ClInclude Include="CONFIGURATION\MotorConfig.h" />
+    <ClInclude Include="CONFIGURATION\PaddleConfig.h" />
     <ClInclude Include="CONFIGURATION\SystemConfig.h" />
+    <ClInclude Include="CONFIGURATION\TomoConfig.h" />
     <ClInclude Include="DEBUGGER\Debugger.h" />
     <ClInclude Include="DEVICES\PCB326.h" />
     <ClInclude Include="GENERATOR\ExposureModule.h" />

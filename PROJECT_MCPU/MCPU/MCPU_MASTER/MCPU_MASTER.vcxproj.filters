@@ -170,9 +170,6 @@
     <ClInclude Include="DEVICES\PCB326.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CONFIGURATION\CalibrationConfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GENERATOR\ExposureModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -216,6 +213,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WINDOWS\SERVICE\ServicePaddleCalibration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\CollimatorConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\ConfigurationFiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\DetectorConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\FilterConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\MotorConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\PaddleConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CONFIGURATION\TomoConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

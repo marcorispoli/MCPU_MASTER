@@ -4,7 +4,7 @@
 #include "idleForm.h"
 #include "awsProtocol.h"
 
-#include "SystemConfig.h"
+#include "ConfigurationFiles.h"
 
 #include "CanOpenMotor.h"
 #include "BodyMotor.h"

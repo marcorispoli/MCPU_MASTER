@@ -2,47 +2,14 @@
 
 using namespace System::Collections::Generic;
 
+
+
+
 /**
  * @brief This class handles the configuration file management
- * \ingroup ModuleParam
- * # ABSTRACT
- *
- * The configuration file is a special file with a proper
- * format: a string based file with TAGS and a variable set of parameters.
- *
- * The basic characteristics are:
- *
- *  + A Readable Text file format;
- *  + A robust data structure and access data interface, preventing data corruption;
- *  + Comment strings inside the file allow the readability;
- *  + Etherogeneous data content: all data are in string format convertible to any kind of data types.
- *  + File revision management.
- *
- * # FILE DATA FORMAT
- *
- * The file is composed of several string lines, each one
- * handling a given parameter with a list of values.
- *
- * Each parameter is defined by a static string as a TAG identifier.
- * The following string show the data format:
- * \verbatim
-
-  # Comment line ......
-  <TAG,PARAM1, PARAM2, PARAM3,...., PARAM-N>
-
-  where:
-  - # is a comment initiator: every character following the '#' is interpreted as a comment line.
-  - TAG: is a unique string identifier. This string shall be used in the code in order to point to a parameter.
-  - PARAM1, .., PARAM-N: are strings separated by commas, representing the parameter content,
-    splitted in a list of etherogeneus values in string format.
-  \endverbatim
- *
- * A special TAG = "REVISION" is reserved to store the file revision code in the file.
- * This tag is used to determines if the configuration file is at the correct
- * revision when the application accesses the file.
- * A virtual configFile::revisionChangeCallback() function is called in case a wrong revision
- * should be detected.
- *
+ * \ingroup ConfigurationFilesModule
+ * \internal
+ * 
  * # USAGE
  *
  * The application shall subclass this class in order to create a

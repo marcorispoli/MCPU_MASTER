@@ -1,6 +1,6 @@
 #pragma once
 #include "CanOpenMotor.h"
-#include "CalibrationConfig.h"
+#include "ConfigurationFiles.h"
 
 ref class SlideMotor : public CANOPEN::CanOpenMotor
 {

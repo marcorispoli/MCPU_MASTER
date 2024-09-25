@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "PCB315.h"
-#include "CalibrationConfig.h"
+#include "ConfigurationFiles.h"
 #include "Generator.h"
 
 /// <summary>

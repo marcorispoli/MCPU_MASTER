@@ -1,6 +1,6 @@
 #include "R2CP_Eth.h"
 #include "CaDataDicGen.h"
-#include "SystemConfig.h"
+#include "ConfigurationFiles.h"
 #include "Generator.h"
 #include "gantry_global_status.h"
 #include "Notify.h"

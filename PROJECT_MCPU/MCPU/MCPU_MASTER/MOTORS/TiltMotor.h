@@ -1,6 +1,6 @@
 #pragma once
 #include "ExposureModule.h"
-#include "CalibrationConfig.h"
+#include "ConfigurationFiles.h"
 #include "CanOpenMotor.h"
 
 /// <summary>

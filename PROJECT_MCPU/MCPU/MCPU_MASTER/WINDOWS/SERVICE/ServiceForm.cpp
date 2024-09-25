@@ -1,7 +1,7 @@
 #include "../AWS/awsProtocol.h"
 #include "ServiceForm.h"
 #include "ErrorForm.h"
-#include "SystemConfig.h"
+#include "ConfigurationFiles.h"
 #include "Notify.h"
 #include "../gantry_global_status.h"
 

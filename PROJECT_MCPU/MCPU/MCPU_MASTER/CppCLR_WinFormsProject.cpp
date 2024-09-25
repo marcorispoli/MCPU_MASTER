@@ -1,7 +1,7 @@
 #include "gantry_global_status.h"
 #include "Notify.h"
 #include "MainForm.h"
-#include "SystemConfig.h"
+#include "ConfigurationFiles.h"
 #include "Log.h"
 
 using namespace System;

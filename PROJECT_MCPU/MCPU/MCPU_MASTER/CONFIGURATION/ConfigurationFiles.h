@@ -21,7 +21,19 @@
 \defgroup ConfigurationFilesDescription Application Configuration File Description
 \ingroup ConfigurationeFiles
 
+   # Abstract
+   
    This section describes the configuration files used in the Application.
+
+   # Index
+
+   \ref SystemConfig \n
+   \ref MotorConfig \n
+   \ref PaddleConfig \n
+   \ref CollimatorConfig \n
+   \ref FilterConfig \n
+   \ref TomoConfig \n
+   \ref DetectorConfig \n
 
 *
 * # Overview
@@ -93,6 +105,7 @@
 * <"PARAM_NAME_nn", "data-1", "data-2", "...", "data-x">
 * 
 * \endverbatim
+* 
 */
 
 

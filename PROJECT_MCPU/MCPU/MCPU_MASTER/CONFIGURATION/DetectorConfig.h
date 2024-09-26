@@ -1,6 +1,32 @@
 #pragma once
 #include "ConfigFile.h"
 
+/// \addtogroup ConfigurationFilesDescription 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \section DetectorConfig DetectorConfiguration.cnf configuration file
+/// 
+/// ## Overview
+/// 
+/// The Application handles different Detector types.
+/// 
+/// Every Detector has its own behavior in term of timing and 
+/// limitations. 
+/// 
+/// This configuration file sets all the relevant parameters for every Detector handled by the Application.
+/// 
+/// + **Name of the configuration file:** DetecorConfiguration.cnf
+/// + **Current revision code:** 1;
+/// 
+/// ## Parameter Description
+/// 
+/// This configuration file contains the following parameter rows: 
+/// + GENERIC Detector Descriptor;
+/// + LMAM2V2 Detector descriptor;
+/// + DRTECH Detector descriptor;
+/// 
+/// 
+
 
 ref class DetectorConfig
 {
@@ -18,7 +44,7 @@ public:
     };
     literal int     MAX_TOMO_FPS = 6;
 
-    literal System::String^ FILENAME = "DetecorConfiguration.cnf";
+    literal System::String^ FILENAME = "DetectorConfiguration.cnf";
     literal int     FILE_REVISION = 1;
 
     literal int     PARAM_PRE_TO_PULSE_AEC_WAITING_TIME = 0;
@@ -33,7 +59,28 @@ public:
     literal int     PARAM_MAX_3D_FPS = 9;
 
 
-    //___________________________________________________________________________________________________//
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### Generic Detector Descriptor Parameters Row
+    /// 
+    /// This parameter sets the Generic Detector Descriptor parameters.
+    /// 
+    /// < GENERIC, PreToPulseTmo,PlsTmo,PreTmo,Tomo1Tmo,Tomo2Tmo,Tomo3Tmo,Tomo4Tmo,Tomo5Tmo,Tomo6Tmo,TomoMaxFps >
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |PreToPulseTmo|Integer|5000|-|Time in ms from the Pre pulse to the Pulse|
+    /// |PlsTmo|Integer|5000|-|Integration Time in ms of a 2D pulse|
+    /// |PreTmo|Integer|1000|-|Integration Time in ms of a 2D pre-pulse|
+    /// |Tomo1Tmo|Integer|500|-|Integration Time in ms of a Tomo 1 FPS|
+    /// |Tomo2Tmo|Integer|250|-|Integration Time in ms of a Tomo 2 FPS|
+    /// |Tomo3Tmo|Integer|200|-|Integration Time in ms of a Tomo 3 FPS|
+    /// |Tomo4Tmo|Integer|120|-|Integration Time in ms of a Tomo 4 FPS|
+    /// |Tomo5Tmo|Integer|80|-|Integration Time in ms of a Tomo 5 FPS|
+    /// |Tomo6Tmo|Integer|33|-|Integration Time in ms of a Tomo 6 FPS|
+    /// |TomoMaxFps|Integer|4|1:6|Max FPS of the detector|
+    /// 
+    /// 
     literal System::String^ PARAM_GENERIC_CONFIG = "GENERIC";
     literal System::String^ PARAM_GENERIC_COMMENT = "This is the Generic Detector description";
 
@@ -49,7 +96,28 @@ public:
     literal System::String^ PARAM_GENERIC_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT = "33";
     literal System::String^ PARAM_GENERIC_MAX_3D_FPS_DEFAULT = "4";
 
-    //___________________________________________________________________________________________________//
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### LMAM2V2 Detector Descriptor Parameters Row
+    /// 
+    /// This parameter sets the LMAM2V2 Detector Descriptor parameters.
+    /// 
+    /// < LMAM2V2, PreToPulseTmo,PlsTmo,PreTmo,Tomo1Tmo,Tomo2Tmo,Tomo3Tmo,Tomo4Tmo,Tomo5Tmo,Tomo6Tmo,TomoMaxFps >
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |PreToPulseTmo|Integer|5000|-|Time in ms from the Pre pulse to the Pulse|
+    /// |PlsTmo|Integer|5000|-|Integration Time in ms of a 2D pulse|
+    /// |PreTmo|Integer|1000|-|Integration Time in ms of a 2D pre-pulse|
+    /// |Tomo1Tmo|Integer|500|-|Integration Time in ms of a Tomo 1 FPS|
+    /// |Tomo2Tmo|Integer|250|-|Integration Time in ms of a Tomo 2 FPS|
+    /// |Tomo3Tmo|Integer|200|-|Integration Time in ms of a Tomo 3 FPS|
+    /// |Tomo4Tmo|Integer|120|-|Integration Time in ms of a Tomo 4 FPS|
+    /// |Tomo5Tmo|Integer|80|-|Integration Time in ms of a Tomo 5 FPS|
+    /// |Tomo6Tmo|Integer|33|-|Integration Time in ms of a Tomo 6 FPS|
+    /// |TomoMaxFps|Integer|4|1:6|Max FPS of the detector|
+    /// 
+    /// 
     literal System::String^ PARAM_LMAM2V2_CONFIG = "LMAM2V2";
     literal System::String^ PARAM_LMAM2V2_COMMENT = "This is the LMAM2V2 Detector description";
 
@@ -65,7 +133,28 @@ public:
     literal System::String^ PARAM_LMAM2V2_MAX_3D_INTEGRATION_TIME_6FPS_DEFAULT = "33";
     literal System::String^ PARAM_LMAM2V2_MAX_3D_FPS_DEFAULT = "4";
 
-    //___________________________________________________________________________________________________//
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### DRTECH Detector Descriptor Parameters Row
+    /// 
+    /// This parameter sets the DRTECH Detector Descriptor parameters.
+    /// 
+    /// < DRTECH, PreToPulseTmo,PlsTmo,PreTmo,Tomo1Tmo,Tomo2Tmo,Tomo3Tmo,Tomo4Tmo,Tomo5Tmo,Tomo6Tmo,TomoMaxFps >
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |PreToPulseTmo|Integer|5000|-|Time in ms from the Pre pulse to the Pulse|
+    /// |PlsTmo|Integer|5000|-|Integration Time in ms of a 2D pulse|
+    /// |PreTmo|Integer|1000|-|Integration Time in ms of a 2D pre-pulse|
+    /// |Tomo1Tmo|Integer|500|-|Integration Time in ms of a Tomo 1 FPS|
+    /// |Tomo2Tmo|Integer|250|-|Integration Time in ms of a Tomo 2 FPS|
+    /// |Tomo3Tmo|Integer|200|-|Integration Time in ms of a Tomo 3 FPS|
+    /// |Tomo4Tmo|Integer|120|-|Integration Time in ms of a Tomo 4 FPS|
+    /// |Tomo5Tmo|Integer|80|-|Integration Time in ms of a Tomo 5 FPS|
+    /// |Tomo6Tmo|Integer|33|-|Integration Time in ms of a Tomo 6 FPS|
+    /// |TomoMaxFps|Integer|4|1:6|Max FPS of the detector|
+    /// 
+    /// 
     literal System::String^ PARAM_DRTECH_CONFIG = "DRTECH";
     literal System::String^ PARAM_DRTECH_COMMENT = "This is the DRTECH Detector description";
 

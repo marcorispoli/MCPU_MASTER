@@ -1,75 +1,29 @@
 #pragma once
 #include "ConfigFile.h"
 
-/// <summary>
-/// \defgroup ModuleMotorParam Motor Parameter Configuration
-/// \ingroup ConfigurationFilesDescription
+/// \addtogroup ConfigurationFilesDescription 
+/// <div style="page-break-after: always;"></div>
 /// 
-/// This parameter module implements the parameter related to the Gantry motors. 
+/// \section MotorConfig MotorCalibration.cnf configuration file
 /// 
-///  </summary>
+/// ## Overview
 /// 
-/// # Overview
+/// This configuration file handles the parameters tuning the motorization behaviors.
 /// 
 /// + **Name of the configuration file:** MotorCalibration.cnf
 /// + **Current revision code:** 1;
 /// 
-/// # Parameter Description
+/// ## Parameter Description
 /// 
 /// This configuration file contains the following parameters: 
-/// + Body Motor Parameters: the parameters controlling the Body rotation;
-/// + Vertical Motor Parameters: the parameters controlling the vertical rotation;
-/// + Arm Motor Parameters: the parameters controlling the C-ARM rotation;
-/// + Shift Motor Parameters: the parameters controlling the SHIFT rotation;
-/// + Tilt Motor Parameters: the parameters controlling the TILT rotation;
+/// + Obstacle Parameters: setting of the sensitivity of the obstacle detection board (pcb326) 
+/// + Body Motor Parameters: the parameters controlling the Body motor activation;
+/// + Arm Motor Parameters: the parameters controlling the C-ARM motor activation;
+/// + Vertical Motor Parameters: the parameters controlling the Vertical motor activation;
+/// + Tilt Motor Parameters: the parameters controlling the Tilt motor activation;
+/// + Slide Motor Parameters: the parameters controlling the Slide motor activation;
 /// 
-/// # Body Motor Parameters
 /// 
-/// |POSITION|PARAM-CODE|TYPE|DESCRIPTION|
-/// |:--|:--|:--|:--|
-/// |0|PARAM_POSITION|32 bit Integer|Motor encoder position (motor units) assigned at the startup to avoid the Homing procedure|
-/// |1|PARAM_SPEED|16 bit Integer|Speed in 0.1 degree / seconds of the Motor rotation|
-/// |2|PARAM_ACC|16 bit Integer|Acceleration in 0.1 degree / seconds^2 of the Motor rotation|
-/// |3|PARAM_DEC|16 bit Integer|Deceleration in 0.1 degree / seconds^2 of the Motor rotation|
-/// |4|PARAM_HOME_SPEED|16 bit Integer|Speed in 0.1 degree / seconds of the Motor Homing |
-/// |5|PARAM_HOME_ACC|16 bit Integer|Acceleration in 0.1 degree / seconds^2 of the Motor Homing|
-/// 
-/// # Arm Motor Parameters
-/// 
-/// |POSITION|PARAM-CODE|TYPE|DESCRIPTION|
-/// |:--|:--|:--|:--|
-/// |0|PARAM_POSITION|32 bit Integer|Motor encoder position (motor units) assigned at the startup to avoid the Homing procedure|
-/// |1|PARAM_SPEED|16 bit Integer|Speed in 0.01 degree / seconds of the Motor rotation|
-/// |2|PARAM_ACC|16 bit Integer|Acceleration in 0.01 degree / seconds^2 of the Motor rotation|
-/// |3|PARAM_DEC|16 bit Integer|Deceleration in 0.01 degree / seconds^2 of the Motor rotation|
-/// |4|PARAM_HOME_SPEED|16 bit Integer|Speed in 0.01 degree / seconds of the Motor Homing |
-/// |5|PARAM_HOME_ACC|16 bit Integer|Acceleration in 0.01 degree / seconds^2 of the Motor Homing| 
-///
-/// # Vertical Motor Parameters
-/// 
-/// |POSITION|PARAM-CODE|TYPE|DESCRIPTION|
-/// |:--|:--|:--|:--|
-/// |0|PARAM_POSITION|32 bit Integer|Motor encoder position (motor units) assigned at the startup to avoid the Homing procedure|
-/// |1|PARAM_SPEED|16 bit Integer|Speed in 1mm / seconds of the Motor rotation|
-/// |2|PARAM_ACC|16 bit Integer|Acceleration in 1mm / seconds^2 of the Motor rotation|
-/// |3|PARAM_DEC|16 bit Integer|Deceleration in 1mm / seconds^2 of the Motor rotation|
-/// |4|PARAM_HOME_SPEED|16 bit Integer|Speed in 1mm / seconds of the Motor Homing |
-/// |5|PARAM_HOME_ACC|16 bit Integer|Acceleration 1mm degree / seconds^2 of the Motor Homing| 
-///  
-/// # PARAM_POSITION Details
-/// 
-/// This field is an integer value set to the last valid Body position.\n
-/// At the system startup, if this value should be set to "UNDEF" \n
-/// the Body Motor will perform an automatic homing position at the first \n
-/// Automatic activation command.\n
-/// 
-/// If this field is avalid value, after the startup, the motor \n
-/// will take this position as the valid current position and the \n
-/// homeing procedure will not be executed.\n
-/// 
-/// The Default value at the file creation is "UNDEF". \n
-///  
-///  
 
 
 /// <summary>
@@ -99,7 +53,25 @@ public:
     literal int PARAM_HOME_SPEED = 8;                              //!< Parameter speed in home procedure
     literal int PARAM_HOME_ACC = 9;                                //!< Parameter acceleration in home procedure
 
-    //___________________________________________________________________________________________________//
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### Obstacle Parameters Row
+    /// 
+    /// This parameter row set the behavior of the Obstacle Detection board, PCB326.
+    /// 
+    /// < OBSTACLE_CALIBRATION, Gain, Sensitivity, RecalibrationTime, EnableMask, Th1, Th2, Th3, Th4,Th5,Th6,Th7,Th8 >
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |Gain|Byte|0|0:3|This is the master Gain: 0 = minimum sensitivity|
+    /// |Sensitivity|Byte|3|0:7|This is the sensor's gain: 0 = max sensitivity|
+    /// |RecalibrationTime|Byte|0|0:15|This is the recalibration time: 0  = frequent recalibration|
+    /// |EnableMask|Byte|0x3|0:0xFF|This is a bit-field where every bit enables/disables a sensor input channel of the pcb326|
+    /// |Th1|Byte|64|1:127|This is the detection threshold of sensor channel-1: 1 = most sensitive|
+    /// |Th2|Byte|64|1:127|This is the detection threshold of sensor channel-2: 1 = most sensitive|
+    /// |..|..|..|..|..|
+    /// |Th8|Byte|64|1:127|This is the detection threshold of sensor channel-8: 1 = most sensitive|
+    /// 
     literal System::String^ PARAM_OBSTACLE = "OBSTACLE_CALIBRATION";                               //!< This is the Obstacle calibration parameter
     literal System::String^ PARAM_OBSTACLE_COMMENT = "OBSTACLE_CALIBRATION : gain[l0:h3] sensitivity[h0:l7] recal-time[l0:h15] enable[..] csx_th[..]";
     literal System::String^ PARAM_OBSTACLE_GAIN_DEFAULT = "0"; //!< 0:3 This is the general sensors gain
@@ -131,7 +103,33 @@ public:
 
 
 
-    //___________________________________________________________________________________________________//
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### Body Motor Parameters Row
+    /// 
+    /// This parameter row set the behavior of the Body motor activation.
+    /// 
+    /// < BODY_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |ExternalSensorCalibration|Variant|"UNDEF"|"INTERNAL"/"UNDEF"/32-bit|See table below|
+    /// |CurrentPosition|32 bit Integer|"UNDEF"|0:0xFFFFFFFF|This is the last motor valid position in 0.1 degree/units|
+    /// |AutoSpeed|16 bit Integer|50|0:0xFFFF|Speed in 0.1 degree / seconds of the motor rotation when in auto mode|
+    /// |AutoAcc|16 bit Integer|20|0:0xFFFF|Aceleration in 0.1 degree / seconds^2 of the motor rotation when in auto mode|
+    /// |AutoDec|16 bit Integer|20|0:0xFFFF|Deceleration in 0.1 degree / seconds^2 of the motor rotation when in auto mode|
+    /// |ManualSpeed|16 bit Integer|50|0:0xFFFF|Speed in 0.1 degree / seconds of the motor rotation when in manual mode|
+    /// |ManaulAcc|16 bit Integer|20|0:0xFFFF|Aceleration in 0.1 degree / seconds^2 of the motor rotation when in manual mode|
+    /// |ManualDec|16 bit Integer|100|0:0xFFFF|Deceleration in 0.1 degree / seconds^2 of the motor rotation when in manual mode|
+    /// |ZeroSettingSpeed|16 bit Integer|50|0:0xFFFF|Speed in 0.1 degree / seconds of the motor rotation when in zero setting mode|
+    /// |ZeroSettingAcc|16 bit Integer|10|0:0xFFFF|Aceleration in 0.1 degree / seconds^2 of the motor rotation when in zero setting mode|
+    /// 
+    /// ExternalSensorCalibration:
+    /// + "INTERNAL": the current position is determined by the incremental encoder internal of the motor.
+    /// The current position value is stored into the CurrentPosition field after every activation.
+    /// + "UNDEF": the position is determined by an external 10 bit potentiometer connected with the motor that is not yet initialized.
+    /// + 10 bit Integer value: this is the sensor value when the motor is in the mechanical zero position.
+    /// 
     literal System::String^ PARAM_BODY = "BODY_CALIBRATION";                               //!< This is the Body Motor parameter section
     literal System::String^ PARAM_BODY_COMMENT = "BODY_CALIBRATION calibration data";
     literal System::String^ PARAM_BODY_EXTERNAL_ZERO_DEFAULT = MOTOR_EXTERNAL_UNDEFINED_POSITION;           //!< Initial pot zero setting
@@ -145,24 +143,76 @@ public:
     literal System::String^ PARAM_BODY_HOME_SPEED_DEFAULT = "50";                                  //!< Body Home Speed in 0.1 degree/ss
     literal System::String^ PARAM_BODY_HOME_ACC_DEFAULT = "10";                                    //!< Body Home Acc in 0.1 degree/ss
 
-    //___________________________________________________________________________________________________//
+   /// \addtogroup  ConfigurationFilesDescription 
+   /// 
+   /// ### Arm Motor Parameters Row
+   /// 
+   /// This parameter row set the behavior of the Arm motor activation.
+   /// 
+   /// < ARM_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+   /// 
+   /// |Param|Type|Default|Range|Descrption|
+   /// |:--|:--|:--|:--|:--|
+   /// |ExternalSensorCalibration|Variant|"INTERNAL"|"INTERNAL"/"UNDEF"/32-bit|See table below|
+   /// |CurrentPosition|32 bit Integer|"UNDEF"|0:0xFFFFFFFF|This is the last motor valid position in 0.01 degree/units|
+   /// |AutoSpeed|16 bit Integer|1000|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in auto mode|
+   /// |AutoAcc|16 bit Integer|500|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in auto mode|
+   /// |AutoDec|16 bit Integer|500|0:0xFFFF|Deceleration in 0.01 degree / seconds^2 of the motor rotation when in auto mode|
+   /// |ManualSpeed|16 bit Integer|500|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in manual mode|
+   /// |ManaulAcc|16 bit Integer|300|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in manual mode|
+   /// |ManualDec|16 bit Integer|300|0:0xFFFF|Deceleration in 0.01 degree / seconds^2 of the motor rotation when in manual mode|
+   /// |ZeroSettingSpeed|16 bit Integer|500|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in zero setting mode|
+   /// |ZeroSettingAcc|16 bit Integer|100|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in zero setting mode|
+   /// 
+   /// ExternalSensorCalibration:
+   /// + "INTERNAL": the current position is determined by the incremental encoder internal of the motor.
+   /// The current position value is stored into the CurrentPosition field after every activation.
+   /// + "UNDEF": the position is determined by an external 10 bit potentiometer connected with the motor that is not yet initialized.
+   /// + 10 bit Integer value: this is the sensor value when the motor is in the mechanical zero position.
+   /// 
     literal System::String^ PARAM_ARM = "ARM_CALIBRATION";                                         //!< This is the ARM Motor parameter section
     literal System::String^ PARAM_ARM_COMMENT = "ARM_CALIBRATION calibration data";
     literal System::String^ PARAM_ARM_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;            //!< Initial pot zero setting
-    literal System::String^ PARAM_ARM_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid encoder ARM Motor position (for initial zero setting)
+    literal System::String^ PARAM_ARM_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;         //!< The last valid ARM Motor position in 0.01°
     literal System::String^ PARAM_ARM_AUTO_SPEED_DEFAULT = "1000";                                 //!< Arm Auto Speed in 0.01 degree/s
     literal System::String^ PARAM_ARM_AUTO_ACC_DEFAULT = "500";                                    //!< Arm Auto Acc in 0.01 degree/ss
     literal System::String^ PARAM_ARM_AUTO_DEC_DEFAULT = "500";                                    //!< Arm Auto Dec in 0.01 degree/ss
     literal System::String^ PARAM_ARM_MANUAL_SPEED_DEFAULT = "500";                               //!< Arm Manual Speed in 0.01 degree/s
     literal System::String^ PARAM_ARM_MANUAL_ACC_DEFAULT = "300";                                  //!< Arm Manual Acc in 0.01 degree/ss
     literal System::String^ PARAM_ARM_MANUAL_DEC_DEFAULT = "500";                                  //!< Arm Manual Dec in 0.01 degree/ss
-    literal System::String^ PARAM_ARM_HOME_SPEED_DEFAULT = "5000";                                 //!< Arm Home Speed in 0.01 degree/ss
+    literal System::String^ PARAM_ARM_HOME_SPEED_DEFAULT = "500";                                  //!< Arm Home Speed in 0.01 degree/ss
     literal System::String^ PARAM_ARM_HOME_ACC_DEFAULT = "100";                                    //!< Arm Home Acc in 0.01 degree/ss
 
-    //___________________________________________________________________________________________________//
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### Vertical Motor Parameters Row
+    /// 
+    /// This parameter row set the behavior of the Vertical motor activation.
+    /// 
+    /// < VERTICAL_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |ExternalSensorCalibration|Variant|"INTERNAL"|"INTERNAL"/"UNDEF"/32-bit|See table below|
+    /// |CurrentPosition|32 bit Integer|"UNDEF"|0:0xFFFFFFFF|This is the last motor valid position in 1 mm / units|
+    /// |AutoSpeed|16 bit Integer|30|0:0xFFFF|Speed in 1 mm / seconds of the motor rotation when in auto mode|
+    /// |AutoAcc|16 bit Integer|20|0:0xFFFF|Aceleration in 1 mm / seconds^2 of the motor rotation when in auto mode|
+    /// |AutoDec|16 bit Integer|10|0:0xFFFF|Deceleration in 1 mm / seconds^2 of the motor rotation when in auto mode|
+    /// |ManualSpeed|16 bit Integer|30|0:0xFFFF|Speed in 1 mm / seconds of the motor rotation when in manual mode|
+    /// |ManaulAcc|16 bit Integer|20|0:0xFFFF|Aceleration in 1 mm / seconds^2 of the motor rotation when in manual mode|
+    /// |ManualDec|16 bit Integer|60|0:0xFFFF|Deceleration in 1 mm / seconds^2 of the motor rotation when in manual mode|
+    /// |ZeroSettingSpeed|16 bit Integer|20|0:0xFFFF|Speed in 1 mm / seconds of the motor rotation when in zero setting mode|
+    /// |ZeroSettingAcc|16 bit Integer|10|0:0xFFFF|Aceleration in 1 mm / seconds^2 of the motor rotation when in zero setting mode|
+    /// 
+    /// ExternalSensorCalibration:
+    /// + "INTERNAL": the current position is determined by the incremental encoder internal of the motor.
+    /// The current position value is stored into the CurrentPosition field after every activation.
+    /// + "UNDEF": the position is determined by an external 10 bit potentiometer connected with the motor that is not yet initialized.
+    /// + 10 bit Integer value: this is the sensor value when the motor is in the mechanical zero position.
+    /// 
     literal System::String^ PARAM_VERTICAL = "VERTICAL_CALIBRATION";                                   //!< This is the VERTICAL Motor parameter section
     literal System::String^ PARAM_VERTICAL_COMMENT = "VERTICAL_CALIBRATION calibration data";
-    literal System::String^ PARAM_VERTICAL_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;                        //!< Initial pot zero setting
+    literal System::String^ PARAM_VERTICAL_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;            //!< Initial pot zero setting
     literal System::String^ PARAM_VERTICAL_CURRENT_POSITION_DEFAULT = MOTOR_UNDEFINED_POSITION;        //!< The last valid encoder VERTICAL Motor position (for initial zero setting)
     literal System::String^ PARAM_VERTICAL_AUTO_SPEED_DEFAULT = "30";                                  //!< VERTICAL Auto Speed in 1 mm/s
     literal System::String^ PARAM_VERTICAL_AUTO_ACC_DEFAULT = "20";                                    //!< VERTICAL Auto Acc in 1mm /ss
@@ -173,7 +223,36 @@ public:
     literal System::String^ PARAM_VERTICAL_HOME_SPEED_DEFAULT = "20";                                  //!< VERTICAL Home Speed in 1mm degree/ss
     literal System::String^ PARAM_VERTICAL_HOME_ACC_DEFAULT = "10";                                    //!< VERTICAL Home Acc in 1mm degree/ss
 
-    //___________________________________________________________________________________________________//
+   /// \addtogroup  ConfigurationFilesDescription 
+   /// 
+   /// ### Tilt Motor Parameters Row
+   /// 
+   /// This parameter row set the behavior of the Tilt motor activation.
+   /// 
+   ///      NOTE: the motor setting during a Tomo scan is assigned in a different way 
+   /// see the \ref TomoConfig file description.
+   /// 
+   /// < TILT_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+   /// 
+   /// |Param|Type|Default|Range|Descrption|
+   /// |:--|:--|:--|:--|:--|
+   /// |ExternalSensorCalibration|Variant|"INTERNAL"|"INTERNAL"/"UNDEF"/32-bit|See table below|
+   /// |CurrentPosition|32 bit Integer|"UNDEF"|0:0xFFFFFFFF|This is the last motor valid position in 0.01 degree/units|
+   /// |AutoSpeed|16 bit Integer|400|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in auto mode|
+   /// |AutoAcc|16 bit Integer|400|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in auto mode|
+   /// |AutoDec|16 bit Integer|400|0:0xFFFF|Deceleration in 0.01 degree / seconds^2 of the motor rotation when in auto mode|
+   /// |ManualSpeed|16 bit Integer|100|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in manual mode|
+   /// |ManaulAcc|16 bit Integer|100|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in manual mode|
+   /// |ManualDec|16 bit Integer|200|0:0xFFFF|Deceleration in 0.01 degree / seconds^2 of the motor rotation when in manual mode|
+   /// |ZeroSettingSpeed|16 bit Integer|200|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in zero setting mode|
+   /// |ZeroSettingAcc|16 bit Integer|100|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in zero setting mode|
+   /// 
+   /// ExternalSensorCalibration:
+   /// + "INTERNAL": the current position is determined by the incremental encoder internal of the motor.
+   /// The current position value is stored into the CurrentPosition field after every activation.
+   /// + "UNDEF": the position is determined by an external 10 bit potentiometer connected with the motor that is not yet initialized.
+   /// + 10 bit Integer value: this is the sensor value when the motor is in the mechanical zero position.
+   /// 
     literal System::String^ PARAM_TILT = "TILT_CALIBRATION";                                       //!< This is the TILT Motor parameter section
     literal System::String^ PARAM_TILT_COMMENT = "TILT_CALIBRATION calibration data";
     literal System::String^ PARAM_TILT_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;                         //!< Initial pot zero setting
@@ -187,7 +266,33 @@ public:
     literal System::String^ PARAM_TILT_HOME_SPEED_DEFAULT = "200";                                  //!< TILT Home Speed in 0.01 degree degree/ss
     literal System::String^ PARAM_TILT_HOME_ACC_DEFAULT = "100";                                    //!< TILT Home Acc in 0.01 degree degree/ss
 
-    //___________________________________________________________________________________________________//
+   /// \addtogroup  ConfigurationFilesDescription 
+   /// 
+   /// ### Slide Motor Parameters Row
+   /// 
+   /// This parameter row set the behavior of the Slide motor activation.
+   /// 
+   /// < SLIDE_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+   /// 
+   /// |Param|Type|Default|Range|Descrption|
+   /// |:--|:--|:--|:--|:--|
+   /// |ExternalSensorCalibration|Variant|"INTERNAL"|"INTERNAL"/"UNDEF"/32-bit|See table below|
+   /// |CurrentPosition|32 bit Integer|"UNDEF"|0:0xFFFFFFFF|This is the last motor valid position in 0.01 degree/units|
+   /// |AutoSpeed|16 bit Integer|400|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in auto mode|
+   /// |AutoAcc|16 bit Integer|400|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in auto mode|
+   /// |AutoDec|16 bit Integer|400|0:0xFFFF|Deceleration in 0.01 degree / seconds^2 of the motor rotation when in auto mode|
+   /// |ManualSpeed|16 bit Integer|400|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in manual mode|
+   /// |ManaulAcc|16 bit Integer|400|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in manual mode|
+   /// |ManualDec|16 bit Integer|400|0:0xFFFF|Deceleration in 0.01 degree / seconds^2 of the motor rotation when in manual mode|
+   /// |ZeroSettingSpeed|16 bit Integer|100|0:0xFFFF|Speed in 0.01 degree / seconds of the motor rotation when in zero setting mode|
+   /// |ZeroSettingAcc|16 bit Integer|100|0:0xFFFF|Aceleration in 0.01 degree / seconds^2 of the motor rotation when in zero setting mode|
+   /// 
+   /// ExternalSensorCalibration:
+   /// + "INTERNAL": the current position is determined by the incremental encoder internal of the motor.
+   /// The current position value is stored into the CurrentPosition field after every activation.
+   /// + "UNDEF": the position is determined by an external 10 bit potentiometer connected with the motor that is not yet initialized.
+   /// + 10 bit Integer value: this is the sensor value when the motor is in the mechanical zero position.
+   /// 
     literal System::String^ PARAM_SLIDE = "SLIDE_CALIBRATION";                                       //!< This is the SLIDE Motor parameter section
     literal System::String^ PARAM_SLIDE_COMMENT = "SLIDE_CALIBRATION calibration data";
     literal System::String^ PARAM_SLIDE_EXTERNAL_ZERO_DEFAULT = MOTOR_INTERNAL_POSITION;                         //!< Initial pot zero setting

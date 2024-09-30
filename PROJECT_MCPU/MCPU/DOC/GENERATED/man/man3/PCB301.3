@@ -1,5 +1,220 @@
-.TH "PCB301" 3 "MCPU" \" -*- nroff -*-
+.TH "PCB301" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 PCB301
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBProtocolStructure\fP"
+.br
+.RI "This class implement the protocol data structure as described in the protocol specification\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBgetPowerdown\fP (void)"
+.br
+.RI "This function returns the PowerDown condition status "
+.ti -1c
+.RI "static bool \fBgetMotorPowerSupply\fP (void)"
+.br
+.RI "This function returns the current status of the 48DVC power supply activation status\&. "
+.ti -1c
+.RI "static void \fBsetMotorPowerSupply\fP (bool stat)"
+.br
+.RI "This method requests the board to disable the 48DVC power supply\&. "
+.ti -1c
+.RI "static bool \fBgetMotorSwitch\fP (void)"
+.br
+.RI "This method requests the current status of the safety external solid state relay "
+.ti -1c
+.RI "static void \fBsetMotorSwitch\fP (bool stat)"
+.br
+.RI "This method requests the board to disable the 48VDC safety solid state relay\&. "
+.ti -1c
+.RI "static bool \fBgetBatteryEna\fP (void)"
+.br
+.RI "This method gets the current status of the Battery Enable External button\&. "
+.ti -1c
+.RI "static bool \fBgetBatteryAlarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery malfunction\&. "
+.ti -1c
+.RI "static bool \fBgetBatt1Alarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery 1 malfunction\&. "
+.ti -1c
+.RI "static bool \fBgetBatt2Alarm\fP (void)"
+.br
+.RI "This method provides the info about a possible battery 2 malfunction\&. "
+.ti -1c
+.RI "static unsigned char \fBgetVoltageBatt1\fP (void)"
+.br
+.RI "This method provides the info about the battery 1 voltage level in 0\&.1V units \&. "
+.ti -1c
+.RI "static unsigned char \fBgetVoltageBatt2\fP (void)"
+.br
+.RI "This method provides the info about the battery 2 voltage level in 0\&.1V units \&. "
+.ti -1c
+.RI "static bool \fBgetSoftPowerOffRequest\fP (void)"
+.br
+.RI "This method provides the status of the current soft power off request coming from the pcb301 board "
+.ti -1c
+.RI "static void \fBsetPowerOff\fP (bool stat)"
+.br
+.RI "This method provides the Application to initiate a soft power off sequence\&. "
+.ti -1c
+.RI "static bool \fBgetPowerLockStatus\fP (void)"
+.br
+.RI "This method provides the current status of the Programming Power Lock "
+.ti -1c
+.RI "static void \fBsetPowerLock\fP (bool stat)"
+.br
+.RI "This method provides the Application to activate the Programming Power Lock circuit\&. "
+.ti -1c
+.RI "static bool \fBgetEmergency\fP (void)"
+.br
+.RI "This function returns the Emergency Input circuit line activation status\&. "
+.ti -1c
+.RI "static bool \fBgetCabinetSafety\fP (void)"
+.br
+.RI "This function returns the Cabinet Safety Input circuit line activation status\&. "
+.ti -1c
+.RI "static bool \fBgetCompressionStatus\fP (void)"
+.br
+.RI "This function returns the Compression Pending Status Input circuit line activation status\&. "
+.ti -1c
+.RI "static bool \fBisClosedDoor\fP (void)"
+.br
+.RI "This function returns the Door Study Status Input circuit line activation status\&. "
+.ti -1c
+.RI "static void \fBSetCompressorEna\fP (bool stat)"
+.br
+.RI "This method sets the Compressor Enable Output line on the \fBPCB301\fP board\&. "
+.ti -1c
+.RI "static void \fBSetCompressorCalib\fP (bool stat)"
+.br
+.RI "This method sets the Compressor Calibration Output line on the \fBPCB301\fP board\&. "
+.ti -1c
+.RI "static bool \fBgetBurningJumper\fP (void)"
+.br
+.RI "This function returns the status of the Burning Jumper detected presence "
+.ti -1c
+.RI "static bool \fBget_pedal_up_stat\fP (void)"
+.br
+.RI "This function returns the Pedal Board Vertical-Up Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_pedal_down_stat\fP (void)"
+.br
+.RI "This function returns the Pedal Board Vertical-Down Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_cmp_up_stat\fP (void)"
+.br
+.RI "This function returns the Pedal Board Compression-Up Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_cmp_down_stat\fP (void)"
+.br
+.RI "This function returns the Pedal Board Compression-Down Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_cw_stat\fP (void)"
+.br
+.RI "This function returns the Manual Keypad CW Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_ccw_stat\fP (void)"
+.br
+.RI "This function returns the Manual Keypad CCW Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_up_stat\fP (void)"
+.br
+.RI "This function returns the Manual Keypad Up Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_down_stat\fP (void)"
+.br
+.RI "This function returns the Manual Keypad Down Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_body_cw\fP (void)"
+.br
+.RI "This function returns the Manual Body-CW Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_body_ccw\fP (void)"
+.br
+.RI "This function returns the Manual Body-CCW Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_slide_up_stat\fP (void)"
+.br
+.RI "This function returns the Manual Slide-Up Hardware Input Line status\&. "
+.ti -1c
+.RI "static bool \fBget_button_slide_down_stat\fP (void)"
+.br
+.RI "This function returns the Manual Slide-Down Hardware Input Line status\&. "
+.ti -1c
+.RI "static void \fBset_keypad_led\fP (bool stat)"
+.br
+.RI "This function controls the status of the Keypad led "
+.ti -1c
+.RI "static bool \fBgetXrayPushButtonStat\fP (void)"
+.br
+.RI "This method returns the current status of the X-RAY push button activation status\&. "
+.ti -1c
+.RI "static void \fBsetXrayEna\fP (bool stat)"
+.br
+.RI "This method requests to activate the x-ray enable hardware signal on the generator external interface\&. "
+.ti -1c
+.RI "static void \fBsetBuzzerManualMode\fP (bool stat)"
+.br
+.RI "This method sets the working mode of the Buzzer in Manual Mode or Automatic Mode "
+.ti -1c
+.RI "static void \fBactivationManualBuzzer\fP (bool stat)"
+.br
+.RI "This method, when the buzzer is set in manual mode, sets the current status of the Buzzer device\&. "
+.ti -1c
+.RI "static \fBCanDeviceCommandResult\fP ^ \fBactivateManualBuzzerTomoMode\fP (int samples, int fps, int tmo, Object^ device)"
+.br
+.RI "This method, when the buzzer is set in manual mode, activates the buzzer in Tomo mode, providing a given number of consecutive pulses at a given rate\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB301\fP ^ \fBdevice\fP = gcnew \fBPCB301\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This is the Running Loop overriden procedure\&. "
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
+.br
+.RI "This is the Demo Loop overriden procedure\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "void PCB301::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Demo Loop overriden procedure\&. This callback is called whenever the Symulator device should not be connected\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB301::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Running Loop overriden procedure\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -1,5 +1,261 @@
-.TH "CanDeviceProtocol" 3 "MCPU" \" -*- nroff -*-
+.TH "CanDeviceProtocol" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-CanDeviceProtocol
+CanDeviceProtocol \-  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CanDeviceProtocol\&.h>\fP
+.PP
+Inherited by \fBPCB301\fP, \fBPCB302\fP, \fBPCB303\fP, \fBPCB304\fP, \fBPCB315\fP, and \fBPCB326\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCanDeviceCommand\fP"
+.br
+.ti -1c
+.RI "class \fBCanDeviceCommandResult\fP"
+.br
+.RI "This class provides a data structure to handle a command result\&. "
+.ti -1c
+.RI "class \fBCanDeviceCommunicationMonitor\fP"
+.br
+.RI "This class provides an interface to monitor the communication performance with the device\&. "
+.ti -1c
+.RI "class \fBCanDeviceRegister\fP"
+.br
+.RI "This class provides a data structure for the can device frame communication protocol\&. "
+.ti -1c
+.RI "class \fBRegister\fP"
+.br
+.RI "This is the data structure handling the protocol device register data\&. "
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCommandRegisterErrors\fP { \fBCommandRegisterErrors::COMMAND_NO_ERROR\fP = 0, \fBCommandRegisterErrors::COMMAND_ERROR_BUSY\fP, \fBCommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM\fP, \fBCommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCommandRegisterErrors::COMMAND_INVALID_DEVICE\fP =253, \fBCommandRegisterErrors::COMMAND_COMMUNICATION_ERROR\fP =254, \fBCommandRegisterErrors::COMMAND_DEVICE_TMO\fP = 255 }"
+.br
+.RI "This is the enumeration of the possible command executed errors\&. "
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBstatus_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBstatus_options::WAITING_REVISION\fP, \fBstatus_options::DEVICE_CONFIGURATION\fP, \fBstatus_options::DEVICE_RUNNING\fP, \fBstatus_options::DEVICE_SIMULATOR\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.br
+.ti -1c
+.RI "enum class \fBbootloader_options\fP { \fBBOOTLOADER_NOT_PRESENT\fP = 0, \fBBOOTLOADER_RUNNING\fP = 1, \fBBOOTLOADER_PRESENT\fP = 2, \fBBOOTLOADER_UNCKNOWN_STAT\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceProtocol\fP (unsigned char devid, LPCWSTR devname)"
+.br
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.RI "This function activate the Module in Real mode\&. "
+.ti -1c
+.RI "void \fBsimulMode\fP (void)"
+.br
+.RI "This function activate the Module in Simulation mode "
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
+.RI "This function tests if the module is running in simulation mode "
+.ti -1c
+.RI "bool \fBisCommunicationError\fP (void)"
+.br
+.RI "This function tests if the module is in communication error condition "
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetModuleStatus\fP (void)"
+.br
+.RI "This function returns the Module operating status "
+.ti -1c
+.RI "\fBbootloader_options\fP \fBgetBootStatus\fP (void)"
+.br
+.RI "This function returns the current status of the bootloader activities on the remote device\&. "
+.ti -1c
+.RI "System::String ^ \fBgetBootRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected Bootloader revision code\&. "
+.ti -1c
+.RI "System::String ^ \fBgetAppRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected remote firmware revision code\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This is a non blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This is a blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo, Object^ src)"
+.br
+.ti -1c
+.RI "bool \fBisCommandCompleted\fP (void)"
+.br
+.RI "This function returns the current status of the pending command\&. "
+.ti -1c
+.RI "bool \fBisCommandError\fP (void)"
+.br
+.RI "This function returns true if the command is terminated with an error condition\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult0\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-0\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult1\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-1\&. "
+.ti -1c
+.RI "\fBCommandRegisterErrors\fP \fBgetCommandError\fP (void)"
+.br
+.RI "This function returns the last error condition of an executed command\&. "
+.ti -1c
+.RI "System::String ^ \fBgetCanCommunicationMonitorString\fP (void)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadCommandRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device command register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadErrorRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device error register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadStatusRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the STATUS register of given INDEX\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadDataRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the DATA register of given INDEX\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ \fBgetRxRegister\fP (void)"
+.br
+.RI "This function returns the last read register\&. "
+.ti -1c
+.RI "virtual void \fBrunningLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
+.ti -1c
+.RI "virtual void \fBdemoLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
+.ti -1c
+.RI "virtual void \fBresetLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the specific operations in case of the remote device reset detection\&. "
+.ti -1c
+.RI "virtual bool \fBconfigurationLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the specific operations during the device configuration fase "
+.ti -1c
+.RI "virtual bool \fBsimulCommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandNoWaitCompletion()\fP should be used by the application See the \fBcommandNoWaitCompletion()\fP for details\&. "
+.ti -1c
+.RI "virtual \fBCanDeviceCommandResult\fP ^ \fBsimulCommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandWaitCompletion()\fP should be used by the application See the \fBcommandWaitCompletion()\fP for details\&. "
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommunicationMonitor\fP \fBcan_communication_monitor\fP"
+.br
+.RI "This is the debug class\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool CanDeviceProtocol::simulCommandNoWaitCompletion (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called in case of simulation, when the \fBcommandNoWaitCompletion()\fP should be used by the application See the \fBcommandNoWaitCompletion()\fP for details\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP 
+.br
+\fId0\fP 
+.br
+\fId1\fP 
+.br
+\fId2\fP 
+.br
+\fId3\fP 
+.br
+\fItmo\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "virtual \fBCanDeviceCommandResult\fP ^ CanDeviceProtocol::simulCommandWaitCompletion (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This function is called in case of simulation, when the \fBcommandWaitCompletion()\fP should be used by the application See the \fBcommandWaitCompletion()\fP for details\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP 
+.br
+\fId0\fP 
+.br
+\fId1\fP 
+.br
+\fId2\fP 
+.br
+\fId3\fP 
+.br
+\fItmo\fP 
+.br
+\fIsrc\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

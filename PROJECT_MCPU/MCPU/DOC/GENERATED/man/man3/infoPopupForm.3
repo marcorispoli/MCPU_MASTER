@@ -1,5 +1,54 @@
-.TH "infoPopupForm" 3 "MCPU" \" -*- nroff -*-
+.TH "infoPopupForm" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 infoPopupForm
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBopen\fP (Form^ parent_form, int msg, System::String^ extra)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBinfoPanelTimer\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~infoPopupForm\fP ()"
+.br
+.RI "Clean up any resources being used\&. "
+.ti -1c
+.RI "void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

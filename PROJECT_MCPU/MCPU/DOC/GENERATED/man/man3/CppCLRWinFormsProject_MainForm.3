@@ -1,5 +1,55 @@
-.TH "CppCLRWinFormsProject::MainForm" 3 "MCPU" \" -*- nroff -*-
+.TH "CppCLRWinFormsProject::MainForm" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-CppCLRWinFormsProject::MainForm
+CppCLRWinFormsProject::MainForm \- This is the Class implementing the Startup Operating mode\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <MainForm\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Timers::Timer ^ \fBstartupTimer\fP"
+.br
+.RI "This is the Timer to step the workflow\&. "
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.RI "This is the handle of the windw for the windows message exchange\&. "
+.ti -1c
+.RI "int \fBstartupFase\fP"
+.br
+.RI "This is the current fase of the startup\&. "
+.ti -1c
+.RI "int \fBstartupSubFase\fP"
+.br
+.RI "This is the current sub-fase of the startup\&. "
+.ti -1c
+.RI "bool \fBstartupCompleted\fP"
+.br
+.RI "The Startup completed flag\&. "
+.ti -1c
+.RI "bool \fBstartupError\fP"
+.br
+.RI "The Startup completed in error condition\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the Class implementing the Startup Operating mode\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

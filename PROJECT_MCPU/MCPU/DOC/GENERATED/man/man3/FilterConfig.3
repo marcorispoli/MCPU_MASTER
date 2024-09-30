@@ -1,5 +1,159 @@
-.TH "FilterConfig" 3 "MCPU" \" -*- nroff -*-
+.TH "FilterConfig" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 FilterConfig
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal System::String ^ \fBFILTER_NOT_ASSIGNED\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER1_ASSIGNMENT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER2_ASSIGNMENT\fP = '2'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER3_ASSIGNMENT\fP = '3'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILTER4_ASSIGNMENT\fP = '4'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBFILENAME\fP = 'FilterCalibration\&.cnf'"
+.br
+.ti -1c
+.RI "literal int \fBFILE_REVISION\fP = 1"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG\fP = 'FILTER_CONFIG'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_COMMENT\fP = 'Defines the Filter assignment'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_RH_POSITION\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_AG_POSITION\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_AL_POSITION\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CU_POSITION\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_MO_POSITION\fP = 4"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_DEFAULT_POSITION\fP = 5"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_RH_POSITION_DEFAULT\fP = FILTER1_ASSIGNMENT"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_AG_POSITION_DEFAULT\fP = FILTER2_ASSIGNMENT"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_AL_POSITION_DEFAULT\fP = FILTER3_ASSIGNMENT"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CU_POSITION_DEFAULT\fP = FILTER4_ASSIGNMENT"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_MO_POSITION_DEFAULT\fP = FILTER_NOT_ASSIGNED"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_DEFAULT_POSITION_DEFAULT\fP = FILTER4_ASSIGNMENT"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION\fP = 'FILTER_CALIB'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_COMMENT\fP = 'Filter calibration fields'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER1\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER2\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER3\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_FILTER4\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_MIRROR\fP = 4"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CALIBRATION_LIGHTON\fP = 5"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER1_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER2_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER3_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_FILTER4_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_MIRROR_DEFAULT\fP = '50'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CALIBRATION_LIGHTON_DEFAULT\fP = '20'"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBConfigFile\fP ^ FilterConfig::Configuration\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= gcnew ConfigFile(FILENAME, FILE_REVISION,
+        CONFIG_FILE_DESCRIPTOR
+        {
+            CONFIG_FILE_ITEM(PARAM_FILTER_CONFIG, PARAM_FILTER_CONFIG_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FILTER_RH_POSITION_DEFAULT,
+            PARAM_FILTER_AG_POSITION_DEFAULT,
+            PARAM_FILTER_AL_POSITION_DEFAULT,
+            PARAM_FILTER_CU_POSITION_DEFAULT,
+            PARAM_FILTER_MO_POSITION_DEFAULT,
+            PARAM_FILTER_DEFAULT_POSITION_DEFAULT,
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_FILTER_CALIBRATION, PARAM_FILTER_CALIBRATION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FILTER_CALIBRATION_FILTER1_DEFAULT,
+            PARAM_FILTER_CALIBRATION_FILTER2_DEFAULT,
+            PARAM_FILTER_CALIBRATION_FILTER3_DEFAULT,
+            PARAM_FILTER_CALIBRATION_FILTER4_DEFAULT,
+            PARAM_FILTER_CALIBRATION_MIRROR_DEFAULT,
+            PARAM_FILTER_CALIBRATION_LIGHTON_DEFAULT
+            }),
+
+        }
+    )
+.fi
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -1,5 +1,98 @@
-.TH "PCB304" 3 "MCPU" \" -*- nroff -*-
+.TH "PCB304" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 PCB304
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBProtocolStructure\fP"
+.br
+.RI "This class implement the protocol data structure as described in the protocol specification\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetAutoGridInField\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetAutoGridOutField\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsyncGeneratorOn\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsyncGeneratorOff\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisGridOnFieldReady\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisGridOffFieldReady\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBenableStartGrid\fP (bool status)"
+.br
+.ti -1c
+.RI "static bool \fBisError\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetDisplay\fP (bool on_off)"
+.br
+.ti -1c
+.RI "static void \fBsetDisplay\fP (short val, unsigned char decimals, bool blink, unsigned char intensity)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal int \fBmax_num_error_resets\fP = 5"
+.br
+.RI "Maximum number of attempts to reset a pending error condition\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB304\fP ^ \fBdevice\fP = gcnew \fBPCB304\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "void PCB304::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB304::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

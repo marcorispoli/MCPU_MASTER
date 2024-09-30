@@ -1,5 +1,85 @@
-.TH "CanDeviceProtocol::CanDeviceCommandResult" 3 "MCPU" \" -*- nroff -*-
+.TH "CanDeviceProtocol::CanDeviceCommandResult" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-CanDeviceProtocol::CanDeviceCommandResult
+CanDeviceProtocol::CanDeviceCommandResult \- This class provides a data structure to handle a command result\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CanDeviceProtocol\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP (\fBCommandRegisterErrors\fP err, unsigned char ris0, unsigned char ris1)"
+.br
+.RI "Creates a result structure assigning all the internal data\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP (\fBCommandRegisterErrors\fP err)"
+.br
+.RI "Creates a result structure assigning only the error code\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP (void)"
+.br
+.RI "Creates a result structure assigning the NO ERROR code to the error field\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBCommandRegisterErrors\fP \fBerror_code\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBresult0\fP"
+.br
+.RI "Result D0 code\&. "
+.ti -1c
+.RI "unsigned char \fBresult1\fP"
+.br
+.RI "Result D1 code\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class provides a data structure to handle a command result\&. 
+
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CanDeviceProtocol::CanDeviceCommandResult::CanDeviceCommandResult (\fBCommandRegisterErrors\fP err, unsigned char ris0, unsigned char ris1)\fC [inline]\fP"
+
+.PP
+Creates a result structure assigning all the internal data\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerr\fP The error code
+.br
+\fIris0\fP The result data 0
+.br
+\fIris1\fP The result data 1
+.RE
+.PP
+
+.SS "CanDeviceProtocol::CanDeviceCommandResult::CanDeviceCommandResult (\fBCommandRegisterErrors\fP err)\fC [inline]\fP"
+
+.PP
+Creates a result structure assigning only the error code\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerr\fP The error code
+.RE
+.PP
+
+.br
+ 
+.SS "CanDeviceProtocol::CanDeviceCommandResult::CanDeviceCommandResult (void)\fC [inline]\fP"
+
+.PP
+Creates a result structure assigning the NO ERROR code to the error field\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

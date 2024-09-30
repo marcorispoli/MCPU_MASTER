@@ -1,5 +1,175 @@
-.TH "R2CP::tGeneratorStatusV5" 3 "MCPU" \" -*- nroff -*-
+.TH "R2CP::tGeneratorStatusV5" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 R2CP::tGeneratorStatusV5
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBGeneratorStatus\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBActive\fP:4"
+.br
+.ti -1c
+.RI "      unsigned char \fBInhibit\fP:4"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBSystemMessage\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBProcedureId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBProcedureStatus\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBExposureDatabankSeqNumber\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBdata_0_7\fP"
+.br
+.ti -1c
+.RI "      unsigned char \fBdata_15_8\fP"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned short \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBFluoroTime\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBAlarm_5minute\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBWarning_5minute\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBSpare_1\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBLockInFrameReached\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBAlarm_10minute\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBWarning_10minute\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBSpare_2\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBHCF_ON\fP: 1"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBFluoroStatus\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBAccumulatedAnodeHU\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBAccumultatedhousingHU\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBAccumulatedGenHU\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBPrepSignalStatus\fP:1"
+.br
+.ti -1c
+.RI "      unsigned char \fBExpsignalStatus\fP:1"
+.br
+.ti -1c
+.RI "      unsigned char \fBFlSignalStatus\fP:1"
+.br
+.ti -1c
+.RI "      unsigned char \fBSpare\fP:4"
+.br
+.ti -1c
+.RI "      unsigned char \fBFilStatus\fP:1"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBExposureSwitches\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBMode_1\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBMode_2\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBSpare\fP: 6"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBDynModeStatus\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBCurrentRotorSpeed\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -1,11 +1,11 @@
-|ERROR_FATAL_COMPILATION|The Software risen an exception.<br>See the log file for details.|
-|ERROR_AWS_INITIALIZATION|An error has been detected during the connection with the AWS<br>See the log file for details.|
-|ERROR_PCB301_RESET|-|
-|ERROR_PCB302_RESET|-|
-|ERROR_PCB303_RESET|-|
-|ERROR_PCB304_RESET|-|
+|ERROR_FATAL_COMPILATION|The application risen a non handled exception.<br>This is a possible bug scenario not tested or not investigated yet.<br>See the Gantry.log file for details.|
+|ERROR_AWS_INITIALIZATION|An error has been detected during the connection with the AWS.<br>The problem may be due to a wrong address set into the SystemIni.cnf file <br>for the Command socket and/or Event socket.<br>See the AWS protocol documentation for details.<br>|
+|ERROR_PCB301_RESET|The PCB301 is the service power board. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.|
+|ERROR_PCB302_RESET|The PCB302 is the compressor device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
+|ERROR_PCB303_RESET|The PCB303 is the collimator device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
+|ERROR_PCB304_RESET|The PCB304 is the grid controller device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
 |ERROR_PCB315_RESET|-|
-|ERROR_PCB326_RESET||
+|ERROR_PCB326_RESET|The PCB326 is the obstacle detection device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
 |ERROR_PCB301_COMMUNICATION_ERROR|-|
 |ERROR_PCB302_COMMUNICATION_ERROR||
 |ERROR_PCB303_COMMUNICATION_ERROR|-|

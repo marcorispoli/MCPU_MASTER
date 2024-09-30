@@ -1,4 +1,4 @@
-.TH "awsProtoEvents" 3 "MCPU" \" -*- nroff -*-
+.TH "awsProtoEvents" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -52,7 +52,7 @@ awsProtoEvents \- AWS Protocol Events
 .ti -1c
 .RI "static void \fBawsProtocol::EVENT_Poweroff\fP (void)"
 .br
-.RI "This Event is sent to AWS whenever the gantry requestes for a power-off sequence\&. "
+.RI "This Event is sent to AWS whenever the gantry requestes for a power-off sequence "
 .ti -1c
 .RI "static void \fBawsProtocol::EVENT_operatingStatusChange\fP (void)"
 .br
@@ -64,18 +64,16 @@ awsProtoEvents \- AWS Protocol Events
  
 .SH "Function Documentation"
 .PP 
-.SS "void awsProtocol::EVENT_Components (void )\fR [static]\fP"
+.SS "void awsProtocol::EVENT_Components (void)\fC [static]\fP"
 
 .PP
-This is the EVENT the gantry sends to AWS to notify about component data change\&. Vedere GET_Component\&.
-.SS "void awsProtocol::EVENT_Executed (int id, int error)\fR [static]\fP"
+This is the EVENT the gantry sends to AWS to notify about component data change\&. Vedere GET_Component 
+.SS "void awsProtocol::EVENT_Executed (int id, int error)\fC [static]\fP"
 
 .PP
 This is the event for command terminated notification\&. This is the EVENT the \fBGantry\fP shall generate when a delayed command completes\&.
-
 .PP
 The Id == 0 codes are rserved for internal activations that shall not be acknowledge to the AWS softwrae\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -85,21 +83,18 @@ The Id == 0 codes are rserved for internal activations that shall not be acknowl
 .RE
 .PP
 
-.SS "void awsProtocol::EVENT_Poweroff (void )\fR [static]\fP"
+.SS "void awsProtocol::EVENT_Poweroff (void)\fC [static]\fP"
 
 .PP
-This Event is sent to AWS whenever the gantry requestes for a power-off sequence\&. 
-.SS "void awsProtocol::EVENT_SelectProjection (System::String^ proj)\fR [static]\fP"
+This Event is sent to AWS whenever the gantry requestes for a power-off sequence 
+.SS "void awsProtocol::EVENT_SelectProjection (System::String^ proj)\fC [static]\fP"
 
 .PP
 This is the EVENT the gantry sends to AWS to request a projection selection\&. This is the EVENT requesting the selection of a given projection\&.
-
 .PP
 The projection shall belong to the projections list set by the AWS through the command SET_ProjectionList\&.
-
 .PP
 Syntax:
-
 .PP
 \fBParameters\fP
 .RS 4

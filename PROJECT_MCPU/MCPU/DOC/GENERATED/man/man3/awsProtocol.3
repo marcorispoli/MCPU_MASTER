@@ -1,5 +1,101 @@
-.TH "awsProtocol" 3 "MCPU" \" -*- nroff -*-
+.TH "awsProtocol" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-awsProtocol
+awsProtocol \- This is the class implementing the AWS Interface Module  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <awsProtocol\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBreturn_errors\fP { \fBreturn_errors::AWS_RET_WRONG_PARAMETERS\fP = 1, \fBreturn_errors::AWS_RET_WRONG_OPERATING_STATUS\fP, \fBreturn_errors::AWS_RET_SYSTEM_ERRORS\fP, \fBreturn_errors::AWS_RET_SYSTEM_WARNINGS\fP, \fBreturn_errors::AWS_RET_INVALID_PARAMETER_FORMAT\fP, \fBreturn_errors::AWS_RET_INVALID_PARAMETER_VALUE\fP, \fBreturn_errors::AWS_RET_DATA_NOT_ALLOWED\fP, \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP, \fBreturn_errors::AWS_RET_DEVICE_ERROR\fP }"
+.br
+.RI "The module implements a standard set of error codes that can be returned (NOK frames) to the AWS in executing a Command request\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBawsProtocol\fP ()"
+.br
+.RI "This is the class constructor 
+.br
+ "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisConnected\fP (void)"
+.br
+.RI "This function returns true in case both Command and Event channels are connected\&. "
+.ti -1c
+.RI "static void \fBEVENT_Executed\fP (int id, int error)"
+.br
+.RI "This is the event for command terminated notification\&. "
+.ti -1c
+.RI "static void \fBEVENT_SelectProjection\fP (System::String^ proj)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to request a projection selection\&. "
+.ti -1c
+.RI "static void \fBEVENT_AbortProjection\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to request a projection abort\&. "
+.ti -1c
+.RI "static void \fBEVENT_GantryStatus\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about its internal operating status\&. "
+.ti -1c
+.RI "static void \fBEVENT_Compressor\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about compressor data change\&. "
+.ti -1c
+.RI "static void \fBEVENT_Components\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about component data change\&. "
+.ti -1c
+.RI "static void \fBEVENT_ReadyForExposure\fP (bool ready, unsigned short code)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status\&. "
+.ti -1c
+.RI "static void \fBEVENT_XrayPushButton\fP (bool status)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. "
+.ti -1c
+.RI "static void \fBEVENT_XraySequenceCompleted\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. "
+.ti -1c
+.RI "static void \fBEVENT_exposurePulseCompleted\fP (unsigned char npulse)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. "
+.ti -1c
+.RI "static void \fBEVENT_Poweroff\fP (void)"
+.br
+.RI "This Event is sent to AWS whenever the gantry requestes for a power-off sequence "
+.ti -1c
+.RI "static void \fBEVENT_operatingStatusChange\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBawsProtocol\fP ^ \fBdevice\fP = gcnew \fBawsProtocol\fP()"
+.br
+.RI "Auto generation declaration\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the class implementing the AWS Interface Module 
+
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -32,9 +32,12 @@
 
    # Index
 
-   + \ref MSGGUI \n;
-   + \ref MSGTAB \n;
-
+   + \ref MSGGUI; \n
+   + \ref MSGDESC; \n
+   + \ref MSGTRANS; \n 
+   + \ref MSGGUI; \n
+   + \ref MSGTAB; \n
+   
    # Overview
 
    The Application makes use of series offormatted string 
@@ -60,7 +63,90 @@
    + The Info Messages: they are the current status information that can help the Operator for the current workflow;
    + The Labels: they are strings used to name the GUI fields when required;
 
+   \section MSGDESC Message Description
+
+   Every message is described by the following items:
+	+ Message Code: it is the univoque identifier code assigned to the message.
+		+ Error Message: "Exxxxx" (example: "E00010");
+		+ Warning Message: "Wxxxxx" (example: "W00010");
+		+ Info Message: "Ixxxxx" (example: "I00010");
+	+ Message Title: it is a string defining the message argument;
+	+ Message Description: (optional) it is a string describing in detail the event;
+
+
+   \section MSGTRANS Message Translation Files 
+
+   The Application, in order to correctly translate the messages, makes use of 
+   special files, located in the LANGUAGE project sub directory, and hardcoded into the application
+   at the compile time.
+
+   The files are named:
+   + translate_xxx.h
+
+   where xxx denotes the current language:
+   + translate_eng.h: it is the file for the english translation;
+   + translate_ita.h: it is the file for the italian translation;
+   + translate_fra.h: it is the file for the franch translation;
+   + translate_por.h: it is the file for the portoguese translation;
+   + translate_esp.h: it is the file for the espanol translation;
+   + translate_rus.h: it is the file for the russian translation;
+
+   every file is composed with a series of raws, describing all the messages in the following format:
+
+   \verbatim
+   
+   
+   "E00001", Notify::messages::E00001, "title string", "description string",
+    ...
+	"E0000n", Notify::messages::E0000n, "title string", "description string",
+
+	"W00001", Notify::messages::W00001, "title string", "description string",
+	...
+	"W0000m", Notify::messages::W0000m, "title string", "description string",
+
+	"I00001", Notify::messages::I00001, "title string", "description string",
+	...
+	"I0000k", Notify::messages::I0000k, "title string", "description string",
+
+   \endverbatim
+
+   from left to right:
+   + The Error Code;
+   + The software internal tag, linked to the error code;
+   + The translated title;
+   + The translated description;
+
+   Translation File Rules:
+   + The TAG shall be uniquelly assigned to the message code;
+   + The TAG and the message code shall not be repeated in the message list;
+   + It is not important the order the raw appear in the file;
+
+
+
    \section MSGGUI Message Gui Display
+
+   The ERROR messages and the WARNING messages are displayed in a dedicated Dialog Window \n
+   that can be accessed from the Panel Window pressing a dedicated button. 
+
+   \image html MessageActivationImage.png
+
+   The activating button can assume one of the right symbols 
+   depending on the current active messages:
+   + The Error symbol is present if almost one of the active messages is an Error message;
+   + The Warning symbol is present if almost one of the active messages is a Warning message and no errors are present;
+   + The Info symbol is present if only info messages are active.
+
+		NOTE: if the Errors are always activated, the Warning and the Info message activation depends by the current operating status.
+
+	The message window has the following aspect:
+
+	\image html MessageWindowsImage.bmp
+
+	The window displays a list of the active messages, in order of the gravity.
+	In case the active messages should exceed the window dimension, 
+	a scrolling bar allows the operator to scroll the list.
+
+
 
    \section MSGTAB Message Description Table
 
@@ -83,13 +169,13 @@ public:
 		ERROR_PCB302_RESET,
 		ERROR_PCB303_RESET,
 		ERROR_PCB304_RESET,
-		ERROR_PCB315_RESET,
+		ERROR_PCB325_RESET,
 		ERROR_PCB326_RESET,
 		ERROR_PCB301_COMMUNICATION_ERROR,
 		ERROR_PCB302_COMMUNICATION_ERROR,
 		ERROR_PCB303_COMMUNICATION_ERROR,
 		ERROR_PCB304_COMMUNICATION_ERROR,
-		ERROR_PCB315_COMMUNICATION_ERROR,
+		ERROR_PCB325_COMMUNICATION_ERROR,
 		ERROR_PCB326_COMMUNICATION_ERROR,
 		ERROR_XRAY_PUSH_FAULT,
 		ERROR_MOTOR_PEDALS_UD_FAULT,

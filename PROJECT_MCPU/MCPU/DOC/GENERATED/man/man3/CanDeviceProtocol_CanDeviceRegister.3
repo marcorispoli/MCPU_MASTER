@@ -1,5 +1,67 @@
-.TH "CanDeviceProtocol::CanDeviceRegister" 3 "MCPU" \" -*- nroff -*-
+.TH "CanDeviceProtocol::CanDeviceRegister" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-CanDeviceProtocol::CanDeviceRegister
+CanDeviceProtocol::CanDeviceRegister \- This class provides a data structure for the can device frame communication protocol\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CanDeviceProtocol\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBdecode\fP (unsigned char *data, bool bootl)"
+.br
+.ti -1c
+.RI "void \fBformat\fP (unsigned char *data)"
+.br
+.ti -1c
+.RI "void \fBset\fP (unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, unsigned char d4, unsigned char d5, unsigned char d6, unsigned char d7, bool bootl)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBb0\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBb1\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBb2\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBb3\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBb4\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBb5\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBb6\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBb7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcrc\fP"
+.br
+.ti -1c
+.RI "bool \fBbootloader\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class provides a data structure for the can device frame communication protocol\&. 
+
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

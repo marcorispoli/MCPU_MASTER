@@ -1,5 +1,242 @@
-.TH "R2CP::CaDataDicRfInterface" 3 "MCPU" \" -*- nroff -*-
+.TH "R2CP::CaDataDicRfInterface" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 R2CP::CaDataDicRfInterface
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_Databank_IdOutOfRange\fP = 1, \fBCp_II_GEN_SS_Databank_NotDefined\fP = 2, \fBCp_II_GEN_SS_IncorrectCommandType\fP = 10 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_FDBkVpValueoutOfRange\fP = 6, \fBCp_II_GEN_SS_FDBmAValueoutofRange\fP = 8, \fBCp_II_GEN_SS_FDBmsValueoutofRange\fP, \fBCp_II_GEN_SS_FDBMaxIntTime\fP, \fBCp_II_GEN_SS_FDBPPSValueoutOfRange\fP, \fBCp_II_GEN_SS_FDBSettingPPSNotSupported\fP, \fBCp_II_GEN_SS_FDBContinuousFluoroscopyNotSupported\fP, \fBCp_II_GEN_SS_FDBCurveIDoutofRange\fP, \fBCp_II_GEN_SS_FDBCurveNotSupported\fP, \fBCp_II_GEN_SS_FDBDataBankTypeNoMatch\fP, \fBCp_II_GEN_SS_FDFocalSpotCodeOutofRange\fP, \fBCp_II_GEN_SS_FDFocalSpotNotSupported\fP, \fBCp_II_GEN_SS_FDFDataBankTypeNotMatch\fP = 24 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_FDBACCProcedureNoFluoro\fP = 3, \fBCp_II_GEN_SS_FDBACCNoExposureDbAssigned\fP = 4, \fBCp_II_GEN_SS_FDBACCExposureDbIdNotDefined\fP = 5 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_FDBKVPkVpValueoutofRange\fP = 3 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_FDBMAmAValueOutofRange\fP = 3 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_FDBMSmsValueoutofRange\fP = 3 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_FDBMaxIntTimeValue\fP = 3 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_GEN_SS_FDB_PPSValueOutofRange\fP = 3, \fBCP_II_GEN_SS_FDB_SettingPPSNotSupported\fP, \fBCP_II_GEN_SS_FDB_ContinuousFluoroscopyNotSupported\fP }"
+.br
+.ti -1c
+.RI "enum { \fBCP_II_GEN_SS_FSSFocalSpotCodeOutOfRange\fP = 3, \fBCP_II_GEN_SS_FSSFocalSpotNotSupported\fP }"
+.br
+.ti -1c
+.RI "enum { \fBCP_II_GEN_SS_FDCCurveIDOutOfRange\fP = 3, \fBCP_II_GEN_SS_FDCurveNotSupported\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual \fB~CaDataDicRfInterface\fP ()"
+.br
+.RI "Destructor\&. "
+.ti -1c
+.RI "void \fBInitialitation\fP (void)"
+.br
+.RI "Once the \fBCaDataDicGen\fP is instanced this method is called\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_RFDLoad\fP (\fBtFlDb\fP *pFlDb)"
+.br
+.RI "Sets a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_RFDLoad\fP (unsigned char Databank_Id)"
+.br
+.RI "Gets a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_RFDAcceptance\fP (unsigned char Procedure_Id)"
+.br
+.RI "Message defined to keep RAD and FL procedure messages consistent\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_GEN_SS_FDBKVP\fP (unsigned char Databank_Id, short int kVp10orStep, bool CommandType)"
+.br
+.RI "Sets FL kV value to a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_GEN_SS_FDBKVP\fP (unsigned char Databank_Id)"
+.br
+.RI "Gets FL kV value to a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_GEN_SS_FDBMA\fP (unsigned char Databank_Id, long int mA100orStep, bool CommandType)"
+.br
+.RI "Sets FL mA value to a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_GEN_SS_FDBMA\fP (unsigned char Databank_Id)"
+.br
+.RI "Gets FL mA value to a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_GEN_SS_FDBMS\fP (unsigned char Databank_Id, int ms100orStep, bool CommandType)"
+.br
+.RI "Sets FL ms value (pulse width) to a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_GEN_SS_FDBMS\fP (unsigned char Databank_Id)"
+.br
+.RI "Gets FL ms value (pulse width) to a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBMaxIntTime\fP (unsigned char DatabankId, unsigned short MaxIntTime)"
+.br
+.RI "Sets maximum integration time in a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBMaxIntTime\fP (unsigned char DatabankId)"
+.br
+.RI "Gets maximum integration time in a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBPPS\fP (unsigned char Databank_Id, unsigned short PPS10)"
+.br
+.RI "Sets PPS in a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBPPS\fP (unsigned char Databank_Id)"
+.br
+.RI "Gets PPS in a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDAbcHighDoseLockIn\fP (unsigned char DatabankId, bool IsAbc, bool IsFlLocking, bool HighDose)"
+.br
+.RI "Sets Abc , Lock In and High Dose\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDAbcHighDoseLockIn\fP (unsigned char DatabankId)"
+.br
+.RI "Gets Abc , Lock In and High Dose\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDQbyPPS\fP (unsigned char DatabankId, bool QbyPPS)"
+.br
+.RI "Set QbyPPS\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDQbyPPS\fP (unsigned char DatabankId)"
+.br
+.RI "Get QbyPPS\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDTargetLsb\fP (unsigned char DatabankId, unsigned short TargetLsb)"
+.br
+.RI "Sets Target Lsb\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDTargetLsb\fP (unsigned char DatabankId)"
+.br
+.RI "Gets Target Lsb\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDFocalSpot\fP (unsigned char DatabankId, unsigned char FocalSpot)"
+.br
+.RI "Sets Target Lsb\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDFocalSpot\fP (unsigned char DatabankId)"
+.br
+.RI "Gets Target Lsb\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDAbcUpdateTime\fP (unsigned char DatabankId, unsigned short AbcUpdateTime)"
+.br
+.RI "Sets Abc Update Time\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDAbcUpdateTime\fP (unsigned char DatabankId)"
+.br
+.RI "Sets Abc Update Time\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBDoseLevelID\fP (unsigned char DatabankId, unsigned short DoseLevelId)"
+.br
+.RI "Sets Dose Level ID in a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBDoseLevelID\fP (unsigned char DatabankId)"
+.br
+.RI "Gets Dose Level ID in Fl Databank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBFilterId\fP (unsigned char DatabankId, unsigned char DoseLevelId)"
+.br
+.RI "Sets New Filter Id\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBFilterId\fP (unsigned char DatabankId)"
+.br
+.RI "Gets Filter Id\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurveId\fP (unsigned char DatabankId, unsigned char CurveId)"
+.br
+.RI "Sets Curve ID in a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurveId\fP (unsigned char DatabankId)"
+.br
+.RI "Gets Curve ID in a FL Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentFlDataBank\fP (void)"
+.br
+.RI "Current Fluoro Exposure Data Bank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentkVp\fP (void)"
+.br
+.RI "Current Fluoro Data Bank kVp value\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentmA\fP (void)"
+.br
+.RI "Current Fluoro Data Bank mA value\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentms\fP (void)"
+.br
+.RI "Current Fluoro Data Bank ms value\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentMaxIntegrationTime\fP (void)"
+.br
+.RI "Current Fluoro Data Bank MinIntegrationTime value\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentPPS\fP (void)"
+.br
+.RI "Current Fluoro Data Bank FPS\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentABC\fP (void)"
+.br
+.RI "Current Fluoro Data Bank ABC setting\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentHighDose\fP (void)"
+.br
+.RI "Current Fluoro Data Bank High Dose value\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentkVScan\fP (void)"
+.br
+.RI "Current Fluoro Data Bank kV Scan\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentQbyPPS\fP (void)"
+.br
+.RI "Current Fluoro Data Bank QbyPPS setting\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentDoseLevelId\fP (void)"
+.br
+.RI "Current Fluoro Data Bank Dose Level ID\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBCurrentCurveId\fP (void)"
+.br
+.RI "Current Fluoro Data Bank Curve ID\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBFluoroTimeReset\fP (void)"
+.br
+.RI "Resets fluoro time\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FDBFiveMinuteFluoroAlarmReset\fP (void)"
+.br
+.RI "Resets 5-minute fluoro alarm\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FlPostExposure\fP (void)"
+.br
+.RI "FlPost Exposure Fl Post Condition\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Generator_SS_FlExpParamRanges\fP (void)"
+.br
+.RI "This message contains the information about the FLUORO exposure parameter ranges\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_ImageSystem_CurrentLsb\fP (unsigned short ExpNumber, unsigned short CurrentLsb)"
+.br
+.RI "This message constains the information about current Lsb measured by Image System\&. "
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -1,5 +1,43 @@
-.TH "tDataDicStatusRegister" 3 "MCPU" \" -*- nroff -*-
+.TH "tDataDicStatusRegister" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-tDataDicStatusRegister
+tDataDicStatusRegister \- Defines status register\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <CaDataDic\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBstatus\fP:1"
+.br
+.ti -1c
+.RI "unsigned char \fBmodes\fP:2"
+.br
+.ti -1c
+.RI "unsigned char \fBunused\fP:1"
+.br
+.ti -1c
+.RI "unsigned char \fBheartbeatFlag\fP:1"
+.br
+.ti -1c
+.RI "unsigned char \fBerrorFlag\fP:1"
+.br
+.ti -1c
+.RI "unsigned char \fBbootingType\fP:1"
+.br
+.ti -1c
+.RI "unsigned char \fBreserved\fP:1"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Defines status register\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

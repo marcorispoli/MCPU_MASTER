@@ -1,5 +1,104 @@
-.TH "PCB304::ProtocolStructure::DataRegister" 3 "MCPU" \" -*- nroff -*-
+.TH "PCB304::ProtocolStructure::DataRegister" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 PCB304::ProtocolStructure::DataRegister
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBregister_index\fP { \fBDISPLAY_REGISTER\fP = 0, \fBGRID_REGISTER\fP, \fBNUM_REGISTER\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBencodeDisplayRegister\fP (void)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBencodeGridRegister\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBdecodeDisplayRegister\fP (\fBRegister\fP^ sys)"
+.br
+.ti -1c
+.RI "static bool \fBdecodeGridRegister\fP (\fBRegister\fP^ sys)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBdisplay_on\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBdisplay_blink\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBdisplay_reverse\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBdisplay_keep_alive\fP = false"
+.br
+.ti -1c
+.RI "static unsigned char \fBdot_position\fP = 0"
+.br
+.ti -1c
+.RI "static unsigned char \fBdisplay_intensity\fP = 0"
+.br
+.ti -1c
+.RI "static short \fBdisplay_value\fP = 0"
+.br
+.ti -1c
+.RI "static bool \fBGeneralEnable\fP = false"
+.br
+.RI "Enable of the grid activities\&. "
+.ti -1c
+.RI "static bool \fBInOutAutoEnable\fP = false"
+.br
+.RI "Enable of InOut automatic positioning\&. "
+.ti -1c
+.RI "static bool \fBInOutStatus\fP = false"
+.br
+.RI "InOut automatic target position\&. "
+.ti -1c
+.RI "static bool \fBEnableStartGrid\fP = false"
+.br
+.RI "Enable the usage of the START-GRID external signal\&. "
+.ti -1c
+.RI "static bool \fBManualXrayDisableEnable\fP = false"
+.br
+.RI "XRAY-DISABLE signal manual mode activation\&. "
+.ti -1c
+.RI "static bool \fBManualXrayDisableStatus\fP = false"
+.br
+.RI "XRAY-DISABLE signal manual mode target status\&. "
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB304::ProtocolStructure::DataRegister::register_index\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIGRID_REGISTER \fP\fP
+
+.PP
+.RS 4
+This is the Display Data register index 
+.RE
+.PP
+This is the control of the Grid status 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -5,10 +5,7 @@
 using namespace CppCLRWinFormsProject;
 
 
-#define STARTUP_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\Cybele.PNG")
-
-#define COLOR_OFF Color::Red
-#define COLOR_ON Color::Yellow
+#define DOC_NAME "MessageNotifyDescription"
 
 void MainForm::MainFormInitialize(void) {
 
@@ -70,17 +67,21 @@ void MainForm::WndProc(System::Windows::Forms::Message% m)
 
 using namespace System::IO;
 
-void MainForm::loadConfig(System::String^ dir, int num_tags) {
+void MainForm::loadConfig(System::String^ dir) {
 	
-	
-	config = gcnew configurationClass(num_tags);
+	config = nullptr;
+	if (tagsArray == nullptr) return;
+
+	// Initializes the configuration
+	config = gcnew configurationClass(tagsArray->Length);
+
+	for (int i = 0; i < tagsArray->Length; i++) {
+		config->tags[i] = tagsArray[i];
+		config->descriptions[i] = "-";
+	}
 
 	// Populates the Description from the file
 	if (!File::Exists(dir + "\\" + "DocConfig.cnf")) {
-		for (int i = 0; i < num_tags; i++) {
-			config->tags[i] = listTag->Items[i]->ToString();
-			config->descriptions[i] = "-";
-		}
 
 		// Store a new file without comments
 		storeConfig(dir);
@@ -92,7 +93,7 @@ void MainForm::loadConfig(System::String^ dir, int num_tags) {
 	System::String^ tag;
 	System::String^ desc;
 	StreamReader^ din;
-	int count = 0;
+	
 	try {
 		din = File::OpenText(dir + "\\" + "DocConfig.cnf");
 
@@ -116,11 +117,10 @@ void MainForm::loadConfig(System::String^ dir, int num_tags) {
 				if (p < 0) continue;
 				desc = linestr->Substring(0, p)->Replace("<br>", "\n");
 				
-
-				config->tags[count] = tag;
-				config->descriptions[count] = desc;
-				count++;
-				if (count > config->tags->Length) break;
+				p = System::Array::IndexOf(tagsArray, tag);
+				if (p >= 0) {
+					config->descriptions[p] = desc;
+				}
 				
 			}
 		}
@@ -130,6 +130,8 @@ void MainForm::loadConfig(System::String^ dir, int num_tags) {
 	catch (...) {
 		return;
 	}
+
+	
 }
 
 void MainForm::storeConfig(System::String^ dir) {
@@ -153,8 +155,9 @@ void MainForm::loadTagList(System::String^ dir) {
 	selectedTitle->Text = "-";
 	selectedContent->Text = "-";
 
-	if (!File::Exists(dir + "\\..\\MESSAGES\\Notify.h")) {
-		
+	tagsArray = nullptr;
+
+	if (!File::Exists(dir + "\\..\\MESSAGES\\Notify.h")) {		
 		return;
 	}
 
@@ -201,6 +204,11 @@ void MainForm::loadTagList(System::String^ dir) {
 			
 		}
 
+		tagsArray = gcnew cli::array<System::String^>(listTag->Items->Count);
+		for (int i = 0; i < tagsArray->Length; i++) {
+			tagsArray[i] = listTag->Items[i]->ToString();
+		}
+
 		din->Close();
 	}
 	catch (...) {
@@ -208,6 +216,7 @@ void MainForm::loadTagList(System::String^ dir) {
 	}
 
 	
+
 	
 }
 void MainForm::loadLanguageList(System::String^ dir) {
@@ -336,7 +345,7 @@ void MainForm::GenerateMessageList(System::String^ dir) {
 	System::String^ strdata;
 
 	// Creates the Doxygen style Table
-	sw->WriteLine(" /** \\addtogroup MSGDOC ");
+	sw->WriteLine(" /** \\addtogroup " + DOC_NAME);
 	sw->WriteLine(" This is the message translation of the language: " + language);
 	sw->WriteLine(" | ID | MESSAGE | Description |");
 	sw->WriteLine(" |:--|:--|:--|");

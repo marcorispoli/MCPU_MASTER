@@ -1,5 +1,175 @@
-.TH "R2CP::CaDataDicPatientInterface" 3 "MCPU" \" -*- nroff -*-
+.TH "R2CP::CaDataDicPatientInterface" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 R2CP::CaDataDicPatientInterface
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum { \fBCp_II_Patient_SS_PDProcedureIdOutOfRangeGen\fP = 1, \fBCp_II_Patient_SS_PDProcedureTypeNotSupportedGen\fP = 2, \fBCp_II_Patient_SS_PDHandswitchFootswitchIndexOutOfRangeGen\fP = 10, \fBCp_II_Patient_SS_PDNonExistentWorkstationGen\fP = 12, \fBCp_II_Patient_SS_PDIncorrectNumberExposureDatabanks\fP = 13, \fBCp_II_Patient_SS_PDExposureDatabankSequencingNotPossible\fP = 14, \fBCp_II_Patient_SS_PDExposureDatabankSequencingNotSupported\fP = 15, \fBCp_II_Patient_SS_PDWorkstationOutOfRange\fP = 16, \fBCp_II_Patient_SS_PDHandswitchFootswitchIndexNotDefined\fP = 17, \fBCp_II_Patient_SS_PDProcedurePrevioslyCreated\fP = 18 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_Patient_SS_PAProcedureIdNotDefinedGen\fP = 1, \fBCp_II_Patient_SS_PAProcedureIdOutOfRangeGen\fP = 2, \fBCp_II_Patient_SS_PAExposureSequenceNumberOutOfRange\fP = 3, \fBCp_II_Patient_SS_PAExposureDbNotAssigned\fP = 4, \fBCp_II_Patient_SS_PAProcedureInvalidActivation\fP = 5, \fBCp_II_Patient_SS_PAProcedureInvalidDeactivation\fP = 6, \fBCp_II_Patient_SS_PAExposureSequenceNumberInvalid\fP = 7 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_Patient_SS_PDefaultProcedureIdNotDefinedGen\fP = 1, \fBCp_II_Patient_SS_PDefaultProcedureIdOutOfRangeGen\fP = 2, \fBCp_II_Patient_SS_PDefaultExposureSequenceNumberOutOfRange\fP = 3, \fBCp_II_Patient_SS_PDefaultExposureDbNotAssigned\fP = 4 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_Patient_SS_PRProcedureIdNotDefinedGen\fP = 1, \fBCp_II_Patient_SS_PRProcedureIdOutOfRangeGen\fP = 2, \fBCp_II_Patient_SS_PRProcedureActivationNotSupported\fP = 11 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_Patient_SS_PWProcedureIdNotDefinedGen\fP = 1, \fBCp_II_Patient_SS_PWProcedureIdOutOfRangeGen\fP = 2, \fBCp_II_Patient_SS_PWNonExistentWorkstation\fP = 12, \fBCp_II_Patient_SS_PWDifferentTubeDefinition\fP = 13 }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_Patient_SS_Pos_Cal_Not_Available\fP = 1, \fBCp_II_Patient_SS_Pos_Cal_No_Switching\fP = 2, \fBCp_II_Patient_SS_Pos_Cal_Wait_To_SendCp\fP }"
+.br
+.ti -1c
+.RI "enum { \fBCp_II_Patient_SS_POOutOfRange\fP = 1, \fBCp_II_Patient_SS_PONotPossible\fP = 2 }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCaDataDicPatientInterface\fP ()"
+.br
+.RI "Default Constructor\&. "
+.ti -1c
+.RI "virtual \fB~CaDataDicPatientInterface\fP ()"
+.br
+.RI "Destructor\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_ProcedureDefinition\fP (\fBtProcedure\fP *pProcedure)"
+.br
+.RI "Defines a procedure\&. Message to be sent to all positioners and generators in the room\&. Each positioner and generator will reply with a Positioner Procedure and \fBGenerator\fP Procedure ANSWER-EVENT\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_ProcedureDefinition\fP (unsigned char ProcedureId)"
+.br
+.RI "Gets procedure Id Information\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_ProcedureActivateDatabank\fP (unsigned char ProcedureId, unsigned char Command, unsigned char ExpDBSeqNum)"
+.br
+.RI "Activates the specified Procedure, Exposure/Position/Collimator FOV/Collimator Data Bank Sequence Numbers\&. There can only be one procedure active\&. All masters will reply with a Positioner or \fBGenerator\fP Activate Procedure and Data Banks ANSWER\&. If activation is driven by handswitch/footswitch, masters will send EVENT messages\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_ProcedureActivateDatabank\fP (unsigned char ProcedureId)"
+.br
+.RI "Gets Current Status of Procedure & Databank\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_Procedure_Default\fP (unsigned char ProcedureId, unsigned char Command, unsigned char ExpDBSeqNum)"
+.br
+.RI "For procedures activated from handswitches/footswitches, defines the procedure that is activated when no handswitch/footswitch is pressed\&. be used to always be ready for the most commonly used procedure, typically fluoro\&. If no procedure is defined, default procedure 0 is used when there is no active handswitch/footswitch\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_Procedure_Default\fP (void)"
+.br
+.RI "Gets Default Procedure\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_Procedure_ClearAll\fP (void)"
+.br
+.RI "Clears all Procedures\&. All masters will reply with a Positioner Clear All Procedures or \fBGenerator\fP Clear All Procedures EVENT\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_Patient_Redefine_HandFootswitchActivation\fP (unsigned char ProcedureId, unsigned char ActiveWhenHorFSwitchIsPressed)"
+.br
+.RI "Redefines Handswitch/Footswitch Procedure Activation Field\&. Message to be sent to all positioners and generators in the room\&. Each positioner and generator will reply with a Positioner Procedure and \fBGenerator\fP Procedure ANSWER-EVENT\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_Redefine_Workstation\fP (unsigned char ProcedureId, unsigned char WorkstationId)"
+.br
+.RI "Redefines Workstation Field\&. Message to be sent to all positioners and generators in the room\&. Each positioner and generator will reply with a Positioner Procedure and \fBGenerator\fP Procedure ANSWER-EVENT\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_SyncUp\fP (void)"
+.br
+.RI "This message is sent to positioner request a complete update of the current positioner status\&. This includes defined procedures and data banks\&. This message is sent to generator request a complete update of the current generator status\&. This includes defined procedures and data banks\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_WorkingMode\fP (unsigned char WorkingMode, unsigned char NodeId)"
+.br
+.RI "Sets new Working Mode\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_WorkingMode\fP (void)"
+.br
+.RI "Gets Current Working MOde\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Positioner_Calibration_Number\fP (unsigned char Pos_Id, unsigned char Sequence)"
+.br
+.RI "This message is sent to generator and positioner when there are more than one positioner configured in the room, to distiguish wich positioner (tube) is about to be calibrated\&. If this message is not sent, the devices will assume that positioner 1 is calibrated\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Positioner_Calibration_Number\fP (void)"
+.br
+.RI "Gets Positioner Calibration Number\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_PowerOffRequest\fP (tPowerOffType PowerOffType)"
+.br
+.RI "This event is fired when a power off sequence is requested\&. It could be started from the RCC (Remote Control Console), or any other device (i\&.e Console, generator power off key, …)\&. Power Recycling is available available on ChallengeX, and consists on a power on restart after a regular power off sequence\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_PowerOff\fP (unsigned short WaitTimeBeforePowerOff)"
+.br
+.RI "Set message should be sent after Power Off Confirm \&. This message is sent to the generator to indicate the number of seconds to wait before the power removal (WaitTimeBeforePowerOff property)\&. Normally, this time should be long enough to allow the PC workstations to do a clean shutdown\&. Once the generator receives this request, notifies with an event to all devices that a power off will be done in the indicated time interval\&. There is no possibility to cancel power off at this point\&. Maximum selectable time: 10 minutes (600 seconds)\&. "
+.ti -1c
+.RI "virtual void \fBII_Patient_SS_PowerOff\fP (void)"
+.br
+.RI "Sets a Power Off 
+.br
+ "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_PowerOffCancel\fP (void)"
+.br
+.RI "This message is sent when a console cancels the power off sequence\&. It should be sent before the “Power Off” set\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_Patient_SS_PowerOffConfirm\fP (tPowerOffType PowerOffConfirmType)"
+.br
+.RI "This message should sent to the positioner before the Power Off to confirm the Power Off Request event (power off or reboot)\&. "
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "anonymous enum"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICp_II_Patient_SS_PDProcedureTypeNotSupportedGen \fP\fP
+generator does not accept the requested procedure ID 
+.TP
+\fB\fICp_II_Patient_SS_PDHandswitchFootswitchIndexOutOfRangeGen \fP\fP
+generator does not implement the requested functionality (license) 
+.TP
+\fB\fICp_II_Patient_SS_PDNonExistentWorkstationGen \fP\fP
+assigned exposure switch is out of range 
+.TP
+\fB\fICp_II_Patient_SS_PDIncorrectNumberExposureDatabanks \fP\fP
+workstation not defined on the generator 
+.TP
+\fB\fICp_II_Patient_SS_PDExposureDatabankSequencingNotPossible \fP\fP
+assigned databank not defined 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual unsigned char R2CP::CaDataDicPatientInterface::II_Patient_SS_PowerOffConfirm (tPowerOffType PowerOffConfirmType)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+This message should sent to the positioner before the Power Off to confirm the Power Off Request event (power off or reboot)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIPowerOffConfirmType\fP => 0: Power off 1: Power Recycling\&. 
+.RE
+.PP
+
+.SS "virtual unsigned char R2CP::CaDataDicPatientInterface::II_Patient_SS_PowerOffRequest (tPowerOffType PowerOffType)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+This event is fired when a power off sequence is requested\&. It could be started from the RCC (Remote Control Console), or any other device (i\&.e Console, generator power off key, …)\&. Power Recycling is available available on ChallengeX, and consists on a power on restart after a regular power off sequence\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fI\fP 
+.RE
+.PP
+=> 0: Power off 1: Power Recycling 
+.br
+ 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

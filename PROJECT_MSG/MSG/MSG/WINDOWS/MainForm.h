@@ -99,12 +99,13 @@ namespace CppCLRWinFormsProject {
 	void GenerateMessageList(System::String^ dir);
 	void GenerateTemplate(System::String^ dir, bool new_template);
 
-	void loadConfig(System::String^ dir, int count);
+	void loadConfig(System::String^ dir);
 	void storeConfig(System::String^ dir);
 
 	System::String^ msgPath;
 	System::String^ currentLanguage;
 	cli::array<msgItem^>^ itemArray;
+	cli::array<System::String^>^ tagsArray;
 	configurationClass^ config;
 
 	
@@ -468,7 +469,7 @@ namespace CppCLRWinFormsProject {
 		msgPath = dirBrowser->SelectedPath;
 		loadLanguageList(dirBrowser->SelectedPath);
 		loadTagList(dirBrowser->SelectedPath);
-		loadConfig(dirBrowser->SelectedPath, listTag->Items->Count);
+		loadConfig(dirBrowser->SelectedPath);
 		loadMessageList(dirBrowser->SelectedPath, comboLanguages->Text);
 		
 	}

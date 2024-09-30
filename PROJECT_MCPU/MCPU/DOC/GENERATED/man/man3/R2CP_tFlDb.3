@@ -1,5 +1,85 @@
-.TH "R2CP::tFlDb" 3 "MCPU" \" -*- nroff -*-
+.TH "R2CP::tFlDb" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 R2CP::tFlDb
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBudword\fP \fBmA100\fP"
+.br
+.ti -1c
+.RI "\fBudword\fP \fBms100\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBkV10\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBMaxIntegrationTime\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBAbcUpdateTime\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBTargeteLsb\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBPPS10\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBDoseLevelId\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBABCEnabled\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBFl_LockIn\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBHighDoseEnabled\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBReserved\fP: 5"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBDoseCtrl\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBFocalSpot\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBDatabankId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBImagingSystemProtocol\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBCurveId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBFilterId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBQbyPSS\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

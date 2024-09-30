@@ -1,4 +1,4 @@
-.TH "MessageNotifyDescription" 3 "MCPU" \" -*- nroff -*-
+.TH "MessageNotifyDescription" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,21 +15,31 @@ This document describes in detail the message notification system and the GUI la
 .SH "Index"
 .PP
 .IP "\(bu" 2
-\fBMessage Gui Display\fP 
+\fBMessage Gui Display\fP; 
 .br
-;
+
 .IP "\(bu" 2
-\fBMessage Description Table\fP 
+\fBMessage Description\fP; 
 .br
-;
+
+.IP "\(bu" 2
+\fBMessage Translation Files\fP; 
+.br
+
+.IP "\(bu" 2
+\fBMessage Gui Display\fP; 
+.br
+
+.IP "\(bu" 2
+\fBMessage Description Table\fP; 
+.br
+ 
 .PP
 .SH "Overview"
 .PP
 The Application makes use of series offormatted string for labeling the GUI field and for generating runtime information messages to the operator\&.
-
 .PP
 All those strings can be translated in one of the following languages:
-
 .PP
 .IP "\(bu" 2
 Italian;
@@ -44,10 +54,8 @@ Franch;
 .IP "\(bu" 2
 Russian;
 .PP
-
 .PP
 The current language shall be set into the SystemInit\&.cnf file (see \fBSystemInit\&.cnf configuration file\fP), and activate during the system startup\&. However, the AWS software can change it with the proper protocol command\&.
-
 .PP
 There are four types of translated strings:
 .IP "\(bu" 2
@@ -59,125 +67,259 @@ The Info Messages: they are the current status information that can help the Ope
 .IP "\(bu" 2
 The Labels: they are strings used to name the GUI fields when required;
 .PP
+.SH "Message Description"
+.PP
+Every message is described by the following items:
+.IP "\(bu" 2
+Message Code: it is the univoque identifier code assigned to the message\&.
+.IP "  \(bu" 4
+Error Message: 'Exxxxx' (example: 'E00010');
+.IP "  \(bu" 4
+Warning Message: 'Wxxxxx' (example: 'W00010');
+.IP "  \(bu" 4
+Info Message: 'Ixxxxx' (example: 'I00010');
+.PP
+
+.IP "\(bu" 2
+Message Title: it is a string defining the message argument;
+.IP "\(bu" 2
+Message Description: (optional) it is a string describing in detail the event;
+.PP
+.SH "Message Translation Files"
+.PP
+The Application, in order to correctly translate the messages, makes use of special files, located in the LANGUAGE project sub directory, and hardcoded into the application at the compile time\&.
+.PP
+The files are named:
+.IP "\(bu" 2
+translate_xxx\&.h
+.PP
+.PP
+where xxx denotes the current language:
+.IP "\(bu" 2
+\fBtranslate_eng\&.h\fP: it is the file for the english translation;
+.IP "\(bu" 2
+\fBtranslate_ita\&.h\fP: it is the file for the italian translation;
+.IP "\(bu" 2
+\fBtranslate_fra\&.h\fP: it is the file for the franch translation;
+.IP "\(bu" 2
+\fBtranslate_por\&.h\fP: it is the file for the portoguese translation;
+.IP "\(bu" 2
+\fBtranslate_esp\&.h\fP: it is the file for the espanol translation;
+.IP "\(bu" 2
+\fBtranslate_rus\&.h\fP: it is the file for the russian translation;
+.PP
+.PP
+every file is composed with a series of raws, describing all the messages in the following format:
+.PP
+.PP
+.nf
+   'E00001', Notify::messages::E00001, 'title string', 'description string',
+    \&.\&.\&.
+    'E0000n', Notify::messages::E0000n, 'title string', 'description string',
+
+    'W00001', Notify::messages::W00001, 'title string', 'description string',
+    \&.\&.\&.
+    'W0000m', Notify::messages::W0000m, 'title string', 'description string',
+
+    'I00001', Notify::messages::I00001, 'title string', 'description string',
+    \&.\&.\&.
+    'I0000k', Notify::messages::I0000k, 'title string', 'description string',.fi
+.PP
+.PP
+from left to right:
+.IP "\(bu" 2
+The Error Code;
+.IP "\(bu" 2
+The software internal tag, linked to the error code;
+.IP "\(bu" 2
+The translated title;
+.IP "\(bu" 2
+The translated description;
+.PP
+.PP
+Translation File Rules:
+.IP "\(bu" 2
+The TAG shall be uniquelly assigned to the message code;
+.IP "\(bu" 2
+The TAG and the message code shall not be repeated in the message list;
+.IP "\(bu" 2
+It is not important the order the raw appear in the file;
+.PP
 .SH "Message Gui Display"
 .PP
+The ERROR messages and the WARNING messages are displayed in a dedicated Dialog Window 
+.br
+ that can be accessed from the Panel Window pressing a dedicated button\&.
+.PP
+.PP
+The activating button can assume one of the right symbols depending on the current active messages:
+.IP "\(bu" 2
+The Error symbol is present if almost one of the active messages is an Error message;
+.IP "\(bu" 2
+The Warning symbol is present if almost one of the active messages is a Warning message and no errors are present;
+.IP "\(bu" 2
+The Info symbol is present if only info messages are active\&.
+.PP
+NOTE: if the Errors are always activated, the Warning and the Info message activation depends by the current operating status\&.
+.PP
+The message window has the following aspect:
+.PP
+.PP
+.PP
+The window displays a list of the active messages, in order of the gravity\&. In case the active messages should exceed the window dimension, a scrolling bar allows the operator to scroll the list\&.
 .SH "Message Description Table"
 .PP
 This is the message translation of the language: language_eng ID   MESSAGE   Description    E00000   Compilation Error
 .br
- Invalid module condition detected\&. See the log file   The Software risen an exception\&.
+ Invalid module condition detected\&. See the log file   The application risen a non handled exception\&.
 .br
-See the log file for details\&.    E00001   AWS Communication
+This is a possible bug scenario not tested or not investigated yet\&.
 .br
- Fatal error in opening the socket\&. Check the network parameters\&.   An error has been detected during the connection with the AWS
+See the Gantry\&.log file for details\&.    E00001   AWS Communication
 .br
-See the log file for details\&.    E00001   \fBPCB301\fP Communication
+ Fatal error in opening the socket\&. Check the network parameters\&.   An error has been detected during the connection with the AWS\&.
 .br
- The Board has been reset   -    E00002   \fBPCB302\fP Communication
+The problem may be due to a wrong address set into the SystemIni\&.cnf file 
 .br
- The Board has been reset   -    E00003   \fBPCB303\fP Communication
+for the Command socket and/or Event socket\&.
 .br
- The Board has been reset   -    E00004   \fBPCB304\fP Communication
+See the AWS protocol documentation for details\&.
 .br
- The Board has been reset   -    E00005   \fBPCB315\fP Communication
+    E00002   \fBPCB301\fP Communication
 .br
- The Board has been reset   -    E00006   \fBPCB326\fP Communication
+ The Board has been reset   The \fBPCB301\fP is the service power board\&. 
 .br
- The Board has been reset   -    E00007   \fBPCB301\fP Communication
+The board signalled a reset event (the microcontroller is restarted)\&.
 .br
- The board no longer communicate with the MCPU   -    E00008   \fBPCB302\fP Communication
+The Application can handle this event restoring the current device status properly\&.
 .br
- The board no longer communicate with the MCPU   -    E00009   \fBPCB303\fP Communication
+However this event may suggest a problem with the cabling (power cable) or a board issue\&.
+.br
+Frequent events like that cannot be accepted as normal behavior\&.    E00003   \fBPCB302\fP Communication
+.br
+ The Board has been reset   The board signalled a reset event (the microcontroller is restarted)\&.
+.br
+The Application can handle this event restoring the current device status properly\&.
+.br
+However this event may suggest a problem with the cabling (power cable) or a board issue\&.
+.br
+Frequent events like that cannot be accepted as normal behavior\&.
+.br
+    E00004   \fBPCB303\fP Communication
+.br
+ The Board has been reset   The board signalled a reset event (the microcontroller is restarted)\&.
+.br
+The Application can handle this event restoring the current device status properly\&.
+.br
+However this event may suggest a problem with the cabling (power cable) or a board issue\&.
+.br
+Frequent events like that cannot be accepted as normal behavior\&.
+.br
+    E00005   \fBPCB304\fP Communication
+.br
+ The Board has been reset   The board signalled a reset event (the microcontroller is restarted)\&.
+.br
+The Application can handle this event restoring the current device status properly\&.
+.br
+However this event may suggest a problem with the cabling (power cable) or a board issue\&.
+.br
+Frequent events like that cannot be accepted as normal behavior\&.
+.br
+    E00006   PCB325 Communication
+.br
+ The Board has been reset   -    E00007   \fBPCB326\fP Communication
+.br
+ The Board has been reset   The board signalled a reset event (the microcontroller is restarted)\&.
+.br
+The Application can handle this event restoring the current device status properly\&.
+.br
+However this event may suggest a problem with the cabling (power cable) or a board issue\&.
+.br
+Frequent events like that cannot be accepted as normal behavior\&.
+.br
+    E00008   \fBPCB301\fP Communication
+.br
+ The board no longer communicate with the MCPU   -    E00009   \fBPCB302\fP Communication
+.br
+ The board no longer communicate with the MCPU   -    E00010   \fBPCB303\fP Communication
 .br
  The board no longer communicate with the MCPU   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    E00010   \fBPCB304\fP Communication
+ID   MESSAGE   Description    E00011   \fBPCB304\fP Communication
 .br
- The board no longer communicate with the MCPU   -    E00011   \fBPCB315\fP Communication
+ The board no longer communicate with the MCPU   -    E00012   PCB325 Communication
 .br
- The board no longer communicate with the MCPU   Bruno fa la pizza che non piace a Bruno
+ The board no longer communicate with the MCPU   -    E00013   \fBPCB326\fP Communication
 .br
-Evviva la puzza
+ The board no longer communicate with the MCPU   -    E00014   Xray push button fault
 .br
-    E00012   \fBPCB326\fP Communication
+ Xray push button locked On   -    E00015   Motor Pedals Fault
 .br
- The board no longer communicate with the MCPU   -    E00013   Xray push button fault
+ Up/Down pedals locked On   -    E00016   Motor Pedals Fault
 .br
- Xray push button locked On   -    E00014   Motor Pedals Fault
+ Compressor pedals locked On   -    E00017   Motor Buttons Fault
 .br
- Up/Down pedals locked On   -    E00015   Motor Pedals Fault
+ C-Arm rotation buttons locked On   -    E00018   Motor Buttons Fault
 .br
- Compressor pedals locked On   -    E00016   Motor Buttons Fault
+ Up/Down buttons locked On   -    E00019   Software Configuration Fault
 .br
- C-Arm rotation buttons locked On   -    E00017   Motor Buttons Fault
-.br
- Up/Down buttons locked On   -    E00018   Software Configuration Fault
-.br
- Wrong software or firmware revision detected   -    E00019   System Power Monitoring
+ Wrong software or firmware revision detected   -    E00020   System Power Monitoring
 .br
  Power down condition detected!   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    E00020   System Power Monitoring
+ID   MESSAGE   Description    E00021   System Power Monitoring
 .br
- Emergency button activation detected!   -    E00037   System Safety Monitoring
+ Emergency button activation detected!   -    E00022   System Safety Monitoring
 .br
- Safety Cabinet activation detected!   -    E00021   System Power Monitoring
+ Safety Cabinet activation detected!   -    E00023   System Power Monitoring
 .br
- Battery voltage monitoring error! The battery voltage level is too low\&.   -    E00022   \fBGenerator\fP Status
+ Battery voltage monitoring error! The battery voltage level is too low\&.   -    E00024   \fBGenerator\fP Status
 .br
- \fBGenerator\fP device not connected   -    E00023   Collimator Monitoring
+ \fBGenerator\fP device not connected   -    E00025   Collimator Monitoring
 .br
- The Collimator selector seams to be blocked   -    E00024   Filter Monitoring
+ The Collimator selector seams to be blocked   -    E00026   Filter Monitoring
 .br
- The Filter selector seams to be blocked   -    E00025   Tube Temperature Monitoring
+ The Filter selector seams to be blocked   -    E00027   Tube Temperature Monitoring
 .br
- The Tube Stator sensor connection input seams to be broken   -    E00026   Tube Temperature Monitoring
+ The Tube Stator sensor connection input seams to be broken   -    E00028   Tube Temperature Monitoring
 .br
- The Tube Stator sensor connection input seams to be shorted   -    E00027   Tube Temperature Monitoring
+ The Tube Stator sensor connection input seams to be shorted   -    E00029   Tube Temperature Monitoring
 .br
- The Tube Bulb sensor connection input seams to be broken   -    E00028   Tube Temperature Monitoring
+ The Tube Bulb sensor connection input seams to be broken   -    E00030   Tube Temperature Monitoring
 .br
  The Tube Bulb sensor connection input seams to be shorted   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    E00029   Body Motor Monitoring
+ID   MESSAGE   Description    E00031   Body Motor Monitoring
 .br
- The brake device is in Fault condition   -    E00030   Tilt Motor Monitoring
+ The brake device is in Fault condition   -    E00032   Tilt Motor Monitoring
 .br
- The brake device is in Fault condition   -    E00031   Vertical Motor Monitoring
+ The brake device is in Fault condition   -    E00033   Vertical Motor Monitoring
 .br
- The encoder is not initialized   -    E00032   ARM Motor Monitoring
+ The encoder is not initialized   -    E00034   ARM Motor Monitoring
 .br
- The encoder is not initialized   -    E00033   Slide Motor Monitoring
+ The encoder is not initialized   -    E00035   Slide Motor Monitoring
 .br
- The encoder is not initialized   -    E00034   Tilt Motor Monitoring
+ The encoder is not initialized   -    E00036   Tilt Motor Monitoring
 .br
- The encoder is not initialized   -    E00035   Body Motor Monitoring
+ The encoder is not initialized   -    E00037   Body Motor Monitoring
 .br
- The encoder is not initialized   -    E00036   Body Motor Monitoring
+ The encoder is not initialized   -    E00038   Body Motor Monitoring
 .br
- The limit switch is active   -    E00037   Body Motor Monitoring
+ The limit switch is active   -    E00039   Body Motor Monitoring
 .br
- Unable to read the potentiometer input   -    E00038   Vertical Motor Monitoring
+ Unable to read the potentiometer input   -    E00040   Vertical Motor Monitoring
 .br
  The limit switch is active   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    E00039   \fBGenerator\fP Status Monitoring
+ID   MESSAGE   Description    E00041   \fBGenerator\fP Status Monitoring
 .br
- The \fBGenerator\fP configuration is failed   -    E00040   \fBGenerator\fP Messages
+ The \fBGenerator\fP configuration is failed   -    E00042   \fBGenerator\fP Messages
 .br
- There are error messages   -    E00041   Potter Messages
+ There are error messages   -    E00043   Potter Messages
 .br
  The Grid device is in fault condition   -    E00900   X-RAY Sequence Error
 .br
@@ -194,59 +336,53 @@ ID   MESSAGE   Description    E00039   \fBGenerator\fP Status Monitoring
  Missing compression force\&.   -    W00002   Component Monitoring
 .br
  Undetected patient protection component\&.   -   
-
 .PP
-
 .PP
 ID   MESSAGE   Description    W00003   Arm Position Monitoring
 .br
  C-ARM angle out of range\&. Repeat the C-ARM positioning\&.   -    W00004   Compressor Monitoring
 .br
- The position is not calibrated\&.   -    W00004   Compressor Monitoring
+ The position is not calibrated\&.   -    W00005   Compressor Monitoring
 .br
- The force is not calibrated\&.   -    W00004   Compressor Monitoring
+ The force is not calibrated\&.   -    W00006   Compressor Monitoring
 .br
- A valid paddle is not detected\&.   -    W00005   Compressor Monitoring
+ A valid paddle is not detected\&.   -    W00007   Compressor Monitoring
 .br
- Wrong Paddle model detected\&.   -    W00006   Exposure Parameters Monitoring
+ Wrong Paddle model detected\&.   -    W00008   Exposure Parameters Monitoring
 .br
- Missing exposure mode selection\&.   -    W00007   Exposure Parameters Monitoring
+ Missing exposure mode selection\&.   -    W00009   Exposure Parameters Monitoring
 .br
- Missing exposure data selection\&.   -    W00008   X-Ray Button Monitoring
+ Missing exposure data selection\&.   -    W00010   X-Ray Button Monitoring
 .br
- The X-Ray button is not enabled\&.   -    W00009   Safety Monitoring
+ The X-Ray button is not enabled\&.   -    W00011   Safety Monitoring
 .br
- The Study's door is detected Open\&.   -    W00010   \fBGenerator\fP Status Monitoring
+ The Study's door is detected Open\&.   -    W00012   \fBGenerator\fP Status Monitoring
 .br
  The \fBGenerator\fP is not ready for exposure\&.   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    W00012   X-Ray Tube Monitoring
+ID   MESSAGE   Description    W00013   X-Ray Tube Monitoring
 .br
- The X-Ray Tube cumulated energy is too high   -    W00013   Collimator Light Command Failed
+ The X-Ray Tube cumulated energy is too high   -    W00014   Collimator Light Command Failed
 .br
- The Collimation Light cannot be activated now\&. Try again\&.   -    W00014   Tube Temperature Monitoring
+ The Collimation Light cannot be activated now\&. Try again\&.   -    W00015   Tube Temperature Monitoring
 .br
- The Tube Stator temperature is too high   -    W00015   Tube Temperature Monitoring
+ The Tube Stator temperature is too high   -    W00016   Tube Temperature Monitoring
 .br
- The Tube Bulb temperature is too high   -    W00016   Tube Temperature Monitoring
+ The Tube Bulb temperature is too high   -    W00017   Tube Temperature Monitoring
 .br
- The Anode temperature is too high   -    W00017   Filter Monitoring
+ The Anode temperature is too high   -    W00018   Filter Monitoring
 .br
- The Filter selector is not in a valid position   -    W00018   Collimator Monitoring
+ The Filter selector is not in a valid position   -    W00019   Collimator Monitoring
 .br
- An invalid collimation format is detected   -    W00019   \fBGenerator\fP Monitoring
+ An invalid collimation format is detected   -    W00020   \fBGenerator\fP Monitoring
 .br
- The \fBGenerator\fP is in Service Mode   -    W00020   Potter Monitoring
+ The \fBGenerator\fP is in Service Mode   -    W00021   Potter Monitoring
 .br
- The grid is not in the expected position   -    W00021   Potter Monitoring
+ The grid is not in the expected position   -    W00022   Potter Monitoring
 .br
  The grid activation is momentary disabled   -   
-
 .PP
-
 .PP
 ID   MESSAGE   Description    I00001   System Power Monitoring
 .br
@@ -269,9 +405,7 @@ ID   MESSAGE   Description    I00001   System Power Monitoring
  Invalid activation conditions   -    I00010   Motor Arm Activation
 .br
  Invalid activation conditions   -   
-
 .PP
-
 .PP
 ID   MESSAGE   Description    I00011   Motor Tilt Activation
 .br
@@ -289,24 +423,22 @@ ID   MESSAGE   Description    I00011   Motor Tilt Activation
 .br
  The manual activation is disabled for safety   -    I00018   Manual Motor Activation
 .br
- The manual activation is disabled for pending errors   -    I00018   Body Motor Monitoring
+ The manual activation is disabled for pending errors   -    I00019   Body Motor Monitoring
 .br
- The motor driver is in error condition   -    I00018   Vertical Motor Monitoring
+ The motor driver is in error condition   -    I00020   Vertical Motor Monitoring
 .br
  The motor driver is in error condition   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    I00018   Tilt Motor Monitoring
+ID   MESSAGE   Description    I00021   Tilt Motor Monitoring
 .br
- The motor driver is in error condition   -    I00018   Arm Motor Monitoring
+ The motor driver is in error condition   -    I00022   Arm Motor Monitoring
 .br
- The motor driver is in error condition   -    I00018   Slide Motor Monitoring
+ The motor driver is in error condition   -    I00023   Slide Motor Monitoring
 .br
- The motor driver is in error condition   -    I00019   Power Off Request
+ The motor driver is in error condition   -    I00024   Power Off Request
 .br
- Proceed with the System Power Off?   -    I00020   Potter Monitoring
+ Proceed with the System Power Off?   -    I00025   Potter Monitoring
 .br
  The Grid positioning is set to manual mode (test mode)   -    L00001   Error Window Panel
 .br
@@ -314,80 +446,74 @@ ID   MESSAGE   Description    I00018   Tilt Motor Monitoring
 .br
  -   -    L00003   Zero Setting Panel
 .br
- -   -    L00003   Service Panel
+ -   -    L00004   Service Panel
 .br
- -   -    L00003   Calibration Panel
-.br
- -   -   
-
-.PP
-
-.PP
-ID   MESSAGE   Description    L00003   Rotation Tool Panel
-.br
- -   -    L00004   ERR
-.br
- -   -    L00005   WRN
-.br
- -   -    L00006   INF
-.br
- -   -    L00007   Standby
-.br
- -   -    L00008   Ready
-.br
- -   -    L00009   X-Ray Executing
-.br
- -   -    L00010   Command successfully completed
-.br
- -   -    L00011   Command manually terminated
-.br
- -   -    L00012   Obstacle detected error
+ -   -    L00005   Calibration Panel
 .br
  -   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    L00013   Motor busy error
+ID   MESSAGE   Description    L00006   Rotation Tool Panel
 .br
- -   -    L00014   Command initialization error
+ -   -    L00007   ERR
 .br
- -   -    L00015   Unexpected internal status error
+ -   -    L00008   WRN
 .br
- -   -    L00016   Limit switches activation error
+ -   -    L00009   INF
 .br
- -   -    L00017   Brake device activation error
+ -   -    L00010   Standby
 .br
- -   -    L00019   Timeout activation error
+ -   -    L00011   Ready
 .br
- -   -    L00020   Driver internal error
+ -   -    L00012   X-Ray Executing
 .br
- -   -    L00021   Driver access register error
+ -   -    L00013   Command successfully completed
 .br
- -   -    L00022   Missing zero setting error
+ -   -    L00014   Command manually terminated
 .br
- -   -    L00023   Motor activation disabled error
+ -   -    L00015   Obstacle detected error
 .br
  -   -   
-
 .PP
-
 .PP
-ID   MESSAGE   Description    L00024   Motor activation aborted
+ID   MESSAGE   Description    L00016   Motor busy error
 .br
- -   -    L00026   Compression Activated
+ -   -    L00017   Command initialization error
 .br
- -   -    L00027   Arm Motor Activated
+ -   -    L00018   Unexpected internal status error
 .br
- -   -    L00028   Body Motor Activated
+ -   -    L00019   Limit switches activation error
 .br
- -   -    L00028   Vertical Motor Activated
+ -   -    L00020   Brake device activation error
 .br
- -   -    L00028   Slide Motor Activated
+ -   -    L00021   Timeout activation error
 .br
- -   -    L00028   Tilt Motor Activated
+ -   -    L00022   Driver internal error
 .br
- -   -    L00029   Xray Tube Calibration Panel
+ -   -    L00023   Driver access register error
+.br
+ -   -    L00024   Missing zero setting error
+.br
+ -   -    L00025   Motor activation disabled error
+.br
+ -   -   
+.PP
+.PP
+ID   MESSAGE   Description    L00026   Motor activation aborted
+.br
+ -   -    L00027   Compression Activated
+.br
+ -   -    L00028   Arm Motor Activated
+.br
+ -   -    L00029   Body Motor Activated
+.br
+ -   -    L00030   Vertical Motor Activated
+.br
+ -   -    L00031   Slide Motor Activated
+.br
+ -   -    L00032   Tilt Motor Activated
+.br
+ -   -    L00033   Xray Tube Calibration Panel
 .br
  -   -   
 .SH "Author"

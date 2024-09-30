@@ -1,4 +1,4 @@
-.TH "R2CPModule" 3 "MCPU" \" -*- nroff -*-
+.TH "R2CPModule" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,12 +13,36 @@ R2CPModule \- R2CP Protocol Communication Module\&.
 .RI "file \fBCaDataDicGen\&.cpp\fP"
 .br
 .RI "Definition of the local object dictionary\&. "
+.ti -1c
+.RI "file \fBCaDataDicGen\&.cpp\fP"
+.br
+.RI "Definition of the local object dictionary\&. "
+.ti -1c
+.RI "file \fBCaDataDicGen\&.cpp\fP"
+.br
+.RI "Definition of the local object dictionary\&. "
+.ti -1c
+.RI "file \fBCaDataDicGen\&.cpp\fP"
+.br
+.RI "Definition of the local object dictionary\&. "
+.ti -1c
+.RI "file \fBCaDataDicGen\&.cpp\fP"
+.br
+.RI "Definition of the local object dictionary\&. "
+.ti -1c
+.RI "file \fBCaDataDicGen\&.cpp\fP"
+.br
+.RI "Definition of the local object dictionary\&. "
+.ti -1c
+.RI "file \fBCaDataDicGen\&.cpp\fP"
+.br
+.RI "Definition of the local object dictionary\&. "
 .in -1c
 .SS "Macros"
 
 .in +1c
 .ti -1c
-.RI "#define \fBHB\fP(x)"
+.RI "#define \fBHB\fP(x)   (unsigned char) (x >> 8)"
 .br
 .RI "Implementations for the class R2CP\&. "
 .in -1c
@@ -27,12 +51,7 @@ R2CPModule \- R2CP Protocol Communication Module\&.
 
 .SH "Macro Definition Documentation"
 .PP 
-.SS "#define HB( x)"
-\fBValue:\fP
-.nf
-(unsigned char) (x >> 8)
-.PP
-.fi
+.SS "#define HB(x)   (unsigned char) (x >> 8)"
 
 .PP
 Implementations for the class R2CP\&. 

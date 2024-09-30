@@ -1,5 +1,81 @@
-.TH "PCB302::ProtocolStructure::DataRegister" 3 "MCPU" \" -*- nroff -*-
+.TH "PCB302::ProtocolStructure::DataRegister" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 PCB302::ProtocolStructure::DataRegister
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBregister_index\fP { \fBHOLDER_LIMITS\fP = 0, \fBCOMPRESSOR_LIMITS\fP, \fBPADDLE_WEIGHT\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBencodeHolderLimitsRegister\fP (void)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBencodeCompressorLimitsRegister\fP (void)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBencodePaddleWeightRegister\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBdecodeHolderLimitsRegister\fP (\fBRegister\fP^ reg)"
+.br
+.ti -1c
+.RI "static bool \fBdecodeCompressorLimitsRegister\fP (\fBRegister\fP^ reg)"
+.br
+.ti -1c
+.RI "static bool \fBdecodePaddleWeightRegister\fP (\fBRegister\fP^ reg)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static unsigned char \fBlimit_compression\fP = 200"
+.br
+.RI "Current limit compression\&. "
+.ti -1c
+.RI "static unsigned char \fBtarget_compression\fP = 150"
+.br
+.RI "Current target compression\&. "
+.ti -1c
+.RI "static unsigned short \fBmax_position\fP = 0"
+.br
+.RI "Max Holder position\&. "
+.ti -1c
+.RI "static unsigned short \fBmin_position\fP = 0"
+.br
+.RI "Min holder position\&. "
+.ti -1c
+.RI "static unsigned char \fBpaddle_weight\fP = 0"
+.br
+.RI "Current detected paddle weight\&. "
+.ti -1c
+.RI "static unsigned char \fBmagnifier_offset\fP = 0"
+.br
+.RI "Offset in case of magnifier\&. "
+.ti -1c
+.RI "static unsigned char \fBpaddle_offset\fP = 0"
+.br
+.RI "Mechanical offset of the detected paddle\&. "
+.ti -1c
+.RI "static unsigned char \fBabsolute_arm_angle\fP = 0"
+.br
+.RI "Current detected Arm angle\&. "
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

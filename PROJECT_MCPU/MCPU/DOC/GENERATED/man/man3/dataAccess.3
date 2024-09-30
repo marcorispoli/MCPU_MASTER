@@ -1,4 +1,4 @@
-.TH "dataAccess" 3 "MCPU" \" -*- nroff -*-
+.TH "dataAccess" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -66,7 +66,6 @@ dataAccess \- Protected Module's Data Access API
 This group provides API to access remote register in read write modes 
 
 Since the access to the remote device should be made only by the class handling the communication with that module, the API for the data access shall be limited to the Subclass module implementing the communication with the device\&.
-
 .PP
 This group provides API to access remote register in read write modes:
 .IP "\(bu" 2
@@ -81,7 +80,7 @@ Read the Special registers\&.
 
 .SH "Function Documentation"
 .PP 
-.SS "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ CanDeviceProtocol::getRxRegister (void )\fR [inline]\fP, \fR [protected]\fP"
+.SS "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ CanDeviceProtocol::getRxRegister (void)\fC [inline]\fP, \fC [protected]\fP"
 
 .PP
 This function returns the last read register\&. 
@@ -92,7 +91,7 @@ The last valid read register content
 .RE
 .PP
 
-.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readCommandRegister (void )\fR [protected]\fP"
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readCommandRegister (void)\fC [protected]\fP"
 
 .PP
 This function executes the read of the special device command register\&. 
@@ -103,7 +102,7 @@ The device command register content or nullptr in case of communication error\&.
 .RE
 .PP
 
-.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readDataRegister (unsigned char index)\fR [protected]\fP"
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readDataRegister (unsigned char index)\fC [protected]\fP"
 
 .PP
 This function executes the read of the DATA register of given INDEX\&. 
@@ -119,7 +118,7 @@ The device STATUS Data(index) content or nullptr in case of communication error
 .RE
 .PP
 
-.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readErrorRegister (void )\fR [protected]\fP"
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readErrorRegister (void)\fC [protected]\fP"
 
 .PP
 This function executes the read of the special device error register\&. 
@@ -130,7 +129,7 @@ The device error register content or nullptr in case of communication error
 .RE
 .PP
 
-.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readStatusRegister (unsigned char index)\fR [protected]\fP"
+.SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readStatusRegister (unsigned char index)\fC [protected]\fP"
 
 .PP
 This function executes the read of the STATUS register of given INDEX\&. 
@@ -146,7 +145,7 @@ The device STATUS Register(index) content or nullptr in case of communication er
 .RE
 .PP
 
-.SS "bool CanDeviceProtocol::writeDataRegister (unsigned char idx, \fBRegister\fP^ reg)\fR [inline]\fP, \fR [protected]\fP"
+.SS "bool CanDeviceProtocol::writeDataRegister (unsigned char idx, \fBRegister\fP^ reg)\fC [inline]\fP, \fC [protected]\fP"
 
 .PP
 This function executes the write of the DATA(index)\&. 
@@ -163,7 +162,7 @@ This function executes the write of the DATA(index)\&.
 .RE
 .PP
 
-.SS "bool CanDeviceProtocol::writeDataRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)\fR [protected]\fP"
+.SS "bool CanDeviceProtocol::writeDataRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)\fC [protected]\fP"
 
 .PP
 This function executes the write of the DATA(index)\&. 
@@ -187,11 +186,10 @@ true in case of success
 .RE
 .PP
 
-.SS "bool CanDeviceProtocol::writeParamRegister (unsigned char idx, \fBRegister\fP^ reg)\fR [inline]\fP, \fR [protected]\fP"
+.SS "bool CanDeviceProtocol::writeParamRegister (unsigned char idx, \fBRegister\fP^ reg)\fC [inline]\fP, \fC [protected]\fP"
 
 .PP
 This function executes the write of the PARAMETER(index)\&. The device will store in EEPROM the parameter if it should be changed\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -205,11 +203,10 @@ This function executes the write of the PARAMETER(index)\&. The device will stor
 .RE
 .PP
 
-.SS "bool CanDeviceProtocol::writeParamRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)\fR [protected]\fP"
+.SS "bool CanDeviceProtocol::writeParamRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)\fC [protected]\fP"
 
 .PP
 This function executes the write of the PARAMETER(index)\&. The device will store in EEPROM the parameter if it should be changed\&.
-
 .PP
 \fBParameters\fP
 .RS 4

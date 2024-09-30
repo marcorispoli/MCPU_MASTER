@@ -1,4 +1,4 @@
-.TH "BodyMotor_Module" 3 "MCPU" \" -*- nroff -*-
+.TH "BodyMotor_Module" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ BodyMotor_Module \- Body Module controller
 .ti -1c
 .RI "class \fBBodyMotor\fP"
 .br
-.RI "This is the Body Module class implementation\&. "
+.RI "This is the Body Module class implementation"
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -46,20 +46,16 @@ with Zero setting OFF: the limit is the clockwise;
 .PP
 .SS "Analog Input"
 The Analog input is used to detect the actual position of the shaft\&.
-
 .PP
 The position is detected using a 5 turns potentiometer connected to the shaft with a x3 multiply factor:
-
 .PP
 180° -> 1\&.5 potentiometer turns\&.
-
 .PP
 The calculated resolution is 0\&.4882 °/unit
 .SS "Digital Inputs"
 .IP "\(bu" 2
 DIGITAL INPUT 4: Brake activation status;
 .PP
-
 .PP
 The Input4 is a Positive logic assigned to the current brake status:
 .IP "\(bu" 2
@@ -67,27 +63,22 @@ ON: the brake is powered;
 .IP "\(bu" 2
 OFF: the brake is not powered;
 .PP
-
 .PP
 NOTE: the Brake device is a normally closed brake, so when it should be powered, it releases the braking force!
 .SS "Digital Outputs"
 .IP "\(bu" 2
 DIGITAL OUTPUT 1 and 2: brake activation outputs
 .PP
-
 .PP
 The Output are tw open collector output that shall be set as Normally closed (OFF = 0V output)\&.
-
 .PP
 In order to power the Brake device both Outpuyt shall be set ON\&.
-
 .PP
 The use of the Output should be:
 .IP "\(bu" 2
 OUTPUT2 shall be set normally ON: ift should be set OFF only in case of brake malfunction;
 .IP "\(bu" 2
 OUTPUT1 shall be set ON/OFF to control the actual brake status;
-
 .PP
 NOTE: The OUPUT2 should be kept ON because this status should guarantee that one of the power Mosfet controlling the Brake remains working in case, for any reason, the other Mosfet should be broken\&.
 .PP

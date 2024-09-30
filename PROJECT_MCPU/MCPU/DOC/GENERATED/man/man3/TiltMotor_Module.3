@@ -1,4 +1,4 @@
-.TH "TiltMotor_Module" 3 "MCPU" \" -*- nroff -*-
+.TH "TiltMotor_Module" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ TiltMotor_Module \- Tilt Motor Module controller
 .ti -1c
 .RI "class \fBTiltMotor\fP"
 .br
-.RI "This is the Tilt Module class implementation\&. "
+.RI "This is the Tilt Module class implementation"
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -45,7 +45,6 @@ DIGITAL INPUT 4: Safety circuit activation feedback;
 .IP "\(bu" 2
 DIGITAL OUTPUT 1: assigned to the brake unlock;
 .PP
-
 .PP
 OUTPUT STATUS   BRAKE DEVICE STATUS    1   LOCKED    0   UNLOCKED   
 .SH "General module Specification"
@@ -78,7 +77,6 @@ In Tomo mode the motor moves the arm to a defined target starting when the Digit
 .PP
 
 .PP
-
 .PP
 The modules upload a Nano-J program into the Motor driver to handle the Tomo activation mode\&.
 .SS "Manual Motor activation"
@@ -93,20 +91,16 @@ Gantry::manualMotorActivationDecrease(): causes the activation downward;
 .PP
 
 .PP
-
 .PP
 The manual activation is monitored in Idle status\&.
-
 .PP
 See the \fBGantry\fP module description for details\&.
 .SS "Safety condition detection"
 The module during the activation monitors the system safety conditions\&. The safety conditions are monitored calling the Gantry::getSafetyRotationStatus();
-
 .PP
 See the \fBGantry\fP module description for details\&.
 .SS "Obstacle detection condition"
 The module during the activation monitors the possible obstacle detection calling the Gantry::getObstacleRotationStatus();
-
 .PP
 See the \fBGantry\fP module description for details\&. 
 .SH "Author"

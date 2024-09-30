@@ -1,5 +1,208 @@
-.TH "R2CP::tStandardLicense" 3 "MCPU" \" -*- nroff -*-
+.TH "R2CP::tStandardLicense" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 R2CP::tStandardLicense
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBPowerKW\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMaxKvp\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMinKvp\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_mA_data_0_7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_mA_data_8_15\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_mA_data_0_7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_mA_data_8_15\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_mAs1000_data_0_7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_mAs1000_data_8_15\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_mAs1000_data_16_23\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_mAs1000_data_24_31\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_mAs1000_data_0_7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_mAs1000_data_8_15\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_mAs1000_data_16_23\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_mAs1000_data_24_31\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_ms_data_0_7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_ms_data_8_15\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_ms_data_0_7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMin_ms_data_8_15\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMax_PPS\fP"
+.br
+.ti -1c
+.RI "bool \fBHigh_SpeedEnabled\fP"
+.br
+.ti -1c
+.RI "bool \fBAEC_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBTomography_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBDualEnergy_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBR20Scale_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBRF_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBTrackingFormula0P_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBFluoroCurves_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBDSI_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBDigitalEnd_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBDSA_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBCine_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBHCF_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBScan_Enabled\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBPowerSupply\fP"
+.br
+.ti -1c
+.RI "bool \fBBatteriesPSU_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBBatteriesStationary_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBCapacitors_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBStarterBooster_Enabled\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBACFilter\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBHighDutyCycle\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBMamography\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBInterfaceOptions_data_0_7\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBInterfaceOptions_data_8_15\fP"
+.br
+.ti -1c
+.RI "bool \fBStarterEnabled\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare46\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare47\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare48\fP"
+.br
+.ti -1c
+.RI "bool \fBPikachu_Bucky_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBPikachy_SerialPort_Enabled\fP"
+.br
+.ti -1c
+.RI "bool \fBDemoMode_Enabled\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBStarterType\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare53\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare54\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare55\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare56\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare57\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare58\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare59\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare60\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare61\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare62\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare63\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSpare64\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

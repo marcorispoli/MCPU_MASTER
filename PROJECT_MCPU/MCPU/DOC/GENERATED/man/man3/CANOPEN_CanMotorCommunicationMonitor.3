@@ -1,5 +1,143 @@
-.TH "CANOPEN::CanMotorCommunicationMonitor" 3 "MCPU" \" -*- nroff -*-
+.TH "CANOPEN::CanMotorCommunicationMonitor" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 CANOPEN::CanMotorCommunicationMonitor
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanMotorCommunicationMonitor\fP (void)"
+.br
+.RI "Initializes the internal caounters "
+.ti -1c
+.RI "void \fBupdateStatistics\fP (void)"
+.br
+.RI "Updates the communication statistics at the point of the call "
+.ti -1c
+.RI "System::String ^ \fBgetStatFormattedString\fP (void)"
+.br
+.RI "Returns a formatted string with the calculated statistics "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "double \fBtxrx_time\fP"
+.br
+.RI "Last Send - Receive time\&. "
+.ti -1c
+.RI "unsigned long \fBsent_messages\fP"
+.br
+.RI "Total number of sent frames\&. "
+.ti -1c
+.RI "unsigned long \fBsent_5\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 5ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_10\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 10ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_15\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 15ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_20\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 20ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_25\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 25ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_30\fP"
+.br
+.RI "Total number of sent frames with a reception time lower than 30ms\&. "
+.ti -1c
+.RI "unsigned long \fBsent_xx\fP"
+.br
+.RI "Total number of sent frames with a reception time exceeding 30ms\&. "
+.ti -1c
+.RI "unsigned long \fBrepeated_messages\fP"
+.br
+.RI "A repeated answer message (discarded) due to a can frame repeatition\&. "
+.ti -1c
+.RI "double \fBperc5\fP"
+.br
+.RI "Percent of messages with less than 5ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc10\fP"
+.br
+.RI "Percent of messages with less than 10ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc15\fP"
+.br
+.RI "Percent of messages with less than 15ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc20\fP"
+.br
+.RI "Percent of messages with less than 20ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc25\fP"
+.br
+.RI "Percent of messages with less than 25ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBperc30\fP"
+.br
+.RI "Percent of messages with less than 30ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBpercXX\fP"
+.br
+.RI "Percent of messages exceeding 30ms of tx-rx time\&. "
+.ti -1c
+.RI "double \fBpercRepeated\fP"
+.br
+.RI "Percent of repeated messages\&. "
+.ti -1c
+.RI "double \fBmeanTime\fP"
+.br
+.RI "Total Rx-Tx Mean time\&. "
+.ti -1c
+.RI "double \fBpercMeanTime\fP"
+.br
+.RI "Percent of the Tx-Rx mean time\&. "
+.ti -1c
+.RI "unsigned long \fBunreceived_messages\fP"
+.br
+.RI "Number of unreceived messages\&. "
+.ti -1c
+.RI "System::String ^ \fBlog_string\fP"
+.br
+.RI "Pre formatted string statistic\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CANOPEN::CanMotorCommunicationMonitor::CanMotorCommunicationMonitor (void)\fC [inline]\fP"
+
+.PP
+Initializes the internal caounters 
+.SH "Member Function Documentation"
+.PP 
+.SS "System::String ^ CANOPEN::CanMotorCommunicationMonitor::getStatFormattedString (void)\fC [inline]\fP"
+
+.PP
+Returns a formatted string with the calculated statistics 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "void CANOPEN::CanMotorCommunicationMonitor::updateStatistics (void)\fC [inline]\fP"
+
+.PP
+Updates the communication statistics at the point of the call Every 1000 sent messages the internal percentuals statistics are calculated\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

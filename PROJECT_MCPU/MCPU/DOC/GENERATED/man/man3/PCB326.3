@@ -1,5 +1,186 @@
-.TH "PCB326" 3 "MCPU" \" -*- nroff -*-
+.TH "PCB326" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 PCB326
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBGeneralSensOption\fP { \fBGEN_1x\fP = 0, \fBGEN_2x\fP, \fBGEN_4x\fP, \fBGEN_8x\fP }"
+.br
+.ti -1c
+.RI "enum class \fBSensorSensOption\fP { \fBSENS_128x\fP = 0, \fBSENS_64x\fP, \fBSENS_32x\fP, \fBSENS_16x\fP, \fBSENS_8x\fP, \fBSENS_4x\fP, \fBSENS_2x\fP, \fBSENS_1x\fP }"
+.br
+.ti -1c
+.RI "enum class \fBRecalibrationOption\fP { \fBRECAL_560ms\fP = 0, \fBRECAL_840ms\fP, \fBRECAL_1120ms\fP, \fBRECAL_1400ms\fP, \fBRECAL_1680ms\fP, \fBRECAL_2240ms\fP, \fBRECAL_2800ms\fP, \fBRECAL_3360ms\fP, \fBRECAL_3920ms\fP, \fBRECAL_4480ms\fP, \fBRECAL_5600ms\fP, \fBRECAL_6720ms\fP, \fBRECAL_7840ms\fP, \fBRECAL_8906ms\fP, \fBRECAL_10080ms\fP, \fBRECAL_11200ms\fP }"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBexecuteObstacleReset\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBexecuteObstacleConfig\fP (\fBGeneralSensOption\fP gen_gain, \fBSensorSensOption\fP sensor_sens, RecalibrationOption recalib_time, unsigned char sensors_ena)"
+.br
+.ti -1c
+.RI "static bool \fBexecuteObstacleCalibrate\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisSensorActive\fP (unsigned char mask)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB326\fP ^ \fBdevice\fP = gcnew \fBPCB326\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
+.ti -1c
+.RI "bool \fBconfigurationLoop\fP (void) override"
+.br
+.RI "This is the Base Class override function to handle the device configuration\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB326::GeneralSensOption\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIGEN_2x \fP\fP
+
+.PP
+.RS 4
+This is the 1x General gain 
+.RE
+.PP
+
+.TP
+\fB\fIGEN_4x \fP\fP
+
+.PP
+.RS 4
+This is the 2x General gain 
+.RE
+.PP
+
+.TP
+\fB\fIGEN_8x \fP\fP
+
+.PP
+.RS 4
+This is the 4x General gain 
+.RE
+.PP
+
+.SS "enum class \fBPCB326::SensorSensOption\fP\fC [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISENS_64x \fP\fP
+
+.PP
+.RS 4
+This is the 128x Sensor gain 
+.RE
+.PP
+
+.TP
+\fB\fISENS_32x \fP\fP
+
+.PP
+.RS 4
+This is the 64x Sensor gain 
+.RE
+.PP
+
+.TP
+\fB\fISENS_16x \fP\fP
+
+.PP
+.RS 4
+This is the 32x Sensor gain 
+.RE
+.PP
+
+.TP
+\fB\fISENS_8x \fP\fP
+
+.PP
+.RS 4
+This is the 16x Sensor gain 
+.RE
+.PP
+
+.TP
+\fB\fISENS_4x \fP\fP
+
+.PP
+.RS 4
+This is the 8x Sensor gain 
+.RE
+.PP
+
+.TP
+\fB\fISENS_2x \fP\fP
+
+.PP
+.RS 4
+This is the 4x Sensor gain 
+.RE
+.PP
+
+.TP
+\fB\fISENS_1x \fP\fP
+
+.PP
+.RS 4
+This is the 2x Sensor gain 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PCB326::configurationLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This is the Base Class override function to handle the device configuration\&. This is the configuration loop routine executed at the beginning of the device connection, before to execute the \fBrunningLoop()\fP routine\&.
+.PP
+\fBReturns\fP
+.RS 4
+true if the configuration success
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB326::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

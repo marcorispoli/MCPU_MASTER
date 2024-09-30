@@ -1,0 +1,104 @@
+.TH "PCB315_Internal" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB315_Internal \- Internal implementation section
+.SH SYNOPSIS
+.br
+.PP
+
+.in +1c
+.ti -1c
+.RI "void \fBPCB315::runningLoop\fP (void) override"
+.br
+.RI "This is the Base class runningLoop override function\&. "
+.ti -1c
+.RI "bool \fBPCB315::configurationLoop\fP (void) override"
+.br
+.RI "This is the Base class configurationLoop override function\&. "
+.ti -1c
+.RI "void \fBPCB315::resetLoop\fP (void) override"
+.br
+.RI "This is the Base class resetLoop override function\&. "
+.ti -1c
+.RI "void \fBPCB315::demoLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "bool PCB315::configurationLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the Base class configurationLoop override function\&. This function is called by the Base class before to call the \fBrunningLoop()\fP allowing the module to properly configure the device\&.
+
+.PP
+In the configurationLoop routine this module:
+.IP "\(bu" 2
+Upload the Calibrated slot positions;
+.IP "\(bu" 2
+Upload the Timeout for the Light;
+.PP
+
+.PP
+The routine never exit in the case of communication issues
+
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB315::demoLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB315::resetLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the Base class resetLoop override function\&. This function activate a One Shot alarm notifying the operator that the device has been reset\&.
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB315::runningLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the Base class runningLoop override function\&. This function is call by the Base class in order to handle the 
+.br
+communication workflow, after the module startup and configuration\&.
+
+.PP
+This module implements the device related functions here\&.
+
+.PP
+The module read the Status register in order to get the relevant registers from the device: updateStatusRegister(): 
+.PP
+.nf
++ In case the function should fail in reading the Status register (several times), the\\n
+  module activates a Communication Error condition until the Status register finally is successfully read\&.\\n
+  During the fault condition the Filter selection and Tube temperature monitor activities are suspended\&. 
+
+.fi
+.PP
+
+.PP
+If the Status register should successfully read, the module:
+
+.PP
+.IP "\(bu" 2
+checks the presence of errors reading the Error register from the device;
+.IP "\(bu" 2
+manage the Filter/Mirror selection operations: manageFilterSelection();
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

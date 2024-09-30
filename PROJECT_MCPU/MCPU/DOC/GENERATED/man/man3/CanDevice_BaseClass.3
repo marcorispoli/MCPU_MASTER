@@ -1,0 +1,57 @@
+.TH "CanDevice_BaseClass" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanDevice_BaseClass \- Can Device protocol Base Class
+.PP
+ \- This class implements all the common features in order to implement the device communication protocol\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Topics"
+
+.in +1c
+.ti -1c
+.RI "\fBPublic Module's Control API\fP"
+.br
+.RI "This group provides API to control the current Module operating status\&. "
+.ti -1c
+.RI "\fBPublic Module's Command Execution API\fP"
+.br
+.RI "This group provides API to send protocol commands to the remote device\&. "
+.ti -1c
+.RI "\fBProtected Module's Data Access API\fP"
+.br
+.RI "This group provides API to access remote register in read write modes "
+.ti -1c
+.RI "\fBPrivate Module's communication protocol API\fP"
+.br
+.RI "This section provides methods and data structure to implement the communication protocol features\&. "
+.ti -1c
+.RI "\fBProtected Subclasses methods\fP"
+.br
+.RI "This section provides the method and structures to subclass the \fBCanDeviceProtocol\fP base class \&. "
+.ti -1c
+.RI "\fBPublic Debug Methods\fP"
+.br
+.RI "This section provides debug feature to monitor the communication with the remote device and in general internal module performances\&. "
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCanDeviceProtocol\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class implements all the common features in order to implement the device communication protocol\&. 
+
+Every module implementing a communication with a device shall be derived from this Base Class\&.
+
+.PP
+Publics and Private API methods and structures will be described\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

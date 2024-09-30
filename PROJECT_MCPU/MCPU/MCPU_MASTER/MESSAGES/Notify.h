@@ -3,6 +3,72 @@
 #include "ErrorForm.h"
 #include "infoPopup.h"
 
+/**
+\defgroup MessageNotify Application Message Notification
+
+	This section describes the Application message notification system.
+
+*
+*/
+
+/**
+	\defgroup MessageNotifyModule Message Notification Implementation
+	\ingroup MessageNotify
+	\internal
+
+	This section describes the implementation of the message notification system.
+*/
+
+
+/**
+\defgroup MessageNotifyDescription Message Notification Description
+\ingroup MessageNotify
+
+   # Abstract
+
+   This document describes in detail the message notification 
+   system and the GUI labeling.
+
+
+   # Index
+
+   + \ref MSGGUI \n;
+   + \ref MSGTAB \n;
+
+   # Overview
+
+   The Application makes use of series offormatted string 
+   for labeling the GUI field and for generating runtime information  messages 
+   to the operator.
+
+   All those strings can be translated in one of the following languages:
+
+   + Italian;
+   + English;
+   + Portuguese;
+   + Spanish;
+   + Franch;
+   + Russian;
+
+   The current language shall be set into the SystemInit.cnf file (see \ref SystemConfig),
+   and activate during the system startup. 
+   However, the AWS software can change it with the proper protocol command.
+
+   There are four types of translated strings:
+   + The Error Messages: they are system errors related to malfunctions of some of the Gantry sub part;
+   + The Warning Messages: they are momentary status that prevent to execute the current exposure sequence;
+   + The Info Messages: they are the current status information that can help the Operator for the current workflow;
+   + The Labels: they are strings used to name the GUI fields when required;
+
+   \section MSGGUI Message Gui Display
+
+   \section MSGTAB Message Description Table
+
+
+
+*/
+
+
 using namespace System::Collections::Generic;
 
 public ref class Notify

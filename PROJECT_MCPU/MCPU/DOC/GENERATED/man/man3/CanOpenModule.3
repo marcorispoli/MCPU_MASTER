@@ -1,0 +1,83 @@
+.TH "CanOpenModule" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanOpenModule \- CanOPEN based motor devices
+.PP
+ \- This is the based class module implementing the control of motor devices based on the CANOpen protocol\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Topics"
+
+.in +1c
+.ti -1c
+.RI "\fBC\-ARM Module controller\fP"
+.br
+.RI ""
+.ti -1c
+.RI "\fBBody Module controller\fP"
+.br
+.RI ""
+.ti -1c
+.RI "\fBMotor Driver base class module\fP"
+.br
+.RI "This is the Class implementing the CanOPEN Motor Device control protocol\&. "
+.ti -1c
+.RI "\fBTilt Motor Module controller\fP"
+.br
+.RI "This module implements the Tilt activation requirements\&. "
+.ti -1c
+.RI "\fBVertical Module controller\fP"
+.br
+.RI "This module implements the Vertical activation requirements\&. "
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCANOPEN::ODRegister\fP"
+.br
+.RI "This is the class implementating the CanOPEN SDO object register\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCANOPEN::MotorDeviceAddresses\fP { \fBMotorDeviceAddresses::TILT_ID\fP = 0x3, \fBMotorDeviceAddresses::ARM_ID\fP = 0x4, \fBMotorDeviceAddresses::SLIDE_ID\fP = 0x5, \fBMotorDeviceAddresses::BODY_ID\fP = 0x6, \fBMotorDeviceAddresses::VERTICAL_ID\fP = 0x7 }"
+.br
+.RI "This is the enumeration of the Application Motor device addresses\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the based class module implementing the control of motor devices based on the CANOpen protocol\&. 
+
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBCANOPEN::MotorDeviceAddresses\fP\fR [strong]\fP"
+
+.PP
+This is the enumeration of the Application Motor device addresses\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BITILT_ID \fP
+Address of the Tilt Motor controller\&. 
+.TP
+\f(BIARM_ID \fP
+Address of the C-ARM Motor controller\&. 
+.TP
+\f(BISLIDE_ID \fP
+Address of the SLIDE Motor controller\&. 
+.TP
+\f(BIBODY_ID \fP
+Address of the BODY Motor controller\&. 
+.TP
+\f(BIVERTICAL_ID \fP
+Address of the Vertical Motor controller\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

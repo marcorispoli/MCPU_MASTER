@@ -1,0 +1,102 @@
+.TH "awsModule" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsModule \- AWS Interface Module
+.PP
+ \- This is the module implementing the communication protocol with the AWS software\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Topics"
+
+.in +1c
+.ti -1c
+.RI "\fBAWS Command Error Codes\fP"
+.br
+.ti -1c
+.RI "\fBAWS Protocol Api\fP"
+.br
+.ti -1c
+.RI "\fBAWS Protocol Events\fP"
+.br
+.ti -1c
+.RI "\fBAWS Protocol Command set\fP"
+.br
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBawsProtocol\fP"
+.br
+.RI "This is the class implementing the AWS Interface Module\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the module implementing the communication protocol with the AWS software\&. 
+
+
+.SH "Protocol general Description"
+.PP
+This module implements the details of the AWS protocol specification document\&.
+
+.PP
+The communication takes place with two ethernet channels:
+.IP "\(bu" 2
+Command channel: the channel where the AWS sends command to the \fBGantry\fP;
+.IP "\(bu" 2
+Event channel: the channel where the \fBGantry\fP sends Status change notify frame to the AWS software\&.
+.PP
+
+.PP
+Both channels are Tcp/Ip based connections where the \fBGantry\fP acts as Server of the communication with the following communication parameters:
+.IP "\(bu" 2
+Command channel: IP = 127\&.0\&.0\&.1, PORT 10000;
+.IP "\(bu" 2
+Event channel: IP = 127\&.0\&.0\&.1, PORT 10001;
+
+.PP
+>NOTE: the actual address and port can be changed in the SystemInit\&.cnf configuration file\&.
+.PP
+
+.PP
+The data frame format are equivalent for both channels:
+
+.PP
+.IP "\(bu" 2
+COMMAND FRAME:
+.IP "  \(bu" 4
+**<ID % EXEC_xxx Param \&.\&.\&. %>** for sequence execution commands;
+.IP "  \(bu" 4
+**<ID % SET_xxx Param \&.\&.\&. %>** for setting status commands;
+.IP "  \(bu" 4
+**<ID % GET_xxx Param \&.\&.\&. %>** for getting status commands;
+.PP
+
+.IP "\(bu" 2
+EVENT FRAME:
+.IP "  \(bu" 4
+<ID % EVENT_xxx Param \&.\&.\&. %> for status Events notification;
+.IP "  \(bu" 4
+<ID % EXECUTED OK optional-Param \&.\&.\&. %> for execution command successfully completed notifications;
+.IP "  \(bu" 4
+<ID % EXECUTED NOK optional-Param \&.\&.\&. %> for execution command terminated in error notifications;
+.PP
+
+.PP
+
+.PP
+Only for COMMANDS \fBGantry\fP will acknowledge with three possible frames:
+.IP "\(bu" 2
+OK frame: <ID % OK optional-params\&.\&.>, a command has been successfully executed;
+.IP "\(bu" 2
+NOK frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
+.IP "\(bu" 2
+EXECUTING: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS) 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -1,0 +1,60 @@
+.TH "awsErrors" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+awsErrors \- AWS Command Error Codes
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBawsProtocol::return_errors\fP { \fBawsProtocol::return_errors::AWS_RET_WRONG_PARAMETERS\fP = 1, \fBawsProtocol::return_errors::AWS_RET_WRONG_OPERATING_STATUS\fP, \fBawsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS\fP, \fBawsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS\fP, \fBawsProtocol::return_errors::AWS_RET_INVALID_PARAMETER_FORMAT\fP, \fBawsProtocol::return_errors::AWS_RET_INVALID_PARAMETER_VALUE\fP, \fBawsProtocol::return_errors::AWS_RET_DATA_NOT_ALLOWED\fP, \fBawsProtocol::return_errors::AWS_RET_DEVICE_BUSY\fP, \fBawsProtocol::return_errors::AWS_RET_DEVICE_ERROR\fP }"
+.br
+.RI "The module implements a standard set of error codes that can be returned (NOK frames) to the AWS in executing a Command request\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.br
+ 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBawsProtocol::return_errors\fP\fR [strong]\fP"
+
+.PP
+The module implements a standard set of error codes that can be returned (NOK frames) to the AWS in executing a Command request\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIAWS_RET_WRONG_PARAMETERS \fP
+[1] The number of the command parameters is invalid 
+.TP
+\f(BIAWS_RET_WRONG_OPERATING_STATUS \fP
+[2] The current operating status is not valid for the command 
+.TP
+\f(BIAWS_RET_SYSTEM_ERRORS \fP
+[3] The command cannot be executed with active system errors 
+.TP
+\f(BIAWS_RET_SYSTEM_WARNINGS \fP
+[4] There are active System warnings 
+.TP
+\f(BIAWS_RET_INVALID_PARAMETER_FORMAT \fP
+[5] A parameter is not in the expected format 
+.TP
+\f(BIAWS_RET_INVALID_PARAMETER_VALUE \fP
+[6] A parameter is not in the expected range 
+.TP
+\f(BIAWS_RET_DATA_NOT_ALLOWED \fP
+[7] The current system setting is not ready to accept the command 
+.TP
+\f(BIAWS_RET_DEVICE_BUSY \fP
+[8] The target device cannot be activated 
+.TP
+\f(BIAWS_RET_DEVICE_ERROR \fP
+[9] The Device signaled an error condition in executing the command 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

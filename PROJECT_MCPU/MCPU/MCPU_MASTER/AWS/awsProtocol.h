@@ -1,5 +1,102 @@
 #pragma once
 
+/**
+\defgroup AWSProtocol AWS Protocol Communication
+
+	This section describes the communication protocol from the Application and the Acquisition software (AWS).
+
+*
+*/
+
+/**
+	\defgroup AWSProtocolModule AWS Protocol Communication Implementation
+	\ingroup AWSProtocol
+	\internal
+
+	This section describes the implementation of the protocol communication with the AWS software.
+*/
+
+
+/**
+\defgroup AWSProtocolDescription AWS Protocol Communication  Description
+\ingroup AWSProtocol
+
+   # Abstract
+
+   This document describes in detail the communication protocol with the AWS software.
+
+   # Index
+
+   + \ref CMDDESC
+
+   ## Study Control
+
+   +	\ref EXEC_OpenStudy
+   +	\ref EXEC_CloseStudy
+
+   ## Arm Control
+   +	\ref SET_ProjectionList
+   +	\ref EXEC_ArmPosition
+   +	\ref EXEC_AbortProjection
+   +    \ref EXEC_TrxPosition
+
+   <div style="page-break-after: always;"></div>
+
+	# Protocol connection description
+ 
+	The communication takes place on two ethernet channels:
+	- Command channel: the channel where the AWS sends command to the Gantry;
+	- Event channel: the channel where the Gantry sends Status change notify frames to the AWS software.
+ 
+	Both channels are Tcp/Ip based connections where the Gantry acts as Server of the communication.
+
+	The IP and Port address of the sockets are set into the SystemIni.cnf file:
+	- The default Command Channel address is: IP = 127.0.0.1, PORT 10000;
+	- The default Event Channel address is: IP = 127.0.0.1, PORT 10001;
+ 
+		
+	# Protocol frame description
+
+	The frame formats are equivalent for both channels:
+ 
+	 + COMMAND FRAME: this is the frame the AWS sends to the application; 
+			+ **<ID % EXEC_xxx Param ... %>** for sequence execution commands;
+			+ **<ID % SET_xxx Param ... %>** for setting status commands;
+			+ **<ID % GET_xxx Param ... %>** for getting status commands;
+ 
+	 + EVENT FRAME: this is the frame the Application sends to the AWS; 
+			+ <ID % EVENT_xxx Param ... %> for status Events notification;
+			+ <ID % EXECUTED OK optional-Param ... %> for execution command successfully completed notifications;
+			+ <ID % EXECUTED NOK optional-Param ... %> for execution command terminated in error notifications;
+ 
+	 The application acknowledges the COMMAND frames with three possible answer frames:
+	 - *OK* frame: <ID % OK optional-params..>, a command has been successfully executed;
+	 - *NOK* frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
+	 - *EXECUTING*: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS) 
+  
+	# Error codes 
+
+	In case the application should answer to a COMMAND with a NOK frame, or in case the Application 
+	should send a NOK EVENT, an error code is provided.
+
+	There are a list of possible error codes that the Application can answer:
+
+	|ERROR CODE|VALUE|DESCRIPTION|AWS-ACTION|
+	|:--|:--|:--|:--|
+	|AWS_RET_WRONG_PARAMETERS|1|The number of the command parameters is invalid|AWS Bug: check the command implementation|
+	|AWS_RET_WRONG_OPERATING_STATUS|2|The current operating status is not valid for the command|AWS Bug: check the current operating status|
+	|AWS_RET_SYSTEM_ERRORS|3|The command cannot be executed with active system errors|The AWS should handle a system error condition|
+	|AWS_RET_SYSTEM_WARNINGS|4|There are active System warnings|The AWS shall check the right condition before to send the command|
+	|AWS_RET_INVALID_PARAMETER_FORMAT|5|A parameter is not in the expected format|AWS Bug: check the command implementation|
+	|AWS_RET_INVALID_PARAMETER_VALUE|6|A parameter is not in the expected range|AWS Bug: check the command implementation|
+	|AWS_RET_DATA_NOT_ALLOWED|7|The current system setting is not ready to accept the command|check the current operating status|
+	|AWS_RET_DEVICE_BUSY|8|The target device cannot be activated|The AWS should wait the previous command completioin before to send a new command|
+	|AWS_RET_DEVICE_ERROR|9|The Device signaled an error condition in executing the command|The AWS should abort the current workflow|
+
+	
+
+*/
+
 
 using namespace System::Collections::Generic;
 
@@ -7,52 +104,9 @@ using namespace System::Collections::Generic;
 #include "Generator.h"
 
 /// <summary>
-/// This is the module implementing the communication protocol with the AWS software.
-/// 
-/// \defgroup awsModule AWS Interface Module
-/// 
-/// # Protocol general Description
-/// 
-/// This module implements the details of the AWS protocol specification document.
-/// 
-/// The communication takes place with two ethernet channels:
-/// - Command channel: the channel where the AWS sends command to the Gantry;
-/// - Event channel: the channel where the Gantry sends Status change notify frame to the AWS software.
-/// 
-/// Both channels are Tcp/Ip based connections where the Gantry acts as Server of the communication 
-/// with the following communication parameters:
-/// - Command channel: IP = 127.0.0.1, PORT 10000;
-/// - Event channel: IP = 127.0.0.1, PORT 10001;
-/// 
-///		>NOTE: the actual address and port can be changed in the SystemInit.cnf configuration file.
-/// 
-/// The data frame format are equivalent for both channels:
-/// 
-/// + COMMAND FRAME: 
-///		+ **<ID % EXEC_xxx Param ... %>** for sequence execution commands;
-///		+ **<ID % SET_xxx Param ... %>** for setting status commands;
-///		+ **<ID % GET_xxx Param ... %>** for getting status commands;
-/// 
-/// + EVENT FRAME: 
-///		+ <ID % EVENT_xxx Param ... %> for status Events notification;
-///		+ <ID % EXECUTED OK optional-Param ... %> for execution command successfully completed notifications;
-///		+ <ID % EXECUTED NOK optional-Param ... %> for execution command terminated in error notifications;
-/// 
-/// Only for COMMANDS Gantry will acknowledge with three possible frames:
-/// - OK frame: <ID % OK optional-params..>, a command has been successfully executed;
-/// - NOK frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
-/// - EXECUTING: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS) 
-/// 
-///  
-/// 
-/// 
-/// 
-/// </summary>
-
-/// <summary>
 /// This is the class implementing the AWS Interface Module
 /// 
-/// \ingroup awsModule
+/// \ingroup AWSProtocolModule
 /// 
 /// @{
 /// </summary>
@@ -60,7 +114,7 @@ ref class awsProtocol
 {
 public:
 	/// \defgroup awsErrors AWS Command Error Codes
-	/// \ingroup awsModule
+	/// \ingroup AWSProtocolModule
 	/// @{ 
 	
 	/// <summary>
@@ -83,7 +137,7 @@ public:
 	/// @}
 	
 	/// \defgroup awsProtoApi AWS Protocol Api 
-	/// \ingroup awsModule
+	/// \ingroup AWSProtocolModule
 	/// @{ 
 
 
@@ -106,7 +160,7 @@ public:
 	/// @}
 
 	/// \defgroup awsProtoEvents AWS Protocol Events
-	/// \ingroup awsModule
+	/// \ingroup AWSProtocolModule
 	/// @{ 
 	
 
@@ -199,7 +253,7 @@ private:
 
 
 	/// \defgroup awsProtoCommands AWS Protocol Command set
-	/// \ingroup awsModule
+	/// \ingroup AWSProtocolModule
 	/// @{ 
 	
 	void EXEC_TestCommand(void);

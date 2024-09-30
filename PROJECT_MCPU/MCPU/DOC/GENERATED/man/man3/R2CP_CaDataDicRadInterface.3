@@ -1,54 +1,5 @@
-.TH "R2CP::CaDataDicRadInterface" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "R2CP::CaDataDicRadInterface" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 R2CP::CaDataDicRadInterface
-.SH SYNOPSIS
-.br
-.PP
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "void \fBInitialitation\fP (void)"
-.br
-.RI "Once the \fBCaDataDicGen\fP is instanced this method is called\&. "
-.ti -1c
-.RI "void \fBMET_Generator_Set_StatusV5\fP (unsigned char *data)"
-.br
-.ti -1c
-.RI "void \fBMET_Generator_Set_StatusV6\fP (unsigned char *data)"
-.br
-.ti -1c
-.RI "unsigned char \fBMET_Generator_Update_ProcedureV5\fP (unsigned char *data)"
-.br
-.ti -1c
-.RI "unsigned char \fBMET_Generator_Update_ProcedureV6\fP (unsigned char *data)"
-.br
-.ti -1c
-.RI "bool \fBisProcInitialized\fP (unsigned char i)"
-.br
-.ti -1c
-.RI "bool \fBisDbInitialized\fP (unsigned char i)"
-.br
-.in -1c
-.SS "Public Attributes"
-
-.in +1c
-.ti -1c
-.RI "\fBtGeneratorStatusV5\fP \fBgeneratorStatusV5\fP"
-.br
-.ti -1c
-.RI "\fBtGeneratorStatusV6\fP \fBgeneratorStatusV6\fP"
-.br
-.ti -1c
-.RI "\fBtProcedureDefinition\fP \fBprocedureDefinitions\fP [ProcId_Last]"
-.br
-.ti -1c
-.RI "\fBtRadDb\fP \fBDbDefinitions\fP [DB_LastId]"
-.br
-.in -1c
-
-.SH "Author"
-.PP 
-Generated automatically by Doxygen for MCPU from the source code\&.

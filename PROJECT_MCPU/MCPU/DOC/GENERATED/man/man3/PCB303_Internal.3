@@ -1,4 +1,4 @@
-.TH "PCB303_Internal" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB303_Internal" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -30,10 +30,11 @@ PCB303_Internal \- Internal implementation section
 
 .SH "Function Documentation"
 .PP 
-.SS "bool PCB303::configurationLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "bool PCB303::configurationLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
 This is the Base Class override function to handle the device configuration\&. This is the configuration loop routine executed at the beginning of the device connection, before to execute the \fBrunningLoop()\fP routine\&.
+
 .PP
 \fBReturns\fP
 .RS 4
@@ -43,22 +44,23 @@ true if the configuration success
 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
-.SS "void PCB303::demoLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "void PCB303::demoLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
 This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
-.SS "void PCB303::resetLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "void PCB303::resetLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
 This is the Base class resetLoop override function\&. This function activate a One Shot alarm notifying the operator that the device has been reset\&.
 .PP
 Reimplemented from \fBCanDeviceProtocol\fP\&.
-.SS "void PCB303::runningLoop (void)\fC [override]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "void PCB303::runningLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
 This is the Base Class override function to handle the normal operation workflow\&. This is the main loop running after the device configuration\&.
+
 .PP
 The procedure reads the relevant registers from the device and manages the following collimator main workflows:
 .IP "\(bu" 2

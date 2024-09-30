@@ -6,6 +6,7 @@ using namespace CppCLRWinFormsProject;
 
 
 #define DOC_NAME "MessageNotifyDescription"
+#define NATIVE_LIST "translate_eng.h"
 
 void MainForm::MainFormInitialize(void) {
 
@@ -13,7 +14,7 @@ void MainForm::MainFormInitialize(void) {
 	//this->Left = Gantry::monitor_X0;
 	//this->Top = Gantry::monitor_Y0;
 	selectedError->Text = "-";
-	selectedTag->Text = "-";
+	labelSelectedTag->Text = "-";
 	selectedTitle->Text = "-";
 	selectedContent->Text = "-";
 
@@ -151,7 +152,7 @@ void MainForm::storeConfig(System::String^ dir) {
 void MainForm::loadTagList(System::String^ dir) {
 
 	selectedError->Text = "-";
-	selectedTag->Text = "-";
+	labelSelectedTag->Text = "-";
 	selectedTitle->Text = "-";
 	selectedContent->Text = "-";
 
@@ -191,9 +192,12 @@ void MainForm::loadTagList(System::String^ dir) {
 		while ((linestr = din->ReadLine()) != nullptr)
 		{
 			linestr = linestr->Replace(" ", "");
-			if (linestr->Contains("};")) return;
-			if (linestr->Contains("NUM_MESSAGES")) return;
+			if (linestr->Contains("};")) break;
+			if (linestr->Contains("NUM_MESSAGES")) break;
 			if (linestr->Contains("NO_MESSAGE")) continue;
+			if (linestr->Contains("WARNING_MESSAGES_SECTION")) continue;
+			if (linestr->Contains("INFO_MESSAGES_SECTION")) continue;
+			if (linestr->Contains("LABEL_MESSAGES_SECTION")) continue;			
 			if (linestr->Contains("\/")) continue;
 
 			if (linestr->Contains(",")) {
@@ -221,7 +225,7 @@ void MainForm::loadTagList(System::String^ dir) {
 }
 void MainForm::loadLanguageList(System::String^ dir) {
 	selectedError->Text = "-";
-	selectedTag->Text = "-";
+	labelSelectedTag->Text = "-";
 	selectedTitle->Text = "-";
 	selectedContent->Text = "-";
 
@@ -239,60 +243,74 @@ void MainForm::loadLanguageList(System::String^ dir) {
 	}
 }
 
-void MainForm::loadMessageList(System::String^ dir, System::String^ filename) {
+void MainForm::loadNativeMessageList(void) {
 
-	errorList->Items->Clear();
-	itemArray = nullptr;
+	nativeArray = nullptr;
+	if (!File::Exists(dirBrowser->SelectedPath + "\\" + NATIVE_LIST)) return;
+	int itemCnt = 0;
+
+	// Creates the array
+	nativeArray = gcnew cli::array<msgItem^>(tagsArray->Length);
+
+	// Reads the file and populates the array
+	StreamReader^ din;
+	System::String^ linestr;
+	msgItem^ pItem;
+	int count = 0;
+
+	try {
+		din = File::OpenText(dirBrowser->SelectedPath + "\\" + NATIVE_LIST);
+		while ((linestr = din->ReadLine()) != nullptr)
+		{
+			pItem = gcnew msgItem(linestr);
+			if (pItem->tp != msgItem::item_type::INVALID){
+				int p = System::Array::IndexOf(tagsArray, pItem->msg_tag);
+				if (p >= 0) {
+					nativeArray[count++] = pItem;
+				}				
+			}
+		}
+		din->Close();
+	}
+	catch (...) {
+		return;
+	}
+
+}
+
+void MainForm::loadMessageList(System::String^ filename) {
+
 	selectedError->Text = "-";
-	selectedTag->Text = "-";
+	labelSelectedTag->Text = "-";
 	selectedTitle->Text = "-";
 	selectedContent->Text = "-";
 
 
-	if (!File::Exists(dir + "\\" + filename)) return;
+	errorList->Items->Clear();
+	itemArray = nullptr;
+	if (!File::Exists(dirBrowser->SelectedPath + "\\" + filename)) return;
 	int itemCnt = 0;
 
-	// Prevent to faith against a runtime attempt
-	StreamReader^ din;
-	try {
-		din = File::OpenText(dir + "\\" + filename);
+	// Creates the array
+	itemArray = gcnew cli::array<msgItem^>(tagsArray->Length);
 
-		System::String^ linestr;
-		System::String^ errstr;
-		int count = 0;
+	// Reads the file and populates the array
+	StreamReader^ din;
+	System::String^ linestr;
+	msgItem^ pItem;
+	int count = 0;
+
+	try {
+		din = File::OpenText(dirBrowser->SelectedPath + "\\" + filename);
 		while ((linestr = din->ReadLine()) != nullptr)
 		{
-			errstr = msgItem::decodeTypeString(linestr);
-			if (errstr != "") {
-				
-				itemCnt++;
-			}
-			count++;			
-		}
-		din->Close();
-	}
-	catch (...) {
-		return ;
-	}
-	
-	itemArray = nullptr;
-	if (itemCnt == 0) {
-		return;
-	}
-	itemArray = gcnew cli::array<msgItem^>(itemCnt);
-
-	int errcnt = 0;
-	try {
-		din = File::OpenText(dir + "\\" + filename);
-
-		System::String^ linestr;
-		msgItem^ pItem;
-		int count = 0;		
-		while ((linestr = din->ReadLine()) != nullptr)
-		{	
 			pItem = gcnew msgItem(linestr);
 			if (pItem->tp != msgItem::item_type::INVALID) {
-				itemArray[count++] = pItem;
+				int p = System::Array::IndexOf(tagsArray, pItem->msg_tag);
+				if (p >= 0) {
+					itemArray[count++] = pItem;
+					errorList->Items->Add(pItem->msg_code);
+				}
 			}
 		}
 		din->Close();
@@ -301,9 +319,39 @@ void MainForm::loadMessageList(System::String^ dir, System::String^ filename) {
 		return;
 	}
 
+
+}
+
+void MainForm::GenerateTranslatorFile(bool only_changed) {
+
+	// No translator file for the english language
+	if(comboLanguages->Text->Equals("translate_eng.h")) return;
+	System::String^ language = comboLanguages->Text->Replace(".h", "");
+	language = language->Replace("translate", "translator");
+
+	// Creates the cvs file
+	StreamWriter^ sw = gcnew StreamWriter(dirBrowser->SelectedPath + "\\" + language + ".cvs");
+
+	// Header
+	sw->WriteLine("MESSAGE-ID;TITLE-ENG;CONTENT-ENG;TITLE-TRANSLATED;CONTENT-TRANSLATED");
+
+	System::String^ stringa;
 	for (int i = 0; i < itemArray->Length; i++) {
-		errorList->Items->Add(itemArray[i]->msg_code);
+		if (only_changed) {
+			stringa = itemArray[i]->msg_title;
+			stringa = stringa->Replace(" ", "");
+			if (!((stringa->Equals("-")) || (stringa->Equals("")))) continue;
+		}
+		sw->WriteLine(itemArray[i]->msg_code + ";" + nativeArray[i]->msg_title + ";" + nativeArray[i]->msg_content + ";" + itemArray[i]->msg_title + ";" + itemArray[i]->msg_content);
+		
 	}
+
+	
+	sw->Close();
+}
+
+void MainForm::ImportTranslatorFile(void) {
+
 }
 
 void MainForm::GenerateTemplate(System::String^ dir, bool new_template) {
@@ -319,7 +367,7 @@ void MainForm::GenerateTemplate(System::String^ dir, bool new_template) {
 
 	for (int i = 0; i < itemArray->Length; i++) {
 		id = "\"" + itemArray[i]->msg_code + "\", ";
-		tag = "Notify::messages::" + itemArray[i]->msg_code + ", ";
+		tag = "Notify::messages::" + itemArray[i]->msg_tag + ", ";
 
 		if (new_template) {
 			title = "\"-\", ";
@@ -336,7 +384,7 @@ void MainForm::GenerateTemplate(System::String^ dir, bool new_template) {
 
 }
 
-void MainForm::GenerateMessageList(System::String^ dir) {
+void MainForm::GenerateDocumentation(System::String^ dir) {
 	System::String^ language = comboLanguages->Text->Replace(".h", "");
 	language = language->Replace("translate", "language");
 
@@ -346,38 +394,90 @@ void MainForm::GenerateMessageList(System::String^ dir) {
 
 	// Creates the Doxygen style Table
 	sw->WriteLine(" /** \\addtogroup " + DOC_NAME);
-	sw->WriteLine(" This is the message translation of the language: " + language);
-	sw->WriteLine(" | ID | MESSAGE | Description |");
+	sw->WriteLine(" ");
+
+	sw->WriteLine("\\section MSGDESC Messages Description Table ");
+	sw->WriteLine(" ");
+
+	sw->WriteLine("In this section the meaning of every message will be described in detail.");
+	sw->WriteLine(" ");
+
+	// Write the Message Content
+	sw->WriteLine(" | MESSAGE CODE | TYPE | Description |");
 	sw->WriteLine(" |:--|:--|:--|");
+	for (int i = 0, l = 0; i < nativeArray->Length; i++, l++) {
+		desc = "-";
+		
+		if (config != nullptr) {			
+			int p = System::Array::IndexOf(config->tags, nativeArray[i]->msg_tag);
+			if (p >= 0) desc = config->descriptions[p]->Replace("\n", "<br>");
+			if (desc->Equals("")) desc = "-";
+		}
 
-	for (int i = 0, l=0; i < itemArray->Length; i++,l++) {
-		if (config != nullptr) {
-			int p = System::Array::IndexOf(config->tags, itemArray[i]->msg_tag);
-			if (p >= 0) desc = config->descriptions[p]->Replace("\n","<br>");
-			else desc = "-";
-			if (desc == "") desc = "-";
-		}else desc = "-";
+		if(desc->Equals("-")) desc = nativeArray[i]->msg_title + "<br>" + nativeArray[i]->msg_content;
 
-		strdata = "|" + itemArray[i]->msg_code + "|" + itemArray[i]->msg_title + "<br>" + itemArray[i]->msg_content + "|" + desc + "|";
+
+		System::String^ msgtype;
+
+		if (nativeArray[i]->msg_code->Contains("E")) msgtype = "ERROR";
+		else if (nativeArray[i]->msg_code->Contains("W")) msgtype = "WARNING";
+		else if (nativeArray[i]->msg_code->Contains("I")) msgtype = "INFORMATION";
+		else if (nativeArray[i]->msg_code->Contains("L")) msgtype = "LABEL";
+		else continue;
+
+		strdata = "|" + itemArray[i]->msg_code + "|" + msgtype + "|" + desc + "|";
 		sw->WriteLine(strdata);
 		if (l == 10) {
 			l = 0;
-			strdata = "";
-			strdata = "";
-			sw->WriteLine(strdata);
-			strdata = "<div style=\"page-break-after: always;\"></div>";			
-			sw->WriteLine(strdata);
-			strdata = "";
-			sw->WriteLine(strdata);
-			strdata = " | ID | MESSAGE | Description |";
-			sw->WriteLine(strdata);
-			strdata = " |:--|:--|:--|";
-			sw->WriteLine(strdata);
+			sw->WriteLine(" ");
+			sw->WriteLine("<div style=\"page-break-after: always;\"></div>");
+			sw->WriteLine(" ");
+			sw->WriteLine(" | MESSAGE CODE | TYPE | Description |");
+			sw->WriteLine(" |:--|:--|:--|");
 		}
 	}
-	strdata = " */";
-	sw->WriteLine(strdata);
+
+	sw->WriteLine("\\section MSGTRANS Messages Translation Tables ");
+	sw->WriteLine(" ");
+
+	sw->WriteLine("In this section, a table for every translated language is showed.");
+	sw->WriteLine(" ");
+
+
+	// For every language, it adds the translation table
+	for (int lng = 0; lng < comboLanguages->Items->Count; lng++) {
+		System::String^ language = comboLanguages->Items[lng]->ToString();
+		language = language->Replace(".h", "");
+		language = language->Replace("translate_", "");
+		sw->WriteLine(" ");
+		sw->WriteLine(" ## Translation  " + language + " table:");
+		sw->WriteLine(" ");
+		sw->WriteLine(" | MESSAGE CODE | TITLE | CONTENT |");
+		sw->WriteLine(" |:--|:--|:--|");
+
+		loadMessageList(comboLanguages->Items[lng]->ToString());
+
+		for (int i = 0, l = 0; i < itemArray->Length; i++, l++) {
+			
+
+			strdata = "|" + itemArray[i]->msg_code + "|" + itemArray[i]->msg_title + "|" + itemArray[i]->msg_content + "|" ;
+			sw->WriteLine(strdata);
+			if (l == 20) {
+				l = 0;
+				sw->WriteLine(" ");
+				sw->WriteLine("<div style=\"page-break-after: always;\"></div>");
+				sw->WriteLine(" ");
+				sw->WriteLine(" | MESSAGE CODE | TITLE | CONTENT |");
+				sw->WriteLine(" |:--|:--|:--|");
+			}
+		}
+	}
+
+
+	sw->WriteLine(" */");
 	sw->Close();
-	
+
+	// Rerload the current language
+	loadMessageList(comboLanguages->Text);
 
 }

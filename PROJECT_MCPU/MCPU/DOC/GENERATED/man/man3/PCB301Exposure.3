@@ -1,4 +1,4 @@
-.TH "PCB301Exposure" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB301Exposure" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,7 +23,7 @@ PCB301Exposure \- PCB301 API for Exposure handling
 .ti -1c
 .RI "static void \fBPCB301::setBuzzerManualMode\fP (bool stat)"
 .br
-.RI "This method sets the working mode of the Buzzer in Manual Mode or Automatic Mode "
+.RI "This method sets the working mode of the Buzzer in Manual Mode or Automatic Mode\&. "
 .ti -1c
 .RI "static void \fBPCB301::activationManualBuzzer\fP (bool stat)"
 .br
@@ -40,10 +40,11 @@ This section provides methods useful during the Exposure workflow\&.
 
 .SH "Function Documentation"
 .PP 
-.SS "static \fBCanDeviceCommandResult\fP ^ PCB301::activateManualBuzzerTomoMode (int samples, int fps, int tmo, Object^ device)\fC [inline]\fP, \fC [static]\fP"
+.SS "static \fBCanDeviceCommandResult\fP ^ PCB301::activateManualBuzzerTomoMode (int samples, int fps, int tmo, Object^ device)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
 This method, when the buzzer is set in manual mode, activates the buzzer in Tomo mode, providing a given number of consecutive pulses at a given rate\&. This method helps the application to implement a simulated Tomo sequence when the generator device is not present for Demo applications\&.
+
 .PP
 The calling thread remains locked to the call until one of the following condition are true:
 .IP "\(bu" 2
@@ -53,8 +54,10 @@ the x-ray push button is released;
 .IP "\(bu" 2
 the Timeout expires
 .PP
+
 .PP
 This function fails and immediatelly returns if the method is called into the \fBPCB301\fP Module!!
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -67,6 +70,7 @@ This function fails and immediatelly returns if the method is called into the \f
 \fIdevice\fP Handle of the calling thread
 .RE
 .PP
+
 .PP
 \fBReturns\fP
 .RS 4
@@ -82,13 +86,15 @@ error_code != COMMAND_NO_ERROR command failed;
 .IP "\(bu" 2
 CanDeviceCommandResult::result_0: numer of actually executed pulses\&.
 .PP
+
 .PP
 NOTE: if the x-ray push button should be released during the pulse generation the procedure successfully termines (no error_code) but the result_0 will provide a number of executed pulses lower than expected\&.
+
 .PP
 .RE
 .PP
 
-.SS "static void PCB301::activationManualBuzzer (bool stat)\fC [inline]\fP, \fC [static]\fP"
+.SS "static void PCB301::activationManualBuzzer (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
 This method, when the buzzer is set in manual mode, sets the current status of the Buzzer device\&. This function has no effect if the Buzzer is set to Automatic Mode\&. 
@@ -99,7 +105,7 @@ This method, when the buzzer is set in manual mode, sets the current status of t
 .RE
 .PP
 
-.SS "static bool PCB301::getXrayPushButtonStat (void)\fC [inline]\fP, \fC [static]\fP"
+.SS "static bool PCB301::getXrayPushButtonStat (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
 This method returns the current status of the X-RAY push button activation status\&. 
@@ -110,19 +116,22 @@ True: the input line is detected active
 .RE
 .PP
 
-.SS "static void PCB301::setBuzzerManualMode (bool stat)\fC [inline]\fP, \fC [static]\fP"
+.SS "static void PCB301::setBuzzerManualMode (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
-This method sets the working mode of the Buzzer in Manual Mode or Automatic Mode The \fBPCB301\fP mounts a local Buzzer device that works in two ways:
+This method sets the working mode of the Buzzer in Manual Mode or Automatic Mode\&. The \fBPCB301\fP mounts a local Buzzer device that works in two ways:
 .IP "\(bu" 2
 Manual Mode;
 .IP "\(bu" 2
 Automatic Mode;
 .PP
+
 .PP
 When in Automatic mode the \fBPCB301\fP activates the Buzzer toghether with the Hardware input line HV-ON\&.
+
 .PP
 When in Manual Mode
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -130,12 +139,14 @@ When in Manual Mode
 .RE
 .PP
 
-.SS "static void PCB301::setXrayEna (bool stat)\fC [inline]\fP, \fC [static]\fP"
+.SS "static void PCB301::setXrayEna (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
 This method requests to activate the x-ray enable hardware signal on the generator external interface\&. The X-RAY enable signal, during an exposure sequence, enables the \fBGenerator\fP to proceeds with the x-ray activation\&.
+
 .PP
 The Application shall set this signal during an exposure workflow\&.
+
 .PP
 The actual status of the signals depends by other hardware signals in the pcb301 board:
 .IP "\(bu" 2
@@ -143,6 +154,7 @@ Closed Door Input hardware line;
 .IP "\(bu" 2
 Xray Push Button hardware Input line;
 .PP
+
 .PP
 \fBParameters\fP
 .RS 4

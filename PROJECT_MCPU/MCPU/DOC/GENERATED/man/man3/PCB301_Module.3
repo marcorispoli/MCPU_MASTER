@@ -1,4 +1,4 @@
-.TH "PCB301_Module" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB301_Module" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,7 +9,7 @@ PCB301_Module \- PCB301 Module: power service board module control
 .SH SYNOPSIS
 .br
 .PP
-.SS "Modules"
+.SS "Topics"
 
 .in +1c
 .ti -1c
@@ -34,13 +34,16 @@ PCB301_Module \- PCB301 Module: power service board module control
 This Module implements the \fBPCB301\fP device protocol communication\&. 
 
 This module subclasses the \fBCanDeviceProtocol\fP base module in order to inherit the protocol implementation basics\&.
+
 .PP
 This module implements the specific functionalities related to the \fBPCB301\fP device\&.
+
 .PP
 See the \fBPCB301\fP specification documents for details\&.
 .SH "General Description"
 .PP
 The \fBPCB301\fP device board is responsible to handle the following system management:
+
 .PP
 .IP "\(bu" 2
 Remote device initialization: see the \fBPCB301Protocol\fP section;
@@ -61,17 +64,22 @@ at the system startup (application start);
 .IP "\(bu" 2
 in case of remote device reset event (as for communication protocol specification);
 .PP
+
 .PP
 During the module initialization all the protocol Parameters are uploaded to the device\&.
+
 .PP
 As soon as this fase completes, the running workflow will start normally\&.
 .SH "Alarm And Warning activation"
 .PP
 The module every about 20ms gets the \fBPCB301\fP Status registers\&.
+
 .PP
 The Status Registers provide the Module with the current status of the board Inputs and diagnostic information as described in the Communication protocol sepcification\&.
+
 .PP
 Some of the Input data are used by this module to direct activate/deactivate system messages as following described:
+
 .PP
 .IP "\(bu" 2
 Notify::messages::ERROR_POWER_DOWN_ERROR: when the powerdown condition is detected;
@@ -95,6 +103,7 @@ Notify::messages::WARNING_DOOR_STUDY_OPEN: when the Study Door is detected Open;
 .SH "Keep Alive Module Implementation"
 .PP
 The \fBPCB301\fP board implements a safety function that disables the 48DVC line and the Solid State relay in case the communication with this module should drop for almost 1 second\&.
+
 .PP
 This Module toggles the proper bit in the Protocol Data Register to keeps the board Alive\&.
 .SH "Input and Output Update"

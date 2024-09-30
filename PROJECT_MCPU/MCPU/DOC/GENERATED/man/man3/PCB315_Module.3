@@ -1,4 +1,4 @@
-.TH "PCB315_Module" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB315_Module" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,7 +9,7 @@ PCB315_Module \- PCB315 Module: filter selection and tube temperature control
 .SH SYNOPSIS
 .br
 .PP
-.SS "Modules"
+.SS "Topics"
 
 .in +1c
 .ti -1c
@@ -29,7 +29,7 @@ PCB315_Module \- PCB315 Module: filter selection and tube temperature control
 .ti -1c
 .RI "class \fBPCB315\fP"
 .br
-.RI "This class implements the functions of the \fBPCB315\fP Module "
+.RI "This class implements the functions of the \fBPCB315\fP Module\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -43,20 +43,26 @@ Mirror and collimation light activation;
 .IP "\(bu" 2
 Tube temperature monitoring;
 .PP
+
 .PP
 The module implements the Device Communication protocol to communicate with the \fBPCB315\fP device through the CAN bus\&.
+
 .PP
 In order to implement the protocol, the module inherits the \fBCanDeviceProtocol\fP class as the base class\&.
+
 .PP
 The module overrides the configurationLoop() routine of the Base class in order to writes the initialization Parameters and Data Registers as needed\&.
 .br
  The routine is automatically called by the Base class after system startup or always after a device reset event\&.
+
 .PP
 This module overrides the runningLoop() rotine of the base class in order to implement the device specific functions\&.
+
 .PP
 As soon as the module class is Instantiated, the constructor will call the Base class constructor\&.
 .br
 The Base class constructor, through the CAN Driver module, tries to connect the Board Device getting the Bootloader and Application revision codes\&.
+
 .PP
 When the Device connection is established and the Board Device firmware revision is acquired,
 .br
@@ -65,6 +71,7 @@ the Base class calls the configurationLoop() routine (overridden in this module)
 in order to let the module to upload and store the Device Parameters and the deviice DATA registers\&.
 .br
 In detail, the moudule in the configurationLoop() routine:
+
 .PP
 .IP "\(bu" 2
 Uploads the Filter assignment parameter;
@@ -73,6 +80,7 @@ Uploads the Filters and Mirror calibrated positions;
 .IP "\(bu" 2
 The Light Timeout
 .PP
+
 .PP
 When the configuration fase termines, the module runs the runningLoop() routine (overridden from the Base class),
 .br
@@ -80,6 +88,7 @@ to handle the normal workflow\&.
 .SH "Application Interface"
 .PP
 The module provides the following Application interface:
+
 .PP
 .IP "\(bu" 2
 setFilterAutoMode(): this function sets the Auto mode\&. The filter is assigned by the Exposure pulse setting
@@ -105,6 +114,7 @@ getTagFromFilter(): this function returns the fiter name (tag) of the Filter sel
 .SH "Filter and Mirror Selection management"
 .PP
 The module allows the Application to select one of the following filter operating mode
+
 .PP
 .IP "\(bu" 2
 AUTO-FILTER mode;
@@ -115,14 +125,17 @@ MIRROR mode;
 .PP
 .SS "AUTO-FILTER Mode"
 The Auto filter mode should be selected for the Exposure settings\&.
+
 .PP
 If the Application should select the AUTO Filter mode,
 .br
 the Module will force the Filter device to select the FILTER assigned to the Auto mode\&.
+
 .PP
 The module will try at least five times to set the requested filter, repeating the command in case of selection should fail\&. 
 .br
 If all the attempts should fail a non resettable error condition will be activated and the Filter selection will be disabled\&.
+
 .PP
 The Application can select the Auto Mode in two different ways:
 .IP "\(bu" 2
@@ -130,10 +143,12 @@ setFilterAutoMode(filter): activates the Auto mode, selecting what filter shall 
 .IP "\(bu" 2
 setFilterAutoMode(): activates the AUTO mode but making use of the already selected Auto filter;
 .PP
+
 .PP
 The function with the filter passed as the parameter should be used by the Module that is responsible
 .br
 to set the exposure filter;
+
 .PP
 The function without the parameter should be used by the module controlling the exposure workflow,
 .br
@@ -142,10 +157,12 @@ in order to be sure that the Auto filter (already selected) be the actual filter
 If the Application should select the MANAUL Filter mode,
 .br
 the Module will force the Filter device to select the FILTER assigned to the Manual mode\&.
+
 .PP
 The module will try at least five times to set the requested filter, repeating the command in case of selection should fail\&. 
 .br
 If all the attempts should fail a non resettable error condition will be activated and the Filter selection will be disabled\&.
+
 .PP
 A sthe Auto mode, also the manual mode can be selected with two functions:
 .IP "\(bu" 2
@@ -153,12 +170,14 @@ setFilterManualMode(filter): activates the manual mode, selecting what filter sh
 .IP "\(bu" 2
 setFilterManaulMode(): activates the Manual mode but making use of the already selected Manaul filter;
 .PP
+
 .PP
 The purpose of the Manual mode is to override any Auto filter in case of calibration/Test scenario\&.
 .SS "MIRROR Mode"
 If the Application should select the MIRROR mode,
 .br
 the Module will force the Filter device to select the MIRROR\&.
+
 .PP
 When the Mirror is selected the power light automatically will be activated for a given timeout\&. 
 .PP
@@ -167,10 +186,13 @@ NOTE: the current Manual filter and Auto Filter are not overridden\&.
 
 .fi
 .PP
- The Application can activate the Mirror mode with the following interface function:
+
+.PP
+The Application can activate the Mirror mode with the following interface function:
 .IP "\(bu" 2
 setMirrorMode();
 .PP
+
 .PP
 The Mirror mode should be activated by the Application when the collimation light shall be used in order to help the patient positioning during compression
 .br
@@ -188,8 +210,10 @@ Cu;
 .IP "\(bu" 2
 Mo;
 .PP
+
 .PP
 The selection can be made either by String name or by Enumeration code\&.
+
 .PP
 .IP "\(bu" 2
 Enumeration codes: see the filterMaterialCodes enum class definition;
@@ -212,6 +236,7 @@ usually the AWS module uses the filter string name (see the AWS protocol specifi
 .IP "\(bu" 2
 usually the internal modules uses the filterMaterialCodes enumeration class;
 .PP
+
 .PP
 There are two convenient functions to convert the code into its respective name and vice versa:
 .IP "\(bu" 2
@@ -225,8 +250,10 @@ The Filter Device can select only four possible slots\&.
 The name of the Slots are FILTER1, FILTER2, FILTER3, FILTER4\&.
 .br
  The phisical positions of the slots are described in the Hardware specification document of the \fBPCB315\fP board\&.
+
 .PP
 The \fBFilterConfig\fP file assignes the slots to the Material Filters\&.
+
 .PP
 For example, it can be assigned:
 .IP "\(bu" 2
@@ -238,6 +265,7 @@ The Filter 'Rh' to the FILTER3 slot;
 .IP "\(bu" 2
 The Filter 'Cu' to the FILTER4 slot; In that example, the filter 'Mo' shall be NOT assigned to prevent errors even if it can be reassigned to any of the possible slots\&.
 .PP
+
 .PP
 See the \fBFilterConfig\fP class section for details\&.
 .SH "Tube Temperature Monitoring"
@@ -247,12 +275,14 @@ The Filter device reads the Tube internal sensors positioned near the Rotating A
 Both Cathode Filament and Anode Stator are equipped with internal thermocouple protections
 .br
 that open at about 105 C, to protect the integrity of the X-RAY Tube\&.
+
 .PP
 The firmware of the \fBPCB315\fP board will monitor the sensors in order to prevent the hardware activation
 .br
 of the internal protection (105C), protecting the X-Ray tube from early aging or longer 
 .br
 stop due to the protection reset required time\&.
+
 .PP
 The Module periodically acquires the current temperature value of the sensors and provides 
 .br
@@ -262,6 +292,7 @@ its value to the Application in percent respect the maximum allowable temperatur
 .IP "\(bu" 2
 100%: the temperature is >= 105C
 .PP
+
 .PP
 The Module monitors the sensor values detecting possible fault conditions:
 .IP "\(bu" 2
@@ -269,13 +300,14 @@ Low Fault condition: the sensor value is < 0C (possible sensor disconnected cond
 .IP "\(bu" 2
 Short Fault condition: the sensor value is > 120C (possible sensor or cable shorted) NOTE: in the case of faults, the percentage of the sensor is set to 0%!
 .PP
+
 .PP
 In case the monitored temperature should exceed the 90C (but lower than 120C)
 .br
 a High Temperature Warning is reported\&. IMPORTANT: this Warning is not a Fault, because it should depends by an intense use of the X-RAY Tube\&.
 .SH "FANCOIL control"
 .PP
-\&.\&.\&. To be implemented
+\&.\&.\&. To be implemented 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU from the source code\&.

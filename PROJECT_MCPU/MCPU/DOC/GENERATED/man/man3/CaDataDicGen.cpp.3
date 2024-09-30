@@ -1,15 +1,15 @@
-.TH "C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/GENERATOR/R2CP/GenDataDic/CaDataDicGen.cpp" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "D:/GIT/SW/Z190/PROJECT_MCPU/MCPU/MCPU_MASTER/GENERATOR/R2CP/GenDataDic/CaDataDicGen.cpp" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/GENERATOR/R2CP/GenDataDic/CaDataDicGen.cpp \- Definition of the local object dictionary\&.  
+D:/GIT/SW/Z190/PROJECT_MCPU/MCPU/MCPU_MASTER/GENERATOR/R2CP/GenDataDic/CaDataDicGen.cpp \- Definition of the local object dictionary\&.  
 
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <string>\fP
+\fR#include <string>\fP
 .br
-\fC#include 'CaDataDicGen\&.h'\fP
+\fR#include 'CaDataDicGen\&.h'\fP
 .br
 
 .SS "Macros"
@@ -63,6 +63,7 @@ C:/Users/marco/Documents/Data/Progetti-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PR
 Definition of the local object dictionary\&. 
 
 Definition Of R2CP \fBGenerator\fP Datatadic\&.
+
 .PP
 \fBAuthor\fP
 .RS 4
@@ -238,7 +239,6 @@ SEDECAL S\&.A\&.
 .PP 
 .SS "const \fBtRow\fP R2CP::GenDictionary[]"
 \fBInitial value:\fP
-.PP
 .nf
 = {
         {NETWORK_COMMANDS_ENTRY,            (sizeof(Row_A0HEX) / sizeof(tEntry)),   Row_A0HEX },    
@@ -248,19 +248,21 @@ SEDECAL S\&.A\&.
         {PATIENT_COMMANDS_ENTRY,            (sizeof(Row_E0HEX)/sizeof(tEntry)),     Row_E0HEX },    
         {SERVICE_COMMANDS_ENTRY,            (sizeof(Row_C0HEX)/sizeof(tEntry)),     Row_C0HEX }     
     }
+.PP
 .fi
+
 .SS "const \fBtEntry\fP R2CP::Row_00HEX[]"
 \fBInitial value:\fP
-.PP
 .nf
 = { 
     
         {R2CP_PROTOCOL_VERSION,     CaDataDicGen::R2CP_ProtocolVersion,     (tDataDicAccess)DATADIC_ACCESS_ANSWER_EVENT, 0,         3,          3,      3},
     }
+.PP
 .fi
+
 .SS "const \fBtEntry\fP R2CP::Row_20HEX[]"
 \fBInitial value:\fP
-.PP
 .nf
 = { 
         {GENERATOR_DATA_BANK_DEFINE_PROCEDURE_V5,                       CaDataDicGen::Generator_DataBank_DefineProcedure,                   DATADIC_ACCESS_ANSWER_EVENT,        0,      0,      7,      7},
@@ -272,10 +274,11 @@ SEDECAL S\&.A\&.
         {GENERATOR_EXPOSURE_MANAGEMENT_RAD_POST_EXPOSURE,               CaDataDicGen::Generator_ExposureManagement_RadPostExposure,         DATADIC_ACCESS_ANSWER_EVENT,        0,      0,      21,     21},
         {GENERATOR_EXPOSURE_MANAGEMENT_GENERATOR_STATUS_V6,             CaDataDicGen::Generator_ExposureManagement_GeneratorStatus,         DATADIC_ACCESS_ANSWER_EVENT,        0,      0,      14,     14},
     }
+.PP
 .fi
+
 .SS "const \fBtEntry\fP R2CP::Row_80HEX[]"
 \fBInitial value:\fP
-.PP
 .nf
 = { 
     
@@ -292,10 +295,11 @@ SEDECAL S\&.A\&.
         {SYSTEM_VD_SINGLE_USER_REQUEST,                                 CaDataDicGen::System_SingleUserRequest,     DATADIC_ACCESS_ANSWER_EVENT,        0,      0,  0x05 , 0x05},
         {SYSTEM_VD_USER_REQUEST_TABLE,                                  CaDataDicGen::System_UserRequestTable,      DATADIC_ACCESS_ANSWER_EVENT,        0,      0,  0x05,  0x05}    
     }
+.PP
 .fi
+
 .SS "const \fBtEntry\fP R2CP::Row_A0HEX[]"
 \fBInitial value:\fP
-.PP
 .nf
 = { 
         
@@ -310,20 +314,22 @@ SEDECAL S\&.A\&.
         { NETWORK_RESTORE,                                              CaDataDicGen::Network_Restore,              (tDataDicAccess)(DATADIC_ACCESS_SET),           0,          1,      0,      0 },
         { NETWORK_CALIBRATION_UPDATE,                                   CaDataDicGen::Network_CalConfigUpdate,      (tDataDicAccess)(DATADIC_ACCESS_ANSWER_EVENT),  0,          0,      0,      0 },
     }
+.PP
 .fi
+
 .SS "const \fBtEntry\fP R2CP::Row_C0HEX[]"
 \fBInitial value:\fP
-.PP
 .nf
 = {
     
         {SERVICE_STANDARD_LICENSE,                                      CaDataDicGen::Service_StandardLicense,                      DATADIC_ACCESS_GET,         0,          0,      0,      0},
         {SERVICE_EXTENDED_LICENSE,                                      CaDataDicGen::Service_ExtendedLicense,                      DATADIC_ACCESS_GET,         0,          0,      0,      0},
     }
+.PP
 .fi
+
 .SS "const \fBtEntry\fP R2CP::Row_E0HEX[]"
 \fBInitial value:\fP
-.PP
 .nf
 = { 
     
@@ -331,7 +337,9 @@ SEDECAL S\&.A\&.
         {PATIENT_PROCEDURE_ACTIVATE,                                    nullptr,                                                DATADIC_ACCESS_SET_GET,                 1,          6,      0,      0},
         
     }
+.PP
 .fi
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU from the source code\&.

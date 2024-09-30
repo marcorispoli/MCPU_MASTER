@@ -1,4 +1,4 @@
-.TH "ConfigurationFilesDescription" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "ConfigurationFilesDescription" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -31,14 +31,19 @@ This section describes the configuration files used in the Application\&.
 .SH "Overview"
 .PP
 The Application makes use of several configuration files in order to change its behavior and/or its interface\&.
+
 .PP
 The Application autogenerates all the missing configuration files, initializing them with the default values\&.
+
 .PP
 All the configuration files share the same structure, derived from a common base-class\&.
+
 .PP
 The configuration files are stored into the same directory of the Application executable file and cannot be removed from there\&.
+
 .PP
 The basic characteristics are :
+
 .PP
 .IP "\(bu" 2
 A Readable Text file format;
@@ -63,8 +68,10 @@ The Revision raw: this is a special Data raw, providing the revision of the conf
 .PP
 .SS "Data Raw Structure"
 The Data raw structure is a string delimited with the special character '<' and '>' containing an arbitrary number of parameters\&.
+
 .PP
 The structure is the following:
+
 .PP
 <DATA_IDENTIFIER,data1, dat2, \&.\&., datan>
 .IP "\(bu" 2
@@ -76,14 +83,17 @@ The number of parameters is different for any Data raw;
 .PP
 .SS "Revision Data Raw"
 The revision data raw is a special Data raw, containing the current configuration file revision number\&.
+
 .PP
 <REVISION, xx>
 .br
 .IP "\(bu" 2
 xx: is the revision number in integer format\&.
 .PP
+
 .PP
 The revision code is verified by the application in order to identify a wrong revision number\&.
+
 .PP
 In case a configuration file should contains a different revision code than expected, 
 .br
@@ -93,6 +103,7 @@ The behavior may dependent by the specific configuration file and/or the given r
 .PP
 .SS "Configuration file example"
 Follows a tipical content of a configuration file:
+
 .PP
 .PP
 .nf
@@ -109,15 +120,19 @@ Follows a tipical content of a configuration file:
 * 
 * .fi
 .PP
+
 .PP
 .SH "DetectorConfiguration\&.cnf configuration file"
 .PP
 .SS "Overview"
 The Application handles different Detector types\&.
+
 .PP
 Every Detector has its own behavior in term of timing and limitations\&.
+
 .PP
 This configuration file sets all the relevant parameters for every Detector handled by the Application\&.
+
 .PP
 .IP "\(bu" 2
 \fBName of the configuration file:\fP DetecorConfiguration\&.cnf
@@ -135,27 +150,35 @@ DRTECH Detector descriptor;
 .PP
 .SS "Generic Detector Descriptor Parameters Row"
 This parameter sets the Generic Detector Descriptor parameters\&.
+
 .PP
 < GENERIC, PreToPulseTmo,PlsTmo,PreTmo,Tomo1Tmo,Tomo2Tmo,Tomo3Tmo,Tomo4Tmo,Tomo5Tmo,Tomo6Tmo,TomoMaxFps >
+
 .PP
 Param   Type   Default   Range   Descrption    PreToPulseTmo   Integer   5000   -   Time in ms from the Pre pulse to the Pulse    PlsTmo   Integer   5000   -   Integration Time in ms of a 2D pulse    PreTmo   Integer   1000   -   Integration Time in ms of a 2D pre-pulse    Tomo1Tmo   Integer   500   -   Integration Time in ms of a Tomo 1 FPS    Tomo2Tmo   Integer   250   -   Integration Time in ms of a Tomo 2 FPS    Tomo3Tmo   Integer   200   -   Integration Time in ms of a Tomo 3 FPS    Tomo4Tmo   Integer   120   -   Integration Time in ms of a Tomo 4 FPS    Tomo5Tmo   Integer   80   -   Integration Time in ms of a Tomo 5 FPS    Tomo6Tmo   Integer   33   -   Integration Time in ms of a Tomo 6 FPS    TomoMaxFps   Integer   4   1:6   Max FPS of the detector   
 .SS "LMAM2V2 Detector Descriptor Parameters Row"
 This parameter sets the LMAM2V2 Detector Descriptor parameters\&.
+
 .PP
 < LMAM2V2, PreToPulseTmo,PlsTmo,PreTmo,Tomo1Tmo,Tomo2Tmo,Tomo3Tmo,Tomo4Tmo,Tomo5Tmo,Tomo6Tmo,TomoMaxFps >
+
 .PP
 Param   Type   Default   Range   Descrption    PreToPulseTmo   Integer   5000   -   Time in ms from the Pre pulse to the Pulse    PlsTmo   Integer   5000   -   Integration Time in ms of a 2D pulse    PreTmo   Integer   1000   -   Integration Time in ms of a 2D pre-pulse    Tomo1Tmo   Integer   500   -   Integration Time in ms of a Tomo 1 FPS    Tomo2Tmo   Integer   250   -   Integration Time in ms of a Tomo 2 FPS    Tomo3Tmo   Integer   200   -   Integration Time in ms of a Tomo 3 FPS    Tomo4Tmo   Integer   120   -   Integration Time in ms of a Tomo 4 FPS    Tomo5Tmo   Integer   80   -   Integration Time in ms of a Tomo 5 FPS    Tomo6Tmo   Integer   33   -   Integration Time in ms of a Tomo 6 FPS    TomoMaxFps   Integer   4   1:6   Max FPS of the detector   
 .SS "DRTECH Detector Descriptor Parameters Row"
 This parameter sets the DRTECH Detector Descriptor parameters\&.
+
 .PP
 < DRTECH, PreToPulseTmo,PlsTmo,PreTmo,Tomo1Tmo,Tomo2Tmo,Tomo3Tmo,Tomo4Tmo,Tomo5Tmo,Tomo6Tmo,TomoMaxFps >
+
 .PP
 Param   Type   Default   Range   Descrption    PreToPulseTmo   Integer   5000   -   Time in ms from the Pre pulse to the Pulse    PlsTmo   Integer   5000   -   Integration Time in ms of a 2D pulse    PreTmo   Integer   1000   -   Integration Time in ms of a 2D pre-pulse    Tomo1Tmo   Integer   500   -   Integration Time in ms of a Tomo 1 FPS    Tomo2Tmo   Integer   250   -   Integration Time in ms of a Tomo 2 FPS    Tomo3Tmo   Integer   200   -   Integration Time in ms of a Tomo 3 FPS    Tomo4Tmo   Integer   120   -   Integration Time in ms of a Tomo 4 FPS    Tomo5Tmo   Integer   80   -   Integration Time in ms of a Tomo 5 FPS    Tomo6Tmo   Integer   33   -   Integration Time in ms of a Tomo 6 FPS    TomoMaxFps   Integer   4   1:6   Max FPS of the detector   
+
 .PP
 .SH "MotorCalibration\&.cnf configuration file"
 .PP
 .SS "Overview"
 This configuration file handles the parameters tuning the motorization behaviors\&.
+
 .PP
 .IP "\(bu" 2
 \fBName of the configuration file:\fP MotorCalibration\&.cnf
@@ -179,16 +202,21 @@ Slide Motor Parameters: the parameters controlling the Slide motor activation;
 .PP
 .SS "Obstacle Parameters Row"
 This parameter row set the behavior of the Obstacle Detection board, \fBPCB326\fP\&.
+
 .PP
 < OBSTACLE_CALIBRATION, Gain, Sensitivity, RecalibrationTime, EnableMask, Th1, Th2, Th3, Th4,Th5,Th6,Th7,Th8 >
+
 .PP
 Param   Type   Default   Range   Descrption    Gain   Byte   0   0:3   This is the master Gain: 0 = minimum sensitivity    Sensitivity   Byte   3   0:7   This is the sensor's gain: 0 = max sensitivity    RecalibrationTime   Byte   0   0:15   This is the recalibration time: 0 = frequent recalibration    EnableMask   Byte   0x3   0:0xFF   This is a bit-field where every bit enables/disables a sensor input channel of the pcb326    Th1   Byte   64   1:127   This is the detection threshold of sensor channel-1: 1 = most sensitive    Th2   Byte   64   1:127   This is the detection threshold of sensor channel-2: 1 = most sensitive    \&.\&.   \&.\&.   \&.\&.   \&.\&.   \&.\&.    Th8   Byte   64   1:127   This is the detection threshold of sensor channel-8: 1 = most sensitive   
 .SS "Body Motor Parameters Row"
 This parameter row set the behavior of the Body motor activation\&.
+
 .PP
 < BODY_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+
 .PP
 Param   Type   Default   Range   Descrption    ExternalSensorCalibration   Variant   'UNDEF'   'INTERNAL'/'UNDEF'/32-bit   See table below    CurrentPosition   32 bit Integer   'UNDEF'   0:0xFFFFFFFF   This is the last motor valid position in 0\&.1 degree/units    AutoSpeed   16 bit Integer   50   0:0xFFFF   Speed in 0\&.1 degree / seconds of the motor rotation when in auto mode    AutoAcc   16 bit Integer   20   0:0xFFFF   Aceleration in 0\&.1 degree / seconds^2 of the motor rotation when in auto mode    AutoDec   16 bit Integer   20   0:0xFFFF   Deceleration in 0\&.1 degree / seconds^2 of the motor rotation when in auto mode    ManualSpeed   16 bit Integer   50   0:0xFFFF   Speed in 0\&.1 degree / seconds of the motor rotation when in manual mode    ManaulAcc   16 bit Integer   20   0:0xFFFF   Aceleration in 0\&.1 degree / seconds^2 of the motor rotation when in manual mode    ManualDec   16 bit Integer   100   0:0xFFFF   Deceleration in 0\&.1 degree / seconds^2 of the motor rotation when in manual mode    ZeroSettingSpeed   16 bit Integer   50   0:0xFFFF   Speed in 0\&.1 degree / seconds of the motor rotation when in zero setting mode    ZeroSettingAcc   16 bit Integer   10   0:0xFFFF   Aceleration in 0\&.1 degree / seconds^2 of the motor rotation when in zero setting mode   
+
 .PP
 ExternalSensorCalibration:
 .IP "\(bu" 2
@@ -200,10 +228,13 @@ ExternalSensorCalibration:
 .PP
 .SS "Arm Motor Parameters Row"
 This parameter row set the behavior of the Arm motor activation\&.
+
 .PP
 < ARM_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+
 .PP
 Param   Type   Default   Range   Descrption    ExternalSensorCalibration   Variant   'INTERNAL'   'INTERNAL'/'UNDEF'/32-bit   See table below    CurrentPosition   32 bit Integer   'UNDEF'   0:0xFFFFFFFF   This is the last motor valid position in 0\&.01 degree/units    AutoSpeed   16 bit Integer   1000   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in auto mode    AutoAcc   16 bit Integer   500   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in auto mode    AutoDec   16 bit Integer   500   0:0xFFFF   Deceleration in 0\&.01 degree / seconds^2 of the motor rotation when in auto mode    ManualSpeed   16 bit Integer   500   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in manual mode    ManaulAcc   16 bit Integer   300   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in manual mode    ManualDec   16 bit Integer   300   0:0xFFFF   Deceleration in 0\&.01 degree / seconds^2 of the motor rotation when in manual mode    ZeroSettingSpeed   16 bit Integer   500   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in zero setting mode    ZeroSettingAcc   16 bit Integer   100   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in zero setting mode   
+
 .PP
 ExternalSensorCalibration:
 .IP "\(bu" 2
@@ -215,10 +246,13 @@ ExternalSensorCalibration:
 .PP
 .SS "Vertical Motor Parameters Row"
 This parameter row set the behavior of the Vertical motor activation\&.
+
 .PP
 < VERTICAL_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+
 .PP
 Param   Type   Default   Range   Descrption    ExternalSensorCalibration   Variant   'INTERNAL'   'INTERNAL'/'UNDEF'/32-bit   See table below    CurrentPosition   32 bit Integer   'UNDEF'   0:0xFFFFFFFF   This is the last motor valid position in 1 mm / units    AutoSpeed   16 bit Integer   30   0:0xFFFF   Speed in 1 mm / seconds of the motor rotation when in auto mode    AutoAcc   16 bit Integer   20   0:0xFFFF   Aceleration in 1 mm / seconds^2 of the motor rotation when in auto mode    AutoDec   16 bit Integer   10   0:0xFFFF   Deceleration in 1 mm / seconds^2 of the motor rotation when in auto mode    ManualSpeed   16 bit Integer   30   0:0xFFFF   Speed in 1 mm / seconds of the motor rotation when in manual mode    ManaulAcc   16 bit Integer   20   0:0xFFFF   Aceleration in 1 mm / seconds^2 of the motor rotation when in manual mode    ManualDec   16 bit Integer   60   0:0xFFFF   Deceleration in 1 mm / seconds^2 of the motor rotation when in manual mode    ZeroSettingSpeed   16 bit Integer   20   0:0xFFFF   Speed in 1 mm / seconds of the motor rotation when in zero setting mode    ZeroSettingAcc   16 bit Integer   10   0:0xFFFF   Aceleration in 1 mm / seconds^2 of the motor rotation when in zero setting mode   
+
 .PP
 ExternalSensorCalibration:
 .IP "\(bu" 2
@@ -237,10 +271,13 @@ This parameter row set the behavior of the Tilt motor activation\&.
 .fi
 .PP
  see the \fBTomoConfig\&.cnf configuration file\fP file description\&.
+
 .PP
 < TILT_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+
 .PP
 Param   Type   Default   Range   Descrption    ExternalSensorCalibration   Variant   'INTERNAL'   'INTERNAL'/'UNDEF'/32-bit   See table below    CurrentPosition   32 bit Integer   'UNDEF'   0:0xFFFFFFFF   This is the last motor valid position in 0\&.01 degree/units    AutoSpeed   16 bit Integer   400   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in auto mode    AutoAcc   16 bit Integer   400   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in auto mode    AutoDec   16 bit Integer   400   0:0xFFFF   Deceleration in 0\&.01 degree / seconds^2 of the motor rotation when in auto mode    ManualSpeed   16 bit Integer   100   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in manual mode    ManaulAcc   16 bit Integer   100   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in manual mode    ManualDec   16 bit Integer   200   0:0xFFFF   Deceleration in 0\&.01 degree / seconds^2 of the motor rotation when in manual mode    ZeroSettingSpeed   16 bit Integer   200   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in zero setting mode    ZeroSettingAcc   16 bit Integer   100   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in zero setting mode   
+
 .PP
 ExternalSensorCalibration:
 .IP "\(bu" 2
@@ -252,10 +289,13 @@ ExternalSensorCalibration:
 .PP
 .SS "Slide Motor Parameters Row"
 This parameter row set the behavior of the Slide motor activation\&.
+
 .PP
 < SLIDE_CALIBRATION, ExternalSensorCalibration, CurrentPosition, AutoSpeed, AutoAcc, AutoDec,ManualSpeed, ManualAcc, ManualDec,ZeroSettingSpeed,ZeroSettingAcc,>
+
 .PP
 Param   Type   Default   Range   Descrption    ExternalSensorCalibration   Variant   'INTERNAL'   'INTERNAL'/'UNDEF'/32-bit   See table below    CurrentPosition   32 bit Integer   'UNDEF'   0:0xFFFFFFFF   This is the last motor valid position in 0\&.01 degree/units    AutoSpeed   16 bit Integer   400   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in auto mode    AutoAcc   16 bit Integer   400   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in auto mode    AutoDec   16 bit Integer   400   0:0xFFFF   Deceleration in 0\&.01 degree / seconds^2 of the motor rotation when in auto mode    ManualSpeed   16 bit Integer   400   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in manual mode    ManaulAcc   16 bit Integer   400   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in manual mode    ManualDec   16 bit Integer   400   0:0xFFFF   Deceleration in 0\&.01 degree / seconds^2 of the motor rotation when in manual mode    ZeroSettingSpeed   16 bit Integer   100   0:0xFFFF   Speed in 0\&.01 degree / seconds of the motor rotation when in zero setting mode    ZeroSettingAcc   16 bit Integer   100   0:0xFFFF   Aceleration in 0\&.01 degree / seconds^2 of the motor rotation when in zero setting mode   
+
 .PP
 ExternalSensorCalibration:
 .IP "\(bu" 2
@@ -265,11 +305,13 @@ ExternalSensorCalibration:
 .IP "\(bu" 2
 10 bit Integer value: this is the sensor value when the motor is in the mechanical zero position\&.
 .PP
+
 .PP
 .SH "PaddleCalibration\&.cnf configuration file"
 .PP
 .SS "Overview"
 The Application handles several parameters that configure and calibrate the compressor device\&.
+
 .PP
 .IP "\(bu" 2
 \fBName of the configuration file:\fP PaddleCalibration\&.cnf
@@ -305,87 +347,115 @@ D75_MAG Paddle descriptor;
 .PP
 .SS "Compressor Calibration Parameters Row"
 This parameter sets the Compressor calibration parameters\&.
+
 .PP
 < COMPRESSOR_DEVICE, PosCalib,ForceCalib,HolderOffset,HolderK,HolderMaxPos,HolderMinPos,TargetForce,MaxForce >
+
 .PP
 Param   Type   Default   Range   Descrption    PosCalib   Byte   0   0:1   Position calibration status: 1=Calibrated, 0 = Not Calibrated    ForceCalib   Byte   0   0:1   Force calibration status: 1=Calibrated, 0 = Not Calibrated    HolderOffset   Word   0   -   Holder Calibration Offset    HolderK   Word   100   -   Percent of linear correction    HolderMaxPos   Word   300   -   Maximum holder position in mm    HolderMinPos   Word   0   -   Minimum holder position in mm    TargetForce   Word   150   -   Current Automatic Target compression in N    MaxForce   Word   200   70:200   Maximum Autmatic Compression Force in N   
 .SS "Prosthesis Paddle Descriptor Parameters Row"
 This parameter sets the Prosthesis parameters\&.
+
 .PP
 < PADDLE_PROSTHESIS, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   1   -   Identifier Code   
 .SS "BIOP_2D Paddle Descriptor Parameters Row"
 This parameter sets the BIOP_2D parameters\&.
+
 .PP
 < PADDLE_BIOP2D, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   2   -   Identifier Code   
 .SS "BIOP_3D Paddle Descriptor Parameters Row"
 This parameter sets the BIOP_3D parameters\&.
+
 .PP
 < PADDLE_BIOP3D, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   3   -   Identifier Code   
 .SS "TOMO Paddle Descriptor Parameters Row"
 This parameter sets the TOMO parameters\&.
+
 .PP
 < PADDLE_TOMO, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   4   -   Identifier Code   
 .SS "24x30_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 24x30_CONTACT parameters\&.
+
 .PP
 < PADDLE_24x30_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   5   -   Identifier Code   
 .SS "18x24_C_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 18x24_C_CONTACT parameters\&.
+
 .PP
 < PADDLE_18x24_C_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   6   -   Identifier Code   
 .SS "18x24_L_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 18x24_L_CONTACT parameters\&.
+
 .PP
 < PADDLE_18x24_L_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   7   -   Identifier Code   
 .SS "18x24_R_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 18x24_R_CONTACT parameters\&.
+
 .PP
 < PADDLE_18x24_R_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   8   -   Identifier Code   
 .SS "10x24_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 10x24_CONTACT parameters\&.
+
 .PP
 < PADDLE_10x24_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   9   -   Identifier Code   
 .SS "9x9_MAG Paddle Descriptor Parameters Row"
 This parameter sets the 9x9_MAG parameters\&.
+
 .PP
 < PADDLE_9x9_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   10   -   Identifier Code   
 .SS "9x21_MAG Paddle Descriptor Parameters Row"
 This parameter sets the 9x21_MAG parameters\&.
+
 .PP
 < PADDLE_9x21_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   11   -   Identifier Code   
 .SS "D75_MAG Paddle Descriptor Parameters Row"
 This parameter sets the D75_MAG parameters\&.
+
 .PP
 < PADDLE_D75_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+
 .PP
 Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   12   -   Identifier Code   
+
 .PP
 .SH "SystemInit\&.cnf configuration file"
 .PP
 .SS "Overview"
 This configuration file initializes the Application and its communication interaces\&.
+
 .PP
 .IP "\(bu" 2
 \fBName of the configuration file:\fP SystemInit\&.cnf
@@ -411,10 +481,13 @@ Application Debug parameters: defines the parameters for the Application Debug t
 .PP
 .SS "Application Running Mode Parameters Row"
 This parameter sets the Application Running Mode\&.
+
 .PP
 < RUNNING_MODE, Mode >
+
 .PP
 Param   Type   Default   Range   Descrption    Mode   String   'NORMAL'   'NORMAL'/'DEMO'/'SYM'   Application Running Mode   
+
 .PP
 .IP "\(bu" 2
 'NORMAL': the application runs normally with all the real peripherals connected and with all the Operating rules;
@@ -423,6 +496,7 @@ Param   Type   Default   Range   Descrption    Mode   String   'NORMAL'   'NORMA
 .IP "\(bu" 2
 'SYM': the application runs in simulation mode\&.
 .PP
+
 .PP
 When the Application runs in Simulation mode, it tries to connect with the McpuSym\&.exe application\&. The simulated peripheral (see the Simulated Mode Definition parameter) are then simulated by McpuSym\&.exe 
 .br
@@ -435,48 +509,63 @@ NOTE: When in Simulation mode, the Operating rules applies\&.
 .PP
 .SS "Simulation Mode Parameters Row"
 This parameter sets the Simulator behavior\&.
+
 .PP
 < SYM_MODE, EthIp,EthPort,SymCan,SymGenerator,SymTilt,SymArm,SymBody,SymVertical,SymSlide,SymPcb301,SymPcb302,SymPcb303,SymPcb304,SymPcb315,SymPcb326 >
+
 .PP
 Param   Type   Default   Range   Descrption    EthIp   Ip4 Address   '127\&.0\&.0\&.1'   Ip Address Range   IP Address of the Simulator process    EthPort   16 Bit Integer   20000   Port Range   IP Port of the Simulator process    SymCan   Byte   0   1/0   Can Module: 1= normal mode, 0 = simulated mode    SymGenerator   Byte   0   1/0   \fBGenerator\fP Module: 1= normal mode, 0 = simulated mode    SymTilt   Byte   0   1/0   Tilt Module: 1= normal mode, 0 = simulated mode    SymArm   Byte   0   1/0   Arm Module: 1= normal mode, 0 = simulated mode    SymBody   Byte   0   1/0   Body Module: 1= normal mode, 0 = simulated mode    SymVertical   Byte   0   1/0   Vertical Module: 1= normal mode, 0 = simulated mode    SymSlide   Byte   0   1/0   Slide Module: 1= normal mode, 0 = simulated mode    SymPcb301   Byte   0   1/0   \fBPCB301\fP Module: 1= normal mode, 0 = simulated mode    SymPcb302   Byte   0   1/0   \fBPCB302\fP Module: 1= normal mode, 0 = simulated mode    SymPcb303   Byte   0   1/0   \fBPCB303\fP Module: 1= normal mode, 0 = simulated mode    SymPcb304   Byte   0   1/0   \fBPCB304\fP Module: 1= normal mode, 0 = simulated mode    SymPcb315   Byte   0   1/0   \fBPCB315\fP Module: 1= normal mode, 0 = simulated mode    SymPcb326   Byte   0   1/0   \fBPCB326\fP Module: 1= normal mode, 0 = simulated mode   
 .SS "Installation Name Parameters Row"
 This parameter sets the Installation Name string\&.
+
 .PP
 < INSTALL_NAME, Name >
+
 .PP
 Param   Type   Default   Range   Descrption    Name   String   'FACTORY INSTALLATION'   -   Name of the Installation   
+
 .PP
 The Installation name is displayed in the Top of the \fBGantry\fP displays\&. 
 .br
 .SS "Package Revision Check List Parameters Row"
 This parameter sets the required revisions of all the modules connected with the \fBGantry\fP\&.
+
 .PP
 < PACKAGE, Id, RevPcb301, RevPcb302, RevPcb303, RevPcb304, RevPcb315, RevPcb326, RevCan, RevGen >
+
 .PP
 Param   Type   Default   Range   Descrption    Id   String   "1\&.02   -   Package Identifier Code    RevPcb301   String   '0\&.1'   -   \fBPCB301\fP Firmware revision: Maj\&.Min    RevPcb302   String   '0\&.1'   -   \fBPCB302\fP Firmware revision: Maj\&.Min    RevPcb303   String   '0\&.1'   -   \fBPCB303\fP Firmware revision: Maj\&.Min    RevPcb304   String   '0\&.1'   -   \fBPCB304\fP Firmware revision: Maj\&.Min    RevPcb315   String   '0\&.1'   -   \fBPCB315\fP Firmware revision: Maj\&.Min    RevPcb326   String   '0\&.1'   -   \fBPCB326\fP Firmware revision: Maj\&.Min    RevCan   String   '0\&.1'   -   Can Device Firmware revision: Maj\&.Min    RevGen   String   '0\&.1'   -   \fBGenerator\fP Device Firmware revision: Maj\&.Min   
 .SS "AWS Interface Parameters Row"
 This parameter sets the AWS Interface connection parameters\&.
+
 .PP
 < AWS_CONNECTION, EthIp, EthCommandPort, EthEventPort >
+
 .PP
 Param   Type   Default   Range   Descrption    EthIp   Ip4 Address   '127\&.0\&.0\&.1'   Ip Address Range   IP Address of the AWS server socket    EthCommandPort   16 Bit Integer   10000   Port Range   IP Port of the Command Server Socket    EthEventPort   16 Bit Integer   10001   Port Range   IP Port of the Event Server Socket   
 .SS "Application Logger Parameters Row"
 This parameter sets the Application Logger parameters\&.
+
 .PP
 < LOG_DIRECTORY, Directory, EnableLog>
+
 .PP
 Param   Type   Default   Range   Descrption    Directory   String   '\\\\GANTRY_LOGS'   -   Directory where the Log files are generated (if enabled)    EnableLog   String   'ON'   'ON'/'OFF'   Enables (ON) or Disables (OFF) The log file generation   
 .SS "Application Debugger Parameters Row"
 This parameter sets the Debugger parameters\&.
+
 .PP
 < DEBUG, DbgEna, EthIp, EthPort>
+
 .PP
 Param   Type   Default   Range   Descrption    DbgEna   String   'OFF'   'ON'/'OFF'   Enables (ON) or Disables (OFF) The Debugger tool    EthIp   Ip4 Address   '127\&.0\&.0\&.1'   Ip Address Range   IP Address of the Debugger server socket    EthPort   16 Bit Integer   20001   Port Range   IP Port of the Debugger server socket   
+
 .PP
 .SH "TomoConfig\&.cnf configuration file"
 .PP
 .SS "Overview"
 This configuration files describes the parameters of all the Tomo sequences\&.
+
 .PP
 .IP "\(bu" 2
 \fBName of the configuration file:\fP TomoConfig\&.cnf
@@ -518,92 +607,122 @@ TOMO_5F Wide Sequence description;
 .PP
 .SS "TOMO_1F Narrow Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_1F Narrow sequence characteristics\&.
+
 .PP
 < TOMO1F_NARROW, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   825   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -825   -   Tube End position in 0\&.01 degree unit    Fps   Byte   1   1:6   Sequence Fps    Samples   Byte   11   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   150   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   150   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   150   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_1F Intermediate Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_1F Intermediate sequence characteristics\&.
+
 .PP
 < TOMO1F_INTERMEDIATE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   1300   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -1300   -   Tube End position in 0\&.01 degree unit    Fps   Byte   1   1:6   Sequence Fps    Samples   Byte   13   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   200   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   200   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   200   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_1F Wide Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_1F Wide sequence characteristics\&.
+
 .PP
 < TOMO1F_WIDE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   1900   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -1900   -   Tube End position in 0\&.01 degree unit    Fps   Byte   1   1:6   Sequence Fps    Samples   Byte   19   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   200   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   200   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   200   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_2F Narrow Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_2F Narrow sequence characteristics\&.
+
 .PP
 < TOMO2F_NARROW, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   825   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -825   -   Tube End position in 0\&.01 degree unit    Fps   Byte   2   1:6   Sequence Fps    Samples   Byte   11   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   300   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   600   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   600   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_2F Intermediate Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_2F Intermediate sequence characteristics\&.
+
 .PP
 < TOMO2F_INTERMEDIATE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   1300   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -1300   -   Tube End position in 0\&.01 degree unit    Fps   Byte   2   1:6   Sequence Fps    Samples   Byte   13   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   400   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   800   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   800   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_2F Wide Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_2F Wide sequence characteristics\&.
+
 .PP
 < TOMO2F_WIDE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   1900   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -1900   -   Tube End position in 0\&.01 degree unit    Fps   Byte   2   1:6   Sequence Fps    Samples   Byte   19   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   400   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   800   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   800   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_3F Narrow Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_3F Narrow sequence characteristics\&.
+
 .PP
 < TOMO3F_NARROW, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   825   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -825   -   Tube End position in 0\&.01 degree unit    Fps   Byte   2   1:6   Sequence Fps    Samples   Byte   11   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   300   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   600   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   600   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_3F Intermediate Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_3F Intermediate sequence characteristics\&.
+
 .PP
 < TOMO3F_INTERMEDIATE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   1300   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -1300   -   Tube End position in 0\&.01 degree unit    Fps   Byte   2   1:6   Sequence Fps    Samples   Byte   13   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   400   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   800   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   800   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_3F Wide Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_3F Wide sequence characteristics\&.
+
 .PP
 < TOMO3F_WIDE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   2608   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -2608   -   Tube End position in 0\&.01 degree unit    Fps   Byte   2   1:6   Sequence Fps    Samples   Byte   24   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   435   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   869   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   869   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_4F Narrow Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_4F Narrow sequence characteristics\&.
+
 .PP
 < TOMO4F_NARROW, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   975   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -975   -   Tube End position in 0\&.01 degree unit    Fps   Byte   4   1:6   Sequence Fps    Samples   Byte   11   1:255   Number of valid pulses in the sequence    Skip   Byte   3   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   600   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   800   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   800   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_4F Intermediate Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_4F Intermediate sequence characteristics\&.
+
 .PP
 < TOMO4F_INTERMEDIATE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   1500   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -1500   -   Tube End position in 0\&.01 degree unit    Fps   Byte   3   1:6   Sequence Fps    Samples   Byte   13   1:255   Number of valid pulses in the sequence    Skip   Byte   3   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   600   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   600   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   600   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_4F Wide Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_4F Wide sequence characteristics\&.
+
 .PP
 < TOMO4F_WIDE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   2550   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -2550   -   Tube End position in 0\&.01 degree unit    Fps   Byte   3   1:6   Sequence Fps    Samples   Byte   24   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   675   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   900   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   900   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_5F Narrow Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_5F Narrow sequence characteristics\&.
+
 .PP
 < TOMO5F_NARROW, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   825   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -825   -   Tube End position in 0\&.01 degree unit    Fps   Byte   1   1:6   Sequence Fps    Samples   Byte   11   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   150   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   150   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   150   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_5F Intermediate Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_5F Intermediate sequence characteristics\&.
+
 .PP
 < TOMO5F_INTERMEDIATE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   1300   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -1300   -   Tube End position in 0\&.01 degree unit    Fps   Byte   1   1:6   Sequence Fps    Samples   Byte   13   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   200   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   200   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   200   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SS "TOMO_5F Wide Sequence Descriptor Parameters Row"
 This parameter sets the TOMO_5F Wide sequence characteristics\&.
+
 .PP
 < TOMO5F_WIDE, HomePosition,EndPosition,Fps,Samples,Skip,Speed,Acc,Dec>
+
 .PP
 Param   Type   Default   Range   Descrption    HomePosition   Integer   2609   -   Tube Home position in 0\&.01 degree unit    EndPosition   Integer   -2609   -   Tube End position in 0\&.01 degree unit    Fps   Byte   1   1:6   Sequence Fps    Samples   Byte   24   1:255   Number of valid pulses in the sequence    Skip   Byte   1   1:255   Number of initial pulses to be discarded (synchronization pulses)    Speed   Word   217   -   Speed of the Tube Arm in 0\&.01 degree/s    Acc   Word   217   -   Aceleration of the Tube Arm in 0\&.01 degree/s^2    Dec   Word   217   -   Deceleration of the Tube Arm in 0\&.01 degree/s^2   
 .SH "Author"

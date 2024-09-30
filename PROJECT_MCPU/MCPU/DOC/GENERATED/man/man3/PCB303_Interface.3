@@ -1,4 +1,4 @@
-.TH "PCB303_Interface" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB303_Interface" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,11 +12,146 @@ PCB303_Interface \- Application Interface
 .ti -1c
 .RI "class \fBPCB303::formatBlades\fP"
 .br
-.RI "This class provides a contenitor for a CALIBRATION blade setup"
+.RI "This class provides a contenitor for a CALIBRATION blade setup\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPCB303_ERROR_RIGHT\fP(reg)"
+.br
+.RI "This is the Right blade collimation error\&. "
+.ti -1c
+.RI "#define \fBPCB303_ERROR_FRONT\fP(reg)"
+.br
+.RI "This is the Front blade collimation error\&. "
+.ti -1c
+.RI "#define \fBPCB303_ERROR_BACK\fP(reg)"
+.br
+.RI "This is the Back blade collimation error\&. "
+.ti -1c
+.RI "#define \fBPCB303_ERROR_TRAP\fP(reg)"
+.br
+.RI "This is the Trap blade collimation error\&. "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_COLLIMATION_STATUS\fP(reg)"
+.br
+.RI "This macro selects the COLLIMATION_STATUS byte from the received Status Register\&. "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_FORMAT_INDEX\fP(reg)"
+.br
+.RI "This macro selects the FORMAT_INDEX byte from the received Status register Can Frame\&. "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_TOMO_PULSE\fP(reg)"
+.br
+.RI "This macro selects the TOMO_PULSE byte from the received Status register Can Frame 
+.br
+ "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_FLAGS\fP(reg)"
+.br
+.RI "This macro selects the SYSTEM_FLAGS byte from the received Status register Can Frame\&. "
+.ti -1c
+.RI "#define \fBPCB303_SYSTEM_FLAG_ERRORS\fP   0x1"
+.br
+.RI "This macro selects the ERROR_FLAGS from the SYSTEM_FLAGS byte 
+.br
+ "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_FB_FRONT\fP(reg)"
+.br
+.RI "This macro selects the Front blade position\&. "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_FB_BACK\fP(reg)"
+.br
+.RI "This macro selects the Back blade position 
+.br
+ "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_LR_LEFT\fP(reg)"
+.br
+.RI "This macro selects the Left blade position\&. "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_LR_RIGHT\fP(reg)"
+.br
+.RI "This macro selects the Right blade position\&. "
+.ti -1c
+.RI "#define \fBPCB303_GET_SYSTEM_T_TRAP\fP(reg)"
+.br
+.RI "This macro selects the Trap blade position\&. "
+.ti -1c
+.RI "#define \fBPCB303_WRITE_DATA_CALIBRATION_FB\fP(front,  back)"
+.br
+.RI "This is the frame implementation to write the DATA_CALIBRATION_FB register\&. "
+.ti -1c
+.RI "#define \fBPCB303_WRITE_DATA_CALIBRATION_LR\fP(left,  right)"
+.br
+.RI "This is the frame implementation to write the DATA_CALIBRATION_LR register\&. "
+.ti -1c
+.RI "#define \fBPCB303_WRITE_DATA_CALIBRATION_T\fP(trap)"
+.br
+.RI "This is the frame implementation to write the DATA_CALIBRATION_T register\&. "
+.ti -1c
+.RI "#define \fBPCB303_WRITE_PARAM_STANDARD_FT\fP(front,  trap)"
+.br
+.RI "This is the frame implementation to write the PARAM_STANDARD_FT Parameter Register 
+.br
+ "
+.ti -1c
+.RI "#define \fBPCB303_WRITE_PARAM_STANDARD_LR\fP(index,  left,  right)"
+.br
+.RI "This is the frame implementation to write the PARAM_STANDARD_LR Parameter Register\&. "
+.ti -1c
+.RI "#define \fBPCB303_WRITE_PARAM_STANDARD_B\fP(index,  back)"
+.br
+.RI "This is the frame implementation to write the PARAM_STANDARD_B Parameter Register\&. "
+.ti -1c
+.RI "#define \fBPCB303_COMMAND_ABORT\fP   (System::Byte) PCB303::Commandregister::ABORT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+.br
+.RI "This is the frame implementation to Execute ABORT_COMMAND Command\&. "
+.ti -1c
+.RI "#define \fBPCB303_COMMAND_OPEN_FORMAT\fP   (System::Byte) PCB303::Commandregister::SET_OPEN_FORMAT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+.br
+.RI "This is the frame implementation to Execute the SET_OPEN_FORMAT_COMMAND Command\&. "
+.ti -1c
+.RI "#define \fBPCB303_COMMAND_STANDARD_FORMAT\fP(index)"
+.br
+.RI "This is the frame implementation to Execute the SET_STANDARD_FORMAT_COMMAND collimation Command\&. "
+.ti -1c
+.RI "#define \fBPCB303_COMMAND_CALIBRATION_FORMAT\fP   (System::Byte) PCB303::Commandregister::SET_CALIBRATION_FORMAT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+.br
+.RI "This is the frame implementation to Execute the SET_CALIBRATION_FORMAT_COMMAND Command\&. "
+.ti -1c
+.RI "#define \fBPCB303_COMMAND_ACTIVATE_TOMO\fP   (System::Byte) PCB303::Commandregister::SET_TOMO_MODE_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
+.br
+.RI "This is the frame implementation to Execute the SET_TOMO_MODE_COMMAND Command\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBPCB303::ColliStandardSelections\fP { \fBPCB303::ColliStandardSelections::COLLI_NOT_STANDARD\fP = 0, \fBPCB303::ColliStandardSelections::COLLI_INVALID_FORMAT\fP = COLLI_NOT_STANDARD, \fBPCB303::ColliStandardSelections::COLLI_STANDARD1\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD_24x30\fP = COLLI_STANDARD1, \fBPCB303::ColliStandardSelections::COLLI_STANDARD2\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD3\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD4\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD5\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD6\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD7\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD8\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD9\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD10\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD11\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD12\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD13\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD14\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD15\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD16\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD17\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD18\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD19\fP, \fBPCB303::ColliStandardSelections::COLLI_STANDARD20\fP, \fBCOLLI_STANDARD_LEN\fP }"
+.br
+.RI "This is the SYSTEM_FORMAT_INDEX byte definition of the SYSTEM status register\&. This byte reports the current select collimation format\&. "
+.ti -1c
+.RI "enum class \fBPCB303::DataRegisters\fP { \fBPCB303::DataRegisters::DATA_CALIBRATION_FB\fP = 0, \fBPCB303::DataRegisters::DATA_CALIBRATION_LR\fP, \fBPCB303::DataRegisters::DATA_CALIBRATION_T\fP }"
+.br
+.RI "This is the enumeration class definigs the indexes of the protocol DATA registers 
+.br
+ "
+.ti -1c
+.RI "enum class \fBPCB303::ParamRegisters\fP { \fBPARAM_STANDARD_FORMAT_FT\fP = 0, \fBPARAM_STANDARD_FORMAT_LR1\fP, \fBPARAM_STANDARD_FORMAT_B1\fP, \fBPARAM_STANDARD_FORMAT_LR2\fP, \fBPARAM_STANDARD_FORMAT_B2\fP, \fBPARAM_STANDARD_FORMAT_LR3\fP, \fBPARAM_STANDARD_FORMAT_B3\fP, \fBPARAM_STANDARD_FORMAT_LR4\fP, \fBPARAM_STANDARD_FORMAT_B4\fP, \fBPARAM_STANDARD_FORMAT_LR5\fP, \fBPARAM_STANDARD_FORMAT_B5\fP, \fBPARAM_STANDARD_FORMAT_LR6\fP, \fBPARAM_STANDARD_FORMAT_B6\fP, \fBPARAM_STANDARD_FORMAT_LR7\fP, \fBPARAM_STANDARD_FORMAT_B7\fP, \fBPARAM_STANDARD_FORMAT_LR8\fP, \fBPARAM_STANDARD_FORMAT_B8\fP, \fBPARAM_STANDARD_FORMAT_LR9\fP, \fBPARAM_STANDARD_FORMAT_B9\fP, \fBPARAM_STANDARD_FORMAT_LR10\fP, \fBPARAM_STANDARD_FORMAT_B10\fP, \fBPARAM_STANDARD_FORMAT_LR11\fP, \fBPARAM_STANDARD_FORMAT_B11\fP, \fBPARAM_STANDARD_FORMAT_LR12\fP, \fBPARAM_STANDARD_FORMAT_B12\fP, \fBPARAM_STANDARD_FORMAT_LR13\fP, \fBPARAM_STANDARD_FORMAT_B13\fP, \fBPARAM_STANDARD_FORMAT_LR14\fP, \fBPARAM_STANDARD_FORMAT_B14\fP, \fBPARAM_STANDARD_FORMAT_LR15\fP, \fBPARAM_STANDARD_FORMAT_B15\fP, \fBPARAM_STANDARD_FORMAT_LR16\fP, \fBPARAM_STANDARD_FORMAT_B16\fP, \fBPARAM_STANDARD_FORMAT_LR17\fP, \fBPARAM_STANDARD_FORMAT_B17\fP, \fBPARAM_STANDARD_FORMAT_LR18\fP, \fBPARAM_STANDARD_FORMAT_B18\fP, \fBPARAM_STANDARD_FORMAT_LR19\fP, \fBPARAM_STANDARD_FORMAT_B19\fP, \fBPARAM_STANDARD_FORMAT_LR20\fP, \fBPARAM_STANDARD_FORMAT_B20\fP }"
+.br
+.RI "
+.br
+ This enumeration class defines the Indexes of the Parameters Registers "
 .in -1c
 .SS "Functions"
 
 .in +1c
+.ti -1c
+.RI "static \fBColliStandardSelections\fP \fBPCB303::getColliFormatIndexFromParam\fP (System::String^ param)"
+.br
 .ti -1c
 .RI "\fBPCB303::PCB303\fP ()"
 .br
@@ -54,24 +189,319 @@ PCB303_Interface \- Application Interface
 .SH "Detailed Description"
 .PP 
 
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define PCB303_COMMAND_STANDARD_FORMAT( index)"
+\fBValue:\fP
+.nf
+(System::Byte) PCB303::Commandregister::SET_STANDARD_FORMAT_COMMAND, (System::Byte) (index),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0
+.PP
+.fi
+
+.PP
+This is the frame implementation to Execute the SET_STANDARD_FORMAT_COMMAND collimation Command\&. 
+.SS "#define PCB303_ERROR_BACK( reg)"
+\fBValue:\fP
+.nf
+(reg\->d2 & 0x8)
+.PP
+.fi
+
+.PP
+This is the Back blade collimation error\&. 
+.SS "#define PCB303_ERROR_FRONT( reg)"
+\fBValue:\fP
+.nf
+(reg\->d2 & 0x4)
+.PP
+.fi
+
+.PP
+This is the Front blade collimation error\&. 
+.SS "#define PCB303_ERROR_RIGHT( reg)"
+\fBValue:\fP
+.nf
+(reg\->d2 & 0x2)
+.PP
+.fi
+
+.PP
+This is the Right blade collimation error\&. 
+.SS "#define PCB303_ERROR_TRAP( reg)"
+\fBValue:\fP
+.nf
+(reg\->d2 & 0x10)
+.PP
+.fi
+
+.PP
+This is the Trap blade collimation error\&. 
+.SS "#define PCB303_GET_SYSTEM_COLLIMATION_STATUS( reg)"
+\fBValue:\fP
+.nf
+(unsigned char) (reg\->d0)
+.PP
+.fi
+
+.PP
+This macro selects the COLLIMATION_STATUS byte from the received Status Register\&. 
+.SS "#define PCB303_GET_SYSTEM_FB_BACK( reg)"
+\fBValue:\fP
+.nf
+((unsigned short) reg\->d2 + 256 * (unsigned short) reg\->d3)
+.PP
+.fi
+
+.PP
+This macro selects the Back blade position 
+.br
+ 
+.SS "#define PCB303_GET_SYSTEM_FB_FRONT( reg)"
+\fBValue:\fP
+.nf
+((unsigned short) reg\->d0 + 256 * (unsigned short) reg\->d1)
+.PP
+.fi
+
+.PP
+This macro selects the Front blade position\&. 
+.SS "#define PCB303_GET_SYSTEM_FLAGS( reg)"
+\fBValue:\fP
+.nf
+(unsigned char) (reg\->d3)
+.PP
+.fi
+
+.PP
+This macro selects the SYSTEM_FLAGS byte from the received Status register Can Frame\&. 
+.SS "#define PCB303_GET_SYSTEM_FORMAT_INDEX( reg)"
+\fBValue:\fP
+.nf
+(unsigned char) (reg\->d1)
+.PP
+.fi
+
+.PP
+This macro selects the FORMAT_INDEX byte from the received Status register Can Frame\&. 
+.SS "#define PCB303_GET_SYSTEM_LR_LEFT( reg)"
+\fBValue:\fP
+.nf
+((unsigned short) reg\->d0 + 256 * (unsigned short) reg\->d1)
+.PP
+.fi
+
+.PP
+This macro selects the Left blade position\&. 
+.SS "#define PCB303_GET_SYSTEM_LR_RIGHT( reg)"
+\fBValue:\fP
+.nf
+((unsigned short) reg\->d2 + 256 * (unsigned short) reg\->d3)
+.PP
+.fi
+
+.PP
+This macro selects the Right blade position\&. 
+.SS "#define PCB303_GET_SYSTEM_T_TRAP( reg)"
+\fBValue:\fP
+.nf
+((unsigned short) reg\->d0 + 256 * (unsigned short) reg\->d1)
+.PP
+.fi
+
+.PP
+This macro selects the Trap blade position\&. 
+.SS "#define PCB303_GET_SYSTEM_TOMO_PULSE( reg)"
+\fBValue:\fP
+.nf
+(unsigned char) (reg\->d2)
+.PP
+.fi
+
+.PP
+This macro selects the TOMO_PULSE byte from the received Status register Can Frame 
+.br
+ 
+.SS "#define PCB303_WRITE_DATA_CALIBRATION_FB( front,  back)"
+\fBValue:\fP
+.nf
+(System::Byte) DataRegisters::DATA_CALIBRATION_FB,(System::Byte) (front&0xFF), (System::Byte) ((front>>8)&0xFF),(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF)
+.PP
+.fi
+
+.PP
+This is the frame implementation to write the DATA_CALIBRATION_FB register\&. 
+.SS "#define PCB303_WRITE_DATA_CALIBRATION_LR( left,  right)"
+\fBValue:\fP
+.nf
+(System::Byte) DataRegisters::DATA_CALIBRATION_LR,(System::Byte) (left&0xFF), (System::Byte) ((left>>8)&0xFF),(System::Byte) (right&0xFF), (System::Byte) ((right>>8)&0xFF)
+.PP
+.fi
+
+.PP
+This is the frame implementation to write the DATA_CALIBRATION_LR register\&. 
+.SS "#define PCB303_WRITE_DATA_CALIBRATION_T( trap)"
+\fBValue:\fP
+.nf
+(System::Byte) DataRegisters::DATA_CALIBRATION_T,(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF),(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF)
+.PP
+.fi
+
+.PP
+This is the frame implementation to write the DATA_CALIBRATION_T register\&. 
+.SS "#define PCB303_WRITE_PARAM_STANDARD_B( index,  back)"
+\fBValue:\fP
+.nf
+(System::Byte) (ParamRegisters::PARAM_STANDARD_FORMAT_B1) + (index\-1) * 2 ,(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF),(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF)
+.PP
+.fi
+
+.PP
+This is the frame implementation to write the PARAM_STANDARD_B Parameter Register\&. 
+.SS "#define PCB303_WRITE_PARAM_STANDARD_FT( front,  trap)"
+\fBValue:\fP
+.nf
+(System::Byte) ParamRegisters::PARAM_STANDARD_FORMAT_FT,(System::Byte) (front&0xFF), (System::Byte) ((front>>8)&0xFF),(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF)
+.PP
+.fi
+
+.PP
+This is the frame implementation to write the PARAM_STANDARD_FT Parameter Register 
+.br
+ 
+.SS "#define PCB303_WRITE_PARAM_STANDARD_LR( index,  left,  right)"
+\fBValue:\fP
+.nf
+(System::Byte) (ParamRegisters::PARAM_STANDARD_FORMAT_LR1) + (index\-1) * 2, (System::Byte) (left&0xFF), (System::Byte) ((left>>8)&0xFF), (System::Byte) (right&0xFF), (System::Byte) ((right>>8)&0xFF)
+.PP
+.fi
+
+.PP
+This is the frame implementation to write the PARAM_STANDARD_LR Parameter Register\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum class \fBPCB303::ColliStandardSelections\fP\fR [strong]\fP"
+
+.PP
+This is the SYSTEM_FORMAT_INDEX byte definition of the SYSTEM status register\&. This byte reports the current select collimation format\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BICOLLI_NOT_STANDARD \fP
+When an OPEN format or CALIBRATION format is selected this is reported as a non standard format active\&. 
+.TP
+\f(BICOLLI_INVALID_FORMAT \fP
+This is the code assigned to a Not valid collimatoion format code\&. 
+.TP
+\f(BICOLLI_STANDARD1 \fP
+The current selected format is the STANDARD1\&. 
+.TP
+\f(BICOLLI_STANDARD_24x30 \fP
+The special code is reserved to the 24x30 collimation, assigned to the COLLI_STANDARD1\&. 
+.TP
+\f(BICOLLI_STANDARD2 \fP
+The current selected format is the STANDARD2\&. 
+.TP
+\f(BICOLLI_STANDARD3 \fP
+The current selected format is the STANDARD3\&. 
+.TP
+\f(BICOLLI_STANDARD4 \fP
+The current selected format is the STANDARD4\&. 
+.TP
+\f(BICOLLI_STANDARD5 \fP
+The current selected format is the STANDARD5\&. 
+.TP
+\f(BICOLLI_STANDARD6 \fP
+The current selected format is the STANDARD6\&. 
+.TP
+\f(BICOLLI_STANDARD7 \fP
+The current selected format is the STANDARD7\&. 
+.TP
+\f(BICOLLI_STANDARD8 \fP
+The current selected format is the STANDARD8\&. 
+.TP
+\f(BICOLLI_STANDARD9 \fP
+The current selected format is the STANDARD9\&. 
+.TP
+\f(BICOLLI_STANDARD10 \fP
+The current selected format is the STANDARD10\&. 
+.TP
+\f(BICOLLI_STANDARD11 \fP
+The current selected format is the STANDARD11\&. 
+.TP
+\f(BICOLLI_STANDARD12 \fP
+The current selected format is the STANDARD12\&. 
+.TP
+\f(BICOLLI_STANDARD13 \fP
+The current selected format is the STANDARD13\&. 
+.TP
+\f(BICOLLI_STANDARD14 \fP
+The current selected format is the STANDARD14\&. 
+.TP
+\f(BICOLLI_STANDARD15 \fP
+The current selected format is the STANDARD15\&. 
+.TP
+\f(BICOLLI_STANDARD16 \fP
+The current selected format is the STANDARD16\&. 
+.TP
+\f(BICOLLI_STANDARD17 \fP
+The current selected format is the STANDARD17\&. 
+.TP
+\f(BICOLLI_STANDARD18 \fP
+The current selected format is the STANDARD18\&. 
+.TP
+\f(BICOLLI_STANDARD19 \fP
+The current selected format is the STANDARD19\&. 
+.TP
+\f(BICOLLI_STANDARD20 \fP
+The current selected format is the STANDARD20\&. 
+.SS "enum class \fBPCB303::DataRegisters\fP\fR [strong]\fP"
+
+.PP
+This is the enumeration class definigs the indexes of the protocol DATA registers 
+.br
+ 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIDATA_CALIBRATION_FB \fP
+The Application shall set this register in CALIBRATION to set the Front and Back blades positions\&. 
+.TP
+\f(BIDATA_CALIBRATION_LR \fP
+The Application shall set this register in CALIBRATION to set the Left and Right blades positions\&. 
+.TP
+\f(BIDATA_CALIBRATION_T \fP
+The Application shall set this register in CALIBRATION to set the Trap blade positions\&. 
+.SS "enum class \fBPCB303::ParamRegisters\fP\fR [strong]\fP"
+
+.PP
+
+.br
+ This enumeration class defines the Indexes of the Parameters Registers 
+.br
+ 
 .SH "Function Documentation"
 .PP 
-.SS "PCB303::PCB303 ()\fC [inline]\fP"
+.SS "PCB303::PCB303 ()\fR [inline]\fP"
 
 .PP
 \fBPCB303\fP Class constructor\&. The construction initializes several internal variables\&. The constructor call the base class setting the address of the controlled device\&.
+
 .PP
-As soon as the base class is initialized, the communication process starts and the device is initialized with \fBconfigurationLoop()\fP routine\&.
-.SS "void PCB303::resetFaults (void)\fC [static]\fP"
+As soon as the base class is initialized, the communication process starts and the device is initialized with \fBconfigurationLoop()\fP routine\&. 
+.SS "void PCB303::resetFaults (void )\fR [static]\fP"
 
 .PP
 In case of collimation fault condition, this function starts a new collimation attempt\&. This functions resets the Application fault condition for the format collimation\&.
-.PP
-The Fault is reset ONLY in the application not in the device\&. After the fault should be reset, the application can try once more to set the format collimation\&.
-.SS "void PCB303::setCalibrationCollimationMode (\fBformatBlades\fP^ blades)\fC [static]\fP"
 
 .PP
-This function sets the format collimation to CALIBRATION mode\&. This command sets the CALIBRATION collimation mode 
+The Fault is reset ONLY in the application not in the device\&. After the fault should be reset, the application can try once more to set the format collimation\&.
+.SS "void PCB303::setCalibrationCollimationMode (\fBformatBlades\fP^ blades)\fR [static]\fP"
+
+.PP
+This function sets the format collimation to CALIBRATION mode\&. This command sets the CALIBRATION collimation mode\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -79,10 +509,11 @@ This function sets the format collimation to CALIBRATION mode\&. This command se
 .RE
 .PP
 
-.SS "void PCB303::setCustomCollimationMode (\fBColliStandardSelections\fP custom)\fC [static]\fP"
+.SS "void PCB303::setCustomCollimationMode (\fBColliStandardSelections\fP custom)\fR [static]\fP"
 
 .PP
-This function sets the format collimation to CUSTOM mode\&. This function sets the Custom Collimation mode
+This function sets the format collimation to CUSTOM mode\&. This function sets the Custom Collimation mode\&.
+
 .PP
 \fBParameters\fP
 .RS 4

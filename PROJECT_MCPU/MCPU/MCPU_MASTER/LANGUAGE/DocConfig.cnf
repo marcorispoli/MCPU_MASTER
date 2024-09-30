@@ -4,13 +4,13 @@
 |ERROR_PCB302_RESET|The PCB302 is the compressor device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
 |ERROR_PCB303_RESET|The PCB303 is the collimator device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
 |ERROR_PCB304_RESET|The PCB304 is the grid controller device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
-|ERROR_PCB315_RESET|-|
+|ERROR_PCB325_RESET|The PCB325 is the biopsy detection device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br><br>|
 |ERROR_PCB326_RESET|The PCB326 is the obstacle detection device. <br>The board signalled a reset event (the microcontroller is restarted).<br>The Application can handle this event restoring the current device status properly.<br>However this event may suggest a problem with the cabling (power cable) or a board issue.<br>Frequent events like that cannot be accepted as normal behavior.<br>|
 |ERROR_PCB301_COMMUNICATION_ERROR|-|
 |ERROR_PCB302_COMMUNICATION_ERROR||
 |ERROR_PCB303_COMMUNICATION_ERROR|-|
 |ERROR_PCB304_COMMUNICATION_ERROR||
-|ERROR_PCB315_COMMUNICATION_ERROR|Bruno fa la pizza che non piace a Bruno<br>Evviva la puzza<br>|
+|ERROR_PCB325_COMMUNICATION_ERROR|-|
 |ERROR_PCB326_COMMUNICATION_ERROR||
 |ERROR_XRAY_PUSH_FAULT||
 |ERROR_MOTOR_PEDALS_UD_FAULT||

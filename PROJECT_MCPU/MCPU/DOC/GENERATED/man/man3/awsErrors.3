@@ -1,4 +1,4 @@
-.TH "awsErrors" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "awsErrors" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,7 +21,7 @@ awsErrors \- AWS Command Error Codes
  
 .SH "Enumeration Type Documentation"
 .PP 
-.SS "enum class \fBawsProtocol::return_errors\fP\fC [strong]\fP"
+.SS "enum class \fBawsProtocol::return_errors\fP\fR [strong]\fP"
 
 .PP
 The module implements a standard set of error codes that can be returned (NOK frames) to the AWS in executing a Command request\&. 
@@ -29,31 +29,31 @@ The module implements a standard set of error codes that can be returned (NOK fr
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIAWS_RET_WRONG_PARAMETERS \fP\fP
+\f(BIAWS_RET_WRONG_PARAMETERS \fP
 [1] The number of the command parameters is invalid 
 .TP
-\fB\fIAWS_RET_WRONG_OPERATING_STATUS \fP\fP
+\f(BIAWS_RET_WRONG_OPERATING_STATUS \fP
 [2] The current operating status is not valid for the command 
 .TP
-\fB\fIAWS_RET_SYSTEM_ERRORS \fP\fP
+\f(BIAWS_RET_SYSTEM_ERRORS \fP
 [3] The command cannot be executed with active system errors 
 .TP
-\fB\fIAWS_RET_SYSTEM_WARNINGS \fP\fP
+\f(BIAWS_RET_SYSTEM_WARNINGS \fP
 [4] There are active System warnings 
 .TP
-\fB\fIAWS_RET_INVALID_PARAMETER_FORMAT \fP\fP
+\f(BIAWS_RET_INVALID_PARAMETER_FORMAT \fP
 [5] A parameter is not in the expected format 
 .TP
-\fB\fIAWS_RET_INVALID_PARAMETER_VALUE \fP\fP
+\f(BIAWS_RET_INVALID_PARAMETER_VALUE \fP
 [6] A parameter is not in the expected range 
 .TP
-\fB\fIAWS_RET_DATA_NOT_ALLOWED \fP\fP
+\f(BIAWS_RET_DATA_NOT_ALLOWED \fP
 [7] The current system setting is not ready to accept the command 
 .TP
-\fB\fIAWS_RET_DEVICE_BUSY \fP\fP
+\f(BIAWS_RET_DEVICE_BUSY \fP
 [8] The target device cannot be activated 
 .TP
-\fB\fIAWS_RET_DEVICE_ERROR \fP\fP
+\f(BIAWS_RET_DEVICE_ERROR \fP
 [9] The Device signaled an error condition in executing the command 
 .SH "Author"
 .PP 

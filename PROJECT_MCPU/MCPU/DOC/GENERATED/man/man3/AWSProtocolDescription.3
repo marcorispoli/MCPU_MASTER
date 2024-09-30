@@ -1,0 +1,282 @@
+.TH "AWSProtocolDescription" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AWSProtocolDescription \- AWS Protocol Communication Description
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+
+.SH "Abstract"
+.PP
+This document describes in detail the communication protocol with the AWS software\&.
+.SH "Index"
+.PP
+.IP "\(bu" 2
+\fBCommand Description Section\fP
+.PP
+.SS "Study Control"
+.IP "\(bu" 2
+\fBEXEC_OpenStudy\fP
+.IP "\(bu" 2
+\fBEXEC_CloseStudy\fP
+.PP
+.SS "Arm Control"
+.IP "\(bu" 2
+\fBSET_ProjectionList\fP
+.IP "\(bu" 2
+\fBEXEC_ArmPosition\fP
+.IP "\(bu" 2
+\fBEXEC_AbortProjection\fP
+.IP "\(bu" 2
+\fBEXEC_TrxPosition\fP
+.PP
+
+.PP
+.SH "Protocol connection description"
+.PP
+The communication takes place on two ethernet channels:
+.IP "\(bu" 2
+Command channel: the channel where the AWS sends command to the \fBGantry\fP;
+.IP "\(bu" 2
+Event channel: the channel where the \fBGantry\fP sends Status change notify frames to the AWS software\&.
+.PP
+
+.PP
+Both channels are Tcp/Ip based connections where the \fBGantry\fP acts as Server of the communication\&.
+
+.PP
+The IP and Port address of the sockets are set into the SystemIni\&.cnf file:
+.IP "\(bu" 2
+The default Command Channel address is: IP = 127\&.0\&.0\&.1, PORT 10000;
+.IP "\(bu" 2
+The default Event Channel address is: IP = 127\&.0\&.0\&.1, PORT 10001;
+.PP
+.SH "Protocol frame description"
+.PP
+The frame formats are equivalent for both channels:
+
+.PP
+.IP "\(bu" 2
+COMMAND FRAME: this is the frame the AWS sends to the application;
+.IP "  \(bu" 4
+**<ID % EXEC_xxx Param \&.\&.\&. %>** for sequence execution commands;
+.IP "  \(bu" 4
+**<ID % SET_xxx Param \&.\&.\&. %>** for setting status commands;
+.IP "  \(bu" 4
+**<ID % GET_xxx Param \&.\&.\&. %>** for getting status commands;
+.PP
+
+.IP "\(bu" 2
+EVENT FRAME: this is the frame the Application sends to the AWS;
+.IP "  \(bu" 4
+<ID % EVENT_xxx Param \&.\&.\&. %> for status Events notification;
+.IP "  \(bu" 4
+<ID % EXECUTED OK optional-Param \&.\&.\&. %> for execution command successfully completed notifications;
+.IP "  \(bu" 4
+<ID % EXECUTED NOK optional-Param \&.\&.\&. %> for execution command terminated in error notifications;
+.PP
+
+.PP
+
+.PP
+The application acknowledges the COMMAND frames with three possible answer frames:
+.IP "\(bu" 2
+\fIOK\fP frame: <ID % OK optional-params\&.\&.>, a command has been successfully executed;
+.IP "\(bu" 2
+\fINOK\fP frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
+.IP "\(bu" 2
+\fIEXECUTING\fP: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS)
+.PP
+.SH "Error codes"
+.PP
+In case the application should answer to a COMMAND with a NOK frame, or in case the Application should send a NOK EVENT, an error code is provided\&.
+
+.PP
+There are a list of possible error codes that the Application can answer:
+
+.PP
+ERROR CODE   VALUE   DESCRIPTION   AWS-ACTION    AWS_RET_WRONG_PARAMETERS   1   The number of the command parameters is invalid   AWS Bug: check the command implementation    AWS_RET_WRONG_OPERATING_STATUS   2   The current operating status is not valid for the command   AWS Bug: check the current operating status    AWS_RET_SYSTEM_ERRORS   3   The command cannot be executed with active system errors   The AWS should handle a system error condition    AWS_RET_SYSTEM_WARNINGS   4   There are active System warnings   The AWS shall check the right condition before to send the command    AWS_RET_INVALID_PARAMETER_FORMAT   5   A parameter is not in the expected format   AWS Bug: check the command implementation    AWS_RET_INVALID_PARAMETER_VALUE   6   A parameter is not in the expected range   AWS Bug: check the command implementation    AWS_RET_DATA_NOT_ALLOWED   7   The current system setting is not ready to accept the command   check the current operating status    AWS_RET_DEVICE_BUSY   8   The target device cannot be activated   The AWS should wait the previous command completioin before to send a new command    AWS_RET_DEVICE_ERROR   9   The Device signaled an error condition in executing the command   The AWS should abort the current workflow   
+
+.PP
+.SH "Command Description Section"
+.PP
+.SS "EXEC_OpenStudy"
+This command shall be sent by AWS to request to Open the Study\&.
+
+.PP
+The Open Study is necessary to enter the Operating Status\&.
+
+.PP
+Frame format: <ID % EXEC_OpenStudy patient_name>
+
+.PP
+PARAMETER   Data Type   Description    patient_name   String   Study's patient name   
+
+.PP
+Possibly returned error codes:
+
+.PP
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_SYSTEM_ERRORS   'SYSTEM_ERRORS'   system error condition are presents    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   wrong number of parameters (it should be 1)    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_IDLE_MODE'   the \fBGantry\fP is not in IDLE status   
+
+.PP
+.SS "EXEC_CloseStudy"
+This command shall be sent by AWS to Close a current study and set the \fBGantry\fP in IDLE operating status\&.
+
+.PP
+Frame format:
+.br
+<ID % EXEC_CloseStudy >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+
+.PP
+Possibly returned error codes:
+
+.PP
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   The gantry is not in Open Status mode   
+
+.PP
+.SS "SET_ProjectionList"
+This command shall be sent by AWS to set the gantry selectable projections\&.
+
+.PP
+The AWS provides a set of projection that the operator can select
+.br
+from the local displays\&.
+
+.PP
+Frame format: <ID % SET_ProjectionList proj1, proj2, \&.\&. , proj-n>
+
+.PP
+PARAMETER   Data Type   Description    proj1\&.\&.proj-n   Projection name   List of the selectable projections   
+
+.PP
+Possibly returned error codes:
+
+.PP
+ERROR CODE   ERROR STRING   DESCRIPTION    return_errors::AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    return_errors::AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PROJECTION_IN_THE_LIST'   a projection name in the list is not valid   
+
+.PP
+.SS "EXEC_ArmPosition"
+This command shall be sent by AWS to activate the C-ARM to a given projection\&.
+
+.PP
+.IP "\(bu" 2
+The \fBSET_ProjectionList\fP shall be received first, in order to have a valid list of acceptable projections;
+.IP "\(bu" 2
+In operating mode (Open Study) the AWS controls the ARM angle position using this command;
+.IP "\(bu" 2
+The \fBGantry\fP automatically modifies the Vertical position of the C-ARM,
+.br
+in order to keep unchanged the position of the copression plane (Virtual Isometric feature);
+.PP
+
+.PP
+Frame format: <ID % EXEC_ArmPosition projection Angle Min Max>
+
+.PP
+PARAMETER   Data Type   Description    projection   String   Name of the projection the AWS is selecting    Angle   Integer   Degree of the target angle    Min   Integer   Degree of the minimum acceptable angle    Max   Integer   Degree of the maximum acceptable angle   
+
+.PP
+.IP "\(bu" 2
+Projection name: it shall be present in the list of the selectable projections (see the \fBSET_ProjectionList\fP command);
+.IP "\(bu" 2
+Angle: is the target Angle the AWS assign to the projection\&. Is up to the AWS to decide what is the right angle\&.
+.IP "\(bu" 2
+The Min and the Max value define the acceptable range in the case the operator should manually change the projection angle:
+.IP "  \(bu" 4
+if the actual ARM angle should be < Min or > Max the gantry will reject the Exposure activation;
+.PP
+
+.PP
+
+.PP
+NOTE:
+.IP "\(bu" 2
+the Min shall be < Ange;
+.IP "\(bu" 2
+the Max shall be > Ange;
+.PP
+
+.PP
+Possibly returned error codes:
+
+.PP
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 4)    AWS_RET_DEVICE_BUSY   'MOTORS_BUSY'   One of the motors is running    AWS_RET_DEVICE_BUSY   'ARM_NOT_READY'   The ARM is not ready to execute an activation    AWS_RET_DATA_NOT_ALLOWED   'WRONG_PROJECTION'   The projection name is not valid or it isn't in the list of selectable projections    AWS_RET_INVALID_PARAMETER_VALUE   'WRONG_TARGET_DATA'   One of the angle parameter is not correct or out of range   
+
+.PP
+The Command always returns a <ID % EXECUTING%> frame in case of success, because the ARM requires some time to be positioned, even if the ARM should be already in the target position\&.
+
+.PP
+.SS "EXEC_AbortProjection"
+This command shall be sent by AWS to invalidate any selected projection\&.
+
+.PP
+When the Application receive this COMMAND:
+.IP "\(bu" 2
+The current projection is invalidated;
+.IP "\(bu" 2
+If the current exposure mode should enable the projection check, then the exposure cannot be further initiated, until a new valid projection is selected;
+.IP "\(bu" 2
+The ARM remains in the current position;
+.IP "\(bu" 2
+The GUI removes the projection icon from the panel;
+.PP
+
+.PP
+Frame format: <ID % EXEC_AbortProjection >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+
+.PP
+Possibly returned error codes:
+
+.PP
+ERROR CODE   ERROR STRING   DESCRIPTION    return_errors::AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   The gantry is not in Open Status mode   
+
+.PP
+.SS "EXEC_TrxPosition"
+This command activates the Tube-Arm rotation\&.
+
+.PP
+The AWS may use this command in two scenarios:
+.IP "\(bu" 2
+During a Tomo sequence;
+.IP "\(bu" 2
+During a \fBBiopsy\fP study;
+.PP
+
+.PP
+In a Tomo sequence the AWS can command an early Tube position to the starting sequence angle (Home position): in this way the sequence activation time is reduced\&. Note: the \fBGantry\fP however auto positions the Tube in home position before to start the exposure, if the Tube should not already be in the right position\&.
+
+.PP
+In a \fBBiopsy\fP sequence, the AWS set the Tube in the proper stereotactic positions, following the biopsy worflow\&.
+
+.PP
+The AWS cannot set an arbitrary target angle with this command: instead, a predefined subset of targets are already predefined\&.
+
+.PP
+Frame format: <ID % EXEC_TrxPosition trx_target>
+
+.PP
+PARAMETER   Data Type   Description    trx_target   String   the TRX target position\&. See table below   
+
+.PP
+TRX TARGET VALUE   DESCRIPTION    'SCOUT'   Scout Position    'BP_R'   \fBBiopsy\fP Right Position    'BP_L'   \fBBiopsy\fP left Position    'TOMO_H'   Tomo Home Position    'TOMO_E'   Tomo Final Position   
+
+.PP
+Possibly returned error codes:
+
+.PP
+ERROR CODE   ERROR STRING   DESCRIPTION    return_errors::AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    return_errors::AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    return_errors::AWS_RET_DEVICE_BUSY   'MOTORS_BUSY'   One of the motors is running    return_errors::AWS_RET_DEVICE_BUSY   'TRX_NOT_READY'   The TRX is not ready to execute an activation    return_errors::AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_TARGET'   One of the angle parameter is not correct or out of range    return_errors::AWS_RET_DEVICE_ERROR   'DEVICE_ERROR'   The Tilt Device cannot activate the command for an internal reason   
+
+.PP
+\fBGantry\fP always returns <ID % EXECUTING%> frame: the TRX start executing; 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

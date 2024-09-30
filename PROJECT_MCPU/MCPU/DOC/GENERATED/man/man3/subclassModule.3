@@ -1,4 +1,4 @@
-.TH "subclassModule" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "subclassModule" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,7 +27,7 @@ subclassModule \- Protected Subclasses methods
 .ti -1c
 .RI "virtual bool \fBCanDeviceProtocol::configurationLoop\fP (void)"
 .br
-.RI "This routine shall be overridden by the subclass module in order to implement the specific operations during the device configuration fase "
+.RI "This routine shall be overridden by the subclass module in order to implement the specific operations during the device configuration fase\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -36,25 +36,25 @@ This section provides the method and structures to subclass the \fBCanDeviceProt
 
 .SH "Function Documentation"
 .PP 
-.SS "bool CanDeviceProtocol::configurationLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "bool CanDeviceProtocol::configurationLoop (void )\fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
-This routine shall be overridden by the subclass module in order to implement the specific operations during the device configuration fase 
+This routine shall be overridden by the subclass module in order to implement the specific operations during the device configuration fase\&. 
 .PP
 Reimplemented in \fBPCB302\fP, \fBPCB303\fP, \fBPCB315\fP, and \fBPCB326\fP\&.
-.SS "virtual void CanDeviceProtocol::demoLoop (void)\fC [inline]\fP, \fC [protected]\fP, \fC [virtual]\fP"
+.SS "virtual void CanDeviceProtocol::demoLoop (void )\fR [inline]\fP, \fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
 This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
 .PP
 Reimplemented in \fBPCB301\fP, \fBPCB303\fP, \fBPCB304\fP, and \fBPCB315\fP\&.
-.SS "void CanDeviceProtocol::resetLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "void CanDeviceProtocol::resetLoop (void )\fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
 This routine shall be overridden by the subclass module in order to implement the specific operations in case of the remote device reset detection\&. 
 .PP
 Reimplemented in \fBPCB303\fP, and \fBPCB315\fP\&.
-.SS "void CanDeviceProtocol::runningLoop (void)\fC [protected]\fP, \fC [virtual]\fP"
+.SS "void CanDeviceProtocol::runningLoop (void )\fR [protected]\fP, \fR [virtual]\fP"
 
 .PP
 This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 

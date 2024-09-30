@@ -1,4 +1,4 @@
-.TH "PCB303_Module" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB303_Module" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,7 +9,7 @@ PCB303_Module \- PCB303 Module: format collimation
 .SH SYNOPSIS
 .br
 .PP
-.SS "Modules"
+.SS "Topics"
 
 .in +1c
 .ti -1c
@@ -29,7 +29,7 @@ PCB303_Module \- PCB303 Module: format collimation
 .ti -1c
 .RI "class \fBPCB303\fP"
 .br
-.RI "This class implements the functions of the \fBPCB303\fP Module "
+.RI "This class implements the functions of the \fBPCB303\fP Module\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -41,20 +41,26 @@ This module implements the functions of the Collimator device
 .IP "\(bu" 2
 Tomo Dynamic Collimation;
 .PP
+
 .PP
 The module implements the Device Communication protocol to communicate with the \fBPCB303\fP device through the CAN bus\&.
+
 .PP
 In order to implement the protocol, the module inherits the \fBCanDeviceProtocol\fP class as the base class\&.
+
 .PP
 The module overrides the configurationLoop() routine of the Base class in order to writes the initialization Parameters and Data Registers as needed\&.
 .br
  The routine is automatically called by the Base class after system startup or always after a device reset event\&.
+
 .PP
 This module overrides the runningLoop() rotine of the base class in order to implement the device specific functions\&.
+
 .PP
 As soon as the module class is Instantiated, the constructor will call the Base class constructor\&.
 .br
 The Base class constructor, through the CAN Driver module, tries to connect the Board Device getting the Bootloader and Application revision codes\&.
+
 .PP
 When the Device connection is established and the Board Device firmware revision is acquired,
 .br
@@ -63,12 +69,14 @@ the Base class calls the configurationLoop() routine (overridden in this module)
 in order to let the module to upload and store the Device Parameters and the deviice DATA registers\&.
 .br
 In detail, the moudule in the configurationLoop() routine:
+
 .PP
 .IP "\(bu" 2
 Uploads the Standard Collimation format parameters;
 .IP "\(bu" 2
 Uploads the Tomo collimation format parameters;
 .PP
+
 .PP
 When the configuration fase termines, the module runs the runningLoop() routine (overridden from the Base class),
 .br
@@ -79,9 +87,12 @@ NOTE: as soon as the startup termines, the Module automatically sets the OPEN co
 
 .fi
 .PP
- In the normal module workflow - runningLoop() - the module controls the Collimator device insuring that the current 
+
+.PP
+In the normal module workflow - runningLoop() - the module controls the Collimator device insuring that the current 
 .br
 Application requested collimation format is selected and operating in the collimator device\&.
+
 .PP
 In case of the actual collimation shouldn't corrispond with the requested collimation,
 .br
@@ -99,6 +110,7 @@ NOTE: In case of error, the Application can call the resetFault() routine to res
 .SH "Application Interface"
 .PP
 The module provides the following Application interface:
+
 .PP
 .IP "\(bu" 2
 setAutoCollimationMode() : This function sets the format collimation to AUTO mode;
@@ -116,6 +128,7 @@ getError(): This function returns an error code in case of the collimator should
 .SH "2D Collimation Format Selection specification"
 .PP
 The module allows the Application to select one of the following 2D collimation modes:
+
 .PP
 .IP "\(bu" 2
 OPEN collimation mode;
@@ -140,25 +153,28 @@ NOTE: this collimation mode is automatically set by the Module after the system 
 
 .fi
 .PP
- 
 .SS "AUTO Collimation Mode"
 If the Application should select the AUTO collimation mode,
 .br
 the Module sets the current collimation format based on the current detected compressor Paddle\&.
+
 .PP
 The Paddle is assigned to a given collimation format into the PaddleCalibration file\&.
+
 .PP
 This collimation mode should be set by the Application in the Operating workflow\&.
 .SS "CUSTOM Collimation Mode"
 If the Application should select the CUSTOM collimation mode,
 .br
 the Module sets the current collimation format equal to the format directly set by the Application with the proper interface command - setCustomCalibraitonMode(customFormat) -\&.
+
 .PP
 The custom collimation format can be selected from the 20 predefined collimation formats\&.
 .SS "CALIBRATION Collimation Mode"
 If the Application should select the CALIBRATION collimation mode,
 .br
 the module will force the current blades position to get a non standard value imposed by the application\&.
+
 .PP
 The Application requests this Non Standard collimation using the proper
 .br
@@ -170,18 +186,21 @@ The Application can calibrate a maximum of 20 possibles standard 2D collimation 
 All those formats shares the same Trap and Front blade positions because they should not change
 .br
  along with the paddle geometry\&.
+
 .PP
 See the \fBCollimatorConfig\fP class for details\&.
 .SH "Format collimation errors"
 .PP
 In case the collimator should fail in setting the requested collimation mode, the module automatically tries to repeat the collimation command for a max of five times\&.
+
 .PP
 If the command repetion should fail, the Module disables further collimation selection attempts and a persistent error condition will be notified in the system\&.
+
 .PP
 .IP "\(bu" 2
 The Application can check an error condition presence calling the getError() function;
 .IP "\(bu" 2
-In case of Error, the Application may restart the collimation attempts calling the resetFault() function;
+In case of Error, the Application may restart the collimation attempts calling the resetFault() function; 
 .PP
 
 .SH "Author"

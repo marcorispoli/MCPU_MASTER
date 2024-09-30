@@ -1,4 +1,4 @@
-.TH "PCB303_Protocol" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB303_Protocol" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,120 +9,13 @@ PCB303_Protocol \- Protocol implementation
 .SH SYNOPSIS
 .br
 .PP
+.SS "Macros"
 
 .in +1c
 .ti -1c
-.RI "#define \fBPCB303_ERROR_LEFT\fP(reg)   (reg\->d2 & 0x1)"
+.RI "#define \fBPCB303_ERROR_LEFT\fP(reg)"
 .br
 .RI "This is the Left blade collimation error\&. "
-.ti -1c
-.RI "#define \fBPCB303_ERROR_RIGHT\fP(reg)   (reg\->d2 & 0x2)"
-.br
-.RI "This is the Right blade collimation error\&. "
-.ti -1c
-.RI "#define \fBPCB303_ERROR_FRONT\fP(reg)   (reg\->d2 & 0x4)"
-.br
-.RI "This is the Front blade collimation error\&. "
-.ti -1c
-.RI "#define \fBPCB303_ERROR_BACK\fP(reg)   (reg\->d2 & 0x8)"
-.br
-.RI "This is the Back blade collimation error\&. "
-.ti -1c
-.RI "#define \fBPCB303_ERROR_TRAP\fP(reg)   (reg\->d2 & 0x10)"
-.br
-.RI "This is the Trap blade collimation error\&. "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_COLLIMATION_STATUS\fP(reg)   (unsigned char) (reg\->d0)"
-.br
-.RI "This macro selects the COLLIMATION_STATUS byte from the received Status Register\&. "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_FORMAT_INDEX\fP(reg)   (unsigned char) (reg\->d1)"
-.br
-.RI "This macro selects the FORMAT_INDEX byte from the received Status register Can Frame\&. "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_TOMO_PULSE\fP(reg)   (unsigned char) (reg\->d2)"
-.br
-.RI "This macro selects the TOMO_PULSE byte from the received Status register Can Frame 
-.br
- "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_FLAGS\fP(reg)   (unsigned char) (reg\->d3)"
-.br
-.RI "This macro selects the SYSTEM_FLAGS byte from the received Status register Can Frame\&. "
-.ti -1c
-.RI "#define \fBPCB303_SYSTEM_FLAG_ERRORS\fP   0x1"
-.br
-.RI "This macro selects the ERROR_FLAGS from the SYSTEM_FLAGS byte 
-.br
- "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_FB_FRONT\fP(reg)   ((unsigned short) reg\->d0 + 256 * (unsigned short) reg\->d1)"
-.br
-.RI "This macro selects the Front blade position\&. "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_FB_BACK\fP(reg)   ((unsigned short) reg\->d2 + 256 * (unsigned short) reg\->d3)"
-.br
-.RI "This macro selects the Back blade position 
-.br
- "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_LR_LEFT\fP(reg)   ((unsigned short) reg\->d0 + 256 * (unsigned short) reg\->d1)"
-.br
-.RI "This macro selects the Left blade position\&. "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_LR_RIGHT\fP(reg)   ((unsigned short) reg\->d2 + 256 * (unsigned short) reg\->d3)"
-.br
-.RI "This macro selects the Right blade position\&. "
-.ti -1c
-.RI "#define \fBPCB303_GET_SYSTEM_T_TRAP\fP(reg)   ((unsigned short) reg\->d0 + 256 * (unsigned short) reg\->d1)"
-.br
-.RI "This macro selects the Trap blade position\&. "
-.ti -1c
-.RI "#define \fBPCB303_WRITE_DATA_CALIBRATION_FB\fP(front,  back)   (System::Byte) DataRegisters::DATA_CALIBRATION_FB,(System::Byte) (front&0xFF), (System::Byte) ((front>>8)&0xFF),(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF)"
-.br
-.RI "This is the frame implementation to write the DATA_CALIBRATION_FB register\&. "
-.ti -1c
-.RI "#define \fBPCB303_WRITE_DATA_CALIBRATION_LR\fP(left,  right)   (System::Byte) DataRegisters::DATA_CALIBRATION_LR,(System::Byte) (left&0xFF), (System::Byte) ((left>>8)&0xFF),(System::Byte) (right&0xFF), (System::Byte) ((right>>8)&0xFF)"
-.br
-.RI "This is the frame implementation to write the DATA_CALIBRATION_LR register\&. "
-.ti -1c
-.RI "#define \fBPCB303_WRITE_DATA_CALIBRATION_T\fP(trap)   (System::Byte) DataRegisters::DATA_CALIBRATION_T,(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF),(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF)"
-.br
-.RI "This is the frame implementation to write the DATA_CALIBRATION_T register\&. "
-.ti -1c
-.RI "#define \fBPCB303_WRITE_PARAM_STANDARD_FT\fP(front,  trap)   (System::Byte) ParamRegisters::PARAM_STANDARD_FORMAT_FT,(System::Byte) (front&0xFF), (System::Byte) ((front>>8)&0xFF),(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF)"
-.br
-.RI "This is the frame implementation to write the PARAM_STANDARD_FT Parameter Register 
-.br
- "
-.ti -1c
-.RI "#define \fBPCB303_WRITE_PARAM_STANDARD_LR\fP(index,  left,  right)   (System::Byte) (ParamRegisters::PARAM_STANDARD_FORMAT_LR1) + (index\-1) * 2, (System::Byte) (left&0xFF), (System::Byte) ((left>>8)&0xFF), (System::Byte) (right&0xFF), (System::Byte) ((right>>8)&0xFF)"
-.br
-.RI "This is the frame implementation to write the PARAM_STANDARD_LR Parameter Register\&. "
-.ti -1c
-.RI "#define \fBPCB303_WRITE_PARAM_STANDARD_B\fP(index,  back)   (System::Byte) (ParamRegisters::PARAM_STANDARD_FORMAT_B1) + (index\-1) * 2 ,(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF),(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF)"
-.br
-.RI "This is the frame implementation to write the PARAM_STANDARD_B Parameter Register\&. "
-.ti -1c
-.RI "#define \fBPCB303_COMMAND_ABORT\fP   (System::Byte) PCB303::Commandregister::ABORT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
-.br
-.RI "This is the frame implementation to Execute ABORT_COMMAND Command\&. "
-.ti -1c
-.RI "#define \fBPCB303_COMMAND_OPEN_FORMAT\fP   (System::Byte) PCB303::Commandregister::SET_OPEN_FORMAT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
-.br
-.RI "This is the frame implementation to Execute the SET_OPEN_FORMAT_COMMAND Command\&. "
-.ti -1c
-.RI "#define \fBPCB303_COMMAND_STANDARD_FORMAT\fP(index)   (System::Byte) PCB303::Commandregister::SET_STANDARD_FORMAT_COMMAND, (System::Byte) (index),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
-.br
-.RI "This is the frame implementation to Execute the SET_STANDARD_FORMAT_COMMAND collimation Command\&. "
-.ti -1c
-.RI "#define \fBPCB303_COMMAND_CALIBRATION_FORMAT\fP   (System::Byte) PCB303::Commandregister::SET_CALIBRATION_FORMAT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
-.br
-.RI "This is the frame implementation to Execute the SET_CALIBRATION_FORMAT_COMMAND Command\&. "
-.ti -1c
-.RI "#define \fBPCB303_COMMAND_ACTIVATE_TOMO\fP   (System::Byte) PCB303::Commandregister::SET_TOMO_MODE_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0"
-.br
-.RI "This is the frame implementation to Execute the SET_TOMO_MODE_COMMAND Command\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -131,10 +24,17 @@ This section implements the internal module data and structures in order to impl
 
 .SH "Macro Definition Documentation"
 .PP 
-.SS "#define PCB303_ERROR_LEFT(reg)   (reg\->d2 & 0x1)"
+.SS "#define PCB303_ERROR_LEFT( reg)"
+\fBValue:\fP
+.nf
+(reg\->d2 & 0x1)
+.PP
+.fi
 
 .PP
-This is the Left blade collimation error\&. <> 
+This is the Left blade collimation error\&. 
+.br
+ 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU from the source code\&.

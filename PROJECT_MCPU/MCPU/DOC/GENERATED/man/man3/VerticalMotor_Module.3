@@ -1,4 +1,4 @@
-.TH "VerticalMotor_Module" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "VerticalMotor_Module" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -37,6 +37,7 @@ OFF (Dark): the limit switch is detected
 .PP
 
 .PP
+
 .PP
 Zero Photocell   Limit Photocell   Position    x   ON   travel range    ON   OFF   Upper position    OFF   OFF   Lower position   
 .SH "Motor GPIO assignment"
@@ -47,6 +48,7 @@ DIGITAL INPUT 1 and 2: Assigned to the limit switch photocell;
 .IP "\(bu" 2
 DIGITAL INPUT 3: Homing photocell;
 .PP
+
 .PP
 The Input1 and Input2 are assigned to the same photocell: the limit switch\&.
 .br
@@ -78,11 +80,13 @@ After a subsequent startup, the current position will be retrived from the Motor
 .PP
 .SS "Limit Switch detection"
 The module monitors the current limit switch photocell status\&.
+
 .PP
 In Idle status:
 .IP "\(bu" 2
 if the limit switch should be detected active, the current position will be invalidated and a relevant alarm is generated\&. Further activation will be rejected until the zero setting procedure will be successfully executed\&.
 .PP
+
 .PP
 During the activation:
 .IP "\(bu" 2
@@ -96,9 +100,11 @@ Obstacle detection: Gantry::getObstacleStatus();
 Compression activation: Gantry::getCompressionStatus();
 .IP "\(bu" 2
 Open Cabinet: Gantry::getOpenCabinetStatus();
+
 .PP
 NOTE: All those conditions are under the control of the \fBGantry\fP module ant this module makes use of external functions to get the related status\&.
 .PP
+
 .PP
 For all the previous conditions:
 .IP "\(bu" 2
@@ -120,6 +126,7 @@ Gantry::manualMotorActivationDecrease(): causes the activation downward;
 .PP
 
 .PP
+
 .PP
 See the \fBGantry\fP module description for the input used in the different operating scenarios\&.
 .SH "Module Initialization"
@@ -135,6 +142,7 @@ manualPositioningRunningCallback(): during the manual activation the activation 
 .IP "\(bu" 2
 manualPositioningCompletedCallback(): at the command completion the encoder position is stored into the configuration file\&.
 .PP
+
 .PP
 The Module
 .SH "Automatic activation"

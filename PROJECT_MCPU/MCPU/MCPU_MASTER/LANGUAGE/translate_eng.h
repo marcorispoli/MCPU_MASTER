@@ -127,10 +127,6 @@
 "L00005", Notify::messages::LABEL_CALIBRATION_PANEL_TITLE, "Calibration Panel", "-",
 "L00006", Notify::messages::LABEL_ROTATION_TOOL_PANEL_TITLE, "Rotation Tool Panel", "-",
 
-
-"L00007", Notify::messages::LABEL_ERROR, "ERR", "-",
-"L00008", Notify::messages::LABEL_WARNING, "WRN", "-",
-"L00009", Notify::messages::LABEL_INFO, "INF", "-",
 "L00010", Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE, "Standby", "-",
 "L00011", Notify::messages::LABEL_READY_FOR_EXPOSURE, "Ready", "-",
 "L00012", Notify::messages::LABEL_X_RAY_ON, "X-Ray Executing", "-",

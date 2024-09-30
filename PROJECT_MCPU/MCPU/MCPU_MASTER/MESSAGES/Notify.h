@@ -32,11 +32,11 @@
 
    # Index
 
+   + \ref MSGTPY; \n
+   + \ref MSGCONF; \n 
    + \ref MSGGUI; \n
    + \ref MSGDESC; \n
-   + \ref MSGTRANS; \n 
-   + \ref MSGGUI; \n
-   + \ref MSGTAB; \n
+   + \ref MSGTRANS; \n
    
    # Overview
 
@@ -63,7 +63,7 @@
    + The Info Messages: they are the current status information that can help the Operator for the current workflow;
    + The Labels: they are strings used to name the GUI fields when required;
 
-   \section MSGDESC Message Description
+   \section MSGTPY Message Types
 
    Every message is described by the following items:
 	+ Message Code: it is the univoque identifier code assigned to the message.
@@ -74,7 +74,7 @@
 	+ Message Description: (optional) it is a string describing in detail the event;
 
 
-   \section MSGTRANS Message Translation Files 
+   \section MSGCONF Translation configuration files 
 
    The Application, in order to correctly translate the messages, makes use of 
    special files, located in the LANGUAGE project sub directory, and hardcoded into the application
@@ -143,20 +143,28 @@
 	\image html MessageWindowsImage.bmp
 
 	The window displays a list of the active messages, in order of the gravity.
-	In case the active messages should exceed the window dimension, 
+
+	In case the active messages should exceed the window dimension, \n 
 	a scrolling bar allows the operator to scroll the list.
 
+	The message window panel will remain open for 20 seconds then will close automatically.
 
 
-   \section MSGTAB Message Description Table
 
-
+   
 
 */
 
 
 using namespace System::Collections::Generic;
 
+/// <summary>
+/// \addtogroup MessageNotifyModule
+/// \Internal
+/// 
+/// YThis is the calss implementing the application message management.
+/// 
+/// </summary>
 public ref class Notify
 {
 public:
@@ -308,13 +316,9 @@ public:
 		LABEL_SLIDE_ACTIVATED,
 		LABEL_TILT_ACTIVATED,
 
-
 		// Last declaration
 		NUM_MESSAGES,
-		LABEL_ERROR,
-		LABEL_WARNING,
-		LABEL_INFO,
-		LABEL_LABEL
+		
 	};
 
 	ref class item{

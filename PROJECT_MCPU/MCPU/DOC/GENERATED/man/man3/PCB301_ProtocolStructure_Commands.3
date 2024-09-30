@@ -1,44 +1,5 @@
-.TH "PCB301::ProtocolStructure::Commands" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "PCB301::ProtocolStructure::Commands" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 PCB301::ProtocolStructure::Commands
-.SH SYNOPSIS
-.br
-.PP
-.SS "Public Types"
-
-.in +1c
-.ti -1c
-.RI "enum class \fBcommand_index\fP { \fBABORT_COMMAND\fP = 0, \fBACTIVATE_SOFT_POWEROFF\fP, \fBACTIVATE_DEMO_TOMO\fP }"
-.br
-.in -1c
-.SS "Public Member Functions"
-
-.in +1c
-.ti -1c
-.RI "\fBCanDeviceCommand\fP ^ \fBencodeActivateDemoCommand\fP (unsigned char samples, unsigned char fps)"
-.br
-.in -1c
-.SH "Member Enumeration Documentation"
-.PP 
-.SS "enum class \fBPCB301::ProtocolStructure::Commands::command_index\fP\fC [strong]\fP"
-
-.PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fIABORT_COMMAND \fP\fP
-Abort Command (mandatory as for device protocol) 
-.TP
-\fB\fIACTIVATE_SOFT_POWEROFF \fP\fP
-Soft power off activation\&. 
-.TP
-\fB\fIACTIVATE_DEMO_TOMO \fP\fP
-Buzzer pulse for tomo 
-.br
- 
-
-.SH "Author"
-.PP 
-Generated automatically by Doxygen for MCPU from the source code\&.

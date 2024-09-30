@@ -1,4 +1,4 @@
-.TH "Startup_Module" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "Startup_Module" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,6 +22,7 @@ Startup_Module \- Startup Module
 This module implements the Workflow and GUI to handle the system startup workflow\&. 
 
 At the program beginning several operation shall be initiated before to enter any of the Operating modes:
+
 .PP
 .IP "\(bu" 2
 System Initialization;
@@ -33,6 +34,7 @@ Revision check;
 .SH "System Initialization"
 .PP
 The module setup and operation depends by several parameters stroed into the \fBSystemConfig\fP file\&.
+
 .PP
 This file determines:
 .IP "\(bu" 2
@@ -44,13 +46,16 @@ The current set of expected device revision codes;
 .IP "\(bu" 2
 The communication connection addresses for some of the module;
 .PP
+
 .PP
 In the System Initialization all the Operating modules will be instantiated\&.
 .SH "Device Module Initialization"
 .PP
 Based on the System running mode and related module's operating mode, every device module is activated in real or simulated mode\&.
+
 .PP
 The following device modules will be activated in the given sequence:
+
 .PP
 .IP "\(bu" 2
 \fBCanDriver\fP Module: this is the first to be activated, in order to open the CAN communication driver;
@@ -82,6 +87,7 @@ The following device modules will be activated in the given sequence:
 .SH "Revision Check"
 .PP
 Every connected module provides the current bootloader and firmware revision code\&. This module checks the validity of the detected revision code with a list of valid revision codes from the \fBSystemConfig\fP file\&.
+
 .PP
 If a revision code should not match with the expected, a general error message is activated preventing the system to enter an operating mode\&.
 .SH "Startup Completion"

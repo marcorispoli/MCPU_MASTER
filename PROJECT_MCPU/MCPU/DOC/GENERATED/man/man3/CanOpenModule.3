@@ -1,4 +1,4 @@
-.TH "CanOpenModule" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "CanOpenModule" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,7 +9,7 @@ CanOpenModule \- CanOPEN based motor devices
 .SH SYNOPSIS
 .br
 .PP
-.SS "Modules"
+.SS "Topics"
 
 .in +1c
 .ti -1c
@@ -47,7 +47,7 @@ CanOpenModule \- CanOPEN based motor devices
 .ti -1c
 .RI "enum class \fBCANOPEN::MotorDeviceAddresses\fP { \fBMotorDeviceAddresses::TILT_ID\fP = 0x3, \fBMotorDeviceAddresses::ARM_ID\fP = 0x4, \fBMotorDeviceAddresses::SLIDE_ID\fP = 0x5, \fBMotorDeviceAddresses::BODY_ID\fP = 0x6, \fBMotorDeviceAddresses::VERTICAL_ID\fP = 0x7 }"
 .br
-.RI "This is the enumeration of the Application Motor device addresses "
+.RI "This is the enumeration of the Application Motor device addresses\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -56,27 +56,27 @@ This is the based class module implementing the control of motor devices based o
 
 .SH "Enumeration Type Documentation"
 .PP 
-.SS "enum class \fBCANOPEN::MotorDeviceAddresses\fP\fC [strong]\fP"
+.SS "enum class \fBCANOPEN::MotorDeviceAddresses\fP\fR [strong]\fP"
 
 .PP
-This is the enumeration of the Application Motor device addresses 
+This is the enumeration of the Application Motor device addresses\&. 
 .PP
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fITILT_ID \fP\fP
+\f(BITILT_ID \fP
 Address of the Tilt Motor controller\&. 
 .TP
-\fB\fIARM_ID \fP\fP
+\f(BIARM_ID \fP
 Address of the C-ARM Motor controller\&. 
 .TP
-\fB\fISLIDE_ID \fP\fP
+\f(BISLIDE_ID \fP
 Address of the SLIDE Motor controller\&. 
 .TP
-\fB\fIBODY_ID \fP\fP
+\f(BIBODY_ID \fP
 Address of the BODY Motor controller\&. 
 .TP
-\fB\fIVERTICAL_ID \fP\fP
+\f(BIVERTICAL_ID \fP
 Address of the Vertical Motor controller\&. 
 .SH "Author"
 .PP 

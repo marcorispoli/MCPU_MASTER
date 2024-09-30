@@ -1,4 +1,4 @@
-.TH "awsModule" 3 "Mon Sep 30 2024" "MCPU" \" -*- nroff -*-
+.TH "awsModule" 3 "MCPU" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,7 +9,7 @@ awsModule \- AWS Interface Module
 .SH SYNOPSIS
 .br
 .PP
-.SS "Modules"
+.SS "Topics"
 
 .in +1c
 .ti -1c
@@ -31,7 +31,7 @@ awsModule \- AWS Interface Module
 .ti -1c
 .RI "class \fBawsProtocol\fP"
 .br
-.RI "This is the class implementing the AWS Interface Module "
+.RI "This is the class implementing the AWS Interface Module\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -41,6 +41,7 @@ This is the module implementing the communication protocol with the AWS software
 .SH "Protocol general Description"
 .PP
 This module implements the details of the AWS protocol specification document\&.
+
 .PP
 The communication takes place with two ethernet channels:
 .IP "\(bu" 2
@@ -48,17 +49,21 @@ Command channel: the channel where the AWS sends command to the \fBGantry\fP;
 .IP "\(bu" 2
 Event channel: the channel where the \fBGantry\fP sends Status change notify frame to the AWS software\&.
 .PP
+
 .PP
 Both channels are Tcp/Ip based connections where the \fBGantry\fP acts as Server of the communication with the following communication parameters:
 .IP "\(bu" 2
 Command channel: IP = 127\&.0\&.0\&.1, PORT 10000;
 .IP "\(bu" 2
 Event channel: IP = 127\&.0\&.0\&.1, PORT 10001;
+
 .PP
 >NOTE: the actual address and port can be changed in the SystemInit\&.cnf configuration file\&.
 .PP
+
 .PP
 The data frame format are equivalent for both channels:
+
 .PP
 .IP "\(bu" 2
 COMMAND FRAME:
@@ -81,6 +86,7 @@ EVENT FRAME:
 .PP
 
 .PP
+
 .PP
 Only for COMMANDS \fBGantry\fP will acknowledge with three possible frames:
 .IP "\(bu" 2
@@ -88,7 +94,7 @@ OK frame: <ID % OK optional-params\&.\&.>, a command has been successfully execu
 .IP "\(bu" 2
 NOK frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
 .IP "\(bu" 2
-EXECUTING: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS)
+EXECUTING: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS) 
 .PP
 
 .SH "Author"

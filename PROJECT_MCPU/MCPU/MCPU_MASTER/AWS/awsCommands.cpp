@@ -21,15 +21,23 @@
 using namespace System::Diagnostics;
 
 
-/// <summary>
-/// This command shall be sent by AWS to request to Open the Study.
+/// \addtogroup AWSProtocolDescription
+///  
+/// <div style="page-break-after: always;"></div>
 /// 
-/// </summary>
+/// \section CMDDESC Command Description Section
+///
+
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_OpenStudy 
+/// 
+/// This command shall be sent by AWS to request to Open the Study.
 /// 
 /// The Open Study is necessary to enter the Operating Status.
 /// 
-/// Frame format:\n
-/// <ID % EXEC_OpenStudy "patient_name">
+/// Frame format: <ID % EXEC_OpenStudy patient_name>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -40,10 +48,14 @@ using namespace System::Diagnostics;
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
-/// |return_errors::AWS_RET_SYSTEM_ERRORS| "SYSTEM_ERRORS" | system error condition are presents|
-/// |return_errors::AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
-/// |return_errors::AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_IDLE_MODE"| the Gantry is not in IDLE status|
+/// |AWS_RET_SYSTEM_ERRORS| "SYSTEM_ERRORS" | system error condition are presents|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_IDLE_MODE"| the Gantry is not in IDLE status|
 /// 
+
+/// <summary>
+/// This command shall be sent by AWS to request to Open the Study.
+/// </summary>
 /// <param name=""></param>
 void  awsProtocol::EXEC_OpenStudy(void) {
 
@@ -65,9 +77,14 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     ackOk();
 }
 
-/// <summary>
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+///  
+/// \subsection EXEC_CloseStudy
+/// 
 /// This command shall be sent by AWS to Close a current study and set the Gantry in IDLE operating status.
-/// </summary>
 /// 
 /// Frame format:\n
 /// <ID % EXEC_CloseStudy >
@@ -80,8 +97,12 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
-/// |return_errors::AWS_RET_WRONG_OPERATING_STATUS| "NOT_IN_OPEN_MODE" | The gantry is not in Open Status mode|
+/// |AWS_RET_WRONG_OPERATING_STATUS| "NOT_IN_OPEN_MODE" | The gantry is not in Open Status mode|
 /// 
+
+/// <summary>
+/// This command shall be sent by AWS to Close a current study and set the Gantry in IDLE operating status.
+/// </summary>
 /// <param name=""></param>
 void  awsProtocol::EXEC_CloseStudy(void) {
     if (!Gantry::setCloseStudy()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
@@ -92,16 +113,18 @@ void  awsProtocol::EXEC_CloseStudy(void) {
 }
 
 
-/// <summary>
-/// This command shall be sent by AWS to set the gantry selectable projections.
+/// \addtogroup AWSProtocolDescription
 /// 
-/// </summary>
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_ProjectionList
+/// 
+/// This command shall be sent by AWS to set the gantry selectable projections.
 /// 
 /// The AWS provides a set of projection that the operator can select\n
 /// from the local displays.
 /// 
-/// Frame format:\n
-/// <ID % SET_ProjectionList proj1, proj2, .. , proj-n>
+/// Frame format: <ID % SET_ProjectionList proj1, proj2, .. , proj-n>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -115,6 +138,10 @@ void  awsProtocol::EXEC_CloseStudy(void) {
 /// |return_errors::AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
 /// |return_errors::AWS_RET_INVALID_PARAMETER_VALUE|"INVALID_PROJECTION_IN_THE_LIST"|a projection name in the list is not valid|
 /// 
+
+/// <summary>
+/// This command shall be sent by AWS to set the gantry selectable projections.
+/// </summary>
 /// <param name=""></param>
 void awsProtocol::SET_ProjectionList(void) {
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
@@ -125,28 +152,23 @@ void awsProtocol::SET_ProjectionList(void) {
 
 }
 
-/// <summary>
-/// This function activate the ARM to a target position;
-/// 
-/// The target data in the ArmStatus are updated;
-/// 
-/// if the target angle is different of more than 1° then the
-/// ArmStatus::target_change_event() is generated and the 
-/// ARM activation initiates.
-/// 
-/// </summary>
-/// <param name=""></param>
 
-/// <summary>
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection EXEC_ArmPosition
+/// 
 /// This command shall be sent by AWS to activate the C-ARM to a given projection.
 /// 
-/// </summary>
+/// + The \ref SET_ProjectionList shall be received first, in order to have 
+/// a valid list of acceptable projections;
+/// + In operating mode (Open Study) the AWS controls the ARM angle position using this command;
+/// + The Gantry automatically modifies the Vertical position of the C-ARM,\n
+/// in order to keep unchanged the position of the copression plane (Virtual Isometric feature);
 /// 
-/// In operating mode (Open Study) the AWS controls the ARM angle position using this command. 
-/// 
-/// 
-/// Frame format:\n
-/// <ID % EXEC_ArmPosition projection Angle Min Max>
+/// Frame format: <ID % EXEC_ArmPosition projection Angle Min Max>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -155,7 +177,7 @@ void awsProtocol::SET_ProjectionList(void) {
 /// |Min|Integer|Degree of the minimum acceptable angle|
 /// |Max|Integer|Degree of the maximum acceptable angle|
 /// 
-/// - Projection name: it shall be present in the list of the selectable projections (see the "SET_ProjectionList" command);
+/// - Projection name: it shall be present in the list of the selectable projections (see the \ref SET_ProjectionList command);
 /// - Angle: is the target Angle the AWS assign to the projection. Is up to the AWS to decide what is the right angle.
 /// - The Min and the Max value define the acceptable range in the case the operator should manually change the projection angle:
 ///     - if the actual ARM angle should be < Min or > Max the gantry will reject the Exposure activation;
@@ -168,16 +190,21 @@ void awsProtocol::SET_ProjectionList(void) {
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
-/// |return_errors::AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
-/// |return_errors::AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 4)|
-/// |return_errors::AWS_RET_DEVICE_BUSY|"MOTORS_BUSY"|One of the motors is running|
-/// |return_errors::AWS_RET_DEVICE_BUSY|"ARM_NOT_READY"|The ARM is not ready to execute an activation|
-/// |return_errors::AWS_RET_DATA_NOT_ALLOWED | "WRONG_PROJECTION" | The projection name is not valid or it isn't in the list of selectable projections |
-/// |return_errors::AWS_RET_INVALID_PARAMETER_VALUE |  "WRONG_TARGET_DATA" | One of the angle parameter is not correct or out of range |
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 4)|
+/// |AWS_RET_DEVICE_BUSY|"MOTORS_BUSY"|One of the motors is running|
+/// |AWS_RET_DEVICE_BUSY|"ARM_NOT_READY"|The ARM is not ready to execute an activation|
+/// |AWS_RET_DATA_NOT_ALLOWED | "WRONG_PROJECTION" | The projection name is not valid or it isn't in the list of selectable projections |
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "WRONG_TARGET_DATA" | One of the angle parameter is not correct or out of range |
 ///
 /// The Command always returns a <ID % EXECUTING%> frame in case of success, because 
 /// the ARM requires some time to be positioned, even if the ARM should be already in the target position.
 ///  
+
+/// <summary>
+/// This command shall be sent by AWS to activate the C-ARM to a given projection.
+/// 
+/// </summary>
 /// <param name=""></param>
 void awsProtocol::EXEC_ArmPosition(void) {
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
@@ -204,19 +231,24 @@ void awsProtocol::EXEC_ArmPosition(void) {
 
 }
 
-/// <summary>
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection EXEC_AbortProjection
+/// 
 /// This command shall be sent by AWS to invalidate any selected projection.
 /// </summary>
 /// 
-/// When the Gantry executes this command, the current projection is 
-/// invalidated:
-/// + The exposure cannot be further initiated until a new projection is selected.
 /// 
-/// The ARM remains in the current position when the projection is invalidated,
-/// but the system display will remove the projection icon from the panel.
+/// When the Application receive this COMMAND:
+/// + The current projection is invalidated;
+/// + If the current exposure mode should enable the projection check, then the exposure 
+/// cannot be further initiated, until a new valid projection is selected;
+/// + The ARM remains in the current position;
+/// + The GUI removes the projection icon from the panel;
 /// 
-/// Frame format:\n
-/// <ID % EXEC_AbortProjection >
+/// Frame format: <ID % EXEC_AbortProjection >
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -228,6 +260,10 @@ void awsProtocol::EXEC_ArmPosition(void) {
 /// |:--|:--|:--|
 /// |return_errors::AWS_RET_WRONG_OPERATING_STATUS| "NOT_IN_OPEN_MODE" | The gantry is not in Open Status mode|
 /// 
+
+/// <summary>
+/// This command shall be sent by AWS to invalidate any selected projection.
+/// </summary>
 /// <param name=""></param>
 void awsProtocol::EXEC_AbortProjection(void) {
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
@@ -236,14 +272,31 @@ void awsProtocol::EXEC_AbortProjection(void) {
 
 }
 
-/// <summary>
-/// This command shall be sent by AWS to activate the Tilting.
+/// \addtogroup AWSProtocolDescription
 /// 
-/// </summary>
+/// <div style="page-break-after: always;"></div>
 /// 
+/// \subsection EXEC_TrxPosition
 /// 
-/// Frame format:\n
-/// <ID % EXEC_TrxPosition trx_target>
+/// This command activates the Tube-Arm rotation.
+/// 
+/// The AWS may use this command in two scenarios:
+/// + During a Tomo sequence;
+/// + During a Biopsy study;
+/// 
+/// In a Tomo sequence the AWS can command an early Tube position 
+/// to the starting sequence angle (Home position): in this way 
+/// the sequence activation time is reduced. 
+///     Note: the Gantry however auto positions the Tube in home position 
+///     before to start the exposure, if the Tube should not already be in the right position.
+/// 
+/// In a Biopsy sequence, the AWS set the Tube in the proper stereotactic 
+/// positions, following the biopsy worflow.
+/// 
+/// The AWS cannot set an arbitrary target angle with this command: instead, a predefined subset of 
+/// targets are already predefined.
+/// 
+/// Frame format: <ID % EXEC_TrxPosition trx_target>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -269,7 +322,11 @@ void awsProtocol::EXEC_AbortProjection(void) {
 /// |return_errors::AWS_RET_DEVICE_ERROR |  "DEVICE_ERROR" | The Tilt Device cannot activate the command for an internal reason |
 /// 
 /// Gantry always returns <ID % EXECUTING%> frame: the TRX start executing;
-///  
+
+/// <summary>
+/// This command activates the Tube-Arm rotation.
+/// 
+/// </summary>
 /// <param name=""></param>
 void awsProtocol::EXEC_TrxPosition(void) {
     if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }

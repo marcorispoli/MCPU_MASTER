@@ -268,16 +268,7 @@ void PCB315::runningLoop(void) {
 
     static bool commerr = false;
 
-    // Test the communication status
-    if (commerr != isCommunicationError()) {
-        commerr = isCommunicationError();
-        if (isCommunicationError()) {
-            Notify::activate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR);
-        }
-        else {
-            Notify::deactivate(Notify::messages::ERROR_PCB315_COMMUNICATION_ERROR);
-        }
-    }
+   
 
     // Updates the Status register
     if (updateStatusRegister()) {
@@ -301,7 +292,7 @@ void PCB315::runningLoop(void) {
 void PCB315::resetLoop(void) {
 
     // Ths error is a one shot error: it is reset as soon as the operator open the error window
-    Notify::instant(Notify::messages::ERROR_PCB315_RESET);
+    
 }
 
 /// <summary>

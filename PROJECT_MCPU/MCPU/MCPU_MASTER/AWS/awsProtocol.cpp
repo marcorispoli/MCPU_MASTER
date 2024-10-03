@@ -63,6 +63,7 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("GET_Trx", gcnew command_callback(this, &awsProtocol::GET_Trx));
     commandExec->Add("GET_Arm", gcnew command_callback(this, &awsProtocol::GET_Arm));
     commandExec->Add("GET_TubeTemperature", gcnew command_callback(this, &awsProtocol::GET_TubeTemperature));
+    commandExec->Add("GET_ProtocolRevision", gcnew command_callback(this, &awsProtocol::GET_ProtocolRevision));
     commandExec->Add("SET_Language", gcnew command_callback(this, &awsProtocol::SET_Language));
     commandExec->Add("EXEC_PowerOff", gcnew command_callback(this, &awsProtocol::EXEC_PowerOff));
     commandExec->Add("EXEC_TestCommand", gcnew command_callback(this, &awsProtocol::EXEC_TestCommand));

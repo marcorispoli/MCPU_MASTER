@@ -1,16 +1,10 @@
 #pragma once
 
-/**
-\defgroup ConfigurationeFiles Application Configuration Files
 
-    This section describes the configuration files implemented in the Application.
-
-*
-*/
 
 /**
     \defgroup ConfigurationFilesModule Configuration Files Implementation
-    \ingroup ConfigurationeFiles
+    \ingroup APPIMPL
     \internal
 
     This section describes the configuration file modules implementation.
@@ -19,7 +13,7 @@
 
 /**
 \defgroup ConfigurationFilesDescription Application Configuration File Description
-\ingroup ConfigurationeFiles
+\ingroup APPDOC
 
    # Abstract
    

@@ -8,22 +8,60 @@ AWSProtocolDescription \- AWS Protocol Communication Description
 .PP
 .SH "Detailed Description"
 .PP 
+\fBPROTOCOL REVISION: 1\&.0\&.0\fP
+.SH "Change Log"
+.PP
+\fIRevision 1\&.0\&.0\fP
 
+.PP
+.IP "\(bu" 2
+Added the \fBGET_ProtocolRevision\fP command
+.IP "\(bu" 2
+Set a list of standard returned errors;
+.IP "\(bu" 2
+Changed the \fBGET_Components\fP command;
+.PP
+
+.PP
+In this revision, the commands are completed with a consistent set of returned error codes\&.
+
+.PP
+A protocol revision code is added in order to check the current implementation running on \fBGantry\fP\&.
+.br
+ The current revision code is also reported in the protocol documentation\&.
+.br
+ The command \fBGET_ProtocolRevision\fP command is then added to the protocol\&.
 .SH "Abstract"
 .PP
 This document describes in detail the communication protocol with the AWS software\&.
+
+.PP
 .SH "Index"
 .PP
+.SS "Implemented Commands"
+\fIGeneric Commands\fP
 .IP "\(bu" 2
-\fBCommand Description Section\fP
+\fBGET_ProtocolRevision\fP
+.IP "\(bu" 2
+\fBGET_Compressor\fP
+.IP "\(bu" 2
+\fBGET_Components\fP
+.IP "\(bu" 2
+\fBGET_TubeTemperature\fP
+.IP "\(bu" 2
+\fBSET_Language\fP
 .PP
-.SS "Study Control"
+
+.PP
+\fIStudy Control\fP
 .IP "\(bu" 2
 \fBEXEC_OpenStudy\fP
 .IP "\(bu" 2
 \fBEXEC_CloseStudy\fP
 .PP
-.SS "Arm Control"
+
+.PP
+\fIProjection and Tube-Arm Control\fP
 .IP "\(bu" 2
 \fBSET_ProjectionList\fP
 .IP "\(bu" 2
@@ -32,6 +70,48 @@ This document describes in detail the communication protocol with the AWS softwa
 \fBEXEC_AbortProjection\fP
 .IP "\(bu" 2
 \fBEXEC_TrxPosition\fP
+.IP "\(bu" 2
+\fBGET_Trx\fP
+.IP "\(bu" 2
+\fBGET_Arm\fP
+.PP
+
+.PP
+\fIExposure Control\fP
+.IP "\(bu" 2
+\fBSET_TomoConfig\fP
+.IP "\(bu" 2
+\fBSET_ExposureMode\fP
+.IP "\(bu" 2
+\fBSET_ExposureData\fP
+.IP "\(bu" 2
+\fBSET_EnableXrayPush\fP
+.IP "\(bu" 2
+\fBGET_ReadyForExposure\fP
+.IP "\(bu" 2
+\fBEXEC_StartXraySequence\fP
+.PP
+.SS "Implemented Events"
+.IP "\(bu" 2
+\fBEVENT_SelectProjection\fP
+.IP "\(bu" 2
+\fBEVENT_AbortProjection\fP
+.IP "\(bu" 2
+\fBEVENT_GantryStatus\fP
+.IP "\(bu" 2
+\fBEVENT_Compressor\fP
+.IP "\(bu" 2
+\fBEVENT_Components\fP
+.IP "\(bu" 2
+\fBEVENT_ReadyForExposure\fP
+.IP "\(bu" 2
+\fBEVENT_XrayPushButton\fP
+.IP "\(bu" 2
+\fBEVENT_exposurePulseCompleted\fP
+.IP "\(bu" 2
+\fBEVENT_XraySequenceCompleted\fP
+.IP "\(bu" 2
+\fBEVENT_Poweroff\fP
 .PP
 
 .PP
@@ -57,28 +137,19 @@ The default Event Channel address is: IP = 127\&.0\&.0\&.1, PORT 10001;
 .SH "Protocol frame description"
 .PP
 The frame formats are equivalent for both channels:
-
-.PP
 .IP "\(bu" 2
-COMMAND FRAME: this is the frame the AWS sends to the application;
-.IP "  \(bu" 4
-**<ID % EXEC_xxx Param \&.\&.\&. %>** for sequence execution commands;
-.IP "  \(bu" 4
-**<ID % SET_xxx Param \&.\&.\&. %>** for setting status commands;
-.IP "  \(bu" 4
-**<ID % GET_xxx Param \&.\&.\&. %>** for getting status commands;
-.PP
-
+Command Frames: frame sent from AWS to \fBGantry\fP;
 .IP "\(bu" 2
-EVENT FRAME: this is the frame the Application sends to the AWS;
-.IP "  \(bu" 4
-<ID % EVENT_xxx Param \&.\&.\&. %> for status Events notification;
-.IP "  \(bu" 4
-<ID % EXECUTED OK optional-Param \&.\&.\&. %> for execution command successfully completed notifications;
-.IP "  \(bu" 4
-<ID % EXECUTED NOK optional-Param \&.\&.\&. %> for execution command terminated in error notifications;
+Event Frames: frame sents by \fBGantry\fP to AWS;
 .PP
-
+.SS "Command Frame Description"
+This is the frame the AWS sends to the application to request a service:
+.IP "\(bu" 2
+\fB<ID % EXEC_xxx Param \&.\&.\&. %>\fP for sequence execution commands;
+.IP "\(bu" 2
+\fB<ID % SET_xxx Param \&.\&.\&. %>\fP for setting status commands;
+.IP "\(bu" 2
+\fB<ID % GET_xxx Param \&.\&.\&. %>\fP for getting status commands;
 .PP
 
 .PP
@@ -90,6 +161,26 @@ The application acknowledges the COMMAND frames with three possible answer frame
 .IP "\(bu" 2
 \fIEXECUTING\fP: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS)
 .PP
+.SS "Event Frame Description"
+This is the frame the \fBGantry\fP sends to the AWS to notify its internal status change or to notify a command completion event\&.
+
+.PP
+.IP "\(bu" 2
+\fB<ID % EVENT_xxx Param \&.\&.\&. %>\fP for status Events notification;
+.IP "\(bu" 2
+\fB<ID % EXECUTED CMDID OK optional-Param \&.\&.\&. %>\fP for execution command successfully completed notifications;
+.IP "\(bu" 2
+\fB<ID % EXECUTED CMDID NOK optional-Param \&.\&.\&. %>\fP for execution command terminated in error notifications;
+.PP
+
+.PP
+Where:
+.IP "\(bu" 2
+CMDID: is the Id of the executing command that is terminated;
+.PP
+
+.PP
+The AWS shall not answer to Event frames!
 .SH "Error codes"
 .PP
 In case the application should answer to a COMMAND with a NOK frame, or in case the Application should send a NOK EVENT, an error code is provided\&.
@@ -99,6 +190,12 @@ There are a list of possible error codes that the Application can answer:
 
 .PP
 ERROR CODE   VALUE   DESCRIPTION   AWS-ACTION    AWS_RET_WRONG_PARAMETERS   1   The number of the command parameters is invalid   AWS Bug: check the command implementation    AWS_RET_WRONG_OPERATING_STATUS   2   The current operating status is not valid for the command   AWS Bug: check the current operating status    AWS_RET_SYSTEM_ERRORS   3   The command cannot be executed with active system errors   The AWS should handle a system error condition    AWS_RET_SYSTEM_WARNINGS   4   There are active System warnings   The AWS shall check the right condition before to send the command    AWS_RET_INVALID_PARAMETER_FORMAT   5   A parameter is not in the expected format   AWS Bug: check the command implementation    AWS_RET_INVALID_PARAMETER_VALUE   6   A parameter is not in the expected range   AWS Bug: check the command implementation    AWS_RET_DATA_NOT_ALLOWED   7   The current system setting is not ready to accept the command   check the current operating status    AWS_RET_DEVICE_BUSY   8   The target device cannot be activated   The AWS should wait the previous command completioin before to send a new command    AWS_RET_DEVICE_ERROR   9   The Device signaled an error condition in executing the command   The AWS should abort the current workflow   
+.SH "Current Selectable Projection Codes"
+.PP
+The AWS can select one of the possible projections of the following table:
+
+.PP
+PROJECTION FOR 2D   PROJECTION FOR 3D   PROJECTION FOR CESM   PROJECTION FOR COMBO   PROJECTION FOR VI    LCC   LCCT   LCCD   LCCB   LCCM    LFB   LFBT   LFBD   LFBB   LFBM    LISO   LISOT   LISOD   LISOB   LISOM    LLM   LLMT   LLMD   LLMB   LLMM    LLMO   LLMOT   LLMOD   LLMOB   LLMOM    LML   LMLT   LMLD   LMLB   LMLM    LMLO   LMLOT   LMLOD   LMLOB   LMLOM    LSIO   LSIOT   LSIOD   LSIOB   LSIOM    RCC   RCCT   RCCD   RCCB   RCCM    RFB   RFBT   RFBD   RFBB   RFBM    RISO   RISOT   RISOD   RISOB   RISOM    RLM   RLMT   RLMD   RLMB   RLMM    RML   RLMOT   RLMOD   RLMOB   RLMOM    RMLO   RMLT   RMLD   RMLB   RMLM    RSIO   RMLOT   RMLOD   RMLOB   RMLOM   
 
 .PP
 .SH "Command Description Section"
@@ -108,35 +205,23 @@ This command shall be sent by AWS to request to Open the Study\&.
 
 .PP
 The Open Study is necessary to enter the Operating Status\&.
-
-.PP
+.SS "Command Data Format"
 Frame format: <ID % EXEC_OpenStudy patient_name>
 
 .PP
 PARAMETER   Data Type   Description    patient_name   String   Study's patient name   
-
-.PP
-Possibly returned error codes:
-
-.PP
+.SS "Command Returned Code"
 ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_SYSTEM_ERRORS   'SYSTEM_ERRORS'   system error condition are presents    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   wrong number of parameters (it should be 1)    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_IDLE_MODE'   the \fBGantry\fP is not in IDLE status   
 
 .PP
 .SS "EXEC_CloseStudy"
 This command shall be sent by AWS to Close a current study and set the \fBGantry\fP in IDLE operating status\&.
-
-.PP
-Frame format:
-.br
-<ID % EXEC_CloseStudy >
+.SS "Command Data Format"
+Frame format: <ID % EXEC_CloseStudy >
 
 .PP
 PARAMETER   Data Type   Description    -   -   -   
-
-.PP
-Possibly returned error codes:
-
-.PP
+.SS "Command Returned Code"
 ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   The gantry is not in Open Status mode   
 
 .PP
@@ -147,17 +232,12 @@ This command shall be sent by AWS to set the gantry selectable projections\&.
 The AWS provides a set of projection that the operator can select
 .br
 from the local displays\&.
-
-.PP
+.SS "Command Data Format"
 Frame format: <ID % SET_ProjectionList proj1, proj2, \&.\&. , proj-n>
 
 .PP
 PARAMETER   Data Type   Description    proj1\&.\&.proj-n   Projection name   List of the selectable projections   
-
-.PP
-Possibly returned error codes:
-
-.PP
+.SS "Command Returned Code"
 ERROR CODE   ERROR STRING   DESCRIPTION    return_errors::AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    return_errors::AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PROJECTION_IN_THE_LIST'   a projection name in the list is not valid   
 
 .PP
@@ -174,8 +254,7 @@ The \fBGantry\fP automatically modifies the Vertical position of the C-ARM,
 .br
 in order to keep unchanged the position of the copression plane (Virtual Isometric feature);
 .PP
-
-.PP
+.SS "Command Data Format"
 Frame format: <ID % EXEC_ArmPosition projection Angle Min Max>
 
 .PP
@@ -201,11 +280,7 @@ the Min shall be < Ange;
 .IP "\(bu" 2
 the Max shall be > Ange;
 .PP
-
-.PP
-Possibly returned error codes:
-
-.PP
+.SS "Command Returned Code"
 ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 4)    AWS_RET_DEVICE_BUSY   'MOTORS_BUSY'   One of the motors is running    AWS_RET_DEVICE_BUSY   'ARM_NOT_READY'   The ARM is not ready to execute an activation    AWS_RET_DATA_NOT_ALLOWED   'WRONG_PROJECTION'   The projection name is not valid or it isn't in the list of selectable projections    AWS_RET_INVALID_PARAMETER_VALUE   'WRONG_TARGET_DATA'   One of the angle parameter is not correct or out of range   
 
 .PP
@@ -226,18 +301,13 @@ The ARM remains in the current position;
 .IP "\(bu" 2
 The GUI removes the projection icon from the panel;
 .PP
-
-.PP
+.SS "Command Data Format"
 Frame format: <ID % EXEC_AbortProjection >
 
 .PP
 PARAMETER   Data Type   Description    -   -   -   
-
-.PP
-Possibly returned error codes:
-
-.PP
-ERROR CODE   ERROR STRING   DESCRIPTION    return_errors::AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   The gantry is not in Open Status mode   
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   The gantry is not in Open Status mode   
 
 .PP
 .SS "EXEC_TrxPosition"
@@ -259,8 +329,7 @@ In a \fBBiopsy\fP sequence, the AWS set the Tube in the proper stereotactic posi
 
 .PP
 The AWS cannot set an arbitrary target angle with this command: instead, a predefined subset of targets are already predefined\&.
-
-.PP
+.SS "Command Data Format"
 Frame format: <ID % EXEC_TrxPosition trx_target>
 
 .PP
@@ -268,15 +337,408 @@ PARAMETER   Data Type   Description    trx_target   String   the TRX target posi
 
 .PP
 TRX TARGET VALUE   DESCRIPTION    'SCOUT'   Scout Position    'BP_R'   \fBBiopsy\fP Right Position    'BP_L'   \fBBiopsy\fP left Position    'TOMO_H'   Tomo Home Position    'TOMO_E'   Tomo Final Position   
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    AWS_RET_DEVICE_BUSY   'MOTORS_BUSY'   One of the motors is running    AWS_RET_DEVICE_BUSY   'TRX_NOT_READY'   The TRX is not ready to execute an activation    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_TARGET'   One of the angle parameter is not correct or out of range    AWS_RET_DEVICE_ERROR   'DEVICE_ERROR'   The Tilt Device cannot activate the command for an internal reason   
 
 .PP
-Possibly returned error codes:
+\fBGantry\fP always returns <ID % EXECUTING%> frame: the TRX start executing;
 
 .PP
-ERROR CODE   ERROR STRING   DESCRIPTION    return_errors::AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    return_errors::AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    return_errors::AWS_RET_DEVICE_BUSY   'MOTORS_BUSY'   One of the motors is running    return_errors::AWS_RET_DEVICE_BUSY   'TRX_NOT_READY'   The TRX is not ready to execute an activation    return_errors::AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_TARGET'   One of the angle parameter is not correct or out of range    return_errors::AWS_RET_DEVICE_ERROR   'DEVICE_ERROR'   The Tilt Device cannot activate the command for an internal reason   
+.SS "SET_TomoConfig"
+This command selects the next Tomo sequence geometry\&. 
+.br
 
 .PP
-\fBGantry\fP always returns <ID % EXECUTING%> frame: the TRX start executing; 
+Every tomo sequence is characterized by a set of paramneters:
+.IP "\(bu" 2
+Starting Position;
+.IP "\(bu" 2
+Ending Position;
+.IP "\(bu" 2
+Acceleration;
+.IP "\(bu" 2
+Speed;
+.IP "\(bu" 2
+Deceleration;
+.IP "\(bu" 2
+Number of samples;
+.IP "\(bu" 2
+Number of discarded inital pulses (skip pulses);
+.PP
+
+.PP
+All those parameters are stored into a TomoConfig\&.cnf file (see the \fBTomoConfig\&.cnf configuration file\fP for reference) where a unique identifier name is assigned to a given tomo sequence\&.
+
+.PP
+The AWS with this command can select one of the available sequences using the predefined Identifier\&.
+.SS "Command Data Format"
+Frame format: <ID % SET_TomoConfig tomo_name>
+
+.PP
+PARAMETER   Data Type   Description    tomo_name   String   the predefined name assigned to the Tomo sequence to be selected   
+
+.PP
+tomo_name    TOMO1F_NARROW    TOMO1F_INTERMEDIATE    TOMO1F_WIDE    TOMO2F_NARROW    TOMO2F_INTERMEDIATE    TOMO2F_WIDE    TOMO3F_NARROW    TOMO3F_INTERMEDIATE    TOMO3F_WIDE    TOMO4F_NARROW    TOMO4F_INTERMEDIATE    TOMO4F_WIDE    TOMO5F_NARROW    TOMO5F_INTERMEDIATE    TOMO5F_WIDE   
+.PP
+.nf
+NOTE: The previous table reflects the current Tomo configurations\&. 
+The TomoConfig\&.cnf file however can be updated in the future\&.
+
+.fi
+.PP
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    AWS_RET_INVALID_PARAMETER_VALUE   'WRONG_CONFIGURATION_ID'   The Tomo ID is not present in the TomoConfig\&.cnf configuration file   
+
+.PP
+.SS "SET_ExposureMode"
+This command selects exposure type and characteristics of the next exposure sequence\&. 
+.br
+.SS "Command Data Format"
+Frame format: <ID % SET_ExposureMode exp_type detector_type compression_mode collimation_mode protection_mode arm_mode >
+
+.PP
+PARAMETER   Data Type   Description    exp_type   String   Defines the type of the exposure (see tble below)    detector_type   String   Defines the target Detector (see table below)    compression_mode   String   Sets the behavior of the compressor (see table below)    collimation_mode   String   Sets the collimation format used (see table below)    protection_mode   String   Sets the use of the patient protection (see table below)    arm_mode   String   Sets the use of the accurate ARM positioning (see table below)   
+
+.PP
+exp_type   Description    MAN_2D   Exposure 2D in Manual Mode    AEC_2D   Exposure 2D with pre pulse    MAN_3D   Exposure 3D in Manual Mode    AEC_3D   Exposure 3D with pre pulse    MAN_COMBO   Combo in manual mode    AEC_COMBO   Combo with pre-pulse    MAN_AE   Exposure CESM in Manual Mode    AEC_AE   Exposure CESM with pre pulse   
+
+.PP
+detector_type (see the DetectorConfiguration\&.cnf description \fBDetectorConfiguration\&.cnf configuration file\fP)   Description    GENERIC   A generic detector with tipical timing    LMAM2V2   Analogic LMAM2V2 tuned timings    DRTECH   DRTECH tuned timings    VAREX   VAREX tuned timings   
+
+.PP
+compression_mode   Description    CMP_KEEP   The compressor shall be used and it will remain in compression after exposure    CMP_RELEASE   The compressor shall be used and it will relase the compression after exposure    CMP_DISABLE   The compressor may not be used (no error is set)   
+
+.PP
+collimation_mode   Description    COLLI_AUTO   The collimation format is automatically selected by the \fBGantry\fP, based on the current detected compression paddle    COLLI_CUSTOM   The Custom collimation format is selected    PADDLE_PROSTHESIS   Manually sets the collimation for that paddle format    PADDLE_BIOP2D   Manually sets the collimation for that paddle format    PADDLE_BIOP3D   Manually sets the collimation for that paddle format    PADDLE_TOMO   Manually sets the collimation for that paddle format    PADDLE_24x30_CONTACT   Manually sets the collimation for that paddle format    PADDLE_18x24_C_CONTACT   Manually sets the collimation for that paddle format    PADDLE_18x24_L_CONTACT   Manually sets the collimation for that paddle format    PADDLE_18x24_R_CONTACT   Manually sets the collimation for that paddle format    PADDLE_10x24_CONTACT   Manually sets the collimation for that paddle format    PADDLE_9x21_MAG   Manually sets the collimation for that paddle format    PADDLE_9x9_MAG   Manually sets the collimation for that paddle format    PADDLE_D75_MAG   Manually sets the collimation for that paddle format   
+
+.PP
+protection_mode   Description    PROTECTION_ENA   The Patient protection shall be used for the next exposure    PROTECTION_DIS   The Patient protection may not be used for the next exposure   
+
+.PP
+arm_mode   Description    ARM_ENA   The ARM position shall properly be set    ARM_DIS   The current ARM angle is not checked by the \fBGantry\fP   
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 6)    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_EXPOSURE_TYPE'   The exp_type parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_DETECTOR_TYPE'   The detector_type parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_COMPRESSION_MODE'   The compression_mode parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PADDLE'   The manual collimation paddle is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_COLLIMATION_FORMAT'   An invalid collimation format is assigned to the selected paddle    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PATIENT_PROTECTION_MODE'   The protection_mode parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_ARM_MODE'   The arm_mode parameter is wrong   
+
+.PP
+.SS "SET_ExposureData"
+This command assignes the exposure parameters for the next Exposure pulse in the current sequence\&.
+
+.PP
+Depending by the Exposure type, the exposure is composed by a number of single pulses:
+.IP "\(bu" 2
+The MAN_2D: is composed by 1 pulse;
+.IP "\(bu" 2
+The AEC_2D: is composed by 2 pulses;
+.IP "\(bu" 2
+The MAN_3D: is composed by 1 pulse (in this case is intended the whole train of pulses);
+.IP "\(bu" 2
+The AEC_3D: is composed by 2 pulses (pre pulse and the Tomo pulses);
+.IP "\(bu" 2
+The MAN_COMBO: is composed by 2 pulses (the manual 2D and the Manual Tomo);
+.IP "\(bu" 2
+The AEC_COMBO: is composed by 3 pulses (the pre, the pulse 2D and the Tomo pulses);
+.IP "\(bu" 2
+The MAN_AE: is composed by 2 pulses (the Low Energy pulse and the High energy pulse);
+.IP "\(bu" 2
+The AEC_AE: is composed by 3 pulses (the pre pulse, the Low Energy pulse and the High energy pulse);
+.PP
+
+.PP
+During the exposure sequence the AWS shall set the next pulse parameters\&. For example, in an AEC 2D sequence:
+.IP "\(bu" 2
+The AWS sends this command with the index 0 at the beginning, to set the parameters of the pre pulse;
+.IP "\(bu" 2
+Then, after the pre pulse completion, the AWS will send again this command, but with the index 1, in order to set the parameters of the Main pulse;
+.PP
+.SS "Command Data Format"
+Frame format: <ID % SET_ExposureData pulse_number kV mAs filter>
+
+.PP
+PARAMETER   Data Type   Description    pulse_number   Byte   the pulse sequence number, starting from 0    kV   float   Kv selection    mAs   float   mAs for the pulse (*)    filter   String   The filter that shall be selected for this pulse (see table below)   
+.PP
+.nf
+(*) NOTE: in case of a tomo sequence, the mAs is the ***Total*** amount of mAs in the sequence\&.
+
+.fi
+.PP
+
+.PP
+filter    Ag    Al    Rh    Mo    Cu    
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 4)    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PARAMETERS'   One of the pulse parameter is not valid\&. See the \fBGantry\fP log for detail   
+
+.PP
+.SS "SET_EnableXrayPush"
+This command enables/disables the X-RAY push button to init an exposure sequence\&.
+.SS "Command Data Format"
+Frame format: <ID % SET_EnableXrayPush enable_status>
+
+.PP
+PARAMETER   Data Type   Description    enable_status   String   'ON': Enabled;
+.br
+'OFF': Disabled   
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)   
+
+.PP
+.SS "GET_ReadyForExposure"
+This COMMAND returns the \fBGantry\fP current Ready For Exposure status\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_ReadyForExposure >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_SYSTEM_ERRORS   'GANTRY_NOT_READY'   \fBGantry\fP is not Ready because there are active system Errors    AWS_RET_SYSTEM_WARNINGS   'GANTRY_NOT_READY'   \fBGantry\fP is not Ready because there are active system Warnings   
+
+.PP
+.SS "EXEC_StartXraySequence"
+This command requests to starts an exposure\&.
+.SS "Command Data Format"
+Frame format: <ID % EXEC_StartXraySequence >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_SYSTEM_ERRORS   'GANTRY_NOT_READY'   \fBGantry\fP is not Ready because there are active system Errors    AWS_RET_SYSTEM_WARNINGS   'GANTRY_NOT_READY'   \fBGantry\fP is not Ready because there are active system Warnings    AWS_RET_DEVICE_ERROR   'GENERATOR_ERROR'   The \fBGenerator\fP device rejected the start exposure\&.   
+
+.PP
+.SS "GET_Compressor"
+This COMMAND returns the Compressor Data\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_Compressor >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Success Returned Code"
+<ID % OK Thickness Force>
+
+.PP
+PARAMETER   Data Type   Description    Thickness   Integer   Current breast thickness in mm    Force   Integer   Current compression force in N   
+.SS "Command Error Returned Code"
+No Error for this command\&.
+
+.PP
+.SS "GET_Components"
+This COMMAND returns the detected component on the \fBGantry\fP\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_Components >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Success Returned Code"
+<ID % OK component_type mag_factor compressor_paddle protection_type collimation_tool >
+
+.PP
+PARAMETER   Data Type   Description    component_type   String   'BIOPY'/'MAGNIFIER'/'POTTER'    mag_factor   Float   Current magnifier factor value    compressor_paddle   String   Detected compressor paddle code    protection_type   String   'BIOPY'/'MAGNIFIER'/'POTTER'    collimation_tool   String   'LEAD_SCREEN'/'SPECIMEN'/'UNDETECTED_COLLIMATOR'   
+.SS "Command Error Returned Code"
+No Error for this command\&.
+
+.PP
+.SS "GET_Trx"
+This COMMAND returns the current Tube Arm position\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_Trx >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Success Returned Code"
+<ID % OK target_name angle >
+
+.PP
+PARAMETER   Data Type   Description    target_name   String   The name of the current target position(See table below)    angle   Float   The current angle in \&.01 degree   
+
+.PP
+target_name   Description    BP_R   \fBBiopsy\fP positive target (usually +15 degree)    BP_L   \fBBiopsy\fP negative target (usually -15 degree)    TOMO_H   Tomo Home position    TOMO_E   Tomo End position    UNDEF   Unclassified target position   
+.SS "Command Error Returned Code"
+No Error for this command\&.
+
+.PP
+.SS "GET_Arm"
+This COMMAND returns the current Tube Arm position\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_Arm >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Success Returned Code"
+<ID % OK projection_name angle >
+
+.PP
+PARAMETER   Data Type   Description    target_name   String   The name of the current projection    angle   Float   The current angle in \&.01 degree   
+.SS "Command Error Returned Code"
+No Error for this command\&.
+
+.PP
+.SS "GET_TubeTemperature"
+This COMMAND returns the current Tube Arm position\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_TubeTemperature >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Success Returned Code"
+<ID % OK anode bulb stator >
+
+.PP
+PARAMETER   Data Type   Description    anode   Byte   % of the cumulated HU [0:100]    bulb   Byte   % of the cumulated Bulb Temperature [0:100]    stator   Byte   % of the cumulated Stator Temperature [0:100]   
+.SS "Command Error Returned Code"
+No Error for this command\&.
+
+.PP
+.SS "SET_Language"
+This command sets the language of the \fBGantry\fP messages and labels\&. 
+.PP
+.nf
+NOTE: This command requires to restart the Gantry Application to apply the language changes\&.
+
+.fi
+.PP
+.SS "Command Data Format"
+Frame format: <ID % SET_Language language>
+
+.PP
+PARAMETER   Data Type   Description    language   String   This is the language identifier code (see table below)   
+
+.PP
+|language||Description| |:--|:--| |ITA|Italian Language| |ENG|English Language| |FRA|Franch Language| |ESP|Spanish Language| |POR|Portuguese Language| |RUS|Russian Language|
+.SS "Error Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_CLOSE_MODE'   The command can be executed only in Close Study status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   Wrong number of parameters received (it should be 1)    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_LANGUAGE'   Wrong languge identifier   
+
+.PP
+.SS "GET_ProtocolRevision"
+This COMMAND returns the current protocol revision code\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_ProtocolRevision >
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "Command Success Returned Code"
+<ID % OK revision_code >
+
+.PP
+PARAMETER   Data Type   Description    revision_code   String   current revision code in the format maj\&.min\&.sub   
+.SS "Command Error Returned Code"
+No Error for this command\&.
+
+.PP
+.SH "Event Description Section"
+.PP
+.SS "EVENT_SelectProjection"
+This is the EVENT requesting the selection of a given projection\&.
+
+.PP
+The projection shall belong to the projections list set by the AWS through the command \fBSET_ProjectionList\fP\&.
+.SS "Command Data Format"
+Frame format: <ID % EVENT_SelectProjection projection_name %>
+
+.PP
+PARAMETER   Data Type   Description    projection_name   String   It is one of the available projections\&. See the \fBCurrent Selectable Projection Codes\fP section   
+.SS "EVENT_AbortProjection"
+This is the EVENT requesting to abort the current selected projection\&.
+
+.PP
+The \fBGantry\fP sends this command whrn the operatore press the \fIAbort Button\fP on the GUI display\&.
+
+.PP
+The \fBGantry\fP doesn't proceed with the abort by its own\&.
+
+.PP
+The AWS will send the \fBEXEC_AbortProjection\fP command in the case should accept the abort request\&.
+.SS "Command Data Format"
+Frame format: <ID % EVENT_AbortProjection %>
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "EVENT_GantryStatus"
+\fBGantry\fP sends this EVENT always its internal status changes\&.
+.SS "Command Data Format"
+Frame format: <ID % EVENT_GantryStatus current_status %>
+
+.PP
+PARAMETER   Data Type   Description    current_status   String   the \fBGantry\fP current status (see table below)   
+
+.PP
+current_status   Description    GANTRY_STARTUP   Startup fase    GANTRY_IDLE   Idle Status: not in Open Study    GANTRY_OPEN_STUDY   This is the Operating status    GANTRY_SERVICE   This is the Service status    UNDEF   This is a non defined \fBGantry\fP Status   
+.SS "EVENT_Compressor"
+\fBGantry\fP sends this EVENT to notify the compressor data changes\&.
+.SS "Command Data Format"
+Frame format: <ID % EVENT_Compressor breast_thick compression_force %>
+
+.PP
+PARAMETER   Data Type   Description    breast_thick   Int   current measured breast thickness in mm    compression_force   Int   current measured compression force N   
+.SS "EVENT_Components"
+\fBGantry\fP sends this EVENT to notify the change in the detected components \&.
+.SS "Command Data Format"
+Frame format: <ID % EVENT_Components component_type magnifier_factor paddle_name protection_name collimation_tool %>
+
+.PP
+PARAMETER   Data Type   Description    component_type   String   BIOPSY/MAGNIFIER/POTTER    magnifier_factor   Int   Current Magnifier factor    paddle_name   String   Nome of the detected compression paddle    protection_name   String   PROTECTION_POSITIONED/PROTECTION_SHIFTED/UNDETECTED_PROTECTION    collimation_tool   String   LEAD_SCREEN/SPECIMEN/UNDETECTED_COLLIMATOR   
+.SS "EVENT_ReadyForExposure"
+\fBGantry\fP sends this EVENT to notify the change in the Ready For Exposure current status \&.
+.SS "Command Data Format"
+In case of Ready condition: <ID % EVENT_ReadyForExposure OK 0 %>
+
+.PP
+In case of Not Ready condition: <ID % EVENT_ReadyForExposure NOK code %>
+
+.PP
+CODE   Description    AWS_RET_SYSTEM_ERRORS   There are active errors in the system    AWS_RET_SYSTEM_WARNINGS   There are active warnings in the system   
+.SS "EVENT_XrayPushButton"
+\fBGantry\fP sends this EVENT when the status of the X-RAY push button changes \&.
+.SS "Command Data Format"
+<ID % EVENT_XrayPushButton x_status %>
+
+.PP
+PARAMETER   Data Type   Description    x_status   String   ON/OFF   
+.SS "EVENT_exposurePulseCompleted"
+\fBGantry\fP sends this EVENT whenever a pulse of a sequence is executed\&. 
+.PP
+.nf
+NOTE: this EVENT is not sent if the pulse is the last pulse of a sequence\&.
+In this case the \\ref EVENT_XraySequenceCompleted is sent instead\&.
+
+.fi
+.PP
+.SS "Command Data Format"
+<ID % EVENT_exposurePulseCompleted pulse_number %>
+
+.PP
+PARAMETER   Data Type   Description    pulse_number   Byte   Pulse number starting from 0   
+.SS "EVENT_XraySequenceCompleted"
+\fBGantry\fP sends this EVENT when a X-Ray sequence ends, whether with or without success\&.
+.SS "Command Data Format"
+<ID % EVENT_XraySequenceCompleted result kv0 mAs0 filter0 kv1 mAs1 filter1 kv2 mAs2 filter2 kv3 mAs3 filter3 %>
+
+.PP
+PARAMETER   Data Type   Description    result   String   OK: exposure success;
+.br
+NOK: exposure aborted without dose;
+.br
+PARTIAL: exposure aborted with partial dose released    kv0   float   kV measured in the pulse #0    mAs0   float   mAs measured in the pulse #0    filter0   String   filter code used for the pulse #0    kv1   float   kV measured in the pulse #1    mAs1   float   mAs measured in the pulse #1    filter1   String   filter code used for the pulse #1    kv2   float   kV measured in the pulse #2    mAs2   float   mAs measured in the pulse #2    filter2   String   filter code used for the pulse #2    kv3   float   kV measured in the pulse #3    mAs3   float   mAs measured in the pulse #3    filter3   String   filter code used for the pulse #3   
+.PP
+.nf
+NOTE: the pulse data related to pulses not in the procedure shall be not considered! 
+
+.fi
+.PP
+.SS "EVENT_Poweroff"
+This Event is sent to AWS whenever the gantry requestes for a power-off sequence\&.
+
+.PP
+The AWS may accept the request: in this case the AWS shall send the command \fBEXEC_PowerOff\fP to the \fBGantry\fP\&.
+.SS "Command Data Format"
+<ID % EVENT_Poweroff %>
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
+.SS "EVENT_Executed"
+This is the EVENT the \fBGantry\fP shall generate when a delayed command completes\&.
+.SS "Command Data Format"
+<ID % EVENT_Executed %>
+
+.PP
+PARAMETER   Data Type   Description    -   -   -   
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU from the source code\&.

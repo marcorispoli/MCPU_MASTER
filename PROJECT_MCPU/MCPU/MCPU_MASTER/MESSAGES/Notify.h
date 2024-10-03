@@ -3,17 +3,11 @@
 #include "ErrorForm.h"
 #include "infoPopup.h"
 
-/**
-\defgroup MessageNotify Application Message Notification
 
-	This section describes the Application message notification system.
-
-*
-*/
 
 /**
 	\defgroup MessageNotifyModule Message Notification Implementation
-	\ingroup MessageNotify
+	\ingroup APPIMPL
 	\internal
 
 	This section describes the implementation of the message notification system.
@@ -22,7 +16,7 @@
 
 /**
 \defgroup MessageNotifyDescription Message Notification Description
-\ingroup MessageNotify
+\ingroup APPDOC
 
    # Abstract
 

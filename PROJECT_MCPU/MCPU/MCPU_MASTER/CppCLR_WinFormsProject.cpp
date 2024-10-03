@@ -7,6 +7,22 @@
 using namespace System;
 using namespace System::Windows::Forms;
 
+/// <summary>
+/// \defgroup APPDOC Application Documentation
+/// 
+/// This section provides detailed description of the Application functions
+/// and performances.
+/// 
+/// </summary>
+/// <returns></returns>
+
+/// <summary>
+/// \defgroup APPIMPL Application Implementation
+/// 
+/// This section provides detailed description of the modules iplementation.
+/// 
+/// </summary>
+/// <returns></returns>
 
 
 [STAThread]

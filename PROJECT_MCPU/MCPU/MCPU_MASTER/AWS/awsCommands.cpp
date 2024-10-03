@@ -37,6 +37,8 @@ using namespace System::Diagnostics;
 /// 
 /// The Open Study is necessary to enter the Operating Status.
 /// 
+/// ### Command Data Format
+/// 
 /// Frame format: <ID % EXEC_OpenStudy patient_name>
 /// 
 /// |PARAMETER|Data Type|Description|
@@ -44,7 +46,7 @@ using namespace System::Diagnostics;
 /// |patient_name|String|Study's patient name| 
 /// 
 /// 
-/// Possibly returned error codes:
+/// ### Command Returned Code 
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
@@ -86,14 +88,15 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 /// 
 /// This command shall be sent by AWS to Close a current study and set the Gantry in IDLE operating status.
 /// 
-/// Frame format:\n
-/// <ID % EXEC_CloseStudy >
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_CloseStudy >
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
 /// |-|-|-| 
 /// 
-/// Possibly returned error codes:
+/// ### Command Returned Code 
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
@@ -124,6 +127,8 @@ void  awsProtocol::EXEC_CloseStudy(void) {
 /// The AWS provides a set of projection that the operator can select\n
 /// from the local displays.
 /// 
+/// ### Command Data Format
+/// 
 /// Frame format: <ID % SET_ProjectionList proj1, proj2, .. , proj-n>
 /// 
 /// |PARAMETER|Data Type|Description|
@@ -131,7 +136,7 @@ void  awsProtocol::EXEC_CloseStudy(void) {
 /// |proj1..proj-n|Projection name|List of the selectable projections| 
 /// 
 /// 
-/// Possibly returned error codes:
+/// ### Command Returned Code 
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
@@ -168,6 +173,8 @@ void awsProtocol::SET_ProjectionList(void) {
 /// + The Gantry automatically modifies the Vertical position of the C-ARM,\n
 /// in order to keep unchanged the position of the copression plane (Virtual Isometric feature);
 /// 
+/// ### Command Data Format
+/// 
 /// Frame format: <ID % EXEC_ArmPosition projection Angle Min Max>
 /// 
 /// |PARAMETER|Data Type|Description|
@@ -186,7 +193,7 @@ void awsProtocol::SET_ProjectionList(void) {
 /// + the Min shall be < Ange;
 /// + the Max shall be > Ange;
 /// 
-/// Possibly returned error codes:
+/// ### Command Returned Code 
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
@@ -248,17 +255,19 @@ void awsProtocol::EXEC_ArmPosition(void) {
 /// + The ARM remains in the current position;
 /// + The GUI removes the projection icon from the panel;
 /// 
+/// ### Command Data Format
+/// 
 /// Frame format: <ID % EXEC_AbortProjection >
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
 /// |-|-|-| 
 /// 
-/// Possibly returned error codes:
+/// ### Command Returned Code 
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
-/// |return_errors::AWS_RET_WRONG_OPERATING_STATUS| "NOT_IN_OPEN_MODE" | The gantry is not in Open Status mode|
+/// |AWS_RET_WRONG_OPERATING_STATUS| "NOT_IN_OPEN_MODE" | The gantry is not in Open Status mode|
 /// 
 
 /// <summary>
@@ -296,6 +305,8 @@ void awsProtocol::EXEC_AbortProjection(void) {
 /// The AWS cannot set an arbitrary target angle with this command: instead, a predefined subset of 
 /// targets are already predefined.
 /// 
+/// ### Command Data Format
+/// 
 /// Frame format: <ID % EXEC_TrxPosition trx_target>
 /// 
 /// |PARAMETER|Data Type|Description|
@@ -310,16 +321,16 @@ void awsProtocol::EXEC_AbortProjection(void) {
 /// |"TOMO_H"| Tomo Home Position |
 /// |"TOMO_E"| Tomo Final Position |
 /// 
-/// Possibly returned error codes:
+/// ### Command Returned Code 
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
-/// |return_errors::AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
-/// |return_errors::AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
-/// |return_errors::AWS_RET_DEVICE_BUSY|"MOTORS_BUSY"|One of the motors is running|
-/// |return_errors::AWS_RET_DEVICE_BUSY|"TRX_NOT_READY"|The TRX is not ready to execute an activation|
-/// |return_errors::AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_TARGET" | One of the angle parameter is not correct or out of range |
-/// |return_errors::AWS_RET_DEVICE_ERROR |  "DEVICE_ERROR" | The Tilt Device cannot activate the command for an internal reason |
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
+/// |AWS_RET_DEVICE_BUSY|"MOTORS_BUSY"|One of the motors is running|
+/// |AWS_RET_DEVICE_BUSY|"TRX_NOT_READY"|The TRX is not ready to execute an activation|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_TARGET" | One of the angle parameter is not correct or out of range |
+/// |AWS_RET_DEVICE_ERROR |  "DEVICE_ERROR" | The Tilt Device cannot activate the command for an internal reason |
 /// 
 /// Gantry always returns <ID % EXECUTING%> frame: the TRX start executing;
 
@@ -342,9 +353,73 @@ void awsProtocol::EXEC_TrxPosition(void) {
     return;
 }
 
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_TomoConfig
+/// 
+/// This command selects the next Tomo sequence geometry.   
+/// 
+/// Every tomo sequence is characterized by a set of paramneters:
+/// + Starting Position;
+/// + Ending Position;
+/// + Acceleration;
+/// + Speed;
+/// + Deceleration;
+/// + Number of samples;
+/// + Number of discarded inital pulses (skip pulses);
+/// 
+/// All those parameters are stored into a TomoConfig.cnf file 
+/// (see the \ref TomoConfig for reference) 
+/// where a unique identifier name is assigned to a given tomo sequence.
+/// 
+/// The AWS with this command can select one of the available sequences
+/// using the predefined Identifier.
+/// 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % SET_TomoConfig tomo_name>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |tomo_name|String|the predefined name assigned to the Tomo sequence to be selected| 
+/// 
+/// |tomo_name|
+/// |:--|
+/// |TOMO1F_NARROW| 
+/// |TOMO1F_INTERMEDIATE|  
+/// |TOMO1F_WIDE|  
+/// |TOMO2F_NARROW| 
+/// |TOMO2F_INTERMEDIATE|  
+/// |TOMO2F_WIDE|  
+/// |TOMO3F_NARROW| 
+/// |TOMO3F_INTERMEDIATE|  
+/// |TOMO3F_WIDE|  
+/// |TOMO4F_NARROW| 
+/// |TOMO4F_INTERMEDIATE|  
+/// |TOMO4F_WIDE|  
+/// |TOMO5F_NARROW| 
+/// |TOMO5F_INTERMEDIATE|  
+/// |TOMO5F_WIDE|  
+///
+///     NOTE: The previous table reflects the current Tomo configurations. 
+///     The TomoConfig.cnf file however can be updated in the future.
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "WRONG_CONFIGURATION_ID" | The Tomo ID is not present in the TomoConfig.cnf configuration file |
+/// 
+
+
 /// <summary>
-/// This command select the current Tomo sequence
-/// from the Tomo Configuration file.
+/// This command selects the next Tomo sequence geometry. 
 /// 
 /// </summary>
 /// <param name=""></param>
@@ -359,8 +434,97 @@ void awsProtocol::SET_TomoConfig(void) {
     return;
 }
 
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_ExposureMode
+/// 
+/// This command selects exposure type and characteristics of the next exposure sequence.   
+/// 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % SET_ExposureMode exp_type detector_type compression_mode collimation_mode protection_mode arm_mode >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |exp_type|String|Defines the type of the exposure (see tble below)| 
+/// |detector_type|String|Defines the target Detector (see table below)| 
+/// |compression_mode|String|Sets the behavior of the compressor (see table below)| 
+/// |collimation_mode|String|Sets the collimation format used (see table below)| 
+/// |protection_mode|String|Sets the use of the patient protection (see table below)| 
+/// |arm_mode|String|Sets the use of the accurate ARM positioning (see table below)| 
+///
+/// |exp_type|Description|
+/// |:--|:--|
+/// |MAN_2D|Exposure 2D in Manual Mode|
+/// |AEC_2D|Exposure 2D with pre pulse|
+/// |MAN_3D|Exposure 3D in Manual Mode|
+/// |AEC_3D|Exposure 3D with pre pulse|
+/// |MAN_COMBO|Combo in manual mode|
+/// |AEC_COMBO|Combo with pre-pulse|
+/// |MAN_AE|Exposure CESM in Manual Mode|
+/// |AEC_AE|Exposure CESM with pre pulse|
+/// 
+/// |detector_type (see the DetectorConfiguration.cnf description \ref DetectorConfig) |Description|
+/// |:--|:--|
+/// |GENERIC|A generic detector with tipical timing|
+/// |LMAM2V2|Analogic LMAM2V2 tuned timings|
+/// |DRTECH|DRTECH tuned timings|
+/// |VAREX|VAREX tuned timings|
+///
+/// |compression_mode |Description|
+/// |:--|:--|
+/// |CMP_KEEP|The compressor shall be used and it will remain in compression after exposure|
+/// |CMP_RELEASE|The compressor shall be used and it will relase the compression after exposure|
+/// |CMP_DISABLE|The compressor may not be used (no error is set)|
+/// 
+/// |collimation_mode |Description|
+/// |:--|:--|
+/// |COLLI_AUTO|The collimation format is automatically selected by the Gantry, based on the current detected compression paddle|
+/// |COLLI_CUSTOM|The Custom collimation format is selected|
+/// |PADDLE_PROSTHESIS|Manually sets the collimation for that paddle format|
+/// |PADDLE_BIOP2D|Manually sets the collimation for that paddle format|
+/// |PADDLE_BIOP3D|Manually sets the collimation for that paddle format|
+/// |PADDLE_TOMO|Manually sets the collimation for that paddle format|
+/// |PADDLE_24x30_CONTACT|Manually sets the collimation for that paddle format|
+/// |PADDLE_18x24_C_CONTACT|Manually sets the collimation for that paddle format|
+/// |PADDLE_18x24_L_CONTACT|Manually sets the collimation for that paddle format|
+/// |PADDLE_18x24_R_CONTACT|Manually sets the collimation for that paddle format|
+/// |PADDLE_10x24_CONTACT|Manually sets the collimation for that paddle format|
+/// |PADDLE_9x21_MAG|Manually sets the collimation for that paddle format|
+/// |PADDLE_9x9_MAG|Manually sets the collimation for that paddle format|
+/// |PADDLE_D75_MAG|Manually sets the collimation for that paddle format|
+/// 
+/// |protection_mode|Description|
+/// |:--|:--|
+/// |PROTECTION_ENA|The Patient protection shall be used for the next exposure|
+/// |PROTECTION_DIS|The Patient protection may not be used for the next exposure|
+/// 
+/// |arm_mode|Description|
+/// |:--|:--|
+/// |ARM_ENA|The ARM position shall properly be set |
+/// |ARM_DIS|The current ARM angle is not checked by the Gantry|
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 6)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_EXPOSURE_TYPE" | The exp_type parameter is wrong|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_DETECTOR_TYPE" | The detector_type parameter is wrong|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_COMPRESSION_MODE" | The compression_mode parameter is wrong|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_PADDLE" | The manual collimation paddle is wrong|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_COLLIMATION_FORMAT" | An invalid collimation format is assigned to the selected paddle|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_PATIENT_PROTECTION_MODE" | The protection_mode parameter is wrong|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_ARM_MODE" | The arm_mode parameter is wrong|
+/// 
+/// 
+
 /// <summary>
-/// This command select the Exposure Mode for the incoming Exposure sequence
+/// This command selects exposure type and characteristics of the next exposure sequence.   
 /// 
 /// </summary>
 /// <param name=""></param>
@@ -456,8 +620,67 @@ void   awsProtocol::SET_ExposureMode(void) {
     return;
 }
 
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_ExposureData
+/// 
+/// This command assignes the exposure parameters for the next Exposure pulse in the current sequence.
+/// 
+/// Depending by the Exposure type, the exposure is composed by a number of single pulses:
+/// + The MAN_2D: is composed by 1 pulse;
+/// + The AEC_2D: is composed by 2 pulses;
+/// + The MAN_3D: is composed by 1 pulse (in this case is intended the whole train of pulses);
+/// + The AEC_3D: is composed by 2 pulses (pre pulse and the Tomo pulses);
+/// + The MAN_COMBO: is composed by 2 pulses (the manual 2D and the Manual Tomo);
+/// + The AEC_COMBO: is composed by 3 pulses (the pre, the pulse 2D and the Tomo pulses);
+/// + The MAN_AE: is composed by 2 pulses (the Low Energy pulse and the High energy pulse);
+/// + The AEC_AE: is composed by 3 pulses (the pre pulse, the Low Energy pulse and the High energy pulse);
+/// 
+/// During the exposure sequence the AWS shall set the next pulse parameters. 
+/// For example, in an AEC 2D sequence:
+/// + The AWS sends this command with the index 0 at the beginning, to set the parameters of the pre pulse;
+/// + Then, after the pre pulse completion, the AWS will send again this command, but with the index 1, in order to set 
+/// the parameters of the Main pulse;
+/// 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % SET_ExposureData pulse_number kV mAs filter>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |pulse_number|Byte|the pulse sequence number, starting from 0|
+/// |kV|float|Kv selection|
+/// |mAs|float|mAs for the pulse (*)|
+/// |filter|String|The filter that shall be selected for this pulse (see table below)|
+/// 
+///     (*) NOTE: in case of a tomo sequence, the mAs is the ***Total*** amount of mAs in the sequence.
+/// 
+/// 
+/// |filter|
+/// |:--|
+/// |Ag| 
+/// |Al| 
+/// |Rh| 
+/// |Mo| 
+/// |Cu| 
+/// || 
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 4)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_PARAMETERS" | One of the pulse parameter is not valid. See the Gantry log for detail|
+/// 
+
+
 /// <summary>
-/// This command assignes the exposure parameters for the next Exposure pulse
+/// This command assignes the exposure parameters for the next Exposure pulse in the current sequence.
 /// 
 /// </summary>
 /// <param name=""></param>
@@ -483,8 +706,36 @@ void   awsProtocol::SET_ExposureData(void) {
     return;
 }
 
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_EnableXrayPush
+/// 
+/// This command enables/disables the X-RAY push button to init an exposure sequence.
+/// 
+/// 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % SET_EnableXrayPush enable_status>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |enable_status|String|"ON": Enabled;<br>"OFF": Disabled|
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
+/// 
+/// 
+
 /// <summary>
-/// This command assignes the exposure parameters for the next Exposure pulse
+///  This command enables/disables the X-RAY push button to init an exposure sequence.
+/// 
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::SET_EnableXrayPush(void) {
@@ -499,8 +750,34 @@ void   awsProtocol::SET_EnableXrayPush(void) {
     return;
 }
 
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_ReadyForExposure
+/// 
+/// This COMMAND returns the Gantry current Ready For Exposure status.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_ReadyForExposure >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_SYSTEM_ERRORS|"GANTRY_NOT_READY"| Gantry is not Ready because there are active system Errors|
+/// |AWS_RET_SYSTEM_WARNINGS|"GANTRY_NOT_READY"| Gantry is not Ready because there are active system Warnings|
+/// 
+/// 
+/// 
+
 /// <summary>
-/// This command request for the current status of the ready for exposure
+/// This COMMAND returns the Gantry current Ready For Exposure status.
 /// 
 /// </summary>
 /// <param name=""></param>
@@ -515,6 +792,32 @@ void   awsProtocol::GET_ReadyForExposure(void) {
     ackOk();
     return;
 }
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection EXEC_StartXraySequence
+/// 
+/// This command requests to starts an exposure.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_StartXraySequence >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_SYSTEM_ERRORS|"GANTRY_NOT_READY"| Gantry is not Ready because there are active system Errors|
+/// |AWS_RET_SYSTEM_WARNINGS|"GANTRY_NOT_READY"| Gantry is not Ready because there are active system Warnings|
+/// |AWS_RET_DEVICE_ERROR|"GENERATOR_ERROR"| The Generator device rejected the start exposure.|
+/// 
+/// 
 
 /// <summary>
 /// This command requests for the exposure start 
@@ -544,6 +847,35 @@ void   awsProtocol::EXEC_StartXraySequence(void) {
     return;
 }
 
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_Compressor
+/// 
+/// This COMMAND returns the Compressor Data.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_Compressor >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK  Thickness Force>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |Thickness|Integer|Current breast thickness in mm|
+/// |Force|Integer|Current compression force in N|
+/// 
+/// ### Command Error Returned Code 
+/// 
+/// No Error for this command.
+
 
 /// <summary>
 /// This command requests the Compressor data:
@@ -563,6 +895,40 @@ void   awsProtocol::GET_Compressor(void) {
     ackOk(lista);
     return;
 }
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_Components
+/// 
+/// This COMMAND returns the detected component on the Gantry.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_Components >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK  component_type mag_factor  compressor_paddle protection_type collimation_tool >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |component_type|String|"BIOPY"/"MAGNIFIER"/"POTTER"|
+/// |mag_factor|Float|Current magnifier factor value|
+/// |compressor_paddle|String|Detected compressor paddle code|
+/// |protection_type|String|"BIOPY"/"MAGNIFIER"/"POTTER"|
+/// |collimation_tool|String|"LEAD_SCREEN"/"SPECIMEN"/"UNDETECTED_COLLIMATOR"|
+/// 
+/// 
+/// ### Command Error Returned Code 
+/// 
+/// No Error for this command.
+
 
 /// <summary>
 /// This command requests the component identified by the system.
@@ -607,6 +973,45 @@ void   awsProtocol::GET_Components(void) {
     return;
 }
 
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_Trx
+/// 
+/// This COMMAND returns the current Tube Arm position.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_Trx >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK  target_name angle >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |target_name|String|The name of the current target position(See table below)|
+/// |angle|Float|The current angle in .01 degree|
+/// 
+/// |target_name|Description|
+/// |:--|:--|
+/// |BP_R|Biopsy positive target (usually +15 degree)|
+/// |BP_L|Biopsy negative target (usually -15 degree)|
+/// |TOMO_H|Tomo Home position|
+/// |TOMO_E|Tomo End position|
+/// |UNDEF|Unclassified target position|
+///
+/// ### Command Error Returned Code 
+/// 
+/// No Error for this command.
+
+
 /// <summary>
 /// This command provides the current TRX position:
 /// + The Symbolic position;
@@ -626,6 +1031,35 @@ void   awsProtocol::GET_Trx(void) {
     return;
 }
 
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_Arm
+/// 
+/// This COMMAND returns the current Tube Arm position.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_Arm >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK  projection_name angle >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |target_name|String|The name of the current projection|
+/// |angle|Float|The current angle in .01 degree|
+/// 
+/// ### Command Error Returned Code 
+/// 
+/// No Error for this command.
+
 /// <summary>
 /// This command provides the current ARM position
 /// </summary>
@@ -641,8 +1075,39 @@ void   awsProtocol::GET_Arm(void) {
 }
 
 
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_TubeTemperature
+/// 
+/// This COMMAND returns the current Tube Arm position.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_TubeTemperature >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK anode bulb stator >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |anode|Byte|% of the cumulated HU [0:100]|
+/// |bulb|Byte|% of the cumulated Bulb Temperature [0:100]|
+/// |stator|Byte|% of the cumulated Stator Temperature [0:100]|
+/// 
+/// ### Command Error Returned Code 
+/// 
+/// No Error for this command.
+
+
 /// <summary>
-/// This command returns the Tube cumeulated energy 
+/// This command returns the Tube cumulated energy 
 /// for the Anode and the internal Filament and Stator device.
 /// 
 /// </summary>
@@ -659,6 +1124,43 @@ void   awsProtocol::GET_TubeTemperature(void) {
     return;
 }
 
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_Language
+/// 
+/// This command sets the language of the Gantry messages and labels.
+/// 
+///     NOTE: This command requires to restart the Gantry Application to apply the language changes.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % SET_Language language>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |language|String|This is the language identifier code (see table below)|
+/// 
+/// |language||Description|
+/// |:--|:--|
+/// |ITA|Italian Language|
+/// |ENG|English Language|
+/// |FRA|Franch Language|
+/// |ESP|Spanish Language|
+/// |POR|Portuguese Language|
+/// |RUS|Russian Language|
+/// 
+/// 
+/// 
+/// ### Error Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_CLOSE_MODE"| The command can be executed only in Close Study status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|Wrong number of parameters received (it should be 1)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"INVALID_LANGUAGE"| Wrong languge identifier|
+
 /// <summary>
 /// This command sets the GUI language.
 /// 
@@ -672,6 +1174,52 @@ void   awsProtocol::SET_Language(void) {
     ackOk();
     return;
 }
+
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_ProtocolRevision
+/// 
+/// This COMMAND returns the current protocol revision code.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_ProtocolRevision >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK revision_code >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |revision_code|String|current revision code in the format maj.min.sub|
+/// 
+/// ### Command Error Returned Code 
+/// 
+/// No Error for this command.
+
+
+/// <summary>
+/// This COMMAND returns the current protocol revision code.
+/// 
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_ProtocolRevision(void) {
+    // Create the list of the results
+    List<String^>^ lista = gcnew List<String^>;
+
+    lista->Add(PROTOCOL_REVISION_CODE); 
+    ackOk(lista);
+    return;
+}
+
 
 /// <summary>
 /// This command requests for the exposure start 

@@ -1,16 +1,11 @@
 #pragma once
 
-/**
-\defgroup AWSProtocol AWS Protocol Communication
+#define PROTOCOL_REVISION_CODE "1.0.0"
 
-	This section describes the communication protocol from the Application and the Acquisition software (AWS).
-
-*
-*/
 
 /**
 	\defgroup AWSProtocolModule AWS Protocol Communication Implementation
-	\ingroup AWSProtocol
+	\ingroup APPIMPL
 	\internal
 
 	This section describes the implementation of the protocol communication with the AWS software.
@@ -19,26 +14,76 @@
 
 /**
 \defgroup AWSProtocolDescription AWS Protocol Communication  Description
-\ingroup AWSProtocol
+\ingroup APPDOC
+
+   <b>PROTOCOL REVISION: 1.0.0</b>
+
+   # Change Log
+   
+   _Revision 1.0.0_ 
+
+   + Added the \ref GET_ProtocolRevision command
+   + Set a list of standard returned errors;
+   + Changed the \ref GET_Components command;
+   
+   In this revision, the commands are completed with a consistent set of returned error codes.
+
+   A protocol revision code is added in order to check the current implementation running on Gantry.\n
+   The current revision code is also reported in the protocol documentation.\n
+   The command \ref GET_ProtocolRevision command is then added to the protocol. 
+
+
 
    # Abstract
 
    This document describes in detail the communication protocol with the AWS software.
 
+   <div style="page-break-after: always;"></div>
+
    # Index
 
-   + \ref CMDDESC
+   ## Implemented Commands 
 
-   ## Study Control
+   _Generic Commands_
+   +	\ref GET_ProtocolRevision
+   +	\ref GET_Compressor
+   +	\ref GET_Components
+   +	\ref GET_TubeTemperature
+   +	\ref SET_Language
 
+   _Study Control_
    +	\ref EXEC_OpenStudy
    +	\ref EXEC_CloseStudy
-
-   ## Arm Control
+   
+   _Projection and Tube-Arm Control_
    +	\ref SET_ProjectionList
    +	\ref EXEC_ArmPosition
    +	\ref EXEC_AbortProjection
    +    \ref EXEC_TrxPosition
+   +	\ref GET_Trx
+   +	\ref GET_Arm
+
+   _Exposure Control_
+   +	\ref SET_TomoConfig
+   +	\ref SET_ExposureMode
+   +	\ref SET_ExposureData
+   +	\ref SET_EnableXrayPush
+   +	\ref GET_ReadyForExposure
+   +	\ref EXEC_StartXraySequence
+
+   ## Implemented Events
+
+   +	\ref EVENT_SelectProjection
+   +	\ref EVENT_AbortProjection
+   +	\ref EVENT_GantryStatus
+   +	\ref EVENT_Compressor
+   +	\ref EVENT_Components
+   +	\ref EVENT_ReadyForExposure
+   +	\ref EVENT_XrayPushButton
+   +	\ref EVENT_exposurePulseCompleted
+   +	\ref EVENT_XraySequenceCompleted
+   +	\ref EVENT_Poweroff
+
 
    <div style="page-break-after: always;"></div>
 
@@ -58,22 +103,34 @@
 	# Protocol frame description
 
 	The frame formats are equivalent for both channels:
+	+ Command Frames: frame sent from AWS to Gantry;
+	+ Event Frames: frame sents by Gantry to AWS;
  
-	 + COMMAND FRAME: this is the frame the AWS sends to the application; 
-			+ **<ID % EXEC_xxx Param ... %>** for sequence execution commands;
-			+ **<ID % SET_xxx Param ... %>** for setting status commands;
-			+ **<ID % GET_xxx Param ... %>** for getting status commands;
+	## Command Frame Description
+
+	This is the frame the AWS sends to the application to request a service:
+			+ <b><ID % EXEC_xxx Param ... %></b> for sequence execution commands;
+			+ <b><ID % SET_xxx Param ... %></b> for setting status commands;
+			+ <b><ID % GET_xxx Param ... %></b> for getting status commands;
  
-	 + EVENT FRAME: this is the frame the Application sends to the AWS; 
-			+ <ID % EVENT_xxx Param ... %> for status Events notification;
-			+ <ID % EXECUTED OK optional-Param ... %> for execution command successfully completed notifications;
-			+ <ID % EXECUTED NOK optional-Param ... %> for execution command terminated in error notifications;
- 
-	 The application acknowledges the COMMAND frames with three possible answer frames:
-	 - *OK* frame: <ID % OK optional-params..>, a command has been successfully executed;
-	 - *NOK* frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
-	 - *EXECUTING*: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS) 
-  
+	The application acknowledges the COMMAND frames with three possible answer frames:
+		 - *OK* frame: <ID % OK optional-params..>, a command has been successfully executed;
+		 - *NOK* frame:<ID % NOK errcode error_string>, a command has been rejected because of errors;
+		 - *EXECUTING*: <ID % EXECUTING > , a command is executing and will be further notified the command completion (see the EVENTS)
+
+	## Event Frame Description
+	
+	This is the frame the Gantry sends to the AWS to notify its internal status change or to notify a command completion event.
+
+	+ <b><ID % EVENT_xxx Param ... %></b> for status Events notification;
+	+ <b><ID % EXECUTED  CMDID OK optional-Param ... %></b> for execution command successfully completed notifications;
+	+ <b><ID % EXECUTED  CMDID NOK optional-Param ... %></b> for execution command terminated in error notifications;
+	
+	Where:
+	+ CMDID: is the Id of the executing command that is terminated;
+
+	The AWS shall not answer to Event frames!
+	 
 	# Error codes 
 
 	In case the application should answer to a COMMAND with a NOK frame, or in case the Application 
@@ -93,6 +150,27 @@
 	|AWS_RET_DEVICE_BUSY|8|The target device cannot be activated|The AWS should wait the previous command completioin before to send a new command|
 	|AWS_RET_DEVICE_ERROR|9|The Device signaled an error condition in executing the command|The AWS should abort the current workflow|
 
+	\section ProtoProjection Current Selectable Projection Codes
+
+	The AWS can select one of the possible projections of the following table:
+
+	|PROJECTION FOR 2D|PROJECTION FOR 3D|PROJECTION FOR CESM|PROJECTION FOR COMBO|PROJECTION FOR VI|
+	|:--|:--|:--|:--|:--|
+	|LCC|LCCT|LCCD|LCCB|LCCM|
+	|LFB|LFBT|LFBD|LFBB|LFBM|
+	|LISO|LISOT|LISOD|LISOB|LISOM|
+	|LLM|LLMT|LLMD|LLMB|LLMM|
+	|LLMO|LLMOT|LLMOD|LLMOB|LLMOM|
+	|LML|LMLT|LMLD|LMLB|LMLM|
+	|LMLO|LMLOT|LMLOD|LMLOB|LMLOM|
+	|LSIO|LSIOT|LSIOD|LSIOB|LSIOM|
+	|RCC|RCCT|RCCD|RCCB|RCCM|
+	|RFB|RFBT|RFBD|RFBB|RFBM|
+	|RISO|RISOT|RISOD|RISOB|RISOM|
+	|RLM|RLMT|RLMD|RLMB|RLMM|
+	|RML|RLMOT|RLMOD|RLMOB|RLMOM|
+	|RMLO|RMLT|RMLD|RMLB|RMLM|
+	|RSIO|RMLOT|RMLOD|RMLOB|RMLOM|
 	
 
 */
@@ -183,7 +261,7 @@ public:
 	static void EVENT_Components(void);
 
 	/// This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status
-	static void EVENT_ReadyForExposure(bool ready, unsigned short code);
+	static void EVENT_ReadyForExposure(void);
 
 	/// This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation
 	static void EVENT_XrayPushButton(bool status);
@@ -277,6 +355,7 @@ private:
 	void GET_Trx(void);
 	void GET_Arm(void);
 	void GET_TubeTemperature(void);
+	void GET_ProtocolRevision(void);
 
 	void SET_Language(void);
 	void EXEC_PowerOff(void) { ackNa(); };

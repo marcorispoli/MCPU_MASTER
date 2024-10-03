@@ -356,19 +356,19 @@ void OperatingForm::evaluateXrayStatus(void) {
 	
 	if (ready_stat != stat) {
 		ready_stat = stat;
-
+		
 		if (stat == 0) {
 			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
 			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
-			awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_ERRORS);			
+			awsProtocol::EVENT_ReadyForExposure();			
 		}else if(stat == 1) {
 			xrayStat->BackgroundImage = XRAY_STDBY_IMAGE;
 			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
-			awsProtocol::EVENT_ReadyForExposure(false, (unsigned short)awsProtocol::return_errors::AWS_RET_SYSTEM_WARNINGS);
+			awsProtocol::EVENT_ReadyForExposure();
 		}else if (stat == 2) {
 			xrayStat->BackgroundImage = XRAY_READY_IMAGE;
 			labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_READY_FOR_EXPOSURE);
-			awsProtocol::EVENT_ReadyForExposure(true, (unsigned short)0);
+			awsProtocol::EVENT_ReadyForExposure();
 		}
 		else {
 			xrayStat->BackgroundImage = XRAY_ON_IMAGE;

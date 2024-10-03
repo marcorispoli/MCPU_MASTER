@@ -152,6 +152,7 @@
     <ClInclude Include="MESSAGES\Log.h" />
     <ClInclude Include="MOTORS\ArmMotor.h" />
     <ClInclude Include="MOTORS\BodyMotor.h" />
+    <ClInclude Include="MOTORS\Motors.h" />
     <ClInclude Include="MOTORS\SlideMotor.h" />
     <ClInclude Include="MOTORS\VerticalMotor.h" />
     <ClInclude Include="VSCAN\CanSimulator.h" />

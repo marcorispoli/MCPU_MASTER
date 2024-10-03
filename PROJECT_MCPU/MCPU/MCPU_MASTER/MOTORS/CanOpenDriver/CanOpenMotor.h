@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "Notify.h"
 
+
 using namespace System::Diagnostics;
 using namespace System::Threading;
 

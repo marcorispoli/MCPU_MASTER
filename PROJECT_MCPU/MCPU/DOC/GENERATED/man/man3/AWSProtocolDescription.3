@@ -14,16 +14,7 @@ AWSProtocolDescription \- AWS Protocol Communication Description
 \fIRevision 1\&.0\&.0\fP
 
 .PP
-.IP "\(bu" 2
-Added the \fBGET_ProtocolRevision\fP command
-.IP "\(bu" 2
-Set a list of standard returned errors;
-.IP "\(bu" 2
-Changed the \fBGET_Components\fP command;
-.PP
-
-.PP
-In this revision, the commands are completed with a consistent set of returned error codes\&.
+\fBAdded the \fBGET_ProtocolRevision\fP command\fP
 
 .PP
 A protocol revision code is added in order to check the current implementation running on \fBGantry\fP\&.
@@ -31,11 +22,58 @@ A protocol revision code is added in order to check the current implementation r
  The current revision code is also reported in the protocol documentation\&.
 .br
  The command \fBGET_ProtocolRevision\fP command is then added to the protocol\&.
+
+.PP
+\fBAdded the command \fBGET_TomoInfo\fP command\fP
+
+.PP
+The command returns the parameters of a given Tomo sequence\&.
+
+.PP
+\fBCreate a list of standard returned error codes\fP
+
+.PP
+A Discrete list of the error returned code has been completed\&.
+.br
+ Now every command can return only one of the predefined error code\&. See the \fBError Table\fP
+
+.PP
+\fBChanged the \fBGET_Components\fP command\fP
+
+.PP
+See the command description for details\&.
+
+.PP
+\fBReviewed the list of the available Detectors\fP
+
+.PP
+The list now is:
+.IP "\(bu" 2
+GENERIC;
+.IP "\(bu" 2
+LMAM2V2;
+.IP "\(bu" 2
+FDIV2;
+.IP "\(bu" 2
+DRTECH;
+.IP "\(bu" 2
+VAREX;
+.PP
+
+.PP
+If the AWS should select a different Detector, the GENERIC Detector is automatically selected and no error is then generated\&.
+
+.PP
+\fBModified the \fBEXEC_ArmPosition\fP command\fP
+
+.PP
+The command now checks if the current position is already at the requested target\&. In the case of already in Target, the command is istantly accepted\&.
+
+.PP
+ 
 .SH "Abstract"
 .PP
 This document describes in detail the communication protocol with the AWS software\&.
-
-.PP
 .SH "Index"
 .PP
 .SS "Implemented Commands"
@@ -78,6 +116,8 @@ This document describes in detail the communication protocol with the AWS softwa
 
 .PP
 \fIExposure Control\fP
+.IP "\(bu" 2
+\fBGET_TomoInfo\fP
 .IP "\(bu" 2
 \fBSET_TomoConfig\fP
 .IP "\(bu" 2
@@ -181,14 +221,16 @@ CMDID: is the Id of the executing command that is terminated;
 
 .PP
 The AWS shall not answer to Event frames!
+
+.PP
+ 
 .SH "Error codes"
 .PP
 In case the application should answer to a COMMAND with a NOK frame, or in case the Application should send a NOK EVENT, an error code is provided\&.
 
 .PP
 There are a list of possible error codes that the Application can answer:
-
-.PP
+.SS "Error Table"
 ERROR CODE   VALUE   DESCRIPTION   AWS-ACTION    AWS_RET_WRONG_PARAMETERS   1   The number of the command parameters is invalid   AWS Bug: check the command implementation    AWS_RET_WRONG_OPERATING_STATUS   2   The current operating status is not valid for the command   AWS Bug: check the current operating status    AWS_RET_SYSTEM_ERRORS   3   The command cannot be executed with active system errors   The AWS should handle a system error condition    AWS_RET_SYSTEM_WARNINGS   4   There are active System warnings   The AWS shall check the right condition before to send the command    AWS_RET_INVALID_PARAMETER_FORMAT   5   A parameter is not in the expected format   AWS Bug: check the command implementation    AWS_RET_INVALID_PARAMETER_VALUE   6   A parameter is not in the expected range   AWS Bug: check the command implementation    AWS_RET_DATA_NOT_ALLOWED   7   The current system setting is not ready to accept the command   check the current operating status    AWS_RET_DEVICE_BUSY   8   The target device cannot be activated   The AWS should wait the previous command completioin before to send a new command    AWS_RET_DEVICE_ERROR   9   The Device signaled an error condition in executing the command   The AWS should abort the current workflow   
 .SH "Current Selectable Projection Codes"
 .PP
@@ -254,6 +296,16 @@ The \fBGantry\fP automatically modifies the Vertical position of the C-ARM,
 .br
 in order to keep unchanged the position of the copression plane (Virtual Isometric feature);
 .PP
+
+.PP
+The command may teminates in three different modes:
+.IP "\(bu" 2
+Immediate OK: the ARM is already in the requested target;
+.IP "\(bu" 2
+Executing: the ARM is running to the requested target;
+.IP "\(bu" 2
+NOK: an error prevent to select the given projection\&.
+.PP
 .SS "Command Data Format"
 Frame format: <ID % EXEC_ArmPosition projection Angle Min Max>
 
@@ -280,6 +332,8 @@ the Min shall be < Ange;
 .IP "\(bu" 2
 the Max shall be > Ange;
 .PP
+.SS "Success Returned Code"
+<ID % OK 0 >: the ARM is already in target position <ID % EXECUTING >: the ARM is running o the target position
 .SS "Command Returned Code"
 ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 4)    AWS_RET_DEVICE_BUSY   'MOTORS_BUSY'   One of the motors is running    AWS_RET_DEVICE_BUSY   'ARM_NOT_READY'   The ARM is not ready to execute an activation    AWS_RET_DATA_NOT_ALLOWED   'WRONG_PROJECTION'   The projection name is not valid or it isn't in the list of selectable projections    AWS_RET_INVALID_PARAMETER_VALUE   'WRONG_TARGET_DATA'   One of the angle parameter is not correct or out of range   
 
@@ -390,6 +444,63 @@ The TomoConfig\&.cnf file however can be updated in the future\&.
 ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    AWS_RET_INVALID_PARAMETER_VALUE   'WRONG_CONFIGURATION_ID'   The Tomo ID is not present in the TomoConfig\&.cnf configuration file   
 
 .PP
+.SS "GET_TomoInfo"
+This command returns the parameters of a given Tomo sequence;
+
+.PP
+Every tomo sequence is characterized by a set of parameters:
+.IP "\(bu" 2
+Starting Position;
+.IP "\(bu" 2
+Ending Position;
+.IP "\(bu" 2
+Acceleration;
+.IP "\(bu" 2
+Speed;
+.IP "\(bu" 2
+Deceleration;
+.IP "\(bu" 2
+Number of samples;
+.IP "\(bu" 2
+Number of discarded inital pulses (skip pulses);
+.PP
+
+.PP
+All those parameters are stored into a TomoConfig\&.cnf file (see the \fBTomoConfig\&.cnf configuration file\fP for reference) where a unique identifier name is assigned to a given tomo sequence\&.
+
+.PP
+The AWS with this command can get the parameters of a given sequence\&.
+.SS "Command Data Format"
+Frame format: <ID % GET_TomoInfo tomo_name>
+
+.PP
+PARAMETER   Data Type   Description    tomo_name   String   the predefined name assigned to the Tomo sequence to be selected   
+
+.PP
+tomo_name    TOMO1F_NARROW    TOMO1F_INTERMEDIATE    TOMO1F_WIDE    TOMO2F_NARROW    TOMO2F_INTERMEDIATE    TOMO2F_WIDE    TOMO3F_NARROW    TOMO3F_INTERMEDIATE    TOMO3F_WIDE    TOMO4F_NARROW    TOMO4F_INTERMEDIATE    TOMO4F_WIDE    TOMO5F_NARROW    TOMO5F_INTERMEDIATE    TOMO5F_WIDE   
+.PP
+.nf
+NOTE: The previous table reflects the current Tomo configurations\&. 
+The TomoConfig\&.cnf file however can be updated in the future\&.
+
+.fi
+.PP
+.SS "Command Success Returned Code"
+<ID % OK home end skip samples fps >
+
+.PP
+PARAMETER   Data Type   Description    home   Integer   Starting position in 0\&.01 degree    end   Integer   End position in 0\&.01 degree    skip   Byte   number of sync pulses: those pulses shall be discarded    samples   Byte   number of valid pulses    fps   Byte   frame per second   
+.PP
+.nf
+NOTE: the detector will provides the skip + samples integration window,
+but the first skip images shall be discarded by the AWS\&. 
+
+.fi
+.PP
+.SS "Command Returned Code"
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 1)    AWS_RET_INVALID_PARAMETER_VALUE   'WRONG_CONFIGURATION_ID'   The Tomo ID is not present in the TomoConfig\&.cnf configuration file   
+
+.PP
 .SS "SET_ExposureMode"
 This command selects exposure type and characteristics of the next exposure sequence\&. 
 .br
@@ -403,7 +514,7 @@ PARAMETER   Data Type   Description    exp_type   String   Defines the type of t
 exp_type   Description    MAN_2D   Exposure 2D in Manual Mode    AEC_2D   Exposure 2D with pre pulse    MAN_3D   Exposure 3D in Manual Mode    AEC_3D   Exposure 3D with pre pulse    MAN_COMBO   Combo in manual mode    AEC_COMBO   Combo with pre-pulse    MAN_AE   Exposure CESM in Manual Mode    AEC_AE   Exposure CESM with pre pulse   
 
 .PP
-detector_type (see the DetectorConfiguration\&.cnf description \fBDetectorConfiguration\&.cnf configuration file\fP)   Description    GENERIC   A generic detector with tipical timing    LMAM2V2   Analogic LMAM2V2 tuned timings    DRTECH   DRTECH tuned timings    VAREX   VAREX tuned timings   
+detector_type (see the DetectorConfiguration\&.cnf description \fBDetectorConfiguration\&.cnf configuration file\fP)   Description    GENERIC   A generic detector with tipical timing    LMAM2V2   Analogic LMAM2V2 tuned timings    FDIV2   Analogic LMAM2V2 tuned timings    DRTECH   DRTECH tuned timings    VAREX   VAREX tuned timings   
 
 .PP
 compression_mode   Description    CMP_KEEP   The compressor shall be used and it will remain in compression after exposure    CMP_RELEASE   The compressor shall be used and it will relase the compression after exposure    CMP_DISABLE   The compressor may not be used (no error is set)   
@@ -417,7 +528,7 @@ protection_mode   Description    PROTECTION_ENA   The Patient protection shall b
 .PP
 arm_mode   Description    ARM_ENA   The ARM position shall properly be set    ARM_DIS   The current ARM angle is not checked by the \fBGantry\fP   
 .SS "Command Returned Code"
-ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 6)    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_EXPOSURE_TYPE'   The exp_type parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_DETECTOR_TYPE'   The detector_type parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_COMPRESSION_MODE'   The compression_mode parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PADDLE'   The manual collimation paddle is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_COLLIMATION_FORMAT'   An invalid collimation format is assigned to the selected paddle    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PATIENT_PROTECTION_MODE'   The protection_mode parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_ARM_MODE'   The arm_mode parameter is wrong   
+ERROR CODE   ERROR STRING   DESCRIPTION    AWS_RET_WRONG_OPERATING_STATUS   'NOT_IN_OPEN_MODE'   the \fBGantry\fP is not in Open Study operating status    AWS_RET_WRONG_PARAMETERS   'WRONG_NUMBER_OF_PARAMETERS'   the number of parameters is not correct (it should be 6)    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_EXPOSURE_TYPE'   The exp_type parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_COMPRESSION_MODE'   The compression_mode parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PADDLE'   The manual collimation paddle is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_COLLIMATION_FORMAT'   An invalid collimation format is assigned to the selected paddle    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_PATIENT_PROTECTION_MODE'   The protection_mode parameter is wrong    AWS_RET_INVALID_PARAMETER_VALUE   'INVALID_ARM_MODE'   The arm_mode parameter is wrong   
 
 .PP
 .SS "SET_ExposureData"

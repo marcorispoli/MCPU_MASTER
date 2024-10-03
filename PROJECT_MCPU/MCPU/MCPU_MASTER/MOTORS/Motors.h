@@ -329,9 +329,8 @@
 	the actual position is provided by the current value of the sensor.
 
 
-	<div style="page-break-after: always;"></div>
 
-	# Motor Functions detailed desciption
+
 
 
 */

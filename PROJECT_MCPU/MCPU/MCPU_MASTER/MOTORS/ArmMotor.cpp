@@ -82,17 +82,35 @@ void ArmMotor::abortTarget(void) {
     
 }
 
-bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id) {
+
+int ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id) {
     
+    // Checks the validity of the requested projection
+    if (!projections->isValidProjection(proj)) {
+        LogClass::logInFile("ArmMotor::setTarget() - wrong projection requested: " + proj);
+        return -1;
+    }
+
+    // If the device is already in target answer ok immediate
+    int tg = pos * 100;
+    if ((device->getCurrentUposition() >= (tg - 10)) && (device->getCurrentUposition() <= (tg + 10))) {
+        // Already in the rght position
+        projections->setProjection(proj);
+
+        // Assignes the target data
+        allowed_low = low * 100;
+        allowed_high = high * 100;
+        valid_target = true;
+        selected_target = pos;
+        return 0; // Immediate
+    }
+
     if ((!TiltMotor::isScoutPosition())) {
         LogClass::logInFile("ArmMotor::setTarget() - command: error, tilt not in scout ");
-        return false;
+        return -2;
 
     }
     
-
-    // Checks the validity of the requested projection
-    if (!projections->isValidProjection(proj) ) return false;
 
     // Activate an Isocentric C-ARM rotation
     device->iso_activation_mode = true;
@@ -106,11 +124,13 @@ bool ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int i
         allowed_high = high * 100;
         valid_target = true;
         selected_target = pos;
-        return true;
+        return 1; // Command is executing
     }    
 
+
+    // Command activation failed
     valid_target = false;
-    return false;
+    return -3;
 }
 
 bool ArmMotor::serviceAutoPosition(int pos) {

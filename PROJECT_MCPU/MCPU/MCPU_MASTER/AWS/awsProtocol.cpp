@@ -53,6 +53,7 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("EXEC_AbortProjection", gcnew command_callback(this, &awsProtocol::EXEC_AbortProjection));
     commandExec->Add("EXEC_TrxPosition", gcnew command_callback(this, &awsProtocol::EXEC_TrxPosition));
     commandExec->Add("SET_TomoConfig", gcnew command_callback(this, &awsProtocol::SET_TomoConfig));
+    commandExec->Add("GET_TomoInfo", gcnew command_callback(this, &awsProtocol::SET_TomoConfig));
     commandExec->Add("SET_ExposureMode", gcnew command_callback(this, &awsProtocol::SET_ExposureMode));
     commandExec->Add("SET_ExposureData", gcnew command_callback(this, &awsProtocol::SET_ExposureData));
     commandExec->Add("SET_EnableXrayPush", gcnew command_callback(this, &awsProtocol::SET_EnableXrayPush));

@@ -68,6 +68,43 @@ public:
             valid = false;
             return false;
         }
+
+        /// <summary>
+        /// Return true if the sequence identifier is present in the tomo configured list.
+        /// </summary>
+        /// <param name="cfg">Name of the sequence</param>
+        /// <returns>true: if the name is present in the list</returns>
+        bool exist(System::String^ cfg) {
+            for (int i = 0; i < (int)TomoConfig::tomo_id::TOMO_ID_NUM; i++) {
+                if (cfg == ((TomoConfig::tomo_id)i).ToString())  return true;                
+            }
+            return false;
+        }
+
+        System::String^ getHome(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_HOME];
+        }
+        System::String^ getEnd(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_END];
+        }
+        System::String^ getSkip(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_SKIP];
+        }
+        System::String^ getSamples(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_SAMPLES];
+        }
+        System::String^ getFps(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_FPS];
+        }
+        System::String^ getSpeed(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_SPEED];
+        }
+        System::String^ getAcc(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_ACC];
+        }
+        System::String^ getDec(System::String^ cfg) {
+            return TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_DEC];
+        }
     };
 
     ref class exposure_pulse 

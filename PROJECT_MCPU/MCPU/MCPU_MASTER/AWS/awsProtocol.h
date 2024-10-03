@@ -22,15 +22,31 @@
    
    _Revision 1.0.0_ 
 
-   + Added the \ref GET_ProtocolRevision command
-   + Set a list of standard returned errors;
-   + Changed the \ref GET_Components command;
-   
-   In this revision, the commands are completed with a consistent set of returned error codes.
-
+   _Added the \ref GET_ProtocolRevision command_
    A protocol revision code is added in order to check the current implementation running on Gantry.\n
    The current revision code is also reported in the protocol documentation.\n
-   The command \ref GET_ProtocolRevision command is then added to the protocol. 
+   The command \ref GET_ProtocolRevision command is then added to the protocol.
+
+   _Added the command \ref GET_TomoInfo command_
+   The command returns the parameters of a given Tomo sequence.
+
+   _Create a list of standard returned error codes_
+   A Discrete list of the error returned code has been completed.\n
+   Now every command can return only one of the predefined error code.
+
+   _Changed the \ref GET_Components command_
+   See the command description for details.
+
+   _Reviewed the list of the available Detectors_
+   The list now is:
+   - GENERIC;
+   - LMAM2V2;
+   - FDIV2;
+   - DRTECH;
+   - VAREX;
+   If the AWS should select a different Detector, the GENERIC Detector is automatically selected
+   and no error is then generated.
+   
 
 
 
@@ -64,6 +80,7 @@
    +	\ref GET_Arm
 
    _Exposure Control_
+   +	\ref GET_TomoInfo
    +	\ref SET_TomoConfig
    +	\ref SET_ExposureMode
    +	\ref SET_ExposureData
@@ -344,6 +361,8 @@ private:
 	void EXEC_AbortProjection(void);
 	void EXEC_TrxPosition(void);
 	void SET_TomoConfig(void);
+	void GET_TomoInfo(void);
+	
 	void SET_ExposureMode(void);
 	void SET_ExposureData(void);
 	void SET_EnableXrayPush(void);

@@ -167,11 +167,15 @@ void awsProtocol::SET_ProjectionList(void) {
 /// 
 /// This command shall be sent by AWS to activate the C-ARM to a given projection.
 /// 
-/// + The \ref SET_ProjectionList shall be received first, in order to have 
-/// a valid list of acceptable projections;
+/// + The \ref SET_ProjectionList shall be received first, in order to have a valid list of acceptable projections;
 /// + In operating mode (Open Study) the AWS controls the ARM angle position using this command;
 /// + The Gantry automatically modifies the Vertical position of the C-ARM,\n
 /// in order to keep unchanged the position of the copression plane (Virtual Isometric feature);
+/// 
+/// The command may teminates in three different modes:
+/// + Immediate OK: the ARM is already in the requested target;
+/// + Executing: the ARM is running to the requested target;
+/// + NOK: an error prevent to select the given projection.
 /// 
 /// ### Command Data Format
 /// 
@@ -192,6 +196,12 @@ void awsProtocol::SET_ProjectionList(void) {
 /// NOTE: 
 /// + the Min shall be < Ange;
 /// + the Max shall be > Ange;
+/// 
+/// ### Success  Returned Code
+/// 
+/// <ID % OK 0 >: the ARM is already in target position
+/// <ID % EXECUTING >: the ARM is running o the target position
+/// 
 /// 
 /// ### Command Returned Code 
 /// 
@@ -223,16 +233,25 @@ void awsProtocol::EXEC_ArmPosition(void) {
     
     if (!ArmMotor::getProjectionsList()->isValidProjection(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
 
-    if (!ArmMotor::setTarget(
-        Convert::ToInt16(pDecodedFrame->parameters[1]) ,
-        Convert::ToInt16(pDecodedFrame->parameters[2]) ,
-        Convert::ToInt16(pDecodedFrame->parameters[3]) ,
+    int errcode = ArmMotor::setTarget(
+        Convert::ToInt16(pDecodedFrame->parameters[1]),
+        Convert::ToInt16(pDecodedFrame->parameters[2]),
+        Convert::ToInt16(pDecodedFrame->parameters[3]),
         pDecodedFrame->parameters[0], // Projection code
-        pDecodedFrame->ID)) {
+        pDecodedFrame->ID);
+    
+    // Error condition
+    if (errcode < 0) {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return;
     }
 
-    // Always deference the answer 
+    // Immediate: target already in position
+    if (errcode == 0) {
+        ackOk();
+        return;
+    }
+
+    // Command is in execution
     ackExecuting();    
     return;
 
@@ -438,6 +457,113 @@ void awsProtocol::SET_TomoConfig(void) {
 /// 
 /// <div style="page-break-after: always;"></div>
 /// 
+/// \subsection GET_TomoInfo
+/// 
+/// This command returns the parameters of a given Tomo sequence;
+/// 
+/// Every tomo sequence is characterized by a set of parameters:
+/// + Starting Position;
+/// + Ending Position;
+/// + Acceleration;
+/// + Speed;
+/// + Deceleration;
+/// + Number of samples;
+/// + Number of discarded inital pulses (skip pulses);
+/// 
+/// All those parameters are stored into a TomoConfig.cnf file 
+/// (see the \ref TomoConfig for reference) 
+/// where a unique identifier name is assigned to a given tomo sequence.
+/// 
+/// The AWS with this command can get the parameters of a given sequence.
+/// 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_TomoInfo tomo_name>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |tomo_name|String|the predefined name assigned to the Tomo sequence to be selected| 
+/// 
+/// |tomo_name|
+/// |:--|
+/// |TOMO1F_NARROW| 
+/// |TOMO1F_INTERMEDIATE|  
+/// |TOMO1F_WIDE|  
+/// |TOMO2F_NARROW| 
+/// |TOMO2F_INTERMEDIATE|  
+/// |TOMO2F_WIDE|  
+/// |TOMO3F_NARROW| 
+/// |TOMO3F_INTERMEDIATE|  
+/// |TOMO3F_WIDE|  
+/// |TOMO4F_NARROW| 
+/// |TOMO4F_INTERMEDIATE|  
+/// |TOMO4F_WIDE|  
+/// |TOMO5F_NARROW| 
+/// |TOMO5F_INTERMEDIATE|  
+/// |TOMO5F_WIDE|  
+///
+///     NOTE: The previous table reflects the current Tomo configurations. 
+///     The TomoConfig.cnf file however can be updated in the future.
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK  home end skip samples fps >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |home|Integer|Starting position in 0.01 degree|
+/// |end|Integer|End position in 0.01 degree|
+/// |skip|Byte|number of sync pulses: those pulses shall be discarded|
+/// |samples|Byte|number of valid pulses|
+/// |fps|Byte|frame per second|
+/// 
+///     NOTE: the detector will provides the skip + samples integration window,
+///     but the first skip images shall be discarded by the AWS. 
+///
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "WRONG_CONFIGURATION_ID" | The Tomo ID is not present in the TomoConfig.cnf configuration file |
+/// 
+
+
+/// <summary>
+/// This command selects the next Tomo sequence geometry. 
+/// 
+/// </summary>
+/// <param name=""></param>
+void awsProtocol::GET_TomoInfo(void) {
+    if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+
+    // Parameter 0: Tomo configiguration selection;
+    System::String^ tomoid = pDecodedFrame->parameters[0];
+    if (!Exposures::getTomoExposure()->exist(tomoid)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
+
+    // Prepares the parameter list
+    List<String^>^ lista = gcnew List<String^>;
+    lista->Add(Exposures::getTomoExposure()->getHome(tomoid));
+    lista->Add(Exposures::getTomoExposure()->getEnd(tomoid));
+    lista->Add(Exposures::getTomoExposure()->getSkip(tomoid));
+    lista->Add(Exposures::getTomoExposure()->getSamples(tomoid));
+    lista->Add(Exposures::getTomoExposure()->getFps(tomoid));
+    
+    ackOk(lista);
+    return;
+}
+
+
+
+
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
 /// \subsection SET_ExposureMode
 /// 
 /// This command selects exposure type and characteristics of the next exposure sequence.   
@@ -471,6 +597,7 @@ void awsProtocol::SET_TomoConfig(void) {
 /// |:--|:--|
 /// |GENERIC|A generic detector with tipical timing|
 /// |LMAM2V2|Analogic LMAM2V2 tuned timings|
+/// |FDIV2|Analogic LMAM2V2 tuned timings|
 /// |DRTECH|DRTECH tuned timings|
 /// |VAREX|VAREX tuned timings|
 ///
@@ -514,7 +641,6 @@ void awsProtocol::SET_TomoConfig(void) {
 /// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
 /// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 6)|
 /// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_EXPOSURE_TYPE" | The exp_type parameter is wrong|
-/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_DETECTOR_TYPE" | The detector_type parameter is wrong|
 /// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_COMPRESSION_MODE" | The compression_mode parameter is wrong|
 /// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_PADDLE" | The manual collimation paddle is wrong|
 /// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_COLLIMATION_FORMAT" | An invalid collimation format is assigned to the selected paddle|
@@ -559,9 +685,11 @@ void   awsProtocol::SET_ExposureMode(void) {
             break;
         }
     }
+
+    // If the detector should not be in the available list, a generic detector is selected
     if (!detector_found) {
         Exposures::setDetectorType(DetectorConfig::detector_model_option::GENERIC);
-        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_DETECTOR_TYPE"; ackNok(); return;
+        LogClass::logInFile("SET_ExposureMode: Detector not in the available list. Set the generic detector!");
     }
 
     

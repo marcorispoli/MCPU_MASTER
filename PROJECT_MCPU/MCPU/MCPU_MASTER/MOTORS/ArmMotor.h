@@ -314,7 +314,7 @@ public:
 	ArmMotor(void);
     static ArmMotor^ device = gcnew ArmMotor();
     
-    // Exposure acceptable conditions
+    // Exposure acceptable conditions    
     static bool isTarget(void) { return ((device->getCurrentUposition() >= selected_target - 1) && (device->getCurrentUposition() <= selected_target + 1)); }
     static bool isValidTarget(void) { return valid_target; }
     static bool isInRange(void) { return ((device->getCurrentUposition() >= allowed_low) && (device->getCurrentUposition() <= allowed_high)); }
@@ -324,7 +324,8 @@ public:
     static bool startManualHoming(int target_position);
     static bool startAutoHoming();
     
-    static bool setTarget(int pos, int low, int high, System::String^ proj, int id);
+    static int setTarget(int pos, int low, int high, System::String^ proj, int id);
+
     static void abortTarget(void);
     static bool serviceAutoPosition(int pos);
     static bool setIdlePosition(void);

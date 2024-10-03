@@ -22,39 +22,49 @@
    
    _Revision 1.0.0_ 
 
-   _Added the \ref GET_ProtocolRevision command_
+   <b>Added the \ref GET_ProtocolRevision command</b>
+
    A protocol revision code is added in order to check the current implementation running on Gantry.\n
    The current revision code is also reported in the protocol documentation.\n
    The command \ref GET_ProtocolRevision command is then added to the protocol.
 
-   _Added the command \ref GET_TomoInfo command_
+   <b>Added the command \ref GET_TomoInfo command</b>
+
    The command returns the parameters of a given Tomo sequence.
 
-   _Create a list of standard returned error codes_
+   <b>Create a list of standard returned error codes</b>
+
    A Discrete list of the error returned code has been completed.\n
    Now every command can return only one of the predefined error code.
+   See the \ref ERRTABLE
 
-   _Changed the \ref GET_Components command_
+   <b>Changed the \ref GET_Components command</b>
+
    See the command description for details.
 
-   _Reviewed the list of the available Detectors_
+   <b>Reviewed the list of the available Detectors</b>
+
    The list now is:
    - GENERIC;
    - LMAM2V2;
    - FDIV2;
    - DRTECH;
    - VAREX;
+
    If the AWS should select a different Detector, the GENERIC Detector is automatically selected
    and no error is then generated.
    
+	<b>Modified the \ref EXEC_ArmPosition command</b>
 
+	The command now checks if the current position is already at the requested target.
+	In the case of already in Target, the command is istantly accepted.
 
-
+   <div style="page-break-after: always;"></div>
    # Abstract
 
    This document describes in detail the communication protocol with the AWS software.
 
-   <div style="page-break-after: always;"></div>
+   
 
    # Index
 
@@ -147,13 +157,16 @@
 	+ CMDID: is the Id of the executing command that is terminated;
 
 	The AWS shall not answer to Event frames!
-	 
+	
+	 <div style="page-break-after: always;"></div>
 	# Error codes 
 
 	In case the application should answer to a COMMAND with a NOK frame, or in case the Application 
 	should send a NOK EVENT, an error code is provided.
 
 	There are a list of possible error codes that the Application can answer:
+
+	\subsection ERRTABLE Error Table 
 
 	|ERROR CODE|VALUE|DESCRIPTION|AWS-ACTION|
 	|:--|:--|:--|:--|

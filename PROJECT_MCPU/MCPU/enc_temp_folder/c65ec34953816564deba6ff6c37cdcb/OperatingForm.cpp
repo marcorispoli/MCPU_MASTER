@@ -28,7 +28,6 @@
 #define XRAY_STDBY_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\XStdby.PNG")
 #define XRAY_READY_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\XReady.PNG")
 #define DEMO_IMAGE   Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\Demo.PNG")
-#define SYM_IMAGE   Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\Sym.PNG")
 
 #define LAMP_OFF_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\LampOff.PNG")
 #define LAMP_ON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\LampOn.PNG")
@@ -194,22 +193,19 @@ void OperatingForm::formInitialization(void) {
 	labelXrayStatus->Text = Notify::TranslateLabel(Notify::messages::LABEL_NOT_READY_FOR_EXPOSURE);
 	
 
-	
-	
-	
-	// Activate the Demo Icon if the Xrays are not 
+	// Demo icon
 	demoIcon->BackColor = Color::Transparent;
-	if (Gantry::isOperatingDemo()) {		
-		demoIcon->BackgroundImage = DEMO_IMAGE;
-		demoIcon->Show();
+	demoIcon->BackgroundImage = DEMO_IMAGE;
+	
+	
+
+	if (Gantry::isOperatingDemo()) demoIcon->Show();
+	else if (Gantry::isOperatingSym()) {
+		if(Gantry::isGeneratorDemo()) demoIcon->Show();
+		else  demoIcon->Hide();
 	}
-	else if (Exposures::isSimulatorMode()) {
-		demoIcon->BackgroundImage = SYM_IMAGE;
-		demoIcon->Show();
-	}
-	else {
-		demoIcon->Hide();
-	}
+	else demoIcon->Hide();
+
 
 	// Sets the current lamp status
 	OPERSTATUS::Registers.collimator.light_on= false;

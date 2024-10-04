@@ -525,7 +525,6 @@ void awsProtocol::SET_TomoConfig(void) {
 /// 
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
-/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
 /// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 1)|
 /// |AWS_RET_INVALID_PARAMETER_VALUE |  "WRONG_CONFIGURATION_ID" | The Tomo ID is not present in the TomoConfig.cnf configuration file |
 /// 
@@ -538,8 +537,7 @@ void awsProtocol::SET_TomoConfig(void) {
 /// <param name=""></param>
 void awsProtocol::GET_TomoInfo(void) {
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
-
+    
     // Parameter 0: Tomo configiguration selection;
     System::String^ tomoid = pDecodedFrame->parameters[0];
     if (!Exposures::getTomoExposure()->exist(tomoid)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }

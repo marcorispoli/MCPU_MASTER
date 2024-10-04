@@ -60,14 +60,15 @@ void PCB302::moduleInitialize(void) {
 bool PCB302::configurationLoop(void) {
 
 	if (position_calibrated) {
-		// Uploads the calibrated parameters
+		// Uploads the calibrated position parameters
 		protocol.parameter_register.Kp = System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_KP]);
-		protocol.parameter_register.Op = (unsigned short)System::Convert::ToInt32(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_KP]);
+		protocol.parameter_register.Op = (unsigned short)System::Convert::ToInt32(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_COMPRESSOR)[PaddleConfig::COMPRESSOR_HOLDER_OP]);
 		writeParamRegister((int)ProtocolStructure::ParameterRegister::register_index::HOLDER_CALIB, protocol.parameter_register.encodeHolderCalibRegister());
 	}
 	
-	// Uploads the HOLDER CALIB REGISTER parameters
+	
 	if (force_calibrated) {
+		// Uploads the force CALIB REGISTER parameters
 		writeParamRegister((int)ProtocolStructure::ParameterRegister::register_index::COMPRESSION_CALIB, protocol.parameter_register.encodeCompressionCalibRegister());
 	}
 	

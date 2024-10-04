@@ -105,7 +105,7 @@ void IdleForm::formInitialization(void) {
 	IDLESTATUS::Registers.warning = false;
 	IDLESTATUS::Registers.info = false;
 	errorButton->BackgroundImage = ERROR_BUTTON_OFF;
-	errorButton->Hide();
+	errorButton->Show();
 
 	// Service Button
 	serviceButton->BackColor = Color::Transparent;
@@ -496,7 +496,7 @@ void IdleForm::idleStatusManagement(void) {
 			IDLESTATUS::Registers.alarm = false;
 			IDLESTATUS::Registers.info = false;
 			errorButton->BackgroundImage = ERROR_BUTTON_OFF;
-			errorButton->Hide();
+			errorButton->Show();
 		}
 
 	}

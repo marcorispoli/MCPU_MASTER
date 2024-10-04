@@ -223,8 +223,8 @@ void MainForm::pcb302Simulator(void) {
 	paddle_list->Enabled = true;
 
 	// Enable/Disable the component: only without pad can nbe selected a component
-	if (paddle_list->Text == "NOT_DETECTED") component_list->Enabled = true;
-	else component_list->Enabled = false;
+	//if (paddle_list->Text == "NOT_DETECTED") component_list->Enabled = true;
+	//else component_list->Enabled = false;
 
 	 
 	// Target Force 
@@ -248,8 +248,7 @@ void MainForm::pcb302Simulator(void) {
 		PCB302::inputs.compression_down = false;
 		PCB302::inputs.compression_up = false;
 	}
-<<<<<<< HEAD
-=======
+
 	
 	// Compressor Enable
 	if (PCB302::inputs.compression_ena) cmp_ena->BackColor = COLOR_ON;
@@ -258,7 +257,7 @@ void MainForm::pcb302Simulator(void) {
 	// Calibration Enable
 	if (PCB302::inputs.calibration_ena) calib_ena->BackColor = COLOR_ON;
 	else calib_ena->BackColor = COLOR_OFF;
->>>>>>> Test_Integrazione_Detector
+
 
 
 	// Paddle detected

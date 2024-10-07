@@ -157,13 +157,32 @@ ref class PCB303 : public CanDeviceProtocol
 {
 private:
 
+	literal System::Byte  NUM_COLLIMATION_SLOTS = 20; //!< Max number of available collimation slots
+	literal System::Byte  CUSTOM_SLOT = NUM_COLLIMATION_SLOTS - 1; //!< The slot assigned to the custom format collimation
+	
+
 	/// <summary>
-/// This class implement the protocol data structure as described in the protocol specification.
-/// </summary>
+	/// This class implement the protocol data structure as described in the protocol specification.
+	/// </summary>
 	ref class ProtocolStructure {
 	public:
+		ref class format_collimation_data {
+		public:
+			format_collimation_data() {
+				front = 0;
+				back = 0;
+				left = 0;
+				right = 0;
+				trap = 0;
+			}
 
-		
+			unsigned short front;
+			unsigned short back;
+			unsigned short left;
+			unsigned short right;
+			unsigned short trap;
+
+		};
 
 		ref class StatusRegister {
 		public:
@@ -173,58 +192,44 @@ private:
 				TUBE_REGISTER,				
 			};
 
-			enum class status_code {
+			enum class action_code {
 				STAT_UNDEFINED = 0, //!> The position of the device is undefined
-				STAT_POSIIONING,	//!> A positioning command is executing
+				STAT_POSITIONING,	//!> A positioning command is executing
 				STAT_POSITIONED		//!> The position of the device is undefined
 			};
 
-			static status_code collimation_status;
-			static unsigned char collimation_index;
-			static status_code filter_status;
-			static status_code mirror_status;
-			static bool light_status;
+			enum class mirror_target_code {
+				OUT_FIELD = 0,	//!> Out of the X-RAY field
+				IN_FIELD,		//!> In of the X-RAY field
+			};
 
-			unsigned char stator_temp;
-			unsigned char bulb_temp;
-			bool stator_high;
-			bool stator_fault;
-			bool bulb_high;
-			bool bulb_fault;
+			enum class light_target_code {
+				LIGHT_OFF = 0,	//!> Light switched Off
+				LIGHT_ON,		//!> Light Switched On
+			};
+
+			
 
 			static bool decodeSystemRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
-				// Byte 0 of the register
-				collimation_status = (status_code) (sys->d0 & 0x7);
-				collimation_index = (sys->d0  >> 3);
+				// Byte 0: Collimator byte
+				collimation_action_status = (action_code) (sys->d0 & 0x7);
+				collimation_target_index = (sys->d0  >> 3);
 
-				manual_servo_up = sys->d0 & 0x1;
-				manual_servo_down = sys->d0 & 0x2;
-				manual_pedal_up = sys->d0 & 0x4;
-				manual_pedal_down = sys->d0 & 0x8;
+				// Byte 1: Filter byte
+				filter_action_status = (action_code)(sys->d1 & 0x7);
+				filter_target_index = (sys->d1 >> 3);
 
-				// Byte 1
-				idle_status = sys->d1 & 0x1;
-				manual_activation = sys->d1 & 0x2;
-				pedal_activation = sys->d1 & 0x4;
-				command_activation = sys->d1 & 0x8;
-				upward_direction = sys->d1 & 0x10;
-				downward_direction = sys->d1 & 0x20;
+				// Byte 2: Mirror byte
+				mirror_action_status = (action_code)(sys->d2 & 0x7);
 
-				device_fault = sys->d1 & 0x80;
+				if (sys->d2 & 0x8) mirror_target_index = mirror_target_code::IN_FIELD;
+				else mirror_target_code::OUT_FIELD;
 
-				// Byte 2
-				compression_ena = sys->d2 & 0x1;
-				compression_on = sys->d2 & 0x2;
+				if (sys->d2 & 0x10) light_status = light_target_code::LIGHT_ON;
+				else light_status = light_target_code::LIGHT_OFF;
 
-				smart_target = sys->d2 & 0x8;
-				force_target = sys->d2 & 0x10;
-				limit_compression = sys->d2 & 0x20;
-
-				// Byte 3
-				if (sys->d3 >= (unsigned char)ComponentCode::UNDETECTED_COMPONENT) component = ComponentCode::UNDETECTED_COMPONENT;
-				else component = (ComponentCode)sys->d3;
 				return true;
 			}
 
@@ -234,116 +239,66 @@ private:
 				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
 
 				// Byte 0 of the register
-				if (manual_servo_up) sys->d0 |= 0x1;
-				if (manual_servo_down) sys->d0 |= 0x2;
-				if (manual_pedal_up)sys->d0 |= 0x4;
-				if (manual_pedal_down)sys->d0 |= 0x8;
+				sys->d0 = ((unsigned char) collimation_action_status & 0x7);
+				sys->d0 |= ((unsigned char) collimation_target_index >> 3);
 
-				// Byte 1
-				if (idle_status)sys->d1 |= 0x1;
-				if (manual_activation)sys->d1 |= 0x2;
-				if (pedal_activation) sys->d1 |= 0x4;
-				if (command_activation) sys->d1 |= 0x8;
-				if (upward_direction) sys->d1 |= 0x10;
-				if (downward_direction) sys->d1 |= 0x20;
+				// Byte 1 of the register
+				sys->d1 = ((unsigned char)filter_action_status & 0x7);
+				sys->d1 |= ((unsigned char)filter_target_index >> 3);
 
-				if (device_fault) sys->d1 |= 0x80;
+				// Byte 2 of the register
+				sys->d2 = ((unsigned char)mirror_action_status & 0x7);
+				
+				if (mirror_target_index == mirror_target_code::IN_FIELD) sys->d2 |= 0x8;
+				else sys->d2 &= ~0x8;
 
-				// Byte 2
-				if (compression_ena) sys->d2 |= 0x1;
-				if (compression_on) sys->d2 |= 0x2;
-
-				if (smart_target)sys->d2 |= 0x8;
-				if (force_target) sys->d2 |= 0x10;
-				if (limit_compression)sys->d2 |= 0x20;
-
-				// Byte 3
-				sys->d3 = (unsigned char)component;
+				if (light_status == light_target_code::LIGHT_ON) sys->d2 |= 0x10;
+				else sys->d2 &= ~0x10;
 
 				// Returns the formatted register
 				return sys;
 			}
 
 
+			static bool decodeTubeRegister(Register^ sys) {
+				if (sys == nullptr) return false;
 
-			static bool decodePaddleRegister(Register^ pad) {
-				if (pad == nullptr) return false;
-				paddle_position = (int)pad->d0 + 256 * (int)(pad->d1 & 0x0f);
-				paddle_force = (int)((pad->d1 & 0xF0) >> 4) + 16 * (int)pad->d2;
-				paddle_tag = pad->d3;
+				// Byte 0: Stator
+				stator_temp = sys->d0;
+
+				// Byte 1: Bulb Byte
+				bulb_temp = sys->d1;
 				return true;
 			}
 
-			Register^ encodePaddleRegister(void) {
+			Register^ encodeTubeRegister(void) {
 
 				// Creates a register with all bytes set to 0
-				Register^ pad = gcnew Register;
+				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
 
-				pad->d0 = (unsigned char)(paddle_position & 0xFF);
-				pad->d1 = (unsigned char)((paddle_position >> 8) & 0x0f);
-				pad->d1 |= ((unsigned char)(paddle_force & 0x0F) << 4);
-				pad->d2 = (unsigned char)((paddle_force >> 4) & 0xff);
-				pad->d3 = paddle_tag;
+				// Byte 0 of the register
+				sys->d0 = stator_temp;
 
-				// Returns the formatted register
-				return pad;
-			}
-
-			static bool decodeRawPaddleRegister(Register^ rpad) {
-				if (rpad == nullptr) return false;
-
-				paddle_raw_position = (int)rpad->d0 + 256 * (int)(rpad->d1 & 0x0f);
-				paddle_raw_force = (int)((rpad->d1 & 0xF0) >> 4) + 16 * (int)rpad->d2;
-				paddle_raw_code = rpad->d3;
-				return true;
-			}
-
-			Register^ encodeRawPaddleRegister(void) {
-
-				// Creates a register with all bytes set to 0
-				Register^ pad = gcnew Register;
-
-				pad->d0 = (unsigned char)(paddle_raw_position & 0xFF);
-				pad->d1 = (unsigned char)((paddle_raw_position >> 8) & 0x0f);
-				pad->d1 |= ((unsigned char)(paddle_raw_force & 0x0F) >> 4);
-				pad->d2 = (unsigned char)((paddle_raw_force >> 4) & 0xff);
-				pad->d3 = paddle_raw_code;
+				// Byte 1 of the register
+				sys->d1 = bulb_temp;
 
 				// Returns the formatted register
-				return pad;
+				return sys;
 			}
 
+			static action_code collimation_action_status;
+			static unsigned char collimation_target_index;
 
-			static bool manual_servo_up = false; //!< The Manual Servo Up button is activated
-			static bool manual_servo_down = false;//!< The Manual Servo Down button is activated
-			static bool manual_pedal_up = false;//!< The Manual Compression Pedal Up button is activated
-			static bool manual_pedal_down = false;//!< The Manual Compression Pedal Down button is activated
+			static action_code filter_action_status;
+			static unsigned char filter_target_index;
 
-			static bool idle_status = false;//!< The Compressor is in Idle (no activation is pending)
-			static bool manual_activation = false;//!< The Servo manual activation is executing
-			static bool pedal_activation = false;//!< The Pedal manual activation is executing
-			static bool command_activation = false;//!< The Protocol command  activation is executing
-			static bool upward_direction = false;//!< The paddle is activated Upward
-			static bool downward_direction = false;//!< The paddle is activated Downward
+			static action_code mirror_action_status;
+			static mirror_target_code mirror_target_index;
 
-			static bool device_fault = false;//!< The device is in fault condition (see the Error register)
+			static light_target_code light_status;
 
-			static bool compression_ena = false;//!< The compressor Ena hardware input is detected
-			static bool compression_on = false;	//!< A valid compression is detected (Compression-On)
-
-			static bool smart_target = false;//!< The Smart uPress has been detected
-			static bool force_target = false;//!< The Target compression is detected
-			static bool limit_compression = false;//!< The Limit compression is detected
-
-			static int paddle_position = 0; //! Current calibrated paddle position
-			static int paddle_force = 0;//! Current calibrated paddle force
-			static unsigned char paddle_tag = 0;//! Current detected paddle tag
-
-			static int paddle_raw_position = 0;//! Current sensor position value
-			static int paddle_raw_force = 0;//! Current sensor force value
-			static unsigned char paddle_raw_code = 0;//! Current paddle code
-
-			static ComponentCode component = ComponentCode::UNDETECTED_COMPONENT; //!< Current detected Component code
+			static unsigned char stator_temp;
+			static unsigned char bulb_temp;
 
 		};
 
@@ -352,145 +307,126 @@ private:
 		public:
 
 			enum class register_index {
-				HOLDER_LIMITS = 0,
-				COMPRESSOR_LIMITS,
-				PADDLE_WEIGHT
+				NO_DATA_REGISTERS = 0,
 			};
-
-			static bool decodeHolderLimitsRegister(Register^ reg) {
-				if (reg == nullptr) return false;
-				max_position = reg->d0 + 256 * reg->d1;
-				min_position = reg->d2 + 256 * reg->d3;
-				return true;
-			}
-
-			Register^ encodeHolderLimitsRegister(void) {
-
-				// Creates a register with all bytes set to 0
-				Register^ out = gcnew Register;
-
-				out->d0 = (unsigned char)max_position;
-				out->d1 = (unsigned char)(max_position >> 8);
-				out->d2 = (unsigned char)min_position;
-				out->d3 = (unsigned char)(min_position >> 8);
-
-
-				// Returns the formatted register
-				return out;
-			}
-
-			static bool decodeCompressorLimitsRegister(Register^ reg) {
-				if (reg == nullptr) return false;
-				limit_compression = reg->d0;
-				target_compression = reg->d1;
-				return true;
-			}
-
-
-			Register^ encodeCompressorLimitsRegister(void) {
-
-				// Creates a register with all bytes set to 0
-				Register^ out = gcnew Register;
-
-				out->d0 = (unsigned char)limit_compression;
-				out->d1 = (unsigned char)target_compression;
-
-				// Returns the formatted register
-				return out;
-			}
-
-			static bool decodePaddleWeightRegister(Register^ reg) {
-				if (reg == nullptr) return false;
-				paddle_weight = reg->d0;
-				paddle_offset = reg->d1;
-				absolute_arm_angle = reg->d2;
-				magnifier_offset = reg->d3;
-				return true;
-			}
-
-			Register^ encodePaddleWeightRegister(void) {
-
-				// Creates a register with all bytes set to 0
-				Register^ out = gcnew Register;
-
-				out->d0 = paddle_weight;
-				out->d1 = paddle_offset;
-				out->d2 = absolute_arm_angle;
-				out->d3 = magnifier_offset;
-
-
-				// Returns the formatted register
-				return out;
-			}
-
-
-			static unsigned char limit_compression = 200;//!< Current limit compression
-			static unsigned char target_compression = 150;//!< Current target compression
-
-			static unsigned short max_position = 0; //!< Max Holder position
-			static unsigned short min_position = 0; //!< Min holder position
-
-			static unsigned char paddle_weight = 0;//!< Current detected paddle weight
-			static unsigned char magnifier_offset = 0; //!< Offset in case of magnifier
-			static unsigned char paddle_offset = 0;	//!< Mechanical offset of the detected paddle
-			static unsigned char absolute_arm_angle = 0;//!< Current detected Arm angle
 
 		};
 
 		ref class ParameterRegister {
 		public:
-			enum class register_index {
-				HOLDER_CALIB = 0,
-				COMPRESSION_CALIB
-			};
 
-			static bool decodeHolderCalibRegister(Register^ reg) {
+			ParameterRegister() {
+				format_collimation = gcnew cli::array< format_collimation_data^>(NUM_COLLIMATION_SLOTS);
+				for (int i = 0; i < NUM_COLLIMATION_SLOTS; i++) {
+					format_collimation[i] = gcnew format_collimation_data();
+				}
+			}
+
+			literal unsigned int  FB_FORMAT_SLOT_IDX = 0;
+			literal unsigned int  LR_FORMAT_SLOT_IDX = FB_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS;
+			literal unsigned int  TR_FORMAT_SLOT_IDX = LR_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS;
+
+			
+			static bool decodeFBCollimationSlotRegister(Register^ reg, unsigned int idx) {
 				if (reg == nullptr) return false;
-				Kp = reg->d0;
-				Op = reg->d1 + 256 * reg->d2;
+				if (idx >= format_collimation->Length) return false;
+
+				format_collimation[idx]->front = reg->d0 + 256 * reg->d1;
+				format_collimation[idx]->back = reg->d2 + 256 * reg->d3;
 				return true;
 			}
 
-			Register^ encodeHolderCalibRegister(void) {
-				unsigned char d0 = Kp;
-				unsigned char d1 = (unsigned char)Op;
-				unsigned char d2 = (unsigned char)(Op >> 8);
-				unsigned char d3 = 0;
+			Register^ encodeFBCollimationSlotRegister(unsigned int idx) {
+				if (idx >= format_collimation->Length) return nullptr;
+
+				unsigned char d0 = format_collimation[idx]->front & 0xFF;
+				unsigned char d1 = (format_collimation[idx]->front >> 8) & 0xFF;
+
+				unsigned char d2 = format_collimation[idx]->back & 0xFF;
+				unsigned char d3 = (format_collimation[idx]->back >> 8) & 0xFF;
+
 				return gcnew Register(d0, d1, d2, d3);
 			}
 
-			static bool decodeCompressionCalibRegister(Register^ reg) {
+			static bool decodeLRCollimationSlotRegister(Register^ reg, unsigned int idx) {
 				if (reg == nullptr) return false;
+				if (idx >= format_collimation->Length) return false;
 
+				format_collimation[idx]->left = reg->d0 + 256 * reg->d1;
+				format_collimation[idx]->right = reg->d2 + 256 * reg->d3;
 				return true;
 			}
 
-			Register^ encodeCompressionCalibRegister(void) {
+			Register^ encodeLRCollimationSlotRegister(unsigned int idx) {
+				if (idx >= format_collimation->Length) return nullptr;
 
-				unsigned char d0 = 0;
-				unsigned char d1 = 0;
-				unsigned char d2 = 0;
-				unsigned char d3 = 0;
+				unsigned char d0 = format_collimation[idx]->left & 0xFF;
+				unsigned char d1 = (format_collimation[idx]->left >> 8) & 0xFF;
+
+				unsigned char d2 = format_collimation[idx]->right & 0xFF;
+				unsigned char d3 = (format_collimation[idx]->right >> 8) & 0xFF;
+
 				return gcnew Register(d0, d1, d2, d3);
 			}
 
+			static bool decodeTrapCollimationSlotRegister(Register^ reg, unsigned int idx) {
+				if (reg == nullptr) return false;
+				if ((idx * 2) >= format_collimation->Length) return false;
 
-			static unsigned char Kp;
-			static unsigned short Op;
+				int idxl = idx * 2;
+				int idxh = idxl + 1;
 
+				format_collimation[idxl]->trap = reg->d0 + 256 * reg->d1;
+				format_collimation[idxh]->trap = reg->d2 + 256 * reg->d3;
+				return true;
+			}
+
+			Register^ encodeTrapCollimationSlotRegister(unsigned int idx) {
+				if ((idx*2) >= format_collimation->Length) return nullptr;
+
+				int idxl = idx * 2;
+				int idxh = idxl + 1;
+				
+				unsigned char d0 = format_collimation[idxl]->left & 0xFF;
+				unsigned char d1 = (format_collimation[idxl]->left >> 8) & 0xFF;
+
+				unsigned char d2 = format_collimation[idxh]->right & 0xFF;
+				unsigned char d3 = (format_collimation[idxh]->right >> 8) & 0xFF;
+
+				return gcnew Register(d0, d1, d2, d3);
+			}
+
+			static cli::array< format_collimation_data^>^ format_collimation;
 		};
 
 		ref class Commands {
 		public:
 			enum class command_index {
 				ABORT_COMMAND = 0, //!< Abort Command (mandatory as for device protocol)
-				SET_TRIMMERS_COMMAND,
-				SET_COMPRESSION,
-				SET_UNLOCK,
+				SET_FORMAT,
+				SET_FILTER,
+				SET_MIRROR,
+				SET_LIGHT,
 			};
 
-			CanDeviceCommand^ encodeSetUnlockCommand(void) {
-				return gcnew CanDeviceCommand((unsigned char)command_index::SET_UNLOCK, 0, 0, 0, 0);
+			CanDeviceCommand^ encodeSetFormatCommand(unsigned char target_format_slot) {
+				// if the index is out of range, the collimatin will be st to OPEN in the device
+				return gcnew CanDeviceCommand((unsigned char)command_index::SET_FORMAT, target_format_slot, 0, 0, 0);
+			}
+
+			CanDeviceCommand^ encodeSetFilterCommand(unsigned char target_filter_slot) {
+				if (target_filter_slot >= 5) return nullptr;
+				return gcnew CanDeviceCommand((unsigned char)command_index::SET_FILTER, target_filter_slot, 0, 0, 0);
+			}
+
+			CanDeviceCommand^ encodeSetMirrorCommand(System::Byte target_mirror) {
+				if (target_mirror > 1) return nullptr;
+				return gcnew CanDeviceCommand((unsigned char)command_index::SET_MIRROR, target_mirror, 0, 0, 0);
+			}
+
+			CanDeviceCommand^ encodeSetLightCommand(System::Byte target_light) {
+				if (target_light > 1) return nullptr;
+				return gcnew CanDeviceCommand((unsigned char)command_index::SET_LIGHT, target_light, 0, 0, 0);
 			}
 
 		};
@@ -501,220 +437,7 @@ private:
 		static Commands command;
 	};
 
-
 	
-	/// \ingroup PCB303_Protocol	
-	/// 
-	///@{
-
-	#define PCB303_ERROR_LEFT(reg)	(reg->d2 & 0x1) //!< This is the Left blade collimation error
-	#define PCB303_ERROR_RIGHT(reg)	(reg->d2 & 0x2) //!< This is the Right blade collimation error
-	#define PCB303_ERROR_FRONT(reg)	(reg->d2 & 0x4) //!< This is the Front blade collimation error
-	#define PCB303_ERROR_BACK(reg)	(reg->d2 & 0x8) //!< This is the Back blade collimation error
-	#define PCB303_ERROR_TRAP(reg)	(reg->d2 & 0x10) //!< This is the Trap blade collimation error
-
-
-	#define PCB303_GET_SYSTEM_COLLIMATION_STATUS(reg) (unsigned char) (reg->d0)//!< This macro selects the COLLIMATION_STATUS byte from the received Status Register
-	#define PCB303_GET_SYSTEM_FORMAT_INDEX(reg) (unsigned char) (reg->d1)//!< This macro selects the FORMAT_INDEX byte from the received Status register Can Frame
-	#define PCB303_GET_SYSTEM_TOMO_PULSE(reg) (unsigned char) (reg->d2)//!< This macro selects the TOMO_PULSE byte from the received Status register Can Frame	
-	#define PCB303_GET_SYSTEM_FLAGS(reg) (unsigned char) (reg->d3)//!< This macro selects the SYSTEM_FLAGS byte from the received Status register Can Frame
-	#define PCB303_SYSTEM_FLAG_ERRORS 0x1 //!< This macro selects the ERROR_FLAGS from the SYSTEM_FLAGS byte	
-	
-	#define PCB303_GET_SYSTEM_FB_FRONT(reg) ((unsigned short) reg->d0 + 256 * (unsigned short) reg->d1) //!< This macro selects the Front blade position 
-	#define PCB303_GET_SYSTEM_FB_BACK(reg) ((unsigned short) reg->d2 + 256 * (unsigned short) reg->d3) //!< This macro selects the Back blade position 	
-	#define PCB303_GET_SYSTEM_LR_LEFT(reg) ((unsigned short) reg->d0 + 256 * (unsigned short) reg->d1) //!< This macro selects the Left blade position 
-	#define PCB303_GET_SYSTEM_LR_RIGHT(reg) ((unsigned short) reg->d2 + 256 * (unsigned short) reg->d3) //!< This macro selects the Right blade position 
-	#define PCB303_GET_SYSTEM_T_TRAP(reg) ((unsigned short) reg->d0 + 256 * (unsigned short) reg->d1) //!< This macro selects the Trap blade position
-
-	 
-	
-	/// <summary>	
-	/// This enumeration class defines the Indexes of the protocol Status Registers
-	/// </summary>
-	enum class StatusRegisters {
-		SYSTEM_STATUS_REGISTER = 0, //!< System status register index (see StatusDataBytes)
-		SYSTEM_CURRENT_FB_REGISTER, //!< This is the current Front and Back position (if the position is valid)
-		SYSTEM_CURRENT_LR_REGISTER, //!< This is the current Left and Right position (if the position is valid)
-		SYSTEM_CURRENT_T_REGISTER,//!< This is the current Trap position (if the position is valid)
-	};
-	
-	/// <summary>
-	/// This enumeration class defines the data content (D0 to D3) of the System Status Register.
-	/// </summary>
-	enum class StatusDataBytes {
-		SYSTEM_COLLIMATION_STATUS = 0, //!> Collimation status data byte see (CollimationStatusCode)
-		SYSTEM_FORMAT_INDEX,		//!< Current selected standard collimation format index	(see ColliStandardSelections)
-		SYSTEM_TOMO_PULSE,			//!< Current Tomo pulse processing in Tomo dynamic mode
-		SYSTEM_SPARE
-	};
-
-	/// <summary>
-	/// This is the SYSTEM_COLLIMATION_STATUS byte definition of the SYSTEM status register.
-	/// </summary>
-	enum class CollimationStatusCode {
-		COLLI_STATUS_OPEN_FORMAT = 0, //!< The open format is currently selected
-		COLLI_STATUS_STANDARD_FORMAT,//!< The standard format is currently selected (see the STATUS FORMAT INDEX in that case)
-		COLLI_STATUS_CALIB_FORMAT,  //!< The Calibration format is currently selected
-		COLLI_STATUS_TOMO_MODE,		//!< The Tomo mode is currently active
-		COLLI_STATUS_OUT_OF_POSITION,//!< Not a valid collimation format is selected
-		COLLI_STATUS_2D_EXECUTING,	//!< A 2D collimation format selection is executing
-	};
-
-	/// <summary>
-	/// This is the SYSTEM_FORMAT_INDEX byte definition of the SYSTEM status register.
-	/// This byte reports the current select collimation format.
-	/// </summary>
-public: enum class ColliStandardSelections {
-	COLLI_NOT_STANDARD = 0, //!< When an OPEN format or CALIBRATION format is selected this is reported as a non standard format active
-	COLLI_INVALID_FORMAT = COLLI_NOT_STANDARD, //!< This is the code assigned to a Not valid collimatoion format code
-	COLLI_STANDARD1, //!< The current selected format is the STANDARD1 
-	COLLI_STANDARD_24x30 = COLLI_STANDARD1, //!< The special code is reserved to the 24x30 collimation, assigned to the COLLI_STANDARD1
-	COLLI_STANDARD2,//!< The current selected format is the STANDARD2
-	COLLI_STANDARD3,//!< The current selected format is the STANDARD3 
-	COLLI_STANDARD4,//!< The current selected format is the STANDARD4
-	COLLI_STANDARD5,//!< The current selected format is the STANDARD5
-	COLLI_STANDARD6,//!< The current selected format is the STANDARD6
-	COLLI_STANDARD7,//!< The current selected format is the STANDARD7
-	COLLI_STANDARD8,//!< The current selected format is the STANDARD8
-	COLLI_STANDARD9,//!< The current selected format is the STANDARD9
-	COLLI_STANDARD10,//!< The current selected format is the STANDARD10
-	COLLI_STANDARD11,//!< The current selected format is the STANDARD11
-	COLLI_STANDARD12,//!< The current selected format is the STANDARD12
-	COLLI_STANDARD13,//!< The current selected format is the STANDARD13
-	COLLI_STANDARD14,//!< The current selected format is the STANDARD14
-	COLLI_STANDARD15,//!< The current selected format is the STANDARD15
-	COLLI_STANDARD16,//!< The current selected format is the STANDARD16
-	COLLI_STANDARD17,//!< The current selected format is the STANDARD17
-	COLLI_STANDARD18,//!< The current selected format is the STANDARD18
-	COLLI_STANDARD19,//!< The current selected format is the STANDARD19
-	COLLI_STANDARD20,//!< The current selected format is the STANDARD20
-	COLLI_STANDARD_LEN
-
-	};
-	
-public: static ColliStandardSelections getColliFormatIndexFromParam(System::String^ param) {
-	if (param == "COLLI_STANDARD1") return ColliStandardSelections::COLLI_STANDARD1;
-	else if (param == "COLLI_STANDARD2") return ColliStandardSelections::COLLI_STANDARD2;
-	else if (param == "COLLI_STANDARD3") return ColliStandardSelections::COLLI_STANDARD3;
-	else if (param == "COLLI_STANDARD4") return ColliStandardSelections::COLLI_STANDARD4;
-	else if (param == "COLLI_STANDARD5") return ColliStandardSelections::COLLI_STANDARD5;
-	else if (param == "COLLI_STANDARD6") return ColliStandardSelections::COLLI_STANDARD6;
-	else if (param == "COLLI_STANDARD7") return ColliStandardSelections::COLLI_STANDARD7;
-	else if (param == "COLLI_STANDARD8") return ColliStandardSelections::COLLI_STANDARD8;
-	else if (param == "COLLI_STANDARD9") return ColliStandardSelections::COLLI_STANDARD9;
-	else if (param == "COLLI_STANDARD10") return ColliStandardSelections::COLLI_STANDARD10;
-	else if (param == "COLLI_STANDARD11") return ColliStandardSelections::COLLI_STANDARD11;
-	else if (param == "COLLI_STANDARD12") return ColliStandardSelections::COLLI_STANDARD12;
-	else if (param == "COLLI_STANDARD13") return ColliStandardSelections::COLLI_STANDARD13;
-	else if (param == "COLLI_STANDARD14") return ColliStandardSelections::COLLI_STANDARD14;
-	else if (param == "COLLI_STANDARD15") return ColliStandardSelections::COLLI_STANDARD15;
-	else if (param == "COLLI_STANDARD16") return ColliStandardSelections::COLLI_STANDARD16;
-	else if (param == "COLLI_STANDARD17") return ColliStandardSelections::COLLI_STANDARD17;
-	else if (param == "COLLI_STANDARD18") return ColliStandardSelections::COLLI_STANDARD18;
-	else if (param == "COLLI_STANDARD19") return ColliStandardSelections::COLLI_STANDARD19;
-	else if (param == "COLLI_STANDARD20") return ColliStandardSelections::COLLI_STANDARD20;
-	else return ColliStandardSelections::COLLI_INVALID_FORMAT;
-
-}
-	/// This is the frame implementation to write the DATA_CALIBRATION_FB register
-	#define PCB303_WRITE_DATA_CALIBRATION_FB(front,back) (System::Byte) DataRegisters::DATA_CALIBRATION_FB,(System::Byte) (front&0xFF), (System::Byte) ((front>>8)&0xFF),(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF)
-	
-	/// This is the frame implementation to write the DATA_CALIBRATION_LR register
-	#define PCB303_WRITE_DATA_CALIBRATION_LR(left,right) (System::Byte) DataRegisters::DATA_CALIBRATION_LR,(System::Byte) (left&0xFF), (System::Byte) ((left>>8)&0xFF),(System::Byte) (right&0xFF), (System::Byte) ((right>>8)&0xFF)
-	
-	/// This is the frame implementation to write the DATA_CALIBRATION_T register
-	#define PCB303_WRITE_DATA_CALIBRATION_T(trap) (System::Byte) DataRegisters::DATA_CALIBRATION_T,(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF),(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF)
-
-	/// <summary>
-	/// This is the enumeration class definigs the indexes of the protocol DATA registers	
-	/// </summary>
-	enum class DataRegisters {
-		DATA_CALIBRATION_FB = 0,//!< The Application shall set this register in CALIBRATION to set the Front and Back blades positions
-		DATA_CALIBRATION_LR,//!< The Application shall set this register in CALIBRATION to set the Left and Right blades positions
-		DATA_CALIBRATION_T,//!< The Application shall set this register in CALIBRATION to set the Trap blade positions
-	};
-	
-	/// This is the frame implementation to write the PARAM_STANDARD_FT Parameter Register		
-	#define PCB303_WRITE_PARAM_STANDARD_FT(front,trap) (System::Byte) ParamRegisters::PARAM_STANDARD_FORMAT_FT,(System::Byte) (front&0xFF), (System::Byte) ((front>>8)&0xFF),(System::Byte) (trap&0xFF), (System::Byte) ((trap>>8)&0xFF)
-	/// This is the frame implementation to write the PARAM_STANDARD_LR Parameter Register
-	#define PCB303_WRITE_PARAM_STANDARD_LR(index, left, right) (System::Byte) (ParamRegisters::PARAM_STANDARD_FORMAT_LR1) + (index-1) * 2, (System::Byte) (left&0xFF), (System::Byte) ((left>>8)&0xFF), (System::Byte) (right&0xFF), (System::Byte) ((right>>8)&0xFF)
-	/// This is the frame implementation to write the PARAM_STANDARD_B Parameter Register
-	#define PCB303_WRITE_PARAM_STANDARD_B(index, back) (System::Byte) (ParamRegisters::PARAM_STANDARD_FORMAT_B1) + (index-1) * 2 ,(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF),(System::Byte) (back&0xFF), (System::Byte) ((back>>8)&0xFF)
-
-	/// <summary>	
-	/// This enumeration class defines the Indexes of the Parameters Registers
-	/// </summary> 
-	public: enum class ParamRegisters {
-		PARAM_STANDARD_FORMAT_FT = 0,
-		PARAM_STANDARD_FORMAT_LR1,
-		PARAM_STANDARD_FORMAT_B1,
-		PARAM_STANDARD_FORMAT_LR2,
-		PARAM_STANDARD_FORMAT_B2,
-		PARAM_STANDARD_FORMAT_LR3,
-		PARAM_STANDARD_FORMAT_B3,
-		PARAM_STANDARD_FORMAT_LR4,
-		PARAM_STANDARD_FORMAT_B4,
-		PARAM_STANDARD_FORMAT_LR5,
-		PARAM_STANDARD_FORMAT_B5,
-		PARAM_STANDARD_FORMAT_LR6,
-		PARAM_STANDARD_FORMAT_B6,
-		PARAM_STANDARD_FORMAT_LR7,
-		PARAM_STANDARD_FORMAT_B7,
-		PARAM_STANDARD_FORMAT_LR8,
-		PARAM_STANDARD_FORMAT_B8,
-		PARAM_STANDARD_FORMAT_LR9,
-		PARAM_STANDARD_FORMAT_B9,
-		PARAM_STANDARD_FORMAT_LR10,
-		PARAM_STANDARD_FORMAT_B10,
-		PARAM_STANDARD_FORMAT_LR11,
-		PARAM_STANDARD_FORMAT_B11,
-		PARAM_STANDARD_FORMAT_LR12,
-		PARAM_STANDARD_FORMAT_B12,
-		PARAM_STANDARD_FORMAT_LR13,
-		PARAM_STANDARD_FORMAT_B13,
-		PARAM_STANDARD_FORMAT_LR14,
-		PARAM_STANDARD_FORMAT_B14,
-		PARAM_STANDARD_FORMAT_LR15,
-		PARAM_STANDARD_FORMAT_B15,
-		PARAM_STANDARD_FORMAT_LR16,
-		PARAM_STANDARD_FORMAT_B16,
-		PARAM_STANDARD_FORMAT_LR17,
-		PARAM_STANDARD_FORMAT_B17,
-		PARAM_STANDARD_FORMAT_LR18,
-		PARAM_STANDARD_FORMAT_B18,
-		PARAM_STANDARD_FORMAT_LR19,
-		PARAM_STANDARD_FORMAT_B19,
-		PARAM_STANDARD_FORMAT_LR20,
-		PARAM_STANDARD_FORMAT_B20,
-
-	};
-
-	/// <summary>	
-	/// This enumeration class defines the Indexes of the Command Execution
-	///
-	/// </summary>
-	private: enum class Commandregister {
-		ABORT_COMMAND = 0, //!< Abort Command (mandatory as for device protocol)
-		SET_OPEN_FORMAT_COMMAND,//!< Selects the Open Collimation
-		SET_STANDARD_FORMAT_COMMAND,//!< Selects the Standard Collimation
-		SET_CALIBRATION_FORMAT_COMMAND,//!< Selects the Calibration Collimation
-		SET_TOMO_MODE_COMMAND//!< Selects the Tomo Collimation
-	};
-	
-	/// This is the frame implementation to Execute ABORT_COMMAND Command
-	#define PCB303_COMMAND_ABORT (System::Byte) PCB303::Commandregister::ABORT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0
-	/// This is the frame implementation to Execute the SET_OPEN_FORMAT_COMMAND Command
-	#define PCB303_COMMAND_OPEN_FORMAT (System::Byte) PCB303::Commandregister::SET_OPEN_FORMAT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0
-	/// This is the frame implementation to Execute the SET_STANDARD_FORMAT_COMMAND collimation Command
-	#define PCB303_COMMAND_STANDARD_FORMAT(index) (System::Byte) PCB303::Commandregister::SET_STANDARD_FORMAT_COMMAND, (System::Byte) (index),(System::Byte) 0,(System::Byte) 0,(System::Byte) 0
-	/// This is the frame implementation to Execute the SET_CALIBRATION_FORMAT_COMMAND Command
-	#define PCB303_COMMAND_CALIBRATION_FORMAT (System::Byte) PCB303::Commandregister::SET_CALIBRATION_FORMAT_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0
-	/// This is the frame implementation to Execute the SET_TOMO_MODE_COMMAND Command
-	#define PCB303_COMMAND_ACTIVATE_TOMO (System::Byte) PCB303::Commandregister::SET_TOMO_MODE_COMMAND, (System::Byte) 0,(System::Byte) 0,(System::Byte) 0,(System::Byte) 0
-
-	///@}
-
-
 	/// <summary>
 	/// PCB303 Class constructor.
 	/// 
@@ -728,9 +451,6 @@ public: static ColliStandardSelections getColliFormatIndexFromParam(System::Stri
 	public: PCB303() : CanDeviceProtocol(0x12, L"COLLIMATOR_DEVICE")
 	{
 		collimationMode = collimationModeEnum::OPEN_MODE;
-		valid_collimation_format = false;
-		collimator_fault = false;
-		format_collimation_attempt = 0;
 	}
 	static PCB303^ device = gcnew PCB303();
 
@@ -743,8 +463,12 @@ public: static ColliStandardSelections getColliFormatIndexFromParam(System::Stri
 		bool configurationLoop(void) override;//!< This is the Base Class override function to handle the device configuration
 		void demoLoop(void) override;
 
-	private:	bool updateStatusRegister(void); //! Read the status registers and handle the related bytes
-	private:	void formatCollimationManagement(void);
+	
+	private:	
+		void formatManagement(void);
+		void filterManagement(void);
+		void mirrorManagement(void);
+		
 
 	///@}
 	
@@ -755,83 +479,46 @@ public: static ColliStandardSelections getColliFormatIndexFromParam(System::Stri
 	/// </summary>
 	enum class  collimationModeEnum{
 		AUTO_COLLIMATION = 0, //!< The collimator is in Auto mode: the paddle model defines the current collimation format
-		CUSTOM_COLLIMATION,   //!< The collimator is in Custom mode: the collimation format is set by the operator
-		CALIBRATION_MODE,	  //!< The collimator is in Calibration mode: the collimation format is set manually by the service software
+		CUSTOM_COLLIMATION,   //!< The collimator is in Custom mode: the collimation format is set by the operator		
 		OPEN_MODE,			  //!< The collimator is in Open mode: the collimation format set OPEN
+		CALIBRATION_MODE,	  //!< The collimator is in Calibration mode: the collimation format is set manually by the service software
 		TOMO_MODE			  //!< The collimator is in Tomo mode: the collimation format is dinamically set by the tomo pulse sequence
 	};
 
-	/// <summary>
-	/// This class provides a contenitor for a CALIBRATION blade setup
-	/// \ingroup PCB303_Interface
-	/// </summary>
-	public:ref class formatBlades {
-	public:
-
-		/// <summary>
-		/// This is the constructor to directly assigne the value of the blades positions
-		/// </summary>
-		/// <param name="ft">front blade</param>
-		/// <param name="bk">back blade</param>
-		/// <param name="lt">left blade</param>
-		/// <param name="rt">right blade</param>
-		/// <param name="tp">trap blade</param>
-		formatBlades(unsigned short ft, unsigned short bk, unsigned short lt, unsigned short rt, unsigned short tp) {
-			front = ft;
-			back = bk;
-			left = lt;
-			right = rt;
-			trap = tp;
-		}
-
-		/// <summary>
-		/// This is the constructor of an OPEN blades
-		/// </summary>
-		formatBlades() {
-			front = back = left = right = trap = 0;
-		}
-
-		/// <summary>
-		/// This is the function to copy a Blade setting 
-		/// </summary>
-		/// <param name="b">Handle of a Blade to be copied</param>
-		void copy(formatBlades^ b) {
-			front = b->front;
-			back = b->back;
-			left = b->left;
-			right = b->right;
-			trap = b->trap;
-		}
-
-		unsigned short front;//!< Front blade position
-		unsigned short back; //!< back blade position
-		unsigned short left; //!< Left blade position
-		unsigned short right; //!< Right blade position
-		unsigned short trap; //!< Trap blade position
-	};
+	
 
 	/// \ingroup PCB303_Internal
 	///@{
-	private: static collimationModeEnum collimationMode; //!< Sets the current collimation mode 
-	private: static bool valid_collimation_format; //!< This flag is set when the collimation format is correct and coherent with the collimationMode register
-	private: static bool collimator_fault; //!< This flag is set when the collimator is in fault condition
-	private: static int format_collimation_attempt; //!< This register counts the attempt to exit from a fault condition
-	private: static ColliStandardSelections customStandardSelection;//!< Custom 2D standard format requested (in case of CUSTOM mode)
-	private: static ColliStandardSelections getAutomaticStandardFormatIndex(void);//!< Retrives what is the current automatic format to be calibrated
-	private: static formatBlades calibrationBlades;
-	private: static CollimationStatusCode   collimation_status; //!< last status collimation status read
-	private: static ColliStandardSelections format_index;		//!< last status format index read
-	private: static unsigned char system_flags;					//!< Last system flags
+	private: 
+		static ProtocolStructure protocol; //!< This is the structure with the Status register info
+
+		static collimationModeEnum collimationMode;				//!< Sets the current collimation mode 
+		static System::Byte selected_format = 0;					//!< This is the current selected format 
+		static System::Byte current_auto_format = 0;	//!< Auo Collimation format
+		static System::Byte current_custom_format = 0; //!< Manual Collimation format
+		static bool valid_collimation_format = false; //!< This flag is set when the collimation format is correct and coherent with the collimationMode register
+		static int format_collimation_attempt = 0; //!< This register counts the attempt to exit from a fault condition
+
+		static System::Byte selected_filter = 0;
+		static bool valid_filter_format = false;
+		static int filter_attempt = 0; 
+
+		static ProtocolStructure::StatusRegister::mirror_target_code selected_mirror = ProtocolStructure::StatusRegister::mirror_target_code::OUT_FIELD;
+		static bool valid_mirror_format = false;
+		static int mirror_attempt = 0; 
+
+		static ProtocolStructure::StatusRegister::light_target_code current_light = ProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF;
+
+
 	///@}
 
 public:
 	/// \ingroup PCB303_Interface
 	///@{
 	static void setAutoCollimationMode(void); //!< This function sets the format collimation to AUTO mode
-	static void setOpenCollimationMode(void); //!< This function sets the format collimation to OPEN mode
-	static void setCalibrationCollimationMode(formatBlades^ blades) ;//!< This function sets the format collimation to CALIBRATION mode
+	static void setOpenCollimationMode(void); //!< This function sets the format collimation to OPEN mode	
 	static void setTomoCollimationMode(void); //!< This function activates the Tomo collimation mode
-	static void setCustomCollimationMode(ColliStandardSelections custom );//!< This function sets the format collimation to CUSTOM mode
+	static void setCustomCollimationMode(void);//!< This function sets the format collimation to CUSTOM mode
 	static void resetFaults(void);//!< In case of collimation fault condition, this function starts a new collimation attempt.
 	inline static bool isValidCollimationFormat(void) { return valid_collimation_format; }
 	///@}

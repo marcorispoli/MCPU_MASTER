@@ -5,43 +5,140 @@
 #include "MESSAGES/Notify.h"
 #include <thread>
 
-/// <summary>
-/// This routine handles the format collimation.
-/// 
-/// The procedure set the collimation format based on the 
-/// collimation mode set by the application.
-/// 
-/// In the case the collimation should be AUTOMATIC,
-/// the format collimation is set according with the current detected paddle 
-/// and the related collimation format assigned to it (see the PaddleCalibration file).
-/// 
-/// In the case the collimation should be CUSTOM,
-/// the format collimation is set to a specific format set by the application.
-/// 
-/// In the case the collimation should be CALIBRATION,
-/// the format collimation is set according with the blade positions set by the application.
-/// 
-/// In the case the collimation should be OPEN,
-/// the format collimation is set to 0 position for all the blades.
-/// 
-/// The procedure makes a maximum of 5 attempts to set the collimation format as expected. 
-/// When the attempts termines the collimator remains in fault condition until the fault
-/// condition is reset by the application (see the resetFault() function)
-///   
-/// </summary>
-/// <param name=""></param>
-void PCB303::formatCollimationManagement(void) {
-    unsigned short current_front, current_back, current_left, current_right, current_trap;
-    Register^ rxreg;
-    ColliStandardSelections format;
+void PCB303::mirrorManagement(void) {
+    static bool mirror_select_error = false;
+
+    // No operation if a protocol command is processing
+    if (!device->isCommandCompleted()) return;
+
+    // No operation if the format collimation is processing, even if the format is not the current selected!
+    if (protocol.status_register.mirror_action_status == ProtocolStructure::StatusRegister::action_code::STAT_POSITIONING) {
+        valid_mirror_format = false;
+        return;
+    }
+
+    // No more attempts can be done after some collimation repetition.
+    if (valid_mirror_format) mirror_attempt = 0;
+    else  if (mirror_attempt > 5) {
+        valid_mirror_format = false;
+
+        // Activate the selectuion error if necessary
+        if (!mirror_select_error) {
+            mirror_select_error = true;
+            Notify::activate(Notify::messages::ERROR_MIRROR_SELECTION_ERROR);
+        }
+        return;
+    }
+
+    // Resets the Selection error
+    if (mirror_select_error) {
+        mirror_select_error = false;
+        mirror_attempt = 0;
+        Notify::deactivate(Notify::messages::ERROR_MIRROR_SELECTION_ERROR);
+    }
+
+    // In case the position should undefined a warning message is activated
+    if (protocol.status_register.mirror_action_status == ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
+        Notify::activate(Notify::messages::WARNING_MIRROR_OUT_OF_POSITION);
+        valid_mirror_format = false;
+    }
+
+
+    // Tries to send the format selection command
+    if ((selected_mirror != protocol.status_register.mirror_target_index) || (protocol.status_register.mirror_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+        valid_mirror_format = false;
+
+        if (commandNoWaitCompletion(protocol.command.encodeSetMirrorCommand((System::Byte) selected_mirror), 30)) {
+            mirror_attempt++;
+        }
+        return;
+    }
+
+    // Activate the Valid collimation flag
+    if (!valid_mirror_format) {
+        Notify::deactivate(Notify::messages::WARNING_MIRROR_OUT_OF_POSITION);
+        valid_mirror_format = true;
+    }
+
+    return;
+}
+
+
+void PCB303::filterManagement(void) {
+    static bool filter_select_error = false;
+
+    // No operation if a protocol command is processing
+    if (!device->isCommandCompleted()) return;
+
+    // No operation if the format collimation is processing, even if the format is not the current selected!
+    if (protocol.status_register.filter_action_status == ProtocolStructure::StatusRegister::action_code::STAT_POSITIONING) {
+        valid_filter_format = false;
+        return;
+    }
+
+    // No more attempts can be done after some collimation repetition.
+    if (valid_filter_format) filter_attempt = 0;
+    else  if (filter_attempt > 5) {
+        valid_filter_format = false;
+
+        // Activate the selectuion error if necessary
+        if (!filter_select_error) {
+            filter_select_error = true;
+            Notify::activate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);     
+        }
+        return;
+    }
+
+    // Resets the Selection error
+    if (filter_select_error) {
+        filter_select_error = false;
+        filter_attempt = 0;
+        Notify::deactivate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);
+    }
+
+    // In case the position should undefined a warning message is activated
+    if (protocol.status_register.filter_action_status == ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
+        Notify::activate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
+        valid_filter_format = false;
+    }
+    
+
+    // Tries to send the format selection command
+    if ((selected_filter != protocol.status_register.filter_target_index) || (protocol.status_register.filter_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+        valid_filter_format = false;
+
+        if (commandNoWaitCompletion(protocol.command.encodeSetFilterCommand(selected_filter), 30)) {
+            filter_attempt++;         
+        }        
+        return;
+    }
+
+    // Activate the Valid collimation flag
+    if (!valid_filter_format) {
+        Notify::deactivate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
+        valid_filter_format = true;
+    }
+
+    return;
+}
+
+
+void PCB303::formatManagement(void) {    
     static bool collimation_select_error = false;
 
-    // No operation if a command is pending
+    // No operation if a protocol command is processing
     if (!device->isCommandCompleted()) return;
+
+    // No operation if the format collimation is processing, even if the format is not the current selected!
+    if (protocol.status_register.collimation_action_status == ProtocolStructure::StatusRegister::action_code::STAT_POSITIONING) {
+        valid_collimation_format = false;
+        return;
+    }
 
     // No more attempts can be done after some collimation repetition.
     if (valid_collimation_format) format_collimation_attempt = 0;
     else  if (format_collimation_attempt > 5) {
+        valid_collimation_format = false;
 
         // Activate the selectuion error if necessary
         if (!collimation_select_error) {
@@ -54,196 +151,52 @@ void PCB303::formatCollimationManagement(void) {
     // Resets the Selection error
     if (collimation_select_error) {
         collimation_select_error = false;
+        format_collimation_attempt = 0;
         Notify::deactivate(Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR);
     }
 
+    // In case the position should undefined a warning message is activated
+    if (protocol.status_register.collimation_action_status == ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
+        Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
+        valid_collimation_format = false;
+    }
 
-    // Verifies the correct calibration format
+    // A collimation target is selected       
     switch (collimationMode) {
 
-    // Auto Collimation mode setting
     case collimationModeEnum::AUTO_COLLIMATION:
-
-        // If a collimation is executing skips 
-        if (collimation_status == CollimationStatusCode::COLLI_STATUS_2D_EXECUTING) return;
-
-        // Get the current auto collimation format 
-        format = getAutomaticStandardFormatIndex(); 
-        
-        // No collimation activation in case of invalid collimation code
-        if (format == ColliStandardSelections::COLLI_INVALID_FORMAT) {
-            valid_collimation_format = false;
-            return;
-        }
-        
-        // Try to set the valid Standard Collimation
-        if ((collimation_status != CollimationStatusCode::COLLI_STATUS_STANDARD_FORMAT) || (format != format_index))
-        {
-            valid_collimation_format = false;
-            format_collimation_attempt++;
-            commandNoWaitCompletion(PCB303_COMMAND_STANDARD_FORMAT((int)getAutomaticStandardFormatIndex()), 30);
-            return;
-        }
-        else valid_collimation_format = true;
-
+        selected_format = current_auto_format;
         break;
-
-        // Custom Collimation mode setting
     case collimationModeEnum::CUSTOM_COLLIMATION:
-
-        // If a collimation is executing skips 
-        if (collimation_status == CollimationStatusCode::COLLI_STATUS_2D_EXECUTING) return;
-
-        // No collimation activation in case of invalid collimation code
-        if (customStandardSelection == ColliStandardSelections::COLLI_INVALID_FORMAT) {
-            valid_collimation_format = false;
-            return;
-        }
-
-        // Try to set the valid Custom Collimation
-        if ((collimation_status != CollimationStatusCode::COLLI_STATUS_STANDARD_FORMAT) || (customStandardSelection != format_index))
-        {
-            valid_collimation_format = false;
-            format_collimation_attempt++;
-            commandNoWaitCompletion(PCB303_COMMAND_STANDARD_FORMAT((int)customStandardSelection), 30);
-            return;
-        }
-        else valid_collimation_format = true;
-        
+        selected_format = current_custom_format;
         break;
-
-    case collimationModeEnum::CALIBRATION_MODE:
-
-        // If a collimation is executing skips 
-        if (collimation_status == CollimationStatusCode::COLLI_STATUS_2D_EXECUTING) return;
-
-        // Reads the current selected blades from the device 
-        rxreg = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_CURRENT_FB_REGISTER);
-        if (rxreg == nullptr) {
-            valid_collimation_format = false;
-            // Wait before to proceed
-            std::this_thread::sleep_for(std::chrono::microseconds(10000));
-            return;
-        }
-        current_front = PCB303_GET_SYSTEM_FB_FRONT(rxreg);
-        current_back = PCB303_GET_SYSTEM_FB_BACK(rxreg);
-
-        rxreg = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_CURRENT_LR_REGISTER);
-        if (rxreg == nullptr) {
-            valid_collimation_format = false;
-
-            // Wait before to proceed
-            std::this_thread::sleep_for(std::chrono::microseconds(10000));
-            return;
-        }
-
-        current_left = PCB303_GET_SYSTEM_LR_LEFT(rxreg);
-        current_right = PCB303_GET_SYSTEM_LR_RIGHT(rxreg);
-
-        rxreg = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_CURRENT_T_REGISTER);
-        if (rxreg == nullptr) {
-            valid_collimation_format = false;
-
-            // Wait before to proceed
-            std::this_thread::sleep_for(std::chrono::microseconds(10000));
-            return;
-        }
-        current_trap = PCB303_GET_SYSTEM_T_TRAP(rxreg);
-
-        // Compares the current blades position with the expected
-        if ((collimation_status == CollimationStatusCode::COLLI_STATUS_CALIB_FORMAT) &&
-            (current_front == calibrationBlades.front) &&
-            (current_back == calibrationBlades.back) &&
-            (current_left == calibrationBlades.left) &&
-            (current_right == calibrationBlades.right) &&
-            (current_trap == calibrationBlades.trap)
-            ) {
-
-            // Ok, no more actions
-            valid_collimation_format = true;
-            return;
-        }
-
-        // The current blades are not in the expected position
-        // Upload the expected position in the proper DATA registers then executes the CALIBRATION command
-        valid_collimation_format = false;
-        if (!writeDataRegister(PCB303_WRITE_DATA_CALIBRATION_FB(calibrationBlades.front, calibrationBlades.back))) return;
-        if (!writeDataRegister(PCB303_WRITE_DATA_CALIBRATION_LR(calibrationBlades.left, calibrationBlades.right))) return;
-        if (!writeDataRegister(PCB303_WRITE_DATA_CALIBRATION_T(calibrationBlades.trap))) return;
-
-
-        format_collimation_attempt++;
-
-        // Executes the Calibration command
-        commandNoWaitCompletion(PCB303_COMMAND_CALIBRATION_FORMAT, 30);
-        return;
-
-        break;
-
     case collimationModeEnum::OPEN_MODE:
+        selected_format = 255;
+        break;
 
-        // If a collimation is executing skips 
-        if (collimation_status == CollimationStatusCode::COLLI_STATUS_2D_EXECUTING) return;
+    default:
+        selected_format = 255;
+    }
 
-        // Try to set the valid Open Collimation
-        if (collimation_status != CollimationStatusCode::COLLI_STATUS_OPEN_FORMAT) {
-            valid_collimation_format = false;
+    // Tries to send the format selection command
+    if ((selected_format != protocol.status_register.collimation_target_index) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+        if (commandNoWaitCompletion(protocol.command.encodeSetFormatCommand(selected_format), 30)) {
             format_collimation_attempt++;
-            commandNoWaitCompletion(PCB303_COMMAND_OPEN_FORMAT, 30);
-            return;
         }
-        else  valid_collimation_format = true;
+        valid_collimation_format = false;
+        return;
+    }
 
-        break;
-    case collimationModeEnum::TOMO_MODE:
-        break;
-
+    // Activate the Valid collimation flag
+    if (!valid_collimation_format) {
+        Notify::deactivate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
+        valid_collimation_format = true;
     }
 
     return;
 }
 
-bool PCB303::updateStatusRegister(void) {
 
-    // Read the System Status register from the device
-    Register^ system_status_register = readStatusRegister((unsigned char)StatusRegisters::SYSTEM_STATUS_REGISTER);
-    if (system_status_register == nullptr) return false;
-
-    // Stores the System status content into internal registers
-    collimation_status = (CollimationStatusCode)PCB303_GET_SYSTEM_COLLIMATION_STATUS(system_status_register);
-    format_index = (ColliStandardSelections)PCB303_GET_SYSTEM_FORMAT_INDEX(system_status_register);
-    system_flags = PCB303_GET_SYSTEM_FLAGS(system_status_register);
-
-    // In case of a fault condition, read the Error register from the device
-    if (system_flags & PCB303_SYSTEM_FLAG_ERRORS) {
-        System::String^ err_string = "";
-
-        // Reads the error register
-        Register^ error_register = readErrorRegister();
-        if (error_register != nullptr)
-        {
-            if (PCB303_ERROR_LEFT(error_register)) err_string += "Left ";
-            if (PCB303_ERROR_RIGHT(error_register)) err_string += "Right ";
-            if (PCB303_ERROR_FRONT(error_register)) err_string += "Front ";
-            if (PCB303_ERROR_BACK(error_register)) err_string += "Back ";
-            if (PCB303_ERROR_TRAP(error_register)) err_string += "Trap ";
-        }
-
-        if (!collimator_fault) {
-            collimator_fault = true;
-            Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, err_string);
-        }
-    }
-    else {
-        format_collimation_attempt = 0;
-        if (collimator_fault) {
-            collimator_fault = false;
-            Notify::deactivate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
-        }
-    }
-
-    return true;
-}
 
 
 /// <summary>
@@ -261,6 +214,8 @@ void PCB303::runningLoop(void) {
     demoLoop();
     return;
     
+    // Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, err_string);
+    
     // Test the communication status
     if (commerr != isCommunicationError()) {
         commerr = isCommunicationError();
@@ -272,12 +227,20 @@ void PCB303::runningLoop(void) {
         }
     }
 
-    // Updates the Status register
-    if (updateStatusRegister()) {
-        formatCollimationManagement(); // Format collimation management
-    }
 
-    std::this_thread::sleep_for(std::chrono::microseconds(10000));
+    //	System Register
+    protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER));
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+    formatManagement();
+    filterManagement();
+    mirrorManagement();
+
+    //	Tube Register
+    protocol.status_register.decodeTubeRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::TUBE_REGISTER));
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+
     return;
 
 

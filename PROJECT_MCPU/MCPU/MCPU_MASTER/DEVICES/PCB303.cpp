@@ -1,6 +1,8 @@
 
 #include "PCB303.h"
 #include "PCB302.h"
+#include "ExposureModule.h"
+
 #include "ConfigurationFiles.h"
 #include "MESSAGES/Notify.h"
 #include <thread>
@@ -47,11 +49,18 @@ void PCB303::mirrorManagement(void) {
     // Tries to send the format selection command
     if ((selected_mirror != protocol.status_register.mirror_target_index) || (protocol.status_register.mirror_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
         valid_mirror_format = false;
+        retrigger_light_on_command = false;
 
         if (commandNoWaitCompletion(protocol.command.encodeSetMirrorCommand((System::Byte) selected_mirror), 30)) {
             mirror_attempt++;
         }
         return;
+    }
+    
+    // If the Mirror is already in field and the App whould only retrigger the power light ON
+    if (retrigger_light_on_command) {
+        retrigger_light_on_command = false;
+        commandNoWaitCompletion(protocol.command.encodeSetLightCommand((System::Byte)ProtocolStructure::StatusRegister::light_target_code::LIGHT_ON), 30);
     }
 
     // Activate the Valid collimation flag
@@ -165,17 +174,20 @@ void PCB303::formatManagement(void) {
     switch (collimationMode) {
 
     case collimationModeEnum::AUTO_COLLIMATION:
+        // The selected format depends by the paddle detected and its related collimation format
+        current_auto_format = PCB302::getDetectedPaddleCollimationFormat();
         selected_format = current_auto_format;
         break;
+
     case collimationModeEnum::CUSTOM_COLLIMATION:
         selected_format = current_custom_format;
         break;
     case collimationModeEnum::OPEN_MODE:
-        selected_format = 255;
+        selected_format = 0;
         break;
 
     default:
-        selected_format = 255;
+        selected_format = 0; // Open as default 
     }
 
     // Tries to send the format selection command
@@ -250,30 +262,6 @@ void PCB303::runningLoop(void) {
 
 
 /// <summary>
-/// This function returns the Collimation format assigned to a Paddle detected in the System 
-/// by the Compressor device.
-/// 
-/// If the Paddle should not be detected, the COLLI_STANDARD1 Standard collimation is selected.
-/// 
-/// </summary>
-/// <param name=""></param>
-/// <returns>returns the Format collimation assigned to the current paddle</returns>
-PCB303::ColliStandardSelections PCB303::getAutomaticStandardFormatIndex(void) {
-
-    // Get the collimation format of the detected paddle
-    int format = PCB302::getDetectedPaddleCollimationFormat();
-
-    // If the paddle is not detected the -1 code is returned
-    if( format < 0) return ColliStandardSelections::COLLI_INVALID_FORMAT;
-
-    // If the collimation format is not valid the invalid code is returned
-    if( format > (int) ColliStandardSelections::COLLI_STANDARD_LEN) return ColliStandardSelections::COLLI_INVALID_FORMAT;
-
-    // Returns the related collimation format
-    return (ColliStandardSelections) format;
-}
-
-/// <summary>
 /// 
 /// </summary>
 /// 
@@ -297,146 +285,58 @@ void PCB303::resetLoop(void) {
 /// <param name=""></param>
 /// <returns>true if the configuration success</returns>
 bool PCB303::configurationLoop(void) {
-    unsigned short front, trap, left, right, back;
-  if (isSimulatorMode()) return true;
-
-    front = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD_FT)[CollimatorConfig::PARAM_COLLI_STANDARD_FT_FRONT]);
-    trap = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD_FT)[CollimatorConfig::PARAM_COLLI_STANDARD_FT_TRAP]);
-    while(!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_FT(front, trap))) ;
-
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD1)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD1)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD1)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(1, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(1, back)));
+   
     
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD2)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD2)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD2)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(2, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(2, back)));
+    if (isSimulatorMode()) return true;
 
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD3)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD3)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD3)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(3, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(3, back)));
+    // Read the parameters from the configuration files
+    System::String^ Param;
+   
 
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD4)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD4)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD4)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(4, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(4, back)));
+    for (int index= 0; index < protocol.parameter_register.format_collimation->Length; index++) {
+        Param = "COLLI_STANDARD_FORMAT_" + index.ToString();
+        protocol.parameter_register.format_collimation[index]->front = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_FRONT]);
+        protocol.parameter_register.format_collimation[index]->back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_BACK]);
+        protocol.parameter_register.format_collimation[index]->left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_LEFT]);
+        protocol.parameter_register.format_collimation[index]->right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_RIGHT]);
+        protocol.parameter_register.format_collimation[index]->trap = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_TRAP]);
+    }
 
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD5)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD5)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD5)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(5, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(5, back)));
+    // Writes the register to the device
+    for (int index = 0; index < protocol.parameter_register.format_collimation->Length; index++) {
+        writeParamRegister(index, protocol.parameter_register.encodeFBCollimationSlotRegister(index));
+        writeParamRegister(index, protocol.parameter_register.encodeLRCollimationSlotRegister(index));
+    }
 
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD6)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD6)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD6)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(6, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(6, back)));
+    for (int index = 0; index < protocol.parameter_register.format_collimation->Length/2; index++) {
+        writeParamRegister(index, protocol.parameter_register.encodeTrapCollimationSlotRegister(index));
+    }
 
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD7)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD7)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD7)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(7, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(7, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD8)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD8)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD8)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(8, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(8, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD9)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD9)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD9)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(9, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(9, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD10)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD10)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD10)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(10, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(10, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD11)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD11)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD11)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(11, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(11, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD12)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD12)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD12)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(12, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(12, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD13)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD13)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD13)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(13, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(13, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD14)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD14)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD14)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(14, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(14, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD15)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD15)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD15)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(15, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(15, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD16)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD16)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD16)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(16, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(16, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD17)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD17)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD17)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(17, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(17, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD18)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD18)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD18)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(18, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(18, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD19)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD19)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD19)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(19, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(19, back)));
-
-    left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD20)[CollimatorConfig::PARAM_COLLI_STANDARD1_LEFT]);
-    right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD20)[CollimatorConfig::PARAM_COLLI_STANDARD1_RIGHT]);
-    back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_COLLI_STANDARD20)[CollimatorConfig::PARAM_COLLI_STANDARD1_BACK]);
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_LR(20, left, right)));
-    while (!writeParamRegister(PCB303_WRITE_PARAM_STANDARD_B(20, back)));
 
     return true;
 }
 
 
 void PCB303::setAutoCollimationMode(void) {
-    valid_collimation_format = false;
-    collimationMode = collimationModeEnum::AUTO_COLLIMATION;
+    if (Exposures::isXrayRunning()) return;
+
+    if (collimationMode != collimationModeEnum::AUTO_COLLIMATION) {
+        valid_collimation_format = false;
+        collimationMode = collimationModeEnum::AUTO_COLLIMATION;
+    }
+
 }
 
 void PCB303::setOpenCollimationMode(void) {
-    valid_collimation_format = false;
-    collimationMode = collimationModeEnum::OPEN_MODE;
+    if (Exposures::isXrayRunning()) return;
+    
+    if (collimationMode != collimationModeEnum::OPEN_MODE) {
+        collimationMode = collimationModeEnum::OPEN_MODE;
+        if ((protocol.status_register.collimation_target_index != 0) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+            valid_mirror_format = false;
+        }
+    }
+    
 }
 
 /// <summary>
@@ -444,27 +344,45 @@ void PCB303::setOpenCollimationMode(void) {
 /// 
 /// </summary>
 /// <param name="custom">This is a valid collimation code</param>
-void PCB303::setCustomCollimationMode(ColliStandardSelections custom) {
-    valid_collimation_format = false;
-    if (custom == ColliStandardSelections::COLLI_NOT_STANDARD) custom = ColliStandardSelections::COLLI_STANDARD1;
-    customStandardSelection = custom;
+void PCB303::setCustomCollimationMode(System::Byte format_index) {
+    if (Exposures::isXrayRunning()) return;
+
     collimationMode = collimationModeEnum::CUSTOM_COLLIMATION;
+   
+    // Assignes the custom format to the current
+    if (format_index >= NUM_COLLIMATION_SLOTS) current_custom_format = NUM_COLLIMATION_SLOTS - 1;
+    else current_custom_format = format_index;
+
+    // Removes the valid format if the custom format is different from the selected
+    if ((current_custom_format != protocol.status_register.collimation_target_index) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+        valid_mirror_format = false;      
+    }
 
 }
 
-/// <summary>
-/// This command sets the CALIBRATION collimation mode
-/// </summary>
-/// <param name="blades">This is the register containing the blades values</param>
-void PCB303::setCalibrationCollimationMode(formatBlades^ blades){
-    valid_collimation_format = false;
-    calibrationBlades.copy(blades);
-    collimationMode = collimationModeEnum::CALIBRATION_MODE;
+void PCB303::setCollimationLight(bool stat) {
+    if (Exposures::isXrayRunning()) return;
 
+    if (stat) {
+        selected_mirror = ProtocolStructure::StatusRegister::mirror_target_code::IN_FIELD;
+        selected_light = ProtocolStructure::StatusRegister::light_target_code::LIGHT_ON;
+        retrigger_light_on_command = true;
+                
+    }
+    else {
+        selected_mirror = ProtocolStructure::StatusRegister::mirror_target_code::OUT_FIELD;
+        selected_light = ProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF;
+        retrigger_light_on_command = false;        
+    }
+
+    // Removes the valid format if the current status is not the expected status
+    if ((selected_mirror != protocol.status_register.mirror_target_index) || (protocol.status_register.mirror_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+        valid_mirror_format = false;     
+        retrigger_light_on_command = false;
+    }
+    
 }
 
-void PCB303::setTomoCollimationMode(void) 
-{};
 
 /// <summary>
 /// This functions resets the Application fault condition for the format collimation.

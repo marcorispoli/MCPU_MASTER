@@ -80,7 +80,7 @@ TcpIpServerCLI::TcpIpServerCLI(System::String^ ip, int port)
 /// </summary>
 /// <param name=""></param>
 void TcpIpServerCLI::threadWork(void) {
-	DWORD dwWaitResult;
+	
 
 	while (true) {
 		serverSocket->Listen(5);

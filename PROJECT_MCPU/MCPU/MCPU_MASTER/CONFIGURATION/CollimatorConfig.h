@@ -7,343 +7,375 @@ public:
 
     literal System::String^ FILENAME = "CollimatorCalibration.cnf";
     literal int     FILE_REVISION = 1;
+    literal int     PARAM_FORMAT_FRONT = 0;
+    literal int     PARAM_FORMAT_BACK = 1;
+    literal int     PARAM_FORMAT_LEFT = 2;
+    literal int     PARAM_FORMAT_RIGHT = 3;
+    literal int     PARAM_FORMAT_TRAP = 4;
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD_FT = "COLLI_STANDARD_FT";
-    literal System::String^ PARAM_COLLI_STANDARD_FT_COMMENT = "Front and Trap blades for standard collimations";
-    literal int     PARAM_COLLI_STANDARD_FT_FRONT = 0;
-    literal int     PARAM_COLLI_STANDARD_FT_TRAP = 1;
-
-    literal System::String^ PARAM_COLLI_STANDARD_FT_FRONT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD_FT_TRAP_DEFAULT = "1000"; // 1um step
-
-    //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD1 = "COLLI_STANDARD1";
-    literal System::String^ PARAM_COLLI_STANDARD1_COMMENT = "left Right and Back blades for standard collimation 1";
-    literal int     PARAM_COLLI_STANDARD1_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD1_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD1_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD1_LEFT_DEFAULT = "5000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD1_RIGHT_DEFAULT = "5000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD1_BACK_DEFAULT = "5000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_0 = "COLLI_STANDARD_FORMAT_0";
+    literal System::String^ PARAM_COLLI_FORMAT_0_COMMENT = "Collimation format Slot 0";
+    
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_0_DEFAULT = "0"; 
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_0_DEFAULT = "0"; 
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_0_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_0_DEFAULT = "0"; 
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_0_DEFAULT = "0"; 
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD2 = "COLLI_STANDARD2";
-    literal System::String^ PARAM_COLLI_STANDARD2_COMMENT = "left Right and Back blades for standard collimation 2";
-    literal int     PARAM_COLLI_STANDARD2_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD2_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD2_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD2_LEFT_DEFAULT = "10000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD2_RIGHT_DEFAULT = "10000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD2_BACK_DEFAULT = "10000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_1 = "COLLI_STANDARD_FORMAT_1";
+    literal System::String^ PARAM_COLLI_FORMAT_1_COMMENT = "Collimation format Slot 1";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_1_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_1_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_1_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_1_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_1_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD3 = "COLLI_STANDARD3";
-    literal System::String^ PARAM_COLLI_STANDARD3_COMMENT = "left Right and Back blades for standard collimation 3";
-    literal int     PARAM_COLLI_STANDARD3_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD3_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD3_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD3_LEFT_DEFAULT = "15000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD3_RIGHT_DEFAULT = "15000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD3_BACK_DEFAULT = "15000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_2 = "COLLI_STANDARD_FORMAT_2";
+    literal System::String^ PARAM_COLLI_FORMAT_2_COMMENT = "Collimation format Slot 2";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_2_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_2_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_2_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_2_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_2_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD4 = "COLLI_STANDARD4";
-    literal System::String^ PARAM_COLLI_STANDARD4_COMMENT = "left Right and Back blades for standard collimation 4";
-    literal int     PARAM_COLLI_STANDARD4_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD4_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD4_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD4_LEFT_DEFAULT = "20000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD4_RIGHT_DEFAULT = "20000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD4_BACK_DEFAULT = "20000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_3 = "COLLI_STANDARD_FORMAT_3";
+    literal System::String^ PARAM_COLLI_FORMAT_3_COMMENT = "Collimation format Slot 3";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_3_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_3_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_3_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_3_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_3_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD5 = "COLLI_STANDARD5";
-    literal System::String^ PARAM_COLLI_STANDARD5_COMMENT = "left Right and Back blades for standard collimation 5";
-    literal int     PARAM_COLLI_STANDARD5_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD5_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD5_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD5_LEFT_DEFAULT = "20000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD5_RIGHT_DEFAULT = "20000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD5_BACK_DEFAULT = "20000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_4 = "COLLI_STANDARD_FORMAT_4";
+    literal System::String^ PARAM_COLLI_FORMAT_4_COMMENT = "Collimation format Slot 4";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_4_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_4_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_4_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_4_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_4_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD6 = "COLLI_STANDARD6";
-    literal System::String^ PARAM_COLLI_STANDARD6_COMMENT = "left Right and Back blades for standard collimation 6";
-    literal int     PARAM_COLLI_STANDARD6_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD6_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD6_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD6_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD6_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD6_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_5 = "COLLI_STANDARD_FORMAT_5";
+    literal System::String^ PARAM_COLLI_FORMAT_5_COMMENT = "Collimation format Slot 5";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_5_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_5_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_5_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_5_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_5_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD7 = "COLLI_STANDARD7";
-    literal System::String^ PARAM_COLLI_STANDARD7_COMMENT = "left Right and Back blades for standard collimation 7";
-    literal int     PARAM_COLLI_STANDARD7_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD7_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD7_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD7_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD7_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD7_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_6 = "COLLI_STANDARD_FORMAT_6";
+    literal System::String^ PARAM_COLLI_FORMAT_6_COMMENT = "Collimation format Slot 6";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_6_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_6_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_6_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_6_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_6_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD8 = "COLLI_STANDARD8";
-    literal System::String^ PARAM_COLLI_STANDARD8_COMMENT = "left Right and Back blades for standard collimation 8";
-    literal int     PARAM_COLLI_STANDARD8_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD8_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD8_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD8_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD8_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD8_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_7 = "COLLI_STANDARD_FORMAT_7";
+    literal System::String^ PARAM_COLLI_FORMAT_7_COMMENT = "Collimation format Slot 7";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_7_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_7_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_7_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_7_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_7_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD9 = "COLLI_STANDARD9";
-    literal System::String^ PARAM_COLLI_STANDARD9_COMMENT = "left Right and Back blades for standard collimation 9";
-    literal int     PARAM_COLLI_STANDARD9_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD9_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD9_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD9_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD9_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD9_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_8 = "COLLI_STANDARD_FORMAT_8";
+    literal System::String^ PARAM_COLLI_FORMAT_8_COMMENT = "Collimation format Slot 8";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_8_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_8_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_8_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_8_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_8_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD10 = "COLLI_STANDARD10";
-    literal System::String^ PARAM_COLLI_STANDARD10_COMMENT = "left Right and Back blades for standard collimation 10";
-    literal int     PARAM_COLLI_STANDARD10_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD10_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD10_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD10_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD10_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD10_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_9 = "COLLI_STANDARD_FORMAT_9";
+    literal System::String^ PARAM_COLLI_FORMAT_9_COMMENT = "Collimation format Slot 9";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_9_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_9_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_9_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_9_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_9_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD11 = "COLLI_STANDARD11";
-    literal System::String^ PARAM_COLLI_STANDARD11_COMMENT = "left Right and Back blades for standard collimation 11";
-    literal int     PARAM_COLLI_STANDARD11_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD11_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD11_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD11_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD11_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD11_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_10 = "COLLI_STANDARD_FORMAT_10";
+    literal System::String^ PARAM_COLLI_FORMAT_10_COMMENT = "Collimation format Slot 10";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_10_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_10_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_10_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_10_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_10_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD12 = "COLLI_STANDARD12";
-    literal System::String^ PARAM_COLLI_STANDARD12_COMMENT = "left Right and Back blades for standard collimation 12";
-    literal int     PARAM_COLLI_STANDARD12_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD12_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD12_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD12_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD12_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD12_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_11 = "COLLI_STANDARD_FORMAT_11";
+    literal System::String^ PARAM_COLLI_FORMAT_11_COMMENT = "Collimation format Slot 11";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_11_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_11_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_11_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_11_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_11_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD13 = "COLLI_STANDARD13";
-    literal System::String^ PARAM_COLLI_STANDARD13_COMMENT = "left Right and Back blades for standard collimation 13";
-    literal int     PARAM_COLLI_STANDARD13_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD13_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD13_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD13_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD13_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD13_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_12 = "COLLI_STANDARD_FORMAT_12";
+    literal System::String^ PARAM_COLLI_FORMAT_12_COMMENT = "Collimation format Slot 12";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_12_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_12_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_12_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_12_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_12_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD14 = "COLLI_STANDARD14";
-    literal System::String^ PARAM_COLLI_STANDARD14_COMMENT = "left Right and Back blades for standard collimation 14";
-    literal int     PARAM_COLLI_STANDARD14_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD14_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD14_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD14_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD14_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD14_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_13 = "COLLI_STANDARD_FORMAT_13";
+    literal System::String^ PARAM_COLLI_FORMAT_13_COMMENT = "Collimation format Slot 13";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_13_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_13_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_13_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_13_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_13_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD15 = "COLLI_STANDARD15";
-    literal System::String^ PARAM_COLLI_STANDARD15_COMMENT = "left Right and Back blades for standard collimation 15";
-    literal int     PARAM_COLLI_STANDARD15_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD15_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD15_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD15_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD15_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD15_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_14 = "COLLI_STANDARD_FORMAT_14";
+    literal System::String^ PARAM_COLLI_FORMAT_14_COMMENT = "Collimation format Slot 14";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_14_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_14_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_14_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_14_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_14_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD16 = "COLLI_STANDARD16";
-    literal System::String^ PARAM_COLLI_STANDARD16_COMMENT = "left Right and Back blades for standard collimation 16";
-    literal int     PARAM_COLLI_STANDARD16_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD16_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD16_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD16_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD16_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD16_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_15 = "COLLI_STANDARD_FORMAT_15";
+    literal System::String^ PARAM_COLLI_FORMAT_15_COMMENT = "Collimation format Slot 15";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_15_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_15_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_15_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_15_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_15_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD17 = "COLLI_STANDARD17";
-    literal System::String^ PARAM_COLLI_STANDARD17_COMMENT = "left Right and Back blades for standard collimation 17";
-    literal int     PARAM_COLLI_STANDARD17_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD17_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD17_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD17_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD17_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD17_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_16 = "COLLI_STANDARD_FORMAT_16";
+    literal System::String^ PARAM_COLLI_FORMAT_16_COMMENT = "Collimation format Slot 16";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_16_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_16_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_16_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_16_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_16_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD18 = "COLLI_STANDARD18";
-    literal System::String^ PARAM_COLLI_STANDARD18_COMMENT = "left Right and Back blades for standard collimation 18";
-    literal int     PARAM_COLLI_STANDARD18_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD18_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD18_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD18_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD18_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD18_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_17 = "COLLI_STANDARD_FORMAT_17";
+    literal System::String^ PARAM_COLLI_FORMAT_17_COMMENT = "Collimation format Slot 17";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_17_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_17_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_17_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_17_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_17_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD19 = "COLLI_STANDARD19";
-    literal System::String^ PARAM_COLLI_STANDARD19_COMMENT = "left Right and Back blades for standard collimation 19";
-    literal int     PARAM_COLLI_STANDARD19_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD19_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD19_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD19_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD19_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD19_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_18 = "COLLI_STANDARD_FORMAT_18";
+    literal System::String^ PARAM_COLLI_FORMAT_18_COMMENT = "Collimation format Slot 18";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_18_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_18_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_18_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_18_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_18_DEFAULT = "0";
 
     //___________________________________________________________________________________________________//
-    literal System::String^ PARAM_COLLI_STANDARD20 = "COLLI_STANDARD20";
-    literal System::String^ PARAM_COLLI_STANDARD20_COMMENT = "left Right and Back blades for standard collimation 20";
-    literal int     PARAM_COLLI_STANDARD20_LEFT = 0;
-    literal int     PARAM_COLLI_STANDARD20_RIGHT = 1;
-    literal int     PARAM_COLLI_STANDARD20_BACK = 2;
-    literal System::String^ PARAM_COLLI_STANDARD20_LEFT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD20_RIGHT_DEFAULT = "1000"; // 1um step
-    literal System::String^ PARAM_COLLI_STANDARD20_BACK_DEFAULT = "1000"; // 1um step
+    literal System::String^ PARAM_COLLI_FORMAT_19 = "COLLI_STANDARD_FORMAT_19";
+    literal System::String^ PARAM_COLLI_FORMAT_19_COMMENT = "Collimation format Slot 19";
+
+    literal System::String^ PARAM_COLLI_FORMAT_FRONT_19_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_BACK_19_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_LEFT_19_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_RIGHT_19_DEFAULT = "0";
+    literal System::String^ PARAM_COLLI_FORMAT_TRAP_19_DEFAULT = "0";
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD_FT, PARAM_COLLI_STANDARD_FT_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD_FT_FRONT_DEFAULT,
-            PARAM_COLLI_STANDARD_FT_TRAP_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_0, PARAM_COLLI_FORMAT_0_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_0_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_0_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_0_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_0_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_0_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD1, PARAM_COLLI_STANDARD1_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD1_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD1_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD1_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_1, PARAM_COLLI_FORMAT_1_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_1_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_1_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_1_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_1_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_1_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD2, PARAM_COLLI_STANDARD2_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD2_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD2_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD2_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_2, PARAM_COLLI_FORMAT_2_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_2_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_2_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_2_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_2_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_2_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD3, PARAM_COLLI_STANDARD3_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD3_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD3_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD3_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_3, PARAM_COLLI_FORMAT_3_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_3_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_3_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_3_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_3_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_3_DEFAULT
+            }),
+            
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_4, PARAM_COLLI_FORMAT_4_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_4_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_4_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_4_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_4_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_4_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD4, PARAM_COLLI_STANDARD4_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD4_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD4_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD4_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_5, PARAM_COLLI_FORMAT_5_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_5_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_5_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_5_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_5_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_5_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD5, PARAM_COLLI_STANDARD5_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD5_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD5_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD5_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_6, PARAM_COLLI_FORMAT_6_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_6_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_6_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_6_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_6_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_6_DEFAULT
+
+            }),
+            
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_7, PARAM_COLLI_FORMAT_7_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_7_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_7_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_7_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_7_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_7_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD6, PARAM_COLLI_STANDARD6_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD6_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD6_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD6_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_8, PARAM_COLLI_FORMAT_8_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_8_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_8_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_8_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_8_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_8_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD7, PARAM_COLLI_STANDARD7_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD7_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD7_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD7_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_9, PARAM_COLLI_FORMAT_9_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_9_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_9_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_9_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_9_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_9_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD8, PARAM_COLLI_STANDARD8_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD8_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD8_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD8_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_10, PARAM_COLLI_FORMAT_10_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_10_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_10_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_10_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_10_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_10_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD9, PARAM_COLLI_STANDARD9_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD9_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD9_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD9_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_11, PARAM_COLLI_FORMAT_11_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_11_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_11_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_11_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_11_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_11_DEFAULT
+            }),
+            
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_12, PARAM_COLLI_FORMAT_12_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_12_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_12_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_12_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_12_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_12_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD10, PARAM_COLLI_STANDARD10_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD10_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD10_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD10_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_13, PARAM_COLLI_FORMAT_13_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_13_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_13_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_13_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_13_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_13_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD11, PARAM_COLLI_STANDARD11_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD11_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD11_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD11_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_14, PARAM_COLLI_FORMAT_14_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_14_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_14_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_14_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_14_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_14_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD12, PARAM_COLLI_STANDARD12_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD12_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD12_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD12_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_15, PARAM_COLLI_FORMAT_15_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_15_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_15_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_15_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_15_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_15_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD13, PARAM_COLLI_STANDARD13_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD13_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD13_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD13_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_16, PARAM_COLLI_FORMAT_16_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_16_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_16_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_16_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_16_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_16_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD14, PARAM_COLLI_STANDARD14_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD14_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD14_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD14_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_17, PARAM_COLLI_FORMAT_17_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_17_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_17_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_17_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_17_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_17_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD15, PARAM_COLLI_STANDARD15_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD15_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD15_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD15_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_18, PARAM_COLLI_FORMAT_18_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_18_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_18_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_18_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_18_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_18_DEFAULT
             }),
 
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD16, PARAM_COLLI_STANDARD16_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD16_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD16_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD16_BACK_DEFAULT,
-            }),
-
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD17, PARAM_COLLI_STANDARD17_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD17_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD17_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD17_BACK_DEFAULT,
-            }),
-
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD18, PARAM_COLLI_STANDARD18_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD18_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD18_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD18_BACK_DEFAULT,
-            }),
-
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD19, PARAM_COLLI_STANDARD19_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD19_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD19_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD19_BACK_DEFAULT,
-            }),
-
-            CONFIG_FILE_ITEM(PARAM_COLLI_STANDARD20, PARAM_COLLI_STANDARD20_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_COLLI_STANDARD20_LEFT_DEFAULT,
-            PARAM_COLLI_STANDARD20_RIGHT_DEFAULT,
-            PARAM_COLLI_STANDARD20_BACK_DEFAULT,
+            CONFIG_FILE_ITEM(PARAM_COLLI_FORMAT_19, PARAM_COLLI_FORMAT_19_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_COLLI_FORMAT_FRONT_19_DEFAULT,
+            PARAM_COLLI_FORMAT_BACK_19_DEFAULT,
+            PARAM_COLLI_FORMAT_LEFT_19_DEFAULT,
+            PARAM_COLLI_FORMAT_RIGHT_19_DEFAULT,
+            PARAM_COLLI_FORMAT_TRAP_19_DEFAULT
             }),
 
         }

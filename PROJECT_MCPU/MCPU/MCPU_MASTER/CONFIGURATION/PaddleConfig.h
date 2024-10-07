@@ -1,6 +1,6 @@
 #pragma once
 #include "ConfigFile.h"
-#include "CollimatorConfig.h"
+
 
 /// \addtogroup ConfigurationFilesDescription 
 /// <div style="page-break-after: always;"></div>
@@ -99,14 +99,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"1"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|1|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_PROSTHESIS = "PADDLE_PROSTHESIS";
     literal System::String^ PARAM_PADDLE_PROSTHESIS_COMMENT = "PADDLE_PROSTHESIS calibration data";
-    literal System::String^ PADDLE_PROSTHESIS_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD1; // Format Collimation index
+    literal System::String^ PADDLE_PROSTHESIS_COLLIMATION_DEFAULT = "1"; // Format Collimation index
     literal System::String^ PADDLE_PROSTHESIS_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_PROSTHESIS_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_PROSTHESIS_TAG_DEFAULT = "1"; //  Tag Code
@@ -121,14 +121,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"2"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|2|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_BIOP2D = "PADDLE_BIOP2D";
     literal System::String^ PARAM_PADDLE_BIOP2D_COMMENT = "PADDLE_BIOP2D calibration data";
-    literal System::String^ PADDLE_BIOP2D_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD2; // Format Collimation index
+    literal System::String^ PADDLE_BIOP2D_COLLIMATION_DEFAULT = "2"; // Format Collimation index
     literal System::String^ PADDLE_BIOP2D_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_BIOP2D_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_BIOP2D_TAG_DEFAULT = "2"; //  Tag Code
@@ -143,14 +143,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"3"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|3|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_BIOP3D = "PADDLE_BIOP3D";
     literal System::String^ PARAM_PADDLE_BIOP3D_COMMENT = "PADDLE_BIOP3D calibration data";
-    literal System::String^ PADDLE_BIOP3D_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD3; // Format Collimation index
+    literal System::String^ PADDLE_BIOP3D_COLLIMATION_DEFAULT = "3"; // Format Collimation index
     literal System::String^ PADDLE_BIOP3D_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_BIOP3D_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_BIOP3D_TAG_DEFAULT = "3"; //  Tag Code
@@ -165,14 +165,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"4"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|4|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_TOMO = "PADDLE_TOMO";
     literal System::String^ PARAM_PADDLE_TOMO_COMMENT = "PADDLE_TOMO calibration data";
-    literal System::String^ PADDLE_TOMO_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD4; // Format Collimation index
+    literal System::String^ PADDLE_TOMO_COLLIMATION_DEFAULT = "4"; // Format Collimation index
     literal System::String^ PADDLE_TOMO_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_TOMO_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_TOMO_TAG_DEFAULT = "4"; //  Tag Code
@@ -187,14 +187,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"5"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|5|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_24x30_CONTACT = "PADDLE_24x30_CONTACT";
     literal System::String^ PARAM_PADDLE_24x30_CONTACT_COMMENT = "PADDLE_24x30_CONTACT calibration data";
-    literal System::String^ PADDLE_24x30_CONTACT_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD5; // Format Collimation index
+    literal System::String^ PADDLE_24x30_CONTACT_COLLIMATION_DEFAULT = "5"; // Format Collimation index
     literal System::String^ PADDLE_24x30_CONTACT_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_24x30_CONTACT_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_24x30_TAG_DEFAULT = "5"; //  Tag Code
@@ -209,14 +209,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"6"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|6|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_18x24_C_CONTACT = "PADDLE_18x24_C_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_C_CONTACT_COMMENT = "PADDLE_18x24_C_CONTACT calibration data";
-    literal System::String^ PADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD6; // Format Collimation index
+    literal System::String^ PADDLE_18x24_C_CONTACT_COLLIMATION_DEFAULT = "6"; // Format Collimation index
     literal System::String^ PADDLE_18x24_C_CONTACT_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_18x24_C_CONTACT_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_18x24_C_TAG_DEFAULT = "6"; //  Tag Code
@@ -231,14 +231,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"7"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|7|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_18x24_L_CONTACT = "PADDLE_18x24_L_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_L_CONTACT_COMMENT = "PADDLE_18x24_L_CONTACT calibration data";
-    literal System::String^ PADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD7; // Format Collimation index
+    literal System::String^ PADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT = "7"; // Format Collimation index
     literal System::String^ PADDLE_18x24_L_CONTACT_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_18x24_L_CONTACT_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_18x24_L_TAG_DEFAULT = "7"; //  Tag Code
@@ -253,14 +253,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"8"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|8|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_18x24_R_CONTACT = "PADDLE_18x24_R_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_R_CONTACT_COMMENT = "PADDLE_18x24_R_CONTACT calibration data";
-    literal System::String^ PADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD8; // Format Collimation index
+    literal System::String^ PADDLE_18x24_R_CONTACT_COLLIMATION_DEFAULT = "8"; // Format Collimation index
     literal System::String^ PADDLE_18x24_R_CONTACT_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_18x24_R_CONTACT_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_18x24_R_TAG_DEFAULT = "8"; //  Tag Code
@@ -275,14 +275,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"9"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|9|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_10x24_CONTACT = "PADDLE_10x24_CONTACT";
     literal System::String^ PARAM_PADDLE_10x24_CONTACT_COMMENT = "PADDLE_10x24_CONTACT calibration data";
-    literal System::String^ PADDLE_10x24_CONTACT_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD9; // Format Collimation index
+    literal System::String^ PADDLE_10x24_CONTACT_COLLIMATION_DEFAULT = "9"; // Format Collimation index
     literal System::String^ PADDLE_10x24_CONTACT_POSITION_OFFSET_DEFAULT = "120"; // mm offset 
     literal System::String^ PADDLE_10x24_CONTACT_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_10x24_CONTACT_TAG_DEFAULT = "9"; //  Tag Code
@@ -297,14 +297,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"10"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|10|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_9x9_MAG = "PADDLE_9x9_MAG";
     literal System::String^ PARAM_PADDLE_9x9_MAG_COMMENT = "PADDLE_9x9_MAG calibration data";
-    literal System::String^ PADDLE_9x9_MAG_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD10; // Format Collimation index
+    literal System::String^ PADDLE_9x9_MAG_COLLIMATION_DEFAULT = "10"; // Format Collimation index
     literal System::String^ PADDLE_9x9_MAG_POSITION_OFFSET_DEFAULT = "0"; // mm offset 
     literal System::String^ PADDLE_9x9_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_9x9_MAG_TAG_DEFAULT = "10"; //  Tag Code
@@ -319,14 +319,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"11"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|11|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_9x21_MAG = "PADDLE_9x21_MAG";
     literal System::String^ PARAM_PADDLE_9x21_MAG_COMMENT = "PADDLE_9x21_MAG calibration data";
-    literal System::String^ PADDLE_9x21_MAG_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD11; // Format Collimation index
+    literal System::String^ PADDLE_9x21_MAG_COLLIMATION_DEFAULT = "11"; // Format Collimation index
     literal System::String^ PADDLE_9x21_MAG_POSITION_OFFSET_DEFAULT = "0"; // mm offset 
     literal System::String^ PADDLE_9x21_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_9x21_MAG_TAG_DEFAULT = "11"; //  Tag Code
@@ -341,14 +341,14 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"COLLI_STANDARD1"|Collimator Format Range|Sets the assigned collimator format|
+    /// |CollimationFormat|String|"12"|Collimator Format Range|Sets the assigned collimator format|
     /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|12|-|Identifier Code|
     /// 
     literal System::String^ PARAM_PADDLE_D75_MAG = "PADDLE_D75_MAG";
     literal System::String^ PARAM_PADDLE_D75_MAG_COMMENT = "PADDLE_D75_MAG calibration data";
-    literal System::String^ PADDLE_D75_MAG_COLLIMATION_DEFAULT = CollimatorConfig::PARAM_COLLI_STANDARD12; // Format Collimation index
+    literal System::String^ PADDLE_D75_MAG_COLLIMATION_DEFAULT = "12"; // Format Collimation index
     literal System::String^ PADDLE_D75_MAG_POSITION_OFFSET_DEFAULT = "0"; // mm offset 
     literal System::String^ PADDLE_D75_MAG_WEIGHT_DEFAULT = "10"; //  Weight in Newton
     literal System::String^ PADDLE_D75_MAG_TAG_DEFAULT = "12"; //  Tag Code

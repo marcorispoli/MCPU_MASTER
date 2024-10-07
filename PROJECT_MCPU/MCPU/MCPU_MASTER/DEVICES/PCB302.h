@@ -434,10 +434,12 @@ public:
 	static void setCompressorUnlock(void) { PCB302::device->commandNoWaitCompletion(protocol.command.encodeSetUnlockCommand(), 30); } //!< This function unlocks the compression
 	
 public:
-	static int getPaddleCollimationFormatIndex(unsigned char paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
+	
 	static paddleCodes getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name	
 	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
-	static int getDetectedPaddleCollimationFormat(void); //!< This function returns the collimation format index associated to the detected paddle
+
+	static System::Byte getPaddleCollimationFormat(paddleCodes paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
+	static System::Byte getDetectedPaddleCollimationFormat(void) { return detected_paddle_collimation_index; } //!< This function returns the collimation format index associated to the detected paddle
 	
 	/// <summary>
 	/// This function returns the current status of the Patient Protection presence
@@ -498,8 +500,9 @@ private:
 
 
 	void getDetectedPaddleData(void);
-	static paddleCodes detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;;	//!< This is the current detected paddle code
-	static unsigned char detected_paddle_weight = 0;//!< This is the weight in N of the detected paddle
+	static paddleCodes detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;	//!< This is the current detected paddle code
+	static System::Byte detected_paddle_collimation_index = 0; //!< This is the collimation slot associated to the detected paddle
+	static int detected_paddle_weight = 0;//!< This is the weight in N of the detected paddle
 	static int detected_paddle_offset = 0;//!< This is the offset from the holder position and the paddle compression plane 
 
 	

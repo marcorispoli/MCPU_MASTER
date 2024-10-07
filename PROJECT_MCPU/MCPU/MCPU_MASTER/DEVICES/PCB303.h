@@ -327,7 +327,7 @@ private:
 			literal unsigned int  TR_FORMAT_SLOT_IDX = LR_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS;
 
 			
-			static bool decodeFBCollimationSlotRegister(Register^ reg, unsigned int idx) {
+			static bool decodeFBCollimationSlotRegister(Register^ reg, int idx) {
 				if (reg == nullptr) return false;
 				if (idx >= format_collimation->Length) return false;
 
@@ -336,7 +336,7 @@ private:
 				return true;
 			}
 
-			Register^ encodeFBCollimationSlotRegister(unsigned int idx) {
+			Register^ encodeFBCollimationSlotRegister(int idx) {
 				if (idx >= format_collimation->Length) return nullptr;
 
 				unsigned char d0 = format_collimation[idx]->front & 0xFF;
@@ -348,7 +348,7 @@ private:
 				return gcnew Register(d0, d1, d2, d3);
 			}
 
-			static bool decodeLRCollimationSlotRegister(Register^ reg, unsigned int idx) {
+			static bool decodeLRCollimationSlotRegister(Register^ reg, int idx) {
 				if (reg == nullptr) return false;
 				if (idx >= format_collimation->Length) return false;
 
@@ -357,7 +357,7 @@ private:
 				return true;
 			}
 
-			Register^ encodeLRCollimationSlotRegister(unsigned int idx) {
+			Register^ encodeLRCollimationSlotRegister(int idx) {
 				if (idx >= format_collimation->Length) return nullptr;
 
 				unsigned char d0 = format_collimation[idx]->left & 0xFF;
@@ -369,7 +369,7 @@ private:
 				return gcnew Register(d0, d1, d2, d3);
 			}
 
-			static bool decodeTrapCollimationSlotRegister(Register^ reg, unsigned int idx) {
+			static bool decodeTrapCollimationSlotRegister(Register^ reg, int idx) {
 				if (reg == nullptr) return false;
 				if ((idx * 2) >= format_collimation->Length) return false;
 
@@ -381,7 +381,7 @@ private:
 				return true;
 			}
 
-			Register^ encodeTrapCollimationSlotRegister(unsigned int idx) {
+			Register^ encodeTrapCollimationSlotRegister(int idx) {
 				if ((idx*2) >= format_collimation->Length) return nullptr;
 
 				int idxl = idx * 2;
@@ -411,6 +411,7 @@ private:
 
 			CanDeviceCommand^ encodeSetFormatCommand(unsigned char target_format_slot) {
 				// if the index is out of range, the collimatin will be st to OPEN in the device
+				if (target_format_slot >= NUM_COLLIMATION_SLOTS) target_format_slot = 0;
 				return gcnew CanDeviceCommand((unsigned char)command_index::SET_FORMAT, target_format_slot, 0, 0, 0);
 			}
 
@@ -507,8 +508,8 @@ private:
 		static bool valid_mirror_format = false;
 		static int mirror_attempt = 0; 
 
-		static ProtocolStructure::StatusRegister::light_target_code current_light = ProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF;
-
+		static ProtocolStructure::StatusRegister::light_target_code selected_light = ProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF;
+		static bool retrigger_light_on_command = false;
 
 	///@}
 
@@ -517,8 +518,11 @@ public:
 	///@{
 	static void setAutoCollimationMode(void); //!< This function sets the format collimation to AUTO mode
 	static void setOpenCollimationMode(void); //!< This function sets the format collimation to OPEN mode	
-	static void setTomoCollimationMode(void); //!< This function activates the Tomo collimation mode
-	static void setCustomCollimationMode(void);//!< This function sets the format collimation to CUSTOM mode
+	
+	static void setCustomCollimationMode(System::Byte format_index);//!< This function sets the format collimation to CUSTOM mode
+	static void setCollimationLight(bool stat);
+	
+
 	static void resetFaults(void);//!< In case of collimation fault condition, this function starts a new collimation attempt.
 	inline static bool isValidCollimationFormat(void) { return valid_collimation_format; }
 	///@}

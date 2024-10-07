@@ -701,8 +701,7 @@ void   awsProtocol::SET_ExposureMode(void) {
     if (collimation_mode == "COLLI_AUTO") {
         PCB303::setAutoCollimationMode();
     }else if (collimation_mode == "COLLI_CUSTOM") {
-        // The PCB303::ColliStandardSelections::COLLI_STANDARD20 is reserved for the custom.
-        PCB303::setCustomCollimationMode(PCB303::ColliStandardSelections::COLLI_STANDARD20);
+        PCB303::setCustomCollimationMode(255); // The last available slot is reserved for custom 
     }
     else {
         // The AWS sets a format related to a given Paddle 
@@ -718,17 +717,8 @@ void   awsProtocol::SET_ExposureMode(void) {
         }
 
         // Gets the collimation format associated to the paddle code
-        PCB303::ColliStandardSelections format = (PCB303::ColliStandardSelections) PCB302::getPaddleCollimationFormatIndex((int) paddle);
-        if (format == PCB303::ColliStandardSelections::COLLI_INVALID_FORMAT) {
-            // The paddle is not associated to a valid format
-            pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE;
-            pDecodedFrame->errstr = "INVALID_COLLIMATION_FORMAT";
-            ackNok();
-            return;
-        }
+        PCB303::setCustomCollimationMode(PCB302::getPaddleCollimationFormat(paddle));
 
-        // Activate the custom collimation mode
-        PCB303::setCustomCollimationMode(format);
     }
 
     // Patient protection usage 

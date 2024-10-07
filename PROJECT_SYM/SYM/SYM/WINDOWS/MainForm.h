@@ -101,22 +101,22 @@ namespace CppCLRWinFormsProject {
 
 
 	private: System::Windows::Forms::Button^ button2;
-	private: System::Windows::Forms::GroupBox^ pcb315_panel;
+
 
 
 
 
 	private: System::Windows::Forms::Label^ filter_status;
-	private: System::Windows::Forms::RadioButton^ bulb_low;
 
-	private: System::Windows::Forms::RadioButton^ bulb_short;
-	private: System::Windows::Forms::RadioButton^ bulb_high;
-	private: System::Windows::Forms::GroupBox^ groupBox11;
-	private: System::Windows::Forms::GroupBox^ groupBox7;
-	private: System::Windows::Forms::RadioButton^ stator_short;
 
-	private: System::Windows::Forms::RadioButton^ stator_low;
-	private: System::Windows::Forms::RadioButton^ stator_high;
+
+
+
+
+
+
+
+
 	private: System::Windows::Forms::TextBox^ current_filter;
 	private: System::Windows::Forms::GroupBox^ motor_vertical_box;
 
@@ -237,6 +237,29 @@ private: System::Windows::Forms::RadioButton^ UndefField;
 private: System::Windows::Forms::GroupBox^ DisplayBox;
 private: System::Windows::Forms::TextBox^ DisplayVal;
 private: System::Windows::Forms::ProgressBar^ DisplayIntensity;
+private: System::Windows::Forms::GroupBox^ groupBox5;
+
+private: System::Windows::Forms::TextBox^ textBox5;
+private: System::Windows::Forms::Label^ label14;
+private: System::Windows::Forms::TextBox^ textBox4;
+
+private: System::Windows::Forms::TextBox^ textBox3;
+private: System::Windows::Forms::TextBox^ textBox7;
+private: System::Windows::Forms::TextBox^ textBox6;
+private: System::Windows::Forms::Label^ label47;
+private: System::Windows::Forms::Label^ label46;
+private: System::Windows::Forms::Label^ label45;
+private: System::Windows::Forms::Label^ label11;
+private: System::Windows::Forms::TextBox^ textBox8;
+private: System::Windows::Forms::Label^ label50;
+private: System::Windows::Forms::Label^ label49;
+private: System::Windows::Forms::TextBox^ textBox10;
+private: System::Windows::Forms::TextBox^ textBox9;
+private: System::Windows::Forms::PictureBox^ pictureBox3;
+private: System::Windows::Forms::PictureBox^ pictureBox1;
+private: System::Windows::Forms::Label^ label48;
+private: System::Windows::Forms::Label^ label52;
+private: System::Windows::Forms::Label^ label51;
 
 
 
@@ -446,12 +469,12 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->cmp_ena = (gcnew System::Windows::Forms::PictureBox());
 			this->label7 = (gcnew System::Windows::Forms::Label());
-			this->label6 = (gcnew System::Windows::Forms::Label());
-			this->compression_thickness = (gcnew System::Windows::Forms::TextBox());
-			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->compression_force = (gcnew System::Windows::Forms::TextBox());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->paddle_list = (gcnew System::Windows::Forms::ComboBox());
+			this->compression_thickness = (gcnew System::Windows::Forms::TextBox());
 			this->pcb304_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->DisplayBox = (gcnew System::Windows::Forms::GroupBox());
 			this->DisplayVal = (gcnew System::Windows::Forms::TextBox());
@@ -488,16 +511,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label23 = (gcnew System::Windows::Forms::Label());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
-			this->pcb315_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->current_filter = (gcnew System::Windows::Forms::TextBox());
-			this->groupBox7 = (gcnew System::Windows::Forms::GroupBox());
-			this->stator_short = (gcnew System::Windows::Forms::RadioButton());
-			this->stator_low = (gcnew System::Windows::Forms::RadioButton());
-			this->stator_high = (gcnew System::Windows::Forms::RadioButton());
-			this->groupBox11 = (gcnew System::Windows::Forms::GroupBox());
-			this->bulb_short = (gcnew System::Windows::Forms::RadioButton());
-			this->bulb_low = (gcnew System::Windows::Forms::RadioButton());
-			this->bulb_high = (gcnew System::Windows::Forms::RadioButton());
 			this->filter_status = (gcnew System::Windows::Forms::Label());
 			this->motor_vertical_box = (gcnew System::Windows::Forms::GroupBox());
 			this->label40 = (gcnew System::Windows::Forms::Label());
@@ -571,6 +585,27 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_body_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->pcb326_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->pcb303_panel = (gcnew System::Windows::Forms::GroupBox());
+			this->groupBox5 = (gcnew System::Windows::Forms::GroupBox());
+			this->textBox7 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
+			this->label14 = (gcnew System::Windows::Forms::Label());
+			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox8 = (gcnew System::Windows::Forms::TextBox());
+			this->label11 = (gcnew System::Windows::Forms::Label());
+			this->label45 = (gcnew System::Windows::Forms::Label());
+			this->label46 = (gcnew System::Windows::Forms::Label());
+			this->label47 = (gcnew System::Windows::Forms::Label());
+			this->label48 = (gcnew System::Windows::Forms::Label());
+			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			this->pictureBox3 = (gcnew System::Windows::Forms::PictureBox());
+			this->textBox9 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox10 = (gcnew System::Windows::Forms::TextBox());
+			this->label49 = (gcnew System::Windows::Forms::Label());
+			this->label50 = (gcnew System::Windows::Forms::Label());
+			this->label51 = (gcnew System::Windows::Forms::Label());
+			this->label52 = (gcnew System::Windows::Forms::Label());
 			this->infoPanel->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotation_led))->BeginInit();
@@ -592,14 +627,15 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox3->SuspendLayout();
 			this->groupBox6->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
-			this->pcb315_panel->SuspendLayout();
-			this->groupBox7->SuspendLayout();
-			this->groupBox11->SuspendLayout();
 			this->motor_vertical_box->SuspendLayout();
 			this->motor_arm_box->SuspendLayout();
 			this->motor_tilt_box->SuspendLayout();
 			this->motor_slide_box->SuspendLayout();
 			this->motor_body_box->SuspendLayout();
+			this->pcb303_panel->SuspendLayout();
+			this->groupBox5->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox3))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// infoPanel
@@ -1079,24 +1115,13 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label7->TabIndex = 9;
 			this->label7->Text = L"ENABLED";
 			// 
-			// label6
+			// compression_force
 			// 
-			this->label6->AutoSize = true;
-			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label6->ForeColor = System::Drawing::Color::White;
-			this->label6->Location = System::Drawing::Point(473, 23);
-			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(85, 13);
-			this->label6->TabIndex = 6;
-			this->label6->Text = L"BREAST THICK";
-			// 
-			// compression_thickness
-			// 
-			this->compression_thickness->Location = System::Drawing::Point(475, 39);
-			this->compression_thickness->Name = L"compression_thickness";
-			this->compression_thickness->Size = System::Drawing::Size(100, 22);
-			this->compression_thickness->TabIndex = 5;
+			this->compression_force->Enabled = false;
+			this->compression_force->Location = System::Drawing::Point(476, 86);
+			this->compression_force->Name = L"compression_force";
+			this->compression_force->Size = System::Drawing::Size(100, 22);
+			this->compression_force->TabIndex = 3;
 			// 
 			// label4
 			// 
@@ -1110,13 +1135,17 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label4->TabIndex = 4;
 			this->label4->Text = L"TARGET FORCE";
 			// 
-			// compression_force
+			// label6
 			// 
-			this->compression_force->Enabled = false;
-			this->compression_force->Location = System::Drawing::Point(476, 86);
-			this->compression_force->Name = L"compression_force";
-			this->compression_force->Size = System::Drawing::Size(100, 22);
-			this->compression_force->TabIndex = 3;
+			this->label6->AutoSize = true;
+			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label6->ForeColor = System::Drawing::Color::White;
+			this->label6->Location = System::Drawing::Point(473, 23);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(85, 13);
+			this->label6->TabIndex = 6;
+			this->label6->Text = L"BREAST THICK";
 			// 
 			// label3
 			// 
@@ -1142,6 +1171,13 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->paddle_list->Size = System::Drawing::Size(213, 24);
 			this->paddle_list->TabIndex = 0;
 			// 
+			// compression_thickness
+			// 
+			this->compression_thickness->Location = System::Drawing::Point(475, 39);
+			this->compression_thickness->Name = L"compression_thickness";
+			this->compression_thickness->Size = System::Drawing::Size(100, 22);
+			this->compression_thickness->TabIndex = 5;
+			// 
 			// pcb304_panel
 			// 
 			this->pcb304_panel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
@@ -1153,9 +1189,9 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb304_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->pcb304_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->pcb304_panel->Location = System::Drawing::Point(12, 565);
+			this->pcb304_panel->Location = System::Drawing::Point(438, 433);
 			this->pcb304_panel->Name = L"pcb304_panel";
-			this->pcb304_panel->Size = System::Drawing::Size(361, 122);
+			this->pcb304_panel->Size = System::Drawing::Size(352, 126);
 			this->pcb304_panel->TabIndex = 13;
 			this->pcb304_panel->TabStop = false;
 			this->pcb304_panel->Text = L"PCB304 - POTTER";
@@ -1594,136 +1630,13 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pictureBox2->TabIndex = 19;
 			this->pictureBox2->TabStop = false;
 			// 
-			// pcb315_panel
-			// 
-			this->pcb315_panel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->pcb315_panel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->pcb315_panel->Controls->Add(this->current_filter);
-			this->pcb315_panel->Controls->Add(this->groupBox7);
-			this->pcb315_panel->Controls->Add(this->groupBox11);
-			this->pcb315_panel->Controls->Add(this->filter_status);
-			this->pcb315_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->pcb315_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->pcb315_panel->Location = System::Drawing::Point(12, 433);
-			this->pcb315_panel->Name = L"pcb315_panel";
-			this->pcb315_panel->Size = System::Drawing::Size(361, 122);
-			this->pcb315_panel->TabIndex = 17;
-			this->pcb315_panel->TabStop = false;
-			this->pcb315_panel->Text = L"PCB315 - FILTER";
-			this->pcb315_panel->UseCompatibleTextRendering = true;
-			// 
 			// current_filter
 			// 
 			this->current_filter->Enabled = false;
-			this->current_filter->Location = System::Drawing::Point(255, 58);
+			this->current_filter->Location = System::Drawing::Point(197, 42);
 			this->current_filter->Name = L"current_filter";
-			this->current_filter->Size = System::Drawing::Size(100, 22);
+			this->current_filter->Size = System::Drawing::Size(105, 22);
 			this->current_filter->TabIndex = 20;
-			// 
-			// groupBox7
-			// 
-			this->groupBox7->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->groupBox7->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->groupBox7->Controls->Add(this->stator_short);
-			this->groupBox7->Controls->Add(this->stator_low);
-			this->groupBox7->Controls->Add(this->stator_high);
-			this->groupBox7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->groupBox7->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->groupBox7->Location = System::Drawing::Point(129, 25);
-			this->groupBox7->Name = L"groupBox7";
-			this->groupBox7->Size = System::Drawing::Size(115, 81);
-			this->groupBox7->TabIndex = 19;
-			this->groupBox7->TabStop = false;
-			this->groupBox7->Text = L"Stator-Alarms";
-			// 
-			// stator_short
-			// 
-			this->stator_short->AutoSize = true;
-			this->stator_short->Location = System::Drawing::Point(6, 56);
-			this->stator_short->Name = L"stator_short";
-			this->stator_short->Size = System::Drawing::Size(61, 20);
-			this->stator_short->TabIndex = 16;
-			this->stator_short->TabStop = true;
-			this->stator_short->Text = L"Short";
-			this->stator_short->UseVisualStyleBackColor = true;
-			// 
-			// stator_low
-			// 
-			this->stator_low->AutoSize = true;
-			this->stator_low->Location = System::Drawing::Point(6, 18);
-			this->stator_low->Name = L"stator_low";
-			this->stator_low->Size = System::Drawing::Size(52, 20);
-			this->stator_low->TabIndex = 14;
-			this->stator_low->TabStop = true;
-			this->stator_low->Text = L"Low";
-			this->stator_low->UseVisualStyleBackColor = true;
-			// 
-			// stator_high
-			// 
-			this->stator_high->AutoSize = true;
-			this->stator_high->Location = System::Drawing::Point(6, 37);
-			this->stator_high->Name = L"stator_high";
-			this->stator_high->Size = System::Drawing::Size(57, 20);
-			this->stator_high->TabIndex = 15;
-			this->stator_high->TabStop = true;
-			this->stator_high->Text = L"High";
-			this->stator_high->UseVisualStyleBackColor = true;
-			// 
-			// groupBox11
-			// 
-			this->groupBox11->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->groupBox11->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->groupBox11->Controls->Add(this->bulb_short);
-			this->groupBox11->Controls->Add(this->bulb_low);
-			this->groupBox11->Controls->Add(this->bulb_high);
-			this->groupBox11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->groupBox11->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->groupBox11->Location = System::Drawing::Point(9, 25);
-			this->groupBox11->Name = L"groupBox11";
-			this->groupBox11->Size = System::Drawing::Size(114, 81);
-			this->groupBox11->TabIndex = 18;
-			this->groupBox11->TabStop = false;
-			this->groupBox11->Text = L"Bulb-Alarms";
-			// 
-			// bulb_short
-			// 
-			this->bulb_short->AutoSize = true;
-			this->bulb_short->Location = System::Drawing::Point(6, 56);
-			this->bulb_short->Name = L"bulb_short";
-			this->bulb_short->Size = System::Drawing::Size(61, 20);
-			this->bulb_short->TabIndex = 16;
-			this->bulb_short->TabStop = true;
-			this->bulb_short->Text = L"Short";
-			this->bulb_short->UseVisualStyleBackColor = true;
-			// 
-			// bulb_low
-			// 
-			this->bulb_low->AutoSize = true;
-			this->bulb_low->Location = System::Drawing::Point(6, 18);
-			this->bulb_low->Name = L"bulb_low";
-			this->bulb_low->Size = System::Drawing::Size(52, 20);
-			this->bulb_low->TabIndex = 14;
-			this->bulb_low->TabStop = true;
-			this->bulb_low->Text = L"Low";
-			this->bulb_low->UseVisualStyleBackColor = true;
-			// 
-			// bulb_high
-			// 
-			this->bulb_high->AutoSize = true;
-			this->bulb_high->Location = System::Drawing::Point(6, 37);
-			this->bulb_high->Name = L"bulb_high";
-			this->bulb_high->Size = System::Drawing::Size(57, 20);
-			this->bulb_high->TabIndex = 15;
-			this->bulb_high->TabStop = true;
-			this->bulb_high->Text = L"High";
-			this->bulb_high->UseVisualStyleBackColor = true;
-			this->bulb_high->CheckedChanged += gcnew System::EventHandler(this, &MainForm::bulb_high_CheckedChanged);
 			// 
 			// filter_status
 			// 
@@ -1731,7 +1644,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->filter_status->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->filter_status->ForeColor = System::Drawing::Color::White;
-			this->filter_status->Location = System::Drawing::Point(257, 39);
+			this->filter_status->Location = System::Drawing::Point(197, 26);
 			this->filter_status->Name = L"filter_status";
 			this->filter_status->Size = System::Drawing::Size(44, 13);
 			this->filter_status->TabIndex = 6;
@@ -2590,7 +2503,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb326_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->pcb326_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->pcb326_panel->Location = System::Drawing::Point(596, 433);
+			this->pcb326_panel->Location = System::Drawing::Point(12, 566);
 			this->pcb326_panel->Name = L"pcb326_panel";
 			this->pcb326_panel->Size = System::Drawing::Size(194, 122);
 			this->pcb326_panel->TabIndex = 23;
@@ -2602,15 +2515,257 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb303_panel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 				static_cast<System::Int32>(static_cast<System::Byte>(60)));
 			this->pcb303_panel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->pcb303_panel->Controls->Add(this->label52);
+			this->pcb303_panel->Controls->Add(this->label51);
+			this->pcb303_panel->Controls->Add(this->label50);
+			this->pcb303_panel->Controls->Add(this->label49);
+			this->pcb303_panel->Controls->Add(this->textBox10);
+			this->pcb303_panel->Controls->Add(this->textBox9);
+			this->pcb303_panel->Controls->Add(this->pictureBox3);
+			this->pcb303_panel->Controls->Add(this->pictureBox1);
+			this->pcb303_panel->Controls->Add(this->current_filter);
+			this->pcb303_panel->Controls->Add(this->groupBox5);
+			this->pcb303_panel->Controls->Add(this->filter_status);
 			this->pcb303_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->pcb303_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->pcb303_panel->Location = System::Drawing::Point(596, 566);
+			this->pcb303_panel->Location = System::Drawing::Point(12, 433);
 			this->pcb303_panel->Name = L"pcb303_panel";
-			this->pcb303_panel->Size = System::Drawing::Size(194, 122);
+			this->pcb303_panel->Size = System::Drawing::Size(417, 126);
 			this->pcb303_panel->TabIndex = 24;
 			this->pcb303_panel->TabStop = false;
 			this->pcb303_panel->Text = L"PCB303 -COLLIMATOR";
+			// 
+			// groupBox5
+			// 
+			this->groupBox5->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->groupBox5->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->groupBox5->Controls->Add(this->label48);
+			this->groupBox5->Controls->Add(this->label47);
+			this->groupBox5->Controls->Add(this->label46);
+			this->groupBox5->Controls->Add(this->label45);
+			this->groupBox5->Controls->Add(this->label11);
+			this->groupBox5->Controls->Add(this->textBox8);
+			this->groupBox5->Controls->Add(this->textBox7);
+			this->groupBox5->Controls->Add(this->textBox6);
+			this->groupBox5->Controls->Add(this->textBox5);
+			this->groupBox5->Controls->Add(this->label14);
+			this->groupBox5->Controls->Add(this->textBox4);
+			this->groupBox5->Controls->Add(this->textBox3);
+			this->groupBox5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->groupBox5->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->groupBox5->Location = System::Drawing::Point(6, 17);
+			this->groupBox5->Name = L"groupBox5";
+			this->groupBox5->Size = System::Drawing::Size(185, 105);
+			this->groupBox5->TabIndex = 22;
+			this->groupBox5->TabStop = false;
+			this->groupBox5->Text = L"Format";
+			// 
+			// textBox7
+			// 
+			this->textBox7->Enabled = false;
+			this->textBox7->Location = System::Drawing::Point(112, 71);
+			this->textBox7->Name = L"textBox7";
+			this->textBox7->Size = System::Drawing::Size(58, 22);
+			this->textBox7->TabIndex = 31;
+			// 
+			// textBox6
+			// 
+			this->textBox6->Enabled = false;
+			this->textBox6->Location = System::Drawing::Point(112, 44);
+			this->textBox6->Name = L"textBox6";
+			this->textBox6->Size = System::Drawing::Size(58, 22);
+			this->textBox6->TabIndex = 30;
+			// 
+			// textBox5
+			// 
+			this->textBox5->Enabled = false;
+			this->textBox5->Location = System::Drawing::Point(24, 44);
+			this->textBox5->Name = L"textBox5";
+			this->textBox5->Size = System::Drawing::Size(58, 22);
+			this->textBox5->TabIndex = 29;
+			// 
+			// label14
+			// 
+			this->label14->AutoSize = true;
+			this->label14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label14->ForeColor = System::Drawing::Color::White;
+			this->label14->Location = System::Drawing::Point(88, 73);
+			this->label14->Name = L"label14";
+			this->label14->Size = System::Drawing::Size(25, 13);
+			this->label14->TabIndex = 26;
+			this->label14->Text = L"IDX";
+			// 
+			// textBox4
+			// 
+			this->textBox4->Enabled = false;
+			this->textBox4->Location = System::Drawing::Point(24, 18);
+			this->textBox4->Name = L"textBox4";
+			this->textBox4->Size = System::Drawing::Size(58, 22);
+			this->textBox4->TabIndex = 27;
+			// 
+			// textBox3
+			// 
+			this->textBox3->Enabled = false;
+			this->textBox3->Location = System::Drawing::Point(24, 71);
+			this->textBox3->Name = L"textBox3";
+			this->textBox3->Size = System::Drawing::Size(58, 22);
+			this->textBox3->TabIndex = 25;
+			// 
+			// textBox8
+			// 
+			this->textBox8->Enabled = false;
+			this->textBox8->Location = System::Drawing::Point(112, 18);
+			this->textBox8->Name = L"textBox8";
+			this->textBox8->Size = System::Drawing::Size(58, 22);
+			this->textBox8->TabIndex = 32;
+			// 
+			// label11
+			// 
+			this->label11->AutoSize = true;
+			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label11->ForeColor = System::Drawing::Color::White;
+			this->label11->Location = System::Drawing::Point(5, 23);
+			this->label11->Name = L"label11";
+			this->label11->Size = System::Drawing::Size(13, 13);
+			this->label11->TabIndex = 33;
+			this->label11->Text = L"L";
+			// 
+			// label45
+			// 
+			this->label45->AutoSize = true;
+			this->label45->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label45->ForeColor = System::Drawing::Color::White;
+			this->label45->Location = System::Drawing::Point(3, 46);
+			this->label45->Name = L"label45";
+			this->label45->Size = System::Drawing::Size(15, 13);
+			this->label45->TabIndex = 34;
+			this->label45->Text = L"R";
+			// 
+			// label46
+			// 
+			this->label46->AutoSize = true;
+			this->label46->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label46->ForeColor = System::Drawing::Color::White;
+			this->label46->Location = System::Drawing::Point(93, 23);
+			this->label46->Name = L"label46";
+			this->label46->Size = System::Drawing::Size(13, 13);
+			this->label46->TabIndex = 35;
+			this->label46->Text = L"F";
+			// 
+			// label47
+			// 
+			this->label47->AutoSize = true;
+			this->label47->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label47->ForeColor = System::Drawing::Color::White;
+			this->label47->Location = System::Drawing::Point(92, 46);
+			this->label47->Name = L"label47";
+			this->label47->Size = System::Drawing::Size(14, 13);
+			this->label47->TabIndex = 36;
+			this->label47->Text = L"B";
+			// 
+			// label48
+			// 
+			this->label48->AutoSize = true;
+			this->label48->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label48->ForeColor = System::Drawing::Color::White;
+			this->label48->Location = System::Drawing::Point(3, 73);
+			this->label48->Name = L"label48";
+			this->label48->Size = System::Drawing::Size(14, 13);
+			this->label48->TabIndex = 37;
+			this->label48->Text = L"T";
+			// 
+			// pictureBox1
+			// 
+			this->pictureBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)));
+			this->pictureBox1->Location = System::Drawing::Point(197, 90);
+			this->pictureBox1->Name = L"pictureBox1";
+			this->pictureBox1->Size = System::Drawing::Size(57, 23);
+			this->pictureBox1->TabIndex = 23;
+			this->pictureBox1->TabStop = false;
+			// 
+			// pictureBox3
+			// 
+			this->pictureBox3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)));
+			this->pictureBox3->Location = System::Drawing::Point(258, 90);
+			this->pictureBox3->Name = L"pictureBox3";
+			this->pictureBox3->Size = System::Drawing::Size(44, 23);
+			this->pictureBox3->TabIndex = 24;
+			this->pictureBox3->TabStop = false;
+			// 
+			// textBox9
+			// 
+			this->textBox9->Enabled = false;
+			this->textBox9->Location = System::Drawing::Point(314, 44);
+			this->textBox9->Name = L"textBox9";
+			this->textBox9->Size = System::Drawing::Size(92, 22);
+			this->textBox9->TabIndex = 25;
+			// 
+			// textBox10
+			// 
+			this->textBox10->Enabled = false;
+			this->textBox10->Location = System::Drawing::Point(314, 91);
+			this->textBox10->Name = L"textBox10";
+			this->textBox10->Size = System::Drawing::Size(92, 22);
+			this->textBox10->TabIndex = 26;
+			// 
+			// label49
+			// 
+			this->label49->AutoSize = true;
+			this->label49->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label49->ForeColor = System::Drawing::Color::White;
+			this->label49->Location = System::Drawing::Point(311, 28);
+			this->label49->Name = L"label49";
+			this->label49->Size = System::Drawing::Size(35, 13);
+			this->label49->TabIndex = 27;
+			this->label49->Text = L"BULB";
+			// 
+			// label50
+			// 
+			this->label50->AutoSize = true;
+			this->label50->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label50->ForeColor = System::Drawing::Color::White;
+			this->label50->Location = System::Drawing::Point(311, 76);
+			this->label50->Name = L"label50";
+			this->label50->Size = System::Drawing::Size(51, 13);
+			this->label50->TabIndex = 28;
+			this->label50->Text = L"STATOR";
+			// 
+			// label51
+			// 
+			this->label51->AutoSize = true;
+			this->label51->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label51->ForeColor = System::Drawing::Color::White;
+			this->label51->Location = System::Drawing::Point(194, 74);
+			this->label51->Name = L"label51";
+			this->label51->Size = System::Drawing::Size(51, 13);
+			this->label51->TabIndex = 29;
+			this->label51->Text = L"MIRROR";
+			// 
+			// label52
+			// 
+			this->label52->AutoSize = true;
+			this->label52->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label52->ForeColor = System::Drawing::Color::White;
+			this->label52->Location = System::Drawing::Point(258, 75);
+			this->label52->Name = L"label52";
+			this->label52->Size = System::Drawing::Size(39, 13);
+			this->label52->TabIndex = 30;
+			this->label52->Text = L"LIGHT";
 			// 
 			// MainForm
 			// 
@@ -2628,7 +2783,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->Controls->Add(this->motor_tilt_box);
 			this->Controls->Add(this->motor_arm_box);
 			this->Controls->Add(this->motor_vertical_box);
-			this->Controls->Add(this->pcb315_panel);
 			this->Controls->Add(this->groupBox6);
 			this->Controls->Add(this->pcb301_panel);
 			this->Controls->Add(this->pcb304_panel);
@@ -2672,12 +2826,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox6->ResumeLayout(false);
 			this->groupBox6->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
-			this->pcb315_panel->ResumeLayout(false);
-			this->pcb315_panel->PerformLayout();
-			this->groupBox7->ResumeLayout(false);
-			this->groupBox7->PerformLayout();
-			this->groupBox11->ResumeLayout(false);
-			this->groupBox11->PerformLayout();
 			this->motor_vertical_box->ResumeLayout(false);
 			this->motor_vertical_box->PerformLayout();
 			this->motor_arm_box->ResumeLayout(false);
@@ -2688,6 +2836,12 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_slide_box->PerformLayout();
 			this->motor_body_box->ResumeLayout(false);
 			this->motor_body_box->PerformLayout();
+			this->pcb303_panel->ResumeLayout(false);
+			this->pcb303_panel->PerformLayout();
+			this->groupBox5->ResumeLayout(false);
+			this->groupBox5->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox3))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -2803,6 +2957,8 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 
 private: System::Void bulb_high_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 }
+
+
 };
 
 }

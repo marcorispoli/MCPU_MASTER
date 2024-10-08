@@ -292,7 +292,7 @@ bool PCB303::configurationLoop(void) {
     // Read the parameters from the configuration files
     System::String^ Param;
    
-
+    // Upload the configuration file content into the Proocol registers
     for (int index= 0; index < protocol.parameter_register.format_collimation->Length; index++) {
         Param = "COLLI_STANDARD_FORMAT_" + index.ToString();
         protocol.parameter_register.format_collimation[index]->front = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_FRONT]);
@@ -302,16 +302,41 @@ bool PCB303::configurationLoop(void) {
         protocol.parameter_register.format_collimation[index]->trap = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_TRAP]);
     }
 
-    // Writes the register to the device
-    for (int index = 0; index < protocol.parameter_register.format_collimation->Length; index++) {
-        writeParamRegister(index, protocol.parameter_register.encodeFBCollimationSlotRegister(index));
-        writeParamRegister(index, protocol.parameter_register.encodeLRCollimationSlotRegister(index));
+    // Upload the filter positions from the configuration file
+    protocol.parameter_register.filter_slots[0] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_0]);
+    protocol.parameter_register.filter_slots[1] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_1]);
+    protocol.parameter_register.filter_slots[2] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_2]);
+    protocol.parameter_register.filter_slots[3] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_3]);
+    protocol.parameter_register.filter_slots[4] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_4]);
+
+    // Upload the mirror position from the configuration file
+    protocol.parameter_register.mirror_slot = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_MIRROR)[CollimatorConfig::MIRROR_INFIELD]);
+
+    // Download into the divice the Parameters
+   
+    // Writes the first 20 register of the Front-Back datas
+    for (int index = 0; index < NUM_COLLIMATION_SLOTS; index++) {
+        writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::FB_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeFBCollimationSlotRegister(index));
+    
     }
 
-    for (int index = 0; index < protocol.parameter_register.format_collimation->Length/2; index++) {
-        writeParamRegister(index, protocol.parameter_register.encodeTrapCollimationSlotRegister(index));
+    // Writes the next 20 registers of the Left-Right datas
+    for (int index = 0; index < NUM_COLLIMATION_SLOTS; index++) {
+        writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::LR_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeLRCollimationSlotRegister(index));
     }
 
+    // Writes the next 10 registers of the Trap datas
+    for (int index = 0; index < NUM_COLLIMATION_SLOTS / 2; index++) {
+        writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeTrapCollimationSlotRegister(index));
+    }
+
+    // Writes the next 3 registers of the Filter datas
+    for (int index = 0; index < 3; index++) {
+        writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::FILTER_SLOT_IDX + index, protocol.parameter_register.encodeFilterSlotRegister(index));
+    }
+
+    // Writes the next register of the Mirror data
+    writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
 
     return true;
 }

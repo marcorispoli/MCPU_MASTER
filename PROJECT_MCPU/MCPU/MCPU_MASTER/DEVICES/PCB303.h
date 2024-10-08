@@ -189,7 +189,8 @@ private:
 
 			enum class register_index {
 				SYSTEM_REGISTER = 0, //!> This is the System Status register index
-				TUBE_REGISTER,				
+				TUBE_REGISTER,	
+				NUM_REGISTERS
 			};
 
 			enum class action_code {
@@ -307,7 +308,7 @@ private:
 		public:
 
 			enum class register_index {
-				NO_DATA_REGISTERS = 0,
+				NUM_REGISTERS = 0,
 			};
 
 		};
@@ -315,18 +316,28 @@ private:
 		ref class ParameterRegister {
 		public:
 
+			enum class register_index {
+				FB_FORMAT_SLOT_IDX = 0,
+				LR_FORMAT_SLOT_IDX = FB_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS,
+				TR_FORMAT_SLOT_IDX = LR_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS,
+				FILTER_SLOT_IDX = TR_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS / 2,
+				MIRROR_SLOT_IDX = FILTER_SLOT_IDX + 3,
+				NUM_REGISTERS
+			};
+
 			ParameterRegister() {
 				format_collimation = gcnew cli::array< format_collimation_data^>(NUM_COLLIMATION_SLOTS);
+				filter_slots = gcnew cli::array< unsigned short>(6);
+
 				for (int i = 0; i < NUM_COLLIMATION_SLOTS; i++) {
 					format_collimation[i] = gcnew format_collimation_data();
 				}
+				for (int i = 0; i < 6; i++) {
+					filter_slots[i] = 0;
+				}
+				mirror_slot = 0;
 			}
 
-			literal unsigned int  FB_FORMAT_SLOT_IDX = 0;
-			literal unsigned int  LR_FORMAT_SLOT_IDX = FB_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS;
-			literal unsigned int  TR_FORMAT_SLOT_IDX = LR_FORMAT_SLOT_IDX + NUM_COLLIMATION_SLOTS;
-
-			
 			static bool decodeFBCollimationSlotRegister(Register^ reg, int idx) {
 				if (reg == nullptr) return false;
 				if (idx >= format_collimation->Length) return false;
@@ -396,7 +407,53 @@ private:
 				return gcnew Register(d0, d1, d2, d3);
 			}
 
+			static bool decodeFilterSlotRegister(Register^ reg, int idx) {
+				if (reg == nullptr) return false;
+				if ((idx * 2) >= filter_slots->Length) return false;
+
+				int idxl = idx * 2;
+				int idxh = idxl + 1;
+
+				filter_slots[idxl] = reg->d0 + 256 * reg->d1;
+				filter_slots[idxh] = reg->d2 + 256 * reg->d3;
+				return true;
+			}
+
+			Register^ encodeFilterSlotRegister(int idx) {
+				if ((idx * 2) >= filter_slots->Length) return nullptr;
+
+				int idxl = idx * 2;
+				int idxh = idxl + 1;
+
+				unsigned char d0 = filter_slots[idxl] & 0xFF;
+				unsigned char d1 = (filter_slots[idxl] >> 8) & 0xFF;
+
+				unsigned char d2 = filter_slots[idxh] & 0xFF;
+				unsigned char d3 = (filter_slots[idxh] >> 8) & 0xFF;
+
+				return gcnew Register(d0, d1, d2, d3);
+			}
+
+			static bool decodeMirroRegister(Register^ reg) {
+				if (reg == nullptr) return false;
+
+				mirror_slot = reg->d0 + 256 * reg->d1;
+				return true;
+			}
+
+			Register^ encodeMirrorRegister(void) {
+				unsigned char d0 = mirror_slot & 0xFF;
+				unsigned char d1 = (mirror_slot >> 8) & 0xFF;
+
+				unsigned char d2 = 0;
+				unsigned char d3 = 0;
+
+				return gcnew Register(d0, d1, d2, d3);
+			}
+
 			static cli::array< format_collimation_data^>^ format_collimation;
+			static cli::array< unsigned short>^ filter_slots;
+			static unsigned short mirror_slot;
 		};
 
 		ref class Commands {

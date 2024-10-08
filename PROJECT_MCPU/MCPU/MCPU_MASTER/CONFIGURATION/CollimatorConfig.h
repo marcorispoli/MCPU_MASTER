@@ -213,6 +213,43 @@ public:
     literal System::String^ PARAM_COLLI_FORMAT_RIGHT_19_DEFAULT = "0";
     literal System::String^ PARAM_COLLI_FORMAT_TRAP_19_DEFAULT = "0";
 
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_MIRROR = "MIRROR_POSITION";
+    literal System::String^ PARAM_MIRROR_COMMENT = "Mirror calibrated params";
+    literal int     MIRROR_INFIELD = 0;
+    literal System::String^ PARAM_MIRROR_INFIELD_DEFAULT = "0";
+
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_FILTER_POSITION = "FILTER_POSITION";
+    literal System::String^ PARAM_FILTER_POSITION_COMMENT = "Filter calibrated params";
+    literal int     PARAM_FILTER_POSITION_0 = 0;
+    literal int     PARAM_FILTER_POSITION_1 = 1;
+    literal int     PARAM_FILTER_POSITION_2 = 2;
+    literal int     PARAM_FILTER_POSITION_3 = 3;
+    literal int     PARAM_FILTER_POSITION_4 = 4;
+    literal System::String^ PARAM_FILTER_POSITION_0_DEFAULT = "0";
+    literal System::String^ PARAM_FILTER_POSITION_1_DEFAULT = "0";
+    literal System::String^ PARAM_FILTER_POSITION_2_DEFAULT = "0";
+    literal System::String^ PARAM_FILTER_POSITION_3_DEFAULT = "0";
+    literal System::String^ PARAM_FILTER_POSITION_4_DEFAULT = "0";
+
+    //___________________________________________________________________________________________________//
+    literal System::String^ PARAM_FILTER_CONFIG = "FILTER_CONFIG";
+    literal System::String^ PARAM_FILTER_CONFIG_COMMENT = "Defines the Filter material assignment to selector slot";
+    literal int     PARAM_FILTER_RH_POSITION = 0;
+    literal int     PARAM_FILTER_AG_POSITION = 1;
+    literal int     PARAM_FILTER_AL_POSITION = 2;
+    literal int     PARAM_FILTER_CU_POSITION = 3;
+    literal int     PARAM_FILTER_MO_POSITION = 4;
+    literal int     PARAM_FILTER_LEAD_POSITION = 5;
+
+    literal System::String^ PARAM_FILTER_RH_POSITION_DEFAULT = "0"; 
+    literal System::String^ PARAM_FILTER_AG_POSITION_DEFAULT = "1"; 
+    literal System::String^ PARAM_FILTER_AL_POSITION_DEFAULT = "2"; 
+    literal System::String^ PARAM_FILTER_CU_POSITION_DEFAULT = "3"; 
+    literal System::String^ PARAM_FILTER_MO_POSITION_DEFAULT = "3";
+    literal System::String^ PARAM_FILTER_LEAD_POSITION_DEFAULT = "4";
+
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
@@ -378,6 +415,26 @@ public:
             PARAM_COLLI_FORMAT_TRAP_19_DEFAULT
             }),
 
+            CONFIG_FILE_ITEM(PARAM_MIRROR, PARAM_MIRROR_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_MIRROR_INFIELD_DEFAULT,
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_FILTER_POSITION, PARAM_FILTER_POSITION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FILTER_POSITION_0_DEFAULT,
+            PARAM_FILTER_POSITION_1_DEFAULT,
+            PARAM_FILTER_POSITION_2_DEFAULT,
+            PARAM_FILTER_POSITION_3_DEFAULT,
+            PARAM_FILTER_POSITION_4_DEFAULT,
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_FILTER_CONFIG, PARAM_FILTER_CONFIG_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_FILTER_RH_POSITION_DEFAULT,
+            PARAM_FILTER_AG_POSITION_DEFAULT,
+            PARAM_FILTER_AL_POSITION_DEFAULT,
+            PARAM_FILTER_CU_POSITION_DEFAULT,
+            PARAM_FILTER_MO_POSITION_DEFAULT,
+            PARAM_FILTER_LEAD_POSITION_DEFAULT
+            }),
         }
         );
 };

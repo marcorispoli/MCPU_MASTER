@@ -155,11 +155,80 @@
 /// </summary>
 ref class PCB303 : public CanDeviceProtocol
 {
-private:
+public:
 
 	literal System::Byte  NUM_COLLIMATION_SLOTS = 20; //!< Max number of available collimation slots
 	literal System::Byte  CUSTOM_SLOT = NUM_COLLIMATION_SLOTS - 1; //!< The slot assigned to the custom format collimation
 	
+	/// <summary>
+	/// This is the enumeration class for the available filters
+	/// </summary>
+	enum class filter_index {
+		FILTER_RH = 0, 
+		FILTER_AG,
+		FILTER_AL,
+		FILTER_CU,
+		FILTER_MO,
+		FILTER_LD,
+	};
+
+	static System::String^  getTagFromFilter(filter_index flt) {
+		if (flt == filter_index::FILTER_RH) return "Rh";
+		if (flt == filter_index::FILTER_AG) return "Ag";
+		if (flt == filter_index::FILTER_AL) return "Al";
+		if (flt == filter_index::FILTER_CU) return "Cu";
+		if (flt == filter_index::FILTER_MO) return "Mo";
+		if (flt == filter_index::FILTER_LD) return "Ld";
+
+		return "";
+	}
+
+	static filter_index getFilterFromTag(System::String^ tag) {
+		if (
+			(tag->Equals("ag")) ||
+			(tag->Equals("aG")) ||
+			(tag->Equals("Ag")) ||
+			(tag->Equals("AG"))
+			) return filter_index::FILTER_AG;
+			
+		if (
+			(tag->Equals("al")) ||
+			(tag->Equals("aL")) ||
+			(tag->Equals("Al")) ||
+			(tag->Equals("AL"))
+			) return filter_index::FILTER_AL;
+
+		if (
+			(tag->Equals("rh")) ||
+			(tag->Equals("rH")) ||
+			(tag->Equals("Rh")) ||
+			(tag->Equals("RH"))
+			) return filter_index::FILTER_RH;
+
+		if (
+			(tag->Equals("cu")) ||
+			(tag->Equals("cU")) ||
+			(tag->Equals("Cu")) ||
+			(tag->Equals("CU"))
+			) return filter_index::FILTER_CU;
+
+		if (
+			(tag->Equals("mo")) ||
+			(tag->Equals("mO")) ||
+			(tag->Equals("Mo")) ||
+			(tag->Equals("MO"))
+			) return filter_index::FILTER_MO;
+
+		if (
+			(tag->Equals("ld")) ||
+			(tag->Equals("lD")) ||
+			(tag->Equals("Ld")) ||
+			(tag->Equals("LD"))
+			) return filter_index::FILTER_LD;
+
+		// As default returns the Rh
+		return filter_index::FILTER_RH;
+	}
 
 	/// <summary>
 	/// This class implement the protocol data structure as described in the protocol specification.
@@ -241,11 +310,11 @@ private:
 
 				// Byte 0 of the register
 				sys->d0 = ((unsigned char) collimation_action_status & 0x7);
-				sys->d0 |= ((unsigned char) collimation_target_index >> 3);
+				sys->d0 |= ((unsigned char) collimation_target_index << 3);
 
 				// Byte 1 of the register
 				sys->d1 = ((unsigned char)filter_action_status & 0x7);
-				sys->d1 |= ((unsigned char)filter_target_index >> 3);
+				sys->d1 |= ((unsigned char)filter_target_index << 3);
 
 				// Byte 2 of the register
 				sys->d2 = ((unsigned char)mirror_action_status & 0x7);
@@ -559,6 +628,7 @@ private:
 
 		static System::Byte selected_filter = 0;
 		static bool valid_filter_format = false;
+		static bool filter_error = false;
 		static int filter_attempt = 0; 
 
 		static ProtocolStructure::StatusRegister::mirror_target_code selected_mirror = ProtocolStructure::StatusRegister::mirror_target_code::OUT_FIELD;
@@ -568,17 +638,31 @@ private:
 		static ProtocolStructure::StatusRegister::light_target_code selected_light = ProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF;
 		static bool retrigger_light_on_command = false;
 
+		static int bulb_temperature = 0;
+		static int stator_temperature = 0;
+
 	///@}
 
 public:
 	/// \ingroup PCB303_Interface
 	///@{
 	static void setAutoCollimationMode(void); //!< This function sets the format collimation to AUTO mode
-	static void setOpenCollimationMode(void); //!< This function sets the format collimation to OPEN mode	
-	
+	static void setOpenCollimationMode(void); //!< This function sets the format collimation to OPEN mode		
 	static void setCustomCollimationMode(System::Byte format_index);//!< This function sets the format collimation to CUSTOM mode
+
+	// Filter Commands
+	static void selectFilter(filter_index filter);
+	static int  getFilterSlot(filter_index filter);
+	static bool isValidFilter(void) { return valid_filter_format; }
+	static bool isFilterInError(void) { return filter_error; }
+	static bool	waitFilterCompleted(void);
+
 	static void setCollimationLight(bool stat);
+	static bool getPowerLightStatus(void) { return (protocol.status_register.light_status == ProtocolStructure::StatusRegister::light_target_code::LIGHT_ON) ? true : false; }
 	
+	static int getBulb(void) { return bulb_temperature; }
+	static int getStator(void) { return stator_temperature; }
+	static bool isTubeAlarm() { return false; }
 
 	static void resetFaults(void);//!< In case of collimation fault condition, this function starts a new collimation attempt.
 	inline static bool isValidCollimationFormat(void) { return valid_collimation_format; }

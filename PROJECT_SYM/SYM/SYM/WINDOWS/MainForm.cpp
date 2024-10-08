@@ -4,7 +4,6 @@
 #include "PCB302/PCB302.h"
 #include "PCB303/PCB303.h"
 #include "PCB304/PCB304.h"
-#include "PCB315/PCB315.h"
 #include "PCB326/PCB326.h"
 #include "MOTORS/VerticalMotor.h"
 #include "MOTORS/ArmMotor.h"
@@ -71,7 +70,6 @@ void MainForm::MainFormInitialize(void) {
 	PCB302::initialize();
 	PCB303::initialize();
 	PCB304::initialize();
-	PCB315::initialize();
 	PCB326::initialize();
 	VerticalMotor::initialize();
 	ArmMotor::initialize();
@@ -106,8 +104,6 @@ void MainForm::configurationCallback(void) {
 		if (canInterface::canDataBuffer[0] & 0x8) PCB304::board->active = true;
 		else PCB304::board->active = false;
 
-		if (canInterface::canDataBuffer[0] & 0x10) PCB315::board->active = true;
-		else PCB315::board->active = false;
 
 		if (canInterface::canDataBuffer[0] & 0x20) PCB326::board->active = true;
 		else PCB326::board->active = false;
@@ -273,6 +269,65 @@ void MainForm::pcb302Simulator(void) {
 }
 void MainForm::pcb303Simulator(void) {
 
+	// Format Panel Setting
+	colliIndex->Text = PCB303::device.format_index.ToString();
+	if (PCB303::device.format_action_command == PCB303::ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
+		leftBlade->Text = "####";
+		rightBlade->Text = "####";
+		frontBlade->Text = "####";
+		backBlade->Text = "####";
+		trapBlade->Text = "####";
+	}
+	else if (PCB303::device.format_action_command == PCB303::ProtocolStructure::StatusRegister::action_code::STAT_POSITIONING) {
+		leftBlade->Text = "...";
+		rightBlade->Text = "...";
+		frontBlade->Text = "...";
+		backBlade->Text = "...";
+		trapBlade->Text = "...";
+	}
+	else {
+		colliIndex->Text = PCB303::device.format_index.ToString();
+		leftBlade->Text = PCB303::device.format_data.left.ToString();
+		rightBlade->Text = PCB303::device.format_data.right.ToString();
+		frontBlade->Text = PCB303::device.format_data.front.ToString();
+		backBlade->Text = PCB303::device.format_data.back.ToString();
+		trapBlade->Text = PCB303::device.format_data.trap.ToString();
+	}
+	
+	// Filter Panel Setting
+	filterIndex->Text = PCB303::device.filter_index.ToString();
+	if (PCB303::device.filter_action_command == PCB303::ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
+		filterPosition->Text = "####";
+	}
+	else if (PCB303::device.filter_action_command == PCB303::ProtocolStructure::StatusRegister::action_code::STAT_POSITIONING) {
+		filterPosition->Text = "...";
+	}
+	else {
+		filterPosition->Text = PCB303::device.filter_position.ToString();
+	}
+
+
+	// Mirror Panel Setting
+	if(PCB303::device.mirror_index == PCB303::ProtocolStructure::StatusRegister::mirror_target_code::IN_FIELD)
+		mirrorIndex->Text = "FIELD";
+	else mirrorIndex->Text = "OUT";
+
+	if (PCB303::device.mirror_action_command == PCB303::ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
+		mirrorPosition->Text = "####";
+	}
+	else if (PCB303::device.mirror_action_command == PCB303::ProtocolStructure::StatusRegister::action_code::STAT_POSITIONING) {
+		mirrorPosition->Text = "...";
+	}
+	else {
+		mirrorPosition->Text = PCB303::device.mirror_position.ToString();
+	}
+
+	// Light Panel
+	lightTimer->Text = PCB303::device.power_light_timer.ToString();
+	if (PCB303::device.power_light == PCB303::ProtocolStructure::StatusRegister::light_target_code::LIGHT_ON) lightPicture->BackColor = COLOR_ON;
+	else lightPicture->BackColor = COLOR_OFF;
+
+
 }
 void MainForm::pcb304Simulator(void) {
 
@@ -334,6 +389,7 @@ void MainForm::StartupProcedure(void) {
 
 	if(PCB301::board->active)  pcb301Simulator();
 	if (PCB302::board->active) pcb302Simulator();
+	if (PCB303::board->active) pcb303Simulator();
 	if (PCB304::board->active) pcb304Simulator();
 	
 	// Motor power supply assignment
@@ -481,7 +537,6 @@ void MainForm::WndProc(System::Windows::Forms::Message% m)
 		(PCB302::board->active) ? pcb302_panel->Show() : pcb302_panel->Hide();
 		(PCB303::board->active) ? pcb303_panel->Show() : pcb303_panel->Hide();
 		(PCB304::board->active) ? pcb304_panel->Show() : pcb304_panel->Hide();
-		(PCB315::board->active) ? pcb315_panel->Show() : pcb315_panel->Hide();
 		(PCB326::board->active) ? pcb326_panel->Show() : pcb326_panel->Hide();
 
 		(VerticalMotor::device->active) ? motor_vertical_box->Show() : motor_vertical_box->Hide();

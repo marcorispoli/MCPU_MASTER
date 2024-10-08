@@ -30,8 +30,14 @@ public:
 	ref class commandResult {
 	public:
 		commandResult(CommandRegisterErrors err) {
-			error = err;
-			status = CommandReturnStatus::COMMAND_ERROR;
+			if (err == CommandRegisterErrors::COMMAND_NO_ERROR) {
+				error = CommandRegisterErrors::COMMAND_NO_ERROR;
+				status = CommandReturnStatus::COMMAND_SUCCESS;
+			}
+			else {
+				error = err;
+				status = CommandReturnStatus::COMMAND_ERROR;
+			}			
 			d0 = 0;
 			d1 = 0;
 		}
@@ -266,8 +272,7 @@ protected:
 	}
 
 	virtual commandResult^ device_command_callback(unsigned char cmd, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3) {
-		commandResult^ result = gcnew commandResult(deviceInterface::CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED);
-		command_register = gcnew Register((Byte)cmd, (Byte)result->status, (Byte)result->d0, (Byte)result->error);
+		commandResult^ result = gcnew commandResult(deviceInterface::CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED);		
 		return result;
 	}
 

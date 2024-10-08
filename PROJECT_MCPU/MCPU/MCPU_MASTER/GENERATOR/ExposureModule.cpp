@@ -90,15 +90,13 @@ void Exposures::exposureManagementLoop(bool demo) {
         // Checks if the X-RAY push button is pressed
         exposure_err_code = exposure_completed_errors::XRAY_BUTTON_RELEASE;
     }
-    else if (PCB315::isTubeAlarm()) {
+    else if (PCB303::isTubeAlarm()) {
         // Checks for the Tube temperature
         exposure_err_code = exposure_completed_errors::XRAY_TUBE_TEMPERATURE;
     }
     else {
 
-        // Preliminary selection of the filter without waiting the command completion. The given seqeunce will check for completion
-        PCB315::setFilterAutoMode(getExposurePulse(0)->filter, false);
-
+        
         // Every Xray procedure return True if the seqeunce is completed if success.
         // In case of false returned (error condition), the   xray_exposure_error is set properly
         switch (getExposureMode()) {
@@ -195,7 +193,7 @@ void Exposures::exposureManagementLoop(bool demo) {
     /// <param name="pulse_seq">This is the current pulse sequence (0 to 3) </param>
     /// <param name="ft">Filter used in the exposure</param>
     /// <param name="fc">This is the focus used in the exposure</param>
-void Exposures::setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc) {
+void Exposures::setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB303::filter_index ft, unsigned char fc) {
     if (R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].samples) {
         setExposedPulse(pulse_seq, gcnew Exposures::exposure_pulse(
             R2CP::CaDataDicGen::GetInstance()->executed_pulses[databank_index].kV,

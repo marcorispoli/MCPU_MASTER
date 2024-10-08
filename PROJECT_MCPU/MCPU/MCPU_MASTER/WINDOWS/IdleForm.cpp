@@ -10,7 +10,6 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
-#include "PCB315.h"
 #include "PCB326.h"
 #include "VerticalMotor.h"
 #include "ArmMotor.h"
@@ -188,7 +187,7 @@ void IdleForm::initIdleStatus(void) {
 	PCB303::setOpenCollimationMode();
 
 	// Sets the current Filter selector to manual mode
-	PCB315::setFilterManualMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
+	PCB303::selectFilter(PCB303::filter_index::FILTER_RH);
 
 	// Activates the motors
 	PCB301::setMotorPowerSupply(true);
@@ -438,8 +437,7 @@ void IdleForm::idleStatusManagement(void) {
 		(!PCB301::device->isCommunicationError()) &&
 		(!PCB302::device->isCommunicationError()) &&
 		(!PCB303::device->isCommunicationError()) &&
-		(!PCB304::device->isCommunicationError()) &&
-		(!PCB315::device->isCommunicationError())&&
+		(!PCB304::device->isCommunicationError()) &&		
 		(!PCB326::device->isCommunicationError())
 		)	peripherals_connected = true;
 
@@ -450,14 +448,14 @@ void IdleForm::idleStatusManagement(void) {
 	}
 
 	// Evaluates the maximum tube temperature
-	int val = PCB315::getAnode();
-	if (PCB315::getBulb() > val) val = PCB315::getBulb();
-	if (PCB315::getStator() > val) val = PCB315::getStator();
+	int val = 0;// PCB303::getAnode();
+	if (PCB303::getBulb() > val) val = PCB303::getBulb();
+	if (PCB303::getStator() > val) val = PCB303::getStator();
 	labelTubeData->Text = val.ToString() + " %";
 
 	// Sets the background color based on the temperature error condition
-	if (PCB315::isTubeAlarm() != IDLESTATUS::Registers.tube.alarm) {
-		IDLESTATUS::Registers.tube.alarm = PCB315::isTubeAlarm();
+	if (PCB303::isTubeAlarm() != IDLESTATUS::Registers.tube.alarm) {
+		IDLESTATUS::Registers.tube.alarm = PCB303::isTubeAlarm();
 		if (IDLESTATUS::Registers.tube.alarm) tubeTempOk->BackgroundImage = TUBE_TEMP_NOK;
 		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
 	}

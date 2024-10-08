@@ -60,7 +60,7 @@ extern  double dtempo;
 ///  + PCB301 Module: this module initializes the PCB301 communication or the board simulation;
 ///  + PCB302 Module: this module initializes the PCB302 communication or the board simulation;
 ///  + PCB303 Module: this module initializes the PCB303 communication or the board simulation;
-///  + PCB315 Module: this module initializes the PCB315 communication or the board simulation;
+///  + PCB325 Module: this module initializes the PCB325 communication or the board simulation;
 ///  + PCB304 Module: this module initializes the PCB304 communication or the board simulation;
 ///  + PCB326 Module: this module initializes the PCB326 communication or the board simulation;
 ///  + Generator Module: this module initializes the Generator communication or the device simulation;
@@ -139,7 +139,7 @@ namespace CppCLRWinFormsProject {
 	private: bool Startup_PCB302(void);
 	private: bool Startup_PCB303(void);
 	private: bool Startup_PCB304(void);
-	private: bool Startup_PCB315(void);
+	private: bool Startup_PCB325(void);
 	private: bool Startup_PCB326(void);
 	private: bool Startup_MotorBody(void);
 	private: bool Startup_MotorTilt(void);
@@ -165,7 +165,8 @@ namespace CppCLRWinFormsProject {
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::Label^ labelCanDriverActivity;
 	private: System::Windows::Forms::Label^ label9;
-	private: System::Windows::Forms::Label^ labelPcb315Activity;
+	private: System::Windows::Forms::Label^ labelPcb325Activity;
+
 	private: System::Windows::Forms::Label^ label8;
 	private: System::Windows::Forms::Label^ labelPcb304Activity;
 	private: System::Windows::Forms::Label^ label7;
@@ -214,7 +215,7 @@ namespace CppCLRWinFormsProject {
 			this->label12 = (gcnew System::Windows::Forms::Label());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->labelMotorTiltActivity = (gcnew System::Windows::Forms::Label());
-			this->labelPcb315Activity = (gcnew System::Windows::Forms::Label());
+			this->labelPcb325Activity = (gcnew System::Windows::Forms::Label());
 			this->label11 = (gcnew System::Windows::Forms::Label());
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->labelPcb304Activity = (gcnew System::Windows::Forms::Label());
@@ -252,7 +253,7 @@ namespace CppCLRWinFormsProject {
 			this->infoPanel->Controls->Add(this->label12);
 			this->infoPanel->Controls->Add(this->label9);
 			this->infoPanel->Controls->Add(this->labelMotorTiltActivity);
-			this->infoPanel->Controls->Add(this->labelPcb315Activity);
+			this->infoPanel->Controls->Add(this->labelPcb325Activity);
 			this->infoPanel->Controls->Add(this->label11);
 			this->infoPanel->Controls->Add(this->label8);
 			this->infoPanel->Controls->Add(this->labelPcb304Activity);
@@ -373,7 +374,7 @@ namespace CppCLRWinFormsProject {
 			this->labelShActivity->Name = L"labelShActivity";
 			this->labelShActivity->Size = System::Drawing::Size(86, 16);
 			this->labelShActivity->TabIndex = 13;
-			this->labelShActivity->Text = L"Connection ...";			
+			this->labelShActivity->Text = L"Connection ...";
 			// 
 			// label13
 			// 
@@ -391,7 +392,7 @@ namespace CppCLRWinFormsProject {
 			this->label10->Name = L"label10";
 			this->label10->Size = System::Drawing::Size(83, 16);
 			this->label10->TabIndex = 12;
-			this->label10->Text = L"Smart HUB";			
+			this->label10->Text = L"Smart HUB";
 			// 
 			// labelMotorArmActivity
 			// 
@@ -444,16 +445,16 @@ namespace CppCLRWinFormsProject {
 			this->labelMotorTiltActivity->TabIndex = 3;
 			this->labelMotorTiltActivity->Text = L"Connection ...";
 			// 
-			// labelPcb315Activity
+			// labelPcb325Activity
 			// 
-			this->labelPcb315Activity->AutoSize = true;
-			this->labelPcb315Activity->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Italic));
-			this->labelPcb315Activity->ForeColor = System::Drawing::Color::White;
-			this->labelPcb315Activity->Location = System::Drawing::Point(216, 125);
-			this->labelPcb315Activity->Name = L"labelPcb315Activity";
-			this->labelPcb315Activity->Size = System::Drawing::Size(86, 16);
-			this->labelPcb315Activity->TabIndex = 9;
-			this->labelPcb315Activity->Text = L"Connection ...";			
+			this->labelPcb325Activity->AutoSize = true;
+			this->labelPcb325Activity->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Italic));
+			this->labelPcb325Activity->ForeColor = System::Drawing::Color::White;
+			this->labelPcb325Activity->Location = System::Drawing::Point(216, 125);
+			this->labelPcb325Activity->Name = L"labelPcb325Activity";
+			this->labelPcb325Activity->Size = System::Drawing::Size(86, 16);
+			this->labelPcb325Activity->TabIndex = 9;
+			this->labelPcb325Activity->Text = L"Connection ...";
 			// 
 			// label11
 			// 
@@ -469,9 +470,9 @@ namespace CppCLRWinFormsProject {
 			this->label8->AutoSize = true;
 			this->label8->Location = System::Drawing::Point(10, 125);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(154, 16);
+			this->label8->Size = System::Drawing::Size(167, 16);
 			this->label8->TabIndex = 8;
-			this->label8->Text = L"PCB 315: Filter Board";
+			this->label8->Text = L"PCB 325: Biopsy Board";
 			// 
 			// labelPcb304Activity
 			// 

@@ -236,19 +236,19 @@ public:
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_FILTER_CONFIG = "FILTER_CONFIG";
     literal System::String^ PARAM_FILTER_CONFIG_COMMENT = "Defines the Filter material assignment to selector slot";
-    literal int     PARAM_FILTER_RH_POSITION = 0;
-    literal int     PARAM_FILTER_AG_POSITION = 1;
-    literal int     PARAM_FILTER_AL_POSITION = 2;
-    literal int     PARAM_FILTER_CU_POSITION = 3;
-    literal int     PARAM_FILTER_MO_POSITION = 4;
-    literal int     PARAM_FILTER_LEAD_POSITION = 5;
+    literal int     PARAM_FILTER_CONFIG_RH_SLOT = 0;
+    literal int     PARAM_FILTER_CONFIG_AG_SLOT = 1;
+    literal int     PARAM_FILTER_CONFIG_AL_SLOT = 2;
+    literal int     PARAM_FILTER_CONFIG_CU_SLOT = 3;
+    literal int     PARAM_FILTER_CONFIG_MO_SLOT = 4;
+    literal int     PARAM_FILTER_CONFIG_LD_SLOT = 5;
 
-    literal System::String^ PARAM_FILTER_RH_POSITION_DEFAULT = "0"; 
-    literal System::String^ PARAM_FILTER_AG_POSITION_DEFAULT = "1"; 
-    literal System::String^ PARAM_FILTER_AL_POSITION_DEFAULT = "2"; 
-    literal System::String^ PARAM_FILTER_CU_POSITION_DEFAULT = "3"; 
-    literal System::String^ PARAM_FILTER_MO_POSITION_DEFAULT = "3";
-    literal System::String^ PARAM_FILTER_LEAD_POSITION_DEFAULT = "4";
+    literal System::String^ PARAM_FILTER_CONFIG_RH_SLOT_DEFAULT = "0"; 
+    literal System::String^ PARAM_FILTER_CONFIG_AG_SLOT_DEFAULT = "1";
+    literal System::String^ PARAM_FILTER_CONFIG_AL_SLOT_DEFAULT = "2";
+    literal System::String^ PARAM_FILTER_CONFIG_CU_SLOT_DEFAULT = "3";
+    literal System::String^ PARAM_FILTER_CONFIG_MO_SLOT_DEFAULT = "3";
+    literal System::String^ PARAM_FILTER_CONFIG_LD_SLOT_DEFAULT = "4";
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
@@ -428,12 +428,12 @@ public:
             }),
 
             CONFIG_FILE_ITEM(PARAM_FILTER_CONFIG, PARAM_FILTER_CONFIG_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_FILTER_RH_POSITION_DEFAULT,
-            PARAM_FILTER_AG_POSITION_DEFAULT,
-            PARAM_FILTER_AL_POSITION_DEFAULT,
-            PARAM_FILTER_CU_POSITION_DEFAULT,
-            PARAM_FILTER_MO_POSITION_DEFAULT,
-            PARAM_FILTER_LEAD_POSITION_DEFAULT
+            PARAM_FILTER_CONFIG_RH_SLOT_DEFAULT,
+            PARAM_FILTER_CONFIG_AG_SLOT_DEFAULT,
+            PARAM_FILTER_CONFIG_AL_SLOT_DEFAULT,
+            PARAM_FILTER_CONFIG_CU_SLOT_DEFAULT,
+            PARAM_FILTER_CONFIG_MO_SLOT_DEFAULT,
+            PARAM_FILTER_CONFIG_LD_SLOT_DEFAULT
             }),
         }
         );

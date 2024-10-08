@@ -108,7 +108,6 @@
 #include "SystemConfig.h"
 #include "PaddleConfig.h"
 #include "MotorConfig.h"
-#include "FilterConfig.h"
 #include "DetectorConfig.h"
 #include "TomoConfig.h"
 #include "CollimatorConfig.h"

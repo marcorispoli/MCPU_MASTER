@@ -423,7 +423,7 @@ bool CanDeviceProtocol::commandNoWaitCompletion(CanDeviceCommand^ command, int t
     const std::lock_guard<std::mutex> lock(command_wait_mutex);
     if (command == nullptr) return false;
 
-    if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandNoWaitCompletion(command->code, command->d0, command->d1, command->d2, command->d3, tmo);
+    //if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandNoWaitCompletion(command->code, command->d0, command->d1, command->d2, command->d3, tmo);
 
     if (command_executing) return false;
     if (internal_status != status_options::DEVICE_RUNNING) return false;
@@ -450,7 +450,7 @@ CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitComplet
     // Verifies that the calling module is different from the class implementing the communication with the device
     if(src == (Object^) this) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_INVALID_DEVICE);
 
-    if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandWaitCompletion(code, d0, d1, d2, d3, tmo, src);
+    //if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandWaitCompletion(code, d0, d1, d2, d3, tmo, src);
 
 
     // Invalid Device Status 
@@ -487,7 +487,7 @@ CanDeviceProtocol::CanDeviceCommandResult^ CanDeviceProtocol::commandWaitComplet
     if (src == (Object^)this) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_INVALID_DEVICE);
     if(command == nullptr) return gcnew CanDeviceCommandResult(CommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM);
 
-    if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandWaitCompletion(command->code, command->d0, command->d1, command->d2, command->d3, tmo, src);
+    //if ((simulator_mode) && (!CanDriver::isConnected(simulator_mode)))  return simulCommandWaitCompletion(command->code, command->d0, command->d1, command->d2, command->d3, tmo, src);
 
 
     // Invalid Device Status 

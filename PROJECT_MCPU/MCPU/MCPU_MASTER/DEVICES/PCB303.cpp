@@ -86,6 +86,7 @@ void PCB303::filterManagement(void) {
     }
 
     // No more attempts can be done after some collimation repetition.
+    /*
     if (valid_filter_format) filter_attempt = 0;
     else  if (filter_attempt > 5) {
         valid_filter_format = false;
@@ -96,7 +97,7 @@ void PCB303::filterManagement(void) {
             Notify::activate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);     
         }
         return;
-    }
+    }*/
 
     // Resets the Selection error
     if (filter_select_error) {
@@ -145,7 +146,7 @@ void PCB303::formatManagement(void) {
     }
 
     // No more attempts can be done after some collimation repetition.
-    if (valid_collimation_format) format_collimation_attempt = 0;
+/*    if (valid_collimation_format) format_collimation_attempt = 0;
     else  if (format_collimation_attempt > 5) {
         valid_collimation_format = false;
 
@@ -156,6 +157,7 @@ void PCB303::formatManagement(void) {
         }
         return;
     }
+    */
 
     // Resets the Selection error
     if (collimation_select_error) {
@@ -223,8 +225,8 @@ void PCB303::formatManagement(void) {
 /// <param name=""></param>
 void PCB303::runningLoop(void) {
     static bool commerr = false;
-    demoLoop();
-    return;
+    //demoLoop();
+    //return;
     
     // Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, err_string);
     
@@ -285,9 +287,7 @@ void PCB303::resetLoop(void) {
 /// <param name=""></param>
 /// <returns>true if the configuration success</returns>
 bool PCB303::configurationLoop(void) {
-   
     
-    if (isSimulatorMode()) return true;
 
     // Read the parameters from the configuration files
     System::String^ Param;
@@ -408,6 +408,37 @@ void PCB303::setCollimationLight(bool stat) {
     
 }
 
+int PCB303::getFilterSlot(filter_index filter) {
+    if(filter == filter_index::FILTER_AG) return (int) System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_AG_SLOT]);
+    if(filter == filter_index::FILTER_AL) return (int) System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_AL_SLOT]);
+    if(filter == filter_index::FILTER_RH) return (int) System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_RH_SLOT]);
+    if(filter == filter_index::FILTER_CU) return (int) System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_CU_SLOT]);
+    if(filter == filter_index::FILTER_MO) return (int) System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_MO_SLOT]);
+    if(filter == filter_index::FILTER_LD) return (int) System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_LD_SLOT]);
+    return 0;
+}
+
+void PCB303::selectFilter(filter_index filter) {
+
+    // Gets the assigned slot from the filter code
+    int filter_slot = getFilterSlot(filter);
+    if (filter_slot > 4) filter_slot = 0;
+    if (selected_filter == filter_slot) return;
+    selected_filter = filter_slot;
+    valid_filter_format = false;
+
+}
+
+bool PCB303::waitFilterCompleted(void) {
+    
+    for (int i = 0; i < 200; i++) {
+        if (valid_filter_format) return true;
+        if (filter_error) return false;
+        if (protocol.status_register.filter_action_status == ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) return false;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    return false;
+}
 
 /// <summary>
 /// This functions resets the Application fault condition for the format collimation.

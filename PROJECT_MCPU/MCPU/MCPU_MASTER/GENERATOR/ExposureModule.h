@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include "PCB315.h"
+#include "PCB303.h"
 #include "ConfigurationFiles.h"
 #include "Generator.h"
 
@@ -120,7 +120,7 @@ public:
         exposure_pulse(void) {
 
             // The handle of the filter selection is created
-            filter = PCB315::filterMaterialCodes::FILTER_INVALID;
+            filter = PCB303::filter_index::FILTER_RH;
             kV = 0;
             mAs = 0;
            
@@ -128,13 +128,13 @@ public:
             validated = false;
         };
 
-        exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt) {
+        exposure_pulse(double kv, double mas, PCB303::filter_index flt) {
             
             validated = false;
 
             if ((kv > 49.0) || (kv < 20.0)) return ;
             if ((mas > 640) || (mas < 0)) return;
-            if (flt == PCB315::filterMaterialCodes::FILTER_INVALID) return;
+            
 
             filter = flt;
             kV = kv;// Assignes the kV
@@ -143,7 +143,7 @@ public:
             validated = true;
         };
 
-        exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt, float ma, float mS, unsigned char fc, int samples) {
+        exposure_pulse(double kv, double mas, PCB303::filter_index flt, float ma, float mS, unsigned char fc, int samples) {
 
             validated = false;
             filter = flt;
@@ -156,12 +156,12 @@ public:
             validated = true;
         };
 
-        exposure_pulse(double kv, double mas, PCB315::filterMaterialCodes flt, unsigned char fc, bool gd, bool sync) {
+        exposure_pulse(double kv, double mas, PCB303::filter_index flt, unsigned char fc, bool gd, bool sync) {
 
             validated = false;
             if ((kv > 49.0) || (kv < 20.0)) return;
             if ((mas > 640) || (mas < 0)) return;
-            if (flt == PCB315::filterMaterialCodes::FILTER_INVALID) return;
+            
 
             filter = flt;
             kV = kv;        
@@ -182,14 +182,14 @@ public:
         inline unsigned char getFocus() { return focus; }
         inline bool isLargeFocus() { return (focus == FOCUS_LARGE); }
         inline bool isSmallFocus() { return (focus == FOCUS_SMALL); }
-        inline PCB315::filterMaterialCodes getFilter() { return filter; }
+        inline  PCB303::filter_index getFilter() { return filter; }
         inline bool useGrid() { return use_grid; }
         inline bool useDetector() { return synch_det; }
         inline bool isValid() { return validated; }
 
 
         unsigned char focus; // This is the focus assigned to this pulse
-        PCB315::filterMaterialCodes filter; //!< This is the assigned filter 
+        PCB303::filter_index filter; //!< This is the assigned filter 
         bool    use_grid; // Grid shall be used (only test mode)
         bool    synch_det; // Detector sync shall be used (only test mode)
         double  kV; //!< This is the selected kV value
@@ -416,7 +416,7 @@ private:
     exposure_completed_errors aec_combo_exposure_procedure(bool demo);    
     exposure_completed_errors test_exposure_procedure(bool demo);
 
-    void setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB315::filterMaterialCodes ft, unsigned char fc);
+    void setExposedData(unsigned char databank_index, unsigned char pulse_seq, PCB303::filter_index ft, unsigned char fc);
         
     float demo2DPulse(float mAs, float current);
     float demo3DPulses(float mAs,  int samples, int fps);

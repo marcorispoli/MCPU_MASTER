@@ -286,7 +286,7 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 		bool use_grid;
 		bool use_det;
 		unsigned char focus;
-		PCB315::filterMaterialCodes filter;
+		PCB303::filter_index filter;
 
 		try {
 			mAs = System::Convert::ToDouble(mAsSelection->Text);
@@ -298,13 +298,7 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 			if (synchSelection->Text == "NO-SYNCH") use_det = false;
 			else use_det = true;
 
-
-			if (filterSelection->Text == "Rh") filter = PCB315::filterMaterialCodes::FILTER_RH;
-			else if (filterSelection->Text == "Ag") filter = PCB315::filterMaterialCodes::FILTER_AG;
-			else if (filterSelection->Text == "Al") filter = PCB315::filterMaterialCodes::FILTER_AL;
-			else if (filterSelection->Text == "Cu") filter = PCB315::filterMaterialCodes::FILTER_CU;
-			else if (filterSelection->Text == "Mo") filter = PCB315::filterMaterialCodes::FILTER_MO;
-			else filter = PCB315::filterMaterialCodes::FILTER_RH;
+			filter = PCB303::getFilterFromTag(filterSelection->Text);
 
 		}
 		catch (...) {

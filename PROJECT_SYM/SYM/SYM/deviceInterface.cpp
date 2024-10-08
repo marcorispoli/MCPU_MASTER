@@ -250,6 +250,7 @@ void deviceInterface::handle_normal_frame(void) {
 	case (Byte)ProtocolFrameCode::FRAME_COMMAND_EXEC:
 		
 			commandResult^ result = device_command_callback(frame_index, frame_d0, frame_d1, frame_d2, frame_d3);
+			command_register = gcnew Register((Byte)result->status, (Byte)result->d0, (Byte)result->d1, (Byte)result->error);
 			buffer[3] = (Byte)(result->status);
 			buffer[4] = (Byte)(result->d0);
 			buffer[5] = (Byte)(result->d1);

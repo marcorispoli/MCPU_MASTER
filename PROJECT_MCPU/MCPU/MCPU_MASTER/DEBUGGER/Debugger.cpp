@@ -4,7 +4,6 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
-#include "PCB315.h"
 #include "PCB326.h"
 #include "TiltMotor.h"
 #include "ArmMotor.h"
@@ -79,7 +78,6 @@ DebuggerCLI::DebuggerCLI(System::String^ ip, int port)
 /// </summary>
 /// <param name=""></param>
 void DebuggerCLI::threadWork(void) {
-	DWORD dwWaitResult;
 
 	while (true) {
 		serverSocket->Listen(5);
@@ -141,8 +139,7 @@ void DebuggerCLI::rxHandler(void){
 		result_string += "PCB301: " + PCB301::device->getCanCommunicationMonitorString() + "\n\r";
 		result_string += "PCB302: " + PCB302::device->getCanCommunicationMonitorString() + "\n\r";
 		result_string += "PCB303: " + PCB303::device->getCanCommunicationMonitorString() + "\n\r";
-		result_string += "PCB304: " + PCB304::device->getCanCommunicationMonitorString() + "\n\r";
-		result_string += "PCB315: " + PCB315::device->getCanCommunicationMonitorString() + "\n\r";
+		result_string += "PCB304: " + PCB304::device->getCanCommunicationMonitorString() + "\n\r";		
 		result_string += "PCB326: " + PCB326::device->getCanCommunicationMonitorString() + "\n\r";
 
 		if (!TiltMotor::device->isSimulatorMode()) result_string += "TiltMotor: " + TiltMotor::device->getCanCommunicationMonitorString() + "\n\r";

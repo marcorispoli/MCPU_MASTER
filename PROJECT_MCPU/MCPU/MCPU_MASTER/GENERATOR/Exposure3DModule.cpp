@@ -60,10 +60,10 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
 
     PCB304::syncGeneratorOff();
 
-    // Set the filter selected is the expected into the pulse(0). No wait for positioning here
-    if (!PCB315::setFilterAutoMode(getExposurePulse(0)->filter, false)) {
-        return exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
+    PCB303::selectFilter(getExposurePulse(0)->filter);
+    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+
 
     // Tilt preparation in Home
     if (!getTomoExposure()->valid) {
@@ -133,10 +133,8 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
        
     }
    
-    // Checks the filter in position: the filter has been selected early in the generator procedure    
-    if (!PCB315::waitForValidFilter()) {
-        return exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Checks the filter in position
+    if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     if (!demo) {
 

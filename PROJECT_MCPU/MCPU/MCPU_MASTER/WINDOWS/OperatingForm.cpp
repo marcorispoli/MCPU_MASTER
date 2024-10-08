@@ -11,7 +11,7 @@
 #include "SlideMotor.h"
 #include "TiltMotor.h"
 #include "ExposureModule.h"
-#include "../DEVICES/PCB315.h"
+#include "../DEVICES/PCB325.h"
 #include "../DEVICES/PCB303.h"
 #include "../DEVICES/PCB302.h"
 #include "../DEVICES/PCB301.h"
@@ -278,10 +278,7 @@ void OperatingForm::initOperatingStatus(void) {
 	// Sets the current collimation to OPEN mode
 	PCB303::setAutoCollimationMode();
 
-	// Sets the current Filter selector to manual mode
-	PCB315::setMirrorMode(false);
-	//PCB315::setFilterAutoMode(PCB315::filterMaterialCodes::FILTER_DEFAULT);
-
+	// Clears any Instant popup window
 	Notify::clrInstant();
 
 	// Activate the Operating Status  manual modes
@@ -505,7 +502,7 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 		colli_light = PCB302::isDownwardActivationStatus();
 
 		// Activates the mirror (not during initialization)
-		if ((colli_light) && (!init)) PCB315::setMirrorMode(true);
+		if ((colli_light) && (!init)) PCB303::setCollimationLight(true);
 	}
 
 
@@ -646,24 +643,24 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 	
 
 	// Sets the current lamp status
-	if (PCB315::getPowerLightStatus() != OPERSTATUS::Registers.collimator.light_on) {
-		OPERSTATUS::Registers.collimator.light_on = PCB315::getPowerLightStatus();
+	if (PCB303::getPowerLightStatus() != OPERSTATUS::Registers.collimator.light_on) {
+		OPERSTATUS::Registers.collimator.light_on = PCB303::getPowerLightStatus();
 		if(OPERSTATUS::Registers.collimator.light_on) lampButton->BackgroundImage = LAMP_ON_IMAGE;
 		else lampButton->BackgroundImage = LAMP_OFF_IMAGE;
 	}
 
 
 	// Evaluates the maximum tube temperature
-	int val = PCB315::getAnode();
-	if (PCB315::getBulb() > val) val = PCB315::getBulb();
-	if (PCB315::getStator() > val) val = PCB315::getStator();
+	int val = 0;// PCB315::getAnode();
+	if (PCB303::getBulb() > val) val = PCB303::getBulb();
+	if (PCB303::getStator() > val) val = PCB303::getStator();
 	
 
 	// Cumulated max energy of the X-RAY tube
 	labelTubeData->Text = val.ToString() + " %";
 
-	if (PCB315::isTubeAlarm() != OPERSTATUS::Registers.collimator.tube_alarm) {
-		OPERSTATUS::Registers.collimator.tube_alarm = PCB315::isTubeAlarm();
+	if (PCB303::isTubeAlarm() != OPERSTATUS::Registers.collimator.tube_alarm) {
+		OPERSTATUS::Registers.collimator.tube_alarm = PCB303::isTubeAlarm();
 		if (OPERSTATUS::Registers.collimator.tube_alarm) tubeStatus->BackgroundImage = TUBE_TEMP_NOK_IMAGE;
 		else tubeStatus->BackgroundImage = TUBE_TEMP_OK_IMAGE;
 	}
@@ -811,7 +808,7 @@ void OperatingForm::ShiftSelection_Click(System::Object^ sender, System::EventAr
 
 
 void OperatingForm::lampButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	PCB315::setMirrorMode(true);
+	PCB303::setCollimationLight(true);
 	
 }
 

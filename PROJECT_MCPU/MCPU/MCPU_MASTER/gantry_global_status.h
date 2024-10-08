@@ -96,7 +96,7 @@ public:static CANOPEN::CanOpenMotor::motor_rotation_activations getManualActivat
     static inline bool isPcb302Demo(void) { return pcb302_simulator; }
     static inline bool isPcb303Demo(void) { return pcb303_simulator; }
     static inline bool isPcb304Demo(void) { return pcb304_simulator; }
-    static inline bool isPcb315Demo(void) { return pcb315_simulator; }
+    static inline bool isPcb325Demo(void) { return pcb325_simulator; }
     static inline bool isPcb326Demo(void) { return pcb326_simulator; }
     static inline bool isMotorTiltDemo(void) { return motor_tilt_simulator; }
     static inline bool isMotorArmDemo(void) { return motor_arm_simulator; }
@@ -121,7 +121,7 @@ private:
     static bool pcb302_simulator = false;
     static bool pcb303_simulator = false;
     static bool pcb304_simulator = false;
-    static bool pcb315_simulator = false;
+    static bool pcb325_simulator = false;
     static bool pcb326_simulator = false;
     static bool motor_vertical_simulator = false;
     static bool motor_tilt_simulator = false;

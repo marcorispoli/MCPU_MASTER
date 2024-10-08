@@ -9,7 +9,6 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
-#include "PCB315.h"
 #include "PCB326.h"
 #include "ArmMotor.h"
 #include "TiltMotor.h"
@@ -127,7 +126,7 @@ void CanSimulator::sendConfiguration() {
 	if (Gantry::isPcb302Demo()) buffer[(Byte)can_buf_struct::D0] |= 2;
 	if (Gantry::isPcb303Demo()) buffer[(Byte)can_buf_struct::D0] |= 4;
 	if (Gantry::isPcb304Demo()) buffer[(Byte)can_buf_struct::D0] |= 8;
-	if (Gantry::isPcb315Demo()) buffer[(Byte)can_buf_struct::D0] |= 0x10;
+	if (Gantry::isPcb325Demo()) buffer[(Byte)can_buf_struct::D0] |= 0x10;
 	if (Gantry::isPcb326Demo()) buffer[(Byte)can_buf_struct::D0] |= 0x20;
 
 	// Motor Simulation Bit

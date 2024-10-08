@@ -141,12 +141,12 @@
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
     <ClInclude Include="CONFIGURATION\ConfigurationFiles.h" />
     <ClInclude Include="CONFIGURATION\DetectorConfig.h" />
-    <ClInclude Include="CONFIGURATION\FilterConfig.h" />
     <ClInclude Include="CONFIGURATION\MotorConfig.h" />
     <ClInclude Include="CONFIGURATION\PaddleConfig.h" />
     <ClInclude Include="CONFIGURATION\SystemConfig.h" />
     <ClInclude Include="CONFIGURATION\TomoConfig.h" />
     <ClInclude Include="DEBUGGER\Debugger.h" />
+    <ClInclude Include="DEVICES\PCB325.h" />
     <ClInclude Include="DEVICES\PCB326.h" />
     <ClInclude Include="GENERATOR\ExposureModule.h" />
     <ClInclude Include="MESSAGES\Log.h" />
@@ -164,7 +164,6 @@
     <ClInclude Include="DEVICES\PCB302.h" />
     <ClInclude Include="DEVICES\PCB303.h" />
     <ClInclude Include="DEVICES\PCB304.h" />
-    <ClInclude Include="DEVICES\PCB315.h" />
     <ClInclude Include="GENERATOR\Generator.h" />
     <ClInclude Include="GENERATOR\R2CP\api_log.h" />
     <ClInclude Include="GENERATOR\R2CP\CaDataDic.h" />
@@ -247,6 +246,7 @@
     <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
     <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
     <ClCompile Include="DEBUGGER\Debugger.cpp" />
+    <ClCompile Include="DEVICES\PCB325.cpp" />
     <ClCompile Include="DEVICES\PCB326.cpp" />
     <ClCompile Include="GENERATOR\Exposure2DModule.cpp" />
     <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
@@ -272,7 +272,6 @@
     <ClCompile Include="DEVICES\PCB302.cpp" />
     <ClCompile Include="DEVICES\PCB303.cpp" />
     <ClCompile Include="DEVICES\PCB304.cpp" />
-    <ClCompile Include="DEVICES\PCB315.cpp" />
     <ClCompile Include="gantry_global_status.cpp" />
     <ClCompile Include="GENERATOR\Generator.cpp" />
     <ClCompile Include="GENERATOR\R2CP\api_log.cpp" />

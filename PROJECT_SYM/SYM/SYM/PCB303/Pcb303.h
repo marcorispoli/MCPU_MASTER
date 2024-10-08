@@ -99,11 +99,11 @@ public:
 
 				// Byte 0 of the register
 				sys->d0 = ((unsigned char)collimation_action_status & 0x7);
-				sys->d0 |= ((unsigned char)collimation_target_index >> 3);
+				sys->d0 |= ((unsigned char)collimation_target_index << 3);
 
 				// Byte 1 of the register
 				sys->d1 = ((unsigned char)filter_action_status & 0x7);
-				sys->d1 |= ((unsigned char)filter_target_index >> 3);
+				sys->d1 |= ((unsigned char)filter_target_index << 3);
 
 				// Byte 2 of the register
 				sys->d2 = ((unsigned char)mirror_action_status & 0x7);
@@ -363,7 +363,10 @@ public:
 
 	void device_workflow_callback(void) override;
 	void device_reset_callback(void) override;
+	commandResult^ device_command_callback(unsigned char cmd, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3) override;
+
 	
+
 	ref class hardware_device {
 	public:
 		hardware_device() { init(); }
@@ -373,7 +376,11 @@ public:
 			
 			format_index = 0;
 			format_action_command = ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED;
-			collimation = gcnew ProtocolStructure::format_collimation_data;
+			format_data.back = 0;
+			format_data.front = 0;
+			format_data.left = 0;
+			format_data.right = 0;
+			format_data.trap = 0;
 			
 			filter_index = 0;
 			filter_action_command = ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED;
@@ -396,7 +403,7 @@ public:
 		// Format Collimation 
 		int format_index;
 		ProtocolStructure::StatusRegister::action_code format_action_command;
-		ProtocolStructure::format_collimation_data^ collimation;
+		ProtocolStructure::format_collimation_data format_data;
 
 		// Filter Selection
 		int filter_index;
@@ -418,20 +425,10 @@ public:
 	public:
 		hardware_inputs() { init(); }
 		void init() {
-			compression_ena = false; //!< This signal should be set by the PCB301 board (bus hardware)
-			calibration_ena = false; //!< This signal should be set by the PCB301 board (bus hardware)
-			compression_up = false; //!< This signal should be set by the PCB301 board (bus hardware)
-			compression_down = false; //!< This signal should be set by the PCB301 board (bus hardware)
-			paddle_up = false;
-			paddle_down = false;
+			
 		}
 
-		bool compression_ena;
-		bool calibration_ena;
-		bool compression_up;
-		bool compression_down;
-		bool paddle_up;
-		bool paddle_down;
+		
 
 	};
 
@@ -439,10 +436,10 @@ public:
 	public:
 		hardware_outputs() { init(); }
 		void init() {
-			compression_detected = false;
+			
 		}
 
-		bool compression_detected;
+		
 
 	};
 

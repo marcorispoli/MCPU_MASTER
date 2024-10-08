@@ -107,7 +107,7 @@ bool CanOpenMotor::activateManualPositioning(int target) {
 
 
 void CanOpenMotor::manageManualServicePositioning(void) {
-    bool error_condition;
+    
     MotorCompletedCodes termination_code;
 
     // repeat the configuration in case of error
@@ -301,7 +301,7 @@ void CanOpenMotor::manageManualServicePositioning(void) {
 
 
 void CanOpenMotor::manageManualPositioning(void) {
-    bool error_condition;
+    
     MotorCompletedCodes termination_code;
 
     if (external_position_mode) {

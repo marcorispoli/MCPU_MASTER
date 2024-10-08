@@ -2,7 +2,6 @@
 #include "../gantry_global_status.h"
 #include "awsProtocol.h"
 #include "ArmMotor.h"
-#include "PCB315.h"
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB301.h"
@@ -229,9 +228,7 @@ void awsProtocol::EVENT_Components(void) {
     else protection = "UNDETECTED_PROTECTION";
 
     // Collimation Tool
-    if (PCB315::getComponent() == PCB315::component_options::LEAD_SCREEN)  colli_tool = "LEAD_SCREEN";
-    else if (PCB315::getComponent() == PCB315::component_options::SPECIMEN)  colli_tool = "SPECIMEN";
-    else colli_tool = "UNDETECTED_COLLIMATOR";
+    colli_tool = "UNDETECTED_COLLIMATOR";
 
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Components  " + potter_type + " " + mag_factor + " " + paddle + " " + protection + " " + colli_tool + " %>";
@@ -409,10 +406,10 @@ void awsProtocol::EVENT_XraySequenceCompleted(void) {
     System::Globalization::CultureInfo^ myInfo = gcnew  System::Globalization::CultureInfo("en-US", false);
 
     answer = "<" + device->event_counter.ToString() + " %EVENT_XraySequenceCompleted  " + result + " " + ((int)error).ToString();
-    answer += " " + Exposures::getExposedPulse(0)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(0)->getmAs().ToString(myInfo) + " " + PCB315::getTagFromFilter(Exposures::getExposedPulse(0)->getFilter());
-    answer += " " + Exposures::getExposedPulse(1)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(1)->getmAs().ToString(myInfo) + " " + PCB315::getTagFromFilter(Exposures::getExposedPulse(1)->getFilter());
-    answer += " " + Exposures::getExposedPulse(2)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(2)->getmAs().ToString(myInfo) + " " + PCB315::getTagFromFilter(Exposures::getExposedPulse(2)->getFilter());
-    answer += " " + Exposures::getExposedPulse(3)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(3)->getmAs().ToString(myInfo) + " " + PCB315::getTagFromFilter(Exposures::getExposedPulse(3)->getFilter());
+    answer += " " + Exposures::getExposedPulse(0)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(0)->getmAs().ToString(myInfo) + " " + PCB303::getTagFromFilter(Exposures::getExposedPulse(0)->getFilter());
+    answer += " " + Exposures::getExposedPulse(1)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(1)->getmAs().ToString(myInfo) + " " + PCB303::getTagFromFilter(Exposures::getExposedPulse(1)->getFilter());
+    answer += " " + Exposures::getExposedPulse(2)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(2)->getmAs().ToString(myInfo) + " " + PCB303::getTagFromFilter(Exposures::getExposedPulse(2)->getFilter());
+    answer += " " + Exposures::getExposedPulse(3)->getKv().ToString(myInfo) + " " + Exposures::getExposedPulse(3)->getmAs().ToString(myInfo) + " " + PCB303::getTagFromFilter(Exposures::getExposedPulse(3)->getFilter());
     answer += " %>";
 
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));

@@ -75,7 +75,7 @@ void Gantry::initialize(void) {
         pcb302_simulator = false;
         pcb303_simulator = false;
         pcb304_simulator = false;
-        pcb315_simulator = false;
+        pcb325_simulator = false;
         pcb326_simulator = false;
         motor_tilt_simulator = false;
         motor_arm_simulator = false;
@@ -98,7 +98,7 @@ void Gantry::initialize(void) {
 
         generator_simulator = true;   // The generator shall be emulated 
         pcb303_simulator = true;  // The PCB303 board shall be emulated        
-        pcb315_simulator = true;  // The PCB315 board shall be emulated
+        pcb325_simulator = true;  // The PCB325 board shall be emulated
         pcb326_simulator = true;  // The PCB326 board shall be emulated
 
     }
@@ -132,9 +132,9 @@ void Gantry::initialize(void) {
             pcb304_simulator = false;
         else pcb304_simulator = true;
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB315]) == 1)
-            pcb315_simulator = false;
-        else pcb315_simulator = true;
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB325]) == 1)
+            pcb325_simulator = false;
+        else pcb325_simulator = true;
 
         if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB326]) == 1)
             pcb326_simulator = false;

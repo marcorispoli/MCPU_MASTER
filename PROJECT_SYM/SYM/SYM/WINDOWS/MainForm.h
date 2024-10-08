@@ -271,25 +271,27 @@ private: System::Windows::Forms::Label^ label48;
 
 
 private: System::Windows::Forms::GroupBox^ groupBox7;
-private: System::Windows::Forms::Label^ label53;
+
 private: System::Windows::Forms::Label^ label56;
 private: System::Windows::Forms::Label^ label57;
 private: System::Windows::Forms::TextBox^ filterPosition;
 
 private: System::Windows::Forms::TextBox^ filterIndex;
-private: System::Windows::Forms::TextBox^ filterCommand;
+
 private: System::Windows::Forms::GroupBox^ groupBox10;
 private: System::Windows::Forms::GroupBox^ groupBox9;
 private: System::Windows::Forms::PictureBox^ lightPicture;
 private: System::Windows::Forms::Label^ label54;
 private: System::Windows::Forms::TextBox^ lightTimer;
 private: System::Windows::Forms::GroupBox^ groupBox8;
-private: System::Windows::Forms::Label^ mirrorCommand;
-private: System::Windows::Forms::Label^ mirrorPosition;
+private: System::Windows::Forms::Label^ labelMirror;
+
+
 private: System::Windows::Forms::Label^ label55;
-private: System::Windows::Forms::TextBox^ textBox3;
+private: System::Windows::Forms::TextBox^ mirrorPosition;
+
 private: System::Windows::Forms::TextBox^ mirrorIndex;
-private: System::Windows::Forms::TextBox^ textBox5;
+
 
 
 
@@ -615,42 +617,38 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_body_encoder = (gcnew System::Windows::Forms::TextBox());
 			this->pcb326_panel = (gcnew System::Windows::Forms::GroupBox());
 			this->pcb303_panel = (gcnew System::Windows::Forms::GroupBox());
-			this->label50 = (gcnew System::Windows::Forms::Label());
+			this->groupBox10 = (gcnew System::Windows::Forms::GroupBox());
+			this->bulbTemp = (gcnew System::Windows::Forms::TextBox());
 			this->label49 = (gcnew System::Windows::Forms::Label());
 			this->statorTemp = (gcnew System::Windows::Forms::TextBox());
-			this->bulbTemp = (gcnew System::Windows::Forms::TextBox());
+			this->label50 = (gcnew System::Windows::Forms::Label());
+			this->groupBox9 = (gcnew System::Windows::Forms::GroupBox());
+			this->lightPicture = (gcnew System::Windows::Forms::PictureBox());
+			this->label54 = (gcnew System::Windows::Forms::Label());
+			this->lightTimer = (gcnew System::Windows::Forms::TextBox());
+			this->groupBox8 = (gcnew System::Windows::Forms::GroupBox());
+			this->labelMirror = (gcnew System::Windows::Forms::Label());
+			this->label55 = (gcnew System::Windows::Forms::Label());
+			this->mirrorPosition = (gcnew System::Windows::Forms::TextBox());
+			this->mirrorIndex = (gcnew System::Windows::Forms::TextBox());
+			this->groupBox7 = (gcnew System::Windows::Forms::GroupBox());
+			this->label56 = (gcnew System::Windows::Forms::Label());
+			this->label57 = (gcnew System::Windows::Forms::Label());
+			this->filterPosition = (gcnew System::Windows::Forms::TextBox());
+			this->filterIndex = (gcnew System::Windows::Forms::TextBox());
 			this->groupBox5 = (gcnew System::Windows::Forms::GroupBox());
 			this->label48 = (gcnew System::Windows::Forms::Label());
 			this->label47 = (gcnew System::Windows::Forms::Label());
 			this->label46 = (gcnew System::Windows::Forms::Label());
 			this->label45 = (gcnew System::Windows::Forms::Label());
-			this->label11 = (gcnew System::Windows::Forms::Label());
 			this->frontBlade = (gcnew System::Windows::Forms::TextBox());
-			this->colliIndex = (gcnew System::Windows::Forms::TextBox());
 			this->backBlade = (gcnew System::Windows::Forms::TextBox());
+			this->label11 = (gcnew System::Windows::Forms::Label());
 			this->rightBlade = (gcnew System::Windows::Forms::TextBox());
+			this->colliIndex = (gcnew System::Windows::Forms::TextBox());
 			this->label14 = (gcnew System::Windows::Forms::Label());
 			this->leftBlade = (gcnew System::Windows::Forms::TextBox());
 			this->trapBlade = (gcnew System::Windows::Forms::TextBox());
-			this->groupBox7 = (gcnew System::Windows::Forms::GroupBox());
-			this->label53 = (gcnew System::Windows::Forms::Label());
-			this->label56 = (gcnew System::Windows::Forms::Label());
-			this->label57 = (gcnew System::Windows::Forms::Label());
-			this->filterPosition = (gcnew System::Windows::Forms::TextBox());
-			this->filterIndex = (gcnew System::Windows::Forms::TextBox());
-			this->filterCommand = (gcnew System::Windows::Forms::TextBox());
-			this->groupBox8 = (gcnew System::Windows::Forms::GroupBox());
-			this->mirrorCommand = (gcnew System::Windows::Forms::Label());
-			this->mirrorPosition = (gcnew System::Windows::Forms::Label());
-			this->label55 = (gcnew System::Windows::Forms::Label());
-			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
-			this->mirrorIndex = (gcnew System::Windows::Forms::TextBox());
-			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
-			this->groupBox9 = (gcnew System::Windows::Forms::GroupBox());
-			this->label54 = (gcnew System::Windows::Forms::Label());
-			this->lightTimer = (gcnew System::Windows::Forms::TextBox());
-			this->lightPicture = (gcnew System::Windows::Forms::PictureBox());
-			this->groupBox10 = (gcnew System::Windows::Forms::GroupBox());
 			this->infoPanel->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotation_led))->BeginInit();
@@ -678,12 +676,12 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_slide_box->SuspendLayout();
 			this->motor_body_box->SuspendLayout();
 			this->pcb303_panel->SuspendLayout();
-			this->groupBox5->SuspendLayout();
-			this->groupBox7->SuspendLayout();
-			this->groupBox8->SuspendLayout();
+			this->groupBox10->SuspendLayout();
 			this->groupBox9->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->lightPicture))->BeginInit();
-			this->groupBox10->SuspendLayout();
+			this->groupBox8->SuspendLayout();
+			this->groupBox7->SuspendLayout();
+			this->groupBox5->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// infoPanel
@@ -2558,17 +2556,32 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb303_panel->TabStop = false;
 			this->pcb303_panel->Text = L"PCB303 -COLLIMATOR";
 			// 
-			// label50
+			// groupBox10
 			// 
-			this->label50->AutoSize = true;
-			this->label50->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label50->ForeColor = System::Drawing::Color::White;
-			this->label50->Location = System::Drawing::Point(15, 59);
-			this->label50->Name = L"label50";
-			this->label50->Size = System::Drawing::Size(51, 13);
-			this->label50->TabIndex = 28;
-			this->label50->Text = L"STATOR";
+			this->groupBox10->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->groupBox10->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->groupBox10->Controls->Add(this->bulbTemp);
+			this->groupBox10->Controls->Add(this->label49);
+			this->groupBox10->Controls->Add(this->statorTemp);
+			this->groupBox10->Controls->Add(this->label50);
+			this->groupBox10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->groupBox10->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->groupBox10->Location = System::Drawing::Point(629, 15);
+			this->groupBox10->Name = L"groupBox10";
+			this->groupBox10->Size = System::Drawing::Size(137, 105);
+			this->groupBox10->TabIndex = 34;
+			this->groupBox10->TabStop = false;
+			this->groupBox10->Text = L"Tube";
+			// 
+			// bulbTemp
+			// 
+			this->bulbTemp->Enabled = false;
+			this->bulbTemp->Location = System::Drawing::Point(18, 34);
+			this->bulbTemp->Name = L"bulbTemp";
+			this->bulbTemp->Size = System::Drawing::Size(92, 22);
+			this->bulbTemp->TabIndex = 25;
 			// 
 			// label49
 			// 
@@ -2590,13 +2603,183 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->statorTemp->Size = System::Drawing::Size(92, 22);
 			this->statorTemp->TabIndex = 26;
 			// 
-			// bulbTemp
+			// label50
 			// 
-			this->bulbTemp->Enabled = false;
-			this->bulbTemp->Location = System::Drawing::Point(18, 34);
-			this->bulbTemp->Name = L"bulbTemp";
-			this->bulbTemp->Size = System::Drawing::Size(92, 22);
-			this->bulbTemp->TabIndex = 25;
+			this->label50->AutoSize = true;
+			this->label50->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label50->ForeColor = System::Drawing::Color::White;
+			this->label50->Location = System::Drawing::Point(15, 59);
+			this->label50->Name = L"label50";
+			this->label50->Size = System::Drawing::Size(51, 13);
+			this->label50->TabIndex = 28;
+			this->label50->Text = L"STATOR";
+			// 
+			// groupBox9
+			// 
+			this->groupBox9->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->groupBox9->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->groupBox9->Controls->Add(this->lightPicture);
+			this->groupBox9->Controls->Add(this->label54);
+			this->groupBox9->Controls->Add(this->lightTimer);
+			this->groupBox9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->groupBox9->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->groupBox9->Location = System::Drawing::Point(486, 15);
+			this->groupBox9->Name = L"groupBox9";
+			this->groupBox9->Size = System::Drawing::Size(137, 105);
+			this->groupBox9->TabIndex = 33;
+			this->groupBox9->TabStop = false;
+			this->groupBox9->Text = L"Light";
+			// 
+			// lightPicture
+			// 
+			this->lightPicture->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)));
+			this->lightPicture->Location = System::Drawing::Point(59, 54);
+			this->lightPicture->Name = L"lightPicture";
+			this->lightPicture->Size = System::Drawing::Size(58, 38);
+			this->lightPicture->TabIndex = 34;
+			this->lightPicture->TabStop = false;
+			// 
+			// label54
+			// 
+			this->label54->AutoSize = true;
+			this->label54->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label54->ForeColor = System::Drawing::Color::White;
+			this->label54->Location = System::Drawing::Point(5, 23);
+			this->label54->Name = L"label54";
+			this->label54->Size = System::Drawing::Size(33, 13);
+			this->label54->TabIndex = 33;
+			this->label54->Text = L"Timer";
+			// 
+			// lightTimer
+			// 
+			this->lightTimer->Enabled = false;
+			this->lightTimer->Location = System::Drawing::Point(59, 18);
+			this->lightTimer->Name = L"lightTimer";
+			this->lightTimer->Size = System::Drawing::Size(58, 22);
+			this->lightTimer->TabIndex = 27;
+			// 
+			// groupBox8
+			// 
+			this->groupBox8->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->groupBox8->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->groupBox8->Controls->Add(this->labelMirror);
+			this->groupBox8->Controls->Add(this->label55);
+			this->groupBox8->Controls->Add(this->mirrorPosition);
+			this->groupBox8->Controls->Add(this->mirrorIndex);
+			this->groupBox8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->groupBox8->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->groupBox8->Location = System::Drawing::Point(343, 15);
+			this->groupBox8->Name = L"groupBox8";
+			this->groupBox8->Size = System::Drawing::Size(137, 105);
+			this->groupBox8->TabIndex = 32;
+			this->groupBox8->TabStop = false;
+			this->groupBox8->Text = L"Mirror";
+			// 
+			// labelMirror
+			// 
+			this->labelMirror->AutoSize = true;
+			this->labelMirror->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelMirror->ForeColor = System::Drawing::Color::White;
+			this->labelMirror->Location = System::Drawing::Point(3, 62);
+			this->labelMirror->Name = L"labelMirror";
+			this->labelMirror->Size = System::Drawing::Size(44, 13);
+			this->labelMirror->TabIndex = 34;
+			this->labelMirror->Text = L"Position";
+			// 
+			// label55
+			// 
+			this->label55->AutoSize = true;
+			this->label55->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label55->ForeColor = System::Drawing::Color::White;
+			this->label55->Location = System::Drawing::Point(5, 39);
+			this->label55->Name = L"label55";
+			this->label55->Size = System::Drawing::Size(33, 13);
+			this->label55->TabIndex = 33;
+			this->label55->Text = L"Index";
+			// 
+			// mirrorPosition
+			// 
+			this->mirrorPosition->Enabled = false;
+			this->mirrorPosition->Location = System::Drawing::Point(59, 60);
+			this->mirrorPosition->Name = L"mirrorPosition";
+			this->mirrorPosition->Size = System::Drawing::Size(58, 22);
+			this->mirrorPosition->TabIndex = 29;
+			// 
+			// mirrorIndex
+			// 
+			this->mirrorIndex->Enabled = false;
+			this->mirrorIndex->Location = System::Drawing::Point(59, 34);
+			this->mirrorIndex->Name = L"mirrorIndex";
+			this->mirrorIndex->Size = System::Drawing::Size(58, 22);
+			this->mirrorIndex->TabIndex = 27;
+			// 
+			// groupBox7
+			// 
+			this->groupBox7->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->groupBox7->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->groupBox7->Controls->Add(this->label56);
+			this->groupBox7->Controls->Add(this->label57);
+			this->groupBox7->Controls->Add(this->filterPosition);
+			this->groupBox7->Controls->Add(this->filterIndex);
+			this->groupBox7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->groupBox7->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->groupBox7->Location = System::Drawing::Point(200, 15);
+			this->groupBox7->Name = L"groupBox7";
+			this->groupBox7->Size = System::Drawing::Size(137, 105);
+			this->groupBox7->TabIndex = 31;
+			this->groupBox7->TabStop = false;
+			this->groupBox7->Text = L"Filter";
+			// 
+			// label56
+			// 
+			this->label56->AutoSize = true;
+			this->label56->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label56->ForeColor = System::Drawing::Color::White;
+			this->label56->Location = System::Drawing::Point(3, 62);
+			this->label56->Name = L"label56";
+			this->label56->Size = System::Drawing::Size(44, 13);
+			this->label56->TabIndex = 34;
+			this->label56->Text = L"Position";
+			// 
+			// label57
+			// 
+			this->label57->AutoSize = true;
+			this->label57->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label57->ForeColor = System::Drawing::Color::White;
+			this->label57->Location = System::Drawing::Point(5, 39);
+			this->label57->Name = L"label57";
+			this->label57->Size = System::Drawing::Size(33, 13);
+			this->label57->TabIndex = 33;
+			this->label57->Text = L"Index";
+			// 
+			// filterPosition
+			// 
+			this->filterPosition->Enabled = false;
+			this->filterPosition->Location = System::Drawing::Point(59, 60);
+			this->filterPosition->Name = L"filterPosition";
+			this->filterPosition->Size = System::Drawing::Size(58, 22);
+			this->filterPosition->TabIndex = 29;
+			// 
+			// filterIndex
+			// 
+			this->filterIndex->Enabled = false;
+			this->filterIndex->Location = System::Drawing::Point(59, 34);
+			this->filterIndex->Name = L"filterIndex";
+			this->filterIndex->Size = System::Drawing::Size(58, 22);
+			this->filterIndex->TabIndex = 27;
 			// 
 			// groupBox5
 			// 
@@ -2673,6 +2856,22 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label45->TabIndex = 34;
 			this->label45->Text = L"R";
 			// 
+			// frontBlade
+			// 
+			this->frontBlade->Enabled = false;
+			this->frontBlade->Location = System::Drawing::Point(38, 46);
+			this->frontBlade->Name = L"frontBlade";
+			this->frontBlade->Size = System::Drawing::Size(58, 22);
+			this->frontBlade->TabIndex = 32;
+			// 
+			// backBlade
+			// 
+			this->backBlade->Enabled = false;
+			this->backBlade->Location = System::Drawing::Point(121, 46);
+			this->backBlade->Name = L"backBlade";
+			this->backBlade->Size = System::Drawing::Size(58, 22);
+			this->backBlade->TabIndex = 30;
+			// 
 			// label11
 			// 
 			this->label11->AutoSize = true;
@@ -2685,13 +2884,13 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label11->TabIndex = 33;
 			this->label11->Text = L"L";
 			// 
-			// frontBlade
+			// rightBlade
 			// 
-			this->frontBlade->Enabled = false;
-			this->frontBlade->Location = System::Drawing::Point(38, 46);
-			this->frontBlade->Name = L"frontBlade";
-			this->frontBlade->Size = System::Drawing::Size(58, 22);
-			this->frontBlade->TabIndex = 32;
+			this->rightBlade->Enabled = false;
+			this->rightBlade->Location = System::Drawing::Point(121, 74);
+			this->rightBlade->Name = L"rightBlade";
+			this->rightBlade->Size = System::Drawing::Size(58, 22);
+			this->rightBlade->TabIndex = 29;
 			// 
 			// colliIndex
 			// 
@@ -2700,22 +2899,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->colliIndex->Name = L"colliIndex";
 			this->colliIndex->Size = System::Drawing::Size(58, 22);
 			this->colliIndex->TabIndex = 31;
-			// 
-			// backBlade
-			// 
-			this->backBlade->Enabled = false;
-			this->backBlade->Location = System::Drawing::Point(121, 46);
-			this->backBlade->Name = L"backBlade";
-			this->backBlade->Size = System::Drawing::Size(58, 22);
-			this->backBlade->TabIndex = 30;
-			// 
-			// rightBlade
-			// 
-			this->rightBlade->Enabled = false;
-			this->rightBlade->Location = System::Drawing::Point(121, 74);
-			this->rightBlade->Name = L"rightBlade";
-			this->rightBlade->Size = System::Drawing::Size(58, 22);
-			this->rightBlade->TabIndex = 29;
 			// 
 			// label14
 			// 
@@ -2744,235 +2927,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->trapBlade->Name = L"trapBlade";
 			this->trapBlade->Size = System::Drawing::Size(58, 22);
 			this->trapBlade->TabIndex = 25;
-			// 
-			// groupBox7
-			// 
-			this->groupBox7->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->groupBox7->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->groupBox7->Controls->Add(this->label53);
-			this->groupBox7->Controls->Add(this->label56);
-			this->groupBox7->Controls->Add(this->label57);
-			this->groupBox7->Controls->Add(this->filterPosition);
-			this->groupBox7->Controls->Add(this->filterIndex);
-			this->groupBox7->Controls->Add(this->filterCommand);
-			this->groupBox7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->groupBox7->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->groupBox7->Location = System::Drawing::Point(200, 15);
-			this->groupBox7->Name = L"groupBox7";
-			this->groupBox7->Size = System::Drawing::Size(137, 105);
-			this->groupBox7->TabIndex = 31;
-			this->groupBox7->TabStop = false;
-			this->groupBox7->Text = L"Filter";
-			// 
-			// label53
-			// 
-			this->label53->AutoSize = true;
-			this->label53->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label53->ForeColor = System::Drawing::Color::White;
-			this->label53->Location = System::Drawing::Point(3, 73);
-			this->label53->Name = L"label53";
-			this->label53->Size = System::Drawing::Size(54, 13);
-			this->label53->TabIndex = 37;
-			this->label53->Text = L"Command";
-			// 
-			// label56
-			// 
-			this->label56->AutoSize = true;
-			this->label56->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label56->ForeColor = System::Drawing::Color::White;
-			this->label56->Location = System::Drawing::Point(3, 46);
-			this->label56->Name = L"label56";
-			this->label56->Size = System::Drawing::Size(44, 13);
-			this->label56->TabIndex = 34;
-			this->label56->Text = L"Position";
-			// 
-			// label57
-			// 
-			this->label57->AutoSize = true;
-			this->label57->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label57->ForeColor = System::Drawing::Color::White;
-			this->label57->Location = System::Drawing::Point(5, 23);
-			this->label57->Name = L"label57";
-			this->label57->Size = System::Drawing::Size(33, 13);
-			this->label57->TabIndex = 33;
-			this->label57->Text = L"Index";
-			// 
-			// filterPosition
-			// 
-			this->filterPosition->Enabled = false;
-			this->filterPosition->Location = System::Drawing::Point(59, 44);
-			this->filterPosition->Name = L"filterPosition";
-			this->filterPosition->Size = System::Drawing::Size(58, 22);
-			this->filterPosition->TabIndex = 29;
-			// 
-			// filterIndex
-			// 
-			this->filterIndex->Enabled = false;
-			this->filterIndex->Location = System::Drawing::Point(59, 18);
-			this->filterIndex->Name = L"filterIndex";
-			this->filterIndex->Size = System::Drawing::Size(58, 22);
-			this->filterIndex->TabIndex = 27;
-			// 
-			// filterCommand
-			// 
-			this->filterCommand->Enabled = false;
-			this->filterCommand->Location = System::Drawing::Point(59, 70);
-			this->filterCommand->Name = L"filterCommand";
-			this->filterCommand->Size = System::Drawing::Size(58, 22);
-			this->filterCommand->TabIndex = 25;
-			// 
-			// groupBox8
-			// 
-			this->groupBox8->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->groupBox8->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->groupBox8->Controls->Add(this->mirrorCommand);
-			this->groupBox8->Controls->Add(this->mirrorPosition);
-			this->groupBox8->Controls->Add(this->label55);
-			this->groupBox8->Controls->Add(this->textBox3);
-			this->groupBox8->Controls->Add(this->mirrorIndex);
-			this->groupBox8->Controls->Add(this->textBox5);
-			this->groupBox8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->groupBox8->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->groupBox8->Location = System::Drawing::Point(343, 15);
-			this->groupBox8->Name = L"groupBox8";
-			this->groupBox8->Size = System::Drawing::Size(137, 105);
-			this->groupBox8->TabIndex = 32;
-			this->groupBox8->TabStop = false;
-			this->groupBox8->Text = L"Mirror";
-			// 
-			// mirrorCommand
-			// 
-			this->mirrorCommand->AutoSize = true;
-			this->mirrorCommand->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->mirrorCommand->ForeColor = System::Drawing::Color::White;
-			this->mirrorCommand->Location = System::Drawing::Point(3, 73);
-			this->mirrorCommand->Name = L"mirrorCommand";
-			this->mirrorCommand->Size = System::Drawing::Size(54, 13);
-			this->mirrorCommand->TabIndex = 37;
-			this->mirrorCommand->Text = L"Command";
-			// 
-			// mirrorPosition
-			// 
-			this->mirrorPosition->AutoSize = true;
-			this->mirrorPosition->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->mirrorPosition->ForeColor = System::Drawing::Color::White;
-			this->mirrorPosition->Location = System::Drawing::Point(3, 46);
-			this->mirrorPosition->Name = L"mirrorPosition";
-			this->mirrorPosition->Size = System::Drawing::Size(44, 13);
-			this->mirrorPosition->TabIndex = 34;
-			this->mirrorPosition->Text = L"Position";
-			// 
-			// label55
-			// 
-			this->label55->AutoSize = true;
-			this->label55->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label55->ForeColor = System::Drawing::Color::White;
-			this->label55->Location = System::Drawing::Point(5, 23);
-			this->label55->Name = L"label55";
-			this->label55->Size = System::Drawing::Size(33, 13);
-			this->label55->TabIndex = 33;
-			this->label55->Text = L"Index";
-			// 
-			// textBox3
-			// 
-			this->textBox3->Enabled = false;
-			this->textBox3->Location = System::Drawing::Point(59, 44);
-			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(58, 22);
-			this->textBox3->TabIndex = 29;
-			// 
-			// mirrorIndex
-			// 
-			this->mirrorIndex->Enabled = false;
-			this->mirrorIndex->Location = System::Drawing::Point(59, 18);
-			this->mirrorIndex->Name = L"mirrorIndex";
-			this->mirrorIndex->Size = System::Drawing::Size(58, 22);
-			this->mirrorIndex->TabIndex = 27;
-			// 
-			// textBox5
-			// 
-			this->textBox5->Enabled = false;
-			this->textBox5->Location = System::Drawing::Point(59, 70);
-			this->textBox5->Name = L"textBox5";
-			this->textBox5->Size = System::Drawing::Size(58, 22);
-			this->textBox5->TabIndex = 25;
-			// 
-			// groupBox9
-			// 
-			this->groupBox9->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->groupBox9->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->groupBox9->Controls->Add(this->lightPicture);
-			this->groupBox9->Controls->Add(this->label54);
-			this->groupBox9->Controls->Add(this->lightTimer);
-			this->groupBox9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->groupBox9->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->groupBox9->Location = System::Drawing::Point(486, 15);
-			this->groupBox9->Name = L"groupBox9";
-			this->groupBox9->Size = System::Drawing::Size(137, 105);
-			this->groupBox9->TabIndex = 33;
-			this->groupBox9->TabStop = false;
-			this->groupBox9->Text = L"Light";
-			// 
-			// label54
-			// 
-			this->label54->AutoSize = true;
-			this->label54->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label54->ForeColor = System::Drawing::Color::White;
-			this->label54->Location = System::Drawing::Point(5, 23);
-			this->label54->Name = L"label54";
-			this->label54->Size = System::Drawing::Size(33, 13);
-			this->label54->TabIndex = 33;
-			this->label54->Text = L"Timer";
-			// 
-			// lightTimer
-			// 
-			this->lightTimer->Enabled = false;
-			this->lightTimer->Location = System::Drawing::Point(59, 18);
-			this->lightTimer->Name = L"lightTimer";
-			this->lightTimer->Size = System::Drawing::Size(58, 22);
-			this->lightTimer->TabIndex = 27;
-			// 
-			// lightPicture
-			// 
-			this->lightPicture->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
-				static_cast<System::Int32>(static_cast<System::Byte>(224)));
-			this->lightPicture->Location = System::Drawing::Point(59, 54);
-			this->lightPicture->Name = L"lightPicture";
-			this->lightPicture->Size = System::Drawing::Size(58, 38);
-			this->lightPicture->TabIndex = 34;
-			this->lightPicture->TabStop = false;
-			// 
-			// groupBox10
-			// 
-			this->groupBox10->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
-				static_cast<System::Int32>(static_cast<System::Byte>(60)));
-			this->groupBox10->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->groupBox10->Controls->Add(this->bulbTemp);
-			this->groupBox10->Controls->Add(this->label49);
-			this->groupBox10->Controls->Add(this->statorTemp);
-			this->groupBox10->Controls->Add(this->label50);
-			this->groupBox10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
-			this->groupBox10->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
-				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->groupBox10->Location = System::Drawing::Point(629, 15);
-			this->groupBox10->Name = L"groupBox10";
-			this->groupBox10->Size = System::Drawing::Size(137, 105);
-			this->groupBox10->TabIndex = 34;
-			this->groupBox10->TabStop = false;
-			this->groupBox10->Text = L"Tube";
 			// 
 			// MainForm
 			// 
@@ -3044,17 +2998,17 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->motor_body_box->ResumeLayout(false);
 			this->motor_body_box->PerformLayout();
 			this->pcb303_panel->ResumeLayout(false);
-			this->groupBox5->ResumeLayout(false);
-			this->groupBox5->PerformLayout();
-			this->groupBox7->ResumeLayout(false);
-			this->groupBox7->PerformLayout();
-			this->groupBox8->ResumeLayout(false);
-			this->groupBox8->PerformLayout();
+			this->groupBox10->ResumeLayout(false);
+			this->groupBox10->PerformLayout();
 			this->groupBox9->ResumeLayout(false);
 			this->groupBox9->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->lightPicture))->EndInit();
-			this->groupBox10->ResumeLayout(false);
-			this->groupBox10->PerformLayout();
+			this->groupBox8->ResumeLayout(false);
+			this->groupBox8->PerformLayout();
+			this->groupBox7->ResumeLayout(false);
+			this->groupBox7->PerformLayout();
+			this->groupBox5->ResumeLayout(false);
+			this->groupBox5->PerformLayout();
 			this->ResumeLayout(false);
 
 		}

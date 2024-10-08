@@ -17,7 +17,7 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
-#include "PCB315.h"
+#include "PCB325.h"
 #include "PCB326.h"
 #include "ExposureModule.h"
 #include "Log.h"
@@ -56,7 +56,7 @@ void MainForm::MainFormInitialize(void) {
 	LogClass::logInFile("FW302 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW302]);
 	LogClass::logInFile("FW303 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW303]);
 	LogClass::logInFile("FW304 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW304]);
-	LogClass::logInFile("FW315 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW315]);
+	LogClass::logInFile("FW325 Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FW325]);
 	LogClass::logInFile("FW-CAN Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWCAN]);
 	LogClass::logInFile("FW-GENERATOR Installed:" + SystemConfig::Configuration->getParam(SystemConfig::PARAM_PACKAGE)[SystemConfig::PARAM_PACKAGE_FWGEN]);
 
@@ -66,7 +66,7 @@ void MainForm::MainFormInitialize(void) {
 	labelPcb302Activity->Text = "Waiting ..";
 	labelPcb303Activity->Text = "Waiting ..";
 	labelPcb304Activity->Text = "Waiting ..";
-	labelPcb315Activity->Text = "Waiting ..";
+	labelPcb325Activity->Text = "Waiting ..";
 	labelPcb326Activity->Text = "Waiting ..";
 	labelCanDriverActivity->Text = "Waiting ..";
 	labelGeneratorActivity->Text = "Waiting ..";
@@ -321,48 +321,20 @@ bool MainForm::Startup_PCB304(void) {
 	return false;
 }
 
-bool MainForm::Startup_PCB315(void) {
-	System::String^ string;
-
-	switch (startupSubFase) {
-
-	case 0: // Creates the PCB315 process
-		labelPcb315Activity->Text = "CONNECTION ..";
-		string = "pcb315 initialization ..";		
-		LogClass::logInFile(string);
-		if (Gantry::isPcb315Demo()) PCB315::device->simulMode();
-		else PCB315::device->runMode();
-		startupSubFase++;
-		break;
-
-	case 1: // Wait the connection and configuration
-		if (PCB315::device->isSimulatorMode()) {
-			labelPcb315Activity->Text = "RUN IN SIMULATION MODE";
-			labelPcb315Activity->ForeColor = Color::LightGreen;
-			return true;
-		}
-
-		if (PCB315::device->getModuleStatus() > CanDeviceProtocol::status_options::WAITING_REVISION) {
-			labelPcb315Activity->Text = "CONFIGURATION ..";
-			string = "pcb315 firmware revision: ";
-			string += " BOOT:" + PCB315::device->getBootStatus().ToString() + ", REV:" + PCB315::device->getBootRevision();
-			string += " APP:" + PCB315::device->getAppRevision();
-			LogClass::logInFile(string);
-			startupSubFase++;
-		}
-		break;
-
-	case 2: // Wait the connection and configuration		
-		if (PCB315::device->getModuleStatus() == CanDeviceProtocol::status_options::DEVICE_RUNNING) {
-			labelPcb315Activity->Text = "RUN IN NORMAL MODE";
-			labelPcb315Activity->ForeColor = Color::LightGreen;
-			return true;
-		}
-
-		break;
-
+bool MainForm::Startup_PCB325(void) {
+	
+	if (Gantry::isPcb325Demo()) {
+		PCB325::device->simulMode();
+		labelPcb325Activity->Text = "RUN IN SIMULATION MODE";
+		labelPcb325Activity->ForeColor = Color::LightGreen;
 	}
-	return false;
+	else {
+		PCB325::device->runMode();
+		labelPcb325Activity->Text = "RUN IN NORMAL MODE";
+		labelPcb325Activity->ForeColor = Color::LightGreen;
+	}
+	return true;
+
 }
 
 bool MainForm::Startup_PCB326(void) {
@@ -732,7 +704,7 @@ void MainForm::StartupProcedure(void) {
 	case 1: if (Startup_PCB301()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB301 process
 	case 2: if (Startup_PCB302()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB302 process
 	case 3: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
-	case 4: if (Startup_PCB315()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
+	case 4: if (Startup_PCB325()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB325 process
 	case 5: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
 	case 6: if (Startup_PCB326()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
 	case 7: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process

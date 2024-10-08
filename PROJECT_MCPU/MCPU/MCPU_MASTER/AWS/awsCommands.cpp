@@ -10,7 +10,6 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
-#include "PCB315.h"
 #include "PCB326.h"
 #include "ExposureModule.h"
 #include "Generator.h"
@@ -814,7 +813,7 @@ void   awsProtocol::SET_ExposureData(void) {
     Double kV = Convert::ToDouble(kv_param, myInfo);
     Double mAs = Convert::ToDouble(mAs_param, myInfo);
     
-    if (!Exposures::setExposurePulse(pulse_seq, gcnew Exposures::exposure_pulse(kV, mAs, PCB315::getFilterFromTag(filter_param)))) {
+    if (!Exposures::setExposurePulse(pulse_seq, gcnew Exposures::exposure_pulse(kV, mAs, PCB303::getFilterFromTag(filter_param)))) {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return;
     }
    
@@ -1080,9 +1079,7 @@ void   awsProtocol::GET_Components(void) {
     }else lista->Add("UNDETECTED_PROTECTION");
 
     // Collimation Tool
-    if (PCB315::getComponent() == PCB315::component_options::LEAD_SCREEN)  lista->Add("LEAD_SCREEN");
-    else if (PCB315::getComponent() == PCB315::component_options::SPECIMEN)  lista->Add("SPECIMEN");
-    else lista->Add("UNDETECTED_COLLIMATOR");
+    lista->Add("UNDETECTED_COLLIMATOR");
 
 
     ackOk(lista);
@@ -1233,8 +1230,8 @@ void   awsProtocol::GET_TubeTemperature(void) {
     List<String^>^ lista = gcnew List<String^>;
 
     lista->Add("0"); // To Be Done ..
-    lista->Add(PCB315::getBulb().ToString());
-    lista->Add(PCB315::getStator().ToString());
+    lista->Add(PCB303::getBulb().ToString());
+    lista->Add(PCB303::getStator().ToString());
 
     ackOk(lista);
     return;

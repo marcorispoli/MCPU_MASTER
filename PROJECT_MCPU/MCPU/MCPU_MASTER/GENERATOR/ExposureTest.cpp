@@ -16,7 +16,7 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
     bool large_focus = Exposures::getExposurePulse(0)->isLargeFocus();
     bool detector_synch = Exposures::getExposurePulse(0)->useDetector();
     bool grid_synch = Exposures::getExposurePulse(0)->useGrid();
-    PCB315::filterMaterialCodes filter;
+    PCB303::filter_index filter;
     unsigned char current_status;
     int timeout;
     exposure_completed_errors  error;
@@ -31,9 +31,9 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
     // Filter selection 
     filter = getExposurePulse(0)->filter;
     
-    if (!PCB315::setFilterAutoMode(filter, true)) {
-        return exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
+    PCB303::selectFilter(filter);
+    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     // Pulse Preparation
     System::String^ exposure_data_str = ExpName + " PULSE DATA ---------------- "; LogClass::logInFile(exposure_data_str);   

@@ -34,10 +34,9 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
         return exposure_completed_errors::XRAY_INVALID_2D_PARAMETERS;
     }
 
-    // Set the filter selected is the expected into the pulse(0). No wait for positioning here
-    if (!PCB315::setFilterAutoMode(getExposurePulse(0)->filter, false)) {
-        return exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
+    PCB303::selectFilter(getExposurePulse(0)->filter);
+    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     // Sets the Grid On Field (if not yet) : wait for the ready condition   
     if (grid_synch) PCB304::syncGeneratorOn();
@@ -63,12 +62,9 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 
-    // Checks the filter in position: the filter has been selected early in the generator procedure    
-    if (!PCB315::waitForValidFilter()) {
-        return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Checks the filter in position
+    if(!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
-    
     if (!demo) {
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
         setXrayEnable(false);
@@ -123,10 +119,9 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
         return exposure_completed_errors::XRAY_INVALID_2D_PARAMETERS;
     }
 
-    // Set the filter selected is the expected into the pulse(0). No wait for positioning here
-    if (!PCB315::setFilterAutoMode(Exposures::getExposurePulse(0)->filter, false)) {
-        return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
+    PCB303::selectFilter(getExposurePulse(0)->filter);
+    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     // Sets the Grid On Field (if not yet) : wait for the ready condition   
     if (grid_synch) PCB304::syncGeneratorOn();
@@ -152,11 +147,8 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     error = (exposure_completed_errors)generator2DAecPrePulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, large_focus,  exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
-
-    // Checks the filter in position: the filter has been selected early in the generator procedure    
-    if (!PCB315::waitForValidFilter()) {
-        return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Checks the filter in position
+    if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     
     if (!demo) {
@@ -207,10 +199,12 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     }
     getExposurePulse(1)->validated = false;
 
-    // Set/verify the filter selected is the expected into the pulse(1)
-    if (!PCB315::setFilterAutoMode(getExposurePulse(1)->filter, true)) {
-        return exposure_completed_errors::XRAY_FILTER_ERROR;
-    }
+    // Set the filter selected is the expected into the pulse(1). No wait for positioning here    
+    PCB303::selectFilter(getExposurePulse(1)->filter);
+
+    // Checks the filter in position
+    if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+
 
     try {        
         exposure_time = System::Convert::ToInt16(DetectorConfig::Configuration->getParam(detector_param)[DetectorConfig::PARAM_MAX_2D_INTEGRATION_TIME]);

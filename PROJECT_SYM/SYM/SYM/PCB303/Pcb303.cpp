@@ -13,7 +13,7 @@ void PCB303::device_workflow_callback(void) {
 		
 	// Trap parameters
 	for (int i = 0; i < NUM_COLLIMATION_SLOTS/2; i++) {
-		protocol.parameter_register.decodeLRCollimationSlotRegister(parameter_registers[i + (System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX], i);
+		protocol.parameter_register.decodeTrapCollimationSlotRegister(parameter_registers[i + (System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX], i);
 	}
 
 	// Filter parameters

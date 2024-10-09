@@ -467,11 +467,11 @@ public:
 				int idxl = idx * 2;
 				int idxh = idxl + 1;
 				
-				unsigned char d0 = format_collimation[idxl]->left & 0xFF;
-				unsigned char d1 = (format_collimation[idxl]->left >> 8) & 0xFF;
+				unsigned char d0 = format_collimation[idxl]->trap & 0xFF;
+				unsigned char d1 = (format_collimation[idxl]->trap >> 8) & 0xFF;
 
-				unsigned char d2 = format_collimation[idxh]->right & 0xFF;
-				unsigned char d3 = (format_collimation[idxh]->right >> 8) & 0xFF;
+				unsigned char d2 = format_collimation[idxh]->trap & 0xFF;
+				unsigned char d3 = (format_collimation[idxh]->trap >> 8) & 0xFF;
 
 				return gcnew Register(d0, d1, d2, d3);
 			}
@@ -595,6 +595,7 @@ public:
 		void formatManagement(void);
 		void filterManagement(void);
 		void mirrorManagement(void);
+		void tubeManagement(void);
 		
 
 	///@}
@@ -638,8 +639,9 @@ public:
 		static ProtocolStructure::StatusRegister::light_target_code selected_light = ProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF;
 		static bool retrigger_light_on_command = false;
 
-		static int bulb_temperature = 0;
-		static int stator_temperature = 0;
+		static int bulb_temperature_perc = 0;
+		static int stator_temperature_perc = 0;
+		static int max_temperature_perc = 0;
 
 	///@}
 
@@ -660,8 +662,10 @@ public:
 	static void setCollimationLight(bool stat);
 	static bool getPowerLightStatus(void) { return (protocol.status_register.light_status == ProtocolStructure::StatusRegister::light_target_code::LIGHT_ON) ? true : false; }
 	
-	static int getBulb(void) { return bulb_temperature; }
-	static int getStator(void) { return stator_temperature; }
+	static int getBulbPerc(void) { return bulb_temperature_perc; }
+	static int getStatorPerc(void) { return stator_temperature_perc; }
+	static int getMaxTubePerc(void) { return max_temperature_perc; }
+
 	static bool isTubeAlarm() { return false; }
 
 	static void resetFaults(void);//!< In case of collimation fault condition, this function starts a new collimation attempt.

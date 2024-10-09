@@ -2577,7 +2577,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			// 
 			// bulbTemp
 			// 
-			this->bulbTemp->Enabled = false;
 			this->bulbTemp->Location = System::Drawing::Point(18, 34);
 			this->bulbTemp->Name = L"bulbTemp";
 			this->bulbTemp->Size = System::Drawing::Size(92, 22);
@@ -2597,7 +2596,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			// 
 			// statorTemp
 			// 
-			this->statorTemp->Enabled = false;
 			this->statorTemp->Location = System::Drawing::Point(18, 75);
 			this->statorTemp->Name = L"statorTemp";
 			this->statorTemp->Size = System::Drawing::Size(92, 22);

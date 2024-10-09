@@ -210,7 +210,23 @@ void PCB303::formatManagement(void) {
     return;
 }
 
+void PCB303::tubeManagement(void) {
 
+    // Assignes the current Tube Stator and Bulb temperatures
+    int val = protocol.status_register.bulb_temp;
+    if (val > 100) val = 100;
+    if (val < 0) val = 0;    
+    bulb_temperature_perc = val;
+
+    val = protocol.status_register.stator_temp;
+    if (val > 100) val = 100;
+    if (val < 0) val = 0;
+    stator_temperature_perc = val;
+
+    // Calculates the maximum percent
+    if (stator_temperature_perc > bulb_temperature_perc) max_temperature_perc = stator_temperature_perc;
+    else  max_temperature_perc = bulb_temperature_perc;
+}
 
 
 /// <summary>
@@ -244,14 +260,14 @@ void PCB303::runningLoop(void) {
 
     //	System Register
     protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER));
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
-
     formatManagement();
     filterManagement();
     mirrorManagement();
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
     //	Tube Register
     protocol.status_register.decodeTubeRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::TUBE_REGISTER));
+    tubeManagement();
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
 

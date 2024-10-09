@@ -1230,8 +1230,8 @@ void   awsProtocol::GET_TubeTemperature(void) {
     List<String^>^ lista = gcnew List<String^>;
 
     lista->Add("0"); // To Be Done ..
-    lista->Add(PCB303::getBulb().ToString());
-    lista->Add(PCB303::getStator().ToString());
+    lista->Add(PCB303::getBulbPerc().ToString());
+    lista->Add(PCB303::getStatorPerc().ToString());
 
     ackOk(lista);
     return;

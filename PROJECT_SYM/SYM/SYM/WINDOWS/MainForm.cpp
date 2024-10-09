@@ -327,6 +327,35 @@ void MainForm::pcb303Simulator(void) {
 	if (PCB303::device.power_light == PCB303::ProtocolStructure::StatusRegister::light_target_code::LIGHT_ON) lightPicture->BackColor = COLOR_ON;
 	else lightPicture->BackColor = COLOR_OFF;
 
+	// Tube Panel
+	if (statorTemp->Text == "") statorTemp->Text = "0";
+	if (bulbTemp->Text == "") bulbTemp->Text = "0";
+
+	try {
+		int val = System::Convert::ToUInt16(statorTemp->Text);		
+		if (val > 100) val = 100;
+		else if (val < 0) val = 0;
+		
+		PCB303::device.temp_stator = val;
+		statorTemp->Text = val.ToString();
+	}
+	catch (...) {
+		statorTemp->Text = "0";
+		PCB303::device.temp_stator = 0;
+	}
+
+	try {
+		int val = System::Convert::ToUInt16(bulbTemp->Text);
+		if (val > 100) val = 100;
+		else if (val < 0) val = 0;
+
+		PCB303::device.temp_bulb = val;
+		bulbTemp->Text = val.ToString();
+	}
+	catch (...) {
+		bulbTemp->Text = "0";
+		PCB303::device.temp_bulb = 0;
+	}
 
 }
 void MainForm::pcb304Simulator(void) {

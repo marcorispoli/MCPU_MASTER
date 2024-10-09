@@ -448,10 +448,7 @@ void IdleForm::idleStatusManagement(void) {
 	}
 
 	// Evaluates the maximum tube temperature
-	int val = 0;// PCB303::getAnode();
-	if (PCB303::getBulb() > val) val = PCB303::getBulb();
-	if (PCB303::getStator() > val) val = PCB303::getStator();
-	labelTubeData->Text = val.ToString() + " %";
+	labelTubeData->Text = PCB303::getMaxTubePerc().ToString() + " %";
 
 	// Sets the background color based on the temperature error condition
 	if (PCB303::isTubeAlarm() != IDLESTATUS::Registers.tube.alarm) {

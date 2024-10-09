@@ -263,14 +263,15 @@ public:
 				int idxl = idx * 2;
 				int idxh = idxl + 1;
 
-				unsigned char d0 = format_collimation[idxl]->left & 0xFF;
-				unsigned char d1 = (format_collimation[idxl]->left >> 8) & 0xFF;
+				unsigned char d0 = format_collimation[idxl]->trap & 0xFF;
+				unsigned char d1 = (format_collimation[idxl]->trap >> 8) & 0xFF;
 
-				unsigned char d2 = format_collimation[idxh]->right & 0xFF;
-				unsigned char d3 = (format_collimation[idxh]->right >> 8) & 0xFF;
+				unsigned char d2 = format_collimation[idxh]->trap & 0xFF;
+				unsigned char d3 = (format_collimation[idxh]->trap >> 8) & 0xFF;
 
 				return gcnew Register(d0, d1, d2, d3);
 			}
+
 
 			static bool decodeFilterSlotRegister(Register^ reg, int idx) {
 				if (reg == nullptr) return false;

@@ -650,14 +650,8 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 	}
 
 
-	// Evaluates the maximum tube temperature
-	int val = 0;// PCB315::getAnode();
-	if (PCB303::getBulb() > val) val = PCB303::getBulb();
-	if (PCB303::getStator() > val) val = PCB303::getStator();
-	
-
-	// Cumulated max energy of the X-RAY tube
-	labelTubeData->Text = val.ToString() + " %";
+	// Evaluates the maximum tube temperature	
+	labelTubeData->Text = PCB303::getMaxTubePerc().ToString() + " %";
 
 	if (PCB303::isTubeAlarm() != OPERSTATUS::Registers.collimator.tube_alarm) {
 		OPERSTATUS::Registers.collimator.tube_alarm = PCB303::isTubeAlarm();

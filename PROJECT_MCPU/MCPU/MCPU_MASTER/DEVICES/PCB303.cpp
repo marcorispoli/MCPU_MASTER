@@ -2,7 +2,7 @@
 #include "PCB303.h"
 #include "PCB302.h"
 #include "ExposureModule.h"
-
+#include "CanSimulator.h"
 #include "ConfigurationFiles.h"
 #include "MESSAGES/Notify.h"
 #include <thread>
@@ -86,7 +86,7 @@ void PCB303::filterManagement(void) {
     }
 
     // No more attempts can be done after some collimation repetition.
-    /*
+    
     if (valid_filter_format) filter_attempt = 0;
     else  if (filter_attempt > 5) {
         valid_filter_format = false;
@@ -97,7 +97,7 @@ void PCB303::filterManagement(void) {
             Notify::activate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);     
         }
         return;
-    }*/
+    }
 
     // Resets the Selection error
     if (filter_select_error) {
@@ -146,7 +146,7 @@ void PCB303::formatManagement(void) {
     }
 
     // No more attempts can be done after some collimation repetition.
-/*    if (valid_collimation_format) format_collimation_attempt = 0;
+    if (valid_collimation_format) format_collimation_attempt = 0;
     else  if (format_collimation_attempt > 5) {
         valid_collimation_format = false;
 
@@ -157,7 +157,7 @@ void PCB303::formatManagement(void) {
         }
         return;
     }
-    */
+    
 
     // Resets the Selection error
     if (collimation_select_error) {
@@ -241,11 +241,7 @@ void PCB303::tubeManagement(void) {
 /// <param name=""></param>
 void PCB303::runningLoop(void) {
     static bool commerr = false;
-    //demoLoop();
-    //return;
-    
-    // Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION, err_string);
-    
+   
     // Test the communication status
     if (commerr != isCommunicationError()) {
         commerr = isCommunicationError();
@@ -304,6 +300,7 @@ void PCB303::resetLoop(void) {
 /// <returns>true if the configuration success</returns>
 bool PCB303::configurationLoop(void) {
     
+    
 
     // Read the parameters from the configuration files
     System::String^ Param;
@@ -353,6 +350,8 @@ bool PCB303::configurationLoop(void) {
 
     // Writes the next register of the Mirror data
     writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
+
+    if (device->isSimulatorMode()) CanSimulator::sendFilterConfiguration();
 
     return true;
 }

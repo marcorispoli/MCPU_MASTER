@@ -291,6 +291,9 @@ private: System::Windows::Forms::Label^ label55;
 private: System::Windows::Forms::TextBox^ mirrorPosition;
 
 private: System::Windows::Forms::TextBox^ mirrorIndex;
+private: System::Windows::Forms::Label^ label51;
+private: System::Windows::Forms::TextBox^ filterMat;
+
 
 
 
@@ -649,6 +652,8 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label14 = (gcnew System::Windows::Forms::Label());
 			this->leftBlade = (gcnew System::Windows::Forms::TextBox());
 			this->trapBlade = (gcnew System::Windows::Forms::TextBox());
+			this->label51 = (gcnew System::Windows::Forms::Label());
+			this->filterMat = (gcnew System::Windows::Forms::TextBox());
 			this->infoPanel->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotation_led))->BeginInit();
@@ -2725,6 +2730,8 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox7->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 				static_cast<System::Int32>(static_cast<System::Byte>(60)));
 			this->groupBox7->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->groupBox7->Controls->Add(this->label51);
+			this->groupBox7->Controls->Add(this->filterMat);
 			this->groupBox7->Controls->Add(this->label56);
 			this->groupBox7->Controls->Add(this->label57);
 			this->groupBox7->Controls->Add(this->filterPosition);
@@ -2745,11 +2752,12 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label56->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label56->ForeColor = System::Drawing::Color::White;
-			this->label56->Location = System::Drawing::Point(3, 62);
+			this->label56->Location = System::Drawing::Point(2, 80);
 			this->label56->Name = L"label56";
 			this->label56->Size = System::Drawing::Size(44, 13);
 			this->label56->TabIndex = 34;
 			this->label56->Text = L"Position";
+			this->label56->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			// 
 			// label57
 			// 
@@ -2757,26 +2765,27 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label57->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label57->ForeColor = System::Drawing::Color::White;
-			this->label57->Location = System::Drawing::Point(5, 39);
+			this->label57->Location = System::Drawing::Point(5, 27);
 			this->label57->Name = L"label57";
 			this->label57->Size = System::Drawing::Size(33, 13);
 			this->label57->TabIndex = 33;
 			this->label57->Text = L"Index";
+			this->label57->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			// 
 			// filterPosition
 			// 
 			this->filterPosition->Enabled = false;
-			this->filterPosition->Location = System::Drawing::Point(59, 60);
+			this->filterPosition->Location = System::Drawing::Point(48, 75);
 			this->filterPosition->Name = L"filterPosition";
-			this->filterPosition->Size = System::Drawing::Size(58, 22);
+			this->filterPosition->Size = System::Drawing::Size(83, 22);
 			this->filterPosition->TabIndex = 29;
 			// 
 			// filterIndex
 			// 
 			this->filterIndex->Enabled = false;
-			this->filterIndex->Location = System::Drawing::Point(59, 34);
+			this->filterIndex->Location = System::Drawing::Point(48, 22);
 			this->filterIndex->Name = L"filterIndex";
-			this->filterIndex->Size = System::Drawing::Size(58, 22);
+			this->filterIndex->Size = System::Drawing::Size(83, 22);
 			this->filterIndex->TabIndex = 27;
 			// 
 			// groupBox5
@@ -2925,6 +2934,27 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->trapBlade->Name = L"trapBlade";
 			this->trapBlade->Size = System::Drawing::Size(58, 22);
 			this->trapBlade->TabIndex = 25;
+			// 
+			// label51
+			// 
+			this->label51->AutoSize = true;
+			this->label51->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label51->ForeColor = System::Drawing::Color::White;
+			this->label51->Location = System::Drawing::Point(5, 53);
+			this->label51->Name = L"label51";
+			this->label51->Size = System::Drawing::Size(37, 13);
+			this->label51->TabIndex = 36;
+			this->label51->Text = L"Matter";
+			this->label51->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+			// 
+			// filterMat
+			// 
+			this->filterMat->Enabled = false;
+			this->filterMat->Location = System::Drawing::Point(48, 49);
+			this->filterMat->Name = L"filterMat";
+			this->filterMat->Size = System::Drawing::Size(83, 22);
+			this->filterMat->TabIndex = 35;
 			// 
 			// MainForm
 			// 

@@ -104,6 +104,8 @@ public:
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|1|-|Identifier Code|
     /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
+    /// 
     literal System::String^ PARAM_PADDLE_PROSTHESIS = "PADDLE_PROSTHESIS";
     literal System::String^ PARAM_PADDLE_PROSTHESIS_COMMENT = "PADDLE_PROSTHESIS calibration data";
     literal System::String^ PADDLE_PROSTHESIS_COLLIMATION_DEFAULT = "1"; // Format Collimation index
@@ -125,6 +127,8 @@ public:
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|2|-|Identifier Code|
+    /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_BIOP2D = "PADDLE_BIOP2D";
     literal System::String^ PARAM_PADDLE_BIOP2D_COMMENT = "PADDLE_BIOP2D calibration data";
@@ -148,6 +152,8 @@ public:
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|3|-|Identifier Code|
     /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
+    /// 
     literal System::String^ PARAM_PADDLE_BIOP3D = "PADDLE_BIOP3D";
     literal System::String^ PARAM_PADDLE_BIOP3D_COMMENT = "PADDLE_BIOP3D calibration data";
     literal System::String^ PADDLE_BIOP3D_COLLIMATION_DEFAULT = "3"; // Format Collimation index
@@ -169,6 +175,8 @@ public:
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|4|-|Identifier Code|
+    /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_TOMO = "PADDLE_TOMO";
     literal System::String^ PARAM_PADDLE_TOMO_COMMENT = "PADDLE_TOMO calibration data";
@@ -192,6 +200,8 @@ public:
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|5|-|Identifier Code|
     /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
+    /// 
     literal System::String^ PARAM_PADDLE_24x30_CONTACT = "PADDLE_24x30_CONTACT";
     literal System::String^ PARAM_PADDLE_24x30_CONTACT_COMMENT = "PADDLE_24x30_CONTACT calibration data";
     literal System::String^ PADDLE_24x30_CONTACT_COLLIMATION_DEFAULT = "5"; // Format Collimation index
@@ -213,6 +223,8 @@ public:
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|6|-|Identifier Code|
+    /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_18x24_C_CONTACT = "PADDLE_18x24_C_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_C_CONTACT_COMMENT = "PADDLE_18x24_C_CONTACT calibration data";
@@ -236,6 +248,8 @@ public:
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|7|-|Identifier Code|
     /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
+    /// 
     literal System::String^ PARAM_PADDLE_18x24_L_CONTACT = "PADDLE_18x24_L_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_L_CONTACT_COMMENT = "PADDLE_18x24_L_CONTACT calibration data";
     literal System::String^ PADDLE_18x24_L_CONTACT_COLLIMATION_DEFAULT = "7"; // Format Collimation index
@@ -257,6 +271,8 @@ public:
     /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|8|-|Identifier Code|
+    /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_18x24_R_CONTACT = "PADDLE_18x24_R_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_R_CONTACT_COMMENT = "PADDLE_18x24_R_CONTACT calibration data";
@@ -280,6 +296,8 @@ public:
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|9|-|Identifier Code|
     /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
+    /// 
     literal System::String^ PARAM_PADDLE_10x24_CONTACT = "PADDLE_10x24_CONTACT";
     literal System::String^ PARAM_PADDLE_10x24_CONTACT_COMMENT = "PADDLE_10x24_CONTACT calibration data";
     literal System::String^ PADDLE_10x24_CONTACT_COLLIMATION_DEFAULT = "9"; // Format Collimation index
@@ -301,6 +319,8 @@ public:
     /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|10|-|Identifier Code|
+    /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_9x9_MAG = "PADDLE_9x9_MAG";
     literal System::String^ PARAM_PADDLE_9x9_MAG_COMMENT = "PADDLE_9x9_MAG calibration data";
@@ -324,6 +344,8 @@ public:
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|11|-|Identifier Code|
     /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
+    /// 
     literal System::String^ PARAM_PADDLE_9x21_MAG = "PADDLE_9x21_MAG";
     literal System::String^ PARAM_PADDLE_9x21_MAG_COMMENT = "PADDLE_9x21_MAG calibration data";
     literal System::String^ PADDLE_9x21_MAG_COLLIMATION_DEFAULT = "11"; // Format Collimation index
@@ -345,6 +367,8 @@ public:
     /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
     /// |Weight|Word|10|-|Paddle Weight in N |
     /// |IdentificationId|Word|12|-|Identifier Code|
+    /// 
+    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_D75_MAG = "PADDLE_D75_MAG";
     literal System::String^ PARAM_PADDLE_D75_MAG_COMMENT = "PADDLE_D75_MAG calibration data";

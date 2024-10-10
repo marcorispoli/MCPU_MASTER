@@ -37,6 +37,15 @@ public:
 		BUFLEN
 	};
 
+	// Configuration address (low part)
+	literal unsigned char SIMUL_CONFIG_ACTIVE_DEVICES	= 0;
+	literal unsigned char SIMUL_CONFIG_MOTOR_CONFIG_TRX	= 3;
+	literal unsigned char SIMUL_CONFIG_MOTOR_CONFIG_ARM = 4;
+	literal unsigned char SIMUL_CONFIG_MOTOR_CONFIG_SLIDE = 5;
+	literal unsigned char SIMUL_CONFIG_MOTOR_CONFIG_BODY = 6;
+	literal unsigned char SIMUL_CONFIG_MOTOR_CONFIG_VERTICAL = 7;
+	literal unsigned char SIMUL_CONFIG_FILTERS = 10;
+
 	delegate void rxData_slot(void);
 	static event rxData_slot^ canrx_canopen_sdo_event; //!< CanOpen SDO received buffer
 	static event rxData_slot^ canrx_canopen_bootup_event;
@@ -54,7 +63,10 @@ public:
 	static unsigned short canId;
 	static cli::array<System::Byte>^ canDataBuffer;//!< This is the data buffer decoded
 	static bool connection_status = false;//!< This is the current connection status
+	
 	static void sendMotorRotConfiguration(unsigned char devId, double rot_convertion);
+	static void sendFilterConfiguration(void);
+
 private:
 	static bool started = false;
 	
@@ -70,6 +82,8 @@ private:
 	static cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer
 	static void handleBuffer(void);
 	static void sendConfiguration(void);
+	
+
 	
 };
 

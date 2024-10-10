@@ -115,7 +115,7 @@ void CanSimulator::sendConfiguration() {
 
 	buffer[(Byte)can_buf_struct::STX] = CanSimulator::STX;
 	buffer[(Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
-	buffer[(Byte)can_buf_struct::CAN_IDL] = 0x00;
+	buffer[(Byte)can_buf_struct::CAN_IDL] = SIMUL_CONFIG_ACTIVE_DEVICES;
 	buffer[(Byte)can_buf_struct::CAN_IDH] = 0xFF;
 	buffer[(Byte)can_buf_struct::ETX] = CanSimulator::ETX;
 	buffer[(Byte)can_buf_struct::DATALEN] = 8;
@@ -169,6 +169,39 @@ void CanSimulator::sendMotorRotConfiguration(unsigned char devId, double rot_con
 
 	return;
 }
+
+
+void CanSimulator::sendFilterConfiguration(void) {
+
+	cli::array<System::Byte>^ buffer = gcnew cli::array<System::Byte>((int)can_buf_struct::BUFLEN);
+	
+	
+	// Assignes the Slots 
+	buffer[(Byte)can_buf_struct::D0] = PCB303::getFilterSlot(PCB303::filter_index::FILTER_RH);
+	buffer[(Byte)can_buf_struct::D1] = PCB303::getFilterSlot(PCB303::filter_index::FILTER_AG);
+	buffer[(Byte)can_buf_struct::D2] = PCB303::getFilterSlot(PCB303::filter_index::FILTER_AL);
+	buffer[(Byte)can_buf_struct::D3] = PCB303::getFilterSlot(PCB303::filter_index::FILTER_CU);
+	buffer[(Byte)can_buf_struct::D4] = PCB303::getFilterSlot(PCB303::filter_index::FILTER_MO);
+	buffer[(Byte)can_buf_struct::D5] = PCB303::getFilterSlot(PCB303::filter_index::FILTER_LD);
+
+	buffer[(System::Byte)can_buf_struct::STX] = CanSimulator::STX;
+	buffer[(System::Byte)can_buf_struct::LENGHT] = (Byte)can_buf_struct::BUFLEN;
+	buffer[(System::Byte)can_buf_struct::CAN_IDL] = SIMUL_CONFIG_FILTERS;
+	buffer[(System::Byte)can_buf_struct::CAN_IDH] = 0xFF;
+	buffer[(System::Byte)can_buf_struct::ETX] = CanSimulator::ETX;
+	buffer[(Byte)can_buf_struct::DATALEN] = 8;
+
+	try {
+		device->clientSocket->Send(buffer);
+	}
+	catch (...) {
+		LogClass::logInFile("Simulator Server: failed sending the motor configuration word !\n");
+	}
+
+	return;
+}
+
+
 void CanSimulator::handleBuffer(void) {
 
 	

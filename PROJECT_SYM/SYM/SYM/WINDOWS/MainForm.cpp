@@ -91,7 +91,7 @@ void MainForm::configurationCallback(void) {
 	unsigned char config_command = canInterface::canId & 0x00FF;
 	unsigned char buffer[8];
 
-	if (config_command == 0) {
+	if (config_command == canInterface::SIMUL_CONFIG_ACTIVE_DEVICES) {
 		if (canInterface::canDataBuffer[0] & 0x1) PCB301::board->active = true;
 		else PCB301::board->active = false;
 
@@ -129,41 +129,88 @@ void MainForm::configurationCallback(void) {
 	}
 
 	// Tilt Rotation conversion data
-	if (config_command == 3) {
+	if (config_command == canInterface::SIMUL_CONFIG_MOTOR_CONFIG_TRX) {
 		for (int i = 0; i < 8; i++) buffer[i] = canInterface::canDataBuffer[i];
 		TiltMotor::device->rot_to_unit = *reinterpret_cast<double*>(buffer);		
 		return;
 	}
 
 	// Arm
-	if (config_command == 4) {
+	if (config_command == canInterface::SIMUL_CONFIG_MOTOR_CONFIG_ARM) {
 		for (int i = 0; i < 8; i++) buffer[i] = canInterface::canDataBuffer[i];
 		ArmMotor::device->rot_to_unit = *reinterpret_cast<double*>(buffer);
 		return;
 	}
 
 	// Slide
-	if (config_command == 5) {
+	if (config_command == canInterface::SIMUL_CONFIG_MOTOR_CONFIG_SLIDE) {
 		for (int i = 0; i < 8; i++) buffer[i] = canInterface::canDataBuffer[i];
 		SlideMotor::device->rot_to_unit = *reinterpret_cast<double*>(buffer);
 		return;
 	}
 
 	// Body
-	if (config_command == 6) {
+	if (config_command == canInterface::SIMUL_CONFIG_MOTOR_CONFIG_BODY) {
 		for (int i = 0; i < 8; i++) buffer[i] = canInterface::canDataBuffer[i];
 		BodyMotor::device->rot_to_unit = *reinterpret_cast<double*>(buffer);
 		return;
 	}
 
 	// Vertical
-	if (config_command == 7) {
+	if (config_command == canInterface::SIMUL_CONFIG_MOTOR_CONFIG_VERTICAL) {
 		for (int i = 0; i < 8; i++) buffer[i] = canInterface::canDataBuffer[i];
 		VerticalMotor::device->rot_to_unit = *reinterpret_cast<double*>(buffer);
 		return;
 	}
 
-	
+	// Filter Material assignment 
+	if (config_command == canInterface::SIMUL_CONFIG_FILTERS) {
+		for (int i = 0; i < 8; i++) buffer[i] = canInterface::canDataBuffer[i];
+		for(int i = 0; i< 5; i++) PCB303::filter_slot_assignment[i] = "";
+		
+		int i = 0;
+		System::String^ mat = "Rh";
+		if (buffer[i] < 5) {
+			if(PCB303::filter_slot_assignment[buffer[i]] == "")	PCB303::filter_slot_assignment[buffer[i]] = mat;
+			else PCB303::filter_slot_assignment[buffer[i]] += "\/" + mat;
+		}
+
+		i = 1;
+		mat = "Ag";
+		if (buffer[i] < 5) {
+			if (PCB303::filter_slot_assignment[buffer[i]] == "")	PCB303::filter_slot_assignment[buffer[i]] = mat;
+			else PCB303::filter_slot_assignment[buffer[i]] += "\/" + mat;
+		}
+
+		i = 2;
+		mat = "Al";
+		if (buffer[i] < 5) {
+			if (PCB303::filter_slot_assignment[buffer[i]] == "")	PCB303::filter_slot_assignment[buffer[i]] = mat;
+			else PCB303::filter_slot_assignment[buffer[i]] += "\/" + mat;
+		}
+
+		i = 3;
+		mat = "Cu";
+		if (buffer[i] < 5) {
+			if (PCB303::filter_slot_assignment[buffer[i]] == "")	PCB303::filter_slot_assignment[buffer[i]] = mat;
+			else PCB303::filter_slot_assignment[buffer[i]] += "\/" + mat;
+		}
+
+		i = 4;
+		mat = "Mo";
+		if (buffer[i] < 5) {
+			if (PCB303::filter_slot_assignment[buffer[i]] == "")	PCB303::filter_slot_assignment[buffer[i]] = mat;
+			else PCB303::filter_slot_assignment[buffer[i]] += "\/" + mat;
+		}
+
+		i = 5;
+		mat = "Ld";
+		if (buffer[i] < 5) {
+			if (PCB303::filter_slot_assignment[buffer[i]] == "")	PCB303::filter_slot_assignment[buffer[i]] = mat;
+			else PCB303::filter_slot_assignment[buffer[i]] += "\/" + mat;
+		}
+
+	}
 
 }
 
@@ -295,7 +342,16 @@ void MainForm::pcb303Simulator(void) {
 	}
 	
 	// Filter Panel Setting
-	filterIndex->Text = PCB303::device.filter_index.ToString();
+	
+	if (PCB303::device.filter_index < 5) {
+		filterMat->Text = PCB303::filter_slot_assignment[PCB303::device.filter_index];
+		filterIndex->Text = PCB303::device.filter_index.ToString();
+	}
+	else {
+		filterIndex->Text = "####";
+		filterMat->Text = "####";
+	}
+
 	if (PCB303::device.filter_action_command == PCB303::ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
 		filterPosition->Text = "####";
 	}

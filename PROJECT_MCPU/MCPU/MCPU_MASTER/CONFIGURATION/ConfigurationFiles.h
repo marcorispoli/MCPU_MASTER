@@ -25,7 +25,6 @@
    \ref MotorConfig \n
    \ref PaddleConfig \n
    \ref CollimatorConfig \n
-   \ref FilterConfig \n
    \ref TomoConfig \n
    \ref DetectorConfig \n
 

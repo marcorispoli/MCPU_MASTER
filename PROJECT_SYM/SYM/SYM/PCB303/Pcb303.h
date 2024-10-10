@@ -10,8 +10,14 @@ ref class PCB303: public deviceInterface
 {
 public:
 	PCB303(void) :deviceInterface((unsigned short)0x12, setRegVal(1, 0, 0, 0), (Byte)ProtocolStructure::StatusRegister::register_index::NUM_REGISTERS, (Byte)ProtocolStructure::DataRegister::register_index::NUM_REGISTERS, (Byte)ProtocolStructure::ParameterRegister::register_index::NUM_REGISTERS) {
-
+		filter_slot_assignment = gcnew cli::array<System::String^>(6);
+		filter_slot_assignment[0] = "-";
+		filter_slot_assignment[1] = "-";
+		filter_slot_assignment[2] = "-";
+		filter_slot_assignment[3] = "-";
+		filter_slot_assignment[4] = "-";
 	}
+
 	static void  initialize(void) {};
 	static PCB303^ board = gcnew PCB303;
 
@@ -449,5 +455,6 @@ public:
 	static hardware_inputs inputs;
 	static hardware_outputs outputs;
 	static ProtocolStructure protocol;
+	static cli::array<System::String^>^ filter_slot_assignment;
 };
 

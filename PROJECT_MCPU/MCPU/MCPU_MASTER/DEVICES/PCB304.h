@@ -202,7 +202,7 @@ public:
 
 			CanDeviceCommand^ encodeSetInOutCommand(bool InField) {
 				if(InField)	return gcnew CanDeviceCommand((unsigned char)command_index::SET_INOUT, 1, 0, 0, 0);
-				else	return gcnew CanDeviceCommand((unsigned char)command_index::SET_INOUT, 0, 0, 0, 0);
+				else	return gcnew CanDeviceCommand((unsigned char)command_index::SET_INOUT, 2, 0, 0, 0);
 			}
 
 			CanDeviceCommand^ encodeActivateFullTestCommand(unsigned char cycles, unsigned char nfast, unsigned char nslow) {

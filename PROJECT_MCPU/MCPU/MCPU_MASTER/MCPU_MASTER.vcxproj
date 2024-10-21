@@ -146,6 +146,7 @@
     <ClInclude Include="CONFIGURATION\SystemConfig.h" />
     <ClInclude Include="CONFIGURATION\TomoConfig.h" />
     <ClInclude Include="DEBUGGER\Debugger.h" />
+    <ClInclude Include="DEVICES\Devices.h" />
     <ClInclude Include="DEVICES\PCB325.h" />
     <ClInclude Include="DEVICES\PCB326.h" />
     <ClInclude Include="GENERATOR\ExposureModule.h" />

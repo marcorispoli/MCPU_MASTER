@@ -236,6 +236,9 @@
     <ClInclude Include="DEVICES\PCB325.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DEVICES\Devices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">

@@ -1,156 +1,198 @@
 #pragma once
 #include "CanDeviceProtocol.h"
 
-/// <summary>
-/// \defgroup PCB303_Module PCB303 Module: format collimation
-/// \ingroup CanDevice_Module 
-/// This module implements the functions of the Collimator device
-/// 
-/// - 2D Format collimation;
-/// - Tomo Dynamic Collimation;
-/// 
-/// The module implements the Device Communication protocol 
-/// to communicate with the PCB303 device through the CAN bus.
-/// 
-/// In order to implement the protocol, the module inherits the 
-/// CanDeviceProtocol class as the base class.
-/// 
-/// The module overrides the configurationLoop() routine of the Base class 
-/// in order to writes the initialization Parameters and Data Registers as needed.\n 
-/// The routine is automatically called by the Base class after system startup or always after a device reset event.
-/// 
-/// This module overrides the runningLoop() rotine of the base class in order 
-/// to implement the device specific functions.
-/// 
-/// As soon as the module class is Instantiated, the constructor will call the 
-/// Base class constructor.\n
-/// The Base class constructor, through the CAN Driver module, tries to connect the 
-/// Board Device getting the Bootloader and Application revision codes.
-/// 
-/// When the Device connection is established and the Board Device firmware revision is acquired,\n
-/// the Base class calls the configurationLoop() routine (overridden in this module),\n
-/// in order to let the module to upload and store the Device Parameters and the deviice DATA registers.\n
-/// In detail, the moudule in the configurationLoop() routine:
-/// 
-/// - Uploads the Standard Collimation format parameters;
-/// - Uploads the Tomo collimation format parameters;
-/// 
-/// When the configuration fase termines, the module runs the runningLoop() routine (overridden from the Base class),\n
-/// to handle the normal workflow.
-/// 
-///		NOTE: as soon as the startup termines, the Module automatically sets the OPEN collimation mode.
-/// 
-/// In the normal module workflow - runningLoop() - the module controls the Collimator device insuring that the current \n
-/// Application requested collimation format is selected and operating in the collimator device.
-/// 
-/// In case of the actual collimation shouldn't corrispond with the requested collimation,\n
-/// the module automatically tries for a maximum of 5 times to set the correct collimation.\n
-/// In case the number of attempts should expire, the module will disable any further attempt and\n
-/// an error condition is activated (is up to the application to handle the fault condition).
-/// 
-///		NOTE: In case of error, the Application can call the resetFault() routine to restart the collimation attempts.
-/// 
-///  
-/// # Application Interface 
-/// 
-/// The module provides the following Application interface:
-/// 
-/// - setAutoCollimationMode() : This function sets the format collimation to AUTO mode;
-/// - setOpenCollimationMode(): This function sets the format collimation to OPEN mode;
-/// - setCalibrationCollimationMode():  This function sets the format collimation to CALIBRATION mode;
-/// - setCustomCollimationMode(): This function sets the format collimation to CUSTOM mode; 
-/// - resetFaults(): This function allows the Module to attempt ones more to execute a collimation, in case of fault condition;
-/// - getError(): This function returns an error code in case of the collimator should be in error condition;
-/// 
-/// 
-/// # 2D Collimation Format Selection specification
-/// 
-/// The module allows the Application to select one of the following 2D collimation modes:
-/// 
-/// - OPEN collimation mode;
-/// - AUTO collimation mode; 
-/// - CUSTOM collimation mode;
-/// - CALIBRATION collimation mode; 
-/// 
-/// ## OPEN Collimation Mode
-/// 
-/// If the Application should select the OPEN collimation mode,\n
-/// the Module will set the Collimator blades to 0. This is a so called Open \n
-/// position where the collimator doesn't act any collimation on the X-RAYS.\n
-/// 
-/// This collimation mode should be used for test or calibration purpose.
-/// 
-///		NOTE: this collimation mode is automatically set by the Module after the system startup. 
-///
-/// ## AUTO Collimation Mode
-/// 
-/// If the Application should select the AUTO collimation mode,\n
-///	the Module sets the current collimation format based on the current detected compressor Paddle.
-///  
-/// The Paddle is assigned to a given collimation format into the PaddleCalibration file. 
-/// 
-/// This collimation mode should be set by the Application in the Operating workflow.
-/// 
-/// ## CUSTOM Collimation Mode
-/// 
-/// If the Application should select the CUSTOM collimation mode,\n
-///	the Module sets the current collimation format equal to the format directly 
-/// set by the Application with the proper interface command - setCustomCalibraitonMode(customFormat) -.
-/// 
-/// The custom collimation format can be selected from the 20 predefined collimation formats.
-/// 
-/// ## CALIBRATION Collimation Mode
-/// 
-/// If the Application should select the CALIBRATION collimation mode,\n
-/// the module will force the current blades position to get a non standard value imposed by the application.
-/// 
-/// The Application requests this Non Standard collimation using the proper\n 
-/// interface function passing the value of the target blades positons as parameter.
-///	
-/// 
-/// # Collimator Calibration file
-/// 
-/// The Application can calibrate a maximum of 20 possibles standard 2D collimation formats.\n
-/// All those formats shares the same Trap and Front blade positions because they should not change\n 
-/// along with the paddle geometry. 
-/// 
-/// See the CollimatorConfig class for details.
-/// 
-/// 
-/// # Format collimation errors
-/// 
-/// In case the collimator should fail in setting the requested collimation mode,
-/// the module automatically tries to repeat the collimation command for a max of five times.
-/// 
-/// If the command repetion should fail, the Module disables further collimation selection attempts
-/// and a persistent error condition will be notified in the system.
-/// 
-/// - The Application can check an error condition presence calling the getError() function;
-/// 
-/// - In case of Error, the Application may restart the collimation attempts calling the resetFault() function; 
-/// 
-/// </summary>
+
+/**
+	\defgroup PCB303DESC Collimation Management Description
+	\ingroup APPDOC
+
+
+	# Abstract
+
+	This section describes the function and the performances of the Collimator module.
+
+
+	# Overview
+
+	The Gantry system makes use of the PCB303 board to implement the collimation functions:
+	+ X-RAY 2D collimation: the x-ray field exiting the X-Ray tube shall be geometrically limited to a well defined ispection area;
+	+ X-RAY 3D collimation: the x-ray field exiting the X-Ray tube during a Tomo sequence shall be confined to a well defined area, through a dinamic collimation process;
+	+ X-RAY verification: before to activate the x-rays, the collimator device shall project a light wich field geometry shall equals the x-ray collimated area;
+	+ X-RAY filtering: the collimator shall provide a set of selectable filters to shape the x-ray field spectra;
+	+ Tube temperature monmitoring: due to its proximity with the X-RAY Tube, the Tube temperature is collected during the exposures to prevent overheating;
+
+	The format collimation is performed by setting in the collimator device the position of five collimation blades:
+	+ Frontal blade: limits the x-ray field from the patient side;
+	+ Back blade: limits the x-ray field from the gantry side;
+	+ left blade: limits the x-ray field from the left side (patient point of view);
+	+ right blade: limits the x-ray field from the right side (patient point of view);
+	+ trap blade: is a special blade positioned on the back side, to correct the trasversal dispersion during a tomo scan;
+
+	The X-Ray verification is performed activating a power light and positioning a reflecting Mirror 
+	in a position where the virtual light focus is coincident with the X-RAY focus.
+
+	The X-Ray filtering is performed controlling the position of a rotating selector 
+	where the filters are mounted in.
+
+	The Tube temperature is performed reading two sensors inside the X-Ray tube:
+	+ The stator sensor;
+	+ The Bulb sensor;
+
+	# Communication with the PCB303 board
+
+	The application implements the general Can Device Communication protocol (\ref CanDeviceProtocol class)
+	in order to communicate and control the Collimator device.
+
+	The Application implements the specific protocol feature described in the PCB303 protocol specification document.  
+
+	Based on that protocol, the following common activities are implemented:
+	+ Communication startup management:
+		+ Connection fase;
+		+ Remote Bootloader management;
+		+ Revision acquisition;
+		+ Device Register Configuration;
+		+ Board reset handling;
+
+	+ Register Set and Get commands;
+	+ Execution Commands workflow;
+
+	# 2D Format Collimation
+
+	## General Description
+
+	The Application implements a 2D Format collimation applicable to the 2D exposures.
+
+		A Dinamic format collimation is then reserved for the Tomo exposures instead.
+
+	The Application allows to select the following collimation formats:
+	+ The OPEN collimation format: is a special format where the blades are set to 0 position, out of the x-ray field;
+	+ Automatic format collimation (typical): the format collimation is assigned automatically by the Application
+	based on the current detected compressor paddle (see the \ref PCB302DESC for details);
+	+ Custom collimation: the current collimation format can be selected into a list of the available formats:
+		+ The list is composed by the whole set of paddle's formats and an extra format that can be arbitrary calibrated;
+
+	## Format setting and Paddle assignement
+
+	The module allows to configure up to 20 different collimation format slots:
+	+ Each collimation slot sets the value of the collimation blades;
+	+ The Slots are defined into the CollimatorCalibration.cnf (see \ref CollimatorConfig)
+	+ The Slot #0 is assigned to the so called "OPEN" format;
+	+ The Slot #19 is assigned to the so called "CUSTOM" format;
+	+ The Slot #1 to #18 can be assigned to any compressor paddles.
+
+	The assignement of a collimation slot to a compression paddle is executed 
+	into the PaddleCalibration.cnf (see \ref PaddleConfig):
+	+ the assignement is made setting the slot number to the proper paddle parameter.
+
+		NOTE: different paddles can share the same format collimation slot if necessary.
+
+
+	## Format Selection Rules
+	
+	### Closed-Study operating status
+
+	The collimation is always set to OPEN.
+
+	See the Idle Status descripion for details
+
+	### Open-Study operating status
+
+	In Open Study the Acquisition software (AWS) controls the collimation format selection.
+
+	The AWS can select two possible collimation methods:
+	+ Automatic Mode;
+	+ Manual Mode;
+
+	When the Automatic Mode is selected, the application automatically assignes the collimation format
+	based on the detected paddle, following the PaddleConfiguration.cnf setting.
+
+	When the Manual Mode is selected, the AWS selects the Paddle format to be used or an extra format called "CUSTOM".
+
+		NOTE: The Open collimation format is not allowed in Open-Study			
+
+	See the Open-Study Status descripion for details.
+
+	### Service Operating status
+
+	The collimation format is set to OPEN if not differently set by a specific service 
+	module that should handle the collimator for testy or calibration.
+
+	See the Service Status descripion for details.
+
+	# Collimation Light Management
+
+	The Application controls a power light and a mirror device in the collimator device, 
+	in order to implement the collimation light function.
+
+	The function of the collimation light is:
+	+ Help the Operator in the breast positioning during the breast compression;
+	+ Verify the current collimation field.
+
+	When the collimation light position and the mirror position are well calibrated, the
+	position of the light focus will coincide with the position of the X-RAY focus: 
+	+ In this condition, the field projected by the light is collimated as it should be the x-ray focus;
+	+ The projected light footprint on the compression plane is then equivalent (with proper tollerances) with the x-ray footprint;
+	+ The Operator can check the accuracy of the collimation before to activate the x-rays.
+
+	When the collimation light is requested:
+	+ The Mirror is positioned in the In-Field position, at the calibrated position (see the \ref CollimatorConfig );
+	+ The light is activated for a limited time (usually 20 seconds);
+	+ The light can be retriggered at the occurrence;
+
+	The Mirror will be removed from the In-Field position (and the light switched Off)  before to activate the X-RAY sequence.
+
+	## Collimation Light in Closed Study status
+
+	When the Application is in Closed Study (Idle) the Mirror is always set Out-Field
+	and the light switched Off.
+
+	## Collimation Light in Open Study status
+
+	When in Open Study, the Mirror will be set In-Field and the Light switched On as soon as the Compressor paddle 
+	is activated downward, even if not yet in compression.
+
+	The Operator can manually activate the Light at the occurrence, pressing a graphical button on the GUI.
+
+	The Light remains On for a limited time after the compressor paddle activation termines, usually 20 seconds.
+	+ The Time the light shall remains activated can be configured into the \ref CollimatorConfig ;
+	+ In case the paddle should reactivated, the light will be reactivated and the timer will be reset;
+
+		NOTE: The Mirror will not be removed from the In-Field when the light switches Off, to reduce the mechanical stress and noise.
+
+	The Mirror will be removed from thr In-Field (set to Out-Field) and the Light will be switched Off 
+	if a X-Ray procedure should start.
+
+	See the Open Study description for details.
+
+	## Collimation Light in Service status
+
+	The Mirror is removed for the In-Field and Light switched Off in Service if no specific service 
+	function should calibrate or test the light collimation function.
+
+	# Filter Selection
+
+	# Tube Temperature Monitoring
+
+
+
+*/
+
 
 /// <summary>
-/// \defgroup PCB303_Protocol Protocol implementation
-/// \ingroup PCB303_Module
-/// This section implements the internal module data and structures in order to 
-/// implement the protocol detail specifications related to the PCB303 board. 
+/// \defgroup PCB303IMPL Collimator Module Implementation
+/// \ingroup DEVIMPL 
 /// 
+/// This module describes the PCB303 Collimator module implementation
 /// 
 /// </summary>
+/// 
+///  
+/// 
 
-
-
-/// \defgroup PCB303_Internal Internal implementation section
-/// \ingroup PCB303_Module
-
-/// \defgroup PCB303_Interface Application Interface
-/// \ingroup PCB303_Module
 
 /// <summary>
 /// This class implements the functions of the PCB303 Module
-/// \ingroup PCB303_Module
+/// \ingroup PCB303IMPL
 /// 
 /// </summary>
 ref class PCB303 : public CanDeviceProtocol

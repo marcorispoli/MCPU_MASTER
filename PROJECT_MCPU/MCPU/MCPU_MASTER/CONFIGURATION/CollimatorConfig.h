@@ -54,7 +54,7 @@ public:
 
     /// \addtogroup  ConfigurationFilesDescription 
     /// 
-    /// ### Format Collimation Slot #0 Row
+    /// ### Format Collimation Slot 0 Row
     /// 
     /// This parameter describes the format collimation slot 0.
     /// 
@@ -67,8 +67,8 @@ public:
     /// |Left|Word|0|-|Position of the left blade|
     /// |Right|Word|0|-|Position of the right blade|
     /// |Trap|Word|0|-|Position of the trap blade|
-    
-    //___________________________________________________________________________________________________//
+    ///
+    /// 
     literal System::String^ PARAM_COLLI_FORMAT_0 = "COLLI_STANDARD_FORMAT_0";
     literal System::String^ PARAM_COLLI_FORMAT_0_COMMENT = "Collimation format Slot 0";
     
@@ -80,7 +80,7 @@ public:
 
     /// \addtogroup  ConfigurationFilesDescription 
    /// 
-   /// ### Format Collimation Slot #1 Row
+   /// ### Format Collimation Slot 1 Row
    /// 
    /// This parameter describes the format collimation slot 1.
    /// 
@@ -93,8 +93,8 @@ public:
    /// |Left|Word|0|-|Position of the left blade|
    /// |Right|Word|0|-|Position of the right blade|
    /// |Trap|Word|0|-|Position of the trap blade|
-   
-    //___________________________________________________________________________________________________//
+   ///
+   /// 
     literal System::String^ PARAM_COLLI_FORMAT_1 = "COLLI_STANDARD_FORMAT_1";
     literal System::String^ PARAM_COLLI_FORMAT_1_COMMENT = "Collimation format Slot 1";
 
@@ -106,7 +106,7 @@ public:
 
    /// \addtogroup  ConfigurationFilesDescription 
    /// 
-   /// ### Format Collimation Slot #2 Row
+   /// ### Format Collimation Slot 2 Row
    /// 
    /// This parameter describes the format collimation slot 2.
    /// 
@@ -119,8 +119,7 @@ public:
    /// |Left|Word|0|-|Position of the left blade|
    /// |Right|Word|0|-|Position of the right blade|
    /// |Trap|Word|0|-|Position of the trap blade|
-   
-    //___________________________________________________________________________________________________//
+    
     literal System::String^ PARAM_COLLI_FORMAT_2 = "COLLI_STANDARD_FORMAT_2";
     literal System::String^ PARAM_COLLI_FORMAT_2_COMMENT = "Collimation format Slot 2";
 

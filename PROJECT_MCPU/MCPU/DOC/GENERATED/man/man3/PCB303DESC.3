@@ -1,0 +1,235 @@
+.TH "PCB303DESC" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PCB303DESC \- Collimation Management Description
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+
+.SH "Abstract"
+.PP
+This section describes the function and the performances of the Collimator module\&.
+.SH "Overview"
+.PP
+The \fBGantry\fP system makes use of the \fBPCB303\fP board to implement the collimation functions:
+.IP "\(bu" 2
+X-RAY 2D collimation: the x-ray field exiting the X-Ray tube shall be geometrically limited to a well defined ispection area;
+.IP "\(bu" 2
+X-RAY 3D collimation: the x-ray field exiting the X-Ray tube during a Tomo sequence shall be confined to a well defined area, through a dinamic collimation process;
+.IP "\(bu" 2
+X-RAY verification: before to activate the x-rays, the collimator device shall project a light wich field geometry shall equals the x-ray collimated area;
+.IP "\(bu" 2
+X-RAY filtering: the collimator shall provide a set of selectable filters to shape the x-ray field spectra;
+.IP "\(bu" 2
+Tube temperature monmitoring: due to its proximity with the X-RAY Tube, the Tube temperature is collected during the exposures to prevent overheating;
+.PP
+
+.PP
+The format collimation is performed by setting in the collimator device the position of five collimation blades:
+.IP "\(bu" 2
+Frontal blade: limits the x-ray field from the patient side;
+.IP "\(bu" 2
+Back blade: limits the x-ray field from the gantry side;
+.IP "\(bu" 2
+left blade: limits the x-ray field from the left side (patient point of view);
+.IP "\(bu" 2
+right blade: limits the x-ray field from the right side (patient point of view);
+.IP "\(bu" 2
+trap blade: is a special blade positioned on the back side, to correct the trasversal dispersion during a tomo scan;
+.PP
+
+.PP
+The X-Ray verification is performed activating a power light and positioning a reflecting Mirror in a position where the virtual light focus is coincident with the X-RAY focus\&.
+
+.PP
+The X-Ray filtering is performed controlling the position of a rotating selector where the filters are mounted in\&.
+
+.PP
+The Tube temperature is performed reading two sensors inside the X-Ray tube:
+.IP "\(bu" 2
+The stator sensor;
+.IP "\(bu" 2
+The Bulb sensor;
+.PP
+.SH "Communication with the PCB303 board"
+.PP
+The application implements the general Can Device Communication protocol (\fBCanDeviceProtocol\fP class) in order to communicate and control the Collimator device\&.
+
+.PP
+The Application implements the specific protocol feature described in the \fBPCB303\fP protocol specification document\&. 
+.br
+
+.PP
+Based on that protocol, the following common activities are implemented:
+.IP "\(bu" 2
+Communication startup management:
+.IP "  \(bu" 4
+Connection fase;
+.IP "  \(bu" 4
+Remote Bootloader management;
+.IP "  \(bu" 4
+Revision acquisition;
+.IP "  \(bu" 4
+Device Register Configuration;
+.IP "  \(bu" 4
+Board reset handling;
+.PP
+
+.IP "\(bu" 2
+Register Set and Get commands;
+.IP "\(bu" 2
+Execution Commands workflow;
+.PP
+.SH "2D Format Collimation"
+.PP
+.SS "General Description"
+The Application implements a 2D Format collimation applicable to the 2D exposures\&. 
+.PP
+.nf
+A Dinamic format collimation is then reserved for the Tomo exposures instead\&.
+
+.fi
+.PP
+
+.PP
+The Application allows to select the following collimation formats:
+.IP "\(bu" 2
+The OPEN collimation format: is a special format where the blades are set to 0 position, out of the x-ray field;
+.IP "\(bu" 2
+Automatic format collimation (typical): the format collimation is assigned automatically by the Application based on the current detected compressor paddle (see the \fBPCB302DESC\fP for details);
+.IP "\(bu" 2
+Custom collimation: the current collimation format can be selected into a list of the available formats:
+.IP "  \(bu" 4
+The list is composed by the whole set of paddle's formats and an extra format that can be arbitrary calibrated;
+.PP
+
+.PP
+.SS "Format setting and Paddle assignement"
+The module allows to configure up to 20 different collimation format slots:
+.IP "\(bu" 2
+Each collimation slot sets the value of the collimation blades;
+.IP "\(bu" 2
+The Slots are defined into the CollimatorCalibration\&.cnf (see \fBCollimatorCalibration\&.cnf configuration file\fP)
+.IP "\(bu" 2
+The Slot #0 is assigned to the so called 'OPEN' format;
+.IP "\(bu" 2
+The Slot #19 is assigned to the so called 'CUSTOM' format;
+.IP "\(bu" 2
+The Slot #1 to #18 can be assigned to any compressor paddles\&.
+.PP
+
+.PP
+The assignement of a collimation slot to a compression paddle is executed into the PaddleCalibration\&.cnf (see \fBPaddleCalibration\&.cnf configuration file\fP):
+.IP "\(bu" 2
+the assignement is made setting the slot number to the proper paddle parameter\&.
+
+.PP
+NOTE: different paddles can share the same format collimation slot if necessary\&.
+.PP
+.SS "Format Selection Rules"
+.SS "Closed-Study operating status"
+The collimation is always set to OPEN\&.
+
+.PP
+See the Idle Status descripion for details
+.SS "Open-Study operating status"
+In Open Study the Acquisition software (AWS) controls the collimation format selection\&.
+
+.PP
+The AWS can select two possible collimation methods:
+.IP "\(bu" 2
+Automatic Mode;
+.IP "\(bu" 2
+Manual Mode;
+.PP
+
+.PP
+When the Automatic Mode is selected, the application automatically assignes the collimation format based on the detected paddle, following the PaddleConfiguration\&.cnf setting\&.
+
+.PP
+When the Manual Mode is selected, the AWS selects the Paddle format to be used or an extra format called 'CUSTOM'\&. 
+.PP
+.nf
+NOTE: The Open collimation format is not allowed in Open-Study          
+
+.fi
+.PP
+
+.PP
+See the Open-Study Status descripion for details\&.
+.SS "Service Operating status"
+The collimation format is set to OPEN if not differently set by a specific service module that should handle the collimator for testy or calibration\&.
+
+.PP
+See the Service Status descripion for details\&.
+.SH "Collimation Light Management"
+.PP
+The Application controls a power light and a mirror device in the collimator device, in order to implement the collimation light function\&.
+
+.PP
+The function of the collimation light is:
+.IP "\(bu" 2
+Help the Operator in the breast positioning during the breast compression;
+.IP "\(bu" 2
+Verify the current collimation field\&.
+.PP
+
+.PP
+When the collimation light position and the mirror position are well calibrated, the position of the light focus will coincide with the position of the X-RAY focus:
+.IP "\(bu" 2
+In this condition, the field projected by the light is collimated as it should be the x-ray focus;
+.IP "\(bu" 2
+The projected light footprint on the compression plane is then equivalent (with proper tollerances) with the x-ray footprint;
+.IP "\(bu" 2
+The Operator can check the accuracy of the collimation before to activate the x-rays\&.
+.PP
+
+.PP
+When the collimation light is requested:
+.IP "\(bu" 2
+The Mirror is positioned in the In-Field position, at the calibrated position (see the \fBCollimatorCalibration\&.cnf configuration file\fP );
+.IP "\(bu" 2
+The light is activated for a limited time (usually 20 seconds);
+.IP "\(bu" 2
+The light can be retriggered at the occurrence;
+.PP
+
+.PP
+The Mirror will be removed from the In-Field position (and the light switched Off) before to activate the X-RAY sequence\&.
+.SS "Collimation Light in Closed Study status"
+When the Application is in Closed Study (Idle) the Mirror is always set Out-Field and the light switched Off\&.
+.SS "Collimation Light in Open Study status"
+When in Open Study, the Mirror will be set In-Field and the Light switched On as soon as the Compressor paddle is activated downward, even if not yet in compression\&.
+
+.PP
+The Operator can manually activate the Light at the occurrence, pressing a graphical button on the GUI\&.
+
+.PP
+The Light remains On for a limited time after the compressor paddle activation termines, usually 20 seconds\&.
+.IP "\(bu" 2
+The Time the light shall remains activated can be configured into the \fBCollimatorCalibration\&.cnf configuration file\fP ;
+.IP "\(bu" 2
+In case the paddle should reactivated, the light will be reactivated and the timer will be reset;
+
+.PP
+NOTE: The Mirror will not be removed from the In-Field when the light switches Off, to reduce the mechanical stress and noise\&.
+.PP
+
+.PP
+The Mirror will be removed from thr In-Field (set to Out-Field) and the Light will be switched Off if a X-Ray procedure should start\&.
+
+.PP
+See the Open Study description for details\&.
+.SS "Collimation Light in Service status"
+The Mirror is removed for the In-Field and Light switched Off in Service if no specific service function should calibrate or test the light collimation function\&.
+.SH "Filter Selection"
+.PP
+.SH "Tube Temperature Monitoring"
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

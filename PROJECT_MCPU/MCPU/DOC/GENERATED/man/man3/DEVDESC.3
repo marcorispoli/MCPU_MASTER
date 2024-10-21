@@ -1,0 +1,78 @@
+.TH "DEVDESC" 3 "MCPU" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DEVDESC \- Devices Management Description
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+
+.SH "Index"
+.PP
+\fBPCB301DESC\fP \fBPCB302DESC\fP \fBCollimation Management Description\fP \fBPCB304DESC\fP \fBPCB325DESC\fP \fBPCB326DESC\fP
+.SH "Abstract"
+.PP
+This section describes the implementation of the modules controlling the \fBGantry\fP boards
+.SH "Overview"
+.PP
+The \fBGantry\fP is equipped with several inbternal boards with microcontroller in order to execute specific realtime jobs\&.
+
+.PP
+The board are following listed:
+.IP "\(bu" 2
+\fBPCB301\fP board: this board controls the power supply and several system GPIOs ;
+.IP "\(bu" 2
+\fBPCB302\fP board: this board controls the compressor device activities;
+.IP "\(bu" 2
+\fBPCB303\fP board: this board controls the collimation device activities;
+.IP "\(bu" 2
+\fBPCB304\fP board: this board controls the potter-grid device activities;
+.IP "\(bu" 2
+\fBPCB325\fP board: this board controls the \fBBiopsy\fP ativities;
+.IP "\(bu" 2
+\fBPCB326\fP board: this board controls the Obstacle detection activities;
+.PP
+
+.PP
+All the devices supports the same protocol engine based on the Can Bus communication and a defined frame data exchange\&.
+
+.PP
+The protocol is desribed in the specific documentation\&.
+
+.PP
+This application implement a Base class (\fBCanDeviceProtocol\fP class) that implements all the communication mechanisms: each specific device module inherit this class as a base class\&. 
+.PP
+.nf
+IMPORTANT: the protocol is common for all the devices in order to be a robust 
+and well tested part of the module iplementation\&.
+
+.fi
+.PP
+
+.PP
+The basic features that all the modules inherit from this base class are:
+.IP "\(bu" 2
+Communication startup management:
+.IP "  \(bu" 4
+Connection fase;
+.IP "  \(bu" 4
+Remote Bootloader management;
+.IP "  \(bu" 4
+Revision acquisition;
+.IP "  \(bu" 4
+Device Register Configuration;
+.IP "  \(bu" 4
+Board reset handling;
+.PP
+
+.IP "\(bu" 2
+High level routines to get and set the device registers;
+.IP "\(bu" 2
+High level routines to handle the command execution; 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

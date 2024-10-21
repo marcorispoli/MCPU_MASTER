@@ -20,9 +20,7 @@ This section describes the configuration files used in the Application\&.
 .br
  \fBPaddleCalibration\&.cnf configuration file\fP 
 .br
- \fBCollimatorConfig\fP 
-.br
- \fBFilterConfig\fP 
+ \fBCollimatorCalibration\&.cnf configuration file\fP 
 .br
  \fBTomoConfig\&.cnf configuration file\fP 
 .br
@@ -120,6 +118,172 @@ Follows a tipical content of a configuration file:
 * 
 * .fi
 .PP
+
+.PP
+.SH "CollimatorCalibration\&.cnf configuration file"
+.PP
+.SS "Overview"
+The Application handles several parameters that configure and calibrate the collimator device\&.
+
+.PP
+.IP "\(bu" 2
+\fBName of the configuration file:\fP CollimatorCalibration\&.cnf
+.IP "\(bu" 2
+\fBCurrent revision code:\fP 1;
+.PP
+.SS "Parameter Description"
+This configuration file contains the following parameter rows:
+.IP "\(bu" 2
+Format Collimation descriptors:
+.IP "  \(bu" 4
+There are 20 collimation formats that can be assigned to the detected paddles;
+.PP
+
+.IP "\(bu" 2
+Mirror In-Field calibrated position:
+.IP "  \(bu" 4
+This parameter sets the mirror position when it is In-Field
+.PP
+
+.IP "\(bu" 2
+Filter Slot Calibrated positions:
+.IP "  \(bu" 4
+There are 5 possible selectable filter slot;
+.IP "  \(bu" 4
+Every slot is assigned to a calibrated position;
+.PP
+
+.IP "\(bu" 2
+Filter Material assignement:
+.IP "  \(bu" 4
+There are 6 possible materials that can be selected:
+.IP "    \(bu" 6
+Ag;
+.IP "    \(bu" 6
+Rh;
+.IP "    \(bu" 6
+Al;
+.IP "    \(bu" 6
+Cu;
+.IP "    \(bu" 6
+Mo;
+.IP "    \(bu" 6
+Lead;
+.PP
+
+.IP "  \(bu" 4
+Every material can be assigned to a given filter slot
+.PP
+
+.PP
+.SS "Format Collimation Slot 0 Row"
+This parameter describes the format collimation slot 0\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_0, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+
+.PP
+
+.br
+.SS "Format Collimation Slot 2 Row"
+This parameter describes the format collimation slot 2\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_2, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+
+.PP
+
+.br
+.SS "Filter Slot Calibration Row"
+This parameter sets the position of every Filter selectable slot\&.
+
+.PP
+< FILTER_POSITION, Slot0,Slot1,Slot2,Slot3,Slot4 >
+
+.PP
+Param   Type   Default   Range   Descrption    Slot0   Word   0   -   Position of the slot 0    Slot1   Word   0   -   Position of the slot 1    Slot2   Word   0   -   Position of the slot 2    Slot3   Word   0   -   Position of the slot 3    Slot4   Word   0   -   Position of the slot 4   
+.SS "Filter Material Assignement Row"
+This parameter sets the slot of a given material\&.
+
+.PP
+< FILTER_CONFIG, SlotRh,SlotAg,SlotAl,SlotCu,SlotMo,SlotLd >
+
+.PP
+Param   Type   Default   Range   Descrption    SlotRh   Byte   0   -   Filter Slot assigned to Rh    SlotAg   Byte   1   -   Filter Slot assigned to Ag    SlotAl   Byte   2   -   Filter Slot assigned to Al    SlotCu   Byte   3   -   Filter Slot assigned to Cu    SlotMo   Byte   3   -   Filter Slot assigned to Mo    SlotLd   Byte   4   -   Filter Slot assigned to Ld   
 
 .PP
 .SH "DetectorConfiguration\&.cnf configuration file"
@@ -380,7 +544,13 @@ This parameter sets the Prosthesis parameters\&.
 < PADDLE_PROSTHESIS, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   1   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   1   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "BIOP_2D Paddle Descriptor Parameters Row"
 This parameter sets the BIOP_2D parameters\&.
 
@@ -388,7 +558,13 @@ This parameter sets the BIOP_2D parameters\&.
 < PADDLE_BIOP2D, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   2   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '2'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   2   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "BIOP_3D Paddle Descriptor Parameters Row"
 This parameter sets the BIOP_3D parameters\&.
 
@@ -396,7 +572,13 @@ This parameter sets the BIOP_3D parameters\&.
 < PADDLE_BIOP3D, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   3   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '3'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   3   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "TOMO Paddle Descriptor Parameters Row"
 This parameter sets the TOMO parameters\&.
 
@@ -404,7 +586,13 @@ This parameter sets the TOMO parameters\&.
 < PADDLE_TOMO, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   4   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '4'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   4   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "24x30_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 24x30_CONTACT parameters\&.
 
@@ -412,7 +600,13 @@ This parameter sets the 24x30_CONTACT parameters\&.
 < PADDLE_24x30_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   5   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '5'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   5   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "18x24_C_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 18x24_C_CONTACT parameters\&.
 
@@ -420,7 +614,13 @@ This parameter sets the 18x24_C_CONTACT parameters\&.
 < PADDLE_18x24_C_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   6   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '6'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   6   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "18x24_L_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 18x24_L_CONTACT parameters\&.
 
@@ -428,7 +628,13 @@ This parameter sets the 18x24_L_CONTACT parameters\&.
 < PADDLE_18x24_L_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   7   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '7'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   7   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "18x24_R_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 18x24_R_CONTACT parameters\&.
 
@@ -436,7 +642,13 @@ This parameter sets the 18x24_R_CONTACT parameters\&.
 < PADDLE_18x24_R_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   8   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '8'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   8   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "10x24_CONTACT Paddle Descriptor Parameters Row"
 This parameter sets the 10x24_CONTACT parameters\&.
 
@@ -444,7 +656,13 @@ This parameter sets the 10x24_CONTACT parameters\&.
 < PADDLE_10x24_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   9   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '9'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   120   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   9   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "9x9_MAG Paddle Descriptor Parameters Row"
 This parameter sets the 9x9_MAG parameters\&.
 
@@ -452,7 +670,13 @@ This parameter sets the 9x9_MAG parameters\&.
 < PADDLE_9x9_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   10   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '10'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   10   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "9x21_MAG Paddle Descriptor Parameters Row"
 This parameter sets the 9x21_MAG parameters\&.
 
@@ -460,7 +684,13 @@ This parameter sets the 9x21_MAG parameters\&.
 < PADDLE_9x21_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   11   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '11'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   11   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 .SS "D75_MAG Paddle Descriptor Parameters Row"
 This parameter sets the D75_MAG parameters\&.
 
@@ -468,7 +698,13 @@ This parameter sets the D75_MAG parameters\&.
 < PADDLE_D75_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
 
 .PP
-Param   Type   Default   Range   Descrption    CollimationFormat   String   'COLLI_STANDARD1'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   12   -   Identifier Code   
+Param   Type   Default   Range   Descrption    CollimationFormat   String   '12'   Collimator Format Range   Sets the assigned collimator format    CompressionOffset   Word   0   -   Offset of the paddle plane respect of the Holder position in mm    Weight   Word   10   -   Paddle Weight in N    IdentificationId   Word   12   -   Identifier Code   
+.PP
+.nf
+NOTE: The collimation format 0 is reserved for the OPEN collimation
+
+.fi
+.PP
 
 .PP
 .SH "SystemInit\&.cnf configuration file"
@@ -531,10 +767,10 @@ NOTE: When in Simulation mode, the Operating rules applies\&.
 This parameter sets the Simulator behavior\&.
 
 .PP
-< SYM_MODE, EthIp,EthPort,SymCan,SymGenerator,SymTilt,SymArm,SymBody,SymVertical,SymSlide,SymPcb301,SymPcb302,SymPcb303,SymPcb304,SymPcb315,SymPcb326 >
+< SYM_MODE, EthIp,EthPort,SymCan,SymGenerator,SymTilt,SymArm,SymBody,SymVertical,SymSlide,SymPcb301,SymPcb302,SymPcb303,SymPcb304,SymPcb325,SymPcb326 >
 
 .PP
-Param   Type   Default   Range   Descrption    EthIp   Ip4 Address   '127\&.0\&.0\&.1'   Ip Address Range   IP Address of the Simulator process    EthPort   16 Bit Integer   20000   Port Range   IP Port of the Simulator process    SymCan   Byte   0   1/0   Can Module: 1= normal mode, 0 = simulated mode    SymGenerator   Byte   0   1/0   \fBGenerator\fP Module: 1= normal mode, 0 = simulated mode    SymTilt   Byte   0   1/0   Tilt Module: 1= normal mode, 0 = simulated mode    SymArm   Byte   0   1/0   Arm Module: 1= normal mode, 0 = simulated mode    SymBody   Byte   0   1/0   Body Module: 1= normal mode, 0 = simulated mode    SymVertical   Byte   0   1/0   Vertical Module: 1= normal mode, 0 = simulated mode    SymSlide   Byte   0   1/0   Slide Module: 1= normal mode, 0 = simulated mode    SymPcb301   Byte   0   1/0   \fBPCB301\fP Module: 1= normal mode, 0 = simulated mode    SymPcb302   Byte   0   1/0   \fBPCB302\fP Module: 1= normal mode, 0 = simulated mode    SymPcb303   Byte   0   1/0   \fBPCB303\fP Module: 1= normal mode, 0 = simulated mode    SymPcb304   Byte   0   1/0   \fBPCB304\fP Module: 1= normal mode, 0 = simulated mode    SymPcb315   Byte   0   1/0   \fBPCB315\fP Module: 1= normal mode, 0 = simulated mode    SymPcb326   Byte   0   1/0   \fBPCB326\fP Module: 1= normal mode, 0 = simulated mode   
+Param   Type   Default   Range   Descrption    EthIp   Ip4 Address   '127\&.0\&.0\&.1'   Ip Address Range   IP Address of the Simulator process    EthPort   16 Bit Integer   20000   Port Range   IP Port of the Simulator process    SymCan   Byte   0   1/0   Can Module: 1= normal mode, 0 = simulated mode    SymGenerator   Byte   0   1/0   \fBGenerator\fP Module: 1= normal mode, 0 = simulated mode    SymTilt   Byte   0   1/0   Tilt Module: 1= normal mode, 0 = simulated mode    SymArm   Byte   0   1/0   Arm Module: 1= normal mode, 0 = simulated mode    SymBody   Byte   0   1/0   Body Module: 1= normal mode, 0 = simulated mode    SymVertical   Byte   0   1/0   Vertical Module: 1= normal mode, 0 = simulated mode    SymSlide   Byte   0   1/0   Slide Module: 1= normal mode, 0 = simulated mode    SymPcb301   Byte   0   1/0   \fBPCB301\fP Module: 1= normal mode, 0 = simulated mode    SymPcb302   Byte   0   1/0   \fBPCB302\fP Module: 1= normal mode, 0 = simulated mode    SymPcb303   Byte   0   1/0   \fBPCB303\fP Module: 1= normal mode, 0 = simulated mode    SymPcb304   Byte   0   1/0   \fBPCB304\fP Module: 1= normal mode, 0 = simulated mode    SymPcb325   Byte   0   1/0   \fBPCB325\fP Module: 1= normal mode, 0 = simulated mode    SymPcb326   Byte   0   1/0   \fBPCB326\fP Module: 1= normal mode, 0 = simulated mode   
 .SS "Installation Name Parameters Row"
 This parameter sets the Installation Name string\&.
 
@@ -554,7 +790,7 @@ This parameter sets the required revisions of all the modules connected with the
 < PACKAGE, Id, RevPcb301, RevPcb302, RevPcb303, RevPcb304, RevPcb315, RevPcb326, RevCan, RevGen >
 
 .PP
-Param   Type   Default   Range   Descrption    Id   String   "1\&.02   -   Package Identifier Code    RevPcb301   String   '0\&.1'   -   \fBPCB301\fP Firmware revision: Maj\&.Min    RevPcb302   String   '0\&.1'   -   \fBPCB302\fP Firmware revision: Maj\&.Min    RevPcb303   String   '0\&.1'   -   \fBPCB303\fP Firmware revision: Maj\&.Min    RevPcb304   String   '0\&.1'   -   \fBPCB304\fP Firmware revision: Maj\&.Min    RevPcb315   String   '0\&.1'   -   \fBPCB315\fP Firmware revision: Maj\&.Min    RevPcb326   String   '0\&.1'   -   \fBPCB326\fP Firmware revision: Maj\&.Min    RevCan   String   '0\&.1'   -   Can Device Firmware revision: Maj\&.Min    RevGen   String   '0\&.1'   -   \fBGenerator\fP Device Firmware revision: Maj\&.Min   
+Param   Type   Default   Range   Descrption    Id   String   "1\&.02   -   Package Identifier Code    RevPcb301   String   '0\&.1'   -   \fBPCB301\fP Firmware revision: Maj\&.Min    RevPcb302   String   '0\&.1'   -   \fBPCB302\fP Firmware revision: Maj\&.Min    RevPcb303   String   '0\&.1'   -   \fBPCB303\fP Firmware revision: Maj\&.Min    RevPcb304   String   '0\&.1'   -   \fBPCB304\fP Firmware revision: Maj\&.Min    RevPcb325   String   '0\&.1'   -   \fBPCB325\fP Firmware revision: Maj\&.Min    RevPcb326   String   '0\&.1'   -   \fBPCB326\fP Firmware revision: Maj\&.Min    RevCan   String   '0\&.1'   -   Can Device Firmware revision: Maj\&.Min    RevGen   String   '0\&.1'   -   \fBGenerator\fP Device Firmware revision: Maj\&.Min   
 .SS "AWS Interface Parameters Row"
 This parameter sets the AWS Interface connection parameters\&.
 

@@ -8,6 +8,7 @@
 #include "ServiceExposureTool.h"
 #include "ServiceRotationTool.h"
 #include "ServiceZeroSettingTool.h"
+#include "PCB325.h"
 
 
 // Main Panel Definition
@@ -43,7 +44,7 @@ void ServiceForm::formInitialization(void) {
 	// Set of the Menu Buttons
 	zeroSetting->BackColor = Color::Transparent;
 	exposureTool->BackColor = Color::Transparent;
-
+	biopsyTool->BackColor = Color::Transparent;
 
 	serviceTimer = gcnew System::Timers::Timer(100);
 	serviceTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &ServiceForm::onServiceTimeout);
@@ -194,4 +195,8 @@ System::Void  ServiceForm::systemRotation_Click(System::Object^ sender, System::
 }
 System::Void ServiceForm::zeroSetting_Click(System::Object^ sender, System::EventArgs^ e) {
 	ServiceZeroSettingTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
+}
+
+System::Void ServiceForm::biopsyTool_Click(System::Object^ sender, System::EventArgs^ e) {
+	PCB325::activateCycleTest();
 }

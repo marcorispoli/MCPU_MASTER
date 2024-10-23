@@ -51,6 +51,7 @@ protected:
 Object^ pConfirmation; // Used in the case a confirmation should needed
 
 private: System::Windows::Forms::PictureBox^ exposureTool;
+private: System::Windows::Forms::PictureBox^ biopsyTool;
 
 
 public:System::Timers::Timer^ serviceTimer;
@@ -138,6 +139,7 @@ private:
 		this->zeroSetting = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceCanc = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceMenuTitle = (gcnew System::Windows::Forms::Label());
+		this->biopsyTool = (gcnew System::Windows::Forms::PictureBox());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemSetup))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->BeginInit();
@@ -146,6 +148,7 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyTool))->BeginInit();
 		this->SuspendLayout();
 		// 
 		// rotationTool
@@ -227,16 +230,17 @@ private:
 		this->servicePanel->Controls->Add(this->rotationTool);
 		this->servicePanel->Controls->Add(this->systemSetup);
 		this->servicePanel->Controls->Add(this->systemCalibration);
-		this->servicePanel->Location = System::Drawing::Point(0, 50);
+		this->servicePanel->Location = System::Drawing::Point(1000, 50);
 		this->servicePanel->Name = L"servicePanel";
 		this->servicePanel->Size = System::Drawing::Size(600, 880);
 		this->servicePanel->TabIndex = 14;
 		// 
 		// calibPanel
 		// 
+		this->calibPanel->Controls->Add(this->biopsyTool);
 		this->calibPanel->Controls->Add(this->exposureTool);
 		this->calibPanel->Controls->Add(this->zeroSetting);
-		this->calibPanel->Location = System::Drawing::Point(1000, 50);
+		this->calibPanel->Location = System::Drawing::Point(0, 50);
 		this->calibPanel->Name = L"calibPanel";
 		this->calibPanel->Size = System::Drawing::Size(600, 880);
 		this->calibPanel->TabIndex = 15;
@@ -290,6 +294,18 @@ private:
 		this->serviceMenuTitle->Text = L"TITLE";
 		this->serviceMenuTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
+		// biopsyTool
+		// 
+		this->biopsyTool->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+			static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->biopsyTool->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->biopsyTool->Location = System::Drawing::Point(40, 224);
+		this->biopsyTool->Name = L"biopsyTool";
+		this->biopsyTool->Size = System::Drawing::Size(165, 165);
+		this->biopsyTool->TabIndex = 3;
+		this->biopsyTool->TabStop = false;
+		this->biopsyTool->Click += gcnew System::EventHandler(this, &ServiceForm::biopsyTool_Click);
+		// 
 		// ServiceForm
 		// 
 		this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
@@ -315,6 +331,7 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTool))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyTool))->EndInit();
 		this->ResumeLayout(false);
 		this->PerformLayout();
 
@@ -333,7 +350,7 @@ private:
 	private: System::Void zeroSetting_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void exposureTool_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void systemRotation_Click(System::Object^ sender, System::EventArgs^ e);
-		
+	private: System::Void biopsyTool_Click(System::Object^ sender, System::EventArgs^ e);
 	
 };
 

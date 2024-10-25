@@ -27,14 +27,19 @@ void PCB325::runningLoop(void) {
         biopsy_connected = true;
         protocol.status_register.decodeModeRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::MODE_REGISTER));
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        protocol.status_register.decodePositionRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::POSITION_REGISTER));
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+        // Writes the data General register
+        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GENERAL_REGISTER, protocol.data_register.encodeGeneralRegister());
+
+        
     }
     else {
         biopsy_connected = false;
         // Waits the connection with the biopsy polling ones per second the mode register
         protocol.status_register.decodeModeRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::MODE_REGISTER));
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+        
     }    
 
     if (service_cycle_test) {
@@ -48,7 +53,59 @@ void PCB325::runningLoop(void) {
         service_cycle_test = false;       
     }
 
-   
+  
+    if (command_home_request) {
+        if (protocol.status_register.mode != ProtocolStructure::StatusRegister::working_mode::COMMAND_MODE) {
+            commandNoWaitCompletion(protocol.command.encodeCommandModeCommand(), 30);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            sequence = 0;
+            return;
+        }
+
+        switch (sequence) {
+        case 0:
+            
+            commandNoWaitCompletion(protocol.command.encodeMoveYCommand(System::Convert::ToInt16(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_PARK)[BiopsyConfig::PARAM_PARK_Y])), 30);
+            sequence++;
+            break;
+        case 1:
+            if (device->isCommandError()) {
+                sequence = 0;
+                command_home_request = 0;
+            }
+            else if (device->isCommandCompleted()) {
+                sequence++;
+                commandNoWaitCompletion(protocol.command.encodeMoveXCommand(System::Convert::ToInt16(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_PARK)[BiopsyConfig::PARAM_PARK_X])), 30);
+            }
+            break;
+        case 2:
+            if (device->isCommandError()) {
+                sequence = 0;
+                command_home_request = 0;
+            }
+            else if (device->isCommandCompleted()) {
+                sequence++;
+                commandNoWaitCompletion(protocol.command.encodeMoveZCommand(System::Convert::ToInt16(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_PARK)[BiopsyConfig::PARAM_PARK_Z])), 30);
+            }
+            break;
+        case 3:
+            if (device->isCommandError()) {
+                sequence = 0;
+                command_home_request = 0;
+            }
+            else if (device->isCommandCompleted()) {
+                sequence = 0;
+                command_home_request = 0;
+            }
+
+            commandNoWaitCompletion(protocol.command.encodeDisableModeCommand(), 30);
+            break;
+        }
+        
+
+       
+    }
+    
     return;
 }
 

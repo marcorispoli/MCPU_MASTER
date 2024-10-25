@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="AWS\awsProtocol.h" />
     <ClInclude Include="AWS\TcpIpServerCLI.h" />
+    <ClInclude Include="CONFIGURATION\BiopsyConfig.h" />
     <ClInclude Include="CONFIGURATION\CollimatorConfig.h" />
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
     <ClInclude Include="CONFIGURATION\ConfigurationFiles.h" />

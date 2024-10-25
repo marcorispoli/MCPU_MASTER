@@ -31,7 +31,8 @@ public:
 
 			enum class register_index {
 				MODE_REGISTER = 0, 
-				POSITION_REGISTER,
+				POSITION_XY_REGISTER,
+				POSITION_Z_REGISTER,
 				NUM_REGISTERS
 			};
 
@@ -77,16 +78,15 @@ public:
 				return sys;
 			}
 
-			static bool decodePositionRegister(Register^ sys) {
+			static bool decodePositionXYRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
 				X = (int) sys->d0 + 256 * (int) sys->d1;
-				Y = (int)sys->d2;
-				Z = (int)sys->d3;
+				Y = (int)sys->d2 + 256 * (int)sys->d3;
 				return true;
 			}
 
-			Register^ encodePositionRegister(void) {
+			Register^ encodePositionXYRegister(void) {
 
 				// Creates a register with all bytes set to 0
 				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
@@ -94,8 +94,30 @@ public:
 
 				sys->d0 = (unsigned char) (X & 0xFF);
 				sys->d1 = (unsigned char)((X>>8) & 0xFF);
-				sys->d2 = (unsigned char)(Y);
-				sys->d3 = (unsigned char)(Z);
+				sys->d2 = (unsigned char)(Y & 0xFF);
+				sys->d3 = (unsigned char)((Y >> 8) & 0xFF);
+
+				// Returns the formatted register
+				return sys;
+			}
+			static bool decodePositionZRegister(Register^ sys) {
+				if (sys == nullptr) return false;
+
+				Z = (int)sys->d0 + 256 * (int)sys->d1;
+				
+				return true;
+			}
+
+			Register^ encodePositionZRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
+
+
+				sys->d0 = (unsigned char)(Z & 0xFF);
+				sys->d1 = (unsigned char)((Z >> 8) & 0xFF);
+				sys->d2 = 0;
+				sys->d3 = 0;
 
 				// Returns the formatted register
 				return sys;
@@ -116,8 +138,44 @@ public:
 		public:
 
 			enum class register_index {
-				NUM_REGISTERS = 0,
+				GENERAL_REGISTER = 0,
+				NUM_REGISTERS
 			};
+
+			static bool decodeGeneralRegister(Register^ sys) {
+				if (sys == nullptr) return false;
+
+				light_status = sys->d0 & 0x1;
+				step_keyb_ena = sys->d0 & 0x2;
+
+				light_duty = sys->d1;
+
+				return true;
+			}
+
+			Register^ encodeGeneralRegister(void) {
+
+				// Creates a register with all bytes set to 0
+				CanDeviceProtocol::Register^ sys = gcnew CanDeviceProtocol::Register;
+
+
+				sys->d0 = 0;
+				if (light_status) sys->d0 |= 0x1;
+				if (step_keyb_ena) sys->d0 |= 0x2;
+
+				sys->d1 = light_duty;
+				sys->d2 = 0;
+				sys->d3 = 0;
+
+				// Returns the formatted register
+				return sys;
+			}
+
+			static bool step_keyb_ena = false;
+			static bool light_status = false;
+			
+			static int  light_duty = 20;
+
 
 		};
 
@@ -139,7 +197,9 @@ public:
 				CMD_COMMAND_MODE,
 				CMD_SERVICE_MODE,
 				CMD_CALIB_MODE,
-				CMD_MOVE_XYZ,                
+				CMD_MOVE_X,
+				CMD_MOVE_Y,
+				CMD_MOVE_Z,
 				CMD_SERVICE_TEST_CYCLE      
 			};
 
@@ -158,12 +218,20 @@ public:
 			CanDeviceCommand^ encodeTestCycleModeCommand(void) {
 				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_SERVICE_TEST_CYCLE, 0, 0, 0, 0);
 			}
-			CanDeviceCommand^ encodeMoveXYZModeCommand(int X, int Y, int Z) {
+			CanDeviceCommand^ encodeMoveXCommand(int X) {			
 				System::Byte d0 = (System::Byte)(X & 0xFF);
 				System::Byte d1 = (System::Byte)((X>>8) & 0xFF);
-				System::Byte d2 = (System::Byte)(Y);
-				System::Byte d3 = (System::Byte)(Z);
-				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_MOVE_XYZ, d0, d1, d2, d3);
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_MOVE_X, d0, d1, 0, 0);
+			}
+			CanDeviceCommand^ encodeMoveYCommand(int Y) {
+				System::Byte d0 = (System::Byte)(Y & 0xFF);
+				System::Byte d1 = (System::Byte)((Y >> 8) & 0xFF);
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_MOVE_Y, d0, d1, 0, 0);
+			}
+			CanDeviceCommand^ encodeMoveZCommand(int Z) {
+				System::Byte d0 = (System::Byte)(Z & 0xFF);
+				System::Byte d1 = (System::Byte)((Z >> 8) & 0xFF);
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_MOVE_Z, d0, d1,0, 0);
 			}
 
 		};
@@ -177,6 +245,8 @@ public:
 
 	static bool isBiopsyConnected(void) { return biopsy_connected; }
 	static bool activateCycleTest(void);
+	static void setLight(bool status, int duty) { protocol.data_register.light_status = status;  protocol.data_register.light_duty = duty; }
+	static void moveHome(void) { command_home_request = true; }
 
 protected: 	
 	void runningLoop(void) override;
@@ -186,5 +256,7 @@ private:
 	static ProtocolStructure protocol; //!< This is the structure with the Status register info
 	static bool biopsy_connected = false;
 	static bool service_cycle_test = false;
+	static bool command_home_request = false;
+	static int sequence = 0;
 };
 

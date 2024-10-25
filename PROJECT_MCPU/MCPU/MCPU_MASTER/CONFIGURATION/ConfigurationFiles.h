@@ -110,3 +110,4 @@
 #include "DetectorConfig.h"
 #include "TomoConfig.h"
 #include "CollimatorConfig.h"
+#include "BiopsyConfig.h"

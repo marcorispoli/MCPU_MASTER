@@ -61,7 +61,7 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |X|Word|1290|0:2580|Position X of the parking|
+    /// |X|Word|0|0:2580|Position X of the parking|
     /// |Y|Word|0|0:700|Position Y of the parking|
     /// |Z|Word|1280|0:1300|Position Z of the parking|
     /// 
@@ -70,7 +70,7 @@ public:
     literal int     PARAM_PARK_X = 0;
     literal int     PARAM_PARK_Y = 1;
     literal int     PARAM_PARK_Z = 2;
-    literal System::String^ PARAM_PARK_X_DEFAULT = "1290";
+    literal System::String^ PARAM_PARK_X_DEFAULT = "0";
     literal System::String^ PARAM_PARK_Y_DEFAULT = "0";
     literal System::String^ PARAM_PARK_Z_DEFAULT = "1280";
 

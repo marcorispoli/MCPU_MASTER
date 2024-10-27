@@ -10,6 +10,7 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
+#include "PCB325.h"
 #include "PCB326.h"
 #include "VerticalMotor.h"
 #include "ArmMotor.h"
@@ -22,6 +23,7 @@
 
 
 // Main Panel Definition
+#define BIOPSY Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\Biopsy.PNG")
 #define BACKGROUND Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\IdleFormBackground.PNG")
 #define XRAY_MODE Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\XrayMode.PNG")
 #define SERVICE_TOOL_MODE Image::FromFile(Gantry::applicationResourcePath + "IdleForm\\ServiceToolMode.PNG")
@@ -199,14 +201,21 @@ void IdleForm::initIdleStatus(void) {
 	// Activates the compressor
 	PCB301::SetCompressorEna(true);
 	
-	// XRAY mode setting
-	if (Exposures::isSimulatorMode()) {
-		this->xrayMode->Hide();
+	// XRAY/BIOPSY mode setting
+	if (PCB325::isBiopsyConnected()) {
+		this->xrayMode->BackgroundImage = BIOPSY;
+		this->xrayMode->Show();
 	}
 	else {
-		if (Exposures::isServiceToolConnected()) this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
-		else this->xrayMode->BackgroundImage = XRAY_MODE;
-		this->xrayMode->Show();
+		if (Exposures::isSimulatorMode()) {
+			this->xrayMode->Hide();
+		}
+		else {
+			if (Exposures::isServiceToolConnected()) this->xrayMode->BackgroundImage = SERVICE_TOOL_MODE;
+			else this->xrayMode->BackgroundImage = XRAY_MODE;
+			this->xrayMode->Show();
+		}
+
 	}
 	
 	// Activate the Automatic Potter Grid with the Out-Field position and unsync the generator signals

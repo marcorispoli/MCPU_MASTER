@@ -103,10 +103,42 @@ void Gantry::initialize(void) {
 
     }
     else {
-      
 
         // System in Simulation mode
-         param = SystemConfig::PARAM_SYM_MODE;
+        param = SystemConfig::PARAM_SYM_MODE;
+
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_AUTOSTART]) == 1) {
+            // Runs the Application called SIMULATOR.exe in the sub directory SIMULATOR
+            TCHAR buffer[MAX_PATH + 100] = { 0 };
+            const char simul[] = "SIMULATOR\\SIMULATOR.exe";
+            int n = GetModuleFileName(NULL, buffer, MAX_PATH);
+            for (int ciclo = n; ciclo > 0; ciclo--) {
+                if (buffer[ciclo] == '\\') {
+                    n = ciclo + 1;
+                    break;
+                }
+            }
+
+            int i = 0;
+            while (1) {
+                buffer[n + i] = simul[i];
+                if (simul[i] == '.') {
+                    n = n + i + 1;
+                    break;
+                }
+                i++;
+            }
+            buffer[n++] = 'e';
+            buffer[n++] = 'x';
+            buffer[n++] = 'e';
+            buffer[n++] = '\0';
+
+            // If in simulation mode, startes the simulator..
+            ShellExecute(NULL, L"open", buffer, NULL, NULL, SW_SHOWDEFAULT);
+            //_________________________________________________________________________
+        }
+        
+
 
         if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_CAN]) == 1)
             can_driver_simulator = false;

@@ -73,6 +73,7 @@ public:
     /// |:--|:--|:--|:--|:--|
     /// |EthIp|Ip4 Address|"127.0.0.1"|Ip Address Range|IP Address of the Simulator process|
     /// |EthPort|16 Bit Integer|20000|Port Range|IP Port of the Simulator process|
+    /// |AUTOSTART|bool|1|0:1|Automatic start the local simultor application|
     /// |SymCan|Byte|0|1/0|Can Module: 1= normal mode, 0 = simulated mode|
     /// |SymGenerator|Byte|0|1/0|Generator Module: 1= normal mode, 0 = simulated mode|
     /// |SymTilt|Byte|0|1/0|Tilt Module: 1= normal mode, 0 = simulated mode|  
@@ -88,24 +89,26 @@ public:
     /// |SymPcb326|Byte|0|1/0|PCB326 Module: 1= normal mode, 0 = simulated mode|
     /// 
     literal System::String^ PARAM_SYM_MODE = "SYM_MODE";
-    literal System::String^ PARAM_SYM_MODE_COMMENT = "SYM Mode Setting: [1=Run, 0=Sim]: can-driver, generator, tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,325,326";
+    literal System::String^ PARAM_SYM_MODE_COMMENT = "SYM Mode Setting: [1=Run, 0=Sim]: ip, port, autostart, can-driver, generator, tilt, Arm,Body,Vertical,Slide, 301, 302, 303,304,325,326";
     literal int     SYM_MODE_IP = 0;
     literal int     SYM_MODE_PORT = 1;
-    literal int     SYM_MODE_CAN = 2;
-    literal int     SYM_MODE_GENERATOR = 3;
-    literal int     SYM_MODE_TILT = 4;
-    literal int     SYM_MODE_ARM = 5;
-    literal int     SYM_MODE_BODY = 6;
-    literal int     SYM_MODE_VERTICAL = 7;
-    literal int     SYM_MODE_SLIDE = 8;
-    literal int     SYM_MODE_PCB301 = 9;
-    literal int     SYM_MODE_PCB302 = 10;
-    literal int     SYM_MODE_PCB303 = 11;
-    literal int     SYM_MODE_PCB304 = 12;
-    literal int     SYM_MODE_PCB325 = 13;
-    literal int     SYM_MODE_PCB326 = 14;
+    literal int     SYM_AUTOSTART = 2;
+    literal int     SYM_MODE_CAN = 3;
+    literal int     SYM_MODE_GENERATOR = 4;
+    literal int     SYM_MODE_TILT = 5;
+    literal int     SYM_MODE_ARM = 6;
+    literal int     SYM_MODE_BODY = 7;
+    literal int     SYM_MODE_VERTICAL = 8;
+    literal int     SYM_MODE_SLIDE = 9;
+    literal int     SYM_MODE_PCB301 = 10;
+    literal int     SYM_MODE_PCB302 = 11;
+    literal int     SYM_MODE_PCB303 = 12;
+    literal int     SYM_MODE_PCB304 = 13;
+    literal int     SYM_MODE_PCB325 = 14;
+    literal int     SYM_MODE_PCB326 = 15;
     literal System::String^ PARAM_SYM_MODE_IP_DEFAULT = "127.0.0.1";
     literal System::String^ PARAM_SYM_MODE_PORT_DEFAULT = "20000";
+    literal System::String^ PARAM_SYM_AUTOSTART_DEFAULT = "1";
     literal System::String^ PARAM_SYM_MODE_CAN_DEFAULT = "0";
     literal System::String^ PARAM_SYM_MODE_GENERATOR_DEFAULT = "0";
     literal System::String^ PARAM_SYM_MODE_TILT_DEFAULT = "0";
@@ -261,6 +264,7 @@ public:
             CONFIG_FILE_ITEM(PARAM_SYM_MODE, PARAM_SYM_MODE_COMMENT, CONFIG_FILE_DEFAULT{            
             PARAM_SYM_MODE_IP_DEFAULT,
             PARAM_SYM_MODE_PORT_DEFAULT,
+            PARAM_SYM_AUTOSTART_DEFAULT,
             PARAM_SYM_MODE_CAN_DEFAULT,
             PARAM_SYM_MODE_GENERATOR_DEFAULT,
             PARAM_SYM_MODE_TILT_DEFAULT,

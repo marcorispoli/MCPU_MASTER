@@ -13,6 +13,12 @@ using namespace System::Windows::Forms;
 [STAThread]
 int main()
 {
+	CreateMutexA(0, FALSE, "Local\\$myprogram$"); // try to create a named mutex
+	if (GetLastError() == ERROR_ALREADY_EXISTS) // did the mutex already exist?
+		return -1; // quit; mutex is released automatically
+
+	// ... program code ...
+
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 	Gantry::initialize();

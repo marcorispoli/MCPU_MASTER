@@ -14,3 +14,7 @@
 <10% EXEC_StartXraySequence %>
 
 <10%EXEC_CloseStudy %>
+
+
+ ShellExecute(NULL, "open", "path\\to\\file.exe", NULL, NULL, SW_SHOWDEFAULT);
+

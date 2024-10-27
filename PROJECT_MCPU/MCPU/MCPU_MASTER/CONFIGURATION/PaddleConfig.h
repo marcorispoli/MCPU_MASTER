@@ -50,17 +50,81 @@ public:
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |PosCalib|Byte|0|0:1|Position calibration status: 1=Calibrated, 0 = Not Calibrated|
-    /// |ForceCalib|Byte|0|0:1|Force calibration status: 1=Calibrated, 0 = Not Calibrated|
-    /// |HolderOffset|Word|0|-|Holder Calibration Offset |
-    /// |HolderK|Word|100|-|Percent of linear correction|
-    /// |HolderMaxPos|Word|300|-|Maximum holder position in mm|
-    /// |HolderMinPos|Word|0|-|Minimum holder position in mm|
-    /// |TargetForce|Word|150|-|Current Automatic Target compression in N|
-    /// |MaxForce|Word|200|70:200|Maximum Autmatic Compression Force in N|
+    /// |Position Calibration Status|Byte|0|0:1|Position calibration status: 1=Calibrated, 0 = Not Calibrated|
+    /// |Force Calibration Status|Byte|0|0:1|Force calibration status: 1=Calibrated, 0 = Not Calibrated|
+    /// |Holder Offset|Word|0|-|Holder Calibration Offset |
+    /// |Holder K-Correction|Byte|100|50:150|Percent of linear correction|
+    /// |Compressor Max Position|Word|190|-|Maximum compressor position in mm|
+    /// |Compressor Min Position|Word|0|-|Minimum compressor position in mm|
+    /// |Target Force|Byte|150|70:200|Automatic Target compression in N|
+    /// |Max Automatic Compression Force|Byte|200|70:200|Maximum Automatic Compression Force in N|
     /// 
+    /// #### Holder Calibration Status
+    /// This parameter is automatically set by the application when the position calibration process
+    /// is successfully executed.
+    /// 
+    /// \warning
+    /// If this parameter should not be set (position not calibrated) an error message is generated.
+    /// 
+    /// #### Force Calibration Status
+    /// This parameter is automatically set by the application when the compression force calibration process
+    /// is successfully executed.
+    /// 
+    /// \warning
+    /// If this parameter should not be set (position not calibrated) an error message is generated.
+    /// 
+    /// #### Holder Offset
+    /// This is the distance from the 0 compressor position and the Compression Plane (Carbon Fiber).
+    /// The Hoder offset is used, toghether with the paddle offset parameter, 
+    /// in order to calculate the actual breast thickness.
+    /// 
+    /// #### Holder K-Correction
+    /// 
+    /// This parameter adjust the linearity of the Holder Position if necessary.
+    /// 
+    /// The linearity of the holder position is set into the compressor device 
+    /// and usually should not require extra adjustments.
+    /// However, because the holder position is related to the breast thickness measurement,
+    /// the breast thickness may vary differently due to the compressor paddle elasticity.
+    ///  
+    /// The value is espressed in percent value where 100 means no correction:
+    /// + HolderPositionCorrected = CompressorPosition * (K/100) + HolderOffset;
+    /// 
+    /// #### Compressor Max Position
+    /// The compressor Max position is the Upper limit of the Compressor position.
+    /// 
+    /// #### Compressor Min Position
+    /// The compressor Min position is the Lower limit of the Compressor position.
+    /// 
+    /// #### Target Force
+    /// This is the Automatic target compression force.
+    /// 
+    /// When the operator presses the compression paddle (or the compression knobs on the compressor holder) 
+    /// the compressor stops at this target compression force.
+    /// 
+    /// \warning 
+    /// This value cannot be set more than 200N that is the maximum target force with the use of the motor.
+    /// 
+    /// \warning 
+    /// This value cannot be set less than 70N as it is the minimum force largely considered as the correct breast compression.
+    /// 
+    /// \note
+    /// In case a dense breast should detected first, the compression may stop earlier than this target. 
+    ///  
+    /// 
+    /// #### Max Automatic Compression Force
+    /// This is the maximum target that the operator can set during a Study.
+    /// 
+    /// \warning 
+    /// This value cannot be set more than 200N that is the maximum target force with the use of the motor.
+    /// 
+    /// \warning 
+    /// This value cannot be set less than 70N as it is the minimum force largely considered as the correct breast compression.
+    /// 
+    /// 
+    
     literal System::String^ PARAM_COMPRESSOR = "COMPRESSOR_DEVICE";
-    literal System::String^ PARAM_COMPRESSOR_COMMENT = "Compressor device general parameters";
+    literal System::String^ PARAM_COMPRESSOR_COMMENT = "Position-Calibrated[1:0], Force-Calibrated[1:0], Holder-Offset, Holder-Kp, Max-Position,Min-Position,Target-Force,Max-Force";
     literal int     COMPRESSOR_CALIBRATION_POSITION_STATUS = 0; //!< Set to 1 if the calibration position has been executed
     literal int     COMPRESSOR_CALIBRATION_FORCE_STATUS = 1;    //!< Set to 1 if the calibration force has been executed
     literal int     COMPRESSOR_HOLDER_OP = 2;                   //!< Holder calibration: Op parameter
@@ -80,9 +144,63 @@ public:
     literal System::String^ COMPRESSOR_MAX_FORCE_DEFAULT = "200";
 
 
-    //___________________________________________________________________________________________________//
-    //  Paddle parameter data position definition
-    //___________________________________________________________________________________________________//
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### Paddle Calibration Descriptors
+    /// 
+    /// Every compressor Paddle used in the system, is defined by 
+    /// well defined geometric aspect, that strongly impact specifically on the
+    /// patiente Dose calculation and control.
+    /// 
+    /// In particolar:
+    /// - The Paddle offset affects the breast measurement;
+    /// - The Paddle whole dimension affects the x-ray collimation path;
+    /// - The Paddle weight affects the actual compression force measurement;
+    /// 
+    /// The Application provides a set of parameters for any possible Paddle
+    /// to fully face to the previous argument. 
+    /// 
+    /// In particolar:
+    /// 
+    /// < PADDLE_XXXX, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |Collimation Format|String|"1"|Collimator Format Range|Sets the assigned collimator format slot number|
+    /// |Paddle Offset|Word|120|-|Offset from the Holder position and the Compression plane (mm)|
+    /// |Paddle Weight|Word|10|-|Paddle Weight in N |
+    /// |Identification Id|Word|1|-|Identifier Code for the RFID paddle tag|
+    /// 
+    /// 
+    /// #### Collimation Format
+    /// 
+    /// The Collimator device provides up to 20 collimation formats.
+    /// Every format can be assigned to a paddle setting its number in this parameters.
+    /// 
+    /// \note
+    /// The collimation format slot 0 is reserved for the OPEN collimation and should not be assigned to a paddle!
+    /// 
+    /// #### Paddle Offset
+    /// 
+    /// The Paddle offset (in mm) is the distance from the Holder Position (the base of the compressor moving mechanical part)
+    /// and the compression plane of the paddle. 
+    /// 
+    /// The Application uses this value to calculate the actual breast thickness.
+    /// 
+    /// #### Paddle Weight
+    /// 
+    /// The paddle Weight (in N) is passed to the compressor device 
+    /// in order to recalculate the current compression force.
+    /// 
+    /// #### Identification Id
+    /// 
+    /// Every paddle is tagged with an RFID tag that is detected by the compressor device.
+    /// The RFID code is assigned uniquelly to a paddle model.
+    /// This code can be configured into this configuration file. 
+    ///     
+    /// 
+    /// 
+    /// 
 
     literal int     PADDLE_COLLIMATION = 0;     //!< This is the autoomatic collimation slot assigned to the paddle
     literal int     PADDLE_POSITION_OFFSET = 1; //!< This is the position offset for the thickness calculation
@@ -95,16 +213,15 @@ public:
     /// 
     /// This parameter sets the Prosthesis parameters.
     /// 
-    /// < PADDLE_PROSTHESIS, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_PROSTHESIS, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"1"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|1|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"1"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|1|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_PROSTHESIS = "PADDLE_PROSTHESIS";
     literal System::String^ PARAM_PADDLE_PROSTHESIS_COMMENT = "PADDLE_PROSTHESIS calibration data";
@@ -119,16 +236,15 @@ public:
     /// 
     /// This parameter sets the BIOP_2D parameters.
     /// 
-    /// < PADDLE_BIOP2D, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_BIOP2D, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"2"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|2|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"2"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|2|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_BIOP2D = "PADDLE_BIOP2D";
     literal System::String^ PARAM_PADDLE_BIOP2D_COMMENT = "PADDLE_BIOP2D calibration data";
@@ -143,16 +259,15 @@ public:
     /// 
     /// This parameter sets the BIOP_3D parameters.
     /// 
-    /// < PADDLE_BIOP3D, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_BIOP3D, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"3"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|3|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"3"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|3|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_BIOP3D = "PADDLE_BIOP3D";
     literal System::String^ PARAM_PADDLE_BIOP3D_COMMENT = "PADDLE_BIOP3D calibration data";
@@ -167,16 +282,15 @@ public:
     /// 
     /// This parameter sets the TOMO parameters.
     /// 
-    /// < PADDLE_TOMO, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_TOMO, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"4"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|4|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"4"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|4|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_TOMO = "PADDLE_TOMO";
     literal System::String^ PARAM_PADDLE_TOMO_COMMENT = "PADDLE_TOMO calibration data";
@@ -191,16 +305,15 @@ public:
     /// 
     /// This parameter sets the 24x30_CONTACT parameters.
     /// 
-    /// < PADDLE_24x30_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_24x30_CONTACT, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"5"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|5|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"5"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|5|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_24x30_CONTACT = "PADDLE_24x30_CONTACT";
     literal System::String^ PARAM_PADDLE_24x30_CONTACT_COMMENT = "PADDLE_24x30_CONTACT calibration data";
@@ -215,16 +328,15 @@ public:
     /// 
     /// This parameter sets the 18x24_C_CONTACT parameters.
     /// 
-    /// < PADDLE_18x24_C_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_18x24_C_CONTACT, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"6"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|6|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"6"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|6|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_18x24_C_CONTACT = "PADDLE_18x24_C_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_C_CONTACT_COMMENT = "PADDLE_18x24_C_CONTACT calibration data";
@@ -239,16 +351,15 @@ public:
     /// 
     /// This parameter sets the 18x24_L_CONTACT parameters.
     /// 
-    /// < PADDLE_18x24_L_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_18x24_L_CONTACT, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"7"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|7|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"7"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|7|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_18x24_L_CONTACT = "PADDLE_18x24_L_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_L_CONTACT_COMMENT = "PADDLE_18x24_L_CONTACT calibration data";
@@ -263,16 +374,15 @@ public:
     /// 
     /// This parameter sets the 18x24_R_CONTACT parameters.
     /// 
-    /// < PADDLE_18x24_R_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_18x24_R_CONTACT, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"8"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|8|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"8"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|8|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_18x24_R_CONTACT = "PADDLE_18x24_R_CONTACT";
     literal System::String^ PARAM_PADDLE_18x24_R_CONTACT_COMMENT = "PADDLE_18x24_R_CONTACT calibration data";
@@ -287,16 +397,15 @@ public:
     /// 
     /// This parameter sets the 10x24_CONTACT parameters.
     /// 
-    /// < PADDLE_10x24_CONTACT, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_10x24_CONTACT, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"9"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|120|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|9|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"9"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|9|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_10x24_CONTACT = "PADDLE_10x24_CONTACT";
     literal System::String^ PARAM_PADDLE_10x24_CONTACT_COMMENT = "PADDLE_10x24_CONTACT calibration data";
@@ -311,16 +420,15 @@ public:
     /// 
     /// This parameter sets the 9x9_MAG parameters.
     /// 
-    /// < PADDLE_9x9_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_9x9_MAG, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"10"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|10|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"10"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|10|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_9x9_MAG = "PADDLE_9x9_MAG";
     literal System::String^ PARAM_PADDLE_9x9_MAG_COMMENT = "PADDLE_9x9_MAG calibration data";
@@ -335,16 +443,15 @@ public:
     /// 
     /// This parameter sets the 9x21_MAG parameters.
     /// 
-    /// < PADDLE_9x21_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_9x21_MAG, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"11"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|11|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"11"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|11|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_9x21_MAG = "PADDLE_9x21_MAG";
     literal System::String^ PARAM_PADDLE_9x21_MAG_COMMENT = "PADDLE_9x21_MAG calibration data";
@@ -359,16 +466,15 @@ public:
     /// 
     /// This parameter sets the D75_MAG parameters.
     /// 
-    /// < PADDLE_D75_MAG, CollimationFormat,CompressionOffset,Weight,IdentificationId>
+    /// < PADDLE_D75_MAG, Collimation_Format,Paddle_Offset,Paddle_Weight,Identification_Id>
     /// 
-    /// |Param|Type|Default|Range|Descrption|
-    /// |:--|:--|:--|:--|:--|
-    /// |CollimationFormat|String|"12"|Collimator Format Range|Sets the assigned collimator format|
-    /// |CompressionOffset|Word|0|-|Offset of the paddle plane respect of the Holder position in mm|
-    /// |Weight|Word|10|-|Paddle Weight in N |
-    /// |IdentificationId|Word|12|-|Identifier Code|
+    /// |Param|Default|
+    /// |:--|:--|
+    /// |Collimation Format|"12"|
+    /// |Compression Offset|120|
+    /// |Paddle Weight|10|
+    /// |Identification Id|12|
     /// 
-    ///     NOTE: The collimation format 0 is reserved for the OPEN collimation
     /// 
     literal System::String^ PARAM_PADDLE_D75_MAG = "PADDLE_D75_MAG";
     literal System::String^ PARAM_PADDLE_D75_MAG_COMMENT = "PADDLE_D75_MAG calibration data";

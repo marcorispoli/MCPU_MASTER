@@ -29,7 +29,7 @@ CanOpenModuleApi \- Application Interface (API)
 
 .in +1c
 .ti -1c
-.RI "\fBCANOPEN::CanOpenMotor::CanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, int min_position, int max_position, double gear, double external_k, bool reverse)"
+.RI "\fBCANOPEN::CanOpenMotor::CanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, System::String^ parameter, \fBNotify::messages\fP home_err, int \fBmin_position\fP, int \fBmax_position\fP, double gear, double external_k, bool reverse)"
 .br
 .RI "This is the base class constructor\&. "
 .ti -1c
@@ -219,7 +219,7 @@ This enumeration class descibes the Command codes\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BIMOTOR_IDLE \fP
+\f(BIMOTOR_IDLE \fP(0)
 No command are presents 
 .br
  
@@ -257,10 +257,10 @@ ERROR_: they are codes reserved for command completion error conditions
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BICOMMAND_SUCCESS \fP
+\f(BICOMMAND_SUCCESS \fP(0)
 The Command is successsfully terminated\&. 
 .TP
-\f(BICOMMAND_PROCEED \fP
+\f(BICOMMAND_PROCEED \fP(0)
 The Command can proceed in the execution (reserved for subclass) 
 .TP
 \f(BICOMMAND_MANUAL_TERMINATION \fP
@@ -269,7 +269,7 @@ The Command has been manually terminated\&.
 \f(BIMOTOR_ERRORS \fP
 First of the reserved Error codes\&. 
 .TP
-\f(BIERROR_OBSTACLE_DETECTED \fP
+\f(BIERROR_OBSTACLE_DETECTED \fP(MOTOR_ERRORS)
 The command has been terminated because of obstacle detected\&. 
 .TP
 \f(BIERROR_MOTOR_BUSY \fP
@@ -327,7 +327,7 @@ This enumeration class descibes the internal status condition\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BIMOTOR_NOT_CONNECTED \fP
+\f(BIMOTOR_NOT_CONNECTED \fP(0)
 The Motor is not connected with the CAN bus\&. 
 .TP
 \f(BIMOTOR_CONFIGURATION \fP
@@ -348,6 +348,8 @@ The driver is in fault condition
 .SS "void CanOpenMotor::abortActivation (void )"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 Immediate abort of any activation running\&. This command requests for an immediate activation abort\&.
 
 .PP
@@ -357,8 +359,24 @@ If the motor is not active, the command has not effect\&.
 If the motor is active, a quick stop procedure is activated\&.
 .PP
 
+.SS "bool CanOpenMotor::activateAutomaticHoming (int method_on, int method_off, int speed, int acc)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This function starts the automatic homing procedure\&. 
+.SS "bool CanOpenMotor::activateAutomaticPositioning (int id, int target, bool autostart)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This function starts an automatic positioning with predefined parameters 
+.br
+ 
 .SS "bool CanOpenMotor::activateAutomaticPositioning (int id, int target, int speed, int acc, int dec, bool autostart)"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This function starts an automatic positioning 
 .br
@@ -439,6 +457,8 @@ true if the command can be executed
 .SS "bool CANOPEN::CanOpenMotor::activateConfiguration (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 This function activates the Driver configuration fase\&. The Driver configuration will take place only when the driver is in internal status READY or FAULT 
 
 .PP
@@ -448,8 +468,54 @@ true always
 .RE
 .PP
 
-.SS "CanOpenMotor::CanOpenMotor (unsigned char devid, LPCWSTR motorname, System::String^ parameter, Notify::messages home_err, int min, int max, double rounds_for_units, double external_k, bool reverse)"
+.SS "bool CanOpenMotor::activateExternalHoming (int current_uposition)"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This function starts the external sensor homing procedure\&. 
+.SS "bool CanOpenMotor::activateManualHoming (int current_uposition)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This function starts the external sensor homing procedure\&. 
+.SS "bool CanOpenMotor::activateManualPositioning (int target)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This command activates the manual mootion with predefined parameters\&. 
+.SS "bool CanOpenMotor::activateManualPositioning (int target, int speed, int acc, int dec)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This command activates the manual mootion 
+.br
+ 
+.SS "bool CanOpenMotor::activateManualService (bool increase)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.SS "bool CanOpenMotor::activateRelativePositioning (int id, int target)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This function starts an automatic relative positioning with predefined motor parameters\&. 
+.SS "bool CanOpenMotor::activateRelativePositioning (int id, int target, int speed, int acc, int dec)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+This function starts an automatic relative positioning 
+.br
+ 
+.SS "CanOpenMotor::CanOpenMotor (unsigned char devid, LPCWSTR motorname, System::String^ parameter, \fBNotify::messages\fP home_err, int min, int max, double rounds_for_units, double external_k, bool reverse)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This is the base class constructor\&. This is the Class constructor\&.
 
@@ -470,8 +536,32 @@ This is the base class constructor\&. This is the Class constructor\&.
 .RE
 .PP
 
+.SS "delegate void CANOPEN::CanOpenMotor::delegate_command_completed_callback (int id, int code)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+Delegate for the command completed event 
+.br
+ 
+.SS "delegate void CANOPEN::CanOpenMotor::delegate_fault_callback (int code)"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
+Delegate for the callback related to the Fault condition\&. 
+.SS "void CANOPEN::CanOpenMotor::demoMode (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.SS "System::String ^ CANOPEN::CanOpenMotor::getCanCommunicationMonitorString (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .SS "\fBMotorCompletedCodes\fP CANOPEN::CanOpenMotor::getCommandCompletedCode (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This function returns the last command termination code\&. 
 .PP
@@ -484,6 +574,8 @@ This function returns the last command termination code\&.
 .SS "int CANOPEN::CanOpenMotor::getCurrentPosition (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 This function returns the current encoder position\&. 
 .PP
 \fBReturns\fP
@@ -492,8 +584,22 @@ The encoder position in user units
 .RE
 .PP
 
+.SS "int CANOPEN::CanOpenMotor::getEncoderPosition (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.SS "int CANOPEN::CanOpenMotor::getExternalPosition (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.SS "unsigned short CANOPEN::CanOpenMotor::getExternalSensor (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .SS "\fBstatus_options\fP CANOPEN::CanOpenMotor::getInternalStatus (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This function returns the internal module status\&. 
 .PP
@@ -506,6 +612,8 @@ The internal Module status
 .SS "System::String ^ CANOPEN::CanOpenMotor::getInternalStatusStr (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 This function returns a description string of the internal motor status\&. 
 .PP
 \fBReturns\fP
@@ -514,8 +622,18 @@ This function returns a description string of the internal motor status\&.
 .RE
 .PP
 
+.SS "int CANOPEN::CanOpenMotor::getMaxPosition (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.SS "int CANOPEN::CanOpenMotor::getMinPosition (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .SS "bool CANOPEN::CanOpenMotor::isBusy (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This function return true if an executing command is pending\&. The function shall be used to know if the motor is activated or a comnmand is pending (but not yet started)
 
@@ -528,6 +646,8 @@ This function return true if an executing command is pending\&. The function sha
 .SS "bool CANOPEN::CanOpenMotor::isConfigurating (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 This function returns the current configuration fase status\&. 
 .PP
 \fBReturns\fP
@@ -538,6 +658,8 @@ true: the configuration is executing
 
 .SS "bool CANOPEN::CanOpenMotor::isNanojConfigured (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This function returns the status of the Nano-J programming\&. 
 .PP
@@ -550,6 +672,8 @@ true: the program has been successfully uploaded (if required)
 .SS "bool CANOPEN::CanOpenMotor::isODConfigured (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 This function returns the status of the Object Dictionary configuration status\&. 
 .PP
 \fBReturns\fP
@@ -558,8 +682,14 @@ true: the object dictionary has benn successfully configured
 .RE
 .PP
 
+.SS "bool CANOPEN::CanOpenMotor::isPositionFromExternalSensor (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .SS "bool CANOPEN::CanOpenMotor::isReady (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This function returns true if the module is ready to execute a command\&. If this function should return false, it doesn't mean that a command is executing\&. See the \fBisRunning()\fP function for that purpose\&.
 
@@ -579,6 +709,8 @@ true: the driver is ready to execute a command
 .SS "bool CANOPEN::CanOpenMotor::isRunning (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 This function return true if a command is executing\&. 
 .PP
 \fBReturns\fP
@@ -587,8 +719,14 @@ true: a command is executing
 .RE
 .PP
 
+.SS "bool CANOPEN::CanOpenMotor::isSimulatorMode (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .SS "bool CANOPEN::CanOpenMotor::isZeroOk (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
 .PP
 This function returns the Encoder Zero setting status\&. 
 .PP
@@ -598,6 +736,24 @@ true: the encoder has been correctly initialized
 .RE
 .PP
 
+.SS "void CANOPEN::CanOpenMotor::runMode (void )\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.SS "void CANOPEN::CanOpenMotor::setServiceMode (bool stat)\fR [inline]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.SH "Events"
+.PP 
+.SS "\fBdelegate_command_completed_callback\fP^ CANOPEN::CanOpenMotor::command_completed_event"
+
+.PP
+Event generated at the command completion\&. 
+.SS "\fBdelegate_fault_callback\fP^ CANOPEN::CanOpenMotor::fault_event"
+
+.PP
+Event generated when a Driver fault condition is detected\&. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU from the source code\&.

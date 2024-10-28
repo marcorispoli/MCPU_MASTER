@@ -3,3 +3,338 @@
 .nh
 .SH NAME
 ServiceZeroSettingTool
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ServiceZeroSettingTool\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdialog_open\fP (Form^ p)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitPanel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBtimerManagement\fP (void)"
+.br
+.ti -1c
+.RI "\fBServiceZeroSettingTool\fP (void)"
+.br
+.ti -1c
+.RI "\fB~ServiceZeroSettingTool\fP ()"
+.br
+.RI "Clean up any resources being used\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBserviceTimer\fP"
+.br
+.ti -1c
+.RI "float \fBmax_target_angle\fP"
+.br
+.ti -1c
+.RI "float \fBmin_target_angle\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBServiceZeroSettingTool\fP ^ \fBpanel\fP = gcnew \fBServiceZeroSettingTool\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonTargetSelectionCallback\fP (System::String^ value)"
+.br
+.ti -1c
+.RI "void \fBonBodyPanelTimerCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonTiltPanelTimerCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonVerticalPanelTimerCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonSlidePanelTimerCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonArmPanelTimerCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&. "
+.ti -1c
+.RI "System::Void \fBonServiceTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSettingBody_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSettingVertical_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSettingArm_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSettingTilt_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSettingSlide_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBtargetSelection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrunButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBmanButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBmanButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBexternalPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBsensorLabel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBserviceMenuTitle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelDate\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelInstallation\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTime\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBserviceCanc\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBcalibZerosettingPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBzeroSettingSlide\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBzeroSettingTilt\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBzeroSettingArm\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBzeroSettingVertical\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBzeroSettingBody\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBexecutePanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBpositionLabel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBencoderPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBtargetLabel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBtargetSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBsensorValue\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBrunButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::RichTextBox ^ \fBzeroSettingLog\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBexecuteIcon\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ServiceZeroSettingTool::ServiceZeroSettingTool (void )\fR [inline]\fP"
+
+.SS "ServiceZeroSettingTool::~ServiceZeroSettingTool ()\fR [inline]\fP"
+
+.PP
+Clean up any resources being used\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ServiceZeroSettingTool::cancButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::close (void )"
+
+.SS "void ServiceZeroSettingTool::dialog_open (Form^ p)"
+
+.SS "void ServiceZeroSettingTool::formInitialization (void )\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::InitializeComponent (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "void ServiceZeroSettingTool::initPanel (void )"
+
+.SS "System::Void ServiceZeroSettingTool::manButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::onArmPanelTimerCallback (void )\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::onBodyPanelTimerCallback (void )\fR [private]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::onServiceTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::onSlidePanelTimerCallback (void )\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::onTargetSelectionCallback (System::String^ value)\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::onTiltPanelTimerCallback (void )\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::onVerticalPanelTimerCallback (void )\fR [private]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::runButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::targetSelection_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceZeroSettingTool::timerManagement (void )"
+
+.SS "void ServiceZeroSettingTool::WndProc (System::Windows::Forms::Message% m)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::zeroSettingArm_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::zeroSettingBody_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::zeroSettingSlide_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::zeroSettingTilt_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceZeroSettingTool::zeroSettingVertical_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::Panel ^ ServiceZeroSettingTool::calibZerosettingPanel\fR [private]\fP"
+
+.SS "System::ComponentModel::Container ^ ServiceZeroSettingTool::components\fR [private]\fP"
+
+.PP
+Required designer variable\&. 
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::encoderPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceZeroSettingTool::executeIcon\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServiceZeroSettingTool::executePanel\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::externalPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::label2\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::labelDate\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::labelInstallation\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::labelTime\fR [private]\fP"
+
+.SS "System::Windows::Forms::Button ^ ServiceZeroSettingTool::manButton\fR [private]\fP"
+
+.SS "float ServiceZeroSettingTool::max_target_angle"
+
+.SS "float ServiceZeroSettingTool::min_target_angle"
+
+.SS "bool ServiceZeroSettingTool::open_status"
+
+.SS "\fBServiceZeroSettingTool\fP ^ ServiceZeroSettingTool::panel = gcnew \fBServiceZeroSettingTool\fP()\fR [static]\fP"
+
+.SS "Form ^ ServiceZeroSettingTool::parent"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::positionLabel\fR [private]\fP"
+
+.SS "System::Windows::Forms::Button ^ ServiceZeroSettingTool::runButton\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::sensorLabel\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::sensorValue\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceZeroSettingTool::serviceCanc\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::serviceMenuTitle\fR [private]\fP"
+
+.SS "System::Timers::Timer ^ ServiceZeroSettingTool::serviceTimer"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::targetLabel\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceZeroSettingTool::targetSelection\fR [private]\fP"
+
+.SS "HWND ServiceZeroSettingTool::window"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceZeroSettingTool::zeroSettingArm\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceZeroSettingTool::zeroSettingBody\fR [private]\fP"
+
+.SS "System::Windows::Forms::RichTextBox ^ ServiceZeroSettingTool::zeroSettingLog\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceZeroSettingTool::zeroSettingSlide\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceZeroSettingTool::zeroSettingTilt\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceZeroSettingTool::zeroSettingVertical\fR [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

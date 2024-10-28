@@ -3,3 +3,240 @@
 .nh
 .SH NAME
 R2CP::tRadPostExpPostCondition
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <aDataDicRadInterface\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "union \fBRad_TargetDose\fP"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBuword\fP \fBExposureNumber\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBProcedureId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBExpSeqNumber\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned short \fBdata_0_7\fP: 8"
+.br
+.ti -1c
+.RI "      unsigned short \fBdata_8_15\fP: 8"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned short \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBkV10\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      int \fBdata_0_7\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_8_15\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_16_23\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_24_31\fP: 8"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   int \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBmA100\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      int \fBdata_0_7\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_8_15\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_16_23\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_24_31\fP: 8"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   int \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBms100\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      int \fBdata_0_7\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_8_15\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_16_23\fP: 8"
+.br
+.ti -1c
+.RI "      int \fBdata_24_31\fP: 8"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   int \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBmAs1000\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBFocalSpot\fP"
+.br
+.ti -1c
+.RI "union \fBR2CP::tRadPostExpPostCondition::Rad_TargetDose\fP \fBTargetDose\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBLeftAECStatus\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBCenterAECStatus\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBRightAECStatus\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBSpare\fP: 4"
+.br
+.ti -1c
+.RI "      unsigned char \fBInternal_External\fP: 1"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBIonChamber\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBRadEndOfExposure\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBIonChamberOrientation\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char R2CP::tRadPostExpPostCondition::CenterAECStatus"
+
+.SS "unsigned short R2CP::tRadPostExpPostCondition::data_0_7"
+
+.SS "int R2CP::tRadPostExpPostCondition::data_0_7"
+
+.SS "int R2CP::tRadPostExpPostCondition::data_16_23"
+
+.SS "int R2CP::tRadPostExpPostCondition::data_24_31"
+
+.SS "unsigned short R2CP::tRadPostExpPostCondition::data_8_15"
+
+.SS "int R2CP::tRadPostExpPostCondition::data_8_15"
+
+.SS "\fBuword\fP R2CP::tRadPostExpPostCondition::ExposureNumber"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::ExpSeqNumber"
+
+.SS "struct  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::Fields"
+
+.SS "struct  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::Fields"
+
+.SS "struct  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::Fields"
+
+.SS "struct  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::Fields"
+
+.SS "struct  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::Fields"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::FocalSpot"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::Internal_External"
+
+.SS "union  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::IonChamber"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::IonChamberOrientation"
+
+.SS "union  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::kV10"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::LeftAECStatus"
+
+.SS "union  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::mA100"
+
+.SS "union  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::mAs1000"
+
+.SS "union  { \&.\&.\&. }  R2CP::tRadPostExpPostCondition::ms100"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::ProcedureId"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::RadEndOfExposure"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::RightAECStatus"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::Spare"
+
+.SS "union \fBR2CP::tRadPostExpPostCondition::Rad_TargetDose\fP R2CP::tRadPostExpPostCondition::TargetDose"
+
+.SS "unsigned short R2CP::tRadPostExpPostCondition::value"
+
+.SS "int R2CP::tRadPostExpPostCondition::value"
+
+.SS "unsigned char R2CP::tRadPostExpPostCondition::value"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -3,3 +3,363 @@
 .nh
 .SH NAME
 ServiceRotationTool
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ServiceRotationTool\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdialog_open\fP (Form^ p)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitPanel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBtimerManagement\fP (void)"
+.br
+.ti -1c
+.RI "\fBServiceRotationTool\fP (void)"
+.br
+.ti -1c
+.RI "\fB~ServiceRotationTool\fP ()"
+.br
+.RI "Clean up any resources being used\&. "
+.ti -1c
+.RI "void \fBrotationTool_select_item\fP (System::Windows::Forms::PictureBox^ item)"
+.br
+.ti -1c
+.RI "void \fBrotationTooCreateInfoPanel\fP (unsigned char reason)"
+.br
+.ti -1c
+.RI "void \fBrotationToolSelectionArmOkCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBrotationToolSelectionTiltOkCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBrotationToolSelectionBodyOkCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBrotationToolSelectionSlideOkCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBrotationToolSelectionCancCallback\fP (void)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "Object ^ \fBpConfirmation\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBserviceTimer\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBServiceRotationTool\fP ^ \fBpanel\fP = gcnew \fBServiceRotationTool\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&. "
+.ti -1c
+.RI "System::Void \fBonServiceTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_body_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_tilt_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_arm_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_slide_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_manual_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_1_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_2_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_3_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_4_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_5_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_6_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_7_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_8_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrotationTool_selection_angle_9_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBserviceMenuTitle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelDate\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelInstallation\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTime\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBserviceCanc\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBrotationToolPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolArmButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolManualButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSlideButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolBodyButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolTiltButton\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBrotationToolView\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectionIcon\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle9\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle8\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle7\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle6\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle4\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle3\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationToolSelectAngle1\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBrotationToolTargetAngle\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ServiceRotationTool::ServiceRotationTool (void )\fR [inline]\fP"
+
+.SS "ServiceRotationTool::~ServiceRotationTool ()\fR [inline]\fP"
+
+.PP
+Clean up any resources being used\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ServiceRotationTool::cancButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceRotationTool::close (void )"
+
+.SS "void ServiceRotationTool::dialog_open (Form^ p)"
+
+.SS "void ServiceRotationTool::formInitialization (void )\fR [private]\fP"
+
+.SS "void ServiceRotationTool::InitializeComponent (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "void ServiceRotationTool::initPanel (void )"
+
+.SS "System::Void ServiceRotationTool::onServiceTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceRotationTool::rotationTooCreateInfoPanel (unsigned char reason)"
+
+.SS "System::Void ServiceRotationTool::rotationTool_arm_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_body_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_manual_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceRotationTool::rotationTool_select_item (System::Windows::Forms::PictureBox^ item)"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_1_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_2_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_3_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_4_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_5_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_6_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_7_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_8_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_selection_angle_9_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_slide_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceRotationTool::rotationTool_tilt_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceRotationTool::rotationToolSelectionArmOkCallback (void )"
+
+.SS "void ServiceRotationTool::rotationToolSelectionBodyOkCallback (void )"
+
+.SS "void ServiceRotationTool::rotationToolSelectionCancCallback (void )"
+
+.SS "void ServiceRotationTool::rotationToolSelectionSlideOkCallback (void )"
+
+.SS "void ServiceRotationTool::rotationToolSelectionTiltOkCallback (void )"
+
+.SS "void ServiceRotationTool::timerManagement (void )"
+
+.SS "void ServiceRotationTool::WndProc (System::Windows::Forms::Message% m)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::ComponentModel::Container ^ ServiceRotationTool::components\fR [private]\fP"
+
+.PP
+Required designer variable\&. 
+.SS "System::Windows::Forms::Label ^ ServiceRotationTool::labelDate\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceRotationTool::labelInstallation\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceRotationTool::labelTime\fR [private]\fP"
+
+.SS "bool ServiceRotationTool::open_status"
+
+.SS "\fBServiceRotationTool\fP ^ ServiceRotationTool::panel = gcnew \fBServiceRotationTool\fP()\fR [static]\fP"
+
+.SS "Form ^ ServiceRotationTool::parent"
+
+.SS "Object ^ ServiceRotationTool::pConfirmation"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolArmButton\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolBodyButton\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolManualButton\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServiceRotationTool::rotationToolPanel\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle1\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle2\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle3\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle4\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle5\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle6\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle7\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle8\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectAngle9\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSelectionIcon\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolSlideButton\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceRotationTool::rotationToolTargetAngle\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::rotationToolTiltButton\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServiceRotationTool::rotationToolView\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceRotationTool::serviceCanc\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceRotationTool::serviceMenuTitle\fR [private]\fP"
+
+.SS "System::Timers::Timer ^ ServiceRotationTool::serviceTimer"
+
+.SS "HWND ServiceRotationTool::window"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

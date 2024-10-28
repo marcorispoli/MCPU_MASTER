@@ -3,3 +3,189 @@
 .nh
 .SH NAME
 DebuggerCLI
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Debugger\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBrxData_slot\fP (cli::array< System::Byte >^ receiveBuffer, int rc)"
+.br
+.RI "This is the delegate of the reception handler\&. "
+.ti -1c
+.RI "delegate void \fBconnection_slot\fP (bool status)"
+.br
+.RI "This is the delegate of the connection handler\&. "
+.ti -1c
+.RI "\fBDebuggerCLI\fP (System::String^ ip, int port)"
+.br
+.RI "This is the class constructor\&. "
+.ti -1c
+.RI "void \fBsend\fP (cli::array< System::Byte >^ buffer)"
+.br
+.RI "This is function to send data in the BUS\&. "
+.ti -1c
+.RI "bool \fBisConnected\fP (void)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBthreadWork\fP (void)"
+.br
+.RI "This is the worker thread for the connection management\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "\fBrxData_slot\fP^ \fBrxData_event\fP"
+.br
+.RI "Reception event\&. "
+.ti -1c
+.RI "\fBconnection_slot\fP^ \fBconnection_event\fP"
+.br
+.RI "Connection event\&. "
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrxHandler\fP (void)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Threading::Thread ^ \fBrunning_thread\fP"
+.br
+.RI "This is the worker thread handler\&. "
+.ti -1c
+.RI "System::Net::Sockets::Socket ^ \fBserverSocket\fP"
+.br
+.RI "This is the server socket handler\&. "
+.ti -1c
+.RI "System::Net::Sockets::Socket ^ \fBclientSocket\fP"
+.br
+.RI "This is the connected client socket handler\&. "
+.ti -1c
+.RI "bool \fBconnection_status\fP"
+.br
+.RI "This is the current connection status\&. "
+.ti -1c
+.RI "int \fBrx_rc\fP"
+.br
+.RI "This is the number of the received bytes\&. "
+.ti -1c
+.RI "cli::array< System::Byte > ^ \fBrxBuffer\fP"
+.br
+.RI "This is the reception buffer\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "DebuggerCLI::DebuggerCLI (System::String^ ip, int port)"
+
+.PP
+This is the class constructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void DebuggerCLI::connection_slot (bool status)"
+
+.PP
+This is the delegate of the connection handler\&. 
+.SS "bool DebuggerCLI::isConnected (void )\fR [inline]\fP"
+
+.SS "delegate void DebuggerCLI::rxData_slot (cli::array< System::Byte >^ receiveBuffer, int rc)"
+
+.PP
+This is the delegate of the reception handler\&. 
+.SS "void DebuggerCLI::rxHandler (void )\fR [private]\fP"
+
+.SS "void DebuggerCLI::send (cli::array< System::Byte >^ buffer)"
+
+.PP
+This is function to send data in the BUS\&. This function sends a buffer on the bus\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIbuffer\fP This is the data buffer to be sent
+.RE
+.PP
+
+.SS "void DebuggerCLI::threadWork (void )\fR [protected]\fP"
+
+.PP
+This is the worker thread for the connection management\&. There are a two nexted loops:
+.IP "\(bu" 2
+The first is for the listening and connection management;
+.br
+
+.IP "\(bu" 2
+The second is for the data reception\&.
+.PP
+
+.PP
+When a conmnection is closed, the first loop automatically enters in listening in order to wait for a further connection\&. Only one connection at a time is allowed!!
+
+.PP
+Whenever a connection status changes, the worjer thread update the Applicaition rising an event for the connection notify\&.
+
+.PP
+When a buffer is received, a semaphore is used to lock the thread until the previous received buffer has been dispatched\&. When the semaphore is ready, the received buffer is copied into the dispatch buffer in order to be safely sent to the destination\&.
+
+.PP
+The buffer is then dispatched in two steps:
+.IP "\(bu" 2
+1: a message with the data buffer from the worker thread is Posted to the main thread's message queue, where this class resides;
+.IP "\(bu" 2
+2: the message is self-received by the class that can safely rise an event handler;
+.IP "\(bu" 2
+3: the event handler with the received buffer can now be safely (thread safe) consumed by any class or Form residing into the Applicaiton Main Thread\&.
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Net::Sockets::Socket ^ DebuggerCLI::clientSocket\fR [private]\fP"
+
+.PP
+This is the connected client socket handler\&. 
+.SS "bool DebuggerCLI::connection_status\fR [private]\fP"
+
+.PP
+This is the current connection status\&. 
+.SS "System::Threading::Thread ^ DebuggerCLI::running_thread\fR [private]\fP"
+
+.PP
+This is the worker thread handler\&. 
+.SS "int DebuggerCLI::rx_rc\fR [private]\fP"
+
+.PP
+This is the number of the received bytes\&. 
+.SS "cli::array<System::Byte> ^ DebuggerCLI::rxBuffer\fR [private]\fP"
+
+.PP
+This is the reception buffer\&. 
+.SS "System::Net::Sockets::Socket ^ DebuggerCLI::serverSocket\fR [private]\fP"
+
+.PP
+This is the server socket handler\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBconnection_slot\fP^ DebuggerCLI::connection_event"
+
+.PP
+Connection event\&. 
+.SS "\fBrxData_slot\fP^ DebuggerCLI::rxData_event"
+
+.PP
+Reception event\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

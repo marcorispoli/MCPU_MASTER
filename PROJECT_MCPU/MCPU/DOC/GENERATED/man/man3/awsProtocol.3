@@ -2,4 +2,443 @@
 .ad l
 .nh
 .SH NAME
-awsProtocol
+awsProtocol \- This is the class implementing the AWS Interface Module\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <awsProtocol\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBaws_decoded_frame_t\fP"
+.br
+.RI "This structure stores the decoded command\&. "
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBreturn_errors\fP { \fBreturn_errors::AWS_RET_WRONG_PARAMETERS\fP = 1, \fBreturn_errors::AWS_RET_WRONG_OPERATING_STATUS\fP, \fBreturn_errors::AWS_RET_SYSTEM_ERRORS\fP, \fBreturn_errors::AWS_RET_SYSTEM_WARNINGS\fP, \fBreturn_errors::AWS_RET_INVALID_PARAMETER_FORMAT\fP, \fBreturn_errors::AWS_RET_INVALID_PARAMETER_VALUE\fP, \fBreturn_errors::AWS_RET_DATA_NOT_ALLOWED\fP, \fBreturn_errors::AWS_RET_DEVICE_BUSY\fP, \fBreturn_errors::AWS_RET_DEVICE_ERROR\fP }"
+.br
+.RI "The module implements a standard set of error codes that can be returned (NOK frames) to the AWS in executing a Command request\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBawsProtocol\fP ()"
+.br
+.RI "This is the class constructor 
+.br
+ "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisConnected\fP (void)"
+.br
+.RI "This function returns true in case both Command and Event channels are connected\&. "
+.ti -1c
+.RI "static void \fBEVENT_Executed\fP (int id, int error)"
+.br
+.RI "This is the event for command terminated notification\&. "
+.ti -1c
+.RI "static void \fBEVENT_SelectProjection\fP (System::String^ proj)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to request a projection selection\&. "
+.ti -1c
+.RI "static void \fBEVENT_AbortProjection\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to request a projection abort\&. "
+.ti -1c
+.RI "static void \fBEVENT_GantryStatus\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about its internal operating status\&. "
+.ti -1c
+.RI "static void \fBEVENT_Compressor\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about compressor data change\&. "
+.ti -1c
+.RI "static void \fBEVENT_Components\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about component data change\&. "
+.ti -1c
+.RI "static void \fBEVENT_ReadyForExposure\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status\&. "
+.ti -1c
+.RI "static void \fBEVENT_XrayPushButton\fP (bool status)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. "
+.ti -1c
+.RI "static void \fBEVENT_XraySequenceCompleted\fP (void)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. "
+.ti -1c
+.RI "static void \fBEVENT_exposurePulseCompleted\fP (unsigned char npulse)"
+.br
+.RI "This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. "
+.ti -1c
+.RI "static void \fBEVENT_Poweroff\fP (void)"
+.br
+.RI "This Event is sent to AWS whenever the gantry requestes for a power-off sequence\&. "
+.ti -1c
+.RI "static void \fBEVENT_operatingStatusChange\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBawsProtocol\fP ^ \fBdevice\fP = gcnew \fBawsProtocol\fP()"
+.br
+.RI "Auto generation declaration\&. "
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBcommand_rx_handler\fP (cli::array< System::Byte >^ buffer, int rc)"
+.br
+.RI "This is the command-server reception handler\&. "
+.ti -1c
+.RI "void \fBevent_rx_handler\fP (cli::array< System::Byte >^ buffer, int rc)"
+.br
+.RI "This is the event-server reception handler\&. "
+.ti -1c
+.RI "bool \fBfindNextParam\fP (int *i, System::String^ sFrame, System::String^% result, bool *completed)"
+.br
+.RI "This function finds the next item in a command frame\&. "
+.ti -1c
+.RI "int \fBdecodeFrame\fP (cli::array< System::Byte >^ buffer, int size, \fBaws_decoded_frame_t\fP^% pDecoded)"
+.br
+.RI "This function decodes an incoming buffer from the tcp/ip channel\&. "
+.ti -1c
+.RI "delegate void \fBcommand_callback\fP (void)"
+.br
+.RI "This is the delegate of the function pointer for the command execution functions\&. "
+.ti -1c
+.RI "void \fBackNa\fP (void)"
+.br
+.RI "This is the Not Implemented command acknowledge function\&. "
+.ti -1c
+.RI "void \fBackOk\fP (void)"
+.br
+.RI "This is the immediate command executed OK\&. "
+.ti -1c
+.RI "void \fBackOk\fP (List< System::String^>^ params)"
+.br
+.RI "This is the immediate command executed OK with parameters\&. "
+.ti -1c
+.RI "void \fBackNok\fP (void)"
+.br
+.RI "This is the immediate command NOK\&. "
+.ti -1c
+.RI "void \fBackExecuting\fP (void)"
+.br
+.RI "This is the immediate command EXECUTING\&. "
+.ti -1c
+.RI "void \fBeventExecutedOk\fP (unsigned short id)"
+.br
+.RI "This is the Command Executed OK event\&. "
+.ti -1c
+.RI "void \fBeventExecutedOk\fP (unsigned short id, List< System::String^>^ params)"
+.br
+.RI "This is the Command Executed OK event with parameters\&. "
+.ti -1c
+.RI "void \fBeventExecutedNok\fP (unsigned short id, unsigned short errcode)"
+.br
+.RI "This is the Command Executed NOK event with an error code\&. "
+.ti -1c
+.RI "void \fBeventExecutedNok\fP (unsigned short id, unsigned short errcode, System::String^ errorstr)"
+.br
+.RI "This is the Command Executed NOK event with an error code and error string\&. "
+.ti -1c
+.RI "void \fBEXEC_TestCommand\fP (void)"
+.br
+.RI "This command requests for the exposure start\&. "
+.ti -1c
+.RI "void \fBEXEC_OpenStudy\fP (void)"
+.br
+.RI "This command shall be sent by AWS to request to Open the Study\&. "
+.ti -1c
+.RI "void \fBEXEC_CloseStudy\fP (void)"
+.br
+.RI "This command shall be sent by AWS to Close a current study and set the \fBGantry\fP in IDLE operating status\&. "
+.ti -1c
+.RI "void \fBSET_ProjectionList\fP (void)"
+.br
+.RI "This command shall be sent by AWS to set the gantry selectable projections\&. "
+.ti -1c
+.RI "void \fBEXEC_ArmPosition\fP (void)"
+.br
+.RI "This command shall be sent by AWS to activate the C-ARM to a given projection\&. "
+.ti -1c
+.RI "void \fBEXEC_AbortProjection\fP (void)"
+.br
+.RI "This command shall be sent by AWS to invalidate any selected projection\&. "
+.ti -1c
+.RI "void \fBEXEC_TrxPosition\fP (void)"
+.br
+.RI "This command activates the Tube-Arm rotation\&. "
+.ti -1c
+.RI "void \fBSET_TomoConfig\fP (void)"
+.br
+.RI "This command selects the next Tomo sequence geometry\&. "
+.ti -1c
+.RI "void \fBGET_TomoInfo\fP (void)"
+.br
+.RI "This command selects the next Tomo sequence geometry\&. "
+.ti -1c
+.RI "void \fBSET_ExposureMode\fP (void)"
+.br
+.RI "This command selects exposure type and characteristics of the next exposure sequence\&. 
+.br
+ "
+.ti -1c
+.RI "void \fBSET_ExposureData\fP (void)"
+.br
+.RI "This command assignes the exposure parameters for the next Exposure pulse in the current sequence\&. "
+.ti -1c
+.RI "void \fBSET_EnableXrayPush\fP (void)"
+.br
+.RI "This command enables/disables the X-RAY push button to init an exposure sequence\&. "
+.ti -1c
+.RI "void \fBGET_ReadyForExposure\fP (void)"
+.br
+.RI "This COMMAND returns the \fBGantry\fP current Ready For Exposure status\&. "
+.ti -1c
+.RI "void \fBEXEC_StartXraySequence\fP (void)"
+.br
+.RI "This command requests for the exposure start\&. "
+.ti -1c
+.RI "void \fBGET_Compressor\fP (void)"
+.br
+.RI "This command requests the Compressor data: "
+.ti -1c
+.RI "void \fBGET_Components\fP (void)"
+.br
+.RI "This command requests the component identified by the system\&. "
+.ti -1c
+.RI "void \fBGET_Trx\fP (void)"
+.br
+.RI "This command provides the current TRX position: "
+.ti -1c
+.RI "void \fBGET_Arm\fP (void)"
+.br
+.RI "This command provides the current ARM position\&. "
+.ti -1c
+.RI "void \fBGET_TubeTemperature\fP (void)"
+.br
+.RI "This command returns the Tube cumulated energy for the Anode and the internal Filament and Stator device\&. "
+.ti -1c
+.RI "void \fBGET_ProtocolRevision\fP (void)"
+.br
+.RI "This COMMAND returns the current protocol revision code\&. "
+.ti -1c
+.RI "void \fBSET_Language\fP (void)"
+.br
+.RI "This command sets the GUI language\&. "
+.ti -1c
+.RI "void \fBEXEC_PowerOff\fP (void)"
+.br
+.ti -1c
+.RI "void \fBAWS_NotRecognizedCommand\fP (void)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBTcpIpServerCLI\fP ^ \fBevent_server\fP"
+.br
+.RI "This is the event-server handler of the tcp/ip server implementation class\&. "
+.ti -1c
+.RI "\fBTcpIpServerCLI\fP ^ \fBcommand_server\fP"
+.br
+.RI "This is the command-server handler of the tcp/ip server implementation class\&. "
+.ti -1c
+.RI "\fBaws_decoded_frame_t\fP ^ \fBpDecodedFrame\fP"
+.br
+.RI "This is the decoded command\&. "
+.ti -1c
+.RI "unsigned short \fBevent_counter\fP"
+.br
+.RI "This is the sequence counter of the events\&. "
+.ti -1c
+.RI "Dictionary< System::String^, \fBcommand_callback\fP^> ^ \fBcommandExec\fP"
+.br
+.RI "This is the dictionary of the command that are implemented\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the class implementing the AWS Interface Module\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void awsProtocol::ackExecuting (void )\fR [private]\fP"
+
+.PP
+This is the immediate command EXECUTING\&. This is the function to acknowledge AWS that the command is executing\&.
+.SS "void awsProtocol::ackNa (void )\fR [private]\fP"
+
+.PP
+This is the Not Implemented command acknowledge function\&. This is the function to acknowledge the AWS command with the NA code\&.
+
+.PP
+The NA code is sent back to AWS when a command is not implemented\&.
+.SS "void awsProtocol::ackNok (void )\fR [private]\fP"
+
+.PP
+This is the immediate command NOK\&. This is the function to acknowledge the AWS command with the NOK code\&.
+
+.PP
+The NOK code is sent back to AWS when a command has been aborted\&.
+.br
+The function returns a frame with an error cede and an optional error string\&.
+.SS "void awsProtocol::ackOk (List< System::String^>^ params)\fR [private]\fP"
+
+.PP
+This is the immediate command executed OK with parameters\&. 
+.SS "void awsProtocol::ackOk (void )\fR [private]\fP"
+
+.PP
+This is the immediate command executed OK\&. This is the function to acknowledge the AWS command with the OK code\&.
+
+.PP
+The OK code is sent back to AWS when a command has been successfully executed
+.SS "delegate void awsProtocol::command_callback (void )\fR [private]\fP"
+
+.PP
+This is the delegate of the function pointer for the command execution functions\&. 
+.SS "void awsProtocol::command_rx_handler (cli::array< System::Byte >^ buffer, int rc)\fR [private]\fP"
+
+.PP
+This is the command-server reception handler\&. This is the callback assigned to the command_server buffer reception\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIbuffer\fP This is the received byte array
+.br
+\fIrc\fP This is the length of the received buffer
+.RE
+.PP
+
+.SS "int awsProtocol::decodeFrame (cli::array< System::Byte >^ buffer, int size, \fBaws_decoded_frame_t\fP^% pDecoded)\fR [private]\fP"
+
+.PP
+This function decodes an incoming buffer from the tcp/ip channel\&. This is the decode frame of the received byte array from the AWS interface\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIbuffer\fP This is the incoming byte streaming 
+.br
+\fIsize\fP This is the size of the received buffer
+.br
+\fIpDecoded\fP This is the handler of the decoded result
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+This is the error code if <0
+.RE
+.PP
+
+.SS "void awsProtocol::event_rx_handler (cli::array< System::Byte >^ buffer, int rc)\fR [private]\fP"
+
+.PP
+This is the event-server reception handler\&. This is the event_server reception callback\&.
+
+.PP
+The AWS should never send any data on this channel!
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIbuffer\fP This is the received byte array
+.br
+\fIrc\fP This is the length of the received buffer
+.RE
+.PP
+
+.SS "void awsProtocol::eventExecutedNok (unsigned short id, unsigned short errcode)\fR [private]\fP"
+
+.PP
+This is the Command Executed NOK event with an error code\&. This is the function to send an event to AWS notifying the failed command completion\&.
+
+.PP
+The function send an error code to the AWS as a parameter
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIerrcode\fP This is the error code notified to the AWS
+.RE
+.PP
+
+.SS "void awsProtocol::eventExecutedNok (unsigned short id, unsigned short errcode, System::String^ errorstr)\fR [private]\fP"
+
+.PP
+This is the Command Executed NOK event with an error code and error string\&. 
+.SS "void awsProtocol::eventExecutedOk (unsigned short id)\fR [private]\fP"
+
+.PP
+This is the Command Executed OK event\&. This is the function to send an event to AWS to notify a successfully command completion\&.
+.SS "void awsProtocol::eventExecutedOk (unsigned short id, List< System::String^>^ params)\fR [private]\fP"
+
+.PP
+This is the Command Executed OK event with parameters\&. 
+.SS "bool awsProtocol::findNextParam (int * i, System::String^ sFrame, System::String^% result, bool * completed)\fR [private]\fP"
+
+.PP
+This function finds the next item in a command frame\&. This function retrive the next item in the current decoding frame\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIi\fP This is the character index of the received buffer
+.br
+\fIsFrame\fP This is the frame received
+.br
+\fIresult\fP This is the decoded item
+.br
+\fIcompleted\fP This flag is set if the frame is completed
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the item is successfully detected
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBTcpIpServerCLI\fP ^ awsProtocol::command_server\fR [private]\fP"
+
+.PP
+This is the command-server handler of the tcp/ip server implementation class\&. 
+.SS "Dictionary<System::String^, \fBcommand_callback\fP^> ^ awsProtocol::commandExec\fR [private]\fP"
+
+.PP
+This is the dictionary of the command that are implemented\&. 
+.SS "unsigned short awsProtocol::event_counter\fR [private]\fP"
+
+.PP
+This is the sequence counter of the events\&. 
+.SS "\fBTcpIpServerCLI\fP ^ awsProtocol::event_server\fR [private]\fP"
+
+.PP
+This is the event-server handler of the tcp/ip server implementation class\&. 
+.SS "\fBaws_decoded_frame_t\fP ^ awsProtocol::pDecodedFrame\fR [private]\fP"
+
+.PP
+This is the decoded command\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

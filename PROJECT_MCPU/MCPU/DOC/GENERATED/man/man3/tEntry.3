@@ -2,4 +2,58 @@
 .ad l
 .nh
 .SH NAME
-tEntry
+tEntry \- Struct which defines an entry/parameter of a dictionary object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <CaDataDic\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBSubIndex\fP"
+.br
+.ti -1c
+.RI "\fBpfvoidDataDic\fP \fBpFunction\fP"
+.br
+.ti -1c
+.RI "\fBtDataDicAccess\fP \fBAccessType\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBGetDataSize\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBSetDataSize\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBAnswerDataSize\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBEventDataSize\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Struct which defines an entry/parameter of a dictionary object\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBtDataDicAccess\fP tEntry::AccessType"
+Kind of access allowed 
+.SS "unsigned char tEntry::AnswerDataSize"
+Data size of the ANSWER access 
+.SS "unsigned char tEntry::EventDataSize"
+Data size of the EVENT access 
+.SS "unsigned char tEntry::GetDataSize"
+Data size of the GET access 
+.SS "\fBpfvoidDataDic\fP tEntry::pFunction"
+Function pointer to deal the access 
+.SS "unsigned char tEntry::SetDataSize"
+Data size of the SET access 
+.SS "unsigned char tEntry::SubIndex"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

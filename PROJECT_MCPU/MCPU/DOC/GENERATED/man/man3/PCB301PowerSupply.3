@@ -83,6 +83,8 @@ This section provides methods to monitor and control the system power supply\&.
 .SS "static bool PCB301::getBatt1Alarm (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method provides the info about a possible battery 1 malfunction\&. 
 .PP
 \fBReturns\fP
@@ -94,6 +96,8 @@ True: the battery 1 is in alarm condition
 .SS "static bool PCB301::getBatt2Alarm (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method provides the info about a possible battery 2 malfunction\&. 
 .PP
 \fBReturns\fP
@@ -104,6 +108,8 @@ True: the battery 2 is in alarm condition
 
 .SS "static bool PCB301::getBatteryAlarm (void )\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method provides the info about a possible battery malfunction\&. The pcb301 board monitors the current voltage of the batteries (if present and enabled)\&.
 
@@ -131,6 +137,8 @@ True: one or both the batteries are in alarm condition
 .SS "static bool PCB301::getBatteryEna (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method gets the current status of the Battery Enable External button\&. The system provides an external Button to hardware enable the presence and usage of the backup batteries\&.
 
 .PP
@@ -148,6 +156,8 @@ True: the batteries are enabled
 
 .SS "static bool PCB301::getMotorPowerSupply (void )\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This function returns the current status of the 48DVC power supply activation status\&. The 48VDC status is read directly from the power supply device\&.
 
@@ -173,6 +183,8 @@ True: the 48DVC power supply is active at the nominal level (48VDC)
 .SS "static bool PCB301::getMotorSwitch (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method requests the current status of the safety external solid state relay\&. The 48VDC output line is partially protected with a solid state relay for a subset of load devices that shall be momentary disabled for safety condition\&.
 
 .PP
@@ -197,6 +209,8 @@ Compression hardware input is active: the pcb301 board disables the power supply
 .SS "static bool PCB301::getPowerdown (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This function returns the PowerDown condition status\&. 
 .PP
 \fBReturns\fP
@@ -207,6 +221,8 @@ True: a power down condition has been detected
 
 .SS "static bool PCB301::getPowerLockStatus (void )\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method provides the current status of the Programming Power Lock\&. The Programming power lock is a special hardware circuit that locks, when activated, the 24VDC power supply output to be active irrspective of the pcb301 microcontroller activity\&.
 
@@ -228,6 +244,8 @@ The Application should signal a Warning condition in case it should detect this 
 .SS "static bool PCB301::getSoftPowerOffRequest (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method provides the status of the current soft power off request coming from the pcb301 board\&. The \fBPCB301\fP board monitors a dedicated external hardware input button used to request a system power off\&.
 
 .PP
@@ -248,6 +266,8 @@ See \fBPCB301::setPowerOff()\fP for details\&.
 .SS "static unsigned char PCB301::getVoltageBatt1 (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method provides the info about the battery 1 voltage level in 0\&.1V units \&. The battery is a 12VDC nominal battery with a full charge level of 13\&.8V (138 units) 
 
 .PP
@@ -259,6 +279,8 @@ This method provides the info about the battery 1 voltage level in 0\&.1V units 
 .SS "static unsigned char PCB301::getVoltageBatt2 (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method provides the info about the battery 2 voltage level in 0\&.1V units \&. The battery is a 12VDC nominal battery with a full charge level of 13\&.8V (138 units) 
 
 .PP
@@ -269,6 +291,8 @@ This method provides the info about the battery 2 voltage level in 0\&.1V units 
 
 .SS "static void PCB301::setMotorPowerSupply (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method requests the board to disable the 48DVC power supply\&. The Application can request the pcb301 board to disable the 48VDC power Supply\&.
 
@@ -288,6 +312,8 @@ The Application can monitor the effective status with the method \fBPCB301::getM
 .SS "static void PCB301::setMotorSwitch (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method requests the board to disable the 48VDC safety solid state relay\&. The Application can request the pcb301 board to disable the safety solid state relay for safety reason\&.
 
 .PP
@@ -303,6 +329,8 @@ Although the Application should request to activate the solid state relay, the e
 .SS "static void PCB301::setPowerLock (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method provides the Application to activate the Programming Power Lock circuit\&. See the \fBPCB301::getPowerLockStatus()\fP for details about this circuit\&.
 
 .PP
@@ -314,6 +342,8 @@ This method provides the Application to activate the Programming Power Lock circ
 
 .SS "static void PCB301::setPowerOff (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method provides the Application to initiate a soft power off sequence\&. When the Application should initiate a soft power off seqeunce, it should use the PCB301::setPowerOff(true) method:
 .IP "\(bu" 2

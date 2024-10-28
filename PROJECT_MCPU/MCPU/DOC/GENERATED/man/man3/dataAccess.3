@@ -84,6 +84,8 @@ Read the Special registers\&.
 .SS "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ CanDeviceProtocol::getRxRegister (void )\fR [inline]\fP, \fR [protected]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function returns the last read register\&. 
 .PP
 \fBReturns\fP
@@ -95,6 +97,8 @@ The last valid read register content
 .SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readCommandRegister (void )\fR [protected]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function executes the read of the special device command register\&. 
 .PP
 \fBReturns\fP
@@ -105,6 +109,8 @@ The device command register content or nullptr in case of communication error\&.
 
 .SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readDataRegister (unsigned char index)\fR [protected]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function executes the read of the DATA register of given INDEX\&. 
 .PP
@@ -122,6 +128,8 @@ The device STATUS Data(index) content or nullptr in case of communication error
 .SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readErrorRegister (void )\fR [protected]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function executes the read of the special device error register\&. 
 .PP
 \fBReturns\fP
@@ -132,6 +140,8 @@ The device error register content or nullptr in case of communication error
 
 .SS "\fBCanDeviceProtocol::Register\fP CanDeviceProtocol::readStatusRegister (unsigned char index)\fR [protected]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function executes the read of the STATUS register of given INDEX\&. 
 .PP
@@ -149,6 +159,8 @@ The device STATUS Register(index) content or nullptr in case of communication er
 .SS "bool CanDeviceProtocol::writeDataRegister (unsigned char idx, \fBRegister\fP^ reg)\fR [inline]\fP, \fR [protected]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function executes the write of the DATA(index)\&. 
 .PP
 \fBParameters\fP
@@ -165,6 +177,8 @@ This function executes the write of the DATA(index)\&.
 
 .SS "bool CanDeviceProtocol::writeDataRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)\fR [protected]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function executes the write of the DATA(index)\&. 
 .PP
@@ -190,6 +204,8 @@ true in case of success
 .SS "bool CanDeviceProtocol::writeParamRegister (unsigned char idx, \fBRegister\fP^ reg)\fR [inline]\fP, \fR [protected]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function executes the write of the PARAMETER(index)\&. The device will store in EEPROM the parameter if it should be changed\&.
 
 .PP
@@ -207,6 +223,8 @@ This function executes the write of the PARAMETER(index)\&. The device will stor
 
 .SS "bool CanDeviceProtocol::writeParamRegister (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)\fR [protected]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function executes the write of the PARAMETER(index)\&. The device will store in EEPROM the parameter if it should be changed\&.
 

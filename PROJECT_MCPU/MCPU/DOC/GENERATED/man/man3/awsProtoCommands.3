@@ -6,11 +6,261 @@ awsProtoCommands \- AWS Protocol Command set
 .SH SYNOPSIS
 .br
 .PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_TestCommand\fP (void)"
+.br
+.RI "This command requests for the exposure start\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_OpenStudy\fP (void)"
+.br
+.RI "This command shall be sent by AWS to request to Open the Study\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_CloseStudy\fP (void)"
+.br
+.RI "This command shall be sent by AWS to Close a current study and set the \fBGantry\fP in IDLE operating status\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_ProjectionList\fP (void)"
+.br
+.RI "This command shall be sent by AWS to set the gantry selectable projections\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_ArmPosition\fP (void)"
+.br
+.RI "This command shall be sent by AWS to activate the C-ARM to a given projection\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_AbortProjection\fP (void)"
+.br
+.RI "This command shall be sent by AWS to invalidate any selected projection\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_TrxPosition\fP (void)"
+.br
+.RI "This command activates the Tube-Arm rotation\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_TomoConfig\fP (void)"
+.br
+.RI "This command selects the next Tomo sequence geometry\&. "
+.ti -1c
+.RI "void \fBawsProtocol::GET_TomoInfo\fP (void)"
+.br
+.RI "This command selects the next Tomo sequence geometry\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_ExposureMode\fP (void)"
+.br
+.RI "This command selects exposure type and characteristics of the next exposure sequence\&. 
+.br
+ "
+.ti -1c
+.RI "void \fBawsProtocol::SET_ExposureData\fP (void)"
+.br
+.RI "This command assignes the exposure parameters for the next Exposure pulse in the current sequence\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_EnableXrayPush\fP (void)"
+.br
+.RI "This command enables/disables the X-RAY push button to init an exposure sequence\&. "
+.ti -1c
+.RI "void \fBawsProtocol::GET_ReadyForExposure\fP (void)"
+.br
+.RI "This COMMAND returns the \fBGantry\fP current Ready For Exposure status\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_StartXraySequence\fP (void)"
+.br
+.RI "This command requests for the exposure start\&. "
+.ti -1c
+.RI "void \fBawsProtocol::GET_Compressor\fP (void)"
+.br
+.RI "This command requests the Compressor data: "
+.ti -1c
+.RI "void \fBawsProtocol::GET_Components\fP (void)"
+.br
+.RI "This command requests the component identified by the system\&. "
+.ti -1c
+.RI "void \fBawsProtocol::GET_Trx\fP (void)"
+.br
+.RI "This command provides the current TRX position: "
+.ti -1c
+.RI "void \fBawsProtocol::GET_Arm\fP (void)"
+.br
+.RI "This command provides the current ARM position\&. "
+.ti -1c
+.RI "void \fBawsProtocol::GET_TubeTemperature\fP (void)"
+.br
+.RI "This command returns the Tube cumulated energy for the Anode and the internal Filament and Stator device\&. "
+.ti -1c
+.RI "void \fBawsProtocol::GET_ProtocolRevision\fP (void)"
+.br
+.RI "This COMMAND returns the current protocol revision code\&. "
+.ti -1c
+.RI "void \fBawsProtocol::SET_Language\fP (void)"
+.br
+.RI "This command sets the GUI language\&. "
+.ti -1c
+.RI "void \fBawsProtocol::EXEC_PowerOff\fP (void)"
+.br
+.ti -1c
+.RI "void \fBawsProtocol::AWS_NotRecognizedCommand\fP (void)"
+.br
+.in -1c
 .SH "Detailed Description"
 .PP 
 
 .br
  
+.SH "Function Documentation"
+.PP 
+.SS "void awsProtocol::AWS_NotRecognizedCommand (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.SS "void awsProtocol::EXEC_AbortProjection (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command shall be sent by AWS to invalidate any selected projection\&. 
+.SS "void awsProtocol::EXEC_ArmPosition (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command shall be sent by AWS to activate the C-ARM to a given projection\&. 
+.SS "void awsProtocol::EXEC_CloseStudy (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command shall be sent by AWS to Close a current study and set the \fBGantry\fP in IDLE operating status\&. 
+.SS "void awsProtocol::EXEC_OpenStudy (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command shall be sent by AWS to request to Open the Study\&. 
+.SS "void awsProtocol::EXEC_PowerOff (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.SS "void awsProtocol::EXEC_StartXraySequence (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command requests for the exposure start\&. 
+.SS "void awsProtocol::EXEC_TestCommand (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command requests for the exposure start\&. 
+.SS "void awsProtocol::EXEC_TrxPosition (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command activates the Tube-Arm rotation\&. 
+.SS "void awsProtocol::GET_Arm (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command provides the current ARM position\&. 
+.SS "void awsProtocol::GET_Components (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command requests the component identified by the system\&. 
+.IP "\(bu" 2
+Potter-Type, Mag Factor, ComprPaddle, ProtectionType, CollimationTool 
+.PP
+
+.SS "void awsProtocol::GET_Compressor (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command requests the Compressor data: 
+.IP "\(bu" 2
+Compressor Thickness;
+.IP "\(bu" 2
+Compressore Force;
+.PP
+
+.SS "void awsProtocol::GET_ProtocolRevision (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This COMMAND returns the current protocol revision code\&. 
+.SS "void awsProtocol::GET_ReadyForExposure (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This COMMAND returns the \fBGantry\fP current Ready For Exposure status\&. 
+.SS "void awsProtocol::GET_TomoInfo (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command selects the next Tomo sequence geometry\&. 
+.SS "void awsProtocol::GET_Trx (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command provides the current TRX position: 
+.IP "\(bu" 2
+The Symbolic position;
+.IP "\(bu" 2
+The actual angle position;
+.PP
+
+.SS "void awsProtocol::GET_TubeTemperature (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command returns the Tube cumulated energy for the Anode and the internal Filament and Stator device\&. 
+.SS "void awsProtocol::SET_EnableXrayPush (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command enables/disables the X-RAY push button to init an exposure sequence\&. 
+.SS "void awsProtocol::SET_ExposureData (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command assignes the exposure parameters for the next Exposure pulse in the current sequence\&. 
+.SS "void awsProtocol::SET_ExposureMode (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command selects exposure type and characteristics of the next exposure sequence\&. 
+.br
+ 
+.SS "void awsProtocol::SET_Language (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command sets the GUI language\&. 
+.SS "void awsProtocol::SET_ProjectionList (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command shall be sent by AWS to set the gantry selectable projections\&. 
+.SS "void awsProtocol::SET_TomoConfig (void )\fR [private]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
+This command selects the next Tomo sequence geometry\&. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for MCPU from the source code\&.

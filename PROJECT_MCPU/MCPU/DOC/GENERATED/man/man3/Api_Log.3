@@ -3,3 +3,59 @@
 .nh
 .SH NAME
 Api::Log
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <api_log\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBTrace\fP (const char *string)"
+.br
+.ti -1c
+.RI "static void \fBDebugPrint\fP (const char *string,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "static void \fBPrint\fP (\fBLog_level\fP error_level, const char *string,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "static void \fBSet_System_Level\fP (\fBLog_level\fP new_level=\fBLog_level::Info\fP, \fBOutput\fP output=\fBOutput::Serial_Port\fP, void(*LogByEthernet)(unsigned char, char *)=nullptr)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBLog_level\fP \fBsystem_level_\fP = \fBLog_level::Debug\fP"
+.br
+.ti -1c
+.RI "static \fBOutput\fP \fBlog_output_\fP = \fBOutput::Serial_Port\fP"
+.br
+.ti -1c
+.RI "static void(* \fBfcb_LogByEthernet_\fP )(unsigned char, char *) = nullptr"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "static void Api::Log::DebugPrint (const char * string,  \&.\&.\&.)\fR [static]\fP"
+
+.SS "void Api::Log::Print (\fBLog_level\fP error_level, const char * string,  \&.\&.\&.)\fR [static]\fP"
+
+.SS "void Api::Log::Set_System_Level (\fBLog_level\fP new_level = \fR\fBLog_level::Info\fP\fP, \fBOutput\fP output = \fR\fBOutput::Serial_Port\fP\fP, void(* LogByEthernet )(unsigned char, char *) = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "static void Api::Log::Trace (const char * string)\fR [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "void(* Api::Log::fcb_LogByEthernet_)(unsigned char, char *) = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBOutput\fP Api::Log::log_output_ = \fBOutput::Serial_Port\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBLog_level\fP Api::Log::system_level_ = \fBLog_level::Debug\fP\fR [static]\fP, \fR [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

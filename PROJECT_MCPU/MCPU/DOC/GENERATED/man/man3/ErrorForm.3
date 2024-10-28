@@ -3,3 +3,152 @@
 .nh
 .SH NAME
 ErrorForm
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ErrorForm\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBdelegate_button_callback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBopen\fP (Form^ pp)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "\fBErrorForm\fP (void)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBerrorPanelTimer\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~ErrorForm\fP ()"
+.br
+.RI "Clean up any resources being used\&. "
+.ti -1c
+.RI "void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "\fBdelegate_button_callback\fP^ \fBbutton_canc_event\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "System::Void \fBInitializeComponent\fP ()"
+.br
+.ti -1c
+.RI "System::Void \fBonErrorTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBCancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBTitleText\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::RichTextBox ^ \fBerrorContent\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBnotifyIcon\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBCancButton\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ErrorForm::ErrorForm (void )\fR [inline]\fP"
+
+.SS "ErrorForm::~ErrorForm ()\fR [inline]\fP, \fR [protected]\fP"
+
+.PP
+Clean up any resources being used\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ErrorForm::CancButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ErrorForm::close (void )"
+
+.SS "delegate void ErrorForm::delegate_button_callback (void )"
+
+.SS "void ErrorForm::formInitialization (void )"
+
+.SS "System::Void ErrorForm::InitializeComponent ()\fR [inline]\fP, \fR [private]\fP"
+
+.SS "System::Void ErrorForm::onErrorTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fR [inline]\fP, \fR [private]\fP"
+
+.SS "void ErrorForm::open (Form^ pp)"
+
+.SS "void ErrorForm::WndProc (System::Windows::Forms::Message% m)\fR [inline]\fP, \fR [override]\fP, \fR [protected]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::Button ^ ErrorForm::CancButton\fR [private]\fP"
+
+.SS "System::ComponentModel::Container ^ ErrorForm::components\fR [private]\fP"
+
+.PP
+Required designer variable\&. 
+.SS "System::Windows::Forms::RichTextBox ^ ErrorForm::errorContent\fR [private]\fP"
+
+.SS "System::Timers::Timer ^ ErrorForm::errorPanelTimer"
+
+.SS "System::Windows::Forms::Panel ^ ErrorForm::notifyIcon\fR [private]\fP"
+
+.SS "bool ErrorForm::open_status"
+
+.SS "Form ^ ErrorForm::parent"
+
+.SS "System::Windows::Forms::Label ^ ErrorForm::TitleText\fR [private]\fP"
+
+.SS "HWND ErrorForm::window"
+
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_button_callback\fP^ ErrorForm::button_canc_event"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

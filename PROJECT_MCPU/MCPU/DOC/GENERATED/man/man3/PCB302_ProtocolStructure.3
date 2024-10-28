@@ -2,4 +2,102 @@
 .ad l
 .nh
 .SH NAME
-PCB302::ProtocolStructure
+PCB302::ProtocolStructure \- This class implement the protocol data structure as described in the protocol specification\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB302\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCommands\fP"
+.br
+.ti -1c
+.RI "class \fBDataRegister\fP"
+.br
+.ti -1c
+.RI "class \fBParameterRegister\fP"
+.br
+.ti -1c
+.RI "class \fBStatusRegister\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBComponentCode\fP { \fBSHORT_CIRCUIT\fP = 0, \fBPATIENT_PROTECTION_SHITED\fP, \fBPATIENT_PROTECTION_POSITIONED\fP, \fBMAGNIFIER_DEVICE_15x\fP, \fBMAGNIFIER_DEVICE_18x\fP, \fBMAGNIFIER_DEVICE_20x\fP, \fBUNDETECTED_COMPONENT\fP }"
+.br
+.RI "This is the enumeration of the detected component\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBStatusRegister\fP \fBstatus_register\fP"
+.br
+.ti -1c
+.RI "static \fBDataRegister\fP \fBdata_register\fP"
+.br
+.ti -1c
+.RI "static \fBParameterRegister\fP \fBparameter_register\fP"
+.br
+.ti -1c
+.RI "static \fBCommands\fP \fBcommand\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class implement the protocol data structure as described in the protocol specification\&. 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB302::ProtocolStructure::ComponentCode\fP\fR [strong]\fP"
+
+.PP
+This is the enumeration of the detected component\&. The Component can be one of the following device:
+.IP "\(bu" 2
+PATIENT PROTECTION IN THE RIGHT POSITION;
+.IP "\(bu" 2
+PATIENT PROTECTION SHIFTED;
+.IP "\(bu" 2
+Magnifier Device with 1\&.5x factor;
+.IP "\(bu" 2
+Magnifier Device with 1\&.8x factor;
+.IP "\(bu" 2
+Magnifier Device with 2x factor; 
+.PP
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BISHORT_CIRCUIT \fP(0)
+.TP
+\f(BIPATIENT_PROTECTION_SHITED \fP
+.TP
+\f(BIPATIENT_PROTECTION_POSITIONED \fP
+.TP
+\f(BIMAGNIFIER_DEVICE_15x \fP
+.TP
+\f(BIMAGNIFIER_DEVICE_18x \fP
+.TP
+\f(BIMAGNIFIER_DEVICE_20x \fP
+.TP
+\f(BIUNDETECTED_COMPONENT \fP
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBCommands\fP PCB302::ProtocolStructure::command\fR [static]\fP"
+
+.SS "\fBDataRegister\fP PCB302::ProtocolStructure::data_register\fR [static]\fP"
+
+.SS "\fBParameterRegister\fP PCB302::ProtocolStructure::parameter_register\fR [static]\fP"
+
+.SS "\fBStatusRegister\fP PCB302::ProtocolStructure::status_register\fR [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

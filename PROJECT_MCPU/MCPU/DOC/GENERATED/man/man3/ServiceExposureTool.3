@@ -3,3 +3,268 @@
 .nh
 .SH NAME
 ServiceExposureTool
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ServiceExposureTool\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdialog_open\fP (Form^ p)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitPanel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBtimerManagement\fP (void)"
+.br
+.ti -1c
+.RI "\fBServiceExposureTool\fP (void)"
+.br
+.ti -1c
+.RI "\fB~ServiceExposureTool\fP ()"
+.br
+.RI "Clean up any resources being used\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBserviceTimer\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBServiceExposureTool\fP ^ \fBpanel\fP = gcnew \fBServiceExposureTool\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonKvSelectionCallback\fP (System::String^ value)"
+.br
+.ti -1c
+.RI "void \fBonmAsSelectionCallback\fP (System::String^ value)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&. "
+.ti -1c
+.RI "System::Void \fBonServiceTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBkvSelection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBmAsSelection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBenableXray_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBsynchSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel6\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBserviceMenuTitle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelDate\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelInstallation\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTime\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBserviceCanc\fP"
+.br
+.ti -1c
+.RI "bool \fBExposureToolXrayEna\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBexposureToolPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBkVSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBmAsSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBfilterSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel4\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel3\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBgridSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::ComboBox ^ \fBfocusSelection\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel1\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBenableXray\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::RichTextBox ^ \fBexposureLog\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ServiceExposureTool::ServiceExposureTool (void )\fR [inline]\fP"
+
+.SS "ServiceExposureTool::~ServiceExposureTool ()\fR [inline]\fP"
+
+.PP
+Clean up any resources being used\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ServiceExposureTool::cancButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceExposureTool::close (void )"
+
+.SS "void ServiceExposureTool::dialog_open (Form^ p)"
+
+.SS "System::Void ServiceExposureTool::enableXray_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceExposureTool::formInitialization (void )\fR [private]\fP"
+
+.SS "void ServiceExposureTool::InitializeComponent (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "void ServiceExposureTool::initPanel (void )"
+
+.SS "System::Void ServiceExposureTool::kvSelection_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceExposureTool::mAsSelection_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceExposureTool::onKvSelectionCallback (System::String^ value)\fR [private]\fP"
+
+.SS "void ServiceExposureTool::onmAsSelectionCallback (System::String^ value)\fR [private]\fP"
+
+.SS "System::Void ServiceExposureTool::onServiceTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceExposureTool::timerManagement (void )"
+
+.SS "void ServiceExposureTool::WndProc (System::Windows::Forms::Message% m)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::ComponentModel::Container ^ ServiceExposureTool::components\fR [private]\fP"
+
+.PP
+Required designer variable\&. 
+.SS "System::Windows::Forms::PictureBox ^ ServiceExposureTool::enableXray\fR [private]\fP"
+
+.SS "System::Windows::Forms::RichTextBox ^ ServiceExposureTool::exposureLog\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServiceExposureTool::exposureToolPanel\fR [private]\fP"
+
+.SS "bool ServiceExposureTool::ExposureToolXrayEna\fR [private]\fP"
+
+.SS "System::Windows::Forms::ComboBox ^ ServiceExposureTool::filterSelection\fR [private]\fP"
+
+.SS "System::Windows::Forms::ComboBox ^ ServiceExposureTool::focusSelection\fR [private]\fP"
+
+.SS "System::Windows::Forms::ComboBox ^ ServiceExposureTool::gridSelection\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::kVSelection\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::label1\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::label2\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::label3\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::label4\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::label5\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::label6\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::labelDate\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::labelInstallation\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::labelTime\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::mAsSelection\fR [private]\fP"
+
+.SS "bool ServiceExposureTool::open_status"
+
+.SS "\fBServiceExposureTool\fP ^ ServiceExposureTool::panel = gcnew \fBServiceExposureTool\fP()\fR [static]\fP"
+
+.SS "Form ^ ServiceExposureTool::parent"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceExposureTool::serviceCanc\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceExposureTool::serviceMenuTitle\fR [private]\fP"
+
+.SS "System::Timers::Timer ^ ServiceExposureTool::serviceTimer"
+
+.SS "System::Windows::Forms::ComboBox ^ ServiceExposureTool::synchSelection\fR [private]\fP"
+
+.SS "HWND ServiceExposureTool::window"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

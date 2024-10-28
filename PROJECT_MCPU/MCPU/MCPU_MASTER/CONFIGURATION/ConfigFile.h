@@ -8,7 +8,6 @@ using namespace System::Collections::Generic;
 /**
  * @brief This class handles the configuration file management
  * \ingroup ConfigurationFilesModule
- * \internal
  * 
  * # USAGE
  *

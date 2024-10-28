@@ -28,7 +28,6 @@
 
 /// <summary>
 /// \ingroup ConfigurationFilesModule
-/// \internal
 /// 
 /// This is the class implementing the Body Motor parameter configuration file.
 /// </summary>

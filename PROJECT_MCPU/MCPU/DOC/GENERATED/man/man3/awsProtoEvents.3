@@ -67,17 +67,25 @@ awsProtoEvents \- AWS Protocol Events
 .SS "void awsProtocol::EVENT_AbortProjection (void )\fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
 This is the EVENT the gantry sends to AWS to request a projection abort\&. This is the EVENT requesting to abort the current selected projection\&.
 .SS "void awsProtocol::EVENT_Components (void )\fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
 .PP
 This is the EVENT the gantry sends to AWS to notify about component data change\&. \fBGantry\fP sends this EVENT to notify the change in the detected components \&.
 .SS "void awsProtocol::EVENT_Compressor (void )\fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
 This is the EVENT the gantry sends to AWS to notify about compressor data change\&. \fBGantry\fP sends this EVENT to notify the compressor data changes\&.
 .SS "void awsProtocol::EVENT_Executed (int id, int error)\fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
 .PP
 This is the event for command terminated notification\&. This is the EVENT the \fBGantry\fP shall generate when a delayed command completes\&.
 
@@ -95,6 +103,8 @@ The Id == 0 codes are rserved for internal activations that shall not be acknowl
 
 .SS "void awsProtocol::EVENT_exposurePulseCompleted (unsigned char npulse)\fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
 .PP
 This is the EVENT the gantry sends to AWS to notify about a x-ray pulse termination\&. \fBGantry\fP sends this EVENT whenever a pulse of a sequence is executed\&.
 
@@ -116,17 +126,29 @@ In this case the \\ref EVENT_XraySequenceCompleted is sent instead\&.
 .SS "void awsProtocol::EVENT_GantryStatus (void )\fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
 This is the EVENT the gantry sends to AWS to notify about its internal operating status\&. \fBGantry\fP sends this EVENT always its internal status changes\&.
+.SS "static void awsProtocol::EVENT_operatingStatusChange (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
 .SS "void awsProtocol::EVENT_Poweroff (void )\fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
 .PP
 This Event is sent to AWS whenever the gantry requestes for a power-off sequence\&. 
 .SS "void awsProtocol::EVENT_ReadyForExposure (void )\fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
 This is the EVENT the gantry sends to AWS to notify about the current Ready for exposure status\&. \fBGantry\fP sends this EVENT to notify the change in the Ready For Exposure current status \&.
 .SS "void awsProtocol::EVENT_SelectProjection (System::String^ proj)\fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
 .PP
 This is the EVENT the gantry sends to AWS to request a projection selection\&. This is the EVENT requesting the selection of a given projection\&.
 
@@ -146,6 +168,8 @@ Syntax:
 .SS "void awsProtocol::EVENT_XrayPushButton (bool status)\fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
+.PP
 This is the EVENT the gantry sends to AWS to notify about the X-RAY push button activation\&. \fBGantry\fP sends this EVENT when the status of the X-RAY push button changes \&.
 
 .PP
@@ -157,6 +181,8 @@ This is the EVENT the gantry sends to AWS to notify about the X-RAY push button 
 
 .SS "void awsProtocol::EVENT_XraySequenceCompleted (void )\fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/AWS/awsProtocol\&.h\fP>\fP
 .PP
 This is the EVENT the gantry sends to AWS to notify about the X-RAY sequence terminated\&. \fBGantry\fP sends this EVENT when a X-Ray sequence ends, whether with or without success\&.
 .SH "Author"

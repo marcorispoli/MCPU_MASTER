@@ -2,4 +2,609 @@
 .ad l
 .nh
 .SH NAME
-VerticalMotor
+VerticalMotor \- This is the Vertical Module class implementation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <VerticalMotor\&.h>\fP
+.PP
+Inherits \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBVerticalMotor\fP (void)"
+.br
+.RI "This is the class constructor\&. "
+.in -1c
+
+Public Member Functions inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "\fBCanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, System::String^ parameter, \fBNotify::messages\fP home_err, int \fBmin_position\fP, int \fBmax_position\fP, double gear, double external_k, bool reverse)"
+.br
+.RI "This is the base class constructor\&. "
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.ti -1c
+.RI "void \fBdemoMode\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_fault_callback\fP (int code)"
+.br
+.RI "Delegate for the callback related to the Fault condition\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_command_completed_callback\fP (int id, int code)"
+.br
+.RI "Delegate for the command completed event 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateRelativePositioning\fP (int id, int target, int speed, int acc, int dec)"
+.br
+.RI "This function starts an automatic relative positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateRelativePositioning\fP (int id, int target)"
+.br
+.RI "This function starts an automatic relative positioning with predefined motor parameters\&. "
+.ti -1c
+.RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec, bool autostart)"
+.br
+.RI "This function starts an automatic positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, bool autostart)"
+.br
+.RI "This function starts an automatic positioning with predefined parameters 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateAutomaticHoming\fP (int method_on, int method_off, int speed, int acc)"
+.br
+.RI "This function starts the automatic homing procedure\&. "
+.ti -1c
+.RI "bool \fBactivateExternalHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
+.RI "bool \fBactivateManualHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
+.RI "bool \fBactivateManualPositioning\fP (int target, int speed, int acc, int dec)"
+.br
+.RI "This command activates the manual mootion 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateManualPositioning\fP (int target)"
+.br
+.RI "This command activates the manual mootion with predefined parameters\&. "
+.ti -1c
+.RI "bool \fBactivateManualService\fP (bool increase)"
+.br
+.ti -1c
+.RI "void \fBsetServiceMode\fP (bool stat)"
+.br
+.ti -1c
+.RI "void \fBabortActivation\fP (void)"
+.br
+.RI "Immediate abort of any activation running\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetInternalStatus\fP (void)"
+.br
+.RI "This function returns the internal module status\&. "
+.ti -1c
+.RI "System::String ^ \fBgetInternalStatusStr\fP (void)"
+.br
+.RI "This function returns a description string of the internal motor status\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBgetCommandCompletedCode\fP (void)"
+.br
+.RI "This function returns the last command termination code\&. "
+.ti -1c
+.RI "bool \fBactivateConfiguration\fP (void)"
+.br
+.RI "This function activates the Driver configuration fase\&. "
+.ti -1c
+.RI "bool \fBisPositionFromExternalSensor\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisConfigurating\fP (void)"
+.br
+.RI "This function returns the current configuration fase status\&. "
+.ti -1c
+.RI "bool \fBisODConfigured\fP (void)"
+.br
+.RI "This function returns the status of the Object Dictionary configuration status\&. "
+.ti -1c
+.RI "bool \fBisNanojConfigured\fP (void)"
+.br
+.RI "This function returns the status of the Nano-J programming\&. "
+.ti -1c
+.RI "bool \fBisReady\fP (void)"
+.br
+.RI "This function returns true if the module is ready to execute a command\&. "
+.ti -1c
+.RI "bool \fBisBusy\fP (void)"
+.br
+.RI "This function return true if an executing command is pending\&. "
+.ti -1c
+.RI "bool \fBisRunning\fP (void)"
+.br
+.RI "This function return true if a command is executing\&. "
+.ti -1c
+.RI "bool \fBisZeroOk\fP (void)"
+.br
+.RI "This function returns the Encoder Zero setting status\&. "
+.ti -1c
+.RI "int \fBgetCurrentPosition\fP (void)"
+.br
+.RI "This function returns the current encoder position\&. "
+.ti -1c
+.RI "unsigned short \fBgetExternalSensor\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetExternalPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetEncoderPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetMinPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetMaxPosition\fP (void)"
+.br
+.ti -1c
+.RI "System::String ^ \fBgetCanCommunicationMonitorString\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBactivateIsocentricCorrection\fP (int id, int delta_target)"
+.br
+.RI "This command activates the isocentric correction\&. "
+.ti -1c
+.RI "static bool \fBstartManualHoming\fP (int target_position)"
+.br
+.ti -1c
+.RI "static bool \fBstartAutoHoming\fP ()"
+.br
+.RI "This function activates the Automatic Homing procedure\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBVerticalMotor\fP ^ \fBdevice\fP = gcnew \fBVerticalMotor\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "unsigned short \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
+.br
+.RI "Sets specific registers for the Arm activation\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBpreparationCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position) override"
+.br
+.RI "This function is called just before to set the speed: if return true, the speed is set to the predefined value\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBrunningCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBidleCallback\fP (void) override"
+.br
+.RI "The module overrides this function in order to handle the IDLE activities\&. "
+.ti -1c
+.RI "void \fBfaultCallback\fP (bool errstat, bool data_changed, unsigned int \fBerror_class\fP, unsigned int \fBerror_code\fP) override"
+.br
+.ti -1c
+.RI "void \fBcompletedCallback\fP (int id, \fBMotorCommands\fP \fBcurrent_command\fP, int current_position, \fBMotorCompletedCodes\fP term_code) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "void \fBtestLimitSwitch\fP (void)"
+.br
+.RI "True if the limit switch is engaged\&. "
+.in -1c
+
+Protected Member Functions inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "int \fBgetPreviousPosition\fP (void)"
+.br
+.RI "This function returns the previous position before the last activation execution\&. "
+.ti -1c
+.RI "void \fBsetNanoJPtr\fP (const unsigned char *ptr, int size)"
+.br
+.RI "This function assignes the binary pointer of the nano-j program to be uploaded during the configuration fase\&. "
+.ti -1c
+.RI "int \fBgetCurrentEncoderEposition\fP (void)"
+.br
+.RI "This function returns the current encoder position in Encoder internal units\&. "
+.ti -1c
+.RI "int \fBgetCurrentEncoderUposition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetCurrentUposition\fP (void)"
+.br
+.RI "This function returns the current user defined position\&. "
+.ti -1c
+.RI "void \fBsetTargetRange\fP (int h, int l)"
+.br
+.RI "This function set the current acceptable position range\&. "
+.ti -1c
+.RI "bool \fBisEncoderInitialized\fP (void)"
+.br
+.RI "This function returns the current encoder zero setting status\&. "
+.ti -1c
+.RI "void \fBsetEncoderInitStatus\fP (bool val)"
+.br
+.RI "This function allows the subclass to set the current zero setting status\&. "
+.ti -1c
+.RI "int \fBconvert_Encoder_To_User\fP (int x)"
+.br
+.RI "This function translate internal encoder position to the unit position value\&. "
+.ti -1c
+.RI "int \fBconvert_Absolute_Encoder_To_User\fP (int x)"
+.br
+.RI "This function translate internal encoder position to the unit position value\&. "
+.ti -1c
+.RI "int \fBconvert_User_To_Encoder\fP (int x)"
+.br
+.RI "This function translate the user position to the encoder position\&. "
+.ti -1c
+.RI "int \fBconvert_Absolute_User_To_Encoder\fP (int x)"
+.br
+.ti -1c
+.RI "int \fBconvert_UserSec_To_Speed\fP (int x)"
+.br
+.RI "This function is used to transform the user defined speed or acceleration into the SPeed or Acceleration internal encoder units\&. "
+.ti -1c
+.RI "bool \fBblocking_writeOD\fP (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim, int val)"
+.br
+.RI "This function writes a SDO register in the target motor device;\&. "
+.ti -1c
+.RI "void \fBwrite_resetNode\fP (void)"
+.br
+.RI "This function sends a Reset Node command to the device\&. "
+.ti -1c
+.RI "bool \fBblocking_readOD\fP (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim)"
+.br
+.RI "This function Reads a SDO register in the target motor device;\&. "
+.ti -1c
+.RI "bool \fBwriteControlWord\fP (unsigned int mask, unsigned int val)"
+.br
+.RI "This function writes a part of the control word\&. "
+.ti -1c
+.RI "bool \fBreadControlWord\fP (unsigned int *ctrlw)"
+.br
+.RI "This function reads the control word\&. "
+.ti -1c
+.RI "bool \fBreadStatusWord\fP (unsigned int *stw)"
+.br
+.RI "This function reads the status word\&. "
+.ti -1c
+.RI "bool \fBstartRotation\fP (void)"
+.br
+.RI "This function starts the motor rotation\&. "
+.ti -1c
+.RI "bool \fBstartNanoj\fP (void)"
+.br
+.RI "This function runs the Nano-J program on the Motor Device\&. "
+.ti -1c
+.RI "bool \fBstopNanoj\fP (void)"
+.br
+.RI "This function stops a running Nano-J program\&. "
+.ti -1c
+.RI "virtual void \fBmotionParameterCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.ti -1c
+.RI "virtual void \fBresetCallback\fP (void)"
+.br
+.RI "Called whenever the boot message is received from the device\&. "
+.ti -1c
+.RI "virtual bool \fBunbrakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be released\&. "
+.ti -1c
+.RI "virtual bool \fBbrakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be reactivated 
+.br
+ "
+.ti -1c
+.RI "void \fBsetCommandCompleted\fP (\fBMotorCompletedCodes\fP error)"
+.br
+.ti -1c
+.RI "int \fBgetCommandId\fP (void)"
+.br
+.RI "This function returns the current command-id\&. "
+.ti -1c
+.RI "\fBODRegister\fP ^ \fBgetRxReg\fP (void)"
+.br
+.RI "Returns the pointer of the reception sdo register\&. "
+.ti -1c
+.RI "void \fBsetSpeed\fP (int val)"
+.br
+.RI "Modifies the assigned command speed (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "void \fBsetAcc\fP (int val)"
+.br
+.RI "Modifies the assigned command acceleration (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "void \fBsetDec\fP (int val)"
+.br
+.RI "Modifies the assigned command deceleration (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "\fBmotor_rotation_activations\fP \fBgetMotorDirection\fP (void)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBhigh_photocell\fP"
+.br
+.ti -1c
+.RI "bool \fBlow_photocell\fP"
+.br
+.ti -1c
+.RI "bool \fBzero_photocell\fP"
+.br
+.in -1c
+
+Protected Attributes inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "bool \fBsimulator_mode\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBdevice_id\fP"
+.br
+.RI "This is the target Device Id\&. "
+.ti -1c
+.RI "System::String ^ \fBconfig_param\fP"
+.br
+.RI "Pointer to the parameter in the config parameter 
+.br
+ "
+.ti -1c
+.RI "\fBNotify::messages\fP \fBerror_homing\fP"
+.br
+.ti -1c
+.RI "bool \fBfault_activation\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBmanual_increment_direction\fP = false"
+.br
+.RI "Sets true if the increment manual command is executing, false if the decrement manual activation is executing\&. "
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Public Types inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBstatus_options::MOTOR_NOT_CONNECTED\fP = 0, \fBstatus_options::MOTOR_CONFIGURATION\fP, \fBstatus_options::MOTOR_READY\fP, \fBstatus_options::MOTOR_BUSY\fP, \fBstatus_options::MOTOR_FAULT\fP }"
+.br
+.RI "This enumeration class descibes the internal status condition\&. "
+.ti -1c
+.RI "enum class \fBMotorCommands\fP { \fBMotorCommands::MOTOR_IDLE\fP = 0, \fBMotorCommands::MOTOR_AUTO_HOMING\fP, \fBMotorCommands::MOTOR_MANUAL_HOMING\fP, \fBMotorCommands::MOTOR_EXTERNAL_HOMING\fP, \fBMotorCommands::MOTOR_AUTO_POSITIONING\fP, \fBMotorCommands::MOTOR_MANUAL_POSITIONING\fP, \fBMotorCommands::MOTOR_MANUAL_SERVICE\fP }"
+.br
+.RI "This enumeration class descibes the Command codes\&. "
+.ti -1c
+.RI "enum class \fBmotor_rotation_activations\fP { \fBmotor_rotation_activations::MOTOR_NO_ACTIVATION\fP, \fBmotor_rotation_activations::MOTOR_INCREASE\fP, \fBmotor_rotation_activations::MOTOR_DECREASE\fP, \fBmotor_rotation_activations::MOTOR_UNDEFINED\fP }"
+.br
+.ti -1c
+.RI "enum class \fBMotorCompletedCodes\fP { \fBMotorCompletedCodes::COMMAND_SUCCESS\fP = 0, \fBMotorCompletedCodes::COMMAND_PROCEED\fP = 0, \fBMotorCompletedCodes::COMMAND_MANUAL_TERMINATION\fP, \fBMotorCompletedCodes::MOTOR_ERRORS\fP, \fBMotorCompletedCodes::ERROR_OBSTACLE_DETECTED\fP = MOTOR_ERRORS, \fBMotorCompletedCodes::ERROR_MOTOR_BUSY\fP, \fBMotorCompletedCodes::ERROR_INITIALIZATION\fP, \fBMotorCompletedCodes::ERROR_UNEXPECTED_STATUS\fP, \fBMotorCompletedCodes::ERROR_LIMIT_SWITCH\fP, \fBMotorCompletedCodes::ERROR_BRAKE_DEVICE\fP, \fBMotorCompletedCodes::ERROR_TIMOUT\fP, \fBMotorCompletedCodes::ERROR_INTERNAL_FAULT\fP, \fBMotorCompletedCodes::ERROR_ACCESS_REGISTER\fP, \fBMotorCompletedCodes::ERROR_MISSING_HOME\fP, \fBMotorCompletedCodes::ERROR_TARGET_OUT_OF_RANGE\fP, \fBMotorCompletedCodes::ERROR_COMMAND_DISABLED\fP, \fBMotorCompletedCodes::ERROR_COMMAND_ABORTED\fP, \fBMotorCompletedCodes::ERROR_COMMAND_DEMO\fP, \fBMotorCompletedCodes::ERROR_SAFETY\fP, \fBMotorCompletedCodes::ERROR_STARTING_NANOJ\fP, \fBMotorCompletedCodes::ERROR_INVALID_COMMAND\fP }"
+.br
+.RI "This enumeration class descibes the command complete codes\&. "
+.in -1c
+
+Static Protected Member Functions inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "static System::String ^ \fBgetErrorClass1001\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error string from the error of the register 1001\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetErrorClass1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Class string from the register 1003\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetErrorCode1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Code string from the register 1003\&. "
+.in -1c
+
+Events inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "\fBdelegate_fault_callback\fP^ \fBfault_event\fP"
+.br
+.RI "Event generated when a Driver fault condition is detected\&. "
+.ti -1c
+.RI "\fBdelegate_command_completed_callback\fP^ \fBcommand_completed_event\fP"
+.br
+.RI "Event generated at the command completion\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the Vertical Module class implementation\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "VerticalMotor::VerticalMotor (void )"
+
+.PP
+This is the class constructor\&. The Constructor:
+.IP "\(bu" 2
+Initializes the CanOpenMotor base class:
+.IP "  \(bu" 4
+Set the motor address;
+.IP "  \(bu" 4
+Set The module name;
+.IP "  \(bu" 4
+Set The unit conversion coefficient
+.PP
+
+.IP "\(bu" 2
+Set the target acceptable precision range;
+.IP "\(bu" 2
+Initializes the encoder initial position from the configuration file;
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool VerticalMotor::activateIsocentricCorrection (int id, int delta_h)\fR [static]\fP"
+
+.PP
+This command activates the isocentric correction\&. This function activates the Isocentric correction procedure\&.
+
+.PP
+The Isocentric procedure corrects the actual vertical position of the ARM, when a C-ARM rotation command is executed\&.
+
+.PP
+The command activates an automatic positioning where the target is expressed in terms of position variation and not as an absolute target\&.
+
+.PP
+The activation command makes use of the following activation parameters:
+.IP "\(bu" 2
+Speed: \fBMotorConfig::PARAM_AUTO_SPEED\fP;
+.IP "\(bu" 2
+Acceleration: \fBMotorConfig::PARAM_AUTO_ACC\fP;
+.IP "\(bu" 2
+Deceleration: \fBMotorConfig::PARAM_AUTO_DEC\fP;
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP the requesting command ID to be finally signaled 
+.br
+\fIdelta_h\fP position variation
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "void VerticalMotor::completedCallback (int id, \fBMotorCommands\fP current_command, int current_position, \fBMotorCompletedCodes\fP term_code)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "void VerticalMotor::faultCallback (bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBVerticalMotor::MotorCompletedCodes\fP VerticalMotor::idleCallback (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+The module overrides this function in order to handle the IDLE activities\&. In idle state, the module test limit switches verifying that both cannot be in active status at the same time\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+\fBMotorCompletedCodes::COMMAND_PROCEED\fP: a command can be processed;
+.IP "\(bu" 2
+Other values: a command cannot be processed due to a number of the reason\&.
+.PP
+
+.PP
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "unsigned short VerticalMotor::initializeSpecificObjectDictionaryCallback (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Sets specific registers for the Arm activation\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBVerticalMotor::MotorCompletedCodes\fP VerticalMotor::preparationCallback (\fBMotorCommands\fP current_command, int current_position, int target_position)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This function is called just before to set the speed: if return true, the speed is set to the predefined value\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "\fBVerticalMotor::MotorCompletedCodes\fP VerticalMotor::runningCallback (\fBMotorCommands\fP current_command, int current_position, int target_position)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "bool VerticalMotor::startAutoHoming (void )\fR [static]\fP"
+
+.PP
+This function activates the Automatic Homing procedure\&. The procedure makes use of the following activation parameters:
+.IP "\(bu" 2
+Speed: \fBMotorConfig::PARAM_HOME_SPEED\fP;
+.IP "\(bu" 2
+Acceleration and Deceleration: \fBMotorConfig::PARAM_HOME_ACC\fP;
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+true: the command is processing
+.RE
+.PP
+
+.SS "bool VerticalMotor::startManualHoming (int target_position)\fR [static]\fP"
+
+.SS "void VerticalMotor::testLimitSwitch (void )\fR [protected]\fP"
+
+.PP
+True if the limit switch is engaged\&. This function test high and low limit switches\&.
+
+.PP
+The status of the internal variables high_photocell and low_photocell sre assigned after the function is called\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBVerticalMotor\fP ^ VerticalMotor::device = gcnew \fBVerticalMotor\fP()\fR [static]\fP"
+
+.SS "bool VerticalMotor::high_photocell\fR [protected]\fP"
+
+.SS "bool VerticalMotor::low_photocell\fR [protected]\fP"
+
+.SS "bool VerticalMotor::manual_increment_direction = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Sets true if the increment manual command is executing, false if the decrement manual activation is executing\&. 
+.SS "bool VerticalMotor::zero_photocell\fR [protected]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

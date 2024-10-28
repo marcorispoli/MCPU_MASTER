@@ -3,3 +3,237 @@
 .nh
 .SH NAME
 CanDriver
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <CanDriver\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDriver\fP ()"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_can_rx_frame\fP (unsigned short canid, unsigned char *data, unsigned char len)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBstartSimulatorMode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBstartNormalMode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBcanrx_simulator_canopen_sdo_event\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBcanrx_simulator_device_event\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBcanrx_simulator_canopen_bootup_event\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBmultithread_send\fP (unsigned short canId, unsigned char *data, unsigned char len, bool simul)"
+.br
+.ti -1c
+.RI "static bool \fBisConnected\fP (bool simul)"
+.br
+.ti -1c
+.RI "static bool \fBisError\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisWarning\fP (void)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetErrorString\fP (void)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetWarningString\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBCanDriver\fP ^ \fBdriver\fP = gcnew \fBCanDriver\fP()"
+.br
+.ti -1c
+.RI "static int \fBapirev_maj\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBapirev_min\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBapirev_sub\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBhwrev_maj\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBhwrev_min\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBswrev_maj\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBswrev_min\fP = 0"
+.br
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_can_rx_frame\fP^ \fBcanrx_canopen_sdo_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_can_rx_frame\fP^ \fBcanrx_canopen_pdo_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_can_rx_frame\fP^ \fBcanrx_canopen_nmt_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_can_rx_frame\fP^ \fBcanrx_canopen_emrg_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_can_rx_frame\fP^ \fBcanrx_canopen_bootup_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_can_rx_frame\fP^ \fBcanrx_canopen_sync_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_can_rx_frame\fP^ \fBcanrx_device_event\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBthreadWork\fP (void)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Threading::Thread ^ \fBrunning_thread\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBcan_connected\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBerror\fP = false"
+.br
+.ti -1c
+.RI "static System::String ^ \fBErrorString\fP = ''"
+.br
+.ti -1c
+.RI "static bool \fBwarning\fP = false"
+.br
+.ti -1c
+.RI "static System::String ^ \fBWarningString\fP = ''"
+.br
+.ti -1c
+.RI "static bool \fBsimulator_mode\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CanDriver::CanDriver ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void CanDriver::canrx_simulator_canopen_bootup_event (void )\fR [static]\fP"
+
+.SS "void CanDriver::canrx_simulator_canopen_sdo_event (void )\fR [static]\fP"
+
+.SS "void CanDriver::canrx_simulator_device_event (void )\fR [static]\fP"
+
+.SS "delegate void CanDriver::delegate_can_rx_frame (unsigned short canid, unsigned char * data, unsigned char len)"
+
+.SS "static System::String ^ CanDriver::getErrorString (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static System::String ^ CanDriver::getWarningString (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool CanDriver::isConnected (bool simul)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool CanDriver::isError (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool CanDriver::isWarning (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "bool CanDriver::multithread_send (unsigned short canId, unsigned char * data, unsigned char len, bool simul)\fR [static]\fP"
+
+.SS "void CanDriver::startNormalMode (void )\fR [static]\fP"
+
+.SS "void CanDriver::startSimulatorMode (void )\fR [static]\fP"
+
+.SS "void CanDriver::threadWork (void )\fR [private]\fP"
+< System Driver \fBApi\fP Version
+
+.PP
+< System Driver Hardware Version
+
+.PP
+< Array of the received Can Frames
+
+.PP
+< Number of received frames from CAN
+.SH "Member Data Documentation"
+.PP 
+.SS "int CanDriver::apirev_maj = 0\fR [static]\fP"
+
+.SS "int CanDriver::apirev_min = 0\fR [static]\fP"
+
+.SS "int CanDriver::apirev_sub = 0\fR [static]\fP"
+
+.SS "bool CanDriver::can_connected = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCanDriver\fP ^ CanDriver::driver = gcnew \fBCanDriver\fP()\fR [static]\fP"
+
+.SS "bool CanDriver::error = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "System::String ^ CanDriver::ErrorString = ''\fR [static]\fP, \fR [private]\fP"
+
+.SS "int CanDriver::hwrev_maj = 0\fR [static]\fP"
+
+.SS "int CanDriver::hwrev_min = 0\fR [static]\fP"
+
+.SS "System::Threading::Thread ^ CanDriver::running_thread\fR [private]\fP"
+
+.SS "bool CanDriver::simulator_mode\fR [static]\fP, \fR [private]\fP"
+
+.SS "int CanDriver::swrev_maj = 0\fR [static]\fP"
+
+.SS "int CanDriver::swrev_min = 0\fR [static]\fP"
+
+.SS "bool CanDriver::warning = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "System::String ^ CanDriver::WarningString = ''\fR [static]\fP, \fR [private]\fP"
+
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_can_rx_frame\fP^ CanDriver::canrx_canopen_bootup_event\fR [static]\fP"
+
+.SS "\fBdelegate_can_rx_frame\fP^ CanDriver::canrx_canopen_emrg_event\fR [static]\fP"
+
+.SS "\fBdelegate_can_rx_frame\fP^ CanDriver::canrx_canopen_nmt_event\fR [static]\fP"
+
+.SS "\fBdelegate_can_rx_frame\fP^ CanDriver::canrx_canopen_pdo_event\fR [static]\fP"
+
+.SS "\fBdelegate_can_rx_frame\fP^ CanDriver::canrx_canopen_sdo_event\fR [static]\fP"
+
+.SS "\fBdelegate_can_rx_frame\fP^ CanDriver::canrx_canopen_sync_event\fR [static]\fP"
+
+.SS "\fBdelegate_can_rx_frame\fP^ CanDriver::canrx_device_event\fR [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

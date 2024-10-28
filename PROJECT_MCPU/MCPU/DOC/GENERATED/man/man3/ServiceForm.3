@@ -3,3 +3,344 @@
 .nh
 .SH NAME
 ServiceForm
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ServiceForm\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBpanels\fP { \fBPANEL_NOT_DEFINED\fP = 0, \fBMAIN_SERVICE_PANEL\fP, \fBCALIB_PANEL\fP, \fBSETUP_PANEL\fP, \fBCALIB_ZEROSETTING_PANEL\fP, \fBTOOL_EXPOSURE_PANEL\fP, \fBTOOL_ROTATION_PANEL\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBServiceForm\fP (void)"
+.br
+.ti -1c
+.RI "void \fBopen\fP (void)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitServiceStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBserviceStatusManagement\fP (void)"
+.br
+.ti -1c
+.RI "void \fBsetActivePanel\fP (\fBServiceForm::panels\fP p)"
+.br
+.ti -1c
+.RI "void \fBinitServicePanel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBcancServicePanel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitCalibrationPanel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBcancCalibrationPanel\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisPasswordOperator\fP ()"
+.br
+.ti -1c
+.RI "static bool \fBisPasswordFactory\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Timers::Timer ^ \fBserviceTimer\fP"
+.br
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "\fBServiceForm::panels\fP \fBcurrent_panel\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBServiceForm\fP ^ \fBpanel\fP"
+.br
+.ti -1c
+.RI "static bool \fBpasswd_operator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBpasswd_factory\fP = false"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~ServiceForm\fP ()"
+.br
+.RI "Clean up any resources being used\&. "
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "Object ^ \fBpConfirmation\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&. "
+.ti -1c
+.RI "System::Void \fBonServiceTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBsystemCalibration_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSetting_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBexposureTool_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBsystemRotation_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBbiopsyTool_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBbiopsyLightOn_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBbiopsyLightOff_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBbiopsyPark_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBexposureTool\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBbiopsyTool\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBbiopsyLightOff\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBbiopsyLightOn\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBbiopsyPark\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBserviceMenuTitle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelDate\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelInstallation\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTime\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBserviceCanc\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBservicePanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBrotationTool\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBsystemSetup\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBsystemCalibration\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBcalibPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBzeroSetting\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&. "
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBServiceForm::panels\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIPANEL_NOT_DEFINED \fP(0)
+.TP
+\f(BIMAIN_SERVICE_PANEL \fP
+.TP
+\f(BICALIB_PANEL \fP
+.TP
+\f(BISETUP_PANEL \fP
+.TP
+\f(BICALIB_ZEROSETTING_PANEL \fP
+.TP
+\f(BITOOL_EXPOSURE_PANEL \fP
+.TP
+\f(BITOOL_ROTATION_PANEL \fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ServiceForm::ServiceForm (void )\fR [inline]\fP"
+
+.SS "ServiceForm::~ServiceForm ()\fR [inline]\fP, \fR [protected]\fP"
+
+.PP
+Clean up any resources being used\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "System::Void ServiceForm::biopsyLightOff_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceForm::biopsyLightOn_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceForm::biopsyPark_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceForm::biopsyTool_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceForm::cancButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceForm::cancCalibrationPanel (void )"
+
+.SS "void ServiceForm::cancServicePanel (void )"
+
+.SS "void ServiceForm::close (void )"
+
+.SS "System::Void ServiceForm::exposureTool_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceForm::formInitialization (void )\fR [private]\fP"
+
+.SS "void ServiceForm::initCalibrationPanel (void )"
+
+.SS "void ServiceForm::InitializeComponent (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "void ServiceForm::initServicePanel (void )"
+
+.SS "void ServiceForm::initServiceStatus (void )"
+
+.SS "static bool ServiceForm::isPasswordFactory ()\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool ServiceForm::isPasswordOperator ()\fR [inline]\fP, \fR [static]\fP"
+
+.SS "System::Void ServiceForm::onServiceTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceForm::open (void )"
+
+.SS "void ServiceForm::serviceStatusManagement (void )"
+
+.SS "void ServiceForm::setActivePanel (\fBServiceForm::panels\fP p)"
+
+.SS "System::Void ServiceForm::systemCalibration_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServiceForm::systemRotation_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServiceForm::WndProc (System::Windows::Forms::Message% m)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.SS "System::Void ServiceForm::zeroSetting_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::biopsyLightOff\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::biopsyLightOn\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::biopsyPark\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::biopsyTool\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServiceForm::calibPanel\fR [private]\fP"
+
+.SS "System::ComponentModel::Container ^ ServiceForm::components\fR [private]\fP"
+
+.PP
+Required designer variable\&. 
+.SS "\fBServiceForm::panels\fP ServiceForm::current_panel"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::exposureTool\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceForm::labelDate\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceForm::labelInstallation\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceForm::labelTime\fR [private]\fP"
+
+.SS "bool ServiceForm::open_status"
+
+.SS "\fBServiceForm\fP ^ ServiceForm::panel\fR [static]\fP"
+
+.SS "bool ServiceForm::passwd_factory = false\fR [static]\fP"
+
+.SS "bool ServiceForm::passwd_operator = false\fR [static]\fP"
+
+.SS "Object ^ ServiceForm::pConfirmation\fR [protected]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::rotationTool\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::serviceCanc\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServiceForm::serviceMenuTitle\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServiceForm::servicePanel\fR [private]\fP"
+
+.SS "System::Timers::Timer ^ ServiceForm::serviceTimer"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::systemCalibration\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::systemSetup\fR [private]\fP"
+
+.SS "HWND ServiceForm::window"
+
+.SS "System::Windows::Forms::PictureBox ^ ServiceForm::zeroSetting\fR [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

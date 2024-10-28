@@ -3,3 +3,1064 @@
 .nh
 .SH NAME
 CollimatorConfig
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <CollimatorConfig\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal System::String ^ \fBFILENAME\fP = 'CollimatorCalibration\&.cnf'"
+.br
+.ti -1c
+.RI "literal int \fBFILE_REVISION\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORMAT_FRONT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORMAT_BACK\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORMAT_LEFT\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORMAT_RIGHT\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FORMAT_TRAP\fP = 4"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_0\fP = 'COLLI_STANDARD_FORMAT_0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_0_COMMENT\fP = 'Collimation format Slot 0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_0_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_0_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_0_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_0_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_0_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_1\fP = 'COLLI_STANDARD_FORMAT_1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_1_COMMENT\fP = 'Collimation format Slot 1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_1_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_1_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_1_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_1_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_1_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_2\fP = 'COLLI_STANDARD_FORMAT_2'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_2_COMMENT\fP = 'Collimation format Slot 2'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_2_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_2_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_2_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_2_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_2_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_3\fP = 'COLLI_STANDARD_FORMAT_3'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_3_COMMENT\fP = 'Collimation format Slot 3'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_3_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_3_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_3_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_3_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_3_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_4\fP = 'COLLI_STANDARD_FORMAT_4'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_4_COMMENT\fP = 'Collimation format Slot 4'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_4_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_4_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_4_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_4_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_4_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_5\fP = 'COLLI_STANDARD_FORMAT_5'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_5_COMMENT\fP = 'Collimation format Slot 5'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_5_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_5_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_5_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_5_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_5_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_6\fP = 'COLLI_STANDARD_FORMAT_6'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_6_COMMENT\fP = 'Collimation format Slot 6'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_6_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_6_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_6_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_6_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_6_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_7\fP = 'COLLI_STANDARD_FORMAT_7'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_7_COMMENT\fP = 'Collimation format Slot 7'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_7_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_7_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_7_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_7_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_7_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_8\fP = 'COLLI_STANDARD_FORMAT_8'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_8_COMMENT\fP = 'Collimation format Slot 8'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_8_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_8_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_8_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_8_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_8_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_9\fP = 'COLLI_STANDARD_FORMAT_9'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_9_COMMENT\fP = 'Collimation format Slot 9'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_9_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_9_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_9_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_9_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_9_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_10\fP = 'COLLI_STANDARD_FORMAT_10'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_10_COMMENT\fP = 'Collimation format Slot 10'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_10_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_10_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_10_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_10_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_10_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_11\fP = 'COLLI_STANDARD_FORMAT_11'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_11_COMMENT\fP = 'Collimation format Slot 11'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_11_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_11_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_11_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_11_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_11_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_12\fP = 'COLLI_STANDARD_FORMAT_12'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_12_COMMENT\fP = 'Collimation format Slot 12'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_12_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_12_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_12_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_12_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_12_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_13\fP = 'COLLI_STANDARD_FORMAT_13'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_13_COMMENT\fP = 'Collimation format Slot 13'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_13_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_13_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_13_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_13_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_13_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_14\fP = 'COLLI_STANDARD_FORMAT_14'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_14_COMMENT\fP = 'Collimation format Slot 14'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_14_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_14_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_14_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_14_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_14_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_15\fP = 'COLLI_STANDARD_FORMAT_15'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_15_COMMENT\fP = 'Collimation format Slot 15'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_15_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_15_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_15_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_15_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_15_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_16\fP = 'COLLI_STANDARD_FORMAT_16'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_16_COMMENT\fP = 'Collimation format Slot 16'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_16_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_16_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_16_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_16_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_16_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_17\fP = 'COLLI_STANDARD_FORMAT_17'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_17_COMMENT\fP = 'Collimation format Slot 17'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_17_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_17_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_17_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_17_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_17_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_18\fP = 'COLLI_STANDARD_FORMAT_18'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_18_COMMENT\fP = 'Collimation format Slot 18'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_18_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_18_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_18_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_18_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_18_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_19\fP = 'COLLI_STANDARD_FORMAT_19'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_19_COMMENT\fP = 'Collimation format Slot 19'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_FRONT_19_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_BACK_19_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_LEFT_19_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_RIGHT_19_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_COLLI_FORMAT_TRAP_19_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_MIRROR\fP = 'MIRROR_POSITION'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_MIRROR_COMMENT\fP = 'Mirror calibrated params'"
+.br
+.ti -1c
+.RI "literal int \fBMIRROR_INFIELD\fP = 0"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_MIRROR_INFIELD_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_POSITION\fP = 'FILTER_POSITION'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_POSITION_COMMENT\fP = 'Filter calibrated params'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_POSITION_0\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_POSITION_1\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_POSITION_2\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_POSITION_3\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_POSITION_4\fP = 4"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_POSITION_0_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_POSITION_1_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_POSITION_2_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_POSITION_3_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_POSITION_4_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG\fP = 'FILTER_CONFIG'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_COMMENT\fP = 'Defines the Filter material assignment to selector slot'"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CONFIG_RH_SLOT\fP = 0"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CONFIG_AG_SLOT\fP = 1"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CONFIG_AL_SLOT\fP = 2"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CONFIG_CU_SLOT\fP = 3"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CONFIG_MO_SLOT\fP = 4"
+.br
+.ti -1c
+.RI "literal int \fBPARAM_FILTER_CONFIG_LD_SLOT\fP = 5"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_RH_SLOT_DEFAULT\fP = '0'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_AG_SLOT_DEFAULT\fP = '1'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_AL_SLOT_DEFAULT\fP = '2'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_CU_SLOT_DEFAULT\fP = '3'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_MO_SLOT_DEFAULT\fP = '3'"
+.br
+.ti -1c
+.RI "literal System::String ^ \fBPARAM_FILTER_CONFIG_LD_SLOT_DEFAULT\fP = '4'"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBConfigFile\fP ^ \fBConfiguration\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBConfigFile\fP ^ CollimatorConfig::Configuration\fR [static]\fP"
+
+.SS "literal int CollimatorConfig::FILE_REVISION = 1"
+
+.SS "literal System::String ^ CollimatorConfig::FILENAME = 'CollimatorCalibration\&.cnf'"
+
+.SS "literal int CollimatorConfig::MIRROR_INFIELD = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_0 = 'COLLI_STANDARD_FORMAT_0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_0_COMMENT = 'Collimation format Slot 0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_1 = 'COLLI_STANDARD_FORMAT_1'"
+
+.SS "Format Collimation Slot 1 Row"
+This parameter describes the format collimation slot 1\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_1, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_10 = 'COLLI_STANDARD_FORMAT_10'"
+
+.SS "Format Collimation Slot #10 Row"
+This parameter describes the format collimation slot 10\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_10, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_10_COMMENT = 'Collimation format Slot 10'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_11 = 'COLLI_STANDARD_FORMAT_11'"
+
+.SS "Format Collimation Slot #11 Row"
+This parameter describes the format collimation slot 11\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_11, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_11_COMMENT = 'Collimation format Slot 11'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_12 = 'COLLI_STANDARD_FORMAT_12'"
+
+.SS "Format Collimation Slot #12 Row"
+This parameter describes the format collimation slot 12\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_12, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_12_COMMENT = 'Collimation format Slot 12'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_13 = 'COLLI_STANDARD_FORMAT_13'"
+
+.SS "Format Collimation Slot #13 Row"
+This parameter describes the format collimation slot 13\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_13, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_13_COMMENT = 'Collimation format Slot 13'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_14 = 'COLLI_STANDARD_FORMAT_14'"
+
+.SS "Format Collimation Slot #14 Row"
+This parameter describes the format collimation slot 14\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_14, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_14_COMMENT = 'Collimation format Slot 14'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_15 = 'COLLI_STANDARD_FORMAT_15'"
+
+.SS "Format Collimation Slot #15 Row"
+This parameter describes the format collimation slot 15\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_15, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_15_COMMENT = 'Collimation format Slot 15'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_16 = 'COLLI_STANDARD_FORMAT_16'"
+
+.SS "Format Collimation Slot #16 Row"
+This parameter describes the format collimation slot 16\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_16, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_16_COMMENT = 'Collimation format Slot 16'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_17 = 'COLLI_STANDARD_FORMAT_17'"
+
+.SS "Format Collimation Slot #17 Row"
+This parameter describes the format collimation slot 17\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_17, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_17_COMMENT = 'Collimation format Slot 17'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_18 = 'COLLI_STANDARD_FORMAT_18'"
+
+.SS "Format Collimation Slot #18 Row"
+This parameter describes the format collimation slot 18\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_18, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_18_COMMENT = 'Collimation format Slot 18'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_19 = 'COLLI_STANDARD_FORMAT_19'"
+
+.SS "Format Collimation Slot #19 Row"
+This parameter describes the format collimation slot 19\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_19, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_19_COMMENT = 'Collimation format Slot 19'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_1_COMMENT = 'Collimation format Slot 1'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_2 = 'COLLI_STANDARD_FORMAT_2'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_2_COMMENT = 'Collimation format Slot 2'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_3 = 'COLLI_STANDARD_FORMAT_3'"
+
+.SS "Format Collimation Slot #3 Row"
+This parameter describes the format collimation slot 3\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_3, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_3_COMMENT = 'Collimation format Slot 3'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_4 = 'COLLI_STANDARD_FORMAT_4'"
+
+.SS "Format Collimation Slot #4 Row"
+This parameter describes the format collimation slot 4\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_4, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_4_COMMENT = 'Collimation format Slot 4'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_5 = 'COLLI_STANDARD_FORMAT_5'"
+
+.SS "Format Collimation Slot #5 Row"
+This parameter describes the format collimation slot 5\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_5, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_5_COMMENT = 'Collimation format Slot 5'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_6 = 'COLLI_STANDARD_FORMAT_6'"
+
+.SS "Format Collimation Slot #6 Row"
+This parameter describes the format collimation slot 6\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_6, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_6_COMMENT = 'Collimation format Slot 6'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_7 = 'COLLI_STANDARD_FORMAT_7'"
+
+.SS "Format Collimation Slot #7 Row"
+This parameter describes the format collimation slot 7\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_7, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_7_COMMENT = 'Collimation format Slot 7'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_8 = 'COLLI_STANDARD_FORMAT_8'"
+
+.SS "Format Collimation Slot #8 Row"
+This parameter describes the format collimation slot 8\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_8, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_8_COMMENT = 'Collimation format Slot 8'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_9 = 'COLLI_STANDARD_FORMAT_9'"
+
+.SS "Format Collimation Slot #9 Row"
+This parameter describes the format collimation slot 9\&.
+
+.PP
+< COLLI_STANDARD_FORMAT_9, Front,Back,Left,Right,Trap >
+
+.PP
+Param   Type   Default   Range   Descrption    Front   Word   0   -   Position of the front blade    Back   Word   0   -   Position of the back blade    Left   Word   0   -   Position of the left blade    Right   Word   0   -   Position of the right blade    Trap   Word   0   -   Position of the trap blade   
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_9_COMMENT = 'Collimation format Slot 9'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_0_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_10_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_11_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_12_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_13_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_14_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_15_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_16_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_17_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_18_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_19_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_1_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_2_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_3_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_4_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_5_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_6_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_7_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_8_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_BACK_9_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_0_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_10_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_11_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_12_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_13_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_14_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_15_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_16_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_17_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_18_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_19_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_1_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_2_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_3_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_4_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_5_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_6_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_7_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_8_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_FRONT_9_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_0_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_10_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_11_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_12_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_13_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_14_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_15_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_16_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_17_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_18_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_19_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_1_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_2_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_3_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_4_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_5_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_6_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_7_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_8_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_LEFT_9_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_0_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_10_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_11_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_12_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_13_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_14_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_15_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_16_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_17_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_18_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_19_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_1_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_2_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_3_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_4_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_5_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_6_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_7_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_8_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_RIGHT_9_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_0_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_10_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_11_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_12_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_13_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_14_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_15_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_16_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_17_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_18_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_19_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_1_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_2_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_3_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_4_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_5_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_6_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_7_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_8_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_COLLI_FORMAT_TRAP_9_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG = 'FILTER_CONFIG'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_CONFIG_AG_SLOT = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG_AG_SLOT_DEFAULT = '1'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_CONFIG_AL_SLOT = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG_AL_SLOT_DEFAULT = '2'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG_COMMENT = 'Defines the Filter material assignment to selector slot'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_CONFIG_CU_SLOT = 3"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG_CU_SLOT_DEFAULT = '3'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_CONFIG_LD_SLOT = 5"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG_LD_SLOT_DEFAULT = '4'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_CONFIG_MO_SLOT = 4"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG_MO_SLOT_DEFAULT = '3'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_CONFIG_RH_SLOT = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_CONFIG_RH_SLOT_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_POSITION = 'FILTER_POSITION'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_POSITION_0 = 0"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_POSITION_0_DEFAULT = '0'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_POSITION_1 = 1"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_POSITION_1_DEFAULT = '0'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_POSITION_2 = 2"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_POSITION_2_DEFAULT = '0'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_POSITION_3 = 3"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_POSITION_3_DEFAULT = '0'"
+
+.SS "literal int CollimatorConfig::PARAM_FILTER_POSITION_4 = 4"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_POSITION_4_DEFAULT = '0'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_FILTER_POSITION_COMMENT = 'Filter calibrated params'"
+
+.SS "literal int CollimatorConfig::PARAM_FORMAT_BACK = 1"
+
+.SS "literal int CollimatorConfig::PARAM_FORMAT_FRONT = 0"
+
+.SS "literal int CollimatorConfig::PARAM_FORMAT_LEFT = 2"
+
+.SS "literal int CollimatorConfig::PARAM_FORMAT_RIGHT = 3"
+
+.SS "literal int CollimatorConfig::PARAM_FORMAT_TRAP = 4"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_MIRROR = 'MIRROR_POSITION'"
+
+.SS "Mirror In-Field calibration Row"
+This parameter sets the position of the In-Field Mirror position
+
+.PP
+< MIRROR_POSITION, Position, >
+
+.PP
+Param   Type   Default   Range   Descrption    Position   Word   0   -   Position of the mirror when In-Field   
+.SS "literal System::String ^ CollimatorConfig::PARAM_MIRROR_COMMENT = 'Mirror calibrated params'"
+
+.SS "literal System::String ^ CollimatorConfig::PARAM_MIRROR_INFIELD_DEFAULT = '0'"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

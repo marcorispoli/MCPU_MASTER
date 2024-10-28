@@ -29,7 +29,7 @@ PCB301Exposure \- PCB301 API for Exposure handling
 .br
 .RI "This method, when the buzzer is set in manual mode, sets the current status of the Buzzer device\&. "
 .ti -1c
-.RI "static \fBCanDeviceCommandResult\fP ^ \fBPCB301::activateManualBuzzerTomoMode\fP (int samples, int fps, int tmo, Object^ device)"
+.RI "static \fBCanDeviceCommandResult\fP ^ \fBPCB301::activateManualBuzzerTomoMode\fP (int samples, int fps, int tmo, Object^ \fBdevice\fP)"
 .br
 .RI "This method, when the buzzer is set in manual mode, activates the buzzer in Tomo mode, providing a given number of consecutive pulses at a given rate\&. "
 .in -1c
@@ -42,6 +42,8 @@ This section provides methods useful during the Exposure workflow\&.
 .PP 
 .SS "static \fBCanDeviceCommandResult\fP ^ PCB301::activateManualBuzzerTomoMode (int samples, int fps, int tmo, Object^ device)\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method, when the buzzer is set in manual mode, activates the buzzer in Tomo mode, providing a given number of consecutive pulses at a given rate\&. This method helps the application to implement a simulated Tomo sequence when the generator device is not present for Demo applications\&.
 
@@ -97,6 +99,8 @@ NOTE: if the x-ray push button should be released during the pulse generation th
 .SS "static void PCB301::activationManualBuzzer (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method, when the buzzer is set in manual mode, sets the current status of the Buzzer device\&. This function has no effect if the Buzzer is set to Automatic Mode\&. 
 .PP
 \fBParameters\fP
@@ -108,6 +112,8 @@ This method, when the buzzer is set in manual mode, sets the current status of t
 .SS "static bool PCB301::getXrayPushButtonStat (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method returns the current status of the X-RAY push button activation status\&. 
 .PP
 \fBReturns\fP
@@ -118,6 +124,8 @@ True: the input line is detected active
 
 .SS "static void PCB301::setBuzzerManualMode (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method sets the working mode of the Buzzer in Manual Mode or Automatic Mode\&. The \fBPCB301\fP mounts a local Buzzer device that works in two ways:
 .IP "\(bu" 2
@@ -141,6 +149,8 @@ When in Manual Mode
 
 .SS "static void PCB301::setXrayEna (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method requests to activate the x-ray enable hardware signal on the generator external interface\&. The X-RAY enable signal, during an exposure sequence, enables the \fBGenerator\fP to proceeds with the x-ray activation\&.
 

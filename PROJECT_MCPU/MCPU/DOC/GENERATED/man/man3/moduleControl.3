@@ -13,13 +13,13 @@ moduleControl \- Public Module's Control API
 
 .in +1c
 .ti -1c
-.RI "enum class \fBCanDeviceProtocol::status_options\fP { \fBCanDeviceProtocol::status_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBCanDeviceProtocol::status_options::WAITING_REVISION\fP, \fBCanDeviceProtocol::status_options::DEVICE_CONFIGURATION\fP, \fBCanDeviceProtocol::status_options::DEVICE_RUNNING\fP, \fBCanDeviceProtocol::status_options::DEVICE_SIMULATOR\fP, \fBLEN\fP, \fBUNDEF\fP = LEN }"
+.RI "enum class \fBCanDeviceProtocol::status_options\fP { \fBCanDeviceProtocol::status_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBCanDeviceProtocol::status_options::WAITING_REVISION\fP, \fBCanDeviceProtocol::status_options::DEVICE_CONFIGURATION\fP, \fBCanDeviceProtocol::status_options::DEVICE_RUNNING\fP, \fBCanDeviceProtocol::status_options::DEVICE_SIMULATOR\fP, \fBCanDeviceProtocol::status_options::LEN\fP, \fBCanDeviceProtocol::status_options::UNDEF\fP = LEN }"
 .br
 .RI "This is the enumeration of the Module's internal operating status\&.
 .br
 See the getModuleStatus() method\&. "
 .ti -1c
-.RI "enum class \fBCanDeviceProtocol::bootloader_options\fP { \fBBOOTLOADER_NOT_PRESENT\fP = 0, \fBBOOTLOADER_RUNNING\fP = 1, \fBBOOTLOADER_PRESENT\fP = 2, \fBBOOTLOADER_UNCKNOWN_STAT\fP }"
+.RI "enum class \fBCanDeviceProtocol::bootloader_options\fP { \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_NOT_PRESENT\fP = 0, \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_RUNNING\fP = 1, \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_PRESENT\fP = 2, \fBCanDeviceProtocol::bootloader_options::BOOTLOADER_UNCKNOWN_STAT\fP }"
 .br
 .RI "This is the enumeration calss defining the current status of the remote bootloader activity\&. "
 .in -1c
@@ -76,6 +76,21 @@ Get the connected remote device firmware and bootloader revision;
 
 .SH "Enumeration Type Documentation"
 .PP 
+.SS "enum class \fBCanDeviceProtocol::bootloader_options\fP\fR [strong]\fP"
+
+.PP
+This is the enumeration calss defining the current status of the remote bootloader activity\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIBOOTLOADER_NOT_PRESENT \fP(0)
+.TP
+\f(BIBOOTLOADER_RUNNING \fP(1)
+.TP
+\f(BIBOOTLOADER_PRESENT \fP(2)
+.TP
+\f(BIBOOTLOADER_UNCKNOWN_STAT \fP
 .SS "enum class \fBCanDeviceProtocol::status_options\fP\fR [strong]\fP"
 
 .PP
@@ -86,7 +101,7 @@ See the \fBgetModuleStatus()\fP method\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BIWAITING_CAN_DRIVER_CONNECTION \fP
+\f(BIWAITING_CAN_DRIVER_CONNECTION \fP(0)
 The Device is waiting the Can Driver connection 
 .br
  
@@ -104,10 +119,16 @@ The module is Running
 .TP
 \f(BIDEVICE_SIMULATOR \fP
 Device in Simulation mode\&. 
+.TP
+\f(BILEN \fP
+.TP
+\f(BIUNDEF \fP(LEN)
 .SH "Function Documentation"
 .PP 
 .SS "System::String ^ CanDeviceProtocol::getAppRevision (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function returns a string with the current detected remote firmware revision code\&. The firmware revision code is available only after the module startup when the module initialization is completed\&.
 
@@ -120,6 +141,8 @@ This function returns a string with the current detected remote firmware revisio
 .SS "System::String ^ CanDeviceProtocol::getBootRevision (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function returns a string with the current detected Bootloader revision code\&. The bootloader revision code is available only after the module startup when the module initialization is completed\&.
 
 .PP
@@ -130,6 +153,8 @@ This function returns a string with the current detected Bootloader revision cod
 
 .SS "\fBbootloader_options\fP CanDeviceProtocol::getBootStatus (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function returns the current status of the bootloader activities on the remote device\&. 
 .PP
@@ -142,6 +167,8 @@ This function returns the current status of the bootloader activities on the rem
 .SS "\fBstatus_options\fP CanDeviceProtocol::getModuleStatus (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function returns the Module operating status\&. 
 .PP
 \fBReturns\fP
@@ -152,6 +179,8 @@ return the current module operating status\&. See the status_options status enum
 
 .SS "bool CanDeviceProtocol::isCommunicationError (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function tests if the module is in communication error condition\&. 
 .PP
@@ -166,6 +195,8 @@ This function tests if the module is in communication error condition\&.
 .SS "bool CanDeviceProtocol::isSimulatorMode (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function tests if the module is running in simulation mode\&. 
 .PP
 \fBReturns\fP
@@ -177,9 +208,13 @@ return true if the moduleis in simulation mode
 .SS "void CanDeviceProtocol::runMode (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function activate the Module in Real mode\&. 
 .SS "void CanDeviceProtocol::simulMode (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function activate the Module in Simulation mode\&. 
 .SH "Author"

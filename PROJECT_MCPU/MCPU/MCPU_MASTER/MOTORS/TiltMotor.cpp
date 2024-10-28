@@ -184,21 +184,19 @@ static const unsigned char nanojTrxProgram[] = {
 #else
 static const unsigned char nanojTrxProgram[] = { 0 };
 #endif
+
 /// <summary>
 /// This is the Tilt Motor class constructor
 /// 
 /// </summary>
 /// 
-/// The constructor initializes the Base class with the motor address, gear ratio and the direction logic.
-/// 
-/// The Tilt motor makes use of the nanoj program for the Tomo exposures so 
-/// the constructor passes the nano-j program vector pointer to the base class
-/// in order to be uploaded at the startup.
-/// 
-/// The Encoder is initialized with the stored value in the configuration file:
-/// - in case the position should be invalid, the error Notify::messages::ERROR_TILT_MOTOR_HOMING is activated;
-/// - in case of error, the zero setting shall be executed before any activation may take place.
-/// 
+/// The constructor initializes the Base class with:
+/// + the motor address;
+/// + the motor gear ratio; 
+/// + the rotation direction;
+/// + the binary array of the special program to be uploaded into the motor driver for the automatic tomo activation mode; 
+/// + the actual mechanical Tilt position stored into the \ref MotorConfig after the last acivation, in order to initialize the motor internal encoder;
+/// + the target acceptable range set to +/- 0.02°;
 /// 
 /// <param name=""></param>
 TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::TILT_ID, L"MOTOR_TILT", MotorConfig::PARAM_TILT, Notify::messages::ERROR_TILT_MOTOR_HOMING, MIN_ROTATION_ANGLE, MAX_ROTATION_ANGLE, GEAR_RATIO, 1, false)
@@ -220,21 +218,6 @@ bool TiltMotor::setIdlePosition(void) {
     return device->activateAutomaticPositioning(0, 0, true);
 }
 
-/// <summary>
-/// This function executes a TRX activation to a predefined target.
-/// 
-/// </summary>
-/// 
-/// The allowed target for this command are:
-/// - SCOUT: this is 0°;
-/// - BP_R: (biopsy right) this is +15°;
-/// - BP_L: (biopsy left) this is -15°;
-/// - TOMO_H: (tomo home) it depends by the current tomo configuration selected;
-/// - TOMO_E: (tomo end) it depends by the current tomo configuration selected;
-/// 
-/// <param name="tg">this is the target option code</param>
-/// <param name="id">this is the aws command identifier</param>
-/// <returns>true if the target is successfully set</returns>
 bool TiltMotor::setTarget(target_options tg, int id) {
     int angle = 0;
     int speed, acc, dec;
@@ -304,19 +287,6 @@ bool TiltMotor::serviceAutoPosition(int pos) {
 }
 
 
-/// <summary>
-/// This function activates the Tomo Scan rotation mode.
-/// </summary>
-/// 
-/// The Tomo scan rotation mode starts when the Digital Input-1 is triggered high.
-/// 
-/// The Digital Input 1 is assigned to the Exp-Win signal coming from the detector
-/// 
-/// <param name="pos">Target position in User units</param>
-/// <param name="speed">Speed in user units</param>
-/// <param name="acc">Acceleration in User units</param>
-/// <param name="dec">Deceleration in user units</param>
-/// <returns>true if the command successfully started</returns>
 bool TiltMotor::activateTomoScan(int pos, int speed, int acc, int dec) { 
     idle_positioning = false;
 
@@ -332,14 +302,18 @@ bool TiltMotor::activateTomoScan(int pos, int speed, int acc, int dec) {
 }
 
 /// <summary>
-/// This is the override callback called in case of Motor Device reset event.
 /// 
 /// </summary>
 /// 
-/// In case the device should reset after the initialization, the initialization process shall 
-/// restart again.
+/// In case the motor should reset, the base class of this module
+/// restart the initialization process.
+/// 
+/// When the initialization termines this callback is called.
+/// 
+/// The module resets the current targets to set the actual target as unkown target.
 ///  
 /// <param name=""></param>
+
 void TiltMotor::resetCallback(void) {
 
     pending_target = target_options::UNDEF;
@@ -527,17 +501,22 @@ bool TiltMotor::unbrakeCallback(void) {
 // IDLE STATUS ----------------------------------------------------------------------
 
 /// <summary>
-/// The module overrides this function in order to handle the IDLE activities.
+/// 
 /// 
 /// </summary>
+///
+/// In Idle status the module monitor the current status of the stationary brake.
+/// In the case it should result unlocked the module set out of service the Tilt
+/// and a relevant error will be generated.
 /// 
-/// In Idle status the module:
-/// - test the brake device activity;
-/// - monitors the safety conditions;
-/// - monitors the manual activation inputs;
+/// \note
+/// No more activation can be performed with the active brake fault condition.
 /// 
 /// <param name=""></param>
-/// <returns>MotorCompletedCodes::COMMAND_PROCEED in case of ready conditon </returns>
+/// <returns>
+/// + MotorCompletedCodes::COMMAND_PROCEED: no fault condition;
+/// + MotorCompletedCodes::ERROR_BRAKE_DEVICE in case of fault condition; 
+/// </returns>
 TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
     MotorCompletedCodes ret_code = MotorCompletedCodes::COMMAND_PROCEED;
     

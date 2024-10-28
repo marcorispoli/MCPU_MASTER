@@ -3,3 +3,323 @@
 .nh
 .SH NAME
 ServicePaddleCalibrationTool
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ServicePaddleCalibration\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdialog_open\fP (Form^ p)"
+.br
+.ti -1c
+.RI "void \fBclose\fP (void)"
+.br
+.ti -1c
+.RI "void \fBinitPanel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBtimerManagement\fP (void)"
+.br
+.ti -1c
+.RI "\fBServicePaddleCalibrationTool\fP (void)"
+.br
+.ti -1c
+.RI "\fB~ServicePaddleCalibrationTool\fP ()"
+.br
+.RI "Clean up any resources being used\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBopen_status\fP"
+.br
+.ti -1c
+.RI "Form ^ \fBparent\fP"
+.br
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.ti -1c
+.RI "System::Timers::Timer ^ \fBserviceTimer\fP"
+.br
+.ti -1c
+.RI "float \fBmax_target_angle\fP"
+.br
+.ti -1c
+.RI "float \fBmin_target_angle\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBServicePaddleCalibrationTool\fP ^ \fBpanel\fP = gcnew \fBServicePaddleCalibrationTool\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBformInitialization\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonTargetSelectionCallback\fP (System::String^ value)"
+.br
+.ti -1c
+.RI "void \fBonBodyPanelTimerCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBonTiltPanelTimerCallback\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&. "
+.ti -1c
+.RI "System::Void \fBOnPaddleCalibrationToolTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBcancButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSettingBody_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBzeroSettingTilt_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBtargetSelection_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBrunButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.ti -1c
+.RI "System::Void \fBmanButton_Click\fP (System::Object^ sender, System::EventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBhighPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBcalibratedHolderOffset\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBcalibrateHolder\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBacceptLowPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBinsertLowPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel3\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel4\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBcalibratedHolderLinearity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel2\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBcurrentHolderPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBstoreCalibratedParam\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBserviceMenuTitle\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelDate\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelInstallation\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelTime\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBserviceCanc\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBcalibZerosettingPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBpaddleLimits\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBpaddleForceCalibration\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBpaddleHolderCalibration\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Panel ^ \fBholderPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBpositionLabel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBinsertHighPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlowPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Button ^ \fBacceptHighPosition\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBexecuteIcon\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ServicePaddleCalibrationTool::ServicePaddleCalibrationTool (void )\fR [inline]\fP"
+
+.SS "ServicePaddleCalibrationTool::~ServicePaddleCalibrationTool ()\fR [inline]\fP"
+
+.PP
+Clean up any resources being used\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ServicePaddleCalibrationTool::cancButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServicePaddleCalibrationTool::close (void )"
+
+.SS "void ServicePaddleCalibrationTool::dialog_open (Form^ p)"
+
+.SS "void ServicePaddleCalibrationTool::formInitialization (void )\fR [private]\fP"
+
+.SS "void ServicePaddleCalibrationTool::InitializeComponent (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "void ServicePaddleCalibrationTool::initPanel (void )"
+
+.SS "System::Void ServicePaddleCalibrationTool::manButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServicePaddleCalibrationTool::onBodyPanelTimerCallback (void )\fR [private]\fP"
+
+.SS "System::Void ServicePaddleCalibrationTool::OnPaddleCalibrationToolTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fR [private]\fP"
+
+.SS "void ServicePaddleCalibrationTool::onTargetSelectionCallback (System::String^ value)\fR [private]\fP"
+
+.SS "void ServicePaddleCalibrationTool::onTiltPanelTimerCallback (void )\fR [private]\fP"
+
+.SS "System::Void ServicePaddleCalibrationTool::runButton_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServicePaddleCalibrationTool::targetSelection_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "void ServicePaddleCalibrationTool::timerManagement (void )"
+
+.SS "void ServicePaddleCalibrationTool::WndProc (System::Windows::Forms::Message% m)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.SS "System::Void ServicePaddleCalibrationTool::zeroSettingBody_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SS "System::Void ServicePaddleCalibrationTool::zeroSettingTilt_Click (System::Object^ sender, System::EventArgs^ e)\fR [private]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::Windows::Forms::Button ^ ServicePaddleCalibrationTool::acceptHighPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::Button ^ ServicePaddleCalibrationTool::acceptLowPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::calibratedHolderLinearity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::calibratedHolderOffset\fR [private]\fP"
+
+.SS "System::Windows::Forms::Button ^ ServicePaddleCalibrationTool::calibrateHolder\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServicePaddleCalibrationTool::calibZerosettingPanel\fR [private]\fP"
+
+.SS "System::ComponentModel::Container ^ ServicePaddleCalibrationTool::components\fR [private]\fP"
+
+.PP
+Required designer variable\&. 
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::currentHolderPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServicePaddleCalibrationTool::executeIcon\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::highPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::Panel ^ ServicePaddleCalibrationTool::holderPanel\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::insertHighPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::insertLowPosition\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::label2\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::label3\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::label4\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::label5\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::labelDate\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::labelInstallation\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::labelTime\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::lowPosition\fR [private]\fP"
+
+.SS "float ServicePaddleCalibrationTool::max_target_angle"
+
+.SS "float ServicePaddleCalibrationTool::min_target_angle"
+
+.SS "bool ServicePaddleCalibrationTool::open_status"
+
+.SS "System::Windows::Forms::PictureBox ^ ServicePaddleCalibrationTool::paddleForceCalibration\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServicePaddleCalibrationTool::paddleHolderCalibration\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServicePaddleCalibrationTool::paddleLimits\fR [private]\fP"
+
+.SS "\fBServicePaddleCalibrationTool\fP ^ ServicePaddleCalibrationTool::panel = gcnew \fBServicePaddleCalibrationTool\fP()\fR [static]\fP"
+
+.SS "Form ^ ServicePaddleCalibrationTool::parent"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::positionLabel\fR [private]\fP"
+
+.SS "System::Windows::Forms::PictureBox ^ ServicePaddleCalibrationTool::serviceCanc\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ ServicePaddleCalibrationTool::serviceMenuTitle\fR [private]\fP"
+
+.SS "System::Timers::Timer ^ ServicePaddleCalibrationTool::serviceTimer"
+
+.SS "System::Windows::Forms::Button ^ ServicePaddleCalibrationTool::storeCalibratedParam\fR [private]\fP"
+
+.SS "HWND ServicePaddleCalibrationTool::window"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

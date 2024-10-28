@@ -3,3 +3,129 @@
 .nh
 .SH NAME
 R2CP::tFlDb
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <aDataDicRFInterface\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBudword\fP \fBmA100\fP"
+.br
+.ti -1c
+.RI "\fBudword\fP \fBms100\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBkV10\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBMaxIntegrationTime\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBAbcUpdateTime\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBTargeteLsb\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBPPS10\fP"
+.br
+.ti -1c
+.RI "\fBuword\fP \fBDoseLevelId\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   struct {"
+.br
+.ti -1c
+.RI "      unsigned char \fBABCEnabled\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBFl_LockIn\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBHighDoseEnabled\fP: 1"
+.br
+.ti -1c
+.RI "      unsigned char \fBReserved\fP: 5"
+.br
+.ti -1c
+.RI "   } \fBFields\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBvalue\fP"
+.br
+.ti -1c
+.RI "} \fBDoseCtrl\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBFocalSpot\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBDatabankId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBImagingSystemProtocol\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBCurveId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBFilterId\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBQbyPSS\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char R2CP::tFlDb::ABCEnabled"
+
+.SS "\fBuword\fP R2CP::tFlDb::AbcUpdateTime"
+
+.SS "unsigned char R2CP::tFlDb::CurveId"
+
+.SS "unsigned char R2CP::tFlDb::DatabankId"
+
+.SS "union  { \&.\&.\&. }  R2CP::tFlDb::DoseCtrl"
+
+.SS "\fBuword\fP R2CP::tFlDb::DoseLevelId"
+
+.SS "struct  { \&.\&.\&. }  R2CP::tFlDb::Fields"
+
+.SS "unsigned char R2CP::tFlDb::FilterId"
+
+.SS "unsigned char R2CP::tFlDb::Fl_LockIn"
+
+.SS "unsigned char R2CP::tFlDb::FocalSpot"
+
+.SS "unsigned char R2CP::tFlDb::HighDoseEnabled"
+
+.SS "unsigned char R2CP::tFlDb::ImagingSystemProtocol"
+
+.SS "\fBuword\fP R2CP::tFlDb::kV10"
+
+.SS "\fBudword\fP R2CP::tFlDb::mA100"
+
+.SS "\fBuword\fP R2CP::tFlDb::MaxIntegrationTime"
+
+.SS "\fBudword\fP R2CP::tFlDb::ms100"
+
+.SS "\fBuword\fP R2CP::tFlDb::PPS10"
+
+.SS "unsigned char R2CP::tFlDb::QbyPSS"
+
+.SS "unsigned char R2CP::tFlDb::Reserved"
+
+.SS "\fBuword\fP R2CP::tFlDb::TargeteLsb"
+
+.SS "unsigned char R2CP::tFlDb::value"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

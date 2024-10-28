@@ -3,7 +3,6 @@
 /**
 	\defgroup DEVIMPL Device Modules Implementation
 	\ingroup APPIMPL
-	\internal
 
 	This section describes the implementation of the modules controlling the Gantry internal boards.
 

@@ -2,4 +2,324 @@
 .ad l
 .nh
 .SH NAME
-CanSimulator
+CanSimulator \- This Class implements the Tcp/Ip Client connection with the SmartHub server\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <CanSimulator\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBcan_buf_struct\fP { \fBSTX\fP = 0, \fBLENGHT\fP, \fBCAN_IDL\fP, \fBCAN_IDH\fP, \fBDATALEN\fP, \fBD0\fP, \fBD1\fP, \fBD2\fP, \fBD3\fP, \fBD4\fP, \fBD5\fP, \fBD6\fP, \fBD7\fP, \fBETX\fP, \fBBUFLEN\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "delegate void \fBrxData_slot\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBconnection_slot\fP (bool status)"
+.br
+.RI "This is the delegate of the connection handler\&. "
+.ti -1c
+.RI "\fBCanSimulator\fP (void)"
+.br
+.RI "This is the class constructor\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBsend\fP (unsigned short \fBcanId\fP, unsigned char *data, unsigned char len)"
+.br
+.RI "This is function to send data in the BUS\&. "
+.ti -1c
+.RI "static void \fBsendMotorRotConfiguration\fP (unsigned char devId, double rot_convertion)"
+.br
+.ti -1c
+.RI "static void \fBsendFilterConfiguration\fP (void)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal unsigned char \fBSIMUL_CONFIG_ACTIVE_DEVICES\fP = 0"
+.br
+.ti -1c
+.RI "literal unsigned char \fBSIMUL_CONFIG_MOTOR_CONFIG_TRX\fP = 3"
+.br
+.ti -1c
+.RI "literal unsigned char \fBSIMUL_CONFIG_MOTOR_CONFIG_ARM\fP = 4"
+.br
+.ti -1c
+.RI "literal unsigned char \fBSIMUL_CONFIG_MOTOR_CONFIG_SLIDE\fP = 5"
+.br
+.ti -1c
+.RI "literal unsigned char \fBSIMUL_CONFIG_MOTOR_CONFIG_BODY\fP = 6"
+.br
+.ti -1c
+.RI "literal unsigned char \fBSIMUL_CONFIG_MOTOR_CONFIG_VERTICAL\fP = 7"
+.br
+.ti -1c
+.RI "literal unsigned char \fBSIMUL_CONFIG_FILTERS\fP = 10"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const System::Byte \fBSTX\fP = 0x3"
+.br
+.ti -1c
+.RI "static const System::Byte \fBETX\fP = 0x4"
+.br
+.ti -1c
+.RI "static \fBCanSimulator\fP ^ \fBdevice\fP = gcnew \fBCanSimulator\fP()"
+.br
+.ti -1c
+.RI "static unsigned char \fBdatalen\fP"
+.br
+.ti -1c
+.RI "static unsigned short \fBcanId\fP"
+.br
+.ti -1c
+.RI "static cli::array< System::Byte > ^ \fBcanDataBuffer\fP"
+.br
+.RI "This is the data buffer decoded\&. "
+.ti -1c
+.RI "static bool \fBconnection_status\fP = false"
+.br
+.RI "This is the current connection status\&. "
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBrxData_slot\fP^ \fBcanrx_canopen_sdo_event\fP"
+.br
+.RI "CanOpen SDO received buffer\&. "
+.ti -1c
+.RI "static \fBrxData_slot\fP^ \fBcanrx_canopen_bootup_event\fP"
+.br
+.ti -1c
+.RI "static \fBrxData_slot\fP^ \fBcanrx_device_event\fP"
+.br
+.RI "Metaltronica Buffer\&. "
+.ti -1c
+.RI "static \fBconnection_slot\fP^ \fBconnection_event\fP"
+.br
+.RI "Connection event\&. "
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBthreadWork\fP (void)"
+.br
+.RI "This is the worker thread for the connection management\&. "
+.ti -1c
+.RI "static void \fBhandleBuffer\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsendConfiguration\fP (void)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBstarted\fP = false"
+.br
+.ti -1c
+.RI "static System::Threading::Thread ^ \fBrunning_thread\fP"
+.br
+.RI "This is the worker thread handler\&. "
+.ti -1c
+.RI "static System::Net::Sockets::Socket ^ \fBserverSocket\fP"
+.br
+.RI "This is the server socket handler\&. "
+.ti -1c
+.RI "static System::Net::Sockets::Socket ^ \fBclientSocket\fP"
+.br
+.RI "This is the connected client socket handler\&. "
+.ti -1c
+.RI "static int \fBrx_rc\fP"
+.br
+.RI "This is the number of the received bytes\&. "
+.ti -1c
+.RI "static cli::array< System::Byte > ^ \fBrxBuffer\fP"
+.br
+.RI "This is the reception buffer\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This Class implements the Tcp/Ip Client connection with the SmartHub server\&. 
+
+
+.br
+ 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBCanSimulator::can_buf_struct\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BISTX \fP(0)
+.TP
+\f(BILENGHT \fP
+.TP
+\f(BICAN_IDL \fP
+.TP
+\f(BICAN_IDH \fP
+.TP
+\f(BIDATALEN \fP
+.TP
+\f(BID0 \fP
+.TP
+\f(BID1 \fP
+.TP
+\f(BID2 \fP
+.TP
+\f(BID3 \fP
+.TP
+\f(BID4 \fP
+.TP
+\f(BID5 \fP
+.TP
+\f(BID6 \fP
+.TP
+\f(BID7 \fP
+.TP
+\f(BIETX \fP
+.TP
+\f(BIBUFLEN \fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CanSimulator::CanSimulator (void )"
+
+.PP
+This is the class constructor\&. This is the Class constructor\&.
+
+.PP
+The constructor creates all the data necessaries to create the server socket\&.
+
+.PP
+After the data initialization the constructor runs the worker thread for the Listening and data reception\&. The thread is self destroying when the program closes\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIip\fP This is a String for the IP address
+.br
+\fIport\fP This is an integer value for thr server port
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "delegate void CanSimulator::connection_slot (bool status)"
+
+.PP
+This is the delegate of the connection handler\&. 
+.SS "void CanSimulator::handleBuffer (void )\fR [static]\fP, \fR [private]\fP"
+
+.SS "delegate void CanSimulator::rxData_slot (void )"
+
+.SS "bool CanSimulator::send (unsigned short canId, unsigned char * data, unsigned char len)\fR [static]\fP"
+
+.PP
+This is function to send data in the BUS\&. 
+.SS "void CanSimulator::sendConfiguration (void )\fR [static]\fP, \fR [private]\fP"
+
+.SS "void CanSimulator::sendFilterConfiguration (void )\fR [static]\fP"
+
+.SS "void CanSimulator::sendMotorRotConfiguration (unsigned char devId, double rot_convertion)\fR [static]\fP"
+
+.SS "void CanSimulator::threadWork (void )\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the worker thread for the connection management\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "cli::array<System::Byte> ^ CanSimulator::canDataBuffer\fR [static]\fP"
+
+.PP
+This is the data buffer decoded\&. 
+.SS "unsigned short CanSimulator::canId\fR [static]\fP"
+
+.SS "System::Net::Sockets::Socket ^ CanSimulator::clientSocket\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the connected client socket handler\&. 
+.SS "bool CanSimulator::connection_status = false\fR [static]\fP"
+
+.PP
+This is the current connection status\&. 
+.SS "unsigned char CanSimulator::datalen\fR [static]\fP"
+
+.SS "\fBCanSimulator\fP ^ CanSimulator::device = gcnew \fBCanSimulator\fP()\fR [static]\fP"
+
+.SS "const System::Byte CanSimulator::ETX = 0x4\fR [static]\fP"
+
+.SS "System::Threading::Thread ^ CanSimulator::running_thread\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the worker thread handler\&. 
+.SS "int CanSimulator::rx_rc\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the number of the received bytes\&. 
+.SS "cli::array<System::Byte> ^ CanSimulator::rxBuffer\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the reception buffer\&. 
+.SS "System::Net::Sockets::Socket ^ CanSimulator::serverSocket\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the server socket handler\&. 
+.SS "literal unsigned char CanSimulator::SIMUL_CONFIG_ACTIVE_DEVICES = 0"
+
+.SS "literal unsigned char CanSimulator::SIMUL_CONFIG_FILTERS = 10"
+
+.SS "literal unsigned char CanSimulator::SIMUL_CONFIG_MOTOR_CONFIG_ARM = 4"
+
+.SS "literal unsigned char CanSimulator::SIMUL_CONFIG_MOTOR_CONFIG_BODY = 6"
+
+.SS "literal unsigned char CanSimulator::SIMUL_CONFIG_MOTOR_CONFIG_SLIDE = 5"
+
+.SS "literal unsigned char CanSimulator::SIMUL_CONFIG_MOTOR_CONFIG_TRX = 3"
+
+.SS "literal unsigned char CanSimulator::SIMUL_CONFIG_MOTOR_CONFIG_VERTICAL = 7"
+
+.SS "bool CanSimulator::started = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "const System::Byte CanSimulator::STX = 0x3\fR [static]\fP"
+
+.SH "Event Documentation"
+.PP 
+.SS "\fBrxData_slot\fP^ CanSimulator::canrx_canopen_bootup_event\fR [static]\fP"
+
+.SS "\fBrxData_slot\fP^ CanSimulator::canrx_canopen_sdo_event\fR [static]\fP"
+
+.PP
+CanOpen SDO received buffer\&. 
+.SS "\fBrxData_slot\fP^ CanSimulator::canrx_device_event\fR [static]\fP"
+
+.PP
+Metaltronica Buffer\&. 
+.SS "\fBconnection_slot\fP^ CanSimulator::connection_event\fR [static]\fP"
+
+.PP
+Connection event\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

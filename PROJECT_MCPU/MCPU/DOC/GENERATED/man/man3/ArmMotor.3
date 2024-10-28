@@ -2,4 +2,865 @@
 .ad l
 .nh
 .SH NAME
-ArmMotor
+ArmMotor \- This class implements the C-ARM activation features\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ArmMotor\&.h>\fP
+.PP
+Inherits \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBArmMotor\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_abort_projection_request_callback\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_projection_request_callback\fP (System::String^ str)"
+.br
+.in -1c
+
+Public Member Functions inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "\fBCanOpenMotor\fP (unsigned char devid, LPCWSTR motorname, System::String^ parameter, \fBNotify::messages\fP home_err, int \fBmin_position\fP, int \fBmax_position\fP, double gear, double external_k, bool reverse)"
+.br
+.RI "This is the base class constructor\&. "
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.ti -1c
+.RI "void \fBdemoMode\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
+.ti -1c
+.RI "delegate void \fBdelegate_fault_callback\fP (int code)"
+.br
+.RI "Delegate for the callback related to the Fault condition\&. "
+.ti -1c
+.RI "delegate void \fBdelegate_command_completed_callback\fP (int id, int code)"
+.br
+.RI "Delegate for the command completed event 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateRelativePositioning\fP (int id, int target, int speed, int acc, int dec)"
+.br
+.RI "This function starts an automatic relative positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateRelativePositioning\fP (int id, int target)"
+.br
+.RI "This function starts an automatic relative positioning with predefined motor parameters\&. "
+.ti -1c
+.RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, int speed, int acc, int dec, bool autostart)"
+.br
+.RI "This function starts an automatic positioning 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateAutomaticPositioning\fP (int id, int target, bool autostart)"
+.br
+.RI "This function starts an automatic positioning with predefined parameters 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateAutomaticHoming\fP (int method_on, int method_off, int speed, int acc)"
+.br
+.RI "This function starts the automatic homing procedure\&. "
+.ti -1c
+.RI "bool \fBactivateExternalHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
+.RI "bool \fBactivateManualHoming\fP (int current_uposition)"
+.br
+.RI "This function starts the external sensor homing procedure\&. "
+.ti -1c
+.RI "bool \fBactivateManualPositioning\fP (int target, int speed, int acc, int dec)"
+.br
+.RI "This command activates the manual mootion 
+.br
+ "
+.ti -1c
+.RI "bool \fBactivateManualPositioning\fP (int target)"
+.br
+.RI "This command activates the manual mootion with predefined parameters\&. "
+.ti -1c
+.RI "bool \fBactivateManualService\fP (bool increase)"
+.br
+.ti -1c
+.RI "void \fBsetServiceMode\fP (bool stat)"
+.br
+.ti -1c
+.RI "void \fBabortActivation\fP (void)"
+.br
+.RI "Immediate abort of any activation running\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetInternalStatus\fP (void)"
+.br
+.RI "This function returns the internal module status\&. "
+.ti -1c
+.RI "System::String ^ \fBgetInternalStatusStr\fP (void)"
+.br
+.RI "This function returns a description string of the internal motor status\&. "
+.ti -1c
+.RI "\fBMotorCompletedCodes\fP \fBgetCommandCompletedCode\fP (void)"
+.br
+.RI "This function returns the last command termination code\&. "
+.ti -1c
+.RI "bool \fBactivateConfiguration\fP (void)"
+.br
+.RI "This function activates the Driver configuration fase\&. "
+.ti -1c
+.RI "bool \fBisPositionFromExternalSensor\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisConfigurating\fP (void)"
+.br
+.RI "This function returns the current configuration fase status\&. "
+.ti -1c
+.RI "bool \fBisODConfigured\fP (void)"
+.br
+.RI "This function returns the status of the Object Dictionary configuration status\&. "
+.ti -1c
+.RI "bool \fBisNanojConfigured\fP (void)"
+.br
+.RI "This function returns the status of the Nano-J programming\&. "
+.ti -1c
+.RI "bool \fBisReady\fP (void)"
+.br
+.RI "This function returns true if the module is ready to execute a command\&. "
+.ti -1c
+.RI "bool \fBisBusy\fP (void)"
+.br
+.RI "This function return true if an executing command is pending\&. "
+.ti -1c
+.RI "bool \fBisRunning\fP (void)"
+.br
+.RI "This function return true if a command is executing\&. "
+.ti -1c
+.RI "bool \fBisZeroOk\fP (void)"
+.br
+.RI "This function returns the Encoder Zero setting status\&. "
+.ti -1c
+.RI "int \fBgetCurrentPosition\fP (void)"
+.br
+.RI "This function returns the current encoder position\&. "
+.ti -1c
+.RI "unsigned short \fBgetExternalSensor\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetExternalPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetEncoderPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetMinPosition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetMaxPosition\fP (void)"
+.br
+.ti -1c
+.RI "System::String ^ \fBgetCanCommunicationMonitorString\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisTarget\fP (void)"
+.br
+.RI "This function return true in case the current c-arm position is in the selected target angle\&. "
+.ti -1c
+.RI "static bool \fBisValidTarget\fP (void)"
+.br
+.RI "This function returns true in the case the current target position is flagged as valid target for exposure\&. "
+.ti -1c
+.RI "static bool \fBisInRange\fP (void)"
+.br
+.RI "This function checks if the current motor position belong to the acceptable angle range\&. "
+.ti -1c
+.RI "static bool \fBisValidPosition\fP (void)"
+.br
+.RI "This function checks if the current position is a valid position for the exposure\&. "
+.ti -1c
+.RI "static bool \fBstartManualHoming\fP (int target_position)"
+.br
+.RI "This function activates the manual zero setting procedure\&. "
+.ti -1c
+.RI "static bool \fBstartAutoHoming\fP ()"
+.br
+.RI "This function activates the automatic zero setting procedure\&. "
+.ti -1c
+.RI "static int \fBsetTarget\fP (int pos, int low, int high, System::String^ proj, int id)"
+.br
+.RI "This is the method that activate the motor to a valid target angle and trigger the Isocentric Vertical correction\&. "
+.ti -1c
+.RI "static void \fBabortTarget\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBserviceAutoPosition\fP (int pos)"
+.br
+.ti -1c
+.RI "static bool \fBsetIdlePosition\fP (void)"
+.br
+.ti -1c
+.RI "static \fBProjectionOptions\fP ^ \fBgetProjectionsList\fP ()"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetSelectedProjection\fP (void)"
+.br
+.ti -1c
+.RI "static \fBProjectionOptions::options\fP \fBgetSelectedProjectionCode\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBabortProjectionRequest\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBprojectionRequest\fP (System::String^ projection)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBArmMotor\fP ^ \fBdevice\fP = gcnew \fBArmMotor\fP()"
+.br
+.RI "This is the static reference to the C-ARM module\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBcompletedCallback\fP (int id, \fBMotorCommands\fP \fBcurrent_command\fP, int current_position, \fBMotorCompletedCodes\fP term_code) override"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "unsigned short \fBinitializeSpecificObjectDictionaryCallback\fP (void) override"
+.br
+.RI "Sets specific registers for the Arm activation 
+.br
+ "
+.ti -1c
+.RI "void \fBfaultCallback\fP (bool errstat, bool data_changed, unsigned int \fBerror_class\fP, unsigned int \fBerror_code\fP) override"
+.br
+.in -1c
+
+Protected Member Functions inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "int \fBgetPreviousPosition\fP (void)"
+.br
+.RI "This function returns the previous position before the last activation execution\&. "
+.ti -1c
+.RI "void \fBsetNanoJPtr\fP (const unsigned char *ptr, int size)"
+.br
+.RI "This function assignes the binary pointer of the nano-j program to be uploaded during the configuration fase\&. "
+.ti -1c
+.RI "int \fBgetCurrentEncoderEposition\fP (void)"
+.br
+.RI "This function returns the current encoder position in Encoder internal units\&. "
+.ti -1c
+.RI "int \fBgetCurrentEncoderUposition\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetCurrentUposition\fP (void)"
+.br
+.RI "This function returns the current user defined position\&. "
+.ti -1c
+.RI "void \fBsetTargetRange\fP (int h, int l)"
+.br
+.RI "This function set the current acceptable position range\&. "
+.ti -1c
+.RI "bool \fBisEncoderInitialized\fP (void)"
+.br
+.RI "This function returns the current encoder zero setting status\&. "
+.ti -1c
+.RI "void \fBsetEncoderInitStatus\fP (bool val)"
+.br
+.RI "This function allows the subclass to set the current zero setting status\&. "
+.ti -1c
+.RI "int \fBconvert_Encoder_To_User\fP (int x)"
+.br
+.RI "This function translate internal encoder position to the unit position value\&. "
+.ti -1c
+.RI "int \fBconvert_Absolute_Encoder_To_User\fP (int x)"
+.br
+.RI "This function translate internal encoder position to the unit position value\&. "
+.ti -1c
+.RI "int \fBconvert_User_To_Encoder\fP (int x)"
+.br
+.RI "This function translate the user position to the encoder position\&. "
+.ti -1c
+.RI "int \fBconvert_Absolute_User_To_Encoder\fP (int x)"
+.br
+.ti -1c
+.RI "int \fBconvert_UserSec_To_Speed\fP (int x)"
+.br
+.RI "This function is used to transform the user defined speed or acceleration into the SPeed or Acceleration internal encoder units\&. "
+.ti -1c
+.RI "bool \fBblocking_writeOD\fP (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim, int val)"
+.br
+.RI "This function writes a SDO register in the target motor device;\&. "
+.ti -1c
+.RI "void \fBwrite_resetNode\fP (void)"
+.br
+.RI "This function sends a Reset Node command to the device\&. "
+.ti -1c
+.RI "bool \fBblocking_readOD\fP (unsigned short index, unsigned char sub, \fBODRegister::SDODataDimension\fP dim)"
+.br
+.RI "This function Reads a SDO register in the target motor device;\&. "
+.ti -1c
+.RI "bool \fBwriteControlWord\fP (unsigned int mask, unsigned int val)"
+.br
+.RI "This function writes a part of the control word\&. "
+.ti -1c
+.RI "bool \fBreadControlWord\fP (unsigned int *ctrlw)"
+.br
+.RI "This function reads the control word\&. "
+.ti -1c
+.RI "bool \fBreadStatusWord\fP (unsigned int *stw)"
+.br
+.RI "This function reads the status word\&. "
+.ti -1c
+.RI "bool \fBstartRotation\fP (void)"
+.br
+.RI "This function starts the motor rotation\&. "
+.ti -1c
+.RI "bool \fBstartNanoj\fP (void)"
+.br
+.RI "This function runs the Nano-J program on the Motor Device\&. "
+.ti -1c
+.RI "bool \fBstopNanoj\fP (void)"
+.br
+.RI "This function stops a running Nano-J program\&. "
+.ti -1c
+.RI "virtual void \fBmotionParameterCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBpreparationCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.RI "This function is called just before to set the speed: if return true, the speed is set to the predefined value\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBrunningCallback\fP (\fBMotorCommands\fP \fBcurrent_command\fP, int current_position, int target_position)"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "virtual \fBMotorCompletedCodes\fP \fBidleCallback\fP (void)"
+.br
+.RI "This function is called just before to Power the motor phases\&. "
+.ti -1c
+.RI "virtual void \fBresetCallback\fP (void)"
+.br
+.RI "Called whenever the boot message is received from the device\&. "
+.ti -1c
+.RI "virtual bool \fBunbrakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be released\&. "
+.ti -1c
+.RI "virtual bool \fBbrakeCallback\fP (void)"
+.br
+.RI "Called whenever the optional brake device should be reactivated 
+.br
+ "
+.ti -1c
+.RI "void \fBsetCommandCompleted\fP (\fBMotorCompletedCodes\fP error)"
+.br
+.ti -1c
+.RI "int \fBgetCommandId\fP (void)"
+.br
+.RI "This function returns the current command-id\&. "
+.ti -1c
+.RI "\fBODRegister\fP ^ \fBgetRxReg\fP (void)"
+.br
+.RI "Returns the pointer of the reception sdo register\&. "
+.ti -1c
+.RI "void \fBsetSpeed\fP (int val)"
+.br
+.RI "Modifies the assigned command speed (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "void \fBsetAcc\fP (int val)"
+.br
+.RI "Modifies the assigned command acceleration (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "void \fBsetDec\fP (int val)"
+.br
+.RI "Modifies the assigned command deceleration (to be used into the \fBmotionParameterCallback()\fP) "
+.ti -1c
+.RI "\fBmotor_rotation_activations\fP \fBgetMotorDirection\fP (void)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBiso_activation_mode\fP"
+.br
+.RI "Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. "
+.in -1c
+
+Protected Attributes inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "bool \fBsimulator_mode\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBdevice_id\fP"
+.br
+.RI "This is the target Device Id\&. "
+.ti -1c
+.RI "System::String ^ \fBconfig_param\fP"
+.br
+.RI "Pointer to the parameter in the config parameter 
+.br
+ "
+.ti -1c
+.RI "\fBNotify::messages\fP \fBerror_homing\fP"
+.br
+.ti -1c
+.RI "bool \fBfault_activation\fP"
+.br
+.in -1c
+.SS "Events"
+
+.in +1c
+.ti -1c
+.RI "static \fBdelegate_abort_projection_request_callback\fP^ \fBabort_projection_request_event\fP"
+.br
+.ti -1c
+.RI "static \fBdelegate_projection_request_callback\fP^ \fBprojection_request_event\fP"
+.br
+.in -1c
+
+Events inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "\fBdelegate_fault_callback\fP^ \fBfault_event\fP"
+.br
+.RI "Event generated when a Driver fault condition is detected\&. "
+.ti -1c
+.RI "\fBdelegate_command_completed_callback\fP^ \fBcommand_completed_event\fP"
+.br
+.RI "Event generated at the command completion\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBProjectionOptions\fP ^ \fBprojections\fP = gcnew \fBProjectionOptions\fP"
+.br
+.RI "This is the current selected projection\&. "
+.ti -1c
+.RI "static int \fBallowed_low\fP = 0"
+.br
+.RI "Lower acceptable angle (°) "
+.ti -1c
+.RI "static int \fBallowed_high\fP = 0"
+.br
+.RI "Higher acceptable angle (°) "
+.ti -1c
+.RI "static bool \fBvalid_target\fP = false"
+.br
+.RI "True if the target is a valid target\&. "
+.ti -1c
+.RI "static int \fBselected_target\fP"
+.br
+.RI "Automatic selected target 
+.br
+ "
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Public Types inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBstatus_options::MOTOR_NOT_CONNECTED\fP = 0, \fBstatus_options::MOTOR_CONFIGURATION\fP, \fBstatus_options::MOTOR_READY\fP, \fBstatus_options::MOTOR_BUSY\fP, \fBstatus_options::MOTOR_FAULT\fP }"
+.br
+.RI "This enumeration class descibes the internal status condition\&. "
+.ti -1c
+.RI "enum class \fBMotorCommands\fP { \fBMotorCommands::MOTOR_IDLE\fP = 0, \fBMotorCommands::MOTOR_AUTO_HOMING\fP, \fBMotorCommands::MOTOR_MANUAL_HOMING\fP, \fBMotorCommands::MOTOR_EXTERNAL_HOMING\fP, \fBMotorCommands::MOTOR_AUTO_POSITIONING\fP, \fBMotorCommands::MOTOR_MANUAL_POSITIONING\fP, \fBMotorCommands::MOTOR_MANUAL_SERVICE\fP }"
+.br
+.RI "This enumeration class descibes the Command codes\&. "
+.ti -1c
+.RI "enum class \fBmotor_rotation_activations\fP { \fBmotor_rotation_activations::MOTOR_NO_ACTIVATION\fP, \fBmotor_rotation_activations::MOTOR_INCREASE\fP, \fBmotor_rotation_activations::MOTOR_DECREASE\fP, \fBmotor_rotation_activations::MOTOR_UNDEFINED\fP }"
+.br
+.ti -1c
+.RI "enum class \fBMotorCompletedCodes\fP { \fBMotorCompletedCodes::COMMAND_SUCCESS\fP = 0, \fBMotorCompletedCodes::COMMAND_PROCEED\fP = 0, \fBMotorCompletedCodes::COMMAND_MANUAL_TERMINATION\fP, \fBMotorCompletedCodes::MOTOR_ERRORS\fP, \fBMotorCompletedCodes::ERROR_OBSTACLE_DETECTED\fP = MOTOR_ERRORS, \fBMotorCompletedCodes::ERROR_MOTOR_BUSY\fP, \fBMotorCompletedCodes::ERROR_INITIALIZATION\fP, \fBMotorCompletedCodes::ERROR_UNEXPECTED_STATUS\fP, \fBMotorCompletedCodes::ERROR_LIMIT_SWITCH\fP, \fBMotorCompletedCodes::ERROR_BRAKE_DEVICE\fP, \fBMotorCompletedCodes::ERROR_TIMOUT\fP, \fBMotorCompletedCodes::ERROR_INTERNAL_FAULT\fP, \fBMotorCompletedCodes::ERROR_ACCESS_REGISTER\fP, \fBMotorCompletedCodes::ERROR_MISSING_HOME\fP, \fBMotorCompletedCodes::ERROR_TARGET_OUT_OF_RANGE\fP, \fBMotorCompletedCodes::ERROR_COMMAND_DISABLED\fP, \fBMotorCompletedCodes::ERROR_COMMAND_ABORTED\fP, \fBMotorCompletedCodes::ERROR_COMMAND_DEMO\fP, \fBMotorCompletedCodes::ERROR_SAFETY\fP, \fBMotorCompletedCodes::ERROR_STARTING_NANOJ\fP, \fBMotorCompletedCodes::ERROR_INVALID_COMMAND\fP }"
+.br
+.RI "This enumeration class descibes the command complete codes\&. "
+.in -1c
+
+Static Protected Member Functions inherited from \fBCANOPEN::CanOpenMotor\fP
+.in +1c
+.ti -1c
+.RI "static System::String ^ \fBgetErrorClass1001\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error string from the error of the register 1001\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetErrorClass1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Class string from the register 1003\&. "
+.ti -1c
+.RI "static System::String ^ \fBgetErrorCode1003\fP (unsigned int val)"
+.br
+.RI "This is a convenient function to decode a Error Code string from the register 1003\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class implements the C-ARM activation features\&. 
+
+The module inherits the base class \fBCANOPEN::CanOpenMotor\fP for the most of the motor control procedures\&.
+
+.PP
+In order to implement some specific function of the C-ARM, the module overrides the following procedures:
+.IP "\(bu" 2
+\fBinitializeSpecificObjectDictionaryCallback()\fP: uploads some of the cmotor control register to adapt the motor performances to the C-ARM;
+.IP "\(bu" 2
+\fBcompletedCallback()\fP: in order to implement the Virtual Isocentric compensation the module override this callback generated when the activation terminates;
+.IP "\(bu" 2
+\fBfaultCallback()\fP: in case of fault the module generate an error message specific for the C-ARM\&.
+.PP
+
+.PP
+See the \fBC-ARM Rotation Description\fP for details about the features implemented by this module 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ArmMotor::ArmMotor (void )"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static void ArmMotor::abortProjectionRequest (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "void ArmMotor::abortTarget (void )\fR [static]\fP"
+
+.SS "void ArmMotor::completedCallback (int id, \fBMotorCommands\fP current_command, int current_position, \fBMotorCompletedCodes\fP term_code)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This function is called just before to Power the motor phases\&. 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "delegate void ArmMotor::delegate_abort_projection_request_callback (void )"
+
+.SS "delegate void ArmMotor::delegate_projection_request_callback (System::String^ str)"
+
+.SS "void ArmMotor::faultCallback (bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static \fBProjectionOptions\fP ^ ArmMotor::getProjectionsList ()\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static System::String ^ ArmMotor::getSelectedProjection (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static \fBProjectionOptions::options\fP ArmMotor::getSelectedProjectionCode (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "unsigned short ArmMotor::initializeSpecificObjectDictionaryCallback (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Sets specific registers for the Arm activation 
+.br
+ 
+.PP
+Reimplemented from \fBCANOPEN::CanOpenMotor\fP\&.
+.SS "static bool ArmMotor::isInRange (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function checks if the current motor position belong to the acceptable angle range\&. 
+.PP
+\fBImportant\fP
+.RS 4
+The acceptable range is intended as the position range acceptable for the next exposure\&.
+.RE
+.PP
+The module implements a specific and only method that sets the acceptable range:
+.IP "\(bu" 2
+\fBsetTarget()\fP: the Application should use this method only when the related target position needs to be guarantee;
+.PP
+
+.PP
+The acceptable range is set by the Application to allow the motor to be in a different position than the valid target position selected, so long as it belong to a limitad range, called acceptable range\&.
+
+.PP
+\fBNote\fP
+.RS 4
+The manual activation of the motor with the manual buttons causes the motor position to change without changing the current valid (or invalid) target position\&.
+.RE
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+true: the current position belogs to the acceptable range;
+.IP "\(bu" 2
+false: the current position exceeds the acceptable range; 
+.PP
+.RE
+.PP
+
+.SS "static bool ArmMotor::isTarget (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function return true in case the current c-arm position is in the selected target angle\&. The target angle is set by the application when requests for an automatic positioning\&.
+
+.PP
+The position is then considered in target if the actual motor position is into a +/- 0\&.01 degrees respect the selected target angle\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+true: the motor position is equal to the target position;
+.IP "\(bu" 2
+false: the motor position exceed the range of +/- 0\&.01 degrees from the target position; 
+.PP
+.RE
+.PP
+
+.SS "static bool ArmMotor::isValidPosition (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function checks if the current position is a valid position for the exposure\&. This function actually tests both the valid target condition and valid range\&.
+
+.PP
+If the current target is a valid target and the current position, even if different from the target, is in the acceptable range, then the position can finally be considered as valid for the next exposure\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+true: the current motor position is valid for the exposure;
+.IP "\(bu" 2
+false: the current position is not valid for the next exposure; 
+.PP
+.RE
+.PP
+
+.SS "static bool ArmMotor::isValidTarget (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function returns true in the case the current target position is flagged as valid target for exposure\&. 
+.PP
+\fBImportant\fP
+.RS 4
+The concept of valid target is intended as 'Valid for the next exposure'\&.
+.RE
+.PP
+The module implements a specific and only method that sets a valid target:
+.IP "\(bu" 2
+\fBsetTarget()\fP;
+.PP
+
+.PP
+The Application should use this method only when the related target position needs to be guarantee;
+
+.PP
+Any other method that activates the motor invalidate the target position\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+true: the current target position is valid;
+.IP "\(bu" 2
+false: the current target is invalid for the next exposure\&.
+.PP
+
+.PP
+
+.PP
+A target position can be set by other methods that cannot be used in operating mode (Open Study)\&. In this case the target_position is flagged as non valid target\&.
+
+.PP
+.RE
+.PP
+
+.SS "static void ArmMotor::projectionRequest (System::String^ projection)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "bool ArmMotor::serviceAutoPosition (int pos)\fR [static]\fP"
+
+.SS "bool ArmMotor::setIdlePosition (void )\fR [static]\fP"
+
+.SS "int ArmMotor::setTarget (int pos, int low, int high, System::String^ proj, int id)\fR [static]\fP"
+
+.PP
+This is the method that activate the motor to a valid target angle and trigger the Isocentric Vertical correction\&. The application shall calls this method in order to set a valid c-arm position for the next exposure\&.
+
+.PP
+A valid target position and its related acceptable position range is set with this command:
+.IP "\(bu" 2
+a valid target condition shall be checked by the application in order to enable for an exposure;
+.IP "\(bu" 2
+a valid range shall be set by the application in order to let a mamual arm rotation in a determined range valid for the exposure;
+.PP
+
+.PP
+Th projection name is used to validate the tarfget respect the list of acceptable projections that the application should have set before to call this method\&.
+
+.PP
+Moreover, this function, if the requested rotation should successfully terminate, triggers the Vertical motor activation so that the final vertical c-arm position be equal to the position at the beginning of the rotation\&. (Virtual isocentric rotation)
+
+.PP
+If the identifier parameter
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP should be grater than zero, when the command termines the module will notify the AWS with the command termination EVENT, (EVENT_Executed(id));
+.br
+\fIpos\fP this is the target position in 0\&.01 degrees
+.br
+\fIlow\fP lower angle of the acceptable range
+.br
+\fIhigh\fP higher angl of the acceptable range
+.br
+\fIproj\fP projection name
+.br
+\fIid\fP AWS command identifier (if greater than 0)
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool ArmMotor::startAutoHoming (void )\fR [static]\fP"
+
+.PP
+This function activates the automatic zero setting procedure\&. This function activates the Automatic Homing procedure\&.
+
+.PP
+The automatic zero setting procedure activates the motor rotation until a photocell dedicate to the zero setting procedure intercepts the mechanical zero setting point\&.
+
+.PP
+This method should be called by the application for service, in case a automatic zero setting should be executed\&.
+
+.PP
+This methods is not a blocking method for the caller thread:
+.IP "\(bu" 2
+the encoder reset may takes time after this method returns\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+:
+.IP "\(bu" 2
+the Application shall call the method \fBCanOpenMotor::isRunning()\fP to checks if the manual command is terminated;
+.IP "\(bu" 2
+the application shall call the \fBCanOpenMotor::getCommandCompletedCode()\fP to get the result of the command as soon as the \fBCanOpenMotor::isRunning()\fP should return false\&.
+.PP
+.RE
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+true: the zero setting process is actually started;
+.IP "\(bu" 2
+false: the zero setting cannot start for some reason (\fBCanOpenMotor::getCommandCompletedCode()\fP for gets the error code) 
+.PP
+.RE
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool ArmMotor::startManualHoming (int target_position)\fR [static]\fP"
+
+.PP
+This function activates the manual zero setting procedure\&. The manual zero setting procedure is aprocedure that doesn't require any motor activation\&. The motor sets its internal encoder to the value manually passed by this module\&.
+
+.PP
+This method should be called by the application for service, in case a position manual zero setting should be executed\&.
+
+.PP
+This methods is not a blocking method for the caller thread:
+.IP "\(bu" 2
+the encoder reset may takes time after this method returns\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+:
+.IP "\(bu" 2
+the Application shall call the method CanOpenMotor::isRunning() to checks if the manual command is terminated;
+.IP "\(bu" 2
+the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result of the command as soon as the CanOpenMotor::isRunning() should return false\&.
+.PP
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget_position\fP This is the current effective position in 0\&.01 degrees units
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+true: the zero setting process is actually started;
+.IP "\(bu" 2
+false: the zero setting cannot start 
+.PP
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int ArmMotor::allowed_high = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Higher acceptable angle (°) 
+.SS "int ArmMotor::allowed_low = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Lower acceptable angle (°) 
+.SS "\fBArmMotor\fP ^ ArmMotor::device = gcnew \fBArmMotor\fP()\fR [static]\fP"
+
+.PP
+This is the static reference to the C-ARM module\&. The first use of the static reference in the Application will causes an automatic auto instancing of the module
+
+.PP
+The application can have access to the non static members of this module (for example the methods inherited by the base class) by using the \fBArmMotor::device\fP-> reference\&. 
+.SS "bool ArmMotor::iso_activation_mode\fR [protected]\fP"
+
+.PP
+Setting this flag, causes the Vertical motor activation at the Arm rotation completion\&. 
+.SS "\fBProjectionOptions\fP ^ ArmMotor::projections = gcnew \fBProjectionOptions\fP\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the current selected projection\&. 
+.SS "int ArmMotor::selected_target\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Automatic selected target 
+.br
+ 
+.SS "bool ArmMotor::valid_target = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+True if the target is a valid target\&. 
+.SH "Event Documentation"
+.PP 
+.SS "\fBdelegate_abort_projection_request_callback\fP^ ArmMotor::abort_projection_request_event\fR [static]\fP"
+
+.SS "\fBdelegate_projection_request_callback\fP^ ArmMotor::projection_request_event\fR [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

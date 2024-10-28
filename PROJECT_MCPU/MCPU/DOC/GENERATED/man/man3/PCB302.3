@@ -3,3 +3,623 @@
 .nh
 .SH NAME
 PCB302
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB302\&.h>\fP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBProtocolStructure\fP"
+.br
+.RI "This class implement the protocol data structure as described in the protocol specification\&. "
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBPatientProtection\fP { \fBUNDETECTED\fP = 0, \fBPOSITIONED\fP, \fBSHIFTED\fP }"
+.br
+.RI "This is the enumeration of the possible Patient protection presence\&. "
+.ti -1c
+.RI "enum class \fBpaddleCodes\fP { \fBPADDLE_PROSTHESIS\fP =0, \fBPADDLE_BIOP2D\fP, \fBPADDLE_BIOP3D\fP, \fBPADDLE_TOMO\fP, \fBPADDLE_24x30_CONTACT\fP, \fBPADDLE_18x24_C_CONTACT\fP, \fBPADDLE_18x24_L_CONTACT\fP, \fBPADDLE_18x24_R_CONTACT\fP, \fBPADDLE_10x24_CONTACT\fP, \fBPADDLE_9x21_MAG\fP, \fBPADDLE_9x9_MAG\fP, \fBPADDLE_D75_MAG\fP, \fBPADDLE_LEN\fP, \fBPADDLE_NOT_DETECTED\fP = PADDLE_LEN }"
+.br
+.RI "This enumeration class defines the Paddle identified by the Application\&. "
+.in -1c
+
+Public Types inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "enum class \fBCommandRegisterErrors\fP { \fBCommandRegisterErrors::COMMAND_NO_ERROR\fP = 0, \fBCommandRegisterErrors::COMMAND_ERROR_BUSY\fP, \fBCommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM\fP, \fBCommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCommandRegisterErrors::COMMAND_INVALID_DEVICE\fP =253, \fBCommandRegisterErrors::COMMAND_COMMUNICATION_ERROR\fP =254, \fBCommandRegisterErrors::COMMAND_DEVICE_TMO\fP = 255 }"
+.br
+.RI "This is the enumeration of the possible command executed errors\&. "
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBstatus_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBstatus_options::WAITING_REVISION\fP, \fBstatus_options::DEVICE_CONFIGURATION\fP, \fBstatus_options::DEVICE_RUNNING\fP, \fBstatus_options::DEVICE_SIMULATOR\fP, \fBstatus_options::LEN\fP, \fBstatus_options::UNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration of the Module's internal operating status\&.
+.br
+See the \fBgetModuleStatus()\fP method\&. "
+.ti -1c
+.RI "enum class \fBbootloader_options\fP { \fBbootloader_options::BOOTLOADER_NOT_PRESENT\fP = 0, \fBbootloader_options::BOOTLOADER_RUNNING\fP = 1, \fBbootloader_options::BOOTLOADER_PRESENT\fP = 2, \fBbootloader_options::BOOTLOADER_UNCKNOWN_STAT\fP }"
+.br
+.RI "This is the enumeration calss defining the current status of the remote bootloader activity\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB302\fP ()"
+.br
+.in -1c
+
+Public Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceProtocol\fP (unsigned char devid, LPCWSTR devname)"
+.br
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.RI "This function activate the Module in Real mode\&. "
+.ti -1c
+.RI "void \fBsimulMode\fP (void)"
+.br
+.RI "This function activate the Module in Simulation mode\&. "
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
+.RI "This function tests if the module is running in simulation mode\&. "
+.ti -1c
+.RI "bool \fBisCommunicationError\fP (void)"
+.br
+.RI "This function tests if the module is in communication error condition\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetModuleStatus\fP (void)"
+.br
+.RI "This function returns the Module operating status\&. "
+.ti -1c
+.RI "\fBbootloader_options\fP \fBgetBootStatus\fP (void)"
+.br
+.RI "This function returns the current status of the bootloader activities on the remote device\&. "
+.ti -1c
+.RI "System::String ^ \fBgetBootRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected Bootloader revision code\&. "
+.ti -1c
+.RI "System::String ^ \fBgetAppRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected remote firmware revision code\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This is a non blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This is a blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo, Object^ src)"
+.br
+.ti -1c
+.RI "bool \fBisCommandCompleted\fP (void)"
+.br
+.RI "This function returns the current status of the pending command\&. "
+.ti -1c
+.RI "bool \fBisCommandError\fP (void)"
+.br
+.RI "This function returns true if the command is terminated with an error condition\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult0\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-0\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult1\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-1\&. "
+.ti -1c
+.RI "\fBCommandRegisterErrors\fP \fBgetCommandError\fP (void)"
+.br
+.RI "This function returns the last error condition of an executed command\&. "
+.ti -1c
+.RI "System::String ^ \fBgetCanCommunicationMonitorString\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static System::String ^ \fBgetPaddleName\fP (\fBpaddleCodes\fP paddle)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetRawPosition\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetRawForce\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetPaddlePosition\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetPaddleForce\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetThickness\fP (void)"
+.br
+.ti -1c
+.RI "static unsigned short \fBgetForce\fP (void)"
+.br
+.RI "This function returnrs the current thickness in mm\&. "
+.ti -1c
+.RI "static bool \fBisDownwardActivationStatus\fP (void)"
+.br
+.RI "This function returnrs the current compression force in N\&. "
+.ti -1c
+.RI "static bool \fBisUpwardActivationStatus\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisIdleStatus\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetCompressorUnlock\fP (void)"
+.br
+.RI "This function unlocks the compression\&. "
+.ti -1c
+.RI "static \fBpaddleCodes\fP \fBgetPaddleCode\fP (System::String^ tag)"
+.br
+.RI "This function returns the paddle code from the paddle name 
+.br
+ "
+.ti -1c
+.RI "static \fBpaddleCodes\fP \fBgetDetectedPaddleCode\fP (void)"
+.br
+.RI "This function returns the current detected paddle code\&. "
+.ti -1c
+.RI "static System::Byte \fBgetPaddleCollimationFormat\fP (\fBpaddleCodes\fP paddle_code)"
+.br
+.RI "This function returns the index of the collimation format associated at the paddle\&. "
+.ti -1c
+.RI "static System::Byte \fBgetDetectedPaddleCollimationFormat\fP (void)"
+.br
+.RI "This function returns the collimation format index associated to the detected paddle\&. "
+.ti -1c
+.RI "static \fBPatientProtection\fP \fBgetPatientProtection\fP (void)"
+.br
+.RI "This function returns the current status of the Patient Protection presence\&. "
+.ti -1c
+.RI "static unsigned char \fBgetMagnifierFactor\fP (void)"
+.br
+.RI "This function return the current detected Magnifier Factor\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB302\fP ^ \fBdevice\fP = gcnew \fBPCB302\fP()"
+.br
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBpaddle_names\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
+.ti -1c
+.RI "bool \fBconfigurationLoop\fP (void) override"
+.br
+.in -1c
+
+Protected Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadCommandRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device command register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadErrorRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device error register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadStatusRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the STATUS register of given INDEX\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadDataRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the DATA register of given INDEX\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ \fBgetRxRegister\fP (void)"
+.br
+.RI "This function returns the last read register\&. "
+.ti -1c
+.RI "virtual void \fBdemoLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
+.ti -1c
+.RI "virtual void \fBresetLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the specific operations in case of the remote device reset detection\&. "
+.ti -1c
+.RI "virtual bool \fBsimulCommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandNoWaitCompletion()\fP should be used by the application See the \fBcommandNoWaitCompletion()\fP for details\&. "
+.ti -1c
+.RI "virtual \fBCanDeviceCommandResult\fP ^ \fBsimulCommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandWaitCompletion()\fP should be used by the application See the \fBcommandWaitCompletion()\fP for details\&. "
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBmoduleInitialize\fP (void)"
+.br
+.RI "Initialize the module at the module creation\&. "
+.ti -1c
+.RI "void \fBgetDetectedPaddleData\fP (void)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBProtocolStructure\fP \fBprotocol\fP"
+.br
+.RI "This is the structure with the Status register info\&. "
+.ti -1c
+.RI "static bool \fBposition_calibrated\fP = false"
+.br
+.RI "This is the flag related to the position calibration status\&. "
+.ti -1c
+.RI "static bool \fBforce_calibrated\fP = false"
+.br
+.RI "This is the flag related to the position calibration status\&. "
+.ti -1c
+.RI "static \fBpaddleCodes\fP \fBdetected_paddle\fP = \fBpaddleCodes::PADDLE_NOT_DETECTED\fP"
+.br
+.RI "This is the current detected paddle code\&. "
+.ti -1c
+.RI "static System::Byte \fBdetected_paddle_collimation_index\fP = 0"
+.br
+.RI "This is the collimation slot associated to the detected paddle\&. "
+.ti -1c
+.RI "static int \fBdetected_paddle_weight\fP = 0"
+.br
+.RI "This is the weight in N of the detected paddle\&. "
+.ti -1c
+.RI "static int \fBdetected_paddle_offset\fP = 0"
+.br
+.RI "This is the offset from the holder position and the paddle compression plane\&. "
+.ti -1c
+.RI "static unsigned short \fBbreast_thickness\fP = 0"
+.br
+.RI "Compressed breast thickness in mm (0 if the compression_on should be false) "
+.ti -1c
+.RI "static unsigned short \fBcompression_force\fP = 0"
+.br
+.RI "Evaluated compression force ( 0 if the compression_on should be false) "
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Protected Attributes inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommunicationMonitor\fP \fBcan_communication_monitor\fP"
+.br
+.RI "This is the debug class\&. "
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB302::paddleCodes\fP\fR [strong]\fP"
+
+.PP
+This enumeration class defines the Paddle identified by the Application\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIPADDLE_PROSTHESIS \fP(0)
+Paddle PROSTHESIS format\&. 
+.TP
+\f(BIPADDLE_BIOP2D \fP
+Paddle BIOPSY 2D format\&. 
+.TP
+\f(BIPADDLE_BIOP3D \fP
+Paddle BIOPSY STEREO format\&. 
+.TP
+\f(BIPADDLE_TOMO \fP
+Paddle TOMO 24x30 format\&. 
+.TP
+\f(BIPADDLE_24x30_CONTACT \fP
+Paddle 24x30 format\&. 
+.TP
+\f(BIPADDLE_18x24_C_CONTACT \fP
+Paddle 18x24 CENTER format\&. 
+.TP
+\f(BIPADDLE_18x24_L_CONTACT \fP
+Paddle 18x24 LEFT format\&. 
+.TP
+\f(BIPADDLE_18x24_R_CONTACT \fP
+Paddle 18x24 RIGHT format\&. 
+.TP
+\f(BIPADDLE_10x24_CONTACT \fP
+Paddle 10x24 format\&. 
+.TP
+\f(BIPADDLE_9x21_MAG \fP
+Paddle 9x21(MAG) format\&. 
+.TP
+\f(BIPADDLE_9x9_MAG \fP
+Paddle TOMO 9x9(MAG) format\&. 
+.TP
+\f(BIPADDLE_D75_MAG \fP
+Paddle D75(MAG) format\&. 
+.TP
+\f(BIPADDLE_LEN \fP
+.TP
+\f(BIPADDLE_NOT_DETECTED \fP(PADDLE_LEN)
+.SS "enum class \fBPCB302::PatientProtection\fP\fR [strong]\fP"
+
+.PP
+This is the enumeration of the possible Patient protection presence\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIUNDETECTED \fP(0)
+.TP
+\f(BIPOSITIONED \fP
+.TP
+\f(BISHIFTED \fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PCB302::PCB302 ()\fR [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PCB302::configurationLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+This function is called by the Base class before to call the \fBrunningLoop()\fP allowing the module to properly configure the device\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "\fBPCB302::paddleCodes\fP PCB302::getDetectedPaddleCode (void )\fR [static]\fP"
+
+.PP
+This function returns the current detected paddle code\&. 
+.PP
+\fBReturns\fP
+.RS 4
+the current detected paddle code
+.RE
+.PP
+
+.SS "static System::Byte PCB302::getDetectedPaddleCollimationFormat (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function returns the collimation format index associated to the detected paddle\&. 
+.SS "void PCB302::getDetectedPaddleData (void )\fR [private]\fP"
+
+.SS "static unsigned short PCB302::getForce (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function returnrs the current thickness in mm\&. 
+.SS "static unsigned char PCB302::getMagnifierFactor (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function return the current detected Magnifier Factor\&. The Magnifier device is a special component that can be mounted in the special slots of the Mammo unit: its presence is detetced by the compressor device\&.
+
+.PP
+The Magnifier device can be set in one of the possible magnification factor: +1\&.5x; +1\&.8x; +2\&.0x
+
+.PP
+This function returns the current magnification factor multiplied 10: (15, 18, 20)
+
+.PP
+In the case no Magnifier devioce should be detected the function will returns 10\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+The detected Magnifier Factor [10, 15, 18, 20] 
+.RE
+.PP
+
+.SS "\fBPCB302::paddleCodes\fP PCB302::getPaddleCode (System::String^ tag)\fR [static]\fP"
+
+.PP
+This function returns the paddle code from the paddle name 
+.br
+ This function returns the paddle code from the paddle name\&.
+
+.PP
+The Paddle name is a string name describing the Paddle\&.
+.br
+The paddle name is used in the system for string protocols like the AWS protocol\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fItag\fP name of the paddle
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the paddle code or -1 if the no paddle is found
+.RE
+.PP
+
+.SS "System::Byte PCB302::getPaddleCollimationFormat (\fBpaddleCodes\fP paddle_code)\fR [static]\fP"
+
+.PP
+This function returns the index of the collimation format associated at the paddle\&. The index of the collimation format should be in the range of 1:x where x should depend by the collimator number of available collimation format parameters\&. 
+.PP
+.nf
+NOTE: This module cannot check the index value that depends by other modules (the collimaotor)\&.
+
+.fi
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpaddle_code\fP the code of the paddle to be investigated
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the collimation format or \&.-1 if the paddle is notn a valid paddle
+.RE
+.PP
+
+.SS "static unsigned short PCB302::getPaddleForce (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static System::String ^ PCB302::getPaddleName (\fBpaddleCodes\fP paddle)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static unsigned short PCB302::getPaddlePosition (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static \fBPatientProtection\fP PCB302::getPatientProtection (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function returns the current status of the Patient Protection presence\&. The Patient protection is a special component that can be mounted in the special slots of the Mammo Unit: its presence is detected by the compressor device\&.
+
+.PP
+The Patient Protection can be in one of the following status:
+.IP "\(bu" 2
+Not Detected: the patient protectioon is not inserted in the Mammo Unit;
+.IP "\(bu" 2
+Present and shifted;
+.IP "\(bu" 2
+Present and in the correct position for the x-ray exposure\&.
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+The status of the detected (or undetected) patient protection
+.RE
+.PP
+
+.SS "static unsigned short PCB302::getRawForce (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static unsigned short PCB302::getRawPosition (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static unsigned short PCB302::getThickness (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB302::isDownwardActivationStatus (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function returnrs the current compression force in N\&. 
+.SS "static bool PCB302::isIdleStatus (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB302::isUpwardActivationStatus (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "void PCB302::moduleInitialize (void )\fR [private]\fP"
+
+.PP
+Initialize the module at the module creation\&. 
+.SS "void PCB302::runningLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "static void PCB302::setCompressorUnlock (void )\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+This function unlocks the compression\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned short PCB302::breast_thickness = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Compressed breast thickness in mm (0 if the compression_on should be false) 
+.SS "unsigned short PCB302::compression_force = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Evaluated compression force ( 0 if the compression_on should be false) 
+.SS "\fBpaddleCodes\fP PCB302::detected_paddle = \fBpaddleCodes::PADDLE_NOT_DETECTED\fP\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the current detected paddle code\&. 
+.SS "System::Byte PCB302::detected_paddle_collimation_index = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the collimation slot associated to the detected paddle\&. 
+.SS "int PCB302::detected_paddle_offset = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the offset from the holder position and the paddle compression plane\&. 
+.SS "int PCB302::detected_paddle_weight = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the weight in N of the detected paddle\&. 
+.SS "\fBPCB302\fP ^ PCB302::device = gcnew \fBPCB302\fP()\fR [static]\fP"
+
+.SS "bool PCB302::force_calibrated = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the flag related to the position calibration status\&. 
+.SS "const cli::array<System::String^> ^ PCB302::paddle_names\fR [static]\fP"
+\fBInitial value:\fP
+.nf
+= gcnew cli::array<System::String^> { 
+        "PROSTHESIS", 
+        "BIOP2D", 
+        "BIOP3D", 
+        "TOMO",
+        "24x30",
+        "18x24C",
+        "18x24L",
+        "18x24R",
+        "10x24 CNT",
+        "9x21 MAG",
+        "9x9 MAG",
+        "D75 MAG",
+    }
+.PP
+.fi
+
+.SS "bool PCB302::position_calibrated = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the flag related to the position calibration status\&. 
+.SS "\fBProtocolStructure\fP PCB302::protocol\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the structure with the Status register info\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

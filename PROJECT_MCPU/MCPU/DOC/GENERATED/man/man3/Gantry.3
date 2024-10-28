@@ -3,3 +3,482 @@
 .nh
 .SH NAME
 Gantry
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <gantry_global_status\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBoperating_status_options\fP { \fBGANTRY_STARTUP\fP = 0, \fBGANTRY_IDLE\fP, \fBGANTRY_OPERATING\fP, \fBGANTRY_SERVICE\fP }"
+.br
+.ti -1c
+.RI "enum class \fBmanual_rotation_options\fP { \fBGANTRY_MANUAL_ROTATION_DISABLED\fP = 0, \fBGANTRY_STANDARD_STATUS_MANUAL_ROTATION\fP, \fBGANTRY_BODY_MANUAL_ROTATION\fP, \fBGANTRY_SLIDE_MANUAL_ROTATION\fP, \fBGANTRY_TILT_MANUAL_ROTATION\fP, \fBGANTRY_ARM_MANUAL_ROTATION\fP, \fBGANTRY_VERTICAL_MANUAL_ROTATION\fP }"
+.br
+.ti -1c
+.RI "enum class \fBsafety_rotation_conditions\fP { \fBGANTRY_SAFETY_OK\fP, \fBGANTRY_SAFETY_EMERGENCY_BUTTON\fP, \fBGANTRY_SAFETY_POWER_DOWN\fP, \fBGANTRY_SAFETY_COMPRESSION\fP, \fBGANTRY_SAFETY_CABINET\fP, \fBGANTRY_SAFETY_POWER_SUPPLY\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBGantry\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBinitialize\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetManualRotationMode\fP (\fBmanual_rotation_options\fP mode)"
+.br
+.ti -1c
+.RI "static bool \fBgetObstacleRotationStatus\fP (int addr, \fBCANOPEN::CanOpenMotor::motor_rotation_activations\fP direction)"
+.br
+.ti -1c
+.RI "static \fBsafety_rotation_conditions\fP \fBgetSafetyRotationStatus\fP (int addr)"
+.br
+.ti -1c
+.RI "static \fBCANOPEN::CanOpenMotor::motor_rotation_activations\fP \fBgetManualActivationRequestState\fP (int device_id)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetPatientName\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetOpenStudy\fP (System::String^ patient)"
+.br
+.ti -1c
+.RI "static bool \fBsetCloseStudy\fP (void)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetOperatingStatusName\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisSERVICE\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisIDLE\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisOPERATING\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisSTARTUP\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetIdle\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetStartup\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetOperating\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBsetService\fP (void)"
+.br
+.ti -1c
+.RI "static \fBValuePopupForm\fP ^ \fBgetValuePopupWindow\fP ()"
+.br
+.ti -1c
+.RI "static bool \fBisOperatingDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisOperatingSym\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisOperatingNormal\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPcb301Demo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPcb302Demo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPcb303Demo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPcb304Demo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPcb325Demo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisPcb326Demo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisMotorTiltDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisMotorArmDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisMotorBodyDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisMotorVerticalDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisMotorSlideDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisGeneratorDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisCanDriverDemo\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisMotorsActive\fP (void)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBGantry\fP ^ \fBgantry_handle\fP = gcnew \fBGantry\fP()"
+.br
+.ti -1c
+.RI "static int \fBmonitor_X0\fP"
+.br
+.RI "Pointer to the Monitor X0 position\&. "
+.ti -1c
+.RI "static int \fBmonitor_Y0\fP"
+.br
+.RI "Pointer to the Monitor Y0 position\&. "
+.ti -1c
+.RI "static System::String ^ \fBapplicationResourcePath\fP"
+.br
+.RI "This is the current application resource path\&. "
+.ti -1c
+.RI "static Object ^ \fBpIdleForm\fP"
+.br
+.RI "Pointer to the \fBIdleForm\fP\&. "
+.ti -1c
+.RI "static Object ^ \fBpOperatingForm\fP"
+.br
+.RI "Pointer to the \fBOperatingForm\fP\&. "
+.ti -1c
+.RI "static Object ^ \fBpServiceForm\fP"
+.br
+.RI "Pointer to the \fBServiceForm\fP\&. "
+.ti -1c
+.RI "static Object ^ \fBpDebugger\fP = nullptr"
+.br
+.RI "Pointer to the Debugger if activated\&. "
+.ti -1c
+.RI "static const cli::array< System::String^> ^ \fBoperating_status_tags\fP = gcnew cli::array<System::String^> { 'GANTRY_STARTUP', 'GANTRY_IDLE', 'GANTRY_OPEN_STUDY', 'GANTRY_SERVICE', 'UNDEF' }"
+.br
+.RI "This is the option-tags static array\&. "
+.ti -1c
+.RI "static \fBmanual_rotation_options\fP \fBmanual_rotation_mode\fP = \fBmanual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED\fP"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBgetManualRotationIncrease\fP (int addr)"
+.br
+.ti -1c
+.RI "static bool \fBgetManualRotationDecrease\fP (int addr)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBoperating_status_options\fP \fBcurrent_operating_status\fP = \fBoperating_status_options::GANTRY_STARTUP\fP"
+.br
+.ti -1c
+.RI "static \fBValuePopupForm\fP ^ \fBvaluePopupWindow\fP"
+.br
+.ti -1c
+.RI "static System::String ^ \fBpatient_name\fP"
+.br
+.ti -1c
+.RI "static bool \fBoperating_normal_status\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBoperating_sym_status\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBoperating_demo_status\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBpcb301_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBpcb302_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBpcb303_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBpcb304_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBpcb325_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBpcb326_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBmotor_vertical_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBmotor_tilt_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBmotor_arm_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBmotor_body_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBmotor_slide_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBgenerator_simulator\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBcan_driver_simulator\fP = false"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGantry::manual_rotation_options\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIGANTRY_MANUAL_ROTATION_DISABLED \fP(0)
+The Manual rotation is globally disabled 
+.br
+ 
+.TP
+\f(BIGANTRY_STANDARD_STATUS_MANUAL_ROTATION \fP
+Arm rotation and Vertical activation with buttons and pedals\&. 
+.TP
+\f(BIGANTRY_BODY_MANUAL_ROTATION \fP
+Pedals and Buttons for Body rotation\&. 
+.TP
+\f(BIGANTRY_SLIDE_MANUAL_ROTATION \fP
+Pedals and Buttons for Slide\&. 
+.TP
+\f(BIGANTRY_TILT_MANUAL_ROTATION \fP
+Pedals and Buttons for Slide\&. 
+.TP
+\f(BIGANTRY_ARM_MANUAL_ROTATION \fP
+Pedals and Buttons for Arm\&. 
+.TP
+\f(BIGANTRY_VERTICAL_MANUAL_ROTATION \fP
+Pedals and Buttons for Vertical\&. 
+.SS "enum class \fBGantry::operating_status_options\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIGANTRY_STARTUP \fP(0)
+\fBGantry\fP is in the Startup operating mode\&. 
+.TP
+\f(BIGANTRY_IDLE \fP
+\fBGantry\fP is in the Idle operating mode\&. 
+.TP
+\f(BIGANTRY_OPERATING \fP
+\fBGantry\fP is in the Operating operating mode\&. 
+.TP
+\f(BIGANTRY_SERVICE \fP
+\fBGantry\fP is in the Service operating mode 
+.br
+ 
+.SS "enum class \fBGantry::safety_rotation_conditions\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIGANTRY_SAFETY_OK \fP
+No safety issues are detected\&. 
+.TP
+\f(BIGANTRY_SAFETY_EMERGENCY_BUTTON \fP
+The Emergency push button is detected\&. 
+.TP
+\f(BIGANTRY_SAFETY_POWER_DOWN \fP
+The Power down is detected\&. 
+.TP
+\f(BIGANTRY_SAFETY_COMPRESSION \fP
+The Compression is present\&. 
+.TP
+\f(BIGANTRY_SAFETY_CABINET \fP
+The Cabinet is open\&. 
+.TP
+\f(BIGANTRY_SAFETY_POWER_SUPPLY \fP
+The Cabinet is open\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Gantry::Gantry ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBCANOPEN::CanOpenMotor::motor_rotation_activations\fP Gantry::getManualActivationRequestState (int device_id)\fR [static]\fP"
+
+.SS "bool Gantry::getManualRotationDecrease (int addr)\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::getManualRotationIncrease (int addr)\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::getObstacleRotationStatus (int addr, \fBCANOPEN::CanOpenMotor::motor_rotation_activations\fP direction)\fR [static]\fP"
+
+.SS "static System::String ^ Gantry::getOperatingStatusName (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static System::String ^ Gantry::getPatientName (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "\fBGantry::safety_rotation_conditions\fP Gantry::getSafetyRotationStatus (int addr)\fR [static]\fP"
+
+.SS "static \fBValuePopupForm\fP ^ Gantry::getValuePopupWindow ()\fR [inline]\fP, \fR [static]\fP"
+
+.SS "void Gantry::initialize (void )\fR [static]\fP"
+
+.SS "static bool Gantry::isCanDriverDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isGeneratorDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isIDLE (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isMotorArmDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isMotorBodyDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "bool Gantry::isMotorsActive (void )\fR [static]\fP"
+
+.SS "static bool Gantry::isMotorSlideDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isMotorTiltDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isMotorVerticalDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isOPERATING (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isOperatingDemo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isOperatingNormal (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isOperatingSym (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isPcb301Demo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isPcb302Demo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isPcb303Demo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isPcb304Demo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isPcb325Demo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isPcb326Demo (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isSERVICE (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Gantry::isSTARTUP (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "bool Gantry::setCloseStudy (void )\fR [static]\fP"
+
+.SS "bool Gantry::setIdle (void )\fR [static]\fP"
+
+.SS "void Gantry::setManualRotationMode (\fBmanual_rotation_options\fP mode)\fR [static]\fP"
+
+.SS "bool Gantry::setOpenStudy (System::String^ patient)\fR [static]\fP"
+
+.SS "bool Gantry::setOperating (void )\fR [static]\fP"
+
+.SS "bool Gantry::setService (void )\fR [static]\fP"
+
+.SS "void Gantry::setStartup (void )\fR [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::String ^ Gantry::applicationResourcePath\fR [static]\fP"
+
+.PP
+This is the current application resource path\&. 
+.SS "bool Gantry::can_driver_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBoperating_status_options\fP Gantry::current_operating_status = \fBoperating_status_options::GANTRY_STARTUP\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBGantry\fP ^ Gantry::gantry_handle = gcnew \fBGantry\fP()\fR [static]\fP"
+
+.SS "bool Gantry::generator_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBmanual_rotation_options\fP Gantry::manual_rotation_mode = \fBmanual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED\fP\fR [static]\fP"
+
+.SS "int Gantry::monitor_X0\fR [static]\fP"
+
+.PP
+Pointer to the Monitor X0 position\&. 
+.SS "int Gantry::monitor_Y0\fR [static]\fP"
+
+.PP
+Pointer to the Monitor Y0 position\&. 
+.SS "bool Gantry::motor_arm_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::motor_body_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::motor_slide_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::motor_tilt_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::motor_vertical_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::operating_demo_status = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::operating_normal_status = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "const cli::array<System::String^> ^ Gantry::operating_status_tags = gcnew cli::array<System::String^> { 'GANTRY_STARTUP', 'GANTRY_IDLE', 'GANTRY_OPEN_STUDY', 'GANTRY_SERVICE', 'UNDEF' }\fR [static]\fP"
+
+.PP
+This is the option-tags static array\&. 
+.SS "bool Gantry::operating_sym_status = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "System::String ^ Gantry::patient_name\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::pcb301_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::pcb302_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::pcb303_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::pcb304_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::pcb325_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool Gantry::pcb326_simulator = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "Object ^ Gantry::pDebugger = nullptr\fR [static]\fP"
+
+.PP
+Pointer to the Debugger if activated\&. 
+.SS "Object ^ Gantry::pIdleForm\fR [static]\fP"
+
+.PP
+Pointer to the \fBIdleForm\fP\&. 
+.SS "Object ^ Gantry::pOperatingForm\fR [static]\fP"
+
+.PP
+Pointer to the \fBOperatingForm\fP\&. 
+.SS "Object ^ Gantry::pServiceForm\fR [static]\fP"
+
+.PP
+Pointer to the \fBServiceForm\fP\&. 
+.SS "\fBValuePopupForm\fP ^ Gantry::valuePopupWindow\fR [static]\fP, \fR [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

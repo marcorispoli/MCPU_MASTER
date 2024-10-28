@@ -8,7 +8,7 @@
 /**
 	\defgroup MessageNotifyModule Message Notification Implementation
 	\ingroup APPIMPL
-	\internal
+	
 
 	This section describes the implementation of the message notification system.
 */
@@ -153,10 +153,9 @@
 using namespace System::Collections::Generic;
 
 /// <summary>
-/// \addtogroup MessageNotifyModule
-/// \Internal
+/// \ingroup MessageNotifyModule
 /// 
-/// YThis is the calss implementing the application message management.
+/// This is the calss implementing the application message management.
 /// 
 /// </summary>
 public ref class Notify

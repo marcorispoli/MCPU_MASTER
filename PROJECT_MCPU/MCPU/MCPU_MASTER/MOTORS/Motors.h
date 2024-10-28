@@ -335,7 +335,21 @@
 	in case it is using an external position sensor: in this case, at the startup,
 	the actual position is provided by the current value of the sensor.
 
+	## Special Idle Position Sequence Activation Command
 
+	The Application implements a special global activation command that acts as a daisy chain activation
+	that involves in a predefined sequence the following motors:
+	+ Tilt Motor;
+	+ Slide Motor;
+	+ Arm Motor;
+
+	+ The sequence starts with the Tilt motor activated to the 0°;
+	+ When the Tilt completes its activation, the SLide motor is activated to the 0° position;
+	+ Finally, when the Slide completes its activation, the C-ARM starts moving to the 0° target position.
+
+	The Application makes use of this global activation sequence in order to reset the position of those motors
+	when a Study is Closed.
+	
 
 
 */

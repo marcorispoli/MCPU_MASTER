@@ -212,12 +212,46 @@ TiltMotor::TiltMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorD
     current_target = target_options::UNDEF;
 }
 
+/// <summary>
+/// This is the method to be called by the Application to activate the Tilt chained Idle command.
+/// </summary>
+/// 
+/// The Idle command position is a System procedure that involves
+/// the Tilt motor, the Slide motor and finally the Arm motor in an activation daisy chain:
+/// + The Tilt is the first activation in the sequence;
+/// + The Slide activation starts after the Tilt completion;
+/// + Finally the Arm starts as the last motor in the chain;
+/// 
+/// Scope of this activation sequence is to implement a System position called "Idle Position"
+/// that corresponds to a Gantry status when the Gantry is set in Idle mode.
+/// 
+/// \note 
+/// The application may initiate the sequence arbitrarily with any motor of the chain:
+/// in this case the activated motors will be only those that follows the caller in the chain.
+/// 
+/// Being the first motor in the chain, when the Application calls this method 
+/// all the motors will be subsequently activated in the proper order.
+/// 
 bool TiltMotor::setIdlePosition(void) {
     idle_positioning = true;
     pending_target = target_options::SCOUT;
     return device->activateAutomaticPositioning(0, 0, true);
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// 
+/// The module provides this method to let the Application to move the Tilt motor to a 
+/// predefined set of targets (\ref target_options)
+///  
+/// <param name="tg">standard target name (see \ref target_options) </param>
+/// <param name="id">
+/// + AWS identifier command: if this code is greater then 0, at the command completion the 
+/// module will send the \ref EVENT_Executed
+/// 
+/// </param>
+/// <returns></returns>
 bool TiltMotor::setTarget(target_options tg, int id) {
     int angle = 0;
     int speed, acc, dec;
@@ -271,6 +305,17 @@ bool TiltMotor::setTarget(target_options tg, int id) {
     return device->activateAutomaticPositioning(id, angle,  true);
 }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// 
+    /// The Application uses this method during for service purpose.
+    /// 
+    /// <param name="pos">target rotation position in 0.01° units</param>
+    /// <returns>
+    /// + true: the command has been executed successfully;
+    /// + false: the command cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
+    /// </returns>
 bool TiltMotor::serviceAutoPosition(int pos) {
     idle_positioning = false;
     // Test on the Slide position
@@ -286,7 +331,28 @@ bool TiltMotor::serviceAutoPosition(int pos) {
 
 }
 
-
+    /// <summary>
+    /// 
+    /// 
+    /// </summary>
+    /// 
+    /// The Application calls this procedure when the Til is prepositioned 
+    /// into the starting To scan position.
+    /// 
+    /// When this method is called, the silent program running into the motor
+    /// is waken up. The motor will start the rotation as soon as its gpio input
+    /// connected with the detector sinchro signal detects a transition level from
+    /// not active to active.
+    /// 
+    /// 
+    /// <param name="pos">this is the final tomo position in 0.01° units</param>
+    /// <param name="speed">this is the travel speed in 0,01°/s units</param>
+    /// <param name="acc">this is the acceleration rate in 0.01°/s^2</param>
+    /// <param name="dec">this is the deceleration rate in 0.01°/s^2</param>
+     /// <returns>
+    /// + true: the command has been executed successfully;
+    /// + false: the command cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
+    /// </returns>
 bool TiltMotor::activateTomoScan(int pos, int speed, int acc, int dec) { 
     idle_positioning = false;
 
@@ -313,7 +379,6 @@ bool TiltMotor::activateTomoScan(int pos, int speed, int acc, int dec) {
 /// The module resets the current targets to set the actual target as unkown target.
 ///  
 /// <param name=""></param>
-
 void TiltMotor::resetCallback(void) {
 
     pending_target = target_options::UNDEF;
@@ -321,7 +386,7 @@ void TiltMotor::resetCallback(void) {
 }
 
 /// <summary>
-/// This is the override callback called during the initialization fase.
+/// 
 /// 
 /// </summary>
 /// 
@@ -379,11 +444,31 @@ unsigned short TiltMotor::initializeSpecificObjectDictionaryCallback(void) {
 
 
 /// <summary>
-/// This function activates the Automatic Homing procedure
+/// 
 /// 
 /// </summary>
+/// 
+/// The automatic zero setting procedure activates the motor rotation 
+/// until a photocell dedicated to the zero setting procedure intercepts 
+/// the mechanical zero setting point.
+/// 
+/// This method should be called by the application for service,
+/// in case a automatic zero setting should be executed.
+/// 
+/// This methods is not a blocking method for the caller thread:
+/// + the encoder reset may takes time after this method returns.
+/// 
+/// \note:
+/// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
+/// manual command is terminated;
+/// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
+/// of the command as soon as the CanOpenMotor::isRunning() should return false.
+/// 
 /// <param name=""></param>
-/// <returns></returns>
+/// <returns>
+/// + true: the zero setting process is actually started;
+/// + false: the zero setting cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
+/// </returns>
 bool TiltMotor::startAutoHoming(void) {
     pending_target = target_options::UNDEF;
     current_target = pending_target;
@@ -394,6 +479,36 @@ bool TiltMotor::startAutoHoming(void) {
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
 }
 
+    /// <summary>
+    /// 
+    /// 
+    /// </summary>
+    /// 
+    /// The manual zero setting procedure is a procedure that doesn't require
+    /// any motor activation. The motor sets its internal encoder to the value
+    /// manually passed by this module.
+    /// 
+    /// This method should be called by the application for service,
+    /// in case a position manual zero setting should be executed.
+    /// 
+    /// This methods is not a blocking method for the caller thread:
+    /// + the encoder reset may takes time after this method returns.
+    /// 
+    /// \note:
+    /// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
+    /// manual command is terminated;
+    /// 
+    /// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
+    /// of the command as soon as the CanOpenMotor::isRunning() should return false.
+    /// 
+    /// <param name="target_position">This is the current effective position in 0.01 degrees units</param>
+    /// <returns>
+    /// + true: the zero setting process is actually started;
+    /// + false: the zero setting cannot start
+    /// </returns>
+    /// + true: the command successfully started
+    /// + false: a condition prevents to activate this command.
+    /// 
 bool TiltMotor::startManualHoming(int target_position) {
     pending_target = target_options::UNDEF;
     current_target = pending_target;
@@ -462,7 +577,7 @@ bool  TiltMotor::lockBrake(void) {
 // ______________________ BASE CLASS CALLBACKS _________________________________________________
 
 /// <summary>
-/// This callback is called by the base class when the brake device shall be locked.
+/// 
 /// </summary>
 /// 
 /// Usually when the activation termines, before to release the motor power torque 
@@ -550,7 +665,20 @@ TiltMotor::MotorCompletedCodes TiltMotor::idleCallback(void) {
 
 }
 
-
+/// <summary>
+/// This callback is called during the activation preparation fase.
+/// </summary>
+/// 
+/// The module oveeride this callback in order to start the special command 
+/// on the motor driver, in case the activation requested should be for a Tomo sequence.
+/// 
+/// <param name="current_command">the base class passes the code of the current command that is excuting</param>
+/// <param name="current_position">the base class passes the current position</param>
+/// <param name="target_position">the base class passes the target command position</param>
+/// <returns>
+/// + MotorCompletedCodes::COMMAND_PROCEED: the command can proceed;
+/// + MotorCompletedCodes::ERROR_STARTING_NANOJ: the command shall abort due to error in starting the special program;
+/// </returns>
 TiltMotor::MotorCompletedCodes TiltMotor::preparationCallback(MotorCommands current_command, int current_position, int target_position) {
     if (device->simulator_mode)  return MotorCompletedCodes::COMMAND_PROCEED;
     if (current_command != MotorCommands::MOTOR_AUTO_POSITIONING) return MotorCompletedCodes::COMMAND_PROCEED;
@@ -563,6 +691,20 @@ TiltMotor::MotorCompletedCodes TiltMotor::preparationCallback(MotorCommands curr
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
+/// <summary>
+/// The module overrides this callback iin order to update the module status at the command completion.
+/// </summary>
+/// 
+/// When a command completes the module shall executes the following steps:
+/// + in case of a tomo sequence shall stop the special program running into the motor driver;
+/// + assignes the current target code;
+/// + In case it should be the special Idle activation mode, the module shall start the Slide motor to the Idle position;
+/// + if the activation has been initiated by the AWS (id >0) the module will send the \ref EVENT_Executed to the AWS;
+/// 
+/// <param name="id">the identifier of the AWS command;</param>
+/// <param name="current_command">the current executed command code;</param>
+/// <param name="current_position">the final Tilt position</param>
+/// <param name="term_code">the command_completed code of the activation;</param>
 void TiltMotor::completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) {
     if (current_command == MotorCommands::MOTOR_AUTO_POSITIONING) {
         if (!simulator_mode) {

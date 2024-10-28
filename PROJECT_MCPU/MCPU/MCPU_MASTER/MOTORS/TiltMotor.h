@@ -290,111 +290,28 @@ public:
     /// This function activates the manual zero setting procedure.
     /// 
     /// </summary>
-    /// 
-    /// The manual zero setting procedure is a procedure that doesn't require
-    /// any motor activation. The motor sets its internal encoder to the value
-    /// manually passed by this module.
-    /// 
-    /// This method should be called by the application for service,
-    /// in case a position manual zero setting should be executed.
-    /// 
-    /// This methods is not a blocking method for the caller thread:
-    /// + the encoder reset may takes time after this method returns.
-    /// 
-    /// \note:
-    /// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
-    /// manual command is terminated;
-    /// 
-    /// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
-    /// of the command as soon as the CanOpenMotor::isRunning() should return false.
-    /// 
-    /// <param name="target_position">This is the current effective position in 0.01 degrees units</param>
-    /// <returns>
-    /// + true: the zero setting process is actually started;
-    /// + false: the zero setting cannot start
-    /// </returns>
-    /// + true: the command successfully started
-    /// + false: a condition prevents to activate this command.
-    /// 
     static bool startManualHoming(int target_position);
 
     /// <summary>
     /// This function activates the automatic zero setting procedure.
     /// 
-    /// </summary>
-    /// 
-    /// The automatic zero setting procedure activates the motor rotation 
-    /// until a photocell dedicated to the zero setting procedure intercepts 
-    /// the mechanical zero setting point.
-    /// 
-    /// This method should be called by the application for service,
-    /// in case a automatic zero setting should be executed.
-    /// 
-    /// This methods is not a blocking method for the caller thread:
-    /// + the encoder reset may takes time after this method returns.
-    /// 
-    /// \note:
-    /// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
-    /// manual command is terminated;
-    /// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
-    /// of the command as soon as the CanOpenMotor::isRunning() should return false.
-    /// 
-    /// <param name=""></param>
-    /// <returns>
-    /// + true: the zero setting process is actually started;
-    /// + false: the zero setting cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
-    /// </returns>
+    /// </summary>    
     static bool startAutoHoming();
 
     /// <summary>
     /// This function activates the procedure for the Tomo exposure.
     /// 
-    /// </summary>
-    /// 
-    /// The Application calls this procedure when the Til is prepositioned 
-    /// into the starting To scan position.
-    /// 
-    /// When this method is called, the silent program running into the motor
-    /// is waken up. The motor will start the rotation as soon as its gpio input
-    /// connected with the detector sinchro signal detects a transition level from
-    /// not active to active.
-    /// 
-    /// 
-    /// <param name="pos">this is the final tomo position in 0.01° units</param>
-    /// <param name="speed">this is the travel speed in 0,01°/s units</param>
-    /// <param name="acc">this is the acceleration rate in 0.01°/s^2</param>
-    /// <param name="dec">this is the deceleration rate in 0.01°/s^2</param>
-     /// <returns>
-    /// + true: the command has been executed successfully;
-    /// + false: the command cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
-    /// </returns>
+    /// </summary>    
     static bool activateTomoScan(int pos, int speed, int acc, int dec);
     
     /// <summary>
     /// This function activates an automatic Tilt rotation with an arbitrary target.
-    /// </summary>
-    /// 
-    /// The Application uses this method during for service purpose.
-    /// 
-    /// <param name="pos">target rotation position in 0.01° units</param>
-    /// <returns>
-    /// + true: the command has been executed successfully;
-    /// + false: the command cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
-    /// </returns>
+    /// </summary>    
     static bool serviceAutoPosition(int pos);
     
     /// <summary>
-    /// This function activate the Tilt to 0° target. 
-    /// </summary>
-    /// 
-    /// The application should call this method exiting an operating session (CLosed Study event)
-    /// to reset the Tilt to a neutral position (usually 0°).
-    /// 
-    /// <param name=""></param>
-    /// <returns>
-    /// + true: the command has been executed successfully;
-    /// + false: the command cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
-    /// </returns>
+    /// This is the method to be called by the Application to activate the Tilt chained Idle command.
+    /// </summary> 
     static bool setIdlePosition(void);
 
     literal int SCOUT_POSITION = 0;     //!< This is the Scout angle position
@@ -415,28 +332,13 @@ public:
     
     /// <summary>
     /// This function shall be called by the Application to request an Automatic Tilt rotation to the predefined angles.
-    /// </summary>
-    /// 
-    /// The module provides this method to let the Application to move the Tilt motor to a 
-    /// predefined set of targets (\ref target_options)
-    ///  
-    /// <param name="tg">standard target name (see \ref target_options) </param>
-    /// <param name="id">
-    /// + AWS identifier command: if this code is greater then 0, at the command completion the 
-    /// module will send the \ref EVENT_Executed
-    /// 
-    /// </param>
-    /// <returns></returns>
+    /// </summary> 
     static bool setTarget(target_options tg, int id);
 
     /// <summary>
     /// This function checks if the current Tilt angle is in a range of +/-1 °.
     /// 
-    /// </summary>
-    /// 
-    /// 
-    /// <param name=""></param>
-    /// <returns></returns>
+    /// </summary>    
     static bool isScoutPosition(void) {
         if (!device->isEncoderInitialized()) return false;
         return ((device->getCurrentPosition() < 100) && (device->getCurrentPosition() > -100));
@@ -476,26 +378,42 @@ public:
     
 
 protected:
+
+    /// <summary>
+    /// This is the override callback called during the initialization fase.    
+    /// </summary>
     unsigned short initializeSpecificObjectDictionaryCallback(void) override;
     
+    /// <summary>
+    /// This callback is called during the activation preparation fase.
+    /// </summary>
     MotorCompletedCodes preparationCallback(MotorCommands current_command, int current_position, int target_position) override;
+
+    /// <summary>
+    /// The module overrides this callback iin order to update the module status at the command completion.
+    /// </summary>
     void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override;
     
 
+    /// <summary>
     /// This callback is periodically called by the base class when the motor driver is ready 
     /// to execute an activation command.
+    /// </summary>
     MotorCompletedCodes idleCallback(void) override;
     
     /// <summary>
     /// This is the overriden callback called in case of Motor Device reset event.
     /// </summary>
-    /// 
-    /// In case the device should reset after the initialization, the initialization process shall 
-    /// restart again.
-    ///  
-    /// <param name=""></param>
     void resetCallback(void) override;
+
+    /// <summary>
+    /// This callback is called by the base class when the brake device shall be locked.
+    /// </summary>
     bool brakeCallback(void) override;
+
+    /// <summary>
+    /// This callback is called by the base class when the brake device shall be unlocked.
+    /// </summary>
     bool unbrakeCallback(void) override;
 
 private:

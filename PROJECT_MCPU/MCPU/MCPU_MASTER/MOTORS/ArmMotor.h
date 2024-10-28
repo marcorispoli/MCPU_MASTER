@@ -714,6 +714,10 @@ public:
 
 public:
 
+    /// <summary>
+    /// This is the ArmMotor class constructor
+    /// 
+    /// </summary>
 	ArmMotor(void);
 
     /// <summary>
@@ -819,104 +823,88 @@ public:
     /// <summary>
     /// This function activates the manual zero setting procedure.
     /// 
-    /// </summary>
-    /// 
-    /// The manual zero setting procedure is aprocedure that doesn't require
-    /// any motor activation. The motor sets its internal encoder to the value
-    /// manually passed by this module.
-    /// 
-    /// This method should be called by the application for service,
-    /// in case a position manual zero setting should be executed.
-    /// 
-    /// This methods is not a blocking method for the caller thread:
-    /// + the encoder reset may takes time after this method returns.
-    /// 
-    /// \note:
-    /// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
-    /// manual command is terminated;
-    /// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
-    /// of the command as soon as the CanOpenMotor::isRunning() should return false.
-    /// 
-    /// <param name="target_position">This is the current effective position in 0.01 degrees units</param>
-    /// <returns>
-    /// + true: the zero setting process is actually started;
-    /// + false: the zero setting cannot start
-    /// </returns>
+    /// </summary>   
     static bool startManualHoming(int target_position);
 
     /// <summary>
     /// This function activates the automatic zero setting procedure.
     /// 
-    /// </summary>
-    /// 
-    /// The automatic zero setting procedure activates the motor rotation 
-    /// until a photocell dedicate to the zero setting procedure intercepts 
-    /// the mechanical zero setting point.
-    /// 
-    /// This method should be called by the application for service,
-    /// in case a automatic zero setting should be executed.
-    /// 
-    /// This methods is not a blocking method for the caller thread:
-    /// + the encoder reset may takes time after this method returns.
-    /// 
-    /// \note:
-    /// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
-    /// manual command is terminated;
-    /// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
-    /// of the command as soon as the CanOpenMotor::isRunning() should return false.
-    /// 
-    /// <param name=""></param>
-    /// <returns>
-    /// + true: the zero setting process is actually started;
-    /// + false: the zero setting cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
-    /// </returns>
+    /// </summary>    
     static bool startAutoHoming();
     
     /// <summary>
     /// This is the method that activate the motor to a valid target angle and trigger the Isocentric Vertical correction.
     /// 
-    /// </summary>
-    /// 
-    /// The application shall calls this method in order to set a valid c-arm position for 
-    /// the next exposure.
-    /// 
-    /// A valid target position and its related acceptable position range is set with this command:
-    /// + a valid target condition shall be checked by the application in order to enable for an exposure;
-    /// + a valid range shall be set by the application in order to let a mamual arm rotation in a determined range valid for the exposure;
-    /// 
-    /// Th projection name is used to validate the tarfget respect the list of acceptable projections that the 
-    /// application should have set before to call this method.
-    /// 
-    /// Moreover, this function, if the requested rotation should successfully terminate, 
-    /// triggers the Vertical motor activation so that the final vertical c-arm position be equal to the position
-    /// at the beginning of the rotation. (Virtual isocentric rotation)
-    ///  
-    /// If the identifier parameter @param id should be grater than zero,
-    /// when the command termines the module will notify the AWS with the command termination EVENT, (EVENT_Executed(id));
-    /// 
-    /// <param name="pos">this is the target position in 0.01 degrees</param>
-    /// <param name="low">lower angle of the acceptable range</param>
-    /// <param name="high">higher angl of the acceptable range</param>
-    /// <param name="proj">projection name</param>
-    /// <param name="id">AWS command identifier (if greater than 0)</param>
-    /// <returns></returns>
+    /// </summary>    
     static int setTarget(int pos, int low, int high, System::String^ proj, int id);
 
+    /// <summary>
+    /// This function invalidate a current selected target.
+    /// </summary>
     static void abortTarget(void);
+
+    /// <summary>
+    /// This is the service automatic activation that is not valid for an exposure.
+    /// </summary>
     static bool serviceAutoPosition(int pos);
+
+    /// <summary>
+    /// This is the method to be called by the Application to activate the c-ARM chained Idle command.
+    /// </summary>
     static bool setIdlePosition(void);
 
 public:
+
+    /// <summary>
+    /// This method returns the current valid list of acceptable projections;
+    /// </summary>
+    /// <returns></returns>
     static inline ProjectionOptions^ getProjectionsList() { return projections; }
+
+    /// <summary>
+    /// This function returns the current selected projection name string
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
     static System::String^ getSelectedProjection(void) { return projections->getCurrentProjectionName(); }
+
+    /// <summary>
+    /// This function returns the current selected projection code
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
     static ProjectionOptions::options getSelectedProjectionCode(void) { return projections->getCurrentProjectionCode(); }
 
+    /// <summary>
+    /// This is the callback type function for the abort projection emission event
+    /// </summary>
     delegate void delegate_abort_projection_request_callback(void);
+
+    /// <summary>
+    /// This is the event emitted by the module in case of an abort projection request is received.
+    /// </summary>
     static event delegate_abort_projection_request_callback^ abort_projection_request_event;
+
+    /// <summary>
+    /// This is the method to request an abort projection event emission.
+    /// </summary>
+    /// <param name=""></param>
     static void abortProjectionRequest(void) { if (valid_target) abort_projection_request_event(); };
 
+    /// <summary>
+    /// This is the callback type function for the  projection selection request emission event
+    /// </summary>
     delegate void delegate_projection_request_callback(System::String^ str);
+
+    /// <summary>
+    /// This is the event emitted by the module in case of a projection selection request is received.
+    /// </summary>
     static event delegate_projection_request_callback^ projection_request_event;
+
+    /// <summary>
+    /// This is the method to request aprojection selection event emission.
+    /// </summary>
+    /// <param name=""></param>
     static void projectionRequest(System::String^ projection) {
         if (projections->isValidProjection(projection)) projection_request_event(projection); 
     }
@@ -924,8 +912,20 @@ public:
 protected:
 
     bool iso_activation_mode; //!< Setting this flag, causes the Vertical motor activation at the Arm rotation completion
+    
+    /// <summary>
+    /// The module overrides this callback in order to update the module status at the command completion.
+    /// </summary>
     void completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) override; 
+    
+    /// <summary>
+    /// The ArmMotor overrides this function in order to initialize specific motor registers during the startup fase.
+    /// </summary>
     unsigned short initializeSpecificObjectDictionaryCallback(void) override; //!< Sets specific registers for the Arm activation    
+    
+    /// <summary>
+    /// The module overrrides this callback in order to activate a specific error message
+    /// </summary>
     void faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) override;
    
 

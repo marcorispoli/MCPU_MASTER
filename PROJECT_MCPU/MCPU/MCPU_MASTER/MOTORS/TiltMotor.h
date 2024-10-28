@@ -147,6 +147,11 @@
     with a dedicated Service panel: in this case the manual activation button will 
     be used to start the Tilt rotation.
 
+    ## Idle Positioning
+
+    The Tilt will be activated by the Application in the Idle Sequence, at the beginning of the sequence,
+    as described in the \ref IDLEDESC.
+
     ## Zero Setting Calibration
 
     The zero setting procedure is necessary when:
@@ -270,7 +275,10 @@ ref class TiltMotor : public CANOPEN::CanOpenMotor
 {
 public:
 
-
+    /// <summary>
+    /// This is the TiltMotor class constructor
+    /// 
+    /// </summary>
 	TiltMotor(void);
 
     /// <summary>

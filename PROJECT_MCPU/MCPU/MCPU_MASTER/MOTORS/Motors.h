@@ -335,7 +335,7 @@
 	in case it is using an external position sensor: in this case, at the startup,
 	the actual position is provided by the current value of the sensor.
 
-	## Special Idle Position Sequence Activation Command
+	\subsection IDLEDESC Special Idle Position Sequence Activation Command
 
 	The Application implements a special global activation command that acts as a daisy chain activation
 	that involves in a predefined sequence the following motors:

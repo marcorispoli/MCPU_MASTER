@@ -172,6 +172,12 @@
     When in operating mode, the manual rotation shuld be executed only after a valid projection selection.
     Differently, this may be overriden by a further command from the AWS.
 
+    ## Idle Positioning 
+
+    The C-ARM will be activated by the Application in the Idle Sequence, at the end of the sequence, 
+    as described in the \ref IDLEDESC.
+
+
     ## Zero Setting Calibration
 
     The zero setting procedure is necessary when:

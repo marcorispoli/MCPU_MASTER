@@ -26,7 +26,125 @@
 /// + The manual key buttons are disabled;
 /// + The Grid device is set to Out Of Field; 
 /// 
-///   
+/// <div style="page-break-after: always;"></div>
+/// 
+/// ## Data Monitoring
+/// 
+/// During the Idle operating status, several system imputs are 
+/// constantly monitored and the status is displayed on the Idle GUI.
+/// 
+/// The following image shows the Idle GUI:
+/// 
+/// \image html ./IdleMode/IdleGui.png
+/// 
+/// In the previous image there are the followings
+/// picture that displays a particolar status data:
+/// 
+/// ### Application Running Mode
+/// 
+/// |Icon|Description|
+/// |:--:|:--:|
+/// |\image html ./IdleMode/DemoMode.png|"Application running in Demo mode"|
+/// |\image html ./IdleMode/XrayMode.png|"Application running in Normal mode"|
+/// |\image html ./IdleMode/ServiceToolMode.png|"Generator Service Tool"|
+/// |\image html ./IdleMode/Biopsy.png|"Biopsy detected"|
+/// 
+/// \note
+/// When the Generator service tool is active, the Gantry disables the control 
+/// of the generator device that is under the control of the generator service tool application.
+/// The Gantry enables the xray enable signal on the generator interface synchronization signals 
+/// allowing the service tool to activate the xrays for calibratior or test.
+/// As soon as the service tool terminate, the Gantry restart the normal running mode.
+/// 
+/// 
+/// 
+/// ### Battery Status
+/// 
+/// |Icon|Description|
+/// |:--:|:--:|
+/// |\image html ./IdleMode/Battery/BatteryConnected.png| Battery connected and fully charged<\br>Ac power present|
+/// |\image html ./IdleMode/Battery/BatteryConnectedLow.png| Battery connected with low charge<\br>Ac power present|
+/// |\image html ./IdleMode/Battery/BatteryDisonnected.png| Battery disabled<\br>Ac power present|
+/// |\image html ./IdleMode/Battery/BatteryPowerDownFull.png| Battery connected and fully charged<\br>Powerdown event|
+/// |\image html ./IdleMode/Battery/PowerDownBattLow.png| Battery connected with low charge charged<\br>Powerdown event|
+/// 
+/// \warning
+/// When the batteries are disabled (the button on the Gantry extermnal interface is switched off)
+/// the Gantry is no more protected against power down conditions.
+///  
+/// ### AWS connection status
+/// 
+/// |Icon|Description|
+/// |:--:|:--:|
+/// |\image html ./IdleMode/AwsOff.png| Aws disconnected|
+/// |\image html ./IdleMode/AwsOn.png| Aws connected|
+/// 
+/// \remarks
+/// The application provides two tcp/ip sockets for the AWS connection.
+/// Both channels need to be connected in order to run successfully the communication protocol.
+///
+/// ### Gantry Device connection status
+/// 
+/// |Icon|Description|
+/// |:--:|:--:|
+/// |\image html ./IdleMode/PeripheralsDisconnected.png| Some of the devices are not connected|
+/// |\image html ./IdleMode/PeripheralsConnected.png| Device connected |
+/// 
+/// \remarks
+/// In case one or more device is missing (connection lost) 
+/// an error message is activated for eny missing device.
+///  
+/// ### Door Room status
+/// 
+/// |Icon|Description|
+/// |:--:|:--:|
+/// |\image html ./IdleMode/DoorOpen.png| The room's door is open|
+/// |\image html ./IdleMode/DoorClosed.png| The room's door is closed |
+/// 
+/// \remarks
+/// In order to successfully enter the Patient Operating Mode it is mandatory 
+/// to get the room door closed.
+///  
+/// ### Tube Temperature Monitoring status
+/// 
+/// The application monitors the current tube temperature sensors, reading the registers of the collimator device (PCB303).
+/// The temperature of the sensors are rapresented in percentage respect the maximum possible 
+/// before the internal tube protection operates.
+/// 
+/// The temperature displayed is the maximum value of the sensors.
+/// 
+/// |Icon|Description|
+/// |:--:|:--:|
+/// |\image html ./IdleMode/TempNok.png|The tube temperature is High|
+/// |\image html ./IdleMode/TempOk.png| The Tube Temperature is normal|
+/// 
+/// ### Active Messages
+/// 
+/// The Idle status monitors and dislays the current active messages 
+/// 
+/// In case some message should be active a graphic push button
+/// opens a dedicated window, showing a list of active messages:
+/// + (see \ref MessageNotifyDescription)
+/// 
+/// |Icon|Description|
+/// |:--:|:--:|
+/// |\image html ./IdleMode/AlarmOff.png|No active messages are present|
+/// |\image html ./IdleMode/AlarmOn.png|Almost one Error message is active|
+/// |\image html ./IdleMode/WarningOn.png|No Errors and almost one Warning message is active|
+/// |\image html ./IdleMode/InfoOn.png|No Errors, No Warnings and almost one Info message is active|
+/// 
+/// ### Service Operating Mode Entry Button
+/// 
+/// The Idle mode allows to enter the service operating mode 
+/// and its related GUI panels pressing the following graphic button :
+/// 
+/// \image html ./IdleMode/Service.png
+///
+/// \todo
+/// Implementare la dialog per mostrare il package corrente
+///  
+/// 
+
 
 
 

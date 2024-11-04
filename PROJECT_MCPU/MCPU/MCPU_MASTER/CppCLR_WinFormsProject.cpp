@@ -7,6 +7,17 @@
 using namespace System;
 using namespace System::Windows::Forms;
 
+////////////////////////////////////////////////////////////////////////////////
+/*
+	PE IMQ:
+	Ricordarsi:
+	
+	- Cavo per ventola Tubo;
+	- Pulsante raggi;
+	- Chiavetta Briona;
+
+*/
+
 /////////////////////
 /*
 /// \test
@@ -29,7 +40,7 @@ using namespace System::Windows::Forms;
 /// WARNING
 ///
 /// \todo
-/// to be done
+/// Ri
 
 
 */

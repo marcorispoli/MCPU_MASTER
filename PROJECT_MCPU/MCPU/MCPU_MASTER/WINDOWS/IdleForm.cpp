@@ -289,7 +289,8 @@ void IdleForm::initIdleStatus(void) {
 	
 	/// The grid device is activated with an In/Out test to initialize the grid position 
 	/// and to left the grid out of field.
-	PCB304::setGridInOutTest();
+	PCB304::resetErrorCount();
+	PCB304::setAutoGridInField();
 	PCB304::syncGeneratorOff();
 	
 	/// The Idle Operatig Mode window timer is started with 100ms schedule
@@ -734,10 +735,13 @@ System::Void IdleForm::serviceButton_Click(System::Object^ sender, System::Event
 /// activating the PC shutdown and finally switching off the power supply.
 /// In demo or simulation this feature is disabled and only the Gantry application is closed.
 /// 
-
 /// 
 /// <param name=""></param>
 void IdleForm::onPowerOffOkCallback(void) {
+	
+	LogClass::logInFile("APPLICATION IMQ POWER OFF COMMAND");
+	Application::Exit();
+	return;
 
 	// Request the AWS to power off the system
 	awsProtocol::EVENT_Poweroff();

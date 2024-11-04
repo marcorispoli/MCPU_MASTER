@@ -5,7 +5,7 @@
 
 void PCB304::runningLoop(void) {
     static bool commerr = false;
-    static int  error_count = 0;
+   
     static bool grid_error = false;
     static bool keepalive = false;
     static bool grid_out_of_position = false;
@@ -21,7 +21,10 @@ void PCB304::runningLoop(void) {
         else {
             Notify::deactivate(Notify::messages::ERROR_PCB304_COMMUNICATION_ERROR);
         }
+        error_count = 0;
     }
+
+    if (!device->isCommandCompleted()) return;
 
     // Read the Grid Status register
     protocol.status_register.decodeGridRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::GRID));
@@ -44,12 +47,10 @@ void PCB304::runningLoop(void) {
 
             // Reset the error code 
             device->commandNoWaitCompletion(protocol.command.encodeResetCommand(), 30);
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
     }
-    else {
-        error_count = 0;
-    }
+   
 
 
     // Info on the current InOut Positioning mode
@@ -67,6 +68,7 @@ void PCB304::runningLoop(void) {
         if(general_enable) Notify::deactivate(Notify::messages::WARNING_GRID_GENERAL_ENABLE);
         else {
             Notify::activate(Notify::messages::WARNING_GRID_GENERAL_ENABLE);
+            error_count = 0;
 
             // Deactivate the Out Of Position Warning
             Notify::deactivate(Notify::messages::WARNING_GRID_OUT_OF_POSITION);
@@ -92,28 +94,19 @@ void PCB304::runningLoop(void) {
             grid_out_of_position = out_of_position;
 
             if (out_of_position) Notify::activate(Notify::messages::WARNING_GRID_OUT_OF_POSITION);
-            else Notify::deactivate(Notify::messages::WARNING_GRID_OUT_OF_POSITION);
+            else {
+                Notify::deactivate(Notify::messages::WARNING_GRID_OUT_OF_POSITION);
+                error_count = 0;
+            }
         }
 
     }
 
    
 
-    
-
     // Always toggles the keepalive to keep the display ON
     protocol.data_register.display_keep_alive = !protocol.data_register.display_keep_alive;
-
-    // In idle in order to initialize the position, the grid is moved in/Out
-    if (test_grid_in_out) {
-        test_grid_in_out = false;
-        setAutoGridInField();
-        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        setAutoGridOutField();
-        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    }
+    
 
     // Sets the display outputs
     writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::DISPLAY_REGISTER, protocol.data_register.encodeDisplayRegister());

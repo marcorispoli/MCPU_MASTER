@@ -32,7 +32,7 @@ using namespace CANOPEN;
 #define STARTUP_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\Cybele.PNG")
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// 
 /// This is the gui initializtion routine
 /// </summary>
@@ -116,7 +116,7 @@ void StartupOperatingModeForm::MainFormInitialize(void) {
 
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the CanDriver process.
 ///  
 /// </summary>
@@ -185,7 +185,7 @@ bool StartupOperatingModeForm::Startup_CanDriver(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the PCB301 module.
 ///  
 /// </summary>
@@ -255,7 +255,7 @@ bool StartupOperatingModeForm::Startup_PCB301(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the PCB302 module.
 ///  
 /// </summary>
@@ -326,7 +326,7 @@ bool StartupOperatingModeForm::Startup_PCB302(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the PCB303 module.
 ///  
 /// </summary>
@@ -396,7 +396,7 @@ bool StartupOperatingModeForm::Startup_PCB303(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the PCB304 module.
 ///  
 /// </summary>
@@ -466,7 +466,7 @@ bool StartupOperatingModeForm::Startup_PCB304(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the PCB325 module.
 ///  
 /// </summary>
@@ -510,7 +510,7 @@ bool StartupOperatingModeForm::Startup_PCB325(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the PCB326 module.
 ///  
 /// </summary>
@@ -581,7 +581,7 @@ bool StartupOperatingModeForm::Startup_PCB326(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the MotorBody module.
 ///  
 /// </summary>
@@ -655,7 +655,7 @@ bool StartupOperatingModeForm::Startup_MotorBody(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the MotorTilt module.
 ///  
 /// </summary>
@@ -730,7 +730,7 @@ bool StartupOperatingModeForm::Startup_MotorTilt(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the MotorArm module.
 ///  
 /// </summary>
@@ -805,7 +805,7 @@ bool StartupOperatingModeForm::Startup_MotorArm(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the MotorShift module.
 ///  
 /// </summary>
@@ -881,7 +881,7 @@ bool StartupOperatingModeForm::Startup_MotorShift(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the MotorVertical module.
 ///  
 /// </summary>
@@ -957,7 +957,7 @@ bool StartupOperatingModeForm::Startup_MotorVertical(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure executes the startup of the Generator module.
 ///  
 /// </summary>
@@ -1037,7 +1037,7 @@ bool StartupOperatingModeForm::Startup_Generator(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This procedure is called by the window timer
 /// and handles the initialization process sequence.
 /// 
@@ -1108,7 +1108,7 @@ void StartupOperatingModeForm::StartupProcedure(void) {
 }
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// 
 /// This procedure is called by the Window Message Pipe
 /// when the window timer expires. 

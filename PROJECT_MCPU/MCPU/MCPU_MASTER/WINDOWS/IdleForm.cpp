@@ -188,9 +188,16 @@ void IdleForm::initIdleStatus(void) {
 	// Sets the current collimation to OPEN mode
 	PCB303::setOpenCollimationMode();
 
+	/// \todo
+	/// Il filtro in Idle dovrebbe essereimpostato su Piombo per proteggere la bocca del tubo
 	// Sets the current Filter selector to manual mode
 	PCB303::selectFilter(PCB303::filter_index::FILTER_RH);
 
+	// The Mirror will be set in Home postition
+	PCB303::setCollimationLight(false);
+
+	/// \todo
+	/// Verificare se in Idle Mode si possono spegnere i motori
 	// Activates the motors
 	PCB301::setMotorPowerSupply(true);
 	PCB301::setMotorSwitch(true);
@@ -198,6 +205,9 @@ void IdleForm::initIdleStatus(void) {
 	// Activate the Rotation Idle manual modes
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
+	/// \todo
+	/// Il compressore deve essere disabilitato in Idle
+	/// Al momento è lasciato attivo per facilitare lo sviluppo e il debug
 	// Activates the compressor
 	PCB301::SetCompressorEna(true);
 	

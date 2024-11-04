@@ -156,16 +156,10 @@ extern  double dtempo;
 /// 
 /// 
 
-/// \defgroup OPERMODEIMPL Operating Mode Implementation Module
-/// \ingroup APPIMPL
-/// 
-/// This section provides detailed description on the 
-/// 
-/// <returns></returns>
 
 
 /// <summary>
-/// \ingroup OPERMODEIMPL
+/// \ingroup STARTUPIMPL
 /// This is the startup operating mode implementing module
 /// 
 /// </summary>
@@ -180,7 +174,7 @@ namespace StartupOperatingMode {
 	
 
 	/// <summary>
-	/// \ingroup OPERMODEIMPL
+	/// \ingroup STARTUPIMPL
 	/// 
 	/// This is the Class implementing the Startup Operating mode.
 	/// 

@@ -33,6 +33,8 @@ using namespace System::Windows::Forms;
 
 
 */
+
+
 /// <summary>
 /// \defgroup APPDOC Application Documentation
 /// 
@@ -48,6 +50,58 @@ using namespace System::Windows::Forms;
 /// This section provides detailed description of the modules iplementation.
 /// 
 /// </summary>
+
+
+
+/// <summary>
+/// \defgroup OPERIMPL Application Operating Mode Implementation
+/// \ingroup APPIMPL
+/// 
+/// This section provides detailed description about the Operating Mode implementation modules
+/// 
+/// </summary>
+/// 
+/// <returns></returns>
+
+/// <summary>
+/// \defgroup STARTUPIMPL Startup Mode Implementation
+/// \ingroup OPERIMPL
+/// 
+/// This section provides detailed description about the Startup Operating mode implementation
+/// 
+/// </summary>
+/// 
+/// <returns></returns>
+
+/// <summary>
+/// \defgroup IDLEIMPL Idle Mode Implementation
+/// \ingroup OPERIMPL
+/// 
+/// This section provides detailed description about the Idle Operating mode implementation
+/// 
+/// </summary>
+/// 
+/// <returns></returns>
+
+/// <summary>
+/// \defgroup PATIENTIMPL Patient Mode Implementation
+/// \ingroup OPERIMPL
+/// 
+/// This section provides detailed description about the Patient Operating mode implementation
+/// 
+/// </summary>
+/// 
+/// <returns></returns>
+
+/// <summary>
+/// \defgroup SERVICEIMPL Service Mode Implementation
+/// \ingroup OPERIMPL
+/// 
+/// This section provides detailed description about the Service Operating mode implementation
+/// 
+/// </summary>
+/// 
+/// <returns></returns>
 
 
 

@@ -1,18 +1,34 @@
 #pragma once
 #include <Windows.h>
 
-/// <summary>
-/// \defgroup IdleGUI_Module IDLE Status Window Management Module
-/// \ingroup GUI_Module Gantry GUI modules
-/// This module implements the features of the Gantry IDLE status
+/// \addtogroup OPERMODEDOC
+/// <div style="page-break-after: always;"></div>
 /// 
-/// # Features
+/// # Idle Operating Mode
 /// 
-/// - Collimation mode = OPEN
-/// - Filter Manual mode:  selected DEFAULT filter
+/// ## Overview 
 /// 
-/// </summary>
+/// This operating mode handles the scenario where the Gantry is left in stand-by.
 /// 
+/// \remarks
+/// When the Gantry is in Idle mode it is supposed that it can be left unattended.
+/// In this situation the unit may be approached from persons not trained.
+/// To prevent any possible unexpected activation the Gantry devices are set in a conservative and protective mode
+/// 
+/// ## Device Setting 
+/// 
+/// The following list provides the status of the Gantry device in Idle:
+/// + The compressor device is disabled;
+/// + All the Motors are disabled;
+/// + The Format collimation is set to OPEN;
+/// + The Filter selector is set on the Pb to protect the Tube hole;
+/// + The Mirror is set to Home position and the light switched off;
+/// + The manual key buttons are disabled;
+/// + The Grid device is set to Out Of Field; 
+/// 
+///   
+
+
 
 using namespace System::ComponentModel;
 using namespace System::Collections;
@@ -20,6 +36,15 @@ using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
 
+
+
+
+/// <summary>
+/// \ingroup IDLEIMPL
+/// 
+/// This is the Idle Operating mode implementing module
+/// 
+/// </summary>
 public ref class IdleForm :  public System::Windows::Forms::Form
 {
 #define WINMSG_TIMER WM_USER + 1

@@ -238,6 +238,7 @@ public:
 
 	literal int max_num_error_resets = 5; //!< Maximum number of attempts to reset a pending error condition
 
+	static void setGridInOutTest(void) { test_grid_in_out = true; };
 	static void setAutoGridInField(void) { protocol.data_register.GeneralEnable = true; protocol.data_register.InOutAutoEnable = true; protocol.data_register.InOutStatus = true; };
 	static void setAutoGridOutField(void) { protocol.data_register.GeneralEnable = true; protocol.data_register.InOutAutoEnable = true; protocol.data_register.InOutStatus = false; };
 	static void syncGeneratorOn(void) { protocol.data_register.ManualXrayDisableEnable = false; protocol.data_register.EnableStartGrid = true; }
@@ -262,7 +263,7 @@ protected:
 	void demoLoop(void) override;
 
 private:
-
+	static bool test_grid_in_out = false;
 	static ProtocolStructure protocol; // This is the structure with the Status register info
 		
 };

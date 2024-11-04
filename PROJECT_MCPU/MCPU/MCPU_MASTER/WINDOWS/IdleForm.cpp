@@ -229,7 +229,7 @@ void IdleForm::initIdleStatus(void) {
 	}
 	
 	// Activate the Automatic Potter Grid with the Out-Field position and unsync the generator signals
-	PCB304::setAutoGridOutField();
+	PCB304::setGridInOutTest();
 	PCB304::syncGeneratorOff();
 	
 	// Start the startup session	

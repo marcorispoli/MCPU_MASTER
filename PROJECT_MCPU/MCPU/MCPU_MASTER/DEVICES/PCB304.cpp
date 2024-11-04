@@ -104,6 +104,16 @@ void PCB304::runningLoop(void) {
     // Always toggles the keepalive to keep the display ON
     protocol.data_register.display_keep_alive = !protocol.data_register.display_keep_alive;
 
+    // In idle in order to initialize the position, the grid is moved in/Out
+    if (test_grid_in_out) {
+        test_grid_in_out = false;
+        setAutoGridInField();
+        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        setAutoGridOutField();
+        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
 
     // Sets the display outputs
     writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::DISPLAY_REGISTER, protocol.data_register.encodeDisplayRegister());

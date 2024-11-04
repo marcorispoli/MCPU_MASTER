@@ -143,6 +143,26 @@
 /// \todo
 /// Implementare la dialog per mostrare il package corrente
 ///  
+/// ## Power Off Button
+/// 
+/// In Idle mode a system power off button is displayed on the screen:
+/// 
+/// \image html ./IdleMode/power_off_button.png
+/// 
+/// If the operator should press this button a dialog will appear on the screen to 
+/// request a confirmation.
+/// 
+/// In case the operator should confirm:
+/// 
+/// + if the application is runnin in Normal mode,
+/// the power off request is routed to the AWS software.
+/// + if the application is runnin in Demo or Simulation mode,
+/// only the Gantry software quits, the Gantry devices and the AWS software remain running.
+/// 
+/// \remarks
+/// The system power off switches off the the whole Gantry,
+/// activating the PC shutdown and finally switching off the power supply.
+/// In demo or simulation this feature is disabled and only the Gantry application is closed.
 /// 
 
 

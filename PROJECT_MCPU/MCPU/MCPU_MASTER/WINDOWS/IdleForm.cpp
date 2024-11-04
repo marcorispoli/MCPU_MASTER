@@ -84,24 +84,40 @@ namespace IDLESTATUS {
 	}Registers;
 };
 
-
+/// <summary>
+/// This is the form initialization function.
+/// </summary>
+/// 
+/// The form is called at the application initialization 
+/// when the window form is created.
+/// 
+/// 
+/// <param name=""></param>
 void IdleForm::formInitialization(void) {
 
-	// Initialize the position of the form
+	/// The window stores the current Screen position offset in the Virtual Screen display system.
+	/// \note
+	/// The Screen offset is detected in the applicatin initialization. 
+	/// 
+	/// The geometry of the window is properly set.
+	/// 
 	this->Left = Gantry::monitor_X0;
 	this->Top = Gantry::monitor_Y0;
 
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	mainPanel->BackgroundImage = BACKGROUND;
 
+	/// The status of the device data that the Idle status monitors and display
+	/// with dedicated icons is initialized here;
 	this->xrayMode->BackgroundImage = XRAY_MODE;
 	this->xrayMode->Hide();
 
-	// Initialize the Installation name
+	/// The name of the istallation is updated in the bottom of thwe window:
+	/// The installation name is stored into the SystemIni.cnf configuration file \ref SystemConfig
 	labelInstallation->Text = SystemConfig::Configuration->getParam(SystemConfig::PARAM_INSTALLATION_NAME)[SystemConfig::PARAM_INSTALLATION_NAME_TOP];
 
 
-	// Error Button
+	/// The active message button is updated
 	IDLESTATUS::Registers.alarm = false;
 	IDLESTATUS::Registers.warning = false;
 	IDLESTATUS::Registers.info = false;
@@ -116,29 +132,53 @@ void IdleForm::formInitialization(void) {
 	powerOff->Show();
 
 
+	/// The Idle perating Mode window timer is initialized with 100ms schedule.
 	idleTimer = gcnew System::Timers::Timer(100);
 	idleTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &IdleForm::onIdleTimeout);
 	idleTimer->Stop();
 
+	/// The window form is finally Hided.
 	this->Hide();
 	open_status = false;
 }
 
+/// <summary>
+/// This function is called when the Idle Operating Status is activated
+/// </summary>
+/// 
+/// The function initializes the content of the GUI at the current 
+/// gantry status.
+/// 
+/// The function sets the Gantry device at the expected status:
+/// 
+/// + The compressor device is disabled;
+/// + All the Motors are disabled;
+/// + The Format collimation is set to OPEN;
+/// + The Filter selector is set on the Pb to protect the Tube hole;
+/// + The Mirror is set to Home position and the light switched off;
+/// + The manual key buttons are disabled;
+/// + The Grid device is set to Out Of Field; 
+/// 
+/// <param name=""></param>
 void IdleForm::initIdleStatus(void) {
+
+	/// The system date and time is initialized;
+	/// \note
+	/// the date and time is always showed on the bottom of the window
 	System::DateTime date;
 	date = System::DateTime::Now;
 
 	Notify::clrInstant();
-
 	labelDate->Text = date.Day + ":" + date.Month + ":" + date.Year;
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
 	
 	
-	// Handle the Powerdown
+	/// The Powerdown and battery status is acquired and the related 
+	/// icon is displayed on the GUI
 	IDLESTATUS::Registers.powerdown = PCB301::getPowerdown();
 
-	// Handle The Battery status
+	/// The Battery status is updated
 	IDLESTATUS::Registers.battery.battena = PCB301::getBatteryEna();
 	IDLESTATUS::Registers.battery.battery_alarm = PCB301::getBatteryAlarm();
 	IDLESTATUS::Registers.battery.vbatt1 = PCB301::getVoltageBatt1();
@@ -158,20 +198,23 @@ void IdleForm::initIdleStatus(void) {
 		this->batteryConnected->Hide();
 	}
 
+	/// The AWS connection status is acquired and the related icon is displayed
 	IDLESTATUS::Registers.aws_connected = false;
 	this->awsConnected->BackgroundImage = AWS_CONNECTED;
 	this->awsConnected->Hide();
 
+	/// The Devices connection status is acquired and the related icon is displayed
 	IDLESTATUS::Registers.peripherals_connected = false;
 	this->peripheralsConnected->BackgroundImage = PERIPHERALS_CONNECTED;
 	this->peripheralsConnected->Hide();
 
+	/// The room's Door status is acquired and the related icon is displayed
 	IDLESTATUS::Registers.closed_door = PCB301::isClosedDoor();
 	this->doorClosed->BackgroundImage = DOOR_CLOSED;
 	if (!IDLESTATUS::Registers.closed_door) this->doorClosed->Hide();
 	else this->doorClosed->Show();
 
-
+	/// The Tube temperature is updated and the related icon is displayed
 	IDLESTATUS::Registers.tube.anode = 0;
 	IDLESTATUS::Registers.tube.stator = 0;
 	IDLESTATUS::Registers.tube.bulb = 0;
@@ -184,34 +227,50 @@ void IdleForm::initIdleStatus(void) {
 	this->tubeTempOk->BackColor = Color::Transparent;
 	this->tubeTempOk->Show();
 	
-
-	// Sets the current collimation to OPEN mode
+	///\todo 
+	/// Per proteggere il collimatore forse sarebbe meglio chiudere le lame
+	/// 
+	/// The collimation format is set to OPEN to protect the blades inside the collimator
 	PCB303::setOpenCollimationMode();
 
 	/// \todo
 	/// Il filtro in Idle dovrebbe essereimpostato su Piombo per proteggere la bocca del tubo
-	// Sets the current Filter selector to manual mode
+	/// Deve essere inseritoil piombo come filtro selezionabile
+	/// 
+	/// The filter is set to "lead" in order to protect the tube output.
 	PCB303::selectFilter(PCB303::filter_index::FILTER_RH);
 
-	// The Mirror will be set in Home postition
+	/// The Mirror is set to Home and the collimation light switched Off
 	PCB303::setCollimationLight(false);
 
 	/// \todo
 	/// Verificare se in Idle Mode si possono spegnere i motori
-	// Activates the motors
+	/// 
+	/// The motor power supply and the power switch are switched Off for safety.
 	PCB301::setMotorPowerSupply(true);
 	PCB301::setMotorSwitch(true);
 
-	// Activate the Rotation Idle manual modes
+	/// The Manual Buttons are disabled (keyboard led switchd off)
 	Gantry::setManualRotationMode(Gantry::manual_rotation_options::GANTRY_MANUAL_ROTATION_DISABLED);
 
 	/// \todo
 	/// Il compressore deve essere disabilitato in Idle
 	/// Al momento è lasciato attivo per facilitare lo sviluppo e il debug
-	// Activates the compressor
+	/// 
+	/// 
+	/// The compression is disabled
 	PCB301::SetCompressorEna(true);
 	
-	// XRAY/BIOPSY mode setting
+	/// \todo 
+	/// Aggiungere il simbolo di modalità simulazione per completare il set di stati visualizzabili
+	/// 
+	/// 
+	/// The actual Running mode is updated with the following priority:
+	/// + If the biopsy is present, the biopsy icon is displayed;
+	/// + If the application is running in simulation mode, the simulation icon is displayed;
+	/// + If the application is running in demo mode, the demo icon is displayed;
+	/// + If the application is running in normal mode and the generator service tool is active, the service tool icon is displayed;
+	/// + If the application is running in Normal mode the X-RAy simbol is displayed;
 	if (PCB325::isBiopsyConnected()) {
 		this->xrayMode->BackgroundImage = BIOPSY;
 		this->xrayMode->Show();
@@ -228,27 +287,75 @@ void IdleForm::initIdleStatus(void) {
 
 	}
 	
-	// Activate the Automatic Potter Grid with the Out-Field position and unsync the generator signals
+	/// The grid device is activated with an In/Out test to initialize the grid position 
+	/// and to left the grid out of field.
 	PCB304::setGridInOutTest();
 	PCB304::syncGeneratorOff();
 	
-	// Start the startup session	
+	/// The Idle Operatig Mode window timer is started with 100ms schedule
 	idleTimer->Start();	
-
-	
 
 
 }
 
+/// <summary>
+/// This is the function to open the Idle Form
+/// </summary>
+/// 
+/// The function can be called by different threads then the main thread
+/// where the form resides. 
+/// 
+/// Beacuse the window's items can be handled only in the same thread of the window form,
+/// this function put a window message on the window queue so that it will be handled into the main thread.
+/// 
+/// \warning
+/// When the function returns, an unpredictable delay time can happen before to get the form operating.
+/// 
+/// <param name=""></param>
 void IdleForm::open(void) {
 	SendMessageA(window , WINMSG_OPEN, 0, 0); // OPEN EVENT MESSAGE
 }
 
+/// <summary>
+/// This is the function to close the Idle Form
+/// </summary>
+/// 
+/// The function can be called by different threads then the main thread
+/// where the form resides. 
+/// 
+/// Beacuse the window's items can be handled only in the same thread of the window form,
+/// this function put a window message on the window queue so that it will be handled into the main thread.
+/// 
+/// \warning
+/// When the function returns, an unpredictable delay time can happen before to get the form disappeared.
+/// 
+/// <param name=""></param>
 void IdleForm::close(void) {
 	SendMessageA(window, WINMSG_CLOSE, 0, 0); // CLOSE EVENT MESSAGE	
 }
 
-
+/// <summary>
+/// This function opens if necessary a diaog window to show and track variable events .
+/// </summary>
+/// 
+/// There are a set of vents that should require to be visualized on the 
+/// application screen:
+/// 
+/// + Instant messages: the active messages that needs to be displayed and consumed istantly;
+/// + The position of a running motor: if a motor is executing an activation, the current position is dinamically updated on the screen;
+/// 
+/// \note
+/// Even if the motor are disabled in Idle mode, however the motors may be running during the 
+/// operating mode transition.
+/// 
+/// \remarks
+/// + The first event that gains the dialog, keeps the control of the dialog
+/// for 2 seconds more since the event completion.
+/// + If the system message window is open, the dialog remain hided until
+/// the message window disappear. 
+/// 
+/// 
+/// <param name=""></param>
 void IdleForm::evaluatePopupPanels(void) {
 	#define TMO 20
 	static bool compression = false;
@@ -390,14 +497,29 @@ void IdleForm::evaluatePopupPanels(void) {
 
 }
 
+/// <summary>
+/// This is the main scheduled routine of the Idle Status management.
+/// </summary>
+/// 
+/// This function is periodically called by the Idle Status timer, scheduled
+/// every 100ms. (See the formInitializtion() )
+/// 
+/// The function updates the current device data that are displayed 
+/// on the GUI.
+/// 
+/// In particolar:
+/// 
+/// <param name=""></param>
 void IdleForm::idleStatusManagement(void) {
 	static int xray_mode_status = 0;
 
+	/// The date and the time is updated on the bottom of the windows;
 	System::DateTime date;
 	date = System::DateTime::Now;
 	
 	labelTime->Text = date.Hour + ":" + date.Minute + ":" + date.Second;
 
+	/// The current powerdown status and the battery status is updated;
 	bool powerdown = PCB301::getPowerdown();
 	bool powerstatus_chg = false;
 	IDLESTATUS::batteryStatus battery;
@@ -434,7 +556,7 @@ void IdleForm::idleStatusManagement(void) {
 		}
 	}
 
-	// Handles the Door Closed status
+	/// The room door status icon is updated;
 	if (IDLESTATUS::Registers.closed_door != PCB301::isClosedDoor())
 	{
 		IDLESTATUS::Registers.closed_door = PCB301::isClosedDoor();
@@ -442,7 +564,7 @@ void IdleForm::idleStatusManagement(void) {
 		else this->doorClosed->Show();				
 	}
 
-	// Handles the AWS connection status
+	/// The status of the AWS connection is displayed
 	if (awsProtocol::isConnected() != IDLESTATUS::Registers.aws_connected) {
 		IDLESTATUS::Registers.aws_connected = awsProtocol::isConnected();
 
@@ -450,7 +572,7 @@ void IdleForm::idleStatusManagement(void) {
 		else this->awsConnected->Hide();
 	}
 
-	// Handles the Device connection status
+	/// The status of the devices connection is displayed;
 	bool peripherals_connected = false;
 	if (
 		(!PCB301::device->isCommunicationError()) &&
@@ -466,7 +588,7 @@ void IdleForm::idleStatusManagement(void) {
 		else this->peripheralsConnected->Hide();
 	}
 
-	// Evaluates the maximum tube temperature
+	/// The status of the Tube temperature is displayed;
 	labelTubeData->Text = PCB303::getMaxTubePerc().ToString() + " %";
 
 	// Sets the background color based on the temperature error condition
@@ -476,7 +598,7 @@ void IdleForm::idleStatusManagement(void) {
 		else tubeTempOk->BackgroundImage = TUBE_TEMP_OK;
 	}
 
-	// Error Button
+	/// The system message display button is updated with the proper icon (Error, Warning, Info)
 	if (Notify::isError()) {
 		IDLESTATUS::Registers.warning = false;
 		IDLESTATUS::Registers.info = false;
@@ -515,7 +637,7 @@ void IdleForm::idleStatusManagement(void) {
 
 	}
 
-	// XRAY mode setting
+	/// The current exposure mode icon is updated
 	if (!Exposures::isSimulatorMode()) {
 		if (Exposures::isServiceToolConnected()) {
 			if (xray_mode_status != 2) {
@@ -533,12 +655,22 @@ void IdleForm::idleStatusManagement(void) {
 		}
 	}
 
-	// Popup panels at the end of the timer thread:
-	// if a panel should be open this thread stops to the ShowDialog() 
+	/// The popup event dialog activation is evaluated.
 	evaluatePopupPanels();
 
 }
 
+/// <summary>
+/// This is the callback of the Window Message Handler.
+/// </summary>
+/// 
+/// The window message handler is used to handle 
+/// calling request from other threads then the main thread for the following 
+/// pourposes:
+/// + The Idle Timer timeout event: this event calls the idleStatusManagement() ;
+/// + The Open form request: this is a message coming from a thread that would open the Idle Status;
+/// + The Close form request: this is a message coming from a thread that would close the Idle Status;
+/// <param name="m">This is the message code </param>
 void IdleForm::WndProc(System::Windows::Forms::Message% m)
 {
 	switch (m.Msg) {
@@ -567,13 +699,44 @@ void IdleForm::WndProc(System::Windows::Forms::Message% m)
 	Form::WndProc(m);
 }
 
+/// <summary>
+/// This is the callback of the graphic button that request to open the Messaqe dialog window.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
 void IdleForm::errorButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	Notify::open_error(this);
 }
+
+/// <summary>
+/// This is the callback of the graphic button that request to open the Service Operating form
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
 System::Void IdleForm::serviceButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	Gantry::setService();
 }
 
+/// <summary>
+/// This is the callback of the dialog for the power off confirmation event
+/// </summary>
+/// 
+/// If the operator confirm the power off request action,
+/// the power off request event is routed to the AWS for the confirmation.
+/// 
+/// + if the application is runnin in Normal mode,
+/// the power off request is routed to the AWS software.
+/// + if the application is runnin in Demo or Simulation mode,
+/// only the Gantry software quits, the Gantry devices and the AWS software remain running.
+/// 
+/// \remarks
+/// The system power off switches off the the whole Gantry,
+/// activating the PC shutdown and finally switching off the power supply.
+/// In demo or simulation this feature is disabled and only the Gantry application is closed.
+/// 
+
+/// 
+/// <param name=""></param>
 void IdleForm::onPowerOffOkCallback(void) {
 
 	// Request the AWS to power off the system
@@ -586,6 +749,16 @@ void IdleForm::onPowerOffOkCallback(void) {
 	}
 
 }
+
+/// <summary>
+/// This is the callback of the Power Off button on the GUI.
+/// </summary>
+/// 
+/// When the button is pressed a confirmation dialog is showed on the screen.
+/// 
+/// <param name="sender"></param>
+/// <param name="e"></param>
+/// <returns></returns>
 System::Void IdleForm::powerOff_Click(System::Object^ sender, System::EventArgs^ e) {
 	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION);
 	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_POWER_OFF_REQUEST_ACTIVATION);

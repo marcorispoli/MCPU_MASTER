@@ -14,7 +14,9 @@
 #define ZERO_INPUT_MASK(x) !(x & PD4_MOTOR_DI3) //!< Sets the Zero photocell switch input
 
 #define MAX_POSITION 634    //!< Defines the Maximum software position respect the zero setting point
-#define MIN_POSITION -30   //!< Defines the Minimum software position respect the zero setting point
+#define MIN_POSITION 0   //!< Defines the Minimum software position respect the zero setting point
+#define ABSOLUTE_MAX_POSITION (MAX_POSITION+50)     //!< Defines the Absolute Maximum mechanical position (invalid the zero position at the restart)
+#define ABSOLUTE_MIN_POSITION (MIN_POSITION-50)    //!< Defines the Absolute Minimum mechanical position (invalid the zero position at the restart)
 
 #define HOMING_ON_METHOD 20 //!< Zero setting approaching method starting with the Zero photocell ON
 #define HOMING_OFF_METHOD 19//!< Zero setting approaching method starting with the Zero photocell OFF
@@ -79,6 +81,10 @@ void VerticalMotor::testLimitSwitch(void) {
 #define VERTICAL_OD_CODE 0x0001
 unsigned short VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
     
+    // Position Range Limit
+    while (!blocking_writeOD(OD_607B_01, convert_Absolute_User_To_Encoder(ABSOLUTE_MIN_POSITION))); // Min Position Range Limit
+    while (!blocking_writeOD(OD_607B_02, convert_Absolute_User_To_Encoder(ABSOLUTE_MAX_POSITION)));	// Max Position Range Limit
+
     while (!blocking_writeOD(OD_3202_00, 0x41)) ; 	// Motor Drive Submode Select: 6:BLDC 3:CurRed 2:Brake 1:VoS 0: 1=CLOSED_LOOP/O = OPEN_LOOP
 
     while (!blocking_writeOD(OD_2031_00, 15000)) ;  // Peak current

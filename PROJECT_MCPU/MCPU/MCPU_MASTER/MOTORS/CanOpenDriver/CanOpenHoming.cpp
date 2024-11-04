@@ -427,6 +427,8 @@ bool CanOpenMotor::setEncoderCommand(int initial_eposition) {
     }
 
     updateCurrentPosition();
+
+    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: encoder_requested = " + convert_Encoder_To_User(initial_eposition).ToString() + "Position = " + encoder_uposition.ToString());
     if (encoder_eposition != initial_eposition) {
         LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: setEncoderCommand() - ENCODER NOT IN THE INITIAL ASSIGNED VALUE");
         return false;

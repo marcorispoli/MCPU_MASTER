@@ -600,7 +600,17 @@ void CanOpenMotor::mainWorker(void) {
                 }
             }
 
-            if((init_valid) && (setEncoderCommand(init_eposition)) ) home_initialized = true;           
+            // Repeat 5 times the encoder initializtion if necessary
+            bool encoder_init = false;
+            for (int i = 0; i < 5; i++) {
+                if (setEncoderCommand(init_eposition)) {
+                    encoder_init = true;
+                    break;
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            }
+
+            if((init_valid) && (encoder_init) ) home_initialized = true;
             configuration_command = false;
 
             if (!home_initialized) {

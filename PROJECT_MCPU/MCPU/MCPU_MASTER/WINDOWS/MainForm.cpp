@@ -24,7 +24,7 @@
 
 
 
-using namespace CppCLRWinFormsProject;
+using namespace StartupOperatingMode;
 using namespace CANOPEN;
 
 #define STARTUP_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\Cybele.PNG")
@@ -698,28 +698,41 @@ void MainForm::StartupProcedure(void) {
 		return;
 	}
 
+	// Defines the seqeunce order
+	enum {
+		INITSEQ = 0,
+		CANSEQ,		
+		PCB301SEQ,
+		PCB302SEQ,
+		PCB303SEQ,
+		PCB304SEQ,
+		PCB325SEQ,
+		PCB326SEQ,
+		GENSEQ,
+		VERTSEQ,
+		TILTSEQ,
+		ARMSEQ,
+		SLIDESEQ,
+		BODYSEQ,		
+		FINESEQ
+	};
+
 	switch (startupFase) {
-
-	case 0: if (Startup_CanDriver()) { startupFase++; startupSubFase = 0; } break; // Startup of the Can Driver process
-	case 1: if (Startup_PCB301()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB301 process
-	case 2: if (Startup_PCB302()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB302 process
-	case 3: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
-	case 4: if (Startup_PCB325()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB325 process
-	case 5: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
-	case 6: if (Startup_PCB326()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
-	case 7: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
-	case 8: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 9: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 10: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 11: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 12: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process	
-	case 13: startupFase++; startupSubFase = 0;
-		break;
-
-	case 14:
-		startupCompleted = true;
-		break;
-
+	case INITSEQ:	startupFase++; break;
+	case CANSEQ:	if (Startup_CanDriver())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Can Driver process
+	case PCB301SEQ: if (Startup_PCB301())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB301 process
+	case PCB302SEQ: if (Startup_PCB302())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB302 process
+	case PCB303SEQ: if (Startup_PCB303())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
+	case PCB304SEQ: if (Startup_PCB304())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
+	case PCB325SEQ: if (Startup_PCB325())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB325 process
+	case PCB326SEQ: if (Startup_PCB326())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB326 process
+	case GENSEQ:	if (Startup_Generator())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
+	case VERTSEQ:	if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Vertical Motor body process
+	case ARMSEQ:	if (Startup_MotorArm())		{ startupFase++; startupSubFase = 0; } break; // Startup of the Arm Motor  process
+	case SLIDESEQ:	if (Startup_MotorShift())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Slide Motor body process
+	case BODYSEQ:	if (Startup_MotorBody())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Body Motor body process
+	case TILTSEQ:	if (Startup_MotorTilt())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Tilt Motor body process	
+	case FINESEQ:	startupCompleted = true; break;
 	}
 }
 void MainForm::WndProc(System::Windows::Forms::Message% m) 

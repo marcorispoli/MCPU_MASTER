@@ -1,20 +1,3 @@
-/// <summary>
-/// \defgroup OperatingMode_Section Operating Mode Modules
-/// This section groups all the modules controlling the system operating modes.
-///   
-/// </summary>
-/// The system operations are dived in a subset of operating modes:
-/// + Startup Mode: the initial status after system power on;
-/// + Idle Mode: the system idle mode management;
-/// + Operative Mode: the system operating mode management;
-/// + Service Mode: the system service mode management;
-/// 
-/// Every Operating mode is associated to a given graphical GUI 
-/// and a given functional workflow.
-/// 
-/// See to the related Operating Mode sections for details.
-/// 
-
 
 #pragma once
 
@@ -22,73 +5,161 @@ extern  double dtempo;
 #include <Windows.h>
 
 
-/// <summary>
-/// \defgroup Startup_Module Startup Module 
-/// This module implements the Workflow and GUI to handle 
-/// the system startup workflow.
+/// \addtogroup OPERMODE
+/// <div style="page-break-after: always;"></div>
 /// 
-/// </summary>
-/// \ingroup OperatingMode_Section
+/// # Startup Operating Mode
 /// 
-/// At the program beginning several operation shall be initiated 
-/// before to enter any of the Operating modes:
+/// After the program startup (actually the Gantry power up) the following activities shall be executed
+/// in the order of apparence:
 /// 
-/// + System Initialization;
-/// + Device Module initialization;
-/// + Revision check;
+/// + Application running mode definition;
+/// + Application process initialization;
+/// + Gantry Device Communicatin Initialization;
+/// + Gantry Device Revision check;
 /// 
-/// # System Initialization
+/// ## Application running mode definition
 /// 
-/// The module setup and operation depends by several parameters stroed into the SystemConfig file.
+/// The Application can work in three ways:
+/// + Normal Mode;
+/// + Simulation Mode;
+/// + Demo mode;
 /// 
-/// This file determines:
-/// + The current system running mode: DEMO, SIMULATED, RUNNING modes;
-/// + The current modules operation mode for any of the possible system running modes;
-/// + The current set of expected device revision codes;
-/// + The communication connection addresses for some of the module;
+/// In the \ref SystemConfig the parameter *RUNNING_MODE* sets the current running mode.
+///
+/// The parameter SystemIni.RUNNING_MODE = "NORMAL" starts the application in Normal Mode;
+/// The parameter SystemIni.RUNNING_MODE = "SYM" starts the application in Simulation Mode;
+/// The parameter SystemIni.RUNNING_MODE = "DEMO" starts the application in Demo Mode;
 /// 
-/// In the System Initialization all the Operating modules will be instantiated.
+/// ### Application Running Normal Mode 
 /// 
-/// # Device Module Initialization
+/// The application running normal mode is the main running mode 
+/// where all operative features are running as for the system specifications.
+/// 
+/// ### Application Running Simulated Mode
+/// 
+/// The Simulated mode is a special running mode developed to 
+/// help the system developing and debugging fase.
+/// 
+/// In simulation mode, part or all the Gantry devices can 
+/// run in simulated mode. 
+/// 
+/// The parameter SystemIni.SYM_MODE sets several aspect of the simulation mode (see the \ref SystemConfig description)
+/// 
+/// In particolar, the application can set individually what are the process that shall run in normal mode or simulated mode:
+/// 
+/// + Can Driver process: this is the process that control the usb to Can converter device. When in simulated mode, the process doesn't open phisically the device.
+/// + PCB301 device process: this is the process that control PCB301 device (service board device). 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + PCB302 device process: this is the process that control PCB302 device (compressor device). 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + PCB303 device process: this is the process that control PCB303 device (collimator device). 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + PCB304 device process: this is the process that control PCB304 device (grid control device). 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + PCB325 device process: this is the process that control PCB325 device (biopsy device). 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + PCB326 device process: this is the process that control PCB326 device (obstacle device). 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + Vertical motor device process: this is the process that control the Vertical motor driver. 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + C-ARM motor device process: this is the process that control the C-ARM motor driver. 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + Body motor device process: this is the process that control the Body motor driver. 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + Tilt motor device process: this is the process that control the Tilt motor driver. 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// + Slide motor device process: this is the process that control the Slide motor driver. 
+/// When in simulated mode, the process routes the can frame to the simulator via socket connection;
+/// 
+/// \note
+/// When a process is running in Simulated mode, it actually run as it should be in normal mode:
+/// the executing code is exactly the same. The only difference is that 
+/// the communication with the simulator is made with a Tcp/Ip socket instead of a Can Bus.
+/// 
+/// #### Simulator Device
+/// 
+/// The simulator is a special application that can run into the same 
+/// computer or even in a different computer connected with 
+/// an ethernet to the computer wher the Gantry application run.
+/// 
+/// The parameter SystemIni.SYM_MODE defines the IP simulator address and Port.
+/// 
+/// The parameter can set if the simulator shall automatically start when the application 
+/// is set in Simulation mode  (option valid only if the simulator resides in the same pc of the Gantry application).
+/// 
+/// The simulator, for every simulated device:
+/// + simulates the communication protocol;
+/// + simulates the internal functions with a realistic timing;
+/// + simulates the hardware interactions with other simulated device;
+/// + displays the internal device status;
+/// 
+/// \note 
+/// the device functions are simulated basically, reproducing the principal aspects that 
+/// can impact with the Gantry activities.
+/// 
+/// See the Simulator device documentation for more details.
+///    
+/// ## Application process initialization
 /// 
 /// Based on the System running mode and related module's operating mode,
 /// every device module is activated in real or simulated mode.
 /// 
 /// The following device modules will be activated in the given sequence:
 /// 
-///  + CanDriver Module: this is the first to be activated, in order to open the CAN communication driver;
-///  + PCB301 Module: this module initializes the PCB301 communication or the board simulation;
-///  + PCB302 Module: this module initializes the PCB302 communication or the board simulation;
-///  + PCB303 Module: this module initializes the PCB303 communication or the board simulation;
-///  + PCB325 Module: this module initializes the PCB325 communication or the board simulation;
-///  + PCB304 Module: this module initializes the PCB304 communication or the board simulation;
-///  + PCB326 Module: this module initializes the PCB326 communication or the board simulation;
-///  + Generator Module: this module initializes the Generator communication or the device simulation;
-///  + TiltMotor Module: this module initializes the Tilt Motor communication or the board simulation;
-///  + ArmMotor Module: this module initializes the Arm Motor communication or the board simulation;
-///  + SlideMotor Module: this module initializes the Slide Motor communication or the board simulation;
-///  + BodyMotor Module: this module initializes the Body Motor communication or the board simulation;
-///  + VerticalMotor Module: this module initializes the Vertical Motor communication or the board simulation; 
+///  + CanDriver Module: this is the first process to be activated since it as to open the can bus communication;
+///  + PCB301 Module: this process connectes the PCB301 board. this process shall be the second. 
+///  This process shall controls the status of the system power before any other process access its controlled device.
 /// 
-/// # Revision Check
+/// The next processes actually may be called with different orders than this:
+///  + PCB302 process;
+///  + PCB303 process;
+///  + PCB304 process;
+///  + PCB325 process;
+///  + PCB326 preocess;
+///  + Generator process;
+///  + Vertical process;
+///  + Tilt process
+///  + Arm process;
+///  + Slide process
+///  + Body process
 /// 
-/// Every connected module provides the current bootloader and firmware revision code.
-/// This module checks the validity of the detected revision code with a list of 
-/// valid revision codes from the SystemConfig file.
+/// The GUI during the process initialization shows the status of the initialization fase.
 /// 
-/// If a revision code should not match with the expected, a general error message is activated 
-/// preventing the system to enter an operating mode.
+/// During the initialization fase, the following activities are implemented:
+/// + The bootloader and the revision of the firmware controlling the devices are requested;
+/// + The device's registers and parameters are configurated;
+/// + The motors are configurated and their internal status are set to a safer condition;
 /// 
-/// # Startup Completion 
+/// \warning
+/// In case a process should fail to complete the initialization, the whole initialization process 
+/// fails and the Application enters into a error loop. 
+/// In this case the Application may be restarted or the problem may be fixed before to restart 
+/// the application again.    
 /// 
-/// When the startup completes, even if an error should happen, \n
-/// the system automatically selects the Idle status.
-///  
+/// ## Revision Check
+/// 
+/// If the initializzation process should successfully complete,
+/// the Application proceeds with the revision verification.
+/// 
+/// The \ref SystemConfig defines the expected revisions for all the controlled Gantry devices.
+/// 
+/// If a revision should not match the expected one, a general error message is activated 
+/// preventing the system to enter the Patient Operating mode.
+/// 
+/// \note
+/// In case the revision check process should fail, the application 
+/// providdes a service tools to update the non conforming devices. 
+/// 
+/// \todo 
+/// The revision check shall be implemented.
 /// 
 /// 
 
-
-namespace CppCLRWinFormsProject {
+/// <summary>
+/// This is the CppCLRWinFormsProject
+/// </summary>
+namespace StartupOperatingMode {
 
 	
 	using namespace System::ComponentModel;

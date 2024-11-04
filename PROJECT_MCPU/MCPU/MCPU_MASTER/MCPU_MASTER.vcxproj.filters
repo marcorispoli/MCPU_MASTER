@@ -89,7 +89,7 @@
     <ClInclude Include="WINDOWS\IdleForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WINDOWS\MainForm.h">
+    <ClInclude Include="WINDOWS\GUIStartupOperatingForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WINDOWS\OperatingForm.h">

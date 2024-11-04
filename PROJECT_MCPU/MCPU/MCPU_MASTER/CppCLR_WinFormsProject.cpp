@@ -1,6 +1,6 @@
 #include "gantry_global_status.h"
 #include "Notify.h"
-#include "MainForm.h"
+#include "GUIStartupOperatingForm.h"
 #include "ConfigurationFiles.h"
 #include "Log.h"
 
@@ -50,7 +50,8 @@ using namespace System::Windows::Forms;
 /// </summary>
 
 
-/// \defgroup OPERMODE Application Operating Modes
+
+/// \defgroup OPERMODEDOC Application Operating Modes
 ///	\ingroup APPDOC
 /// 
 /// # Overview
@@ -123,6 +124,6 @@ int main()
 
 
 	LogClass::logInFile("PROGRAM INITIALIZATION");
-	Application::Run(gcnew StartupOperatingMode::MainForm());
+	Application::Run(gcnew StartupOperatingMode::StartupOperatingModeForm());
 	return 0;
 }

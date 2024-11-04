@@ -212,7 +212,7 @@
     <ClInclude Include="WINDOWS\KeyPaddle.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="WINDOWS\MainForm.h">
+    <ClInclude Include="WINDOWS\GUIStartupOperatingForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="WINDOWS\OperatingForm.h">

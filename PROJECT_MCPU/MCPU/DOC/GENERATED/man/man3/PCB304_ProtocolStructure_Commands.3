@@ -3,3 +3,95 @@
 .nh
 .SH NAME
 PCB304::ProtocolStructure::Commands
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB304\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBcommand_index\fP { \fBABORT_COMMAND\fP = 0, \fBRESET_ERROR\fP, \fBSET_INOUT\fP, \fBACTIVATE_GRID_TEST\fP }"
+.br
+.ti -1c
+.RI "enum class \fBcommand_test_codes\fP { \fBFULL_TEST\fP = 1, \fBIN_OUT_TEST\fP, \fBTRANSLATION_TEST\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommand\fP ^ \fBencodeResetCommand\fP (void)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommand\fP ^ \fBencodeAbortCommand\fP (void)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommand\fP ^ \fBencodeSetInOutCommand\fP (bool InField)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommand\fP ^ \fBencodeActivateFullTestCommand\fP (unsigned char cycles, unsigned char nfast, unsigned char nslow)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommand\fP ^ \fBencodeActivateInOutTestCommand\fP (unsigned char cycles)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommand\fP ^ \fBencodeActivateTranslationTestCommand\fP (unsigned char cycles, unsigned char nfast, unsigned char nslow)"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB304::ProtocolStructure::Commands::command_index\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIABORT_COMMAND \fP(0)
+Abort Command (mandatory as for device protocol) 
+.TP
+\f(BIRESET_ERROR \fP
+Resets the current error condition\&. 
+.TP
+\f(BISET_INOUT \fP
+Set the In Out position (only with InOut manual mode) 
+.TP
+\f(BIACTIVATE_GRID_TEST \fP
+Activate one of the available tests 
+.br
+ 
+.SS "enum class \fBPCB304::ProtocolStructure::Commands::command_test_codes\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIFULL_TEST \fP(1)
+Full test Command code\&. 
+.TP
+\f(BIIN_OUT_TEST \fP
+In_Out Test command code\&. 
+.TP
+\f(BITRANSLATION_TEST \fP
+Translation Test command code 
+.br
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBCanDeviceCommand\fP ^ PCB304::ProtocolStructure::Commands::encodeAbortCommand (void )\fR [inline]\fP"
+
+.SS "\fBCanDeviceCommand\fP ^ PCB304::ProtocolStructure::Commands::encodeActivateFullTestCommand (unsigned char cycles, unsigned char nfast, unsigned char nslow)\fR [inline]\fP"
+
+.SS "\fBCanDeviceCommand\fP ^ PCB304::ProtocolStructure::Commands::encodeActivateInOutTestCommand (unsigned char cycles)\fR [inline]\fP"
+
+.SS "\fBCanDeviceCommand\fP ^ PCB304::ProtocolStructure::Commands::encodeActivateTranslationTestCommand (unsigned char cycles, unsigned char nfast, unsigned char nslow)\fR [inline]\fP"
+
+.SS "\fBCanDeviceCommand\fP ^ PCB304::ProtocolStructure::Commands::encodeResetCommand (void )\fR [inline]\fP"
+
+.SS "\fBCanDeviceCommand\fP ^ PCB304::ProtocolStructure::Commands::encodeSetInOutCommand (bool InField)\fR [inline]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

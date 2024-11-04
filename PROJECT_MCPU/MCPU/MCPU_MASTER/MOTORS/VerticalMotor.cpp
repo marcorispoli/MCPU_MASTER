@@ -50,13 +50,32 @@ void VerticalMotor::testLimitSwitch(void) {
 
 
 /// <summary>
-/// The module override this function in order to initialize specific motor registers
+/// 
 /// 
 /// </summary>
 /// 
+/// The following registers will be uploaded here:
 /// 
-/// <param name=""></param>
-/// <returns>true if the initialization termines successfully</returns>
+/// | Register Address | Value | Description|
+/// |:--| : --| : --|
+/// |0x3202 : 00 | 0x41 | Sets the BLDC motor model|
+/// |0x2031 : 00 | 15000 | Pick current = 15Amp|
+/// |0x2032 : 00 | 5000 | Maximum speed|
+/// |0x203B : 01 | 50000 | Nominal current |
+/// |0x203B : 02 | 2000 | Maximum duration of peak current |
+/// |0x203B : 03 | 0 | Threshold|
+/// |0x203B : 04 | 0 | Calc Value|
+/// |0x203B : 05 | 15000 | Limit current|
+/// |0x2056 : 00 | 500 | Limit swithc tollerance Band|
+/// |0x3210 : 01 | 10000 | P of Pid|
+/// |0x3210 : 02 | 5 | I of Pid|
+/// |0x60C5 : 00 | 5000 | Max acceleration|
+/// |0x60C6 : 00 | 5000 | Max deceleration|
+/// |0x3240 : 01 | 4 | Input I3 = homing|
+/// |0x3240 : 02 | 0 | Not inverted inputs|
+/// |0x3240 : 03 | 0 | Force Enable = false|
+/// |0x3240 : 06 | 0 | Input voltage threshold = 5V |
+/// 
 #define VERTICAL_OD_CODE 0x0001
 unsigned short VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
     
@@ -92,7 +111,7 @@ unsigned short VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
 }
 
 /// <summary>
-/// This is the class constructor.
+/// 
 /// </summary>
 /// 
 /// The Constructor:
@@ -101,7 +120,7 @@ unsigned short VerticalMotor::initializeSpecificObjectDictionaryCallback(void) {
 ///     - Set The module name;
 ///     - Set The unit conversion coefficient
 /// 
-/// - Set the target acceptable precision range;
+/// - Set the target acceptable precision range to +/-5mm;
 /// - Initializes the encoder initial position from the configuration file;
 /// 
 /// <param name=""></param>
@@ -116,7 +135,7 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
 }
 
 /// <summary>
-/// This function activates the Isocentric correction procedure.
+/// 
 /// </summary>
 /// 
 /// The Isocentric procedure corrects the actual vertical position of the ARM,
@@ -132,7 +151,10 @@ VerticalMotor::VerticalMotor(void) :CANOPEN::CanOpenMotor((unsigned char)CANOPEN
 /// 
 /// <param name="id"> the requesting command ID to be finally signaled </param>
 /// <param name="delta_h">position variation</param>
-/// <returns></returns>
+/// <returns>
+/// + true: the activation started successfully;
+/// +false: the activation is rejected;
+/// </returns>
 bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
 {   
     
@@ -149,7 +171,7 @@ bool VerticalMotor::activateIsocentricCorrection(int id, int delta_h)
 
 
 /// <summary>
-/// The module overrides this function in order to  handle the IDLE activities
+/// 
 /// 
 /// </summary>
 /// 
@@ -185,16 +207,31 @@ VerticalMotor::MotorCompletedCodes VerticalMotor::idleCallback(void) {
 }
 
 /// <summary>
-/// This function activates the Automatic Homing procedure
+/// 
 /// 
 /// </summary>
 /// 
-/// The procedure makes use of the following activation parameters:
-/// - Speed:  MotorConfig::PARAM_HOME_SPEED;
-/// - Acceleration and Deceleration: MotorConfig::PARAM_HOME_ACC;
+/// The automatic zero setting procedure activates the motor rotation 
+/// until a photocell dedicate to the zero setting procedure intercepts 
+/// the mechanical zero setting point.
+/// 
+/// This method should be called by the application for service,
+/// in case a automatic zero setting should be executed.
+/// 
+/// This methods is not a blocking method for the caller thread:
+/// + the encoder reset may takes time after this method returns.
+/// 
+/// \note:
+/// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
+/// manual command is terminated;
+/// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
+/// of the command as soon as the CanOpenMotor::isRunning() should return false.
 /// 
 /// <param name=""></param>
-/// <returns>true: the command is processing</returns>
+/// <returns>
+/// + true: the zero setting process is actually started;
+/// + false: the zero setting cannot start for some reason (CanOpenMotor::getCommandCompletedCode() for gets the error code) 
+/// </returns>
 bool VerticalMotor::startAutoHoming(void) {
     
     // If the safety condition prevent the command execution it is immediatelly aborted
@@ -211,12 +248,52 @@ bool VerticalMotor::startAutoHoming(void) {
     return device->activateAutomaticHoming(HOMING_ON_METHOD, HOMING_OFF_METHOD, speed, acc);
 }
 
+/// <summary>
+/// 
+/// 
+/// </summary>
+/// 
+/// The manual zero setting procedure is a procedure that doesn't require
+/// any motor activation. The motor sets its internal encoder to the value
+/// manually passed by this module.
+/// 
+/// This method should be called by the application for service,
+/// in case a position manual zero setting should be executed.
+/// 
+/// This methods is not a blocking method for the caller thread:
+/// + the encoder reset may takes time after this method returns.
+/// 
+/// \note:
+/// + the Application shall call the method CanOpenMotor::isRunning() to checks if the 
+/// manual command is terminated;
+/// + the application shall call the CanOpenMotor::getCommandCompletedCode() to get the result 
+/// of the command as soon as the CanOpenMotor::isRunning() should return false.
+/// 
+/// <param name="target_position">This is the current effective position in 1mm units</param>
+/// <returns>
+/// + true: the zero setting process is actually started;
+/// + false: the zero setting cannot start
+/// </returns>
 bool VerticalMotor::startManualHoming(int target_position) {
    
     if (device->isPositionFromExternalSensor()) return device->activateExternalHoming(target_position);
     else return device->activateManualHoming(target_position);
 }
 
+/// <summary>
+/// This callback is called during the activation preparation fase.
+/// </summary>
+/// 
+/// The module override this callback in order to handle the status of the limit switches 
+/// before to init the activation.
+/// 
+/// <param name="current_command">the base class passes the code of the current command that is excuting</param>
+/// <param name="current_position">the base class passes the current position</param>
+/// <param name="target_position">the base class passes the target command position</param>
+/// <returns>
+/// + MotorCompletedCodes::COMMAND_PROCEED: the command can proceed;
+/// + MotorCompletedCodes::ERROR_LIMIT_SWITCH: a limit switch is detected active;
+/// </returns>
 VerticalMotor::MotorCompletedCodes VerticalMotor::preparationCallback(MotorCommands current_command, int current_position, int target_position) {
     if(current_command == MotorCommands::MOTOR_AUTO_HOMING) return MotorCompletedCodes::COMMAND_PROCEED;
     if (simulator_mode) return MotorCompletedCodes::COMMAND_PROCEED;
@@ -229,6 +306,20 @@ VerticalMotor::MotorCompletedCodes VerticalMotor::preparationCallback(MotorComma
 
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// 
+/// The module override this function in order to test the status of the limit switches during the 
+/// motor activation.
+/// 
+/// <param name="current_command">the base class passes the code of the current command that is excuting</param>
+/// <param name="current_position">the base class passes the current position</param>
+/// <param name="target_position">the base class passes the target command position</param>
+/// <returns>
+/// + MotorCompletedCodes::COMMAND_PROCEED: the command can proceed;
+/// + MotorCompletedCodes::ERROR_LIMIT_SWITCH: a limit switch is detected active;
+/// </returns>
 VerticalMotor::MotorCompletedCodes VerticalMotor::runningCallback(MotorCommands current_command, int current_position, int target_position) {
     if(simulator_mode) return MotorCompletedCodes::COMMAND_PROCEED;
     
@@ -241,6 +332,18 @@ VerticalMotor::MotorCompletedCodes VerticalMotor::runningCallback(MotorCommands 
     return MotorCompletedCodes::COMMAND_PROCEED;
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// 
+/// The module overrides this callback in order to handle the Automatic activation termination:
+/// + in case of automatic activation (Isocentric) the module shall send the \ref EVENT_Executed
+/// event to the AWS.
+/// 
+/// <param name="id">the identifier of the AWS command;</param>
+/// <param name="current_command">the current executed command code;</param>
+/// <param name="current_position">the final Vertical activation</param>
+/// <param name="term_code">the command_completed code of the activation;</param>
 void VerticalMotor::completedCallback(int id, MotorCommands current_command, int current_position, MotorCompletedCodes term_code) {
     if (current_command != MotorCommands::MOTOR_AUTO_POSITIONING) return;
 
@@ -250,7 +353,15 @@ void VerticalMotor::completedCallback(int id, MotorCommands current_command, int
 }
 
 
-
+/// <summary>
+/// The module overrrides this callback in order to activate a specific error message
+/// </summary>
+/// 
+/// 
+/// <param name="errstat"></param>
+/// <param name="data_changed"></param>
+/// <param name="error_class"></param>
+/// <param name="error_code"></param>
 void VerticalMotor::faultCallback(bool errstat, bool data_changed, unsigned int error_class, unsigned int error_code) {
     if (errstat == false) {
         Notify::deactivate(Notify::messages::INFO_VERTICAL_DRIVER);

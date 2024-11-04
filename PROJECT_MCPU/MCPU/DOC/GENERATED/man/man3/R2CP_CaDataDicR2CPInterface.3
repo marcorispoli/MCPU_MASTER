@@ -3,3 +3,108 @@
 .nh
 .SH NAME
 R2CP::CaDataDicR2CPInterface
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <aDataDicR2CPInterface\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCaDataDicR2CPInterface\fP ()"
+.br
+.RI "Constructor\&. "
+.ti -1c
+.RI "virtual \fB~CaDataDicR2CPInterface\fP ()"
+.br
+.RI "Destructor\&. "
+.ti -1c
+.RI "virtual void \fBInitialitation\fP (void)"
+.br
+.RI "Class Initialitation\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_R2CP_SS_Clean_Error\fP (void)"
+.br
+.RI "Cleans Last Error\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_R2CP_SS_Get_Error\fP (void)"
+.br
+.RI "Gets all Error\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_R2CP_SS_Reset\fP (void)"
+.br
+.RI "Sets a Board Reset\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_R2CP_SS_MasterLiveTime\fP (unsigned short Time2Configure)"
+.br
+.RI "Sets MasterLiveTime\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_R2CP_SS_PackageVersion\fP (char *pPackageVersion)"
+.br
+.RI "Send Package Version\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_R2CP_SS_SerialNumber\fP (unsigned char *pSerialNumber, unsigned short SizeSerialNumber)"
+.br
+.RI "Sets SerialNumber\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_R2CP_SS_SystemVersion\fP (void)"
+.br
+.RI "Gets System Versions\&. "
+.ti -1c
+.RI "virtual bool \fBReservedGot\fP (unsigned char Priority, unsigned char Node, unsigned char Index, unsigned char SubIndex, unsigned char *pData, unsigned short Size)"
+.br
+.RI "Reverved Got\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "R2CP::CaDataDicR2CPInterface::CaDataDicR2CPInterface ()\fR [inline]\fP"
+
+.PP
+Constructor\&. 
+.SS "virtual R2CP::CaDataDicR2CPInterface::~CaDataDicR2CPInterface ()\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Destructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual unsigned char R2CP::CaDataDicR2CPInterface::II_R2CP_SS_Clean_Error (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Cleans Last Error\&. 
+.SS "virtual unsigned char R2CP::CaDataDicR2CPInterface::II_R2CP_SS_Get_Error (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Gets all Error\&. 
+.SS "virtual unsigned char R2CP::CaDataDicR2CPInterface::II_R2CP_SS_MasterLiveTime (unsigned short Time2Configure)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Sets MasterLiveTime\&. 
+.SS "virtual unsigned char R2CP::CaDataDicR2CPInterface::II_R2CP_SS_PackageVersion (char * pPackageVersion)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Send Package Version\&. 
+.SS "virtual unsigned char R2CP::CaDataDicR2CPInterface::II_R2CP_SS_Reset (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Sets a Board Reset\&. 
+.SS "virtual unsigned char R2CP::CaDataDicR2CPInterface::II_R2CP_SS_SerialNumber (unsigned char * pSerialNumber, unsigned short SizeSerialNumber)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Sets SerialNumber\&. 
+.SS "virtual unsigned char R2CP::CaDataDicR2CPInterface::II_R2CP_SS_SystemVersion (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Gets System Versions\&. 
+.SS "virtual void R2CP::CaDataDicR2CPInterface::Initialitation (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Class Initialitation\&. 
+.SS "virtual bool R2CP::CaDataDicR2CPInterface::ReservedGot (unsigned char Priority, unsigned char Node, unsigned char Index, unsigned char SubIndex, unsigned char * pData, unsigned short Size)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Reverved Got\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

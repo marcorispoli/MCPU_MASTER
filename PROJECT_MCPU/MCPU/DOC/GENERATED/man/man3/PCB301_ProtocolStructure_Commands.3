@@ -3,3 +3,48 @@
 .nh
 .SH NAME
 PCB301::ProtocolStructure::Commands
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB301\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBcommand_index\fP { \fBABORT_COMMAND\fP = 0, \fBACTIVATE_SOFT_POWEROFF\fP, \fBACTIVATE_DEMO_TOMO\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommand\fP ^ \fBencodeActivateDemoCommand\fP (unsigned char samples, unsigned char fps)"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB301::ProtocolStructure::Commands::command_index\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIABORT_COMMAND \fP(0)
+Abort Command (mandatory as for device protocol) 
+.TP
+\f(BIACTIVATE_SOFT_POWEROFF \fP
+Soft power off activation\&. 
+.TP
+\f(BIACTIVATE_DEMO_TOMO \fP
+Buzzer pulse for tomo 
+.br
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBCanDeviceCommand\fP ^ PCB301::ProtocolStructure::Commands::encodeActivateDemoCommand (unsigned char samples, unsigned char fps)\fR [inline]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

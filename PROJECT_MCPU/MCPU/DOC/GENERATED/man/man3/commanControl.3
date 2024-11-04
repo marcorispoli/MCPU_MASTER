@@ -140,7 +140,7 @@ This is the enumeration of the possible command executed errors\&. NOTE:
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BICOMMAND_NO_ERROR \fP
+\f(BICOMMAND_NO_ERROR \fP(0)
 Protocol Reserved code for the command successfully completed\&. 
 .TP
 \f(BICOMMAND_ERROR_BUSY \fP
@@ -152,18 +152,20 @@ Protocol Reserved code for the command with invalid parameter\&.
 \f(BICOMMAND_ERROR_MOMENTARY_DISABLED \fP
 Protocol Reserved code for the command momentary disabled\&. 
 .TP
-\f(BICOMMAND_INVALID_DEVICE \fP
+\f(BICOMMAND_INVALID_DEVICE \fP(253)
 Command requested from an invalid thread\&. 
 .TP
-\f(BICOMMAND_COMMUNICATION_ERROR \fP
+\f(BICOMMAND_COMMUNICATION_ERROR \fP(254)
 Command failed due to communication error\&. 
 .TP
-\f(BICOMMAND_DEVICE_TMO \fP
+\f(BICOMMAND_DEVICE_TMO \fP(255)
 Command execution timeout\&. 
 .SH "Function Documentation"
 .PP 
 .SS "bool CanDeviceProtocol::commandNoWaitCompletion (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This is a non blocking thread safe function sending a command to the remote device\&. The function prepares the data structures to allow the device module to handle the command execution\&.
 
@@ -212,6 +214,8 @@ true if the command can be executed
 .SS "\fBCanDeviceProtocol::CanDeviceCommandResult\fP CanDeviceProtocol::commandWaitCompletion (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This is a blocking thread safe function sending a command to the remote device\&. IMPORTANT: This function cannot be called inside the running loop of the sublcass thread handling the communication with the remote device!
 
 .PP
@@ -257,6 +261,8 @@ The handler to the result class
 .SS "\fBCommandRegisterErrors\fP CanDeviceProtocol::getCommandError (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 This function returns the last error condition of an executed command\&. 
 .PP
 \fBReturns\fP
@@ -267,6 +273,8 @@ Command completed error code
 
 .SS "unsigned char CanDeviceProtocol::getCommandResult0 (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 In case of command completed without errors, this function returns the command returned data-0\&. 
 .PP
@@ -279,6 +287,8 @@ Command completed returned data-0 code
 .SS "unsigned char CanDeviceProtocol::getCommandResult1 (void )\fR [inline]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
+.PP
 In case of command completed without errors, this function returns the command returned data-1\&. 
 .PP
 \fBReturns\fP
@@ -289,6 +299,8 @@ Command completed returned data-1 code
 
 .SS "bool CanDeviceProtocol::isCommandCompleted (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function returns the current status of the pending command\&. NOTE: the command is completed event when it completes with an error condition\&.
 
@@ -301,6 +313,8 @@ true if the command is completed
 
 .SS "bool CanDeviceProtocol::isCommandError (void )\fR [inline]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/CanDeviceProtocol\&.h\fP>\fP
 .PP
 This function returns true if the command is terminated with an error condition\&. This function should be called only when the command is terminated\&. See \fBisCommandCompleted()\fP
 

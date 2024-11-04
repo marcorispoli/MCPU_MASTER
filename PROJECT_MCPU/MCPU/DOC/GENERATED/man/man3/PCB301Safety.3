@@ -150,6 +150,8 @@ This module provides API to check the current status of the jumper detection sta
 .SS "static bool PCB301::getBurningJumper (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This function returns the status of the Burning Jumper detected presence\&. The jumper for the burning reduces the safety level of the \fBGantry\fP\&.
 
 .PP
@@ -164,6 +166,8 @@ True if the Jumper is detected present
 
 .SS "static bool PCB301::getCabinetSafety (void )\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This function returns the Cabinet Safety Input circuit line activation status\&. When this input is activated, the external 48VDC power supply is disabled for safety reasons\&.
 
@@ -180,6 +184,8 @@ True: the cabinet input circuit is detected active
 .SS "static bool PCB301::getCompressionStatus (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This function returns the Compression Pending Status Input circuit line activation status\&. When this input is activated, the external safety solid state relay is disabled and the Motor powered by this line cannot be activated for safety reasons\&.
 
 .PP
@@ -194,6 +200,8 @@ True: the compression line is detected active
 
 .SS "static bool PCB301::getEmergency (void )\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This function returns the Emergency Input circuit line activation status\&. When this input is activated, the external power contactor is switched off toghether with the 48VDC power supply\&.
 
@@ -210,6 +218,8 @@ True: the emergency input has been detected activated
 .SS "static bool PCB301::isClosedDoor (void )\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This function returns the Door Study Status Input circuit line activation status\&. When this input is activated, the X-RAY enable signal is disabled and no X-RAY Radiation can be executed by the \fBGenerator\fP device\&.
 
 .PP
@@ -225,6 +235,8 @@ True: the study's door is detected open
 .SS "static void PCB301::SetCompressorCalib (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
+.PP
 This method sets the Compressor Calibration Output line on the \fBPCB301\fP board\&. The Compression Calibration output line enables/disables the activation of the force sensor of the copressor device\&.
 
 .PP
@@ -236,6 +248,8 @@ This method sets the Compressor Calibration Output line on the \fBPCB301\fP boar
 
 .SS "static void PCB301::SetCompressorEna (bool stat)\fR [inline]\fP, \fR [static]\fP"
 
+.PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/DEVICES/PCB301\&.h\fP>\fP
 .PP
 This method sets the Compressor Enable Output line on the \fBPCB301\fP board\&. The Compression Enable output line enables/disables the motor of the compressor device preventing any unwanted motor activation\&.
 

@@ -3,3 +3,742 @@
 .nh
 .SH NAME
 R2CP::CaDataDicGen
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <CaDataDicGen\&.h>\fP
+.PP
+Inherits \fBCaDataDic\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBdatabank_executed_t\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBInitialitation\fP (void)"
+.br
+.RI "DataDic Initialitation\&. "
+.ti -1c
+.RI "void \fBSetCommunicationForm\fP (\fBCR2CP_Eth\fP *Type)"
+.br
+.RI "Set Communication Channel\&. "
+.ti -1c
+.RI "virtual bool \fBCheck_NotAvailable_Message_vs_Status\fP (unsigned short index, unsigned short subindex, \fBtInfoMessage\fP *MessageInfo)"
+.br
+.RI "Inject Interfaces\&. "
+.ti -1c
+.RI "void \fBLock_DataDicGenMutex\fP (void)"
+.br
+.RI "Lock \fBGenerator\fP Datadic\&. "
+.ti -1c
+.RI "void \fBUnLock_DataDicGenMutex\fP (void)"
+.br
+.RI "Unlock \fBGenerator\fP Datadic\&. "
+.ti -1c
+.RI "void \fBNetwork_IpConfig_Event\fP (\fBudword\fP IpAddress, \fBudword\fP MaskSubNetwork, \fBudword\fP Gateway, \fBudword\fP ShIpAdress)"
+.br
+.ti -1c
+.RI "void \fBNetwork_ConnectionRequest_Event\fP (void)"
+.br
+.ti -1c
+.RI "void \fBNetwork_GetApplicationNodeStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBNetwork_GetGeneratorNodeStatus\fP (void)"
+.br
+.ti -1c
+.RI "void \fBNetwork_BackupSnapShot_Event\fP (\fBtBackupSnapShotStatus\fP Status)"
+.br
+.ti -1c
+.RI "void \fBNetwork_Restore_Event\fP (\fBtRestoreStatus\fP Status)"
+.br
+.ti -1c
+.RI "void \fBService_Log_Event\fP (unsigned char *ServiceLog, unsigned short SizeofLog)"
+.br
+.ti -1c
+.RI "void \fBService_StandardLicense_Event\fP (\fBtStandardLicense\fP *StandardLicense)"
+.br
+.ti -1c
+.RI "void \fBService_ExtendedLicense_Event\fP (\fBtExtendedLicense\fP *ExtendedLicense)"
+.br
+.ti -1c
+.RI "bool \fBHeartbeatGot\fP (unsigned char node, unsigned char keyWord, unsigned char status)"
+.br
+.RI "Called by \fBR2CP\fP protocol after getting HEARTBEAT function message\&.\&. "
+.ti -1c
+.RI "void \fBProtocol_Get_Version\fP (void)"
+.br
+.ti -1c
+.RI "void \fBProtocol_Set_Version6\fP (void)"
+.br
+.ti -1c
+.RI "void \fBProtocol_Set_Version5\fP (void)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Get_StatusV5\fP (void)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Get_StatusV6\fP (void)"
+.br
+.ti -1c
+.RI "void \fBSystemMessages_Get_AllMessages\fP (void)"
+.br
+.ti -1c
+.RI "void \fBSystemMessages_SetDisableRx\fP (bool state)"
+.br
+.ti -1c
+.RI "void \fBSystemMessages_SetTestMessage\fP (unsigned long msg)"
+.br
+.ti -1c
+.RI "bool \fBSystemMessages_Clear_Message\fP (unsigned int ID)"
+.br
+.ti -1c
+.RI "void \fBPatient_SetupProcedureV5\fP (unsigned char num)"
+.br
+.ti -1c
+.RI "void \fBPatient_SetupProcedureV6\fP (unsigned char procId, unsigned char param)"
+.br
+.ti -1c
+.RI "void \fBPatient_ClearAllProcedures\fP (void)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Get_Databank\fP (unsigned char i)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Set_2D_Databank\fP (unsigned char i, bool large_focus, float kV, float mAs, unsigned long tmo)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Set_3D_Databank\fP (unsigned char i, bool large_focus, float kV, float MA, float MS, float MT)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Set_Ms_Databank\fP (unsigned char dbId, float MS)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Set_SkipPulse_Databank\fP (unsigned char dbId, unsigned char nskip)"
+.br
+.ti -1c
+.RI "void \fBGenerator_Assign_SkipPulse_Databank\fP (unsigned char procedureId, unsigned char dbId)"
+.br
+.ti -1c
+.RI "void \fBPatient_Activate2DProcedurePulse\fP (bool detector, bool grid)"
+.br
+.ti -1c
+.RI "void \fBPatient_Activate2DAecProcedurePulse\fP (void)"
+.br
+.ti -1c
+.RI "void \fBPatient_Activate2DAecProcedurePre\fP (void)"
+.br
+.ti -1c
+.RI "void \fBPatient_Activate3DProcedurePulse\fP (void)"
+.br
+.ti -1c
+.RI "void \fBPatient_Activate3DAecProcedurePulse\fP (void)"
+.br
+.ti -1c
+.RI "void \fBPatient_Activate3DAecProcedurePre\fP (void)"
+.br
+.ti -1c
+.RI "void \fBGenerator_AssignDbToProc\fP (unsigned char db, unsigned char proc, unsigned char index)"
+.br
+.ti -1c
+.RI "void \fBGenerator_verifyDbToProc\fP (unsigned char proc, unsigned char index)"
+.br
+.ti -1c
+.RI "void \fBGenerator_startExposure\fP (void)"
+.br
+.ti -1c
+.RI "void \fBGenerator_stopExposure\fP (void)"
+.br
+.ti -1c
+.RI "void \fBresetExecutedPulse\fP (void)"
+.br
+.RI "Resets all the databank exposed pulses\&. "
+.ti -1c
+.RI "bool \fBisVersionUpdated\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisProtoV6\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBisProtoV5\fP (void)"
+.br
+.in -1c
+
+Public Member Functions inherited from \fBCaDataDic\fP
+.in +1c
+.ti -1c
+.RI "\fBCaDataDic\fP (unsigned char Node)"
+.br
+.RI "Constructor of the class\&. "
+.ti -1c
+.RI "virtual \fB~CaDataDic\fP ()"
+.br
+.RI "Destructor of the class\&. "
+.ti -1c
+.RI "unsigned char \fBDataDicCheckAndCall\fP (unsigned char Index, unsigned char SubIndex, unsigned char Node, \fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short Size, \fBtInfoMessage\fP *infomessage=nullptr)"
+.br
+.RI "Checks access to the dictionary and calls related function according to parameters passed\&. "
+.ti -1c
+.RI "virtual bool \fBDownloadGot\fP (unsigned short target_id, unsigned char *pData, unsigned short Size)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBCaDataDicGen\fP * \fBGetInstance\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBR2CP_ProtocolVersion\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBGenerator_DataBank_ExposureAcceptance\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBGenerator_DataBank_DefineProcedure\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBGenerator_RadDataBank_Load\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBGenerator_RadDataBank_Load_Ms\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBGenerator_ExposureManagement_GeneratorStatus\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBGenerator_ExposureManagement_RadPostExposure\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_SystemMessage\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_AllSystemMessages\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_LoadDesktop\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_DesktopDisplay\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_NumericPropertySetup\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_NumericPropertyValue\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_StringProperty\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSytem_NumericValueTable\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSytem_NumericValueTableItem\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_StringTable\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_SingleUserRequest\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBSystem_UserRequestTable\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_HeartBeat\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_ConnectionChanged\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.RI "This function is called whenever a CONNECTION-CHANGED EVENT is received\&. "
+.ti -1c
+.RI "static void \fBNetwork_NodeStatus\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.RI "This function is called when a network NODE-STATUS ANSWER/EVENT is received\&. "
+.ti -1c
+.RI "static void \fBNetwork_ConnectionRequest\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_IpConfig\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_FileConfigUpdate\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_SnapShot\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_BackupSnapShot\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_Restore\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBNetwork_CalConfigUpdate\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBService_StandardLicense\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.ti -1c
+.RI "static void \fBService_ExtendedLicense\fP (\fBtDataDicAccess\fP Access, unsigned char *pData, unsigned short nData, \fBtInfoMessage\fP *MessageInfo=nullptr)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBdatabank_executed_t\fP \fBexecuted_pulses\fP [10]"
+.br
+.RI "Sets the array of per Databank received pulses\&. "
+.ti -1c
+.RI "\fBCaDataDicRadInterface\fP \fBradInterface\fP"
+.br
+.ti -1c
+.RI "\fBCaDataDicSystemInterface\fP \fBsystemInterface\fP"
+.br
+.ti -1c
+.RI "\fBtDataDicProtocolVersion\fP \fBprotocolVersion\fP"
+.br
+.ti -1c
+.RI "bool \fBprotocolUpdated\fP"
+.br
+.in -1c
+
+Public Attributes inherited from \fBCaDataDic\fP
+.in +1c
+.ti -1c
+.RI "\fBtDataDicHwVersion\fP \fBmHwVersion\fP"
+.br
+.RI "Stores Hardware version field\&. Format: A3616-01-0\&. "
+.ti -1c
+.RI "\fBtDataDicSwVersion\fP \fBmSwVersion\fP"
+.br
+.RI "Stores Software version field\&. Format: V1R01\&.1\&. "
+.ti -1c
+.RI "\fBtDataDicSwVersion\fP \fBmBootVersion\fP"
+.br
+.RI "Stores Bootloader version field\&. Format: V1R01\&.1\&. "
+.ti -1c
+.RI "\fBtDataDicStatusRegister\fP \fBmStatusRegister\fP"
+.br
+.RI "Stores \fBR2CP\fP status register\&. "
+.ti -1c
+.RI "\fBtDataDicProtocolVersion\fP \fBmProtocolVersion\fP"
+.br
+.RI "Stores protocol version field\&. Format: V1\&.1 R A\&. "
+.ti -1c
+.RI "char * \fBm_pPackageVersion\fP"
+.br
+.RI "Stores protocol version field\&. Format: V1\&.1 R A\&. "
+.ti -1c
+.RI "unsigned char \fBmPipeSubNodeId\fP"
+.br
+.RI "Stores pipe node id\&. "
+.ti -1c
+.RI "unsigned char \fBmPipeInterfaceNumber\fP"
+.br
+.RI "Stores pipe interface number\&. "
+.ti -1c
+.RI "char * \fBm_pSerialNumber\fP"
+.br
+.RI "Stores serial number of the node/equipment\&. "
+.ti -1c
+.RI "char * \fBm_pDescription\fP"
+.br
+.RI "Stores a short description of a node\&. "
+.ti -1c
+.RI "unsigned short \fBmHeartBeatTime\fP"
+.br
+.RI "Stores heartbeat time out\&. Units (mS)\&. "
+.ti -1c
+.RI "unsigned char \fBmNodeId\fP"
+.br
+.RI "Stores \fBR2CP\fP node id of the dictionary\&. 0 is reserved for broadcast and 4 for HCS12 bootloader\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBm_EnableLogInfo\fP = false"
+.br
+.ti -1c
+.RI "static void(* \fBm_fcb_log_\fP )(unsigned char LogLevel, const char *string,\&.\&.\&.) = nullptr"
+.br
+.RI "Log function Callback\&. "
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCaDataDicGen\fP (unsigned char Node)"
+.br
+.RI "Constructor\&. "
+.ti -1c
+.RI "\fB~CaDataDicGen\fP ()"
+.br
+.RI "Destructor\&. "
+.ti -1c
+.RI "unsigned char \fBGetNodeEvent\fP (bool IsFromCp=false)"
+.br
+.RI "Gets Node to send\&. "
+.ti -1c
+.RI "void \fBSetNodeEvent\fP (unsigned char Node, bool IsFromGet=false)"
+.br
+.RI "Sets Node\&. "
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBm_Current_Node_Dest_\fP"
+.br
+.RI "Current Node pending message\&. "
+.ti -1c
+.RI "bool \fBm_IsGetRequest_Pending_\fP"
+.br
+.RI "Get Request Pending\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBCaDataDicGen\fP * \fBm_p_instance_\fP = nullptr"
+.br
+.RI "Objet SingleTone Pointer\&. "
+.ti -1c
+.RI "static \fBCR2CP_Eth\fP * \fBm_Type_\fP = nullptr"
+.br
+.RI "Template Communication Type pointer\&. "
+.ti -1c
+.RI "static \fBCaDataDicInterface\fP * \fBm_p_DataDicInterface_\fP = nullptr"
+.br
+.ti -1c
+.RI "static \fBCaDataDicNetworkInterface\fP * \fBm_p_NetworkInteface_\fP = nullptr"
+.br
+.ti -1c
+.RI "static \fBCaDataDicRadInterface\fP * \fBm_p_RadInterface_\fP = nullptr"
+.br
+.ti -1c
+.RI "static \fBCaDataDicSystemInterface\fP * \fBm_p_SystemInterface_\fP = nullptr"
+.br
+.ti -1c
+.RI "static \fBCaDataDicPatientInterface\fP * \fBm_p_PatientInterface_\fP = nullptr"
+.br
+.ti -1c
+.RI "static \fBCaDataDicServiceInterface\fP * \fBm_p_ServiceInterface_\fP = nullptr"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Protected Attributes inherited from \fBCaDataDic\fP
+.in +1c
+.ti -1c
+.RI "const \fBtTable\fP * \fBpDataDictionary\fP"
+.br
+.RI "Mutex pointer\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "R2CP::CaDataDicGen::CaDataDicGen (unsigned char Node)\fR [private]\fP"
+
+.PP
+Constructor\&. 
+.SS "R2CP::CaDataDicGen::~CaDataDicGen ()\fR [private]\fP"
+
+.PP
+Destructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool R2CP::CaDataDicGen::Check_NotAvailable_Message_vs_Status (unsigned short index, unsigned short subindex, \fBtInfoMessage\fP * MessageInfo)\fR [virtual]\fP"
+
+.PP
+Inject Interfaces\&. Checks messages versus geneator status 
+.PP
+Reimplemented from \fBCaDataDic\fP\&.
+.SS "void R2CP::CaDataDicGen::Generator_Assign_SkipPulse_Databank (unsigned char procedureId, unsigned char dbId)"
+
+.SS "void R2CP::CaDataDicGen::Generator_AssignDbToProc (unsigned char db, unsigned char proc, unsigned char index)"
+
+.SS "void R2CP::CaDataDicGen::Generator_DataBank_DefineProcedure (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Generator_DataBank_ExposureAcceptance (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Generator_ExposureManagement_GeneratorStatus (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Generator_ExposureManagement_RadPostExposure (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Generator_Get_Databank (unsigned char i)"
+
+.SS "void R2CP::CaDataDicGen::Generator_Get_StatusV5 (void )"
+
+.SS "void R2CP::CaDataDicGen::Generator_Get_StatusV6 (void )"
+
+.SS "void R2CP::CaDataDicGen::Generator_RadDataBank_Load (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Generator_RadDataBank_Load_Ms (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Generator_Set_2D_Databank (unsigned char i, bool large_focus, float kV, float mAs, unsigned long tmo)"
+
+.SS "void R2CP::CaDataDicGen::Generator_Set_3D_Databank (unsigned char i, bool large_focus, float kV, float MA, float MS, float MT)"
+
+.SS "void R2CP::CaDataDicGen::Generator_Set_Ms_Databank (unsigned char dbId, float MS)"
+
+.SS "void R2CP::CaDataDicGen::Generator_Set_SkipPulse_Databank (unsigned char dbId, unsigned char nskip)"
+
+.SS "void R2CP::CaDataDicGen::Generator_startExposure (void )"
+
+.SS "void R2CP::CaDataDicGen::Generator_stopExposure (void )"
+
+.SS "void R2CP::CaDataDicGen::Generator_verifyDbToProc (unsigned char proc, unsigned char index)"
+
+.SS "\fBCaDataDicGen\fP * R2CP::CaDataDicGen::GetInstance (void )\fR [static]\fP"
+\fBGenerator\fP Datadic SingleTone 
+.SS "unsigned char R2CP::CaDataDicGen::GetNodeEvent (bool IsFromCp = \fRfalse\fP)\fR [private]\fP"
+
+.PP
+Gets Node to send\&. 
+.SS "bool R2CP::CaDataDicGen::HeartbeatGot (unsigned char node, unsigned char keyWord, unsigned char status)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Called by \fBR2CP\fP protocol after getting HEARTBEAT function message\&.\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fINode\fP Node Id of the dictionary\&. 
+.br
+\fIkeyWord\fP Keyword of the HEARTBEAT message got\&. 
+.br
+\fIstatus\fP Status of the node which is carried on the HEARTBEAT message got\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If it was succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.PP
+Implements \fBCaDataDic\fP\&.
+.SS "void R2CP::CaDataDicGen::Initialitation (void )"
+
+.PP
+DataDic Initialitation\&. 
+.SS "bool R2CP::CaDataDicGen::isProtoV5 (void )\fR [inline]\fP"
+
+.SS "bool R2CP::CaDataDicGen::isProtoV6 (void )\fR [inline]\fP"
+
+.SS "bool R2CP::CaDataDicGen::isVersionUpdated (void )\fR [inline]\fP"
+
+.SS "void R2CP::CaDataDicGen::Lock_DataDicGenMutex (void )"
+
+.PP
+Lock \fBGenerator\fP Datadic\&. 
+.SS "void R2CP::CaDataDicGen::Network_BackupSnapShot (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Network_BackupSnapShot_Event (\fBtBackupSnapShotStatus\fP Status)"
+
+.SS "void R2CP::CaDataDicGen::Network_CalConfigUpdate (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Network_ConnectionChanged (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.PP
+This function is called whenever a CONNECTION-CHANGED EVENT is received\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIAccess\fP 
+.br
+\fIpData\fP 
+.br
+\fInData\fP 
+.br
+\fIMessageInfo\fP 
+.RE
+.PP
+
+.SS "void R2CP::CaDataDicGen::Network_ConnectionRequest (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Network_ConnectionRequest_Event (void )"
+
+.SS "void R2CP::CaDataDicGen::Network_FileConfigUpdate (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Network_GetApplicationNodeStatus (void )"
+
+.SS "void R2CP::CaDataDicGen::Network_GetGeneratorNodeStatus (void )"
+
+.SS "void R2CP::CaDataDicGen::Network_HeartBeat (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Network_IpConfig (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Network_IpConfig_Event (\fBudword\fP IpAddress, \fBudword\fP MaskSubNetwork, \fBudword\fP Gateway, \fBudword\fP ShIpAdress)"
+
+.SS "void R2CP::CaDataDicGen::Network_NodeStatus (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.PP
+This function is called when a network NODE-STATUS ANSWER/EVENT is received\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIAccess\fP 
+.br
+\fIpData\fP 
+.br
+\fInData\fP 
+.br
+\fIMessageInfo\fP 
+.RE
+.PP
+
+.SS "void R2CP::CaDataDicGen::Network_Restore (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Network_Restore_Event (\fBtRestoreStatus\fP Status)"
+
+.SS "void R2CP::CaDataDicGen::Network_SnapShot (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Patient_Activate2DAecProcedurePre (void )"
+
+.SS "void R2CP::CaDataDicGen::Patient_Activate2DAecProcedurePulse (void )"
+
+.SS "void R2CP::CaDataDicGen::Patient_Activate2DProcedurePulse (bool detector, bool grid)"
+
+.SS "void R2CP::CaDataDicGen::Patient_Activate3DAecProcedurePre (void )"
+
+.SS "void R2CP::CaDataDicGen::Patient_Activate3DAecProcedurePulse (void )"
+
+.SS "void R2CP::CaDataDicGen::Patient_Activate3DProcedurePulse (void )"
+
+.SS "void R2CP::CaDataDicGen::Patient_ClearAllProcedures (void )"
+
+.SS "void R2CP::CaDataDicGen::Patient_SetupProcedureV5 (unsigned char num)"
+
+.SS "void R2CP::CaDataDicGen::Patient_SetupProcedureV6 (unsigned char procId, unsigned char param)"
+
+.SS "void R2CP::CaDataDicGen::Protocol_Get_Version (void )"
+
+.SS "void R2CP::CaDataDicGen::Protocol_Set_Version5 (void )"
+
+.SS "void R2CP::CaDataDicGen::Protocol_Set_Version6 (void )"
+
+.SS "void R2CP::CaDataDicGen::R2CP_ProtocolVersion (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::resetExecutedPulse (void )"
+
+.PP
+Resets all the databank exposed pulses\&. 
+.SS "void R2CP::CaDataDicGen::Service_ExtendedLicense (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Service_ExtendedLicense_Event (\fBtExtendedLicense\fP * ExtendedLicense)"
+
+.SS "void R2CP::CaDataDicGen::Service_Log_Event (unsigned char * ServiceLog, unsigned short SizeofLog)"
+
+.SS "void R2CP::CaDataDicGen::Service_StandardLicense (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Service_StandardLicense_Event (\fBtStandardLicense\fP * StandardLicense)"
+
+.SS "void R2CP::CaDataDicGen::SetCommunicationForm (\fBCR2CP_Eth\fP * Type)"
+
+.PP
+Set Communication Channel\&. 
+.SS "void R2CP::CaDataDicGen::SetNodeEvent (unsigned char Node, bool IsFromGet = \fRfalse\fP)\fR [private]\fP"
+
+.PP
+Sets Node\&. 
+.SS "static void R2CP::CaDataDicGen::System_AllSystemMessages (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_DesktopDisplay (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_LoadDesktop (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_NumericPropertySetup (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_NumericPropertyValue (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_SingleUserRequest (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_StringProperty (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_StringTable (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_SystemMessage (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::System_UserRequestTable (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "bool R2CP::CaDataDicGen::SystemMessages_Clear_Message (unsigned int ID)"
+
+.SS "void R2CP::CaDataDicGen::SystemMessages_Get_AllMessages (void )"
+
+.SS "void R2CP::CaDataDicGen::SystemMessages_SetDisableRx (bool state)"
+
+.SS "void R2CP::CaDataDicGen::SystemMessages_SetTestMessage (unsigned long msg)"
+
+.SS "void R2CP::CaDataDicGen::Sytem_NumericValueTable (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::Sytem_NumericValueTableItem (\fBtDataDicAccess\fP Access, unsigned char * pData, unsigned short nData, \fBtInfoMessage\fP * MessageInfo = \fRnullptr\fP)\fR [static]\fP"
+
+.SS "void R2CP::CaDataDicGen::UnLock_DataDicGenMutex (void )"
+
+.PP
+Unlock \fBGenerator\fP Datadic\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBdatabank_executed_t\fP R2CP::CaDataDicGen::executed_pulses[10]"
+
+.PP
+Sets the array of per Databank received pulses\&. 
+.SS "unsigned char R2CP::CaDataDicGen::m_Current_Node_Dest_\fR [private]\fP"
+
+.PP
+Current Node pending message\&. 
+.SS "bool R2CP::CaDataDicGen::m_EnableLogInfo = false\fR [static]\fP"
+
+.SS "void(* R2CP::CaDataDicGen::m_fcb_log_)(unsigned char LogLevel, const char *string,\&.\&.\&.) = nullptr\fR [static]\fP"
+
+.PP
+Log function Callback\&. 
+.SS "bool R2CP::CaDataDicGen::m_IsGetRequest_Pending_\fR [private]\fP"
+
+.PP
+Get Request Pending\&. 
+.SS "\fBCaDataDicInterface\fP * R2CP::CaDataDicGen::m_p_DataDicInterface_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCaDataDicGen\fP * R2CP::CaDataDicGen::m_p_instance_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Objet SingleTone Pointer\&. 
+.SS "\fBCaDataDicNetworkInterface\fP * R2CP::CaDataDicGen::m_p_NetworkInteface_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCaDataDicPatientInterface\fP * R2CP::CaDataDicGen::m_p_PatientInterface_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCaDataDicRadInterface\fP * R2CP::CaDataDicGen::m_p_RadInterface_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCaDataDicServiceInterface\fP * R2CP::CaDataDicGen::m_p_ServiceInterface_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCaDataDicSystemInterface\fP * R2CP::CaDataDicGen::m_p_SystemInterface_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCR2CP_Eth\fP * R2CP::CaDataDicGen::m_Type_ = nullptr\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Template Communication Type pointer\&. 
+.SS "bool R2CP::CaDataDicGen::protocolUpdated"
+
+.SS "\fBtDataDicProtocolVersion\fP R2CP::CaDataDicGen::protocolVersion"
+
+.SS "\fBCaDataDicRadInterface\fP R2CP::CaDataDicGen::radInterface"
+
+.SS "\fBCaDataDicSystemInterface\fP R2CP::CaDataDicGen::systemInterface"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

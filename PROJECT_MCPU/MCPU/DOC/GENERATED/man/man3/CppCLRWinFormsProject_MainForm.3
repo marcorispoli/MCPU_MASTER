@@ -2,4 +2,354 @@
 .ad l
 .nh
 .SH NAME
-CppCLRWinFormsProject::MainForm
+CppCLRWinFormsProject::MainForm \- This is the Class implementing the Startup Operating mode\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <MainForm\&.h>\fP
+.PP
+Inherits System::Windows::Forms::Form\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMainForm\fP (void)"
+.br
+.ti -1c
+.RI "\fB~MainForm\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Timers::Timer ^ \fBstartupTimer\fP"
+.br
+.RI "This is the Timer to step the workflow\&. "
+.ti -1c
+.RI "HWND \fBwindow\fP"
+.br
+.RI "This is the handle of the windw for the windows message exchange\&. "
+.ti -1c
+.RI "int \fBstartupFase\fP"
+.br
+.RI "This is the current fase of the startup\&. "
+.ti -1c
+.RI "int \fBstartupSubFase\fP"
+.br
+.RI "This is the current sub-fase of the startup\&. "
+.ti -1c
+.RI "bool \fBstartupCompleted\fP"
+.br
+.RI "The Startup completed flag\&. "
+.ti -1c
+.RI "bool \fBstartupError\fP"
+.br
+.RI "The Startup completed in error condition\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBWndProc\fP (System::Windows::Forms::Message% m) override"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBMainFormInitialize\fP (void)"
+.br
+.ti -1c
+.RI "void \fBStartupProcedure\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_CanDriver\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_PCB301\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_PCB302\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_PCB303\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_PCB304\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_PCB325\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_PCB326\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_MotorBody\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_MotorTilt\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_MotorArm\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_MotorShift\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_MotorVertical\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBStartup_Generator\fP (void)"
+.br
+.ti -1c
+.RI "void \fBInitializeComponent\fP (void)"
+.br
+.RI "Required method for Designer support - do not modify the contents of this method with the code editor\&. "
+.ti -1c
+.RI "System::Void \fBonStartupTimeout\fP (Object^ source, System::Timers::ElapsedEventArgs^ e)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPcb326Activity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel1\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelGeneratorActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel17\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::PictureBox ^ \fBstartupIcon\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::GroupBox ^ \fBinfoPanel\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelBoardInitialization\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPcb301Activity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPcb303Activity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel6\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPcb302Activity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel5\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelCanDriverActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel9\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPcb325Activity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel8\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelPcb304Activity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel7\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelShActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel10\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelMotorArmActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel12\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelMotorTiltActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel11\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelMotorUpDownActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel15\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelMotorShiftActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel14\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabelMotorBodyActivity\fP"
+.br
+.ti -1c
+.RI "System::Windows::Forms::Label ^ \fBlabel13\fP"
+.br
+.ti -1c
+.RI "System::ComponentModel::Container ^ \fBcomponents\fP"
+.br
+.RI "Required designer variable\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the Class implementing the Startup Operating mode\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CppCLRWinFormsProject::MainForm::MainForm (void )\fR [inline]\fP"
+
+.SS "CppCLRWinFormsProject::MainForm::~MainForm ()\fR [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void CppCLRWinFormsProject::MainForm::InitializeComponent (void )\fR [inline]\fP, \fR [private]\fP"
+
+.PP
+Required method for Designer support - do not modify the contents of this method with the code editor\&. 
+.SS "void MainForm::MainFormInitialize (void )\fR [private]\fP"
+
+.SS "System::Void CppCLRWinFormsProject::MainForm::onStartupTimeout (Object^ source, System::Timers::ElapsedEventArgs^ e)\fR [inline]\fP, \fR [private]\fP"
+
+.SS "bool MainForm::Startup_CanDriver (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_Generator (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_MotorArm (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_MotorBody (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_MotorShift (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_MotorTilt (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_MotorVertical (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_PCB301 (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_PCB302 (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_PCB303 (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_PCB304 (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_PCB325 (void )\fR [private]\fP"
+
+.SS "bool MainForm::Startup_PCB326 (void )\fR [private]\fP"
+
+.SS "void MainForm::StartupProcedure (void )\fR [private]\fP"
+
+.SS "void MainForm::WndProc (System::Windows::Forms::Message% m)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "System::ComponentModel::Container ^ CppCLRWinFormsProject::MainForm::components\fR [private]\fP"
+
+.PP
+Required designer variable\&. 
+.SS "System::Windows::Forms::GroupBox ^ CppCLRWinFormsProject::MainForm::infoPanel\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label1\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label10\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label11\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label12\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label13\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label14\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label15\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label17\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label5\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label6\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label7\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label8\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::label9\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelBoardInitialization\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelCanDriverActivity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelGeneratorActivity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelMotorArmActivity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelMotorBodyActivity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelMotorShiftActivity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelMotorTiltActivity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelMotorUpDownActivity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelPcb301Activity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelPcb302Activity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelPcb303Activity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelPcb304Activity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelPcb325Activity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelPcb326Activity\fR [private]\fP"
+
+.SS "System::Windows::Forms::Label ^ CppCLRWinFormsProject::MainForm::labelShActivity\fR [private]\fP"
+
+.SS "bool CppCLRWinFormsProject::MainForm::startupCompleted"
+
+.PP
+The Startup completed flag\&. 
+.SS "bool CppCLRWinFormsProject::MainForm::startupError"
+
+.PP
+The Startup completed in error condition\&. 
+.SS "int CppCLRWinFormsProject::MainForm::startupFase"
+
+.PP
+This is the current fase of the startup\&. 
+.SS "System::Windows::Forms::PictureBox ^ CppCLRWinFormsProject::MainForm::startupIcon\fR [private]\fP"
+
+.SS "int CppCLRWinFormsProject::MainForm::startupSubFase"
+
+.PP
+This is the current sub-fase of the startup\&. 
+.SS "System::Timers::Timer ^ CppCLRWinFormsProject::MainForm::startupTimer"
+
+.PP
+This is the Timer to step the workflow\&. 
+.SS "HWND CppCLRWinFormsProject::MainForm::window"
+
+.PP
+This is the handle of the windw for the windows message exchange\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

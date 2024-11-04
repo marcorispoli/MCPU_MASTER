@@ -21,10 +21,6 @@ CanOpenModule \- CanOPEN based motor devices
 .br
 .RI "This is the Class implementing the CanOPEN Motor Device control protocol\&. "
 .ti -1c
-.RI "\fBTilt Motor Module controller\fP"
-.br
-.RI "This module implements the Tilt activation requirements\&. "
-.ti -1c
 .RI "\fBVertical Module controller\fP"
 .br
 .RI "This module implements the Vertical activation requirements\&. "
@@ -41,7 +37,7 @@ CanOpenModule \- CanOPEN based motor devices
 
 .in +1c
 .ti -1c
-.RI "enum class \fBCANOPEN::MotorDeviceAddresses\fP { \fBMotorDeviceAddresses::TILT_ID\fP = 0x3, \fBMotorDeviceAddresses::ARM_ID\fP = 0x4, \fBMotorDeviceAddresses::SLIDE_ID\fP = 0x5, \fBMotorDeviceAddresses::BODY_ID\fP = 0x6, \fBMotorDeviceAddresses::VERTICAL_ID\fP = 0x7 }"
+.RI "enum class \fBCANOPEN::MotorDeviceAddresses\fP { \fBCANOPEN::MotorDeviceAddresses::TILT_ID\fP = 0x3, \fBCANOPEN::MotorDeviceAddresses::ARM_ID\fP = 0x4, \fBCANOPEN::MotorDeviceAddresses::SLIDE_ID\fP = 0x5, \fBCANOPEN::MotorDeviceAddresses::BODY_ID\fP = 0x6, \fBCANOPEN::MotorDeviceAddresses::VERTICAL_ID\fP = 0x7 }"
 .br
 .RI "This is the enumeration of the Application Motor device addresses\&. "
 .in -1c
@@ -55,24 +51,26 @@ This is the based class module implementing the control of motor devices based o
 .SS "enum class \fBCANOPEN::MotorDeviceAddresses\fP\fR [strong]\fP"
 
 .PP
+\fR#include <\fBC:/Users/marco/Documents/Data/Progetti\-GIT/SW/PROGETTO_MAIN_CPU_Z190/MAIN_CPU/PROJECT_MCPU/MCPU/MCPU_MASTER/MOTORS/CanOpenDriver/CanOpenMotor\&.h\fP>\fP
+.PP
 This is the enumeration of the Application Motor device addresses\&. 
 .PP
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BITILT_ID \fP
+\f(BITILT_ID \fP(0x3)
 Address of the Tilt Motor controller\&. 
 .TP
-\f(BIARM_ID \fP
+\f(BIARM_ID \fP(0x4)
 Address of the C-ARM Motor controller\&. 
 .TP
-\f(BISLIDE_ID \fP
+\f(BISLIDE_ID \fP(0x5)
 Address of the SLIDE Motor controller\&. 
 .TP
-\f(BIBODY_ID \fP
+\f(BIBODY_ID \fP(0x6)
 Address of the BODY Motor controller\&. 
 .TP
-\f(BIVERTICAL_ID \fP
+\f(BIVERTICAL_ID \fP(0x7)
 Address of the Vertical Motor controller\&. 
 .SH "Author"
 .PP 

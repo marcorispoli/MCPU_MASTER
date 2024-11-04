@@ -2,4 +2,610 @@
 .ad l
 .nh
 .SH NAME
-PCB303
+PCB303 \- This class implements the functions of the \fBPCB303\fP Module\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB303\&.h>\fP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBProtocolStructure\fP"
+.br
+.RI "This class implement the protocol data structure as described in the protocol specification\&. "
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBfilter_index\fP { \fBFILTER_RH\fP = 0, \fBFILTER_AG\fP, \fBFILTER_AL\fP, \fBFILTER_CU\fP, \fBFILTER_MO\fP, \fBFILTER_LD\fP }"
+.br
+.RI "This is the enumeration class for the available filters\&. "
+.in -1c
+
+Public Types inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "enum class \fBCommandRegisterErrors\fP { \fBCommandRegisterErrors::COMMAND_NO_ERROR\fP = 0, \fBCommandRegisterErrors::COMMAND_ERROR_BUSY\fP, \fBCommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM\fP, \fBCommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCommandRegisterErrors::COMMAND_INVALID_DEVICE\fP =253, \fBCommandRegisterErrors::COMMAND_COMMUNICATION_ERROR\fP =254, \fBCommandRegisterErrors::COMMAND_DEVICE_TMO\fP = 255 }"
+.br
+.RI "This is the enumeration of the possible command executed errors\&. "
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBstatus_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBstatus_options::WAITING_REVISION\fP, \fBstatus_options::DEVICE_CONFIGURATION\fP, \fBstatus_options::DEVICE_RUNNING\fP, \fBstatus_options::DEVICE_SIMULATOR\fP, \fBstatus_options::LEN\fP, \fBstatus_options::UNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration of the Module's internal operating status\&.
+.br
+See the \fBgetModuleStatus()\fP method\&. "
+.ti -1c
+.RI "enum class \fBbootloader_options\fP { \fBbootloader_options::BOOTLOADER_NOT_PRESENT\fP = 0, \fBbootloader_options::BOOTLOADER_RUNNING\fP = 1, \fBbootloader_options::BOOTLOADER_PRESENT\fP = 2, \fBbootloader_options::BOOTLOADER_UNCKNOWN_STAT\fP }"
+.br
+.RI "This is the enumeration calss defining the current status of the remote bootloader activity\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB303\fP ()"
+.br
+.RI "\fBPCB303\fP Class constructor\&. "
+.in -1c
+
+Public Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceProtocol\fP (unsigned char devid, LPCWSTR devname)"
+.br
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.RI "This function activate the Module in Real mode\&. "
+.ti -1c
+.RI "void \fBsimulMode\fP (void)"
+.br
+.RI "This function activate the Module in Simulation mode\&. "
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
+.RI "This function tests if the module is running in simulation mode\&. "
+.ti -1c
+.RI "bool \fBisCommunicationError\fP (void)"
+.br
+.RI "This function tests if the module is in communication error condition\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetModuleStatus\fP (void)"
+.br
+.RI "This function returns the Module operating status\&. "
+.ti -1c
+.RI "\fBbootloader_options\fP \fBgetBootStatus\fP (void)"
+.br
+.RI "This function returns the current status of the bootloader activities on the remote device\&. "
+.ti -1c
+.RI "System::String ^ \fBgetBootRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected Bootloader revision code\&. "
+.ti -1c
+.RI "System::String ^ \fBgetAppRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected remote firmware revision code\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This is a non blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This is a blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo, Object^ src)"
+.br
+.ti -1c
+.RI "bool \fBisCommandCompleted\fP (void)"
+.br
+.RI "This function returns the current status of the pending command\&. "
+.ti -1c
+.RI "bool \fBisCommandError\fP (void)"
+.br
+.RI "This function returns true if the command is terminated with an error condition\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult0\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-0\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult1\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-1\&. "
+.ti -1c
+.RI "\fBCommandRegisterErrors\fP \fBgetCommandError\fP (void)"
+.br
+.RI "This function returns the last error condition of an executed command\&. "
+.ti -1c
+.RI "System::String ^ \fBgetCanCommunicationMonitorString\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static System::String ^ \fBgetTagFromFilter\fP (\fBfilter_index\fP flt)"
+.br
+.ti -1c
+.RI "static \fBfilter_index\fP \fBgetFilterFromTag\fP (System::String^ tag)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal System::Byte \fBNUM_COLLIMATION_SLOTS\fP = 20"
+.br
+.RI "Max number of available collimation slots\&. "
+.ti -1c
+.RI "literal System::Byte \fBCUSTOM_SLOT\fP = \fBNUM_COLLIMATION_SLOTS\fP \- 1"
+.br
+.RI "The slot assigned to the custom format collimation\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB303\fP ^ \fBdevice\fP = gcnew \fBPCB303\fP()"
+.br
+.in -1c
+.SS "Private Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBcollimationModeEnum\fP { \fBAUTO_COLLIMATION\fP = 0, \fBCUSTOM_COLLIMATION\fP, \fBOPEN_MODE\fP, \fBCALIBRATION_MODE\fP, \fBTOMO_MODE\fP }"
+.br
+.RI "This enumeration class describes the possible collimation modes the Application can select\&. "
+.in -1c
+.in +1c
+.ti -1c
+.RI "static \fBProtocolStructure\fP \fBprotocol\fP"
+.br
+.RI "This is the structure with the Status register info\&. "
+.ti -1c
+.RI "static \fBcollimationModeEnum\fP \fBcollimationMode\fP"
+.br
+.RI "Sets the current collimation mode\&. "
+.ti -1c
+.RI "static System::Byte \fBselected_format\fP = 0"
+.br
+.RI "This is the current selected format\&. "
+.ti -1c
+.RI "static System::Byte \fBcurrent_auto_format\fP = 0"
+.br
+.RI "Auo Collimation format\&. "
+.ti -1c
+.RI "static System::Byte \fBcurrent_custom_format\fP = 0"
+.br
+.RI "Manual Collimation format\&. "
+.ti -1c
+.RI "static bool \fBvalid_collimation_format\fP = false"
+.br
+.RI "This flag is set when the collimation format is correct and coherent with the collimationMode register\&. "
+.ti -1c
+.RI "static int \fBformat_collimation_attempt\fP = 0"
+.br
+.RI "This register counts the attempt to exit from a fault condition\&. "
+.ti -1c
+.RI "static System::Byte \fBselected_filter\fP = 0"
+.br
+.ti -1c
+.RI "static bool \fBvalid_filter_format\fP = false"
+.br
+.ti -1c
+.RI "static bool \fBfilter_error\fP = false"
+.br
+.ti -1c
+.RI "static int \fBfilter_attempt\fP = 0"
+.br
+.ti -1c
+.RI "static \fBProtocolStructure::StatusRegister::mirror_target_code\fP \fBselected_mirror\fP = \fBProtocolStructure::StatusRegister::mirror_target_code::OUT_FIELD\fP"
+.br
+.ti -1c
+.RI "static bool \fBvalid_mirror_format\fP = false"
+.br
+.ti -1c
+.RI "static int \fBmirror_attempt\fP = 0"
+.br
+.ti -1c
+.RI "static \fBProtocolStructure::StatusRegister::light_target_code\fP \fBselected_light\fP = \fBProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF\fP"
+.br
+.ti -1c
+.RI "static bool \fBretrigger_light_on_command\fP = false"
+.br
+.ti -1c
+.RI "static int \fBbulb_temperature_perc\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBstator_temperature_perc\fP = 0"
+.br
+.ti -1c
+.RI "static int \fBmax_temperature_perc\fP = 0"
+.br
+.in -1c
+.in +1c
+.ti -1c
+.RI "static void \fBsetAutoCollimationMode\fP (void)"
+.br
+.RI "This function sets the format collimation to AUTO mode\&. "
+.ti -1c
+.RI "static void \fBsetOpenCollimationMode\fP (void)"
+.br
+.RI "This function sets the format collimation to OPEN mode 
+.br
+ "
+.ti -1c
+.RI "static void \fBsetCustomCollimationMode\fP (System::Byte format_index)"
+.br
+.RI "This function sets the format collimation to CUSTOM mode\&. "
+.ti -1c
+.RI "static void \fBselectFilter\fP (\fBfilter_index\fP filter)"
+.br
+.ti -1c
+.RI "static int \fBgetFilterSlot\fP (\fBfilter_index\fP filter)"
+.br
+.ti -1c
+.RI "static bool \fBisValidFilter\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisFilterInError\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBwaitFilterCompleted\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetCollimationLight\fP (bool stat)"
+.br
+.ti -1c
+.RI "static bool \fBgetPowerLightStatus\fP (void)"
+.br
+.ti -1c
+.RI "static int \fBgetBulbPerc\fP (void)"
+.br
+.ti -1c
+.RI "static int \fBgetStatorPerc\fP (void)"
+.br
+.ti -1c
+.RI "static int \fBgetMaxTubePerc\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisTubeAlarm\fP ()"
+.br
+.ti -1c
+.RI "static void \fBresetFaults\fP (void)"
+.br
+.RI "In case of collimation fault condition, this function starts a new collimation attempt\&. "
+.ti -1c
+.RI "static bool \fBisValidCollimationFormat\fP (void)"
+.br
+.in -1c
+.in +1c
+.ti -1c
+.RI "void \fBresetLoop\fP (void) override"
+.br
+.RI "This is the Base class resetLoop override function\&. "
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This is the Base Class override function to handle the normal operation workflow\&. "
+.ti -1c
+.RI "bool \fBconfigurationLoop\fP (void) override"
+.br
+.RI "This is the Base Class override function to handle the device configuration\&. "
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
+.ti -1c
+.RI "void \fBformatManagement\fP (void)"
+.br
+.ti -1c
+.RI "void \fBfilterManagement\fP (void)"
+.br
+.ti -1c
+.RI "void \fBmirrorManagement\fP (void)"
+.br
+.ti -1c
+.RI "void \fBtubeManagement\fP (void)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Protected Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadCommandRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device command register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadErrorRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device error register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadStatusRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the STATUS register of given INDEX\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadDataRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the DATA register of given INDEX\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ \fBgetRxRegister\fP (void)"
+.br
+.RI "This function returns the last read register\&. "
+.ti -1c
+.RI "virtual bool \fBsimulCommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandNoWaitCompletion()\fP should be used by the application See the \fBcommandNoWaitCompletion()\fP for details\&. "
+.ti -1c
+.RI "virtual \fBCanDeviceCommandResult\fP ^ \fBsimulCommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandWaitCompletion()\fP should be used by the application See the \fBcommandWaitCompletion()\fP for details\&. "
+.in -1c
+
+Protected Attributes inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommunicationMonitor\fP \fBcan_communication_monitor\fP"
+.br
+.RI "This is the debug class\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class implements the functions of the \fBPCB303\fP Module\&. 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB303::collimationModeEnum\fP\fR [strong]\fP, \fR [private]\fP"
+
+.PP
+This enumeration class describes the possible collimation modes the Application can select\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIAUTO_COLLIMATION \fP(0)
+The collimator is in Auto mode: the paddle model defines the current collimation format\&. 
+.TP
+\f(BICUSTOM_COLLIMATION \fP
+The collimator is in Custom mode: the collimation format is set by the operator 
+.br
+ 
+.TP
+\f(BIOPEN_MODE \fP
+The collimator is in Open mode: the collimation format set OPEN\&. 
+.TP
+\f(BICALIBRATION_MODE \fP
+The collimator is in Calibration mode: the collimation format is set manually by the service software\&. 
+.TP
+\f(BITOMO_MODE \fP
+The collimator is in Tomo mode: the collimation format is dinamically set by the tomo pulse sequence\&. 
+.SS "enum class \fBPCB303::filter_index\fP\fR [strong]\fP"
+
+.PP
+This is the enumeration class for the available filters\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIFILTER_RH \fP(0)
+.TP
+\f(BIFILTER_AG \fP
+.TP
+\f(BIFILTER_AL \fP
+.TP
+\f(BIFILTER_CU \fP
+.TP
+\f(BIFILTER_MO \fP
+.TP
+\f(BIFILTER_LD \fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PCB303::PCB303 ()\fR [inline]\fP"
+
+.PP
+\fBPCB303\fP Class constructor\&. The construction initializes several internal variables\&. The constructor call the base class setting the address of the controlled device\&.
+
+.PP
+As soon as the base class is initialized, the communication process starts and the device is initialized with \fBconfigurationLoop()\fP routine\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PCB303::configurationLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the Base Class override function to handle the device configuration\&. This is the configuration loop routine executed at the beginning of the device connection, before to execute the \fBrunningLoop()\fP routine\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+true if the configuration success
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB303::demoLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB303::filterManagement (void )\fR [private]\fP"
+
+.SS "void PCB303::formatManagement (void )\fR [private]\fP"
+
+.SS "static int PCB303::getBulbPerc (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static \fBfilter_index\fP PCB303::getFilterFromTag (System::String^ tag)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "int PCB303::getFilterSlot (\fBfilter_index\fP filter)\fR [static]\fP"
+
+.SS "static int PCB303::getMaxTubePerc (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB303::getPowerLightStatus (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static int PCB303::getStatorPerc (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static System::String ^ PCB303::getTagFromFilter (\fBfilter_index\fP flt)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB303::isFilterInError (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB303::isTubeAlarm ()\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB303::isValidCollimationFormat (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB303::isValidFilter (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "void PCB303::mirrorManagement (void )\fR [private]\fP"
+
+.SS "void PCB303::resetFaults (void )\fR [static]\fP"
+
+.PP
+In case of collimation fault condition, this function starts a new collimation attempt\&. This functions resets the Application fault condition for the format collimation\&.
+
+.PP
+The Fault is reset ONLY in the application not in the device\&. After the fault should be reset, the application can try once more to set the format collimation\&.
+.SS "void PCB303::resetLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the Base class resetLoop override function\&. This function activate a One Shot alarm notifying the operator that the device has been reset\&.
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB303::runningLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the Base Class override function to handle the normal operation workflow\&. This is the main loop running after the device configuration\&.
+
+.PP
+The procedure reads the relevant registers from the device and manages the following collimator main workflows:
+.IP "\(bu" 2
+handles the format collimation;
+.IP "\(bu" 2
+handle the Tomo Dynamic collimation;
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "void PCB303::selectFilter (\fBfilter_index\fP filter)\fR [static]\fP"
+
+.SS "void PCB303::setAutoCollimationMode (void )\fR [static]\fP"
+
+.PP
+This function sets the format collimation to AUTO mode\&. 
+.SS "void PCB303::setCollimationLight (bool stat)\fR [static]\fP"
+
+.SS "void PCB303::setCustomCollimationMode (System::Byte format_index)\fR [static]\fP"
+
+.PP
+This function sets the format collimation to CUSTOM mode\&. This function sets the Custom Collimation mode\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIcustom\fP This is a valid collimation code
+.RE
+.PP
+
+.SS "void PCB303::setOpenCollimationMode (void )\fR [static]\fP"
+
+.PP
+This function sets the format collimation to OPEN mode 
+.br
+ 
+.SS "void PCB303::tubeManagement (void )\fR [private]\fP"
+
+.SS "bool PCB303::waitFilterCompleted (void )\fR [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int PCB303::bulb_temperature_perc = 0\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBcollimationModeEnum\fP PCB303::collimationMode\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Sets the current collimation mode\&. 
+.SS "System::Byte PCB303::current_auto_format = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Auo Collimation format\&. 
+.SS "System::Byte PCB303::current_custom_format = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+Manual Collimation format\&. 
+.SS "literal System::Byte PCB303::CUSTOM_SLOT = \fBNUM_COLLIMATION_SLOTS\fP \- 1"
+
+.PP
+The slot assigned to the custom format collimation\&. 
+.SS "\fBPCB303\fP ^ PCB303::device = gcnew \fBPCB303\fP()\fR [static]\fP"
+
+.SS "int PCB303::filter_attempt = 0\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool PCB303::filter_error = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "int PCB303::format_collimation_attempt = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This register counts the attempt to exit from a fault condition\&. 
+.SS "int PCB303::max_temperature_perc = 0\fR [static]\fP, \fR [private]\fP"
+
+.SS "int PCB303::mirror_attempt = 0\fR [static]\fP, \fR [private]\fP"
+
+.SS "literal System::Byte PCB303::NUM_COLLIMATION_SLOTS = 20"
+
+.PP
+Max number of available collimation slots\&. 
+.SS "\fBProtocolStructure\fP PCB303::protocol\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the structure with the Status register info\&. 
+.SS "bool PCB303::retrigger_light_on_command = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "System::Byte PCB303::selected_filter = 0\fR [static]\fP, \fR [private]\fP"
+
+.SS "System::Byte PCB303::selected_format = 0\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the current selected format\&. 
+.SS "\fBProtocolStructure::StatusRegister::light_target_code\fP PCB303::selected_light = \fBProtocolStructure::StatusRegister::light_target_code::LIGHT_OFF\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBProtocolStructure::StatusRegister::mirror_target_code\fP PCB303::selected_mirror = \fBProtocolStructure::StatusRegister::mirror_target_code::OUT_FIELD\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "int PCB303::stator_temperature_perc = 0\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool PCB303::valid_collimation_format = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This flag is set when the collimation format is correct and coherent with the collimationMode register\&. 
+.SS "bool PCB303::valid_filter_format = false\fR [static]\fP, \fR [private]\fP"
+
+.SS "bool PCB303::valid_mirror_format = false\fR [static]\fP, \fR [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

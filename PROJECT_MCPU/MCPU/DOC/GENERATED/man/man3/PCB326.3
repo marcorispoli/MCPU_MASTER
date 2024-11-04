@@ -3,3 +3,612 @@
 .nh
 .SH NAME
 PCB326
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB326\&.h>\fP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBGeneralSensOption\fP { \fBGEN_1x\fP = 0, \fBGEN_2x\fP, \fBGEN_4x\fP, \fBGEN_8x\fP }"
+.br
+.ti -1c
+.RI "enum class \fBSensorSensOption\fP { \fBSENS_128x\fP = 0, \fBSENS_64x\fP, \fBSENS_32x\fP, \fBSENS_16x\fP, \fBSENS_8x\fP, \fBSENS_4x\fP, \fBSENS_2x\fP, \fBSENS_1x\fP }"
+.br
+.ti -1c
+.RI "enum class \fBRecalibrationOption\fP { \fBRECAL_560ms\fP = 0, \fBRECAL_840ms\fP, \fBRECAL_1120ms\fP, \fBRECAL_1400ms\fP, \fBRECAL_1680ms\fP, \fBRECAL_2240ms\fP, \fBRECAL_2800ms\fP, \fBRECAL_3360ms\fP, \fBRECAL_3920ms\fP, \fBRECAL_4480ms\fP, \fBRECAL_5600ms\fP, \fBRECAL_6720ms\fP, \fBRECAL_7840ms\fP, \fBRECAL_8906ms\fP, \fBRECAL_10080ms\fP, \fBRECAL_11200ms\fP }"
+.br
+.in -1c
+
+Public Types inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "enum class \fBCommandRegisterErrors\fP { \fBCommandRegisterErrors::COMMAND_NO_ERROR\fP = 0, \fBCommandRegisterErrors::COMMAND_ERROR_BUSY\fP, \fBCommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM\fP, \fBCommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCommandRegisterErrors::COMMAND_INVALID_DEVICE\fP =253, \fBCommandRegisterErrors::COMMAND_COMMUNICATION_ERROR\fP =254, \fBCommandRegisterErrors::COMMAND_DEVICE_TMO\fP = 255 }"
+.br
+.RI "This is the enumeration of the possible command executed errors\&. "
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBstatus_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBstatus_options::WAITING_REVISION\fP, \fBstatus_options::DEVICE_CONFIGURATION\fP, \fBstatus_options::DEVICE_RUNNING\fP, \fBstatus_options::DEVICE_SIMULATOR\fP, \fBstatus_options::LEN\fP, \fBstatus_options::UNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration of the Module's internal operating status\&.
+.br
+See the \fBgetModuleStatus()\fP method\&. "
+.ti -1c
+.RI "enum class \fBbootloader_options\fP { \fBbootloader_options::BOOTLOADER_NOT_PRESENT\fP = 0, \fBbootloader_options::BOOTLOADER_RUNNING\fP = 1, \fBbootloader_options::BOOTLOADER_PRESENT\fP = 2, \fBbootloader_options::BOOTLOADER_UNCKNOWN_STAT\fP }"
+.br
+.RI "This is the enumeration calss defining the current status of the remote bootloader activity\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB326\fP ()"
+.br
+.in -1c
+
+Public Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceProtocol\fP (unsigned char devid, LPCWSTR devname)"
+.br
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.RI "This function activate the Module in Real mode\&. "
+.ti -1c
+.RI "void \fBsimulMode\fP (void)"
+.br
+.RI "This function activate the Module in Simulation mode\&. "
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
+.RI "This function tests if the module is running in simulation mode\&. "
+.ti -1c
+.RI "bool \fBisCommunicationError\fP (void)"
+.br
+.RI "This function tests if the module is in communication error condition\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetModuleStatus\fP (void)"
+.br
+.RI "This function returns the Module operating status\&. "
+.ti -1c
+.RI "\fBbootloader_options\fP \fBgetBootStatus\fP (void)"
+.br
+.RI "This function returns the current status of the bootloader activities on the remote device\&. "
+.ti -1c
+.RI "System::String ^ \fBgetBootRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected Bootloader revision code\&. "
+.ti -1c
+.RI "System::String ^ \fBgetAppRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected remote firmware revision code\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This is a non blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This is a blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo, Object^ src)"
+.br
+.ti -1c
+.RI "bool \fBisCommandCompleted\fP (void)"
+.br
+.RI "This function returns the current status of the pending command\&. "
+.ti -1c
+.RI "bool \fBisCommandError\fP (void)"
+.br
+.RI "This function returns true if the command is terminated with an error condition\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult0\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-0\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult1\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-1\&. "
+.ti -1c
+.RI "\fBCommandRegisterErrors\fP \fBgetCommandError\fP (void)"
+.br
+.RI "This function returns the last error condition of an executed command\&. "
+.ti -1c
+.RI "System::String ^ \fBgetCanCommunicationMonitorString\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBexecuteObstacleReset\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBexecuteObstacleConfig\fP (\fBGeneralSensOption\fP gen_gain, \fBSensorSensOption\fP sensor_sens, \fBRecalibrationOption\fP recalib_time, unsigned char sensors_ena)"
+.br
+.ti -1c
+.RI "static bool \fBexecuteObstacleCalibrate\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisSensorActive\fP (unsigned char mask)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB326\fP ^ \fBdevice\fP = gcnew \fBPCB326\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
+.ti -1c
+.RI "bool \fBconfigurationLoop\fP (void) override"
+.br
+.RI "This is the Base Class override function to handle the device configuration\&. "
+.in -1c
+
+Protected Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadCommandRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device command register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadErrorRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device error register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadStatusRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the STATUS register of given INDEX\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadDataRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the DATA register of given INDEX\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ \fBgetRxRegister\fP (void)"
+.br
+.RI "This function returns the last read register\&. "
+.ti -1c
+.RI "virtual void \fBdemoLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
+.ti -1c
+.RI "virtual void \fBresetLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the specific operations in case of the remote device reset detection\&. "
+.ti -1c
+.RI "virtual bool \fBsimulCommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandNoWaitCompletion()\fP should be used by the application See the \fBcommandNoWaitCompletion()\fP for details\&. "
+.ti -1c
+.RI "virtual \fBCanDeviceCommandResult\fP ^ \fBsimulCommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandWaitCompletion()\fP should be used by the application See the \fBcommandWaitCompletion()\fP for details\&. "
+.in -1c
+.SS "Private Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBStatusRegisters\fP { \fBSYSTEM_STATUS_REGISTER\fP = 0 }"
+.br
+.RI "This is the Device STATUS Register implementation\&. "
+.ti -1c
+.RI "enum class \fBDataRegisters\fP { \fBCONTROL_DATA_REGISTER\fP = 0 }"
+.br
+.RI "This is the Device DATA Register implementation\&. "
+.ti -1c
+.RI "enum class \fBParamRegisters\fP { \fBSENSITIVITY_PARAMETER_REGISTER\fP = 0, \fBCS1_4_THRESHOLD_PARAMETER_REGISTER\fP, \fBCS5_8_THRESHOLD_PARAMETER_REGISTER\fP }"
+.br
+.RI "This is the Device Parameters Register implementation\&. "
+.ti -1c
+.RI "enum class \fBCommandRegister\fP { \fBABORT_COMMAND\fP = 0, \fBRESET_COMMAND\fP, \fBCONFIG_COMMAND\fP, \fBCALIBRATE_COMMAND\fP, \fBNO_COMMAND\fP }"
+.br
+.RI "
+.br
+ This enumeration class defines the Indexes of the Command Execution "
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBresetCommand\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBconfigCommand\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBcalibrateCommand\fP (void)"
+.br
+.ti -1c
+.RI "void \fBhandleSystemStatusRegister\fP (void)"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBRegister\fP ^ \fBsetControlDataRegister\fP (bool reset, bool config)"
+.br
+.ti -1c
+.RI "static \fBRegister\fP ^ \fBsetSensitivitRegister\fP (\fBGeneralSensOption\fP gen_gain, \fBSensorSensOption\fP sensor_sens, \fBRecalibrationOption\fP recalib_time, unsigned char sensors_ena)"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBRegister\fP ^ \fBoutputs_data_register\fP = gcnew \fBRegister\fP()"
+.br
+.ti -1c
+.RI "static \fBGeneralSensOption\fP \fBselected_gen_sens\fP = \fBGeneralSensOption::GEN_1x\fP"
+.br
+.ti -1c
+.RI "static \fBSensorSensOption\fP \fBselected_sensor_sens\fP = \fBSensorSensOption::SENS_2x\fP"
+.br
+.ti -1c
+.RI "static \fBRecalibrationOption\fP \fBselected_recalib_time\fP = \fBRecalibrationOption::RECAL_560ms\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBselected_sensor_ena\fP = \fBSENS_CS1\fP"
+.br
+.ti -1c
+.RI "static \fBCommandRegister\fP \fBcurrent_command\fP = \fBCommandRegister::NO_COMMAND\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs_status\fP = 0"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs1_th\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs2_th\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs3_th\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs4_th\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs5_th\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs6_th\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs7_th\fP"
+.br
+.ti -1c
+.RI "static unsigned char \fBcs8_th\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Protected Attributes inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommunicationMonitor\fP \fBcan_communication_monitor\fP"
+.br
+.RI "This is the debug class\&. "
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB326::CommandRegister\fP\fR [strong]\fP, \fR [private]\fP"
+
+.PP
+
+.br
+ This enumeration class defines the Indexes of the Command Execution 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIABORT_COMMAND \fP(0)
+Reserved for the protocol\&. 
+.TP
+\f(BIRESET_COMMAND \fP
+Executes the reset of the CP1188 device\&. 
+.TP
+\f(BICONFIG_COMMAND \fP
+Executes the reconfiguration of the CP1188 device 
+.br
+ 
+.TP
+\f(BICALIBRATE_COMMAND \fP
+Executes the recalibration of the CP1188 device\&. 
+.TP
+\f(BINO_COMMAND \fP
+.SS "enum class \fBPCB326::DataRegisters\fP\fR [strong]\fP, \fR [private]\fP"
+
+.PP
+This is the Device DATA Register implementation\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BICONTROL_DATA_REGISTER \fP(0)
+.SS "enum class \fBPCB326::GeneralSensOption\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIGEN_1x \fP(0)
+.TP
+\f(BIGEN_2x \fP
+
+.PP
+.RS 4
+This is the 1x General gain 
+.RE
+.PP
+
+.TP
+\f(BIGEN_4x \fP
+
+.PP
+.RS 4
+This is the 2x General gain 
+.RE
+.PP
+
+.TP
+\f(BIGEN_8x \fP
+
+.PP
+.RS 4
+This is the 4x General gain 
+.RE
+.PP
+
+.SS "enum class \fBPCB326::ParamRegisters\fP\fR [strong]\fP, \fR [private]\fP"
+
+.PP
+This is the Device Parameters Register implementation\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BISENSITIVITY_PARAMETER_REGISTER \fP(0)
+.TP
+\f(BICS1_4_THRESHOLD_PARAMETER_REGISTER \fP
+
+.PP
+.RS 4
+This is the Ou 
+.RE
+.PP
+
+.TP
+\f(BICS5_8_THRESHOLD_PARAMETER_REGISTER \fP
+.SS "enum class \fBPCB326::RecalibrationOption\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIRECAL_560ms \fP(0)
+.TP
+\f(BIRECAL_840ms \fP
+.TP
+\f(BIRECAL_1120ms \fP
+.TP
+\f(BIRECAL_1400ms \fP
+.TP
+\f(BIRECAL_1680ms \fP
+.TP
+\f(BIRECAL_2240ms \fP
+.TP
+\f(BIRECAL_2800ms \fP
+.TP
+\f(BIRECAL_3360ms \fP
+.TP
+\f(BIRECAL_3920ms \fP
+.TP
+\f(BIRECAL_4480ms \fP
+.TP
+\f(BIRECAL_5600ms \fP
+.TP
+\f(BIRECAL_6720ms \fP
+.TP
+\f(BIRECAL_7840ms \fP
+.TP
+\f(BIRECAL_8906ms \fP
+.TP
+\f(BIRECAL_10080ms \fP
+.TP
+\f(BIRECAL_11200ms \fP
+.SS "enum class \fBPCB326::SensorSensOption\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BISENS_128x \fP(0)
+.TP
+\f(BISENS_64x \fP
+
+.PP
+.RS 4
+This is the 128x Sensor gain 
+.RE
+.PP
+
+.TP
+\f(BISENS_32x \fP
+
+.PP
+.RS 4
+This is the 64x Sensor gain 
+.RE
+.PP
+
+.TP
+\f(BISENS_16x \fP
+
+.PP
+.RS 4
+This is the 32x Sensor gain 
+.RE
+.PP
+
+.TP
+\f(BISENS_8x \fP
+
+.PP
+.RS 4
+This is the 16x Sensor gain 
+.RE
+.PP
+
+.TP
+\f(BISENS_4x \fP
+
+.PP
+.RS 4
+This is the 8x Sensor gain 
+.RE
+.PP
+
+.TP
+\f(BISENS_2x \fP
+
+.PP
+.RS 4
+This is the 4x Sensor gain 
+.RE
+.PP
+
+.TP
+\f(BISENS_1x \fP
+
+.PP
+.RS 4
+This is the 2x Sensor gain 
+.RE
+.PP
+
+.SS "enum class \fBPCB326::StatusRegisters\fP\fR [strong]\fP, \fR [private]\fP"
+
+.PP
+This is the Device STATUS Register implementation\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BISYSTEM_STATUS_REGISTER \fP(0)
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PCB326::PCB326 ()\fR [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PCB326::calibrateCommand (void )\fR [inline]\fP, \fR [private]\fP"
+
+.SS "bool PCB326::configCommand (void )\fR [inline]\fP, \fR [private]\fP"
+
+.SS "bool PCB326::configurationLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the Base Class override function to handle the device configuration\&. This is the configuration loop routine executed at the beginning of the device connection, before to execute the \fBrunningLoop()\fP routine\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+true if the configuration success
+.RE
+.PP
+
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "static bool PCB326::executeObstacleCalibrate (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB326::executeObstacleConfig (\fBGeneralSensOption\fP gen_gain, \fBSensorSensOption\fP sensor_sens, \fBRecalibrationOption\fP recalib_time, unsigned char sensors_ena)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB326::executeObstacleReset (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "void PCB326::handleSystemStatusRegister (void )\fR [private]\fP"
+
+.SS "static bool PCB326::isSensorActive (unsigned char mask)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "bool PCB326::resetCommand (void )\fR [inline]\fP, \fR [private]\fP"
+
+.SS "void PCB326::runningLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "static \fBRegister\fP ^ PCB326::setControlDataRegister (bool reset, bool config)\fR [inline]\fP, \fR [static]\fP, \fR [private]\fP"
+
+.SS "static \fBRegister\fP ^ PCB326::setSensitivitRegister (\fBGeneralSensOption\fP gen_gain, \fBSensorSensOption\fP sensor_sens, \fBRecalibrationOption\fP recalib_time, unsigned char sensors_ena)\fR [inline]\fP, \fR [static]\fP, \fR [private]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char PCB326::cs1_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs2_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs3_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs4_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs5_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs6_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs7_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs8_th\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::cs_status = 0\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBCommandRegister\fP PCB326::current_command = \fBCommandRegister::NO_COMMAND\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBPCB326\fP ^ PCB326::device = gcnew \fBPCB326\fP()\fR [static]\fP"
+
+.SS "\fBRegister\fP ^ PCB326::outputs_data_register = gcnew \fBRegister\fP()\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBGeneralSensOption\fP PCB326::selected_gen_sens = \fBGeneralSensOption::GEN_1x\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBRecalibrationOption\fP PCB326::selected_recalib_time = \fBRecalibrationOption::RECAL_560ms\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "unsigned char PCB326::selected_sensor_ena = \fBSENS_CS1\fP\fR [static]\fP, \fR [private]\fP"
+
+.SS "\fBSensorSensOption\fP PCB326::selected_sensor_sens = \fBSensorSensOption::SENS_2x\fP\fR [static]\fP, \fR [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

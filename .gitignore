@@ -10,3 +10,4 @@
 *.lnk
 **/x64
 .vs/
+**/GENERATED

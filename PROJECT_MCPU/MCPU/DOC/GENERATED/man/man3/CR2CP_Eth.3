@@ -2,4 +2,610 @@
 .ad l
 .nh
 .SH NAME
-CR2CP_Eth
+CR2CP_Eth \- Class to handle the protocol\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <R2CP_Eth\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCR2CP_Eth\fP (short(*cbSendMsgEth)(unsigned char *pMessage, unsigned short datalength), \fBCaDataDic\fP *(*cbSearchDatadicSlave)(unsigned char Node), \fBCaDataDic\fP *pEthDataDic, void(*cbJumpToBootloader)(void), unsigned short targetId)"
+.br
+.RI "Constructor of the class\&. "
+.ti -1c
+.RI "\fB~CR2CP_Eth\fP ()"
+.br
+.RI "Destructor of the class\&. "
+.ti -1c
+.RI "void \fBProcessMessage\fP (void *pMessage)"
+.br
+.RI "Scans/Processes a message given\&. It will check the format according to protocol defination\&. "
+.ti -1c
+.RI "bool \fBSet\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char *pdata)"
+.br
+.RI "Sends a SET command\&. "
+.ti -1c
+.RI "bool \fBGet\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char *pdata)"
+.br
+.RI "Sends a GET command\&. "
+.ti -1c
+.RI "bool \fBEvent_Answer\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned short dataLength, unsigned char *pdata)"
+.br
+.RI "Sends a EVENT command\&. "
+.ti -1c
+.RI "bool \fBProcessed\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char *pdata)"
+.br
+.RI "Sends a MSG_PROCESSED_FNC command\&. "
+.ti -1c
+.RI "bool \fBWrongAccess\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char *pdata)"
+.br
+.ti -1c
+.RI "bool \fBReserved\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char *pdata)"
+.br
+.ti -1c
+.RI "bool \fBSendRawData\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char function, unsigned short dataLength, unsigned char *pdata)"
+.br
+.RI "Use this method when the data size is higher than 50 bytes to avoid dynamic memory allocation\&. "
+.ti -1c
+.RI "bool \fBisCommandProcessed\fP ()"
+.br
+.ti -1c
+.RI "unsigned char \fBgetAssignedSequence\fP ()"
+.br
+.ti -1c
+.RI "unsigned char \fBgetCommandProcessedResult\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBgetCommandProcessedString\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevalCommadProcessedResult\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevalSetGeneratorProcessedResult\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevalSetPatientProcessedResult\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevalSetSystemProcessedResult\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevalGetGeneratorProcessedResult\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevalGetPatientProcessedResult\fP (void)"
+.br
+.ti -1c
+.RI "void \fBevalGetSystemProcessedResult\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBCallback_token_expired\fP (unsigned char Node)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBsmartHubConnected\fP"
+.br
+.ti -1c
+.RI "bool \fBgeneratorConnected\fP"
+.br
+.ti -1c
+.RI "bool \fBserviceToolConnected\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBGet_Sequence\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBProcessWorkflow\fP (unsigned char priority, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char function, unsigned char dataLength, unsigned char *pdata)"
+.br
+.RI "Assembles the protocol frame and sends it\&. "
+.ti -1c
+.RI "bool \fBProtFunction\fP (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, \fBtEthFunction\fP fnc, unsigned short dataLength, unsigned char *pdata)"
+.br
+.RI "Assembles the protocol frame and sends it\&. "
+.ti -1c
+.RI "bool \fBProcessBlock\fP (\fBCaDataDic\fP *pDataDic, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char *pdata, \fBtInfoMessage\fP *\fBinfomessage\fP=nullptr)"
+.br
+.RI "Processes BLOCK command received\&. It stores pieces of the block until completing it\&. After that, provide object to dictionary\&. "
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "short(* \fBmCbSendMsgEth\fP )(unsigned char *pMessage, unsigned short datalength)"
+.br
+.RI "Stores callback given in constructor to send can messages\&. "
+.ti -1c
+.RI "void(* \fBmCbJumpToBootloader\fP )(void)"
+.br
+.RI "Stores callback given in constructor to jump to bootloader when an update is required\&. "
+.ti -1c
+.RI "\fBCaDataDic\fP *(* \fBmCbSearchDatadicSlave\fP )(unsigned char Node)"
+.br
+.RI "Stores callback given in constructor to get the slave dicctionary\&. "
+.ti -1c
+.RI "unsigned char \fBm_TimerNodeToken_assigned\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBm_sequence\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBassignedSequence\fP"
+.br
+.ti -1c
+.RI "bool \fBcommandProcessed\fP"
+.br
+.ti -1c
+.RI "bool \fBisCpGet\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommandProcessedResult\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommandProcessedIndex\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBcommandProcessedSubIndex\fP"
+.br
+.ti -1c
+.RI "std::string \fBcommandProcessedString\fP"
+.br
+.ti -1c
+.RI "unsigned short \fBmTargetId\fP"
+.br
+.ti -1c
+.RI "\fBCaDataDic\fP * \fBmCbAuxDataDicToDownloader\fP"
+.br
+.ti -1c
+.RI "\fBCaDataDic\fP * \fBmpEthDatadic\fP"
+.br
+.ti -1c
+.RI "struct {"
+.br
+.ti -1c
+.RI "   unsigned short \fBnBlockDataExpected\fP"
+.br
+.ti -1c
+.RI "   unsigned short \fBnCurrentBlockData\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBBlockDataSequenceExpected\fP"
+.br
+.ti -1c
+.RI "   unsigned char * \fBpBlockData\fP"
+.br
+.ti -1c
+.RI "   unsigned char \fBBlockAccess\fP"
+.br
+.ti -1c
+.RI "   \fBtInfoMessage\fP \fBinfomessage\fP"
+.br
+.ti -1c
+.RI "} \fBmBlockManager\fP"
+.br
+.RI "Stores params to manage a download of a block\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static unsigned char \fBm_token_granted\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Class to handle the protocol\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CR2CP_Eth::CR2CP_Eth (short(* cbSendMsgEth )(unsigned char *pMessage, unsigned short datalength), \fBCaDataDic\fP *(* cbSearchDatadicSlave )(unsigned char Node), \fBCaDataDic\fP * pEthDataDic, void(* cbJumpToBootloader )(void), unsigned short targetId)"
+
+.PP
+Constructor of the class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcbSendMsgEth\fP Callback to send eth messages\&. It must return:
+.IP "\(bu" 2
+false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.br
+\fIcbGetDictionary\fP Function to get the right dictionary according to the node It must return:
+.IP "\(bu" 2
+pNULL If not available
+.IP "\(bu" 2
+CaDataDic* Pointer to the dictionary 
+.PP
+.RE
+.PP
+
+.SS "CR2CP_Eth::~CR2CP_Eth ()"
+
+.PP
+Destructor of the class\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void CR2CP_Eth::Callback_token_expired (unsigned char Node)\fR [static]\fP"
+
+.SS "void CR2CP_Eth::evalCommadProcessedResult (void )"
+
+.SS "void CR2CP_Eth::evalGetGeneratorProcessedResult (void )"
+
+.SS "void CR2CP_Eth::evalGetPatientProcessedResult (void )"
+
+.SS "void CR2CP_Eth::evalGetSystemProcessedResult (void )"
+
+.SS "void CR2CP_Eth::evalSetGeneratorProcessedResult (void )"
+
+.SS "void CR2CP_Eth::evalSetPatientProcessedResult (void )"
+
+.SS "void CR2CP_Eth::evalSetSystemProcessedResult (void )"
+
+.SS "bool CR2CP_Eth::Event_Answer (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned short dataLength, unsigned char * pdata)"
+
+.PP
+Sends a EVENT command\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInodeId\fP Node id\&. 
+.br
+\fIindex\fP Index field of the dictionary object\&. 
+.br
+\fIsubindex\fP SubIndex field of the dictionary object\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the dictionary object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.SS "bool CR2CP_Eth::Get (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char * pdata)"
+
+.PP
+Sends a GET command\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInodeId\fP Node id\&. 
+.br
+\fIindex\fP Index field of the dictionary object\&. 
+.br
+\fIsubindex\fP SubIndex field of the dictionary object\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the dictionary object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.SS "unsigned char CR2CP_Eth::Get_Sequence (void )\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::getAssignedSequence ()\fR [inline]\fP"
+
+.SS "unsigned char CR2CP_Eth::getCommandProcessedResult ()\fR [inline]\fP"
+
+.SS "std::string CR2CP_Eth::getCommandProcessedString (void )\fR [inline]\fP"
+
+.SS "bool CR2CP_Eth::isCommandProcessed ()\fR [inline]\fP"
+
+.SS "bool CR2CP_Eth::ProcessBlock (\fBCaDataDic\fP * pDataDic, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char * pdata, \fBtInfoMessage\fP * infomessage = \fRnullptr\fP)\fR [private]\fP"
+
+.PP
+Processes BLOCK command received\&. It stores pieces of the block until completing it\&. After that, provide object to dictionary\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsender\fP Node id\&. 
+.br
+\fIindex\fP Index field of the dictionary object\&. 
+.br
+\fIsubindex\fP SubIndex field of the dictionary object\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the dictionary object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.SS "bool CR2CP_Eth::Processed (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char * pdata)"
+
+.PP
+Sends a MSG_PROCESSED_FNC command\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInodeId\fP Node id\&. 
+.br
+\fIindex\fP Index field of the dictionary object\&. 
+.br
+\fIsubindex\fP SubIndex field of the dictionary object\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the dictionary object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.SS "void CR2CP_Eth::ProcessMessage (void * pMessage)"
+
+.PP
+Scans/Processes a message given\&. It will check the format according to protocol defination\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpMessage\fP Can message\&. 
+.RE
+.PP
+Give an id in case a thread is launched by the dictionary This id is placed in the last argument of the data message
+.SS "bool CR2CP_Eth::ProcessWorkflow (unsigned char priority, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char function, unsigned char dataLength, unsigned char * pdata)\fR [private]\fP"
+
+.PP
+Assembles the protocol frame and sends it\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprio\fP Priority field of frame id\&. 
+.br
+\fIack\fP Handshake field of frame id\&. 
+.br
+\fInode\fP Node id field of frame id\&. 
+.br
+\fIindex\fP Index field of frame id\&. 
+.br
+\fIsubindex\fP SubIndex field of frame id\&. 
+.br
+\fIfnc\fP Function field of frame id\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the frame\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.SS "bool CR2CP_Eth::ProtFunction (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, \fBtEthFunction\fP fnc, unsigned short dataLength, unsigned char * pdata)\fR [private]\fP"
+
+.PP
+Assembles the protocol frame and sends it\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprio\fP Priority field of frame id\&. 
+.br
+\fIack\fP Handshake field of frame id\&. 
+.br
+\fInode\fP Node id field of frame id\&. 
+.br
+\fIindex\fP Index field of frame id\&. 
+.br
+\fIsubindex\fP SubIndex field of frame id\&. 
+.br
+\fIfnc\fP Function field of frame id\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the frame\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.SS "bool CR2CP_Eth::Reserved (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char * pdata)"
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIprio\fP Priority field of frame id\&. 
+.br
+\fIack\fP Handshake field of frame id\&. 
+.br
+\fInode\fP Node id field of frame id\&. 
+.br
+\fIindex\fP Index field of frame id\&. 
+.br
+\fIsubindex\fP SubIndex field of frame id\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the frame\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If n 
+.PP
+.RE
+.PP
+
+.SS "bool CR2CP_Eth::SendRawData (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char function, unsigned short dataLength, unsigned char * pdata)"
+
+.PP
+Use this method when the data size is higher than 50 bytes to avoid dynamic memory allocation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprio\fP Priority field of frame id\&. 
+.br
+\fInode_dest\fP Node id Destine field of frame id\&. 
+.br
+\fInode_iss\fP Node id Origin field of frame id\&. 
+.br
+\fIindex\fP Index field of frame id\&. 
+.br
+\fIsubindex\fP SubIndex field of frame id\&. 
+.br
+\fIfunction\fP Function field of frame id\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Data pointer of the frame\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If n 
+.PP
+.RE
+.PP
+
+.SS "bool CR2CP_Eth::Set (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char * pdata)"
+
+.PP
+Sends a SET command\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInodeId\fP Node id\&. 
+.br
+\fIindex\fP Index field of the dictionary object\&. 
+.br
+\fIsubindex\fP SubIndex field of the dictionary object\&. 
+.br
+\fIdataLength\fP Data lenght\&. 
+.br
+\fIpdata\fP Datas of the dictionary object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+- false If succesful
+.IP "\(bu" 2
+true If not 
+.PP
+.RE
+.PP
+
+.SS "bool CR2CP_Eth::WrongAccess (\fBeEthPriorities\fP prio, unsigned char node_dest, unsigned char node_iss, unsigned char index, unsigned char subindex, unsigned char dataLength, unsigned char * pdata)"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char CR2CP_Eth::assignedSequence\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::BlockAccess"
+
+.SS "unsigned char CR2CP_Eth::BlockDataSequenceExpected"
+
+.SS "bool CR2CP_Eth::commandProcessed\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::commandProcessedIndex\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::commandProcessedResult\fR [private]\fP"
+
+.SS "std::string CR2CP_Eth::commandProcessedString\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::commandProcessedSubIndex\fR [private]\fP"
+
+.SS "bool CR2CP_Eth::generatorConnected"
+
+.SS "\fBtInfoMessage\fP CR2CP_Eth::infomessage"
+
+.SS "bool CR2CP_Eth::isCpGet\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::m_sequence\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::m_TimerNodeToken_assigned\fR [private]\fP"
+
+.SS "unsigned char CR2CP_Eth::m_token_granted\fR [static]\fP, \fR [private]\fP"
+
+.SS "struct  { \&.\&.\&. }  CR2CP_Eth::mBlockManager\fR [private]\fP"
+
+.PP
+Stores params to manage a download of a block\&. 
+.SS "\fBCaDataDic\fP* CR2CP_Eth::mCbAuxDataDicToDownloader\fR [private]\fP"
+
+.SS "void(* CR2CP_Eth::mCbJumpToBootloader) (void)\fR [private]\fP"
+
+.PP
+Stores callback given in constructor to jump to bootloader when an update is required\&. 
+.SS "\fBCaDataDic\fP *(* CR2CP_Eth::mCbSearchDatadicSlave) (unsigned char Node)\fR [private]\fP"
+
+.PP
+Stores callback given in constructor to get the slave dicctionary\&. 
+.SS "short(* CR2CP_Eth::mCbSendMsgEth) (unsigned char *pMessage, unsigned short datalength)\fR [private]\fP"
+
+.PP
+Stores callback given in constructor to send can messages\&. 
+.SS "\fBCaDataDic\fP* CR2CP_Eth::mpEthDatadic\fR [private]\fP"
+
+.SS "unsigned short CR2CP_Eth::mTargetId\fR [private]\fP"
+
+.SS "unsigned short CR2CP_Eth::nBlockDataExpected"
+
+.SS "unsigned short CR2CP_Eth::nCurrentBlockData"
+
+.SS "unsigned char* CR2CP_Eth::pBlockData"
+
+.SS "bool CR2CP_Eth::serviceToolConnected"
+
+.SS "bool CR2CP_Eth::smartHubConnected"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

@@ -3,3 +3,305 @@
 .nh
 .SH NAME
 PCB304
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB304\&.h>\fP
+.PP
+Inherits \fBCanDeviceProtocol\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBProtocolStructure\fP"
+.br
+.RI "This class implement the protocol data structure as described in the protocol specification\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPCB304\fP ()"
+.br
+.in -1c
+
+Public Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceProtocol\fP (unsigned char devid, LPCWSTR devname)"
+.br
+.ti -1c
+.RI "void \fBrunMode\fP (void)"
+.br
+.RI "This function activate the Module in Real mode\&. "
+.ti -1c
+.RI "void \fBsimulMode\fP (void)"
+.br
+.RI "This function activate the Module in Simulation mode\&. "
+.ti -1c
+.RI "bool \fBisSimulatorMode\fP (void)"
+.br
+.RI "This function tests if the module is running in simulation mode\&. "
+.ti -1c
+.RI "bool \fBisCommunicationError\fP (void)"
+.br
+.RI "This function tests if the module is in communication error condition\&. "
+.ti -1c
+.RI "\fBstatus_options\fP \fBgetModuleStatus\fP (void)"
+.br
+.RI "This function returns the Module operating status\&. "
+.ti -1c
+.RI "\fBbootloader_options\fP \fBgetBootStatus\fP (void)"
+.br
+.RI "This function returns the current status of the bootloader activities on the remote device\&. "
+.ti -1c
+.RI "System::String ^ \fBgetBootRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected Bootloader revision code\&. "
+.ti -1c
+.RI "System::String ^ \fBgetAppRevision\fP (void)"
+.br
+.RI "This function returns a string with the current detected remote firmware revision code\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This is a non blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "bool \fBcommandNoWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo)"
+.br
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This is a blocking thread safe function sending a command to the remote device\&. "
+.ti -1c
+.RI "\fBCanDeviceCommandResult\fP ^ \fBcommandWaitCompletion\fP (\fBCanDeviceCommand\fP^ command, int tmo, Object^ src)"
+.br
+.ti -1c
+.RI "bool \fBisCommandCompleted\fP (void)"
+.br
+.RI "This function returns the current status of the pending command\&. "
+.ti -1c
+.RI "bool \fBisCommandError\fP (void)"
+.br
+.RI "This function returns true if the command is terminated with an error condition\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult0\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-0\&. "
+.ti -1c
+.RI "unsigned char \fBgetCommandResult1\fP (void)"
+.br
+.RI "In case of command completed without errors, this function returns the command returned data-1\&. "
+.ti -1c
+.RI "\fBCommandRegisterErrors\fP \fBgetCommandError\fP (void)"
+.br
+.RI "This function returns the last error condition of an executed command\&. "
+.ti -1c
+.RI "System::String ^ \fBgetCanCommunicationMonitorString\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetAutoGridInField\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetAutoGridOutField\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsyncGeneratorOn\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsyncGeneratorOff\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisGridOnFieldReady\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisGridOffFieldReady\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBenableStartGrid\fP (bool status)"
+.br
+.ti -1c
+.RI "static bool \fBisError\fP (void)"
+.br
+.ti -1c
+.RI "static void \fBsetDisplay\fP (bool on_off)"
+.br
+.ti -1c
+.RI "static void \fBsetDisplay\fP (short val, unsigned char decimals, bool blink, unsigned char intensity)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "literal int \fBmax_num_error_resets\fP = 5"
+.br
+.RI "Maximum number of attempts to reset a pending error condition\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPCB304\fP ^ \fBdevice\fP = gcnew \fBPCB304\fP()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrunningLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to inplement the specific module features\&. "
+.ti -1c
+.RI "void \fBdemoLoop\fP (void) override"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the simulated features\&. "
+.in -1c
+
+Protected Member Functions inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadCommandRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device command register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadErrorRegister\fP (void)"
+.br
+.RI "This function executes the read of the special device error register\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadStatusRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the STATUS register of given INDEX\&. "
+.ti -1c
+.RI "\fBRegister\fP ^ \fBreadDataRegister\fP (unsigned char index)"
+.br
+.RI "This function executes the read of the DATA register of given INDEX\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteParamRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the PARAMETER(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char index, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "bool \fBwriteDataRegister\fP (unsigned char idx, \fBRegister\fP^ reg)"
+.br
+.RI "This function executes the write of the DATA(index)\&. "
+.ti -1c
+.RI "\fBCanDeviceProtocol::CanDeviceRegister\fP ^ \fBgetRxRegister\fP (void)"
+.br
+.RI "This function returns the last read register\&. "
+.ti -1c
+.RI "virtual void \fBresetLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the specific operations in case of the remote device reset detection\&. "
+.ti -1c
+.RI "virtual bool \fBconfigurationLoop\fP (void)"
+.br
+.RI "This routine shall be overridden by the subclass module in order to implement the specific operations during the device configuration fase\&. "
+.ti -1c
+.RI "virtual bool \fBsimulCommandNoWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandNoWaitCompletion()\fP should be used by the application See the \fBcommandNoWaitCompletion()\fP for details\&. "
+.ti -1c
+.RI "virtual \fBCanDeviceCommandResult\fP ^ \fBsimulCommandWaitCompletion\fP (unsigned char code, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3, int tmo, Object^ src)"
+.br
+.RI "This function is called in case of simulation, when the \fBcommandWaitCompletion()\fP should be used by the application See the \fBcommandWaitCompletion()\fP for details\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBProtocolStructure\fP \fBprotocol\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Public Types inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "enum class \fBCommandRegisterErrors\fP { \fBCommandRegisterErrors::COMMAND_NO_ERROR\fP = 0, \fBCommandRegisterErrors::COMMAND_ERROR_BUSY\fP, \fBCommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM\fP, \fBCommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED\fP, \fBCommandRegisterErrors::COMMAND_INVALID_DEVICE\fP =253, \fBCommandRegisterErrors::COMMAND_COMMUNICATION_ERROR\fP =254, \fBCommandRegisterErrors::COMMAND_DEVICE_TMO\fP = 255 }"
+.br
+.RI "This is the enumeration of the possible command executed errors\&. "
+.ti -1c
+.RI "enum class \fBstatus_options\fP { \fBstatus_options::WAITING_CAN_DRIVER_CONNECTION\fP = 0, \fBstatus_options::WAITING_REVISION\fP, \fBstatus_options::DEVICE_CONFIGURATION\fP, \fBstatus_options::DEVICE_RUNNING\fP, \fBstatus_options::DEVICE_SIMULATOR\fP, \fBstatus_options::LEN\fP, \fBstatus_options::UNDEF\fP = LEN }"
+.br
+.RI "This is the enumeration of the Module's internal operating status\&.
+.br
+See the \fBgetModuleStatus()\fP method\&. "
+.ti -1c
+.RI "enum class \fBbootloader_options\fP { \fBbootloader_options::BOOTLOADER_NOT_PRESENT\fP = 0, \fBbootloader_options::BOOTLOADER_RUNNING\fP = 1, \fBbootloader_options::BOOTLOADER_PRESENT\fP = 2, \fBbootloader_options::BOOTLOADER_UNCKNOWN_STAT\fP }"
+.br
+.RI "This is the enumeration calss defining the current status of the remote bootloader activity\&. "
+.in -1c
+
+Protected Attributes inherited from \fBCanDeviceProtocol\fP
+.in +1c
+.ti -1c
+.RI "\fBCanDeviceCommunicationMonitor\fP \fBcan_communication_monitor\fP"
+.br
+.RI "This is the debug class\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PCB304::PCB304 ()\fR [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void PCB304::demoLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to implement the simulated features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "static void PCB304::enableStartGrid (bool status)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB304::isError (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB304::isGridOffFieldReady (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB304::isGridOnFieldReady (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "void PCB304::runningLoop (void )\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This routine shall be overridden by the subclass module in order to inplement the specific module features\&. 
+.PP
+Reimplemented from \fBCanDeviceProtocol\fP\&.
+.SS "static void PCB304::setAutoGridInField (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static void PCB304::setAutoGridOutField (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static void PCB304::setDisplay (bool on_off)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static void PCB304::setDisplay (short val, unsigned char decimals, bool blink, unsigned char intensity)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static void PCB304::syncGeneratorOff (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static void PCB304::syncGeneratorOn (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPCB304\fP ^ PCB304::device = gcnew \fBPCB304\fP()\fR [static]\fP"
+
+.SS "literal int PCB304::max_num_error_resets = 5"
+
+.PP
+Maximum number of attempts to reset a pending error condition\&. 
+.SS "\fBProtocolStructure\fP PCB304::protocol\fR [static]\fP, \fR [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

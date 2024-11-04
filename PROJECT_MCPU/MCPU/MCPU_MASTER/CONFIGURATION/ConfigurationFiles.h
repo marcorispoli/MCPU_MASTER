@@ -5,7 +5,7 @@
 /**
     \defgroup ConfigurationFilesModule Configuration Files Implementation
     \ingroup APPIMPL
-    \internal
+    
 
     This section describes the configuration file modules implementation.
 */

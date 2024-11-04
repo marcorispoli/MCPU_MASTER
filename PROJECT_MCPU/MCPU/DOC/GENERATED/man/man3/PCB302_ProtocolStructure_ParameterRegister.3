@@ -3,3 +3,76 @@
 .nh
 .SH NAME
 PCB302::ProtocolStructure::ParameterRegister
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PCB302\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBregister_index\fP { \fBHOLDER_CALIB\fP = 0, \fBCOMPRESSION_CALIB\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRegister\fP ^ \fBencodeHolderCalibRegister\fP (void)"
+.br
+.ti -1c
+.RI "\fBRegister\fP ^ \fBencodeCompressionCalibRegister\fP (void)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBdecodeHolderCalibRegister\fP (\fBRegister\fP^ reg)"
+.br
+.ti -1c
+.RI "static bool \fBdecodeCompressionCalibRegister\fP (\fBRegister\fP^ reg)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static unsigned char \fBKp\fP"
+.br
+.ti -1c
+.RI "static unsigned short \fBOp\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBPCB302::ProtocolStructure::ParameterRegister::register_index\fP\fR [strong]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIHOLDER_CALIB \fP(0)
+.TP
+\f(BICOMPRESSION_CALIB \fP
+.SH "Member Function Documentation"
+.PP 
+.SS "static bool PCB302::ProtocolStructure::ParameterRegister::decodeCompressionCalibRegister (\fBRegister\fP^ reg)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool PCB302::ProtocolStructure::ParameterRegister::decodeHolderCalibRegister (\fBRegister\fP^ reg)\fR [inline]\fP, \fR [static]\fP"
+
+.SS "\fBRegister\fP ^ PCB302::ProtocolStructure::ParameterRegister::encodeCompressionCalibRegister (void )\fR [inline]\fP"
+
+.SS "\fBRegister\fP ^ PCB302::ProtocolStructure::ParameterRegister::encodeHolderCalibRegister (void )\fR [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char PCB302::ProtocolStructure::ParameterRegister::Kp\fR [static]\fP"
+
+.SS "unsigned short PCB302::ProtocolStructure::ParameterRegister::Op\fR [static]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

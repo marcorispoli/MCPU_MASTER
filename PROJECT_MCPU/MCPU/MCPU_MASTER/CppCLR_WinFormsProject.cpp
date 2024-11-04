@@ -40,7 +40,7 @@ using namespace System::Windows::Forms;
 /// and performances.
 /// 
 /// </summary>
-/// <returns></returns>
+
 
 /// <summary>
 /// \defgroup APPIMPL Application Implementation
@@ -48,7 +48,7 @@ using namespace System::Windows::Forms;
 /// This section provides detailed description of the modules iplementation.
 /// 
 /// </summary>
-/// <returns></returns>
+
 
 /// \defgroup OPERMODE Application Operating Modes
 ///	\ingroup APPDOC

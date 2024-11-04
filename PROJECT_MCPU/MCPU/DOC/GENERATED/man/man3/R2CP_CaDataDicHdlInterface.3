@@ -3,3 +3,142 @@
 .nh
 .SH NAME
 R2CP::CaDataDicHdlInterface
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <aDataDicHdlInterface\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum { \fBCp_II_HDL_SS_FPGA_Nok\fP = 1 }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBInitialitation\fP (void)"
+.br
+.RI "Initialitation\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FPGAVersion\fP (void)"
+.br
+.RI "Gets the fpga version\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FPGAReset\fP (void)"
+.br
+.RI "Sets a Fpga reboot\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FPGADna\fP (void)"
+.br
+.RI "Gets FPFA DNA\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FpgaConnections\fP (void)"
+.br
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FPGAUpdateStatus\fP (unsigned char Request)"
+.br
+.RI "Starts Updating Status\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FPGAUpdateStatus\fP (void)"
+.br
+.RI "Gets Current Status\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FpgaUpdateLenght\fP (int Length)"
+.br
+.RI "Get Update Length\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FpgaUpdateEraseSector_Received\fP (void)"
+.br
+.RI "Erase Sector\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FpgaUpdateEraseSector_MaxSector\fP (void)"
+.br
+.RI "Erase Sector\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FpgaUpdateProgPage\fP (int pageNumber, unsigned char *pData, unsigned short nData)"
+.br
+.RI "Set Update Prog Page\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FpgaUpdateProgPage\fP (void)"
+.br
+.RI "Gets Updata Prog Page\&. "
+.ti -1c
+.RI "virtual unsigned char \fBII_HDL_SS_FpgaUpdateChecksum\fP (unsigned char Chk)"
+.br
+.RI "Sets Fpga Checksum\&. "
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "anonymous enum"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BICp_II_HDL_SS_FPGA_Nok \fP(1)
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FpgaConnections (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FPGADna (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Gets FPFA DNA\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FPGAReset (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Sets a Fpga reboot\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FpgaUpdateChecksum (unsigned char Chk)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Sets Fpga Checksum\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FpgaUpdateEraseSector_MaxSector (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Erase Sector\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FpgaUpdateEraseSector_Received (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Erase Sector\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FpgaUpdateLenght (int Length)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Get Update Length\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FpgaUpdateProgPage (int pageNumber, unsigned char * pData, unsigned short nData)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Set Update Prog Page\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FpgaUpdateProgPage (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Gets Updata Prog Page\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FPGAUpdateStatus (unsigned char Request)\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Starts Updating Status\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIRequest\fP => 0 : StartProcess 1 : Abort 
+.RE
+.PP
+
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FPGAUpdateStatus (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Gets Current Status\&. 
+.SS "virtual unsigned char R2CP::CaDataDicHdlInterface::II_HDL_SS_FPGAVersion (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Gets the fpga version\&. 
+.SS "virtual void R2CP::CaDataDicHdlInterface::Initialitation (void )\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Initialitation\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

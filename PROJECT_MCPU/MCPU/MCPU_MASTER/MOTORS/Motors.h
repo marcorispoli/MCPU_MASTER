@@ -2,7 +2,6 @@
 /**
 	\defgroup MOTIMPL Motor Modules Implementation
 	\ingroup APPIMPL
-	\internal
 
 	This section describes the implementation of the modules controlling the system Motors
 
@@ -14,6 +13,14 @@
 	
 
 	# Index
+
+	+ \ref COMFEATURE
+	+ \ref MOTCARM
+	+ \ref MOTTILT
+	+ \ref MOTVERTICAL
+	+ \ref MOTBODY
+	+ \ref MOTSLIDE
+
 
 	# Abstract 
 
@@ -57,7 +64,7 @@
 	with a dedicated internal process, providing an application 
 	common interface to send and receive frames from the CAN bus.
 
-	# Common Features Description
+	\section COMFEATURE Common Features Description
 
 	## Motor Internal Status
 
@@ -98,7 +105,7 @@
 	In the event of fault condition, the application tries automatically to reset the fault as soon as the 
 	fault event disappear.
 
-	## Motor Device Configuration
+	\subsection MOTCONFIG Motor Device Configuration
 	
 	There are basically three kind of motor configurations:
 	+ the motor control setup; 
@@ -328,9 +335,21 @@
 	in case it is using an external position sensor: in this case, at the startup,
 	the actual position is provided by the current value of the sensor.
 
+	\subsection IDLEDESC Special Idle Position Sequence Activation Command
 
+	The Application implements a special global activation command that acts as a daisy chain activation
+	that involves in a predefined sequence the following motors:
+	+ Tilt Motor;
+	+ Slide Motor;
+	+ Arm Motor;
 
+	+ The sequence starts with the Tilt motor activated to the 0°;
+	+ When the Tilt completes its activation, the SLide motor is activated to the 0° position;
+	+ Finally, when the Slide completes its activation, the C-ARM starts moving to the 0° target position.
 
+	The Application makes use of this global activation sequence in order to reset the position of those motors
+	when a Study is Closed.
+	
 
 
 */

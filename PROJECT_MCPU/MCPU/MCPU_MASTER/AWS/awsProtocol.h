@@ -6,7 +6,7 @@
 /**
 	\defgroup AWSProtocolModule AWS Protocol Communication Implementation
 	\ingroup APPIMPL
-	\internal
+	
 
 	This section describes the implementation of the protocol communication with the AWS software.
 */

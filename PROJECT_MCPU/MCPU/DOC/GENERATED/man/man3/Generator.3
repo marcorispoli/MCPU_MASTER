@@ -2,4 +2,1035 @@
 .ad l
 .nh
 .SH NAME
-Generator
+Generator \- This Module class implements the communication and control of the the SHFD Device\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Generator\&.h>\fP
+.PP
+Inherits \fBTcpClientCLI\fP\&.
+.PP
+Inherited by \fBExposures\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBgenerator_errors\fP { \fBGEN_NO_ERRORS\fP = 0, \fBGEN_INVALID_PROCEDURE\fP, \fBGEN_INVALID_PARAMS\fP, \fBGEN_INVALID_STATUS\fP, \fBGEN_COMMUNICATION_ERROR\fP, \fBGEN_INTERNAL_ERROR\fP, \fBGEN_BUTTON_RELEASE\fP, \fBGEN_TIMEOUT\fP, \fBGEN_LAST_ERRCODE\fP }"
+.br
+.RI "This enumeration class provides a standard set of possible error codes during a pulse exposure\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBGenerator\fP (void)"
+.br
+.RI "This is the class constructor\&. "
+.in -1c
+
+Public Member Functions inherited from \fBTcpClientCLI\fP
+.in +1c
+.ti -1c
+.RI "delegate void \fBrxData_slot\fP (cli::array< Byte >^ receiveBuffer, int rc)"
+.br
+.RI "This is the delegate of the reception handler\&. "
+.ti -1c
+.RI "delegate void \fBconnection_slot\fP (bool status)"
+.br
+.RI "This is the delegate of the connection handler\&. "
+.ti -1c
+.RI "\fBTcpClientCLI\fP (String^ ip, int port)"
+.br
+.RI "This is the class constructor\&. "
+.ti -1c
+.RI "void \fBsend\fP (cli::array< Byte >^ buffer)"
+.br
+.RI "This is function to send data in the BUS\&. "
+.ti -1c
+.RI "bool \fBisConnected\fP (void)"
+.br
+.RI "Returns the current connection sattus\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBstartNormalMode\fP (void)"
+.br
+.RI "This function starts the \fBGenerator\fP Module in Normal (non simulated) mode\&. "
+.ti -1c
+.RI "static void \fBstartSimulatorMode\fP (void)"
+.br
+.RI "This function starts the \fBGenerator\fP Module in Simulation mode\&. "
+.ti -1c
+.RI "static bool \fBisSmartHubConnected\fP (void)"
+.br
+.RI "This method provides the current smart hub connection status\&. "
+.ti -1c
+.RI "static bool \fBisGeneratorConnected\fP (void)"
+.br
+.RI "This method provides the current \fBGenerator\fP connection status\&. "
+.ti -1c
+.RI "static bool \fBisServiceToolConnected\fP (void)"
+.br
+.RI "This method provides the current Service Tool detection status\&. "
+.ti -1c
+.RI "static bool \fBisGeneratorIdle\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisReadyForExposure\fP (void)"
+.br
+.ti -1c
+.RI "static bool \fBisSimulatorMode\fP (void)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBsetXrayEnable\fP (bool stat)"
+.br
+.ti -1c
+.RI "virtual bool \fBgetXrayPushButton\fP (void)"
+.br
+.ti -1c
+.RI "virtual void \fBexposureManagementLoop\fP (bool demo)"
+.br
+.ti -1c
+.RI "void \fBrxData\fP (cli::array< Byte >^ receiveBuffer, int rc) override"
+.br
+.RI "This is the ethernet reception buffer callback\&. "
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgeneratorExecutePulseSequence\fP (System::String^ ExpName, int ms_timeout)"
+.br
+.RI "This function controls the generator execution of a single exposure pulse\&. "
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgenerator2DPulsePreparation\fP (System::String^ exp_name, float kV, float mAs, bool islargefocus, bool det_sync, bool grid_sync, int exp_time)"
+.br
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgenerator2DAecPrePulsePreparation\fP (System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time)"
+.br
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgenerator2DAecPulsePreparation\fP (System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time)"
+.br
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgenerator3DPulsePreparation\fP (System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time)"
+.br
+.in -1c
+
+Protected Member Functions inherited from \fBTcpClientCLI\fP
+.in +1c
+.ti -1c
+.RI "void \fBthreadWork\fP (void)"
+.br
+.RI "This is the worker thread for the connection management\&. "
+.ti -1c
+.RI "void \fBstartConnection\fP (void)"
+.br
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBGenerator\fP ^ \fBgetDevice\fP (void)"
+.br
+.ti -1c
+.RI "static System::String ^ \fBgetGeneratorErrorString\fP (System::String^ errstr)"
+.br
+.RI "This function returns a description strings of the System Message Error\&. "
+.ti -1c
+.RI "static unsigned char \fBgetGeneratorStatus\fP (void)"
+.br
+.ti -1c
+.RI "static float \fBgetSelectedAnodeCurrent\fP (void)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBhandleCommandProcessedState\fP (unsigned char *code)"
+.br
+.RI "This function processes the returned code of the last \fBR2CP\fP command\&. "
+.ti -1c
+.RI "bool \fBclearSystemMessages\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBupdateGeneratorStatus\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBsetDisableRxMessage\fP (bool stat)"
+.br
+.ti -1c
+.RI "void \fBthreadWork\fP (void)"
+.br
+.RI "This is the Normal Mode working thread\&. "
+.ti -1c
+.RI "void \fBsimulatorWork\fP ()"
+.br
+.RI "This is the Simulation Mode Working thread\&. "
+.ti -1c
+.RI "void \fBerrorLoop\fP (void)"
+.br
+.RI "If the initial configuration of the \fBGenerator\fP device should fail the main thread call this routine every 1000 ms forever\&. "
+.ti -1c
+.RI "void \fBserviceToolLoop\fP (void)"
+.br
+.RI "If the Service Tool Software should be detected the module main thread calls this loop routine until the Service Tool software is closed\&. "
+.ti -1c
+.RI "bool \fBgeneratorIdleLoop\fP (void)"
+.br
+.RI "This function loop handles the \fBGenerator\fP Idle status\&. "
+.ti -1c
+.RI "bool \fBgeneratorErrorMessagesLoop\fP (void)"
+.br
+.RI "This is the Loop procedure handling the presence of active \fBGenerator\fP System Messages\&. "
+.ti -1c
+.RI "bool \fBconnectionTest\fP (void)"
+.br
+.RI "This function tests if the whole communication with the \fBGenerator\fP System is present\&. "
+.ti -1c
+.RI "bool \fBgeneratorInitialization\fP (void)"
+.br
+.RI "This routine is used to initialize the communication with the generator\&. "
+.ti -1c
+.RI "bool \fBgeneratorSetup\fP (void)"
+.br
+.ti -1c
+.RI "\fBgenerator_errors\fP \fBgeneratorSet3PointDatabank\fP (unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse)"
+.br
+.RI "This function load a databank with a 3 point tech to fit the finest mAs required value\&. "
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static short \fBsendCR2CPData\fP (unsigned char *pMessage, unsigned short datalength)"
+.br
+.RI "This is the callback called by the \fBR2CP\fP module 
+.br
+whenever a valid \fBR2CP\fP frame shall be sent to the smart hub\&. "
+.ti -1c
+.RI "static float \fBgetR10Time\fP (float ms, bool next)"
+.br
+.RI "This function returns the closed lower or higher time from the reinard R10 scale\&. "
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "Thread ^ \fBrunning_thread\fP"
+.br
+.RI "This is the module worker thread handler\&. "
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBGenerator\fP ^ \fBdevice\fP"
+.br
+.RI "This is the Handle of the \fBGenerator\fP class instance\&. "
+.ti -1c
+.RI "static bool \fBsimulator_mode\fP = false"
+.br
+.RI "This is the current real or simulating mode flag\&. "
+.ti -1c
+.RI "static \fBCR2CP_Eth\fP * \fBR2CP_Eth\fP"
+.br
+.RI "This is the Tcp/Ip client connection handler with the smart-hub external software\&. "
+.ti -1c
+.RI "static bool \fBidle_status\fP = false"
+.br
+.RI "The \fBGenerator\fP is in IDLE mode\&. "
+.ti -1c
+.RI "static bool \fBready_for_exposure\fP = false"
+.br
+.RI "The \fBGenerator\fP is in Ready for exposure mode\&. "
+.ti -1c
+.RI "static bool \fBdisable_rx_message\fP = false"
+.br
+.RI "This is the status of the disable rx message\&. "
+.ti -1c
+.RI "static float \fBselected_anode_current\fP = 100"
+.br
+.RI "This is the current selected anodic current from the pulse preparation\&. "
+.ti -1c
+.RI "static unsigned char \fBcurrent_generator_status\fP = 255"
+.br
+.RI "This is the current generator status\&. "
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Events inherited from \fBTcpClientCLI\fP
+.in +1c
+.ti -1c
+.RI "\fBrxData_slot\fP^ \fBrxData_event\fP"
+.br
+.RI "Reception event\&. "
+.ti -1c
+.RI "\fBconnection_slot\fP^ \fBconnection_event\fP"
+.br
+.RI "Connection event\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This Module class implements the communication and control of the the SHFD Device\&. 
+
+
+.SH "Module Dependencies"
+.PP
+.SS "R2CP Installation and setup"
+The Module runs with the following \fBR2CP\fP settings:
+
+.PP
+.IP "\(bu" 2
+Smart Hub Installed into C:/OEM;
+.IP "\(bu" 2
+SQLite database for system messages installed into C:/OEM/AppData/system_messages\&.sqlite;
+.IP "\(bu" 2
+SmartHub IP/Port connection: 192\&.6\&.1\&.201 @ 10000;
+.IP "\(bu" 2
+Smart Hub Node Id: 1;
+.IP "\(bu" 2
+\fBGenerator\fP Node Id: 6;
+.IP "\(bu" 2
+Service Tool Node Id: 9;
+.IP "\(bu" 2
+Application Node Id: 17;
+.IP "\(bu" 2
+Direct Workstation: 1
+.IP "\(bu" 2
+Detector Workstation: 5
+.PP
+.SS "Application libraries"
+The Module uses the SQLite dll files:
+.IP "\(bu" 2
+The Dll shall be installed into the {$ApplicationExecutable}/SQLITE;
+.IP "\(bu" 2
+The following dll shall be present into the SQLITE subdir:
+.IP "  \(bu" 4
+SQLite\&.Designer\&.dll
+.IP "  \(bu" 4
+SQLite\&.Interop\&.dll
+.IP "  \(bu" 4
+System\&.Data\&.SQLite\&.dll
+.IP "  \(bu" 4
+System\&.Data\&.SQLite\&.EF6\&.dll
+.IP "  \(bu" 4
+System\&.Data\&.SQLite\&.Linq\&.dll
+.PP
+
+.PP
+.SH "Module Usage"
+.PP
+The Application shall subclasses this module in order to implement the specific exposure workflow\&.
+
+.PP
+The Application shall override the following callbacks:
+.IP "\(bu" 2
+\fBsetXrayEnable()\fP: this function is called by the base class when the xray_enable hardware signal needs to be set properly;
+.IP "\(bu" 2
+\fBexposureManagementLoop()\fP: the base class calls this fuction every 100ms when in ready for the exposure internal status;
+.PP
+
+.PP
+The \fBsetXrayEnable()\fP should be implemented so that the Application can properly set the external hardware signal;
+
+.PP
+In the \fBexposureManagementLoop()\fP the Application should implement the:
+.IP "\(bu" 2
+Exposure Initialization process: detect when the application request a given exposure procedure;
+.IP "\(bu" 2
+Exposure Data Prepapration: preparing and validating the exposures data;
+.IP "\(bu" 2
+Exposure Implementation: implementation of a given exposure procedures;
+.IP "\(bu" 2
+Exposure Termination: handling the exposure termination;
+.PP
+.SH "Module General description"
+.PP
+This module implements the \fBR2CP\fP protocol interface in order to communicate and control the \fBGenerator\fP Device through the external Smart Hub software\&.
+
+.PP
+The Feature provided by this module are following described:
+.IP "\(bu" 2
+Simulator Mode/ Exposure Mode: the module provides the simulation mode activation\&.
+.br
+In simulation mode the presence of the \fBGenerator\fP device is not necessary (nor the Smart Hub software);
+.IP "\(bu" 2
+Connection with the Smart Hub: the module keeps the connection alive and handle possible disconnections;
+.IP "\(bu" 2
+External Service Tool presence detection: the module handles the presence of the service tool software;
+.IP "\(bu" 2
+System Message Handling: the module handles the presence of the persistent system messages;
+.PP
+.SH "Internal Module Status"
+.PP
+The \fBGenerator\fP module can be in one of the following internal status:
+.IP "\(bu" 2
+Idle Status: the generator completed succesfully the initialization\&.
+.IP "  \(bu" 4
+The communication with the Smart Hub and the \fBGenerator\fP device is working;
+.PP
+
+.IP "\(bu" 2
+Ready For Exposure: the generator is ready to init a pulse sequence\&.
+.IP "  \(bu" 4
+The Ready for exposure is set when the \fBGenerator\fP is in Idle and no system message are presents
+.PP
+
+.PP
+.SH "External Service Tool sotware activation detection"
+.PP
+The Module detects the presence of the Service Tool software activation\&.
+
+.PP
+When the software is detected, the module enters into a running loop with no action, until the software is closed\&.
+
+.PP
+The communication with the \fBGenerator\fP is reinitialized as soon as the Service Tool is disconnected and the normal working mode is ripristinated\&.
+.SH "Communication initialization"
+.PP
+The communication is initialized:
+.IP "\(bu" 2
+after system startup;
+.IP "\(bu" 2
+after a communication error during the normal mode (idle);
+.IP "\(bu" 2
+after the service tool software is closed;
+.PP
+
+.PP
+During the initialization, the module:
+.IP "\(bu" 2
+tests the communication with the Smart Hub and the \fBGenerator\fP;
+.IP "\(bu" 2
+initializes the Databanks and the Procedures used;
+.IP "\(bu" 2
+resets all the system messages should pending in the generator;
+.PP
+
+.PP
+When the Initialization should successfully completes the module enters the Idle mode\&.
+.SH "System Messages handling"
+.PP
+The module periodically checks the presence of the system messages in the generator device\&.
+
+.PP
+The module resets all the messages and stores the non resettable (persistent) messages\&.
+
+.PP
+The persistent messages can originate a System Error message with the description of the currnt persisten message\&.
+
+.PP
+The Description of the message is retrived by the SQLite archive that shall be installed into the /OEM/AppData/system_messages\&.sqlite database\&.
+.SS "RX DISABLE MESSAGE handling"
+A special message is treated apart: GENERAL_RX_DISABLE_MSG_ID = 500074;
+
+.PP
+This message is not stored in the current persistent message queue because the module activate it to prevent an unexpected exposure\&.
+
+.PP
+The module activates it:
+.IP "\(bu" 2
+after the system startup;
+.IP "\(bu" 2
+in Idle after any exposure sequence;
+.PP
+
+.PP
+The module clears it:
+.IP "\(bu" 2
+at the beginning of the first pulse of a sequence\&.
+.PP
+
+.PP
+The Status of this message is not visible out of the \fBGenerator\fP module\&.
+.SH "Exposure management"
+.PP
+The module provides the control of four exposure types:
+.IP "\(bu" 2
+2D Single Pulse exposure;
+.IP "\(bu" 2
+2D AEC sequence (pre-pulse + pulse);
+.IP "\(bu" 2
+3D Single Pulse exposure;
+.IP "\(bu" 2
+3D AEC sequence (pre-pulse + pulse);
+.PP
+
+.PP
+The 2D single pulse exposure can be activated with or without the use of the Grid and Detector synchronization signal\&.
+
+.PP
+The Application can implement an arbitrary exposure workflow using an arbitrary sequence of the basic exposure types\&.
+
+.PP
+In order to implement such generic workflow, the application, subclassing the \fBGenerator\fP class, shall override the \fBexposureManagementLoop()\fP\&. This callback is called by the generator class ones for 100ms when in Ready For Exposure mode\&.
+.SS "2D Single Pulse Exposure implementation"
+The application shall call the following procedures in order to activate a generator Single Pulse sequence:
+
+.PP
+.IP "\(bu" 2
+\fBgenerator2DPulsePreparation()\fP : this routine prepares the \fBGenerator\fP device for the procedure activation\&.
+.br
+With this routine the application sets the exposure parameters to be used during the single pulse exposure\&.
+.IP "\(bu" 2
+\fBgeneratorExecutePulseSequence()\fP: this procedure handles the internal generator status machine that activates the x-rays\&.
+.PP
+.SS "2D AEC Exposure implementation"
+The application shall call the following procedures in order to activate a generator 2D-AEC sequence:
+
+.PP
+.IP "\(bu" 2
+generator2DAecPrePreparation() : this routine prepares the \fBGenerator\fP device for the Aec-Pre procedure activation\&.
+.br
+With this routine the application sets the pre-pulse exposure parameters to be used \&.
+.IP "\(bu" 2
+\fBgeneratorExecutePulseSequence()\fP: this procedure handles the internal generator status machine that activates the x-rays for the pre-pulse procedure;
+.IP "\(bu" 2
+\fBgenerator2DAecPulsePreparation()\fP : this routine prepares the \fBGenerator\fP device for the Aec-Pulse procedure activation\&.
+.br
+With this routine the application sets the main-pulse exposure parameters to be used \&.
+.IP "\(bu" 2
+\fBgeneratorExecutePulseSequence()\fP: this procedure handles the internal generator status machine that activates the x-rays for the pulse procedure;
+.PP
+.SS "3D Single Pulse Exposure implementation"
+The application shall call the following procedures in order to activate a generator 3D Single Pulse sequence:
+
+.PP
+.IP "\(bu" 2
+\fBgenerator3DPulsePreparation()\fP : this routine prepares the \fBGenerator\fP device for the procedure activation\&.
+.br
+With this routine the application sets the exposure parameters to be used during the single pulse exposure\&.
+.IP "\(bu" 2
+\fBgeneratorExecutePulseSequence()\fP: this procedure handles the internal generator status machine that activates the x-rays\&.
+.PP
+.SS "3D AEC Exposure implementation"
+The application shall call the following procedures in order to activate a generator 3D-AEC sequence:
+
+.PP
+.IP "\(bu" 2
+generator3DAecPrePreparation() : this routine prepares the \fBGenerator\fP device for the 3D Aec-Pre procedure activation\&.
+.br
+With this routine the application sets the pre-pulse exposure parameters to be used \&.
+.IP "\(bu" 2
+\fBgeneratorExecutePulseSequence()\fP: this procedure handles the internal generator status machine that activates the x-rays for the pre-pulse procedure;
+.IP "\(bu" 2
+generator3DAecPulsePreparation() : this routine prepares the \fBGenerator\fP device for the 3D Aec-Pulse procedure activation\&.
+.br
+With this routine the application sets the main-pulse exposure parameters to be used \&.
+.IP "\(bu" 2
+\fBgeneratorExecutePulseSequence()\fP: this procedure handles the internal generator status machine that activates the x-rays for the pulse procedure; 
+.PP
+
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum class \fBGenerator::generator_errors\fP\fR [strong]\fP"
+
+.PP
+This enumeration class provides a standard set of possible error codes during a pulse exposure\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIGEN_NO_ERRORS \fP(0)
+No error code\&. 
+.TP
+\f(BIGEN_INVALID_PROCEDURE \fP
+A not valid procedure has been requested\&. 
+.TP
+\f(BIGEN_INVALID_PARAMS \fP
+A non valid exposure parameter has been detected\&. 
+.TP
+\f(BIGEN_INVALID_STATUS \fP
+The generator is in a not expected status 
+.br
+ 
+.TP
+\f(BIGEN_COMMUNICATION_ERROR \fP
+A generator command is failed\&. 
+.TP
+\f(BIGEN_INTERNAL_ERROR \fP
+The generator activated internal error messages\&. 
+.TP
+\f(BIGEN_BUTTON_RELEASE \fP
+The X-Ray Button has been released\&. 
+.TP
+\f(BIGEN_TIMEOUT \fP
+Timeout generator sequence 
+.br
+ 
+.TP
+\f(BIGEN_LAST_ERRCODE \fP
+This code shall be used by the Application Subclass to enhance the error code list during the exposures\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Generator::Generator (void )"
+
+.PP
+This is the class constructor\&. The Constructor instances the base class with the Smart Hub IP and Port address 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool Generator::clearSystemMessages (void )\fR [private]\fP"
+
+.SS "bool Generator::connectionTest (void )\fR [private]\fP"
+
+.PP
+This function tests if the whole communication with the \fBGenerator\fP System is present\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if the connection with the Smart hub and the \fBGenerator\fP device is present
+.RE
+.PP
+
+.SS "void Generator::errorLoop (void )\fR [private]\fP"
+
+.PP
+If the initial configuration of the \fBGenerator\fP device should fail the main thread call this routine every 1000 ms forever\&. 
+.SS "virtual void Generator::exposureManagementLoop (bool demo)\fR [inline]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented in \fBExposures\fP\&.
+.SS "\fBGenerator::generator_errors\fP Generator::generator2DAecPrePulsePreparation (System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time)\fR [protected]\fP"
+
+.SS "\fBGenerator::generator_errors\fP Generator::generator2DAecPulsePreparation (System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time)\fR [protected]\fP"
+
+.SS "\fBGenerator::generator_errors\fP Generator::generator2DPulsePreparation (System::String^ exp_name, float kV, float mAs, bool islargefocus, bool det_sync, bool grid_sync, int exp_time)\fR [protected]\fP"
+
+.SS "\fBGenerator::generator_errors\fP Generator::generator3DPulsePreparation (System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time)\fR [protected]\fP"
+
+.SS "bool Generator::generatorErrorMessagesLoop (void )\fR [private]\fP"
+
+.PP
+This is the Loop procedure handling the presence of active \fBGenerator\fP System Messages\&. The presence of internal system messages in the generator device means that the generator is facing with internal anomalies or invalid status that prevent a correct exposure activation\&.
+
+.PP
+The Loop procedure calls a Module routine (\fBR2CP::CaDataDicGen::GetInstance()\fP->SystemMessages_Get_AllMessages() ) 
+.br
+ to get all the active messages from the device\&. 
+.br
+ The routine internally filter out a special message that is used to prevent an unwanted exposure procedure and, consequently, is not part of actual malfunctions\&.
+
+.PP
+The Loop remains alive until no system messages are detected active\&.
+
+.PP
+The \fBGenerator\fP module in this execution status cannot activate any exposure procedure\&.
+
+.PP
+The loop activates a dedicated error message in the application:
+.IP "\(bu" 2
+The descriptiono of the current error (errors) in string format is retrived by the sqlite database of the generator software tool set\&.
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+.IP "\(bu" 2
+False: in case of error in communication with the generator device
+.IP "\(bu" 2
+True: in case of no system messages are present and communication ok; 
+.PP
+.RE
+.PP
+
+.SS "\fBGenerator::generator_errors\fP Generator::generatorExecutePulseSequence (System::String^ ExpName, int ms_timeout)\fR [protected]\fP"
+
+.PP
+This function controls the generator execution of a single exposure pulse\&. The Single Pulse is any pulse composing a complete exposure sequence:
+.br
+.IP "\(bu" 2
+The Manual 2D sequence is composed by only one pulse-Sequence;
+.IP "\(bu" 2
+The AEC 2D sequence is composed by two pulse-Sequences (the pre-pulse and main-pulse);
+.IP "\(bu" 2
+The 3D manual Exposure is composed by only one pulse-Sequence, where the sequence is a multi kv pulse output;
+.IP "\(bu" 2
+The 3D AEC Exposure is composed by two pulse-Sequence ( the pre-pulse and the main train of kv pulses);
+.IP "\(bu" 2
+And so on\&.\&.\&.
+.PP
+
+.PP
+The procedure:
+.IP "\(bu" 2
+waits to exit from the stand-by before to follow the genratore sequence;
+.IP "\(bu" 2
+follows the generator status changes until the Stand-By or the WaitFootRelease status is detected;
+.PP
+
+.PP
+The procedure will fail always when:
+.IP "\(bu" 2
+an invalid status is detected;
+.IP "\(bu" 2
+the procedure timeout expires;
+.IP "\(bu" 2
+the x-ray enable signal is released (x-ray push button early release);
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIExpName\fP A string used to log the name of the current exposure sequence
+.br
+\fIms_timeout\fP the timeout assigned to the execution of a pulse in ms
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The procedure returns the ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS if csuccessfully completes
+.RE
+.PP
+
+.SS "bool Generator::generatorIdleLoop (void )\fR [private]\fP"
+
+.PP
+This function loop handles the \fBGenerator\fP Idle status\&. The \fBGenerator\fP Idle status is a module status where an exposure procedure can be initiated\&.
+
+.PP
+The \fBGenerator\fP Idle Status is activated as soon after the System Startup and the first \fBGenerator\fP Setup procedure\&.
+
+.PP
+During the Idle Status:
+.IP "\(bu" 2
+The correct connection with the smart hub is checked;
+.IP "\(bu" 2
+The correct connection with the generator device is checked;
+.IP "\(bu" 2
+The absence of the external \fBGenerator\fP Service Tool software is checked;
+.PP
+
+.PP
+If any of the previous condition should fail this routine exits and the main thread routine with a new startup sequence will be activated\&.
+
+.PP
+During the Idle Status, the presence of System Messages is checked:
+.IP "\(bu" 2
+in case of system message presence, the Loop calls the \fBgeneratorErrorMessagesLoop()\fP in order to handle the messages\&.
+.PP
+
+.PP
+Finally, only if no system messages are present and only if the \fBGenerator\fP internal status should be the \fBR2CP::Stat_Standby\fP,
+.br
+a possible exposure activation procedure can be evaluated (xray_processing variable)\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool Generator::generatorInitialization (void )\fR [private]\fP"
+
+.PP
+This routine is used to initialize the communication with the generator\&. The procedure initialize the \fBGenerator\fP communication setting the proper protocol version to V6\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "\fBGenerator::generator_errors\fP Generator::generatorSet3PointDatabank (unsigned char dbId, bool large_focus, float KV, float MAS, int n_pulse, int min_pulse, int max_pulse)\fR [private]\fP"
+
+.PP
+This function load a databank with a 3 point tech to fit the finest mAs required value\&. When a decimal value is needed for the mAs (i\&.e\&. 10\&.5 mAs instead of 10 or 11) the 2 point tech cannot be used because this tech can set only integer values\&.
+
+.PP
+In the case where the decimal part of the mAs should be important (i\&.e\&. in Tomo \fBExposures\fP) a different approach shall be followed:
+
+.PP
+The 3 point method allow to set the kV, the Anodic m Amps and the milliseconds of exposure\&. The Anodic current can be controlle with enough accuracy, wheathe the Exposure time can be selected in a discrete range of values in the R10 table\&.
+
+.PP
+The method consist of the following procedure:
+.IP "\(bu" 2
+The 2 point databank is uploaded into the generator with the mAs in integer format:
+.br
+ this step is necessary to know what is the available anodic current for the kV and mAs range selected;
+.IP "\(bu" 2
+The generator then will assignes the proper anodic current and the integration time requested;
+.IP "\(bu" 2
+The procedure select a new integration time bigger than the one selected by the genrator (in the R10 scale) so that 
+.br
+ it will be possible to use a lower anodic current (a bigger value could not be usable because of Tube limitations);
+.IP "\(bu" 2
+A new anodic current is calculated based on the requested mAs and integration time;
+.IP "\(bu" 2
+A databank with 3 point tech is then uploaded with the new calculated data\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIdbId\fP Databank index
+.br
+\fIlarge_focus\fP true for large focuse, false for small focus
+.br
+\fIKV\fP kV value
+.br
+\fIMAS\fP mAs value
+.br
+\fIn_pulse\fP number of pulses (1 in case of databank for a 2D procedure)
+.br
+\fImin_pulse\fP minimum time for pulse in ms
+.br
+\fImax_pulse\fP maximum pulse time (limited usually by the Max integration time of the Detector )
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ExposureModule::exposure_completed_errors::XRAY_NO_ERRORS for success
+.RE
+.PP
+
+.SS "bool Generator::generatorSetup (void )\fR [private]\fP"
+
+.SS "static \fBGenerator\fP ^ Generator::getDevice (void )\fR [inline]\fP, \fR [static]\fP, \fR [protected]\fP"
+
+.SS "System::String Generator::getGeneratorErrorString (System::String^ errstr)\fR [static]\fP, \fR [protected]\fP"
+
+.PP
+This function returns a description strings of the System Message Error\&. The whole set of the system messages are stored into an SQLite database file in the OEM/AppData/system_messages\&.sqlite file\&.
+
+.PP
+This function makes use of the message id code to retrive the message description in a readable string format\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIerrstr\fP This is the message identifier code in string format
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A desciption string of the related system message
+.RE
+.PP
+
+.SS "static unsigned char Generator::getGeneratorStatus (void )\fR [inline]\fP, \fR [static]\fP, \fR [protected]\fP"
+
+.SS "float Generator::getR10Time (float ms, bool next)\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This function returns the closed lower or higher time from the reinard R10 scale\&. The Function returns the next R10 value or the Previous R10 value 
+.br
+from the requested parameter\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIms\fP this is the nominal time value 
+.br
+\fInext\fP true = next value, false = previous value 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the requested time of the R10 scale 
+
+.PP
+0: value not found 
+.RE
+.PP
+
+.SS "static float Generator::getSelectedAnodeCurrent (void )\fR [inline]\fP, \fR [static]\fP, \fR [protected]\fP"
+
+.SS "virtual bool Generator::getXrayPushButton (void )\fR [inline]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented in \fBExposures\fP\&.
+.SS "bool Generator::handleCommandProcessedState (unsigned char * cd)\fR [private]\fP"
+
+.PP
+This function processes the returned code of the last \fBR2CP\fP command\&. Every command of the \fBR2CP\fP protocol returns a special code at the command completion\&. The code can be used by the module to determine if the command has been properly executed\&.
+
+.PP
+The missing of the returned code usually should cause a general communication error with the module\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIcd\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool Generator::isGeneratorConnected (void )\fR [static]\fP"
+
+.PP
+This method provides the current \fBGenerator\fP connection status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if a valid communication with the \fBGenerator\fP device is present
+.RE
+.PP
+
+.SS "static bool Generator::isGeneratorIdle (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "static bool Generator::isReadyForExposure (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "bool Generator::isServiceToolConnected (void )\fR [static]\fP"
+
+.PP
+This method provides the current Service Tool detection status\&. If the External Service Tool software should be executed the \fBGenerator\fP module stop working unil the software should be closed\&.
+
+.PP
+The Application can monitor this particolar running mode using this method 
+
+.PP
+\fBReturns\fP
+.RS 4
+True if the Service Tool is running on the \fBGantry\fP PC
+.RE
+.PP
+
+.SS "static bool Generator::isSimulatorMode (void )\fR [inline]\fP, \fR [static]\fP"
+
+.SS "bool Generator::isSmartHubConnected (void )\fR [static]\fP"
+
+.PP
+This method provides the current smart hub connection status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if a valid communication with the Smat Hub is present 
+.RE
+.PP
+
+.SS "void Generator::rxData (cli::array< Byte >^ receiveBuffer, int rc)\fR [override]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+This is the ethernet reception buffer callback\&. The routine detect multiple nested frames and passes every frame 
+.br
+to the \fBR2CP\fP module to be properly processed\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIreceiveBuffer\fP 
+.br
+\fIrc\fP 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBTcpClientCLI\fP\&.
+.SS "int16_t Generator::sendCR2CPData (unsigned char * pMessage, unsigned short datalength)\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the callback called by the \fBR2CP\fP module 
+.br
+whenever a valid \fBR2CP\fP frame shall be sent to the smart hub\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpMessage\fP 
+.br
+\fIdatalength\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "void Generator::serviceToolLoop (void )\fR [private]\fP"
+
+.PP
+If the Service Tool Software should be detected the module main thread calls this loop routine until the Service Tool software is closed\&. 
+.SS "bool Generator::setDisableRxMessage (bool stat)\fR [private]\fP"
+
+.SS "virtual void Generator::setXrayEnable (bool stat)\fR [inline]\fP, \fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented in \fBExposures\fP\&.
+.SS "void Generator::simulatorWork (void )\fR [private]\fP"
+
+.PP
+This is the Simulation Mode Working thread\&. The Working Thread of the simulation mode sets all the internal status in ready for exposure\&.
+
+.PP
+the \fBexposureManagementLoop()\fP is called every 100ms with the demo mode flag set to true\&.
+.SS "void Generator::startNormalMode (void )\fR [static]\fP"
+
+.PP
+This function starts the \fBGenerator\fP Module in Normal (non simulated) mode\&. 
+.SS "void Generator::startSimulatorMode (void )\fR [static]\fP"
+
+.PP
+This function starts the \fBGenerator\fP Module in Simulation mode\&. The simulation mode provides a transparent Application interface that doesn't make use of the \fBGenerator\fP device but allowing the application to activate the exposure workflows in a simulated way\&.
+.SS "void Generator::threadWork (void )\fR [private]\fP"
+
+.PP
+This is the Normal Mode working thread\&. The Main Thread starts at the beginning of the program when in Normal Mode\&.
+
+.PP
+The Main thread executes:
+.IP "\(bu" 2
+Initial connection with the generator and smart hub;
+.IP "\(bu" 2
+\fBGenerator\fP Setup;
+.IP "\(bu" 2
+Service Tool monitoring;
+.PP
+
+.PP
+If all the previous condition temrines properly the \fBgeneratorIdleLoop()\fP is called\&.
+
+.PP
+If the \fBgeneratorIdleLoop()\fP should return, the main thread repeats all the previous steps, reinitializing the \fBGenerator\fP and the Module\&.
+.SS "bool Generator::updateGeneratorStatus (void )\fR [private]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char Generator::current_generator_status = 255\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the current generator status\&. 
+.SS "\fBGenerator\fP ^ Generator::device\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the Handle of the \fBGenerator\fP class instance\&. 
+.SS "bool Generator::disable_rx_message = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the status of the disable rx message\&. 
+.SS "bool Generator::idle_status = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+The \fBGenerator\fP is in IDLE mode\&. 
+.SS "\fBCR2CP_Eth\fP* Generator::R2CP_Eth\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the Tcp/Ip client connection handler with the smart-hub external software\&. 
+.SS "bool Generator::ready_for_exposure = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+The \fBGenerator\fP is in Ready for exposure mode\&. 
+.SS "Thread ^ Generator::running_thread\fR [private]\fP"
+
+.PP
+This is the module worker thread handler\&. 
+.SS "float Generator::selected_anode_current = 100\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the current selected anodic current from the pulse preparation\&. 
+.SS "bool Generator::simulator_mode = false\fR [static]\fP, \fR [private]\fP"
+
+.PP
+This is the current real or simulating mode flag\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for MCPU from the source code\&.

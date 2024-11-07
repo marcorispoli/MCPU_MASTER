@@ -115,11 +115,12 @@ void CanDriver::threadWork(void) {
     unsigned char BR = _CAN_1000K;
 
     status = VSCAN_Ioctl(NULL, VSCAN_IOCTL_SET_DEBUG, VSCAN_DEBUG_NONE);
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 20; i++) {
         LogClass::logInFile("CAN OPEN ATTEMPT: " + System::Convert::ToString(i));
         //handle = VSCAN_Open(VSCAN_FIRST_FOUND, VSCAN_MODE_NORMAL);
         handle = VSCAN_Open("COM20", VSCAN_MODE_NORMAL);
         if (handle > 0) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     if (handle <= 0) {

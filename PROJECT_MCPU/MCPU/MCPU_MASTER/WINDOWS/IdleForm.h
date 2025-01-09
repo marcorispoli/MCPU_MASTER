@@ -17,13 +17,14 @@
 /// 
 /// ## Device Setting 
 /// 
-/// The following list provides the status of the Gantry device in Idle:
+/// Follows the status of the Gantry device in Idle operating mode:
 /// + The compressor device is disabled;
-/// + All the Motors are disabled;
+/// + The Motors are disabled (powered off);
 /// + The Format collimation is set to OPEN;
-/// + The Filter selector is set on the Pb to protect the Tube hole;
+/// + The Filter selector is set To "Lead" to protect the Tube hole;
 /// + The Mirror is set to Home position and the light switched off;
 /// + The manual key buttons are disabled;
+/// + The pedalboard is disabled;
 /// + The Grid device is set to Out Of Field; 
 /// 
 /// <div style="page-break-after: always;"></div>
@@ -154,14 +155,15 @@
 /// 
 /// In case the operator should confirm:
 /// 
-/// + if the application is runnin in Normal mode,
+/// + if the application is running in Normal mode,
 /// the power off request is routed to the AWS software.
-/// + if the application is runnin in Demo or Simulation mode,
+/// + if the application is running in Demo or Simulation mode,
 /// only the Gantry software quits, the Gantry devices and the AWS software remain running.
 /// 
 /// \remarks
-/// The system power off switches off the the whole Gantry,
-/// activating the PC shutdown and finally switching off the power supply.
+/// The Power Off procedure will switch off the whole Gantry system:
+/// - the PC will shutdown first;
+/// - finally the GAntry power supply is switched off;
 /// In demo or simulation this feature is disabled and only the Gantry application is closed.
 /// 
 
@@ -175,8 +177,6 @@ using namespace System::Data;
 using namespace System::Drawing;
 
 
-
-
 /// <summary>
 /// \ingroup IDLEIMPL
 /// 
@@ -185,23 +185,24 @@ using namespace System::Drawing;
 /// </summary>
 public ref class IdleForm :  public System::Windows::Forms::Form
 {
-#define WINMSG_TIMER WM_USER + 1
-#define WINMSG_OPEN WINMSG_TIMER + 1
-#define WINMSG_CLOSE WINMSG_OPEN + 1
+
+#define WINMSG_TIMER WM_USER + 1 //!< This is the Window message used to handle the form timer
+#define WINMSG_OPEN WINMSG_TIMER + 1 //!< This is the Window message used to handle a Open window request
+#define WINMSG_CLOSE WINMSG_OPEN + 1 //!< This is the Window message used to handle a Close window request
 
 
 public:
-	System::Timers::Timer^ idleTimer;
+	System::Timers::Timer^ idleTimer; //!< This is the form Timer used to schedule the Idle Status activities
 	
 
 public:
-	void idleStatusManagement(void);
-	void initIdleStatus(void);
-	void evaluatePopupPanels(void);
-	void open(void);
-	void close(void);
-	bool open_status;
-	void onPowerOffOkCallback(void);
+	void idleStatusManagement(void);	//!< This is the Idel Status activity handler
+	void initIdleStatus(void);			//!< Initializes the form at the Open event
+	void evaluatePopupPanels(void);		//!< Handles the aaparence of the Dialog Popup
+	void open(void);					//!< Open window request method
+	void close(void);					//!< Close window request method
+	bool open_status;					//!< Current Open/Close Status
+	void onPowerOffOkCallback(void);	//!< Confrmation Callback for the Power Off button request
 	   
 
 private:HWND window;
@@ -474,10 +475,28 @@ private:
 		SendMessageA(window, WINMSG_TIMER, 0, 0);
 	}
 
-private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
+	/// <summary>
+	///  This is the callback of the error button activation
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	/// <returns></returns>
+	private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
 
+	/// <summary>
+	/// This is the callback managing the Service button activation
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	/// <returns></returns>
+	private: System::Void serviceButton_Click(System::Object^ sender, System::EventArgs^ e);
 
-private: System::Void serviceButton_Click(System::Object^ sender, System::EventArgs^ e);
-private: System::Void powerOff_Click(System::Object^ sender, System::EventArgs^ e);
+	/// <summary>
+	/// This is the callbak managing the Power Off button activation
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	/// <returns></returns>
+	private: System::Void powerOff_Click(System::Object^ sender, System::EventArgs^ e);
 };
 

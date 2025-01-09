@@ -158,6 +158,9 @@
     <ClInclude Include="MOTORS\SlideMotor.h" />
     <ClInclude Include="MOTORS\VerticalMotor.h" />
     <ClInclude Include="VSCAN\CanSimulator.h" />
+    <ClInclude Include="WINDOWS\AecSelectionDialog.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\ConfirmationWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -267,6 +270,7 @@
     <ClCompile Include="MOTORS\SlideMotor.cpp" />
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
     <ClCompile Include="VSCAN\CanSimulator.cpp" />
+    <ClCompile Include="WINDOWS\AecSelectionDialog.cpp" />
     <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
     <ClCompile Include="DEVICES\CanDeviceProtocol.cpp" />
@@ -323,6 +327,9 @@
     <None Include="DOC\mcpu_master_doxy" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="WINDOWS\AecSelectionDialog.resx">
+      <DependentUpon>WINDOWS\AecSelectionDialog.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\ConfirmationWindow.resx">
       <DependentUpon>WINDOWS\ConfirmationWindow.h</DependentUpon>
     </EmbeddedResource>

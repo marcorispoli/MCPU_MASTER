@@ -85,37 +85,30 @@ namespace IDLESTATUS {
 };
 
 /// <summary>
-/// This is the form initialization function.
+/// \ingroup IDLEIMPL
+/// 
+/// This is the Form initialization callback.
+/// 
 /// </summary>
 /// 
-/// The form is called at the application initialization 
-/// when the window form is created.
-/// 
+/// This routine initializes the object of the form:
 /// 
 /// <param name=""></param>
 void IdleForm::formInitialization(void) {
 
-	/// The window stores the current Screen position offset in the Virtual Screen display system.
-	/// \note
-	/// The Screen offset is detected in the applicatin initialization. 
-	/// 
-	/// The geometry of the window is properly set.
-	/// 
+	/// The geometry of the form is initialized at the X,Y offeset set by the Gantry at the program beginning 
 	this->Left = Gantry::monitor_X0;
 	this->Top = Gantry::monitor_Y0;
-
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	mainPanel->BackgroundImage = BACKGROUND;
 
-	/// The status of the device data that the Idle status monitors and display
-	/// with dedicated icons is initialized here;
-	this->xrayMode->BackgroundImage = XRAY_MODE;
-	this->xrayMode->Hide();
-
-	/// The name of the istallation is updated in the bottom of thwe window:
+	
+	/// The name of the istallation is set in the top of the window:
 	/// The installation name is stored into the SystemIni.cnf configuration file \ref SystemConfig
 	labelInstallation->Text = SystemConfig::Configuration->getParam(SystemConfig::PARAM_INSTALLATION_NAME)[SystemConfig::PARAM_INSTALLATION_NAME_TOP];
 
+	/// The X-RAY icon is hidden 	
+	this->xrayMode->Hide();
 
 	/// The active message button is updated
 	IDLESTATUS::Registers.alarm = false;

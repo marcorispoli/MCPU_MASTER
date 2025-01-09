@@ -32,6 +32,11 @@ public:
 	Object^ pXray;
 	Object^ pProj;
 	Object^ pAbort;
+	Object^ pAec;
+
+private: System::Windows::Forms::Panel^ aecButton;
+private: System::Windows::Forms::Label^ labelAec;
+public:
 	Object^ pShiftConf;
 	void suspend(void);
 	void resume(void);
@@ -180,6 +185,8 @@ private:
 		this->collimationStatus = (gcnew System::Windows::Forms::Panel());
 		this->labelColli = (gcnew System::Windows::Forms::Label());
 		this->decompressionStatus = (gcnew System::Windows::Forms::Panel());
+		this->aecButton = (gcnew System::Windows::Forms::Panel());
+		this->labelAec = (gcnew System::Windows::Forms::Label());
 		this->magnifierStatus->SuspendLayout();
 		this->mainPanel->SuspendLayout();
 		this->xrayStat->SuspendLayout();
@@ -190,6 +197,7 @@ private:
 		this->paddleStatus->SuspendLayout();
 		this->tubeStatus->SuspendLayout();
 		this->collimationStatus->SuspendLayout();
+		this->aecButton->SuspendLayout();
 		this->SuspendLayout();
 		// 
 		// labelDate
@@ -254,6 +262,7 @@ private:
 		// 
 		// mainPanel
 		// 
+		this->mainPanel->Controls->Add(this->aecButton);
 		this->mainPanel->Controls->Add(this->xrayStat);
 		this->mainPanel->Controls->Add(this->alarmButton);
 		this->mainPanel->Controls->Add(this->lampButton);
@@ -311,9 +320,9 @@ private:
 		// alarmButton
 		// 
 		this->alarmButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->alarmButton->Location = System::Drawing::Point(404, 524);
+		this->alarmButton->Location = System::Drawing::Point(453, 524);
 		this->alarmButton->Name = L"alarmButton";
-		this->alarmButton->Size = System::Drawing::Size(184, 184);
+		this->alarmButton->Size = System::Drawing::Size(135, 135);
 		this->alarmButton->TabIndex = 0;
 		this->alarmButton->Click += gcnew System::EventHandler(this, &OperatingForm::errorButton_Click);
 		// 
@@ -322,7 +331,7 @@ private:
 		this->lampButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->lampButton->Location = System::Drawing::Point(12, 524);
 		this->lampButton->Name = L"lampButton";
-		this->lampButton->Size = System::Drawing::Size(184, 184);
+		this->lampButton->Size = System::Drawing::Size(135, 135);
 		this->lampButton->TabIndex = 0;
 		this->lampButton->Click += gcnew System::EventHandler(this, &OperatingForm::lampButton_Click);
 		// 
@@ -456,9 +465,9 @@ private:
 		// slideButton
 		// 
 		this->slideButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->slideButton->Location = System::Drawing::Point(208, 524);
+		this->slideButton->Location = System::Drawing::Point(159, 524);
 		this->slideButton->Name = L"slideButton";
-		this->slideButton->Size = System::Drawing::Size(184, 184);
+		this->slideButton->Size = System::Drawing::Size(135, 135);
 		this->slideButton->TabIndex = 0;
 		this->slideButton->Click += gcnew System::EventHandler(this, &OperatingForm::ShiftSelection_Click);
 		// 
@@ -491,6 +500,28 @@ private:
 		this->decompressionStatus->Size = System::Drawing::Size(135, 135);
 		this->decompressionStatus->TabIndex = 0;
 		// 
+		// aecButton
+		// 
+		this->aecButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->aecButton->Controls->Add(this->labelAec);
+		this->aecButton->Location = System::Drawing::Point(306, 524);
+		this->aecButton->Name = L"aecButton";
+		this->aecButton->Size = System::Drawing::Size(135, 135);
+		this->aecButton->TabIndex = 24;
+		this->aecButton->Click += gcnew System::EventHandler(this, &OperatingForm::aecButton_Click);
+		// 
+		// labelAec
+		// 
+		this->labelAec->BackColor = System::Drawing::Color::Transparent;
+		this->labelAec->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			static_cast<System::Byte>(0)));
+		this->labelAec->Location = System::Drawing::Point(0, 101);
+		this->labelAec->Name = L"labelAec";
+		this->labelAec->Size = System::Drawing::Size(135, 25);
+		this->labelAec->TabIndex = 1;
+		this->labelAec->Text = L"AUTO";
+		this->labelAec->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		// 
 		// OperatingForm
 		// 
 		this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
@@ -512,6 +543,7 @@ private:
 		this->paddleStatus->ResumeLayout(false);
 		this->tubeStatus->ResumeLayout(false);
 		this->collimationStatus->ResumeLayout(false);
+		this->aecButton->ResumeLayout(false);
 		this->ResumeLayout(false);
 
 	}
@@ -526,6 +558,7 @@ private:
 
 
 	private: System::Void lampButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void aecButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void viewSelection_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void ShiftSelection_Click(System::Object^ sender, System::EventArgs^ e);

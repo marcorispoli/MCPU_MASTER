@@ -1,4 +1,5 @@
 #include "OperatingForm.h"
+#include "aecSelectionDialog.h"
 #include "Notify.h"
 #include "ErrorForm.h"
 #include "gantry_global_status.h"
@@ -32,6 +33,9 @@
 
 #define LAMP_OFF_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\LampOff.PNG")
 #define LAMP_ON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\LampOn.PNG")
+
+#define AEC_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\aecSelection.PNG")
+
 
 #define SLIDE_0_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\Slide0.PNG")
 #define SLIDE_10_IMAGE Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\Slide10.PNG")
@@ -176,6 +180,9 @@ void OperatingForm::formInitialization(void) {
 	((ConfirmationWindow^)pShiftConf)->button_canc_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onShiftConfirmCanc);
 	((ConfirmationWindow^)pShiftConf)->button_ok_event += gcnew ConfirmationWindow::delegate_button_callback(this, &OperatingForm::onShiftConfirmOk);
 	
+	// AEC Panel creation	
+	pAec = gcnew aecSelectionDialog();
+
 	//________________________________________________________________________________________
 	pXray = gcnew IconWindow(this, XRAY_ICON);
 	
@@ -214,6 +221,10 @@ void OperatingForm::formInitialization(void) {
 	// Sets the current lamp status
 	OPERSTATUS::Registers.collimator.light_on= false;
 	lampButton->BackgroundImage = LAMP_OFF_IMAGE;
+
+	// Sets the current AEC Status
+	aecButton->BackgroundImage = AEC_IMAGE;
+	labelAec->Text = "AUTO";
 
 	// Error Button
 	OPERSTATUS::Registers.alarm = false;
@@ -270,6 +281,9 @@ void OperatingForm::initOperatingStatus(void) {
 	// Init Arm Angle 
 	float arm_position = ((float)ArmMotor::device->getCurrentPosition() / 100);
 	angleText->Text = "[" + arm_position.ToString() + "°]";
+
+	// Init AecSelction	
+	((aecSelectionDialog^)pAec)->field_selected = 0;
 
 	// Invalidate the projections and clears the list
 	ArmMotor::abortTarget();
@@ -737,6 +751,21 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateDigitDisplays();
 	evaluateGridStatus();
 
+	// Evaluates the AEC field manual selection
+	if (Exposures::isXrayRunning()) {
+		// Resets as soon as the exposure is activated
+		((aecSelectionDialog^)pAec)->field_selected = 0;
+	}
+	else {
+		if (((aecSelectionDialog^)pAec)->field_selected == 0) {
+			labelAec->Text = "AUTO";
+		}
+		else {
+			labelAec->Text = "M" + ((aecSelectionDialog^)pAec)->field_selected.ToString();
+		}
+
+	}
+
 	// This shall be posed at the end of the management
 	evaluateReadyWarnings(false);
 	evaluateXrayStatus(); 
@@ -804,6 +833,11 @@ void OperatingForm::ShiftSelection_Click(System::Object^ sender, System::EventAr
 void OperatingForm::lampButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	PCB303::setCollimationLight(true);
 	
+}
+
+void OperatingForm::aecButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	
+	((aecSelectionDialog^)pAec)->open(this);
 }
 
 void OperatingForm::onConfirmOk(void) {

@@ -89,7 +89,7 @@
     <ClInclude Include="WINDOWS\IdleForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WINDOWS\MainForm.h">
+    <ClInclude Include="WINDOWS\GUIStartupOperatingForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WINDOWS\OperatingForm.h">
@@ -240,6 +240,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CONFIGURATION\BiopsyConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WINDOWS\AecSelectionDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -431,6 +434,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DEVICES\PCB325.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WINDOWS\AecSelectionDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

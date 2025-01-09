@@ -193,11 +193,11 @@ public:
 			};
 
 			CanDeviceCommand^ encodeResetCommand(void) {
-				return gcnew CanDeviceCommand((unsigned char)command_index::ABORT_COMMAND, 0, 0, 0, 0);
+				return gcnew CanDeviceCommand((unsigned char)command_index::RESET_ERROR, 0, 0, 0, 0);
 			}
 
 			CanDeviceCommand^ encodeAbortCommand(void) {
-				return gcnew CanDeviceCommand((unsigned char)command_index::RESET_ERROR, 0, 0, 0, 0);
+				return gcnew CanDeviceCommand((unsigned char)command_index::ABORT_COMMAND, 0, 0, 0, 0);
 			}
 
 			CanDeviceCommand^ encodeSetInOutCommand(bool InField) {
@@ -238,6 +238,7 @@ public:
 
 	literal int max_num_error_resets = 5; //!< Maximum number of attempts to reset a pending error condition
 
+	static void setGridInOutTest(void) { test_grid_in_out = true; };
 	static void setAutoGridInField(void) { protocol.data_register.GeneralEnable = true; protocol.data_register.InOutAutoEnable = true; protocol.data_register.InOutStatus = true; };
 	static void setAutoGridOutField(void) { protocol.data_register.GeneralEnable = true; protocol.data_register.InOutAutoEnable = true; protocol.data_register.InOutStatus = false; };
 	static void syncGeneratorOn(void) { protocol.data_register.ManualXrayDisableEnable = false; protocol.data_register.EnableStartGrid = true; }
@@ -245,7 +246,7 @@ public:
 	inline static bool isGridOnFieldReady(void) { return protocol.status_register.inField; }
 	inline static bool isGridOffFieldReady(void) { return protocol.status_register.outField;}
 	inline static void enableStartGrid(bool status) { protocol.data_register.EnableStartGrid = status; }
-
+	inline static void resetErrorCount(void) { error_count = 0; }
 	inline static bool isError(void) { return protocol.status_register.error; }
 	inline static void setDisplay(bool on_off) {protocol.data_register.display_on = on_off;}
 
@@ -262,8 +263,8 @@ protected:
 	void demoLoop(void) override;
 
 private:
-
+	static bool test_grid_in_out = false;
 	static ProtocolStructure protocol; // This is the structure with the Status register info
-		
+	static int  error_count = 0;
 };
 

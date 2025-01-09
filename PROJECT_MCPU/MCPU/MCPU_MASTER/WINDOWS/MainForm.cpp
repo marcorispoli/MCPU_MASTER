@@ -1,5 +1,5 @@
 #include "gantry_global_status.h"
-#include "mainForm.h"
+#include "GUIStartupOperatingForm.h"
 #include "operatingForm.h"
 #include "idleForm.h"
 #include "awsProtocol.h"
@@ -24,13 +24,29 @@
 
 
 
-using namespace CppCLRWinFormsProject;
+
+
+using namespace StartupOperatingMode;
 using namespace CANOPEN;
 
 #define STARTUP_IMAGE Image::FromFile(Gantry::applicationResourcePath + "Icons\\Cybele.PNG")
 
-
-void MainForm::MainFormInitialize(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// 
+/// This is the gui initializtion routine
+/// </summary>
+/// 
+/// This routine initializes the labels of the window
+/// and the main window timer.
+/// 
+/// \note
+/// The window timer runs every 100ms and determines the 
+/// schedule time for the startup sequences.
+/// 
+/// 
+/// <param name=""></param>
+void StartupOperatingModeForm::MainFormInitialize(void) {
 
 	// Initialize the position of the form
 	this->Left = Gantry::monitor_X0;
@@ -92,15 +108,40 @@ void MainForm::MainFormInitialize(void) {
 
 	// Start the startup session
 	startupTimer = gcnew System::Timers::Timer(100);
-	startupTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &MainForm::onStartupTimeout);
+	startupTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &StartupOperatingModeForm::onStartupTimeout);
 	startupTimer->Start();
 	
 	
 }
 
 
-
-bool MainForm::Startup_CanDriver(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the CanDriver process.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_CanDriver(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -108,7 +149,7 @@ bool MainForm::Startup_CanDriver(void) {
 	case 0: // Creates the Can Driver Object
 		if (Gantry::isCanDriverDemo()) {
 			CanDriver::startSimulatorMode();
-			labelCanDriverActivity->Text = "DEMO RUNNING";
+			labelCanDriverActivity->Text = "RUN IN SIMULATION MODE";
 			labelCanDriverActivity->ForeColor = Color::LightGreen;
 			return true;
 		}
@@ -143,7 +184,33 @@ bool MainForm::Startup_CanDriver(void) {
 	return false;
 }
 
-bool MainForm::Startup_PCB301(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the PCB301 module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_PCB301(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -187,8 +254,33 @@ bool MainForm::Startup_PCB301(void) {
 	return false;
 }
 
-
-bool MainForm::Startup_PCB302(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the PCB302 module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_PCB302(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -233,7 +325,33 @@ bool MainForm::Startup_PCB302(void) {
 	return false;
 }
 
-bool MainForm::Startup_PCB303(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the PCB303 module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_PCB303(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -277,7 +395,33 @@ bool MainForm::Startup_PCB303(void) {
 	return false;
 }
 
-bool MainForm::Startup_PCB304(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the PCB304 module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_PCB304(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -321,7 +465,35 @@ bool MainForm::Startup_PCB304(void) {
 	return false;
 }
 
-bool MainForm::Startup_PCB325(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the PCB325 module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// This function doesn't wait for the initialization completion because
+/// the device ( the Biopsy device) may not be present in the system 
+/// at the startup time.
+/// 
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_PCB325(void) {
 	
 	if (Gantry::isPcb325Demo()) {
 		PCB325::device->simulMode();
@@ -337,7 +509,33 @@ bool MainForm::Startup_PCB325(void) {
 
 }
 
-bool MainForm::Startup_PCB326(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the PCB326 module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_PCB326(void) {
 	System::String^ string;
 	
 
@@ -382,7 +580,33 @@ bool MainForm::Startup_PCB326(void) {
 	return false;
 }
 
-bool MainForm::Startup_MotorBody(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the MotorBody module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_MotorBody(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -430,7 +654,33 @@ bool MainForm::Startup_MotorBody(void) {
 	return false;
 }
 
-bool MainForm::Startup_MotorTilt(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the MotorTilt module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_MotorTilt(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -479,8 +729,33 @@ bool MainForm::Startup_MotorTilt(void) {
 	return false;
 }
 
-
-bool MainForm::Startup_MotorArm(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the MotorArm module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_MotorArm(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -529,7 +804,33 @@ bool MainForm::Startup_MotorArm(void) {
 	return false;
 }
 
-bool MainForm::Startup_MotorShift(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the MotorShift module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_MotorShift(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -579,8 +880,33 @@ bool MainForm::Startup_MotorShift(void) {
 	return false;
 }
 
-
-bool MainForm::Startup_MotorVertical(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the MotorVertical module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_MotorVertical(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -630,8 +956,33 @@ bool MainForm::Startup_MotorVertical(void) {
 	return false;
 }
 
-
-bool MainForm::Startup_Generator(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure executes the startup of the Generator module.
+///  
+/// </summary>
+/// 
+/// The procedure determines if the module 
+/// shall be activated as simulated mode or Normal mode. 
+/// 
+/// After the device module is started this procedure 
+/// waits for the process initialization completion.
+/// 
+/// The procedure is called by the window timer 
+/// every 100ms and handles the steps with a status machine approach.
+/// 
+///  
+/// <param name=""></param>
+/// <returns>
+/// + true: the initialization is successfully terminated;
+/// + false: the initialization is in progress;
+/// 
+/// \remarks
+/// In case of an error should be detected, 
+/// the global variable StartupOperatingModeForm::startupError is set to true;
+///  
+/// </returns>
+bool StartupOperatingModeForm::Startup_Generator(void) {
 	System::String^ string;
 
 	switch (startupSubFase) {
@@ -685,12 +1036,32 @@ bool MainForm::Startup_Generator(void) {
 	return false;
 }
 
-void MainForm::StartupProcedure(void) {
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// This procedure is called by the window timer
+/// and handles the initialization process sequence.
+/// 
+/// </summary>
+/// 
+/// This routine is directly called by the window timer
+/// throug the window messages so the thread is the main hread.
+/// 
+/// 
+/// <param name=""></param>
+void StartupOperatingModeForm::StartupProcedure(void) {
 	
+	///\todo
+	///The initialization nerror condition should be handled properly.
+	/// 
+	// In case a procedure should set this variable 
+	// the initialization process stops here	
 	if (startupError) {
 		startupTimer->Stop();
 		return;
 	}
+
+	
+	// In case the initialization termines, the Idle Operating Mode is called.
 	if (startupCompleted) {
 		startupTimer->Stop();
 		this->Hide();
@@ -698,31 +1069,61 @@ void MainForm::StartupProcedure(void) {
 		return;
 	}
 
+	// Defines the seqeunce order
+	enum {
+		INITSEQ = 0,
+		CANSEQ,		
+		PCB301SEQ,
+		PCB302SEQ,
+		PCB303SEQ,
+		PCB304SEQ,
+		PCB325SEQ,
+		PCB326SEQ,
+		GENSEQ,
+		VERTSEQ,
+		TILTSEQ,
+		ARMSEQ,
+		SLIDESEQ,
+		BODYSEQ,		
+		FINESEQ
+	};
+
 	switch (startupFase) {
-
-	case 0: if (Startup_CanDriver()) { startupFase++; startupSubFase = 0; } break; // Startup of the Can Driver process
-	case 1: if (Startup_PCB301()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB301 process
-	case 2: if (Startup_PCB302()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB302 process
-	case 3: if (Startup_PCB303()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
-	case 4: if (Startup_PCB325()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB325 process
-	case 5: if (Startup_PCB304()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
-	case 6: if (Startup_PCB326()) { startupFase++; startupSubFase = 0; } break; // Startup of the PCB315 process
-	case 7: if (Startup_Generator()) { startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
-	case 8: if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 9: if (Startup_MotorArm()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 10: if (Startup_MotorShift()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 11: if (Startup_MotorBody()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process
-	case 12: if (Startup_MotorTilt()) { startupFase++; startupSubFase = 0; } break; // Startup of the Motor body process	
-	case 13: startupFase++; startupSubFase = 0;
-		break;
-
-	case 14:
-		startupCompleted = true;
-		break;
-
+	case INITSEQ:	startupFase++; break;
+	case CANSEQ:	if (Startup_CanDriver())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Can Driver process
+	case PCB301SEQ: if (Startup_PCB301())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB301 process
+	case PCB302SEQ: if (Startup_PCB302())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB302 process
+	case PCB303SEQ: if (Startup_PCB303())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB303 process
+	case PCB304SEQ: if (Startup_PCB304())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB304 process
+	case PCB325SEQ: if (Startup_PCB325())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB325 process
+	case PCB326SEQ: if (Startup_PCB326())		{ startupFase++; startupSubFase = 0; } break; // Startup of the PCB326 process
+	case GENSEQ:	if (Startup_Generator())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Generator process
+	case VERTSEQ:	if (Startup_MotorVertical()) { startupFase++; startupSubFase = 0; } break; // Startup of the Vertical Motor body process
+	case ARMSEQ:	if (Startup_MotorArm())		{ startupFase++; startupSubFase = 0; } break; // Startup of the Arm Motor  process
+	case SLIDESEQ:	if (Startup_MotorShift())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Slide Motor body process
+	case BODYSEQ:	if (Startup_MotorBody())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Body Motor body process
+	case TILTSEQ:	if (Startup_MotorTilt())	{ startupFase++; startupSubFase = 0; } break; // Startup of the Tilt Motor body process	
+	case FINESEQ:	startupCompleted = true; break;
 	}
 }
-void MainForm::WndProc(System::Windows::Forms::Message% m) 
+
+/// <summary>
+/// \ingroup STARTUPIMPL
+/// 
+/// This procedure is called by the Window Message Pipe
+/// when the window timer expires. 
+/// </summary>
+/// 
+/// The window timer is called in the thread pull and
+/// consequently cannot be used to call any form item 
+/// because they resides in the main thread.
+/// 
+/// When the timer expires a window message (WM_USER + 1) 
+/// is used: the WndProc is a callback generated by the window message pump 
+/// and resides in the main window thread.
+/// 
+/// <param name="m"></param>
+void StartupOperatingModeForm::WndProc(System::Windows::Forms::Message% m)
 {
 	switch (m.Msg) {
 

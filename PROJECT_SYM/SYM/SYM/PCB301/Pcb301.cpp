@@ -1,5 +1,16 @@
 #include "Pcb301.h"
 
+/// <summary>
+/// Updates all the Status registers when required
+/// </summary>
+/// <param name=""></param>
+void PCB301::updateStatusRegisters(void) {
+
+	// Encode the Status registers 
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER] = protocol.status_register.encodeSystemRegister();
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::BATTERY_REGISTER] = protocol.status_register.encodeBatteryRegister();
+}
+
 
 void PCB301::device_workflow_callback(void) {
 
@@ -107,8 +118,7 @@ void PCB301::device_workflow_callback(void) {
 	protocol.status_register.voltage_batt2 = device.vbatt2;
 
 	// Encode the Status registers SYSTEM_REGISTER = 0,	//!> This is the System Status register index
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER] = protocol.status_register.encodeSystemRegister();
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::BATTERY_REGISTER] = protocol.status_register.encodeBatteryRegister();
+	updateStatusRegisters();
 
 }
 
@@ -116,4 +126,5 @@ void PCB301::device_reset_callback(void) {
 	device.init();
 	inputs.init();
 	outputs.init();
+	updateStatusRegisters();
 }

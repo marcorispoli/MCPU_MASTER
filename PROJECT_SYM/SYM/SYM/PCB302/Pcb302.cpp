@@ -1,5 +1,10 @@
 #include "Pcb302.h"
 
+void PCB302::updateStatusRegisters(void) {
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER] = protocol.status_register.encodeSystemRegister();
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::PADDLE_REGISTER] = protocol.status_register.encodePaddleRegister();
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::RAW_PADDLE_REGISTER] = protocol.status_register.encodeRawPaddleRegister();
+}
 
 void PCB302::device_workflow_callback(void) {
 	static int paddle_down_sequence = 0;
@@ -154,13 +159,13 @@ void PCB302::device_workflow_callback(void) {
 	protocol.status_register.component = (ProtocolStructure::ComponentCode) device.current_component_code;
 
 	// Encode the Status registers
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER] = protocol.status_register.encodeSystemRegister();
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::PADDLE_REGISTER] = protocol.status_register.encodePaddleRegister();
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::RAW_PADDLE_REGISTER] = protocol.status_register.encodeRawPaddleRegister();
+	updateStatusRegisters();
+	
 }
 
 void PCB302::device_reset_callback(void) {
 	device.init();
 	inputs.init();
 	outputs.init();
+	updateStatusRegisters();
 }

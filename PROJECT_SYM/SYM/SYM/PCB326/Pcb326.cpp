@@ -1,7 +1,12 @@
 #include "Pcb326.h"
 
+void PCB326::updateStatusRegisters(void) {
+
+}
+
 void PCB326::device_workflow_callback(void) {
 
+	updateStatusRegisters();
 }
 
 void PCB326::device_reset_callback(void) {

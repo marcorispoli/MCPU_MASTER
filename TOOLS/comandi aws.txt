@@ -1,5 +1,7 @@
 
 <10%EXEC_OpenStudy "Studio per Demo ECR"%>
+<10%EXEC_CloseStudy %>
+
 <10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
 
 <10%EXEC_ArmPosition LMLO -90 -10 10%>

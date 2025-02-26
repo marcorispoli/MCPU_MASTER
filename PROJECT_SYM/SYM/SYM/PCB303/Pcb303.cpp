@@ -1,4 +1,15 @@
 #include "Pcb303.h"
+
+/// <summary>
+/// Updates all the Status registers when required
+/// </summary>
+/// <param name=""></param>
+void PCB303::updateStatusRegisters(void) {
+	// Encode the Status registers
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER] = protocol.status_register.encodeSystemRegister();
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::TUBE_REGISTER] = protocol.status_register.encodeTubeRegister();
+}
+
 void PCB303::device_workflow_callback(void) {
 
 	// Decode the DATA registers ..
@@ -75,9 +86,8 @@ void PCB303::device_workflow_callback(void) {
 	protocol.status_register.stator_temp = device.temp_stator;
 
 	// Encode the Status registers
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::SYSTEM_REGISTER] = protocol.status_register.encodeSystemRegister();
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::TUBE_REGISTER] = protocol.status_register.encodeTubeRegister();
-
+	updateStatusRegisters();
+	
 
 }
 
@@ -86,11 +96,26 @@ void PCB303::device_reset_callback(void) {
 	device.init();
 	inputs.init();
 	outputs.init();
+	updateStatusRegisters();
 }
 
+/// <summary>
+/// Callback handling the command execution.
+/// </summary>
+/// 
+///		
+/// 
+/// <param name="cmd"></param>
+/// <param name="d0"></param>
+/// <param name="d1"></param>
+/// <param name="d2"></param>
+/// <param name="d3"></param>
+/// <returns></returns>
 PCB303::commandResult^ PCB303::device_command_callback(unsigned char cmd, unsigned char d0, unsigned char d1, unsigned char d2, unsigned char d3) {
 	
-	
+	//IMPORTANT!!!! Before to return it is necessary to update the status registers in the case they should be modified.
+
+
 	switch ((ProtocolStructure::Commands::command_index) cmd) {
 	case ProtocolStructure::Commands::command_index::ABORT_COMMAND:		
 		break;
@@ -155,10 +180,11 @@ PCB303::commandResult^ PCB303::device_command_callback(unsigned char cmd, unsign
 		protocol.status_register.light_status = device.power_light;
 		break;
 
-	default:
+	default:		
 		return gcnew commandResult(deviceInterface::CommandRegisterErrors::COMMAND_ERROR_MOMENTARY_DISABLED);
 	}
 
+	updateStatusRegisters();
 	commandResult^ result = gcnew commandResult(deviceInterface::CommandRegisterErrors::COMMAND_NO_ERROR);
 	return result;
 }

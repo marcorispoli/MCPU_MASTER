@@ -337,7 +337,7 @@ public:
 				mirror_action_status = (action_code)(sys->d2 & 0x7);
 
 				if (sys->d2 & 0x8) mirror_target_index = mirror_target_code::IN_FIELD;
-				else mirror_target_code::OUT_FIELD;
+				else mirror_target_index = mirror_target_code::OUT_FIELD;
 
 				if (sys->d2 & 0x10) light_status = light_target_code::LIGHT_ON;
 				else light_status = light_target_code::LIGHT_OFF;

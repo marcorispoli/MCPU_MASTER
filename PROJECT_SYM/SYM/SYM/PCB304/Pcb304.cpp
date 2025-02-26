@@ -1,5 +1,8 @@
 #include "Pcb304.h"
 
+void PCB304::updateStatusRegisters(void) {
+	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::GRID] = protocol.status_register.encodeGridRegister();
+}
 
 void PCB304::device_workflow_callback(void) {
 	
@@ -137,11 +140,15 @@ void PCB304::device_workflow_callback(void) {
 		protocol.status_register.center = false;
 	}
 	// Encode STATUS registers
-	status_registers[(Byte)ProtocolStructure::StatusRegister::register_index::GRID] = protocol.status_register.encodeGridRegister();
+	updateStatusRegisters();
+
 }
+
+
 
 void PCB304::device_reset_callback(void) {
 	device.init();
 	inputs.init();
 	outputs.init();
+	updateStatusRegisters();
 }

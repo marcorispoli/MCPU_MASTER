@@ -436,5 +436,8 @@ public:
 	static hardware_inputs inputs;
 	static hardware_outputs outputs;
 	static ProtocolStructure protocol;
+
+	// Internal management
+	private:void updateStatusRegisters(void);
 };
 

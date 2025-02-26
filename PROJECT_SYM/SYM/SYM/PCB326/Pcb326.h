@@ -22,6 +22,7 @@ public:
 	void device_workflow_callback(void) override;
 	void device_reset_callback(void) override;
 	
-
+	// Internal management
+	private:void updateStatusRegisters(void);
 };
 

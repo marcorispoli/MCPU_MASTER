@@ -406,4 +406,6 @@ public:
 	static hardware_outputs outputs;
 	static ProtocolStructure protocol;
 
+	// Internal management
+	private:void updateStatusRegisters(void);
 };

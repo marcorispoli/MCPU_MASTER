@@ -30,15 +30,18 @@ public:
     // Forms
     static Object^ pIdleForm; //!< Pointer to the IdleForm 
     static Object^ pOperatingForm; //!< Pointer to the OperatingForm 
+    static Object^ pBiopsyForm; //!< Pointer to the OperatingForm 
     static Object^ pServiceForm; //!< Pointer to the ServiceForm 
     static Object^ pDebugger = nullptr; //!< Pointer to the Debugger if activated
     
     enum class operating_status_options {
         GANTRY_STARTUP = 0, //!< Gantry is in the Startup operating mode
         GANTRY_IDLE,        //!< Gantry is in the Idle operating mode
-        GANTRY_OPERATING,  //!< Gantry is in the Operating operating mode
+        GANTRY_STANDARD_STUDY,  //!< Gantry is in the Operating Study operating mode
+        GANTRY_BIOPSY_STUDY,  //!< Gantry is in the Operating Study operating mode
         GANTRY_SERVICE,     //!< Gantry is in the Service operating mode       
     };
+
     static const cli::array<System::String^>^ operating_status_tags = gcnew cli::array<System::String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
 
     enum class manual_rotation_options {
@@ -72,18 +75,22 @@ private:static bool getManualRotationDecrease(int addr);
 public:static CANOPEN::CanOpenMotor::motor_rotation_activations getManualActivationRequestState(int device_id);
 
     static System::String^ getPatientName(void) { return patient_name; }
-    static bool setOpenStudy(System::String^ patient);
+    static bool setOpenStandardStudy(System::String^ patient);
+    static bool setOpenBiopsyStudy(System::String^ patient);
     static bool setCloseStudy(void);
+    
 
     static System::String^ getOperatingStatusName(void) { return operating_status_tags[(int)current_operating_status]; }
     static bool isSERVICE(void) { return (current_operating_status == operating_status_options::GANTRY_SERVICE); }
     static bool isIDLE(void) { return (current_operating_status == operating_status_options::GANTRY_IDLE); }
-    static bool isOPERATING(void) { return (current_operating_status == operating_status_options::GANTRY_OPERATING); }
+    static bool isSTANDARD(void) { return (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY); }
+    static bool isBIOPSY(void) { return (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY); }
     static bool isSTARTUP(void) { return (current_operating_status == operating_status_options::GANTRY_STARTUP); }
 
     static bool setIdle(void);
     static void setStartup(void);
-    static bool setOperating(void);
+    static bool setStandardStudy(void);
+    static bool setBiopsyStudy(void);
     static bool setService(void);
 
     static inline ValuePopupForm^ getValuePopupWindow() { return valuePopupWindow; }

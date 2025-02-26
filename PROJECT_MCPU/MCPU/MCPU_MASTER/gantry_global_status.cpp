@@ -1,6 +1,7 @@
 #include "gantry_global_status.h"
 #include "IdleForm.h"
 #include "OperatingForm.h"
+#include "BiopsyForm.h"
 #include "ServiceForm.h"
 #include "ConfigurationFiles.h"
 #include "Notify.h"
@@ -200,13 +201,15 @@ void Gantry::initialize(void) {
     // Creates the status Windows
     pIdleForm = gcnew IdleForm();
     pOperatingForm = gcnew OperatingForm();
+    pBiopsyForm = gcnew BiopsyForm();
     pServiceForm = gcnew ServiceForm();
     valuePopupWindow = gcnew ValuePopupForm();
 
 }
 bool Gantry::setIdle() {
     if (current_operating_status == operating_status_options::GANTRY_IDLE) return true;
-    if (current_operating_status == operating_status_options::GANTRY_OPERATING) ((OperatingForm^)pOperatingForm)->close();
+    if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) ((OperatingForm^)pOperatingForm)->close();
+    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) ((OperatingForm^)pBiopsyForm)->close();
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) ((ServiceForm^)pServiceForm)->close();
 
     current_operating_status = operating_status_options::GANTRY_IDLE;
@@ -215,19 +218,33 @@ bool Gantry::setIdle() {
     return true;
 }
 
-bool Gantry::setOperating() {
-    if (current_operating_status == operating_status_options::GANTRY_OPERATING) return true;
+bool Gantry::setStandardStudy() {
+    if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) return true;
+    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) return false;
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) return false;
     if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
 
-    current_operating_status = operating_status_options::GANTRY_OPERATING;
+    current_operating_status = operating_status_options::GANTRY_STANDARD_STUDY;
     ((OperatingForm^)pOperatingForm)->open();
     awsProtocol::EVENT_GantryStatus();
     return true;
 }
 
+bool Gantry::setBiopsyStudy() {
+    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) return true;
+    if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) return false;
+    if (current_operating_status == operating_status_options::GANTRY_SERVICE) return false;
+    if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
+
+    current_operating_status = operating_status_options::GANTRY_BIOPSY_STUDY;
+    ((BiopsyForm^)pBiopsyForm)->open();
+    awsProtocol::EVENT_GantryStatus();
+    return true;
+}
+
 bool Gantry::setService() {
-    if (current_operating_status == operating_status_options::GANTRY_OPERATING) return false;
+    if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) return false;
+    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) return false;
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) return true;
     
     if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
@@ -245,18 +262,26 @@ void Gantry::setStartup(void) {
     
 }
 
-bool Gantry::setOpenStudy(System::String^ patient) {    
+bool Gantry::setOpenStandardStudy(System::String^ patient) {    
     patient_name = patient;
-    return setOperating();    
+    return setStandardStudy();    
 }
 
 bool Gantry::setCloseStudy(void) {    
     patient_name = "";
     Exposures::reset();// Reset all the modalities
+
     ((OperatingForm^)pOperatingForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
+    ((OperatingForm^)pBiopsyForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
 
     return setIdle();
 }
+
+bool Gantry::setOpenBiopsyStudy(System::String^ patient) {
+    patient_name = patient;
+    return setBiopsyStudy();
+}
+
 
  void Gantry::setManualRotationMode(manual_rotation_options mode) {
     manual_rotation_mode = mode;

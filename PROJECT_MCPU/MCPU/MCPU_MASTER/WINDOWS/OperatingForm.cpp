@@ -495,13 +495,16 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 	static int paddle_status = 255;
 	static int thick_status = 255;
 	static int force_status = 255;
+	
 
 	int cur_paddle;
 	int cur_thick;
 	int cur_force;
 	PCB302::paddleCodes paddle;
-	int force, thick;
+	
 
+	int force, thick;
+	
 
 	// used to send the EVENT_Compressor() to AWS
 	static int event_force = 0;
@@ -511,7 +514,8 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 	force = PCB302::getForce();
 	thick = PCB302::getThickness();
 	paddle = PCB302::getDetectedPaddleCode();
-	
+
+
 	if (colli_light != PCB302::isDownwardActivationStatus()) {
 		colli_light = PCB302::isDownwardActivationStatus();
 
@@ -613,7 +617,7 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 	}
 
 	if (cur_paddle != paddle_status) {
-		paddle_status = cur_paddle;
+		paddle_status = cur_paddle;		
 		if (paddle_status == PADDLE_DISABLED) paddleStatus->BackgroundImage = PADDLE_DISABLED_IMAGE;
 		else if (paddle_status == PADDLE_NOT_DETECT) paddleStatus->BackgroundImage = PADDLE_NOT_DETECTED_IMAGE;
 		else paddleStatus->BackgroundImage = PADDLE_ENABLE_IMAGE;
@@ -675,9 +679,13 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 }
 
 void OperatingForm::evaluateMagStatus(void) {
+	static float curFactor = 255;
 
 	float magfactor = (float)PCB302::getMagnifierFactor() / 10;
-	labelMag->Text = magfactor.ToString() +"x";
+	if (curFactor != magfactor) {		
+		curFactor = magfactor;
+		labelMag->Text = magfactor.ToString() + "x";
+	}
 
 }
 
@@ -734,6 +742,33 @@ void OperatingForm::evaluateGridStatus(void) {
 	else PCB304::setAutoGridOutField();
 }
 
+void OperatingForm::evaluateAwsComponentEvent(void) {
+	bool generate_event_component = false;
+	static PCB302::paddleCodes paddle = PCB302::paddleCodes::PADDLE_NOT_DETECTED;
+	static PCB302::PatientProtection patient_protection = PCB302::PatientProtection::UNDETECTED;
+	static unsigned char mag = 255;
+
+	// Checks for patient protection detection changed	
+	if (PCB302::getPatientProtection() != patient_protection) {
+		generate_event_component = true;
+		patient_protection = PCB302::getPatientProtection();
+	}
+
+	// Checks for paddle changing
+	if (PCB302::getDetectedPaddleCode() != paddle) {
+		paddle = PCB302::getDetectedPaddleCode();
+		generate_event_component = true;
+	}
+	
+	// Checks for mag factor changes
+	if (mag != PCB302::getMagnifierFactor()) {
+		mag = PCB302::getMagnifierFactor();
+		generate_event_component = true;
+	}
+
+	if (generate_event_component) awsProtocol::EVENT_Components();
+}
+
 void OperatingForm::operatingStatusManagement(void) {
 	
 	System::DateTime date;
@@ -750,6 +785,7 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateProjectionStatus(false);
 	evaluateDigitDisplays();
 	evaluateGridStatus();
+	evaluateAwsComponentEvent();
 
 	// Evaluates the AEC field manual selection
 	if (Exposures::isXrayRunning()) {

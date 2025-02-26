@@ -388,8 +388,8 @@ public:
 	PADDLE_9x21_MAG, //!< Paddle 9x21(MAG) format
 	PADDLE_9x9_MAG, //!< Paddle TOMO 9x9(MAG) format
 	PADDLE_D75_MAG, //!< Paddle D75(MAG) format
-	PADDLE_LEN,
-	PADDLE_NOT_DETECTED = PADDLE_LEN
+	PADDLE_NOT_DETECTED,
+	PADDLE_LEN = PADDLE_NOT_DETECTED	 
 	};
 
 	static const cli::array<System::String^>^ paddle_names = gcnew cli::array<System::String^> { 

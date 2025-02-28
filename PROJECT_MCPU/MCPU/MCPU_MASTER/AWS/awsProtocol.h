@@ -16,7 +16,7 @@
 \defgroup AWSProtocolDescription AWS Protocol Communication  Description
 \ingroup APPDOC
 
-   <b>PROTOCOL REVISION: 1.0.0</b>
+   <b>PROTOCOL REVISION: 1.1.0</b>
 
    # Change Log
    
@@ -64,7 +64,10 @@
 
    This document describes in detail the communication protocol with the AWS software.
 
-   
+   _Revision 1.1.0_ 
+
+   <b>Added the \ref EXEC_BiopsyStudy command</b>
+   This command opens a Biopsy study.
 
    # Index
 
@@ -79,6 +82,7 @@
 
    _Study Control_
    +	\ref EXEC_OpenStudy
+   +	\ref EXEC_BiopsyStudy
    +	\ref EXEC_CloseStudy
    
    _Projection and Tube-Arm Control_
@@ -366,6 +370,7 @@ private:
 	
 	void EXEC_TestCommand(void);
 	void EXEC_OpenStudy(void);
+	void EXEC_BiopsyStudy(void);
 	void EXEC_CloseStudy(void);
 
 

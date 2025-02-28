@@ -7,7 +7,8 @@ using namespace System;
 ref class deviceInterface
 {
 public:
-	bool active;
+	bool active; // Abilita il simulatore (viene attivato da MCPU tramite configurazione)
+	bool operating; // Attivato dal simulatore per abilitare il modulo a ricevere dati dal can-bus
 
 	enum class CommandRegisterErrors {
 		COMMAND_NO_ERROR = 0,		//!< Protocol Reserved code for the command successfully completed 
@@ -265,6 +266,7 @@ public:
 
 
 protected:
+
 	virtual void device_reset_callback(void) {
 	}
 
@@ -289,8 +291,7 @@ protected:
 
 private:
 	void threadWork(void);//!< This is the worker thread for the connection management	
-	Thread^ running_thread;//!< This is the worker thread handler
-	
+	Thread^ running_thread;//!< This is the worker thread handler	
 	unsigned short devId;
 	unsigned char  num_status;
 	unsigned char  num_data;

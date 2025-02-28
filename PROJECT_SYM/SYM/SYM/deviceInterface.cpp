@@ -7,6 +7,7 @@ deviceInterface::deviceInterface(unsigned short deviceid,unsigned int revision, 
 
 	devId = deviceid;
 	active = false;
+	operating = false;
 
 	num_status = status;
 	num_data = data;
@@ -56,7 +57,9 @@ void deviceInterface::handle_connection(bool stat) {
 
 void deviceInterface::canrx_device_event(void) {
 
-	
+	// Se non è ancora operativo non risponde
+	if (!operating) return;
+
 	// Bootloader / normal frame detection
 	if (canInterface::canId == 0x140 + devId) frame_bootloader = false;
 	else if (canInterface::canId == 0x100 + devId) frame_bootloader = true;

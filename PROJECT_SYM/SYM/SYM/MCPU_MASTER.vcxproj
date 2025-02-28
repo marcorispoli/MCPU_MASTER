@@ -151,6 +151,7 @@
     <ClInclude Include="PCB303\Pcb303.h" />
     <ClInclude Include="Pcb304Simulator.h" />
     <ClInclude Include="PCB304\Pcb304.h" />
+    <ClInclude Include="PCB325\Pcb325.h" />
     <ClInclude Include="PCB326\Pcb326.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="WINDOWS\MainForm.h">
@@ -173,6 +174,7 @@
     <ClCompile Include="PCB302\Pcb302.cpp" />
     <ClCompile Include="PCB303\Pcb303.cpp" />
     <ClCompile Include="PCB304\Pcb304.cpp" />
+    <ClCompile Include="PCB325\Pcb325.cpp" />
     <ClCompile Include="PCB326\Pcb326.cpp" />
     <ClCompile Include="WINDOWS\MainForm.cpp" />
   </ItemGroup>

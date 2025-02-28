@@ -89,11 +89,11 @@ namespace CppCLRWinFormsProject {
 
 
 
-	private: System::Windows::Forms::PictureBox^ pictureBox2;
-	private: System::Windows::Forms::Label^ label21;
-	private: System::Windows::Forms::TextBox^ textBox1;
-	private: System::Windows::Forms::Label^ label23;
-	private: System::Windows::Forms::TextBox^ textBox2;
+
+
+
+
+
 	private: System::Windows::Forms::Button^ exit_simulator;
 
 
@@ -293,6 +293,74 @@ private: System::Windows::Forms::TextBox^ mirrorPosition;
 private: System::Windows::Forms::TextBox^ mirrorIndex;
 private: System::Windows::Forms::Label^ label51;
 private: System::Windows::Forms::TextBox^ filterMat;
+private: System::Windows::Forms::GroupBox^ pcb325_panel;
+
+
+private: System::Windows::Forms::GroupBox^ XScrollFrame;
+
+private: System::Windows::Forms::RadioButton^ xUndef;
+
+private: System::Windows::Forms::RadioButton^ xRight;
+
+private: System::Windows::Forms::RadioButton^ xLeft;
+private: System::Windows::Forms::RadioButton^ xCenter;
+private: System::Windows::Forms::GroupBox^ YFrame;
+
+
+
+private: System::Windows::Forms::RadioButton^ yDown;
+
+
+private: System::Windows::Forms::RadioButton^ yUp;
+private: System::Windows::Forms::RadioButton^ biopsyOn;
+private: System::Windows::Forms::RadioButton^ biopsyOff;
+
+
+
+private: System::Windows::Forms::Label^ keyMode;
+private: System::Windows::Forms::Button^ Zp;
+private: System::Windows::Forms::Button^ Zm;
+private: System::Windows::Forms::Button^ Yp;
+private: System::Windows::Forms::Button^ Ym;
+private: System::Windows::Forms::Button^ Xp;
+private: System::Windows::Forms::Button^ Xm;
+private: System::Windows::Forms::GroupBox^ pointerFrame;
+private: System::Windows::Forms::GroupBox^ needleForm;
+
+
+private: System::Windows::Forms::RadioButton^ needleA;
+private: System::Windows::Forms::RadioButton^ needleB;
+
+
+private: System::Windows::Forms::RadioButton^ pointerOn;
+private: System::Windows::Forms::RadioButton^ pointerOff;
+private: System::Windows::Forms::RadioButton^ noNeedle;
+
+
+
+
+private: System::Windows::Forms::RadioButton^ needleC;
+private: System::Windows::Forms::GroupBox^ keyFrame;
+
+
+private: System::Windows::Forms::NumericUpDown^ slider;
+
+
+private: System::Windows::Forms::Label^ yPos;
+
+private: System::Windows::Forms::Label^ xPos;
+private: System::Windows::Forms::GroupBox^ positionFrame;
+
+
+private: System::Windows::Forms::Label^ zPos;
+private: System::Windows::Forms::PictureBox^ biopMotEna;
+
+
+
+
+
+
+
 
 
 
@@ -338,7 +406,7 @@ private: System::Windows::Forms::TextBox^ filterMat;
 		void pcb302Simulator(void);
 		void pcb303Simulator(void);
 		void pcb304Simulator(void);
-		void pcb315Simulator(void);
+		void pcb325Simulator(void);
 		void pcb326Simulator(void);
 
 
@@ -543,11 +611,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox6 = (gcnew System::Windows::Forms::GroupBox());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->exit_simulator = (gcnew System::Windows::Forms::Button());
-			this->label21 = (gcnew System::Windows::Forms::Label());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->label23 = (gcnew System::Windows::Forms::Label());
-			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
-			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
 			this->motor_vertical_box = (gcnew System::Windows::Forms::GroupBox());
 			this->label40 = (gcnew System::Windows::Forms::Label());
 			this->motor_vertical_uconv = (gcnew System::Windows::Forms::TextBox());
@@ -635,6 +698,8 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->mirrorPosition = (gcnew System::Windows::Forms::TextBox());
 			this->mirrorIndex = (gcnew System::Windows::Forms::TextBox());
 			this->groupBox7 = (gcnew System::Windows::Forms::GroupBox());
+			this->label51 = (gcnew System::Windows::Forms::Label());
+			this->filterMat = (gcnew System::Windows::Forms::TextBox());
 			this->label56 = (gcnew System::Windows::Forms::Label());
 			this->label57 = (gcnew System::Windows::Forms::Label());
 			this->filterPosition = (gcnew System::Windows::Forms::TextBox());
@@ -652,8 +717,39 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->label14 = (gcnew System::Windows::Forms::Label());
 			this->leftBlade = (gcnew System::Windows::Forms::TextBox());
 			this->trapBlade = (gcnew System::Windows::Forms::TextBox());
-			this->label51 = (gcnew System::Windows::Forms::Label());
-			this->filterMat = (gcnew System::Windows::Forms::TextBox());
+			this->pcb325_panel = (gcnew System::Windows::Forms::GroupBox());
+			this->biopsyOff = (gcnew System::Windows::Forms::RadioButton());
+			this->biopsyOn = (gcnew System::Windows::Forms::RadioButton());
+			this->positionFrame = (gcnew System::Windows::Forms::GroupBox());
+			this->biopMotEna = (gcnew System::Windows::Forms::PictureBox());
+			this->zPos = (gcnew System::Windows::Forms::Label());
+			this->yPos = (gcnew System::Windows::Forms::Label());
+			this->xPos = (gcnew System::Windows::Forms::Label());
+			this->keyFrame = (gcnew System::Windows::Forms::GroupBox());
+			this->Xm = (gcnew System::Windows::Forms::Button());
+			this->Xp = (gcnew System::Windows::Forms::Button());
+			this->keyMode = (gcnew System::Windows::Forms::Label());
+			this->Ym = (gcnew System::Windows::Forms::Button());
+			this->Zp = (gcnew System::Windows::Forms::Button());
+			this->Yp = (gcnew System::Windows::Forms::Button());
+			this->Zm = (gcnew System::Windows::Forms::Button());
+			this->pointerFrame = (gcnew System::Windows::Forms::GroupBox());
+			this->slider = (gcnew System::Windows::Forms::NumericUpDown());
+			this->pointerOff = (gcnew System::Windows::Forms::RadioButton());
+			this->pointerOn = (gcnew System::Windows::Forms::RadioButton());
+			this->needleForm = (gcnew System::Windows::Forms::GroupBox());
+			this->noNeedle = (gcnew System::Windows::Forms::RadioButton());
+			this->needleC = (gcnew System::Windows::Forms::RadioButton());
+			this->needleA = (gcnew System::Windows::Forms::RadioButton());
+			this->needleB = (gcnew System::Windows::Forms::RadioButton());
+			this->YFrame = (gcnew System::Windows::Forms::GroupBox());
+			this->yDown = (gcnew System::Windows::Forms::RadioButton());
+			this->yUp = (gcnew System::Windows::Forms::RadioButton());
+			this->XScrollFrame = (gcnew System::Windows::Forms::GroupBox());
+			this->xUndef = (gcnew System::Windows::Forms::RadioButton());
+			this->xRight = (gcnew System::Windows::Forms::RadioButton());
+			this->xLeft = (gcnew System::Windows::Forms::RadioButton());
+			this->xCenter = (gcnew System::Windows::Forms::RadioButton());
 			this->infoPanel->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotation_led))->BeginInit();
@@ -674,7 +770,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->vdc48_stat))->BeginInit();
 			this->groupBox3->SuspendLayout();
 			this->groupBox6->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			this->motor_vertical_box->SuspendLayout();
 			this->motor_arm_box->SuspendLayout();
 			this->motor_tilt_box->SuspendLayout();
@@ -687,6 +782,15 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox8->SuspendLayout();
 			this->groupBox7->SuspendLayout();
 			this->groupBox5->SuspendLayout();
+			this->pcb325_panel->SuspendLayout();
+			this->positionFrame->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopMotEna))->BeginInit();
+			this->keyFrame->SuspendLayout();
+			this->pointerFrame->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->slider))->BeginInit();
+			this->needleForm->SuspendLayout();
+			this->YFrame->SuspendLayout();
+			this->XScrollFrame->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// infoPanel
@@ -1593,17 +1697,12 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox6->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
 			this->groupBox6->Controls->Add(this->button2);
 			this->groupBox6->Controls->Add(this->exit_simulator);
-			this->groupBox6->Controls->Add(this->label21);
-			this->groupBox6->Controls->Add(this->textBox1);
-			this->groupBox6->Controls->Add(this->label23);
-			this->groupBox6->Controls->Add(this->textBox2);
-			this->groupBox6->Controls->Add(this->pictureBox2);
 			this->groupBox6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->groupBox6->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->groupBox6->Location = System::Drawing::Point(10, 694);
+			this->groupBox6->Location = System::Drawing::Point(805, 698);
 			this->groupBox6->Name = L"groupBox6";
-			this->groupBox6->Size = System::Drawing::Size(1085, 108);
+			this->groupBox6->Size = System::Drawing::Size(290, 148);
 			this->groupBox6->TabIndex = 16;
 			this->groupBox6->TabStop = false;
 			this->groupBox6->Text = L"CONNECTION STATUS";
@@ -1613,7 +1712,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->button2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button2->ForeColor = System::Drawing::Color::Black;
-			this->button2->Location = System::Drawing::Point(359, 21);
+			this->button2->Location = System::Drawing::Point(6, 42);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(132, 71);
 			this->button2->TabIndex = 27;
@@ -1625,61 +1724,13 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->exit_simulator->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->exit_simulator->ForeColor = System::Drawing::Color::Black;
-			this->exit_simulator->Location = System::Drawing::Point(617, 21);
+			this->exit_simulator->Location = System::Drawing::Point(152, 42);
 			this->exit_simulator->Name = L"exit_simulator";
 			this->exit_simulator->Size = System::Drawing::Size(132, 71);
 			this->exit_simulator->TabIndex = 17;
 			this->exit_simulator->Text = L"EXIT SIMULATOR";
 			this->exit_simulator->UseVisualStyleBackColor = true;
 			this->exit_simulator->Click += gcnew System::EventHandler(this, &MainForm::exit_simulator_Click);
-			// 
-			// label21
-			// 
-			this->label21->AutoSize = true;
-			this->label21->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label21->ForeColor = System::Drawing::Color::White;
-			this->label21->Location = System::Drawing::Point(6, 66);
-			this->label21->Name = L"label21";
-			this->label21->Size = System::Drawing::Size(87, 13);
-			this->label21->TabIndex = 26;
-			this->label21->Text = L"PORT NUMBER";
-			// 
-			// textBox1
-			// 
-			this->textBox1->Location = System::Drawing::Point(101, 63);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(133, 22);
-			this->textBox1->TabIndex = 25;
-			// 
-			// label23
-			// 
-			this->label23->AutoSize = true;
-			this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label23->ForeColor = System::Drawing::Color::White;
-			this->label23->Location = System::Drawing::Point(30, 40);
-			this->label23->Name = L"label23";
-			this->label23->Size = System::Drawing::Size(61, 13);
-			this->label23->TabIndex = 24;
-			this->label23->Text = L"IP STRING";
-			// 
-			// textBox2
-			// 
-			this->textBox2->Location = System::Drawing::Point(101, 35);
-			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(133, 22);
-			this->textBox2->TabIndex = 23;
-			// 
-			// pictureBox2
-			// 
-			this->pictureBox2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
-				static_cast<System::Int32>(static_cast<System::Byte>(224)));
-			this->pictureBox2->Location = System::Drawing::Point(260, 36);
-			this->pictureBox2->Name = L"pictureBox2";
-			this->pictureBox2->Size = System::Drawing::Size(54, 49);
-			this->pictureBox2->TabIndex = 19;
-			this->pictureBox2->TabStop = false;
 			// 
 			// motor_vertical_box
 			// 
@@ -2534,7 +2585,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb326_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
 			this->pcb326_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
 				static_cast<System::Int32>(static_cast<System::Byte>(190)));
-			this->pcb326_panel->Location = System::Drawing::Point(12, 566);
+			this->pcb326_panel->Location = System::Drawing::Point(12, 570);
 			this->pcb326_panel->Name = L"pcb326_panel";
 			this->pcb326_panel->Size = System::Drawing::Size(194, 122);
 			this->pcb326_panel->TabIndex = 23;
@@ -2746,6 +2797,27 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox7->TabStop = false;
 			this->groupBox7->Text = L"Filter";
 			// 
+			// label51
+			// 
+			this->label51->AutoSize = true;
+			this->label51->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label51->ForeColor = System::Drawing::Color::White;
+			this->label51->Location = System::Drawing::Point(5, 53);
+			this->label51->Name = L"label51";
+			this->label51->Size = System::Drawing::Size(37, 13);
+			this->label51->TabIndex = 36;
+			this->label51->Text = L"Matter";
+			this->label51->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+			// 
+			// filterMat
+			// 
+			this->filterMat->Enabled = false;
+			this->filterMat->Location = System::Drawing::Point(48, 49);
+			this->filterMat->Name = L"filterMat";
+			this->filterMat->Size = System::Drawing::Size(83, 22);
+			this->filterMat->TabIndex = 35;
+			// 
 			// label56
 			// 
 			this->label56->AutoSize = true;
@@ -2935,26 +3007,433 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->trapBlade->Size = System::Drawing::Size(58, 22);
 			this->trapBlade->TabIndex = 25;
 			// 
-			// label51
+			// pcb325_panel
 			// 
-			this->label51->AutoSize = true;
-			this->label51->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+			this->pcb325_panel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->pcb325_panel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->pcb325_panel->Controls->Add(this->biopsyOff);
+			this->pcb325_panel->Controls->Add(this->biopsyOn);
+			this->pcb325_panel->Controls->Add(this->positionFrame);
+			this->pcb325_panel->Controls->Add(this->keyFrame);
+			this->pcb325_panel->Controls->Add(this->pointerFrame);
+			this->pcb325_panel->Controls->Add(this->YFrame);
+			this->pcb325_panel->Controls->Add(this->XScrollFrame);
+			this->pcb325_panel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->pcb325_panel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->pcb325_panel->Location = System::Drawing::Point(12, 698);
+			this->pcb325_panel->Name = L"pcb325_panel";
+			this->pcb325_panel->Size = System::Drawing::Size(778, 148);
+			this->pcb325_panel->TabIndex = 24;
+			this->pcb325_panel->TabStop = false;
+			this->pcb325_panel->Text = L"PCB325 - BIOPSY";
+			// 
+			// biopsyOff
+			// 
+			this->biopsyOff->AutoSize = true;
+			this->biopsyOff->Location = System::Drawing::Point(65, 32);
+			this->biopsyOff->Name = L"biopsyOff";
+			this->biopsyOff->Size = System::Drawing::Size(54, 20);
+			this->biopsyOff->TabIndex = 15;
+			this->biopsyOff->TabStop = true;
+			this->biopsyOff->Text = L"OFF";
+			this->biopsyOff->UseVisualStyleBackColor = true;
+			// 
+			// biopsyOn
+			// 
+			this->biopsyOn->AutoSize = true;
+			this->biopsyOn->Location = System::Drawing::Point(12, 32);
+			this->biopsyOn->Name = L"biopsyOn";
+			this->biopsyOn->Size = System::Drawing::Size(47, 20);
+			this->biopsyOn->TabIndex = 14;
+			this->biopsyOn->TabStop = true;
+			this->biopsyOn->Text = L"ON";
+			this->biopsyOn->UseVisualStyleBackColor = true;
+			// 
+			// positionFrame
+			// 
+			this->positionFrame->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->positionFrame->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->positionFrame->Controls->Add(this->biopMotEna);
+			this->positionFrame->Controls->Add(this->zPos);
+			this->positionFrame->Controls->Add(this->yPos);
+			this->positionFrame->Controls->Add(this->xPos);
+			this->positionFrame->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->positionFrame->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->positionFrame->Location = System::Drawing::Point(351, 11);
+			this->positionFrame->Name = L"positionFrame";
+			this->positionFrame->Size = System::Drawing::Size(69, 129);
+			this->positionFrame->TabIndex = 33;
+			this->positionFrame->TabStop = false;
+			this->positionFrame->Text = L"XYZ";
+			// 
+			// biopMotEna
+			// 
+			this->biopMotEna->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)));
+			this->biopMotEna->Location = System::Drawing::Point(11, 97);
+			this->biopMotEna->Name = L"biopMotEna";
+			this->biopMotEna->Size = System::Drawing::Size(44, 23);
+			this->biopMotEna->TabIndex = 40;
+			this->biopMotEna->TabStop = false;
+			// 
+			// zPos
+			// 
+			this->zPos->AutoSize = true;
+			this->zPos->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label51->ForeColor = System::Drawing::Color::White;
-			this->label51->Location = System::Drawing::Point(5, 53);
-			this->label51->Name = L"label51";
-			this->label51->Size = System::Drawing::Size(37, 13);
-			this->label51->TabIndex = 36;
-			this->label51->Text = L"Matter";
-			this->label51->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+			this->zPos->ForeColor = System::Drawing::Color::White;
+			this->zPos->Location = System::Drawing::Point(7, 71);
+			this->zPos->Name = L"zPos";
+			this->zPos->Size = System::Drawing::Size(28, 16);
+			this->zPos->TabIndex = 39;
+			this->zPos->Text = L"Z: 0";
 			// 
-			// filterMat
+			// yPos
 			// 
-			this->filterMat->Enabled = false;
-			this->filterMat->Location = System::Drawing::Point(48, 49);
-			this->filterMat->Name = L"filterMat";
-			this->filterMat->Size = System::Drawing::Size(83, 22);
-			this->filterMat->TabIndex = 35;
+			this->yPos->AutoSize = true;
+			this->yPos->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->yPos->ForeColor = System::Drawing::Color::White;
+			this->yPos->Location = System::Drawing::Point(6, 47);
+			this->yPos->Name = L"yPos";
+			this->yPos->Size = System::Drawing::Size(29, 16);
+			this->yPos->TabIndex = 38;
+			this->yPos->Text = L"Y: 0";
+			// 
+			// xPos
+			// 
+			this->xPos->AutoSize = true;
+			this->xPos->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->xPos->ForeColor = System::Drawing::Color::White;
+			this->xPos->Location = System::Drawing::Point(6, 21);
+			this->xPos->Name = L"xPos";
+			this->xPos->Size = System::Drawing::Size(49, 16);
+			this->xPos->TabIndex = 37;
+			this->xPos->Text = L"X: 1290";
+			// 
+			// keyFrame
+			// 
+			this->keyFrame->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->keyFrame->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->keyFrame->Controls->Add(this->Xm);
+			this->keyFrame->Controls->Add(this->Xp);
+			this->keyFrame->Controls->Add(this->keyMode);
+			this->keyFrame->Controls->Add(this->Ym);
+			this->keyFrame->Controls->Add(this->Zp);
+			this->keyFrame->Controls->Add(this->Yp);
+			this->keyFrame->Controls->Add(this->Zm);
+			this->keyFrame->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->keyFrame->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->keyFrame->Location = System::Drawing::Point(648, 11);
+			this->keyFrame->Name = L"keyFrame";
+			this->keyFrame->Size = System::Drawing::Size(125, 129);
+			this->keyFrame->TabIndex = 25;
+			this->keyFrame->TabStop = false;
+			this->keyFrame->Text = L"Keyboard";
+			// 
+			// Xm
+			// 
+			this->Xm->ForeColor = System::Drawing::Color::Black;
+			this->Xm->Location = System::Drawing::Point(10, 18);
+			this->Xm->Name = L"Xm";
+			this->Xm->Size = System::Drawing::Size(51, 23);
+			this->Xm->TabIndex = 25;
+			this->Xm->Text = L"X-";
+			this->Xm->UseVisualStyleBackColor = true;
+			this->Xm->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Xm_MouseDown);
+			this->Xm->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Xm_MouseUp);
+			// 
+			// Xp
+			// 
+			this->Xp->ForeColor = System::Drawing::Color::Black;
+			this->Xp->Location = System::Drawing::Point(67, 18);
+			this->Xp->Name = L"Xp";
+			this->Xp->Size = System::Drawing::Size(51, 23);
+			this->Xp->TabIndex = 26;
+			this->Xp->Text = L"X+";
+			this->Xp->UseVisualStyleBackColor = true;
+			this->Xp->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Xp_MouseDown);
+			this->Xp->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Xp_MouseUp);
+			// 
+			// keyMode
+			// 
+			this->keyMode->AutoSize = true;
+			this->keyMode->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->keyMode->ForeColor = System::Drawing::Color::White;
+			this->keyMode->Location = System::Drawing::Point(31, 107);
+			this->keyMode->Name = L"keyMode";
+			this->keyMode->Size = System::Drawing::Size(57, 13);
+			this->keyMode->TabIndex = 31;
+			this->keyMode->Text = L"ENABLED";
+			// 
+			// Ym
+			// 
+			this->Ym->ForeColor = System::Drawing::Color::Black;
+			this->Ym->Location = System::Drawing::Point(10, 47);
+			this->Ym->Name = L"Ym";
+			this->Ym->Size = System::Drawing::Size(51, 23);
+			this->Ym->TabIndex = 27;
+			this->Ym->Text = L"Y-";
+			this->Ym->UseVisualStyleBackColor = true;
+			this->Ym->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Ym_MouseDown);
+			this->Ym->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Ym_MouseUp);
+			// 
+			// Zp
+			// 
+			this->Zp->ForeColor = System::Drawing::Color::Black;
+			this->Zp->Location = System::Drawing::Point(67, 76);
+			this->Zp->Name = L"Zp";
+			this->Zp->Size = System::Drawing::Size(51, 23);
+			this->Zp->TabIndex = 30;
+			this->Zp->Text = L"Z+";
+			this->Zp->UseVisualStyleBackColor = true;
+			// 
+			// Yp
+			// 
+			this->Yp->ForeColor = System::Drawing::Color::Black;
+			this->Yp->Location = System::Drawing::Point(67, 47);
+			this->Yp->Name = L"Yp";
+			this->Yp->Size = System::Drawing::Size(51, 23);
+			this->Yp->TabIndex = 28;
+			this->Yp->Text = L"Y+";
+			this->Yp->UseVisualStyleBackColor = true;
+			this->Yp->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Yp_MouseDown);
+			this->Yp->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Yp_MouseUp);
+			// 
+			// Zm
+			// 
+			this->Zm->ForeColor = System::Drawing::Color::Black;
+			this->Zm->Location = System::Drawing::Point(10, 76);
+			this->Zm->Name = L"Zm";
+			this->Zm->Size = System::Drawing::Size(51, 23);
+			this->Zm->TabIndex = 29;
+			this->Zm->Text = L"Z-";
+			this->Zm->UseVisualStyleBackColor = true;
+			this->Zm->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zp_MouseDown);
+			this->Zm->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zp_MouseUp);
+			// 
+			// pointerFrame
+			// 
+			this->pointerFrame->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->pointerFrame->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->pointerFrame->Controls->Add(this->slider);
+			this->pointerFrame->Controls->Add(this->pointerOff);
+			this->pointerFrame->Controls->Add(this->pointerOn);
+			this->pointerFrame->Controls->Add(this->needleForm);
+			this->pointerFrame->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->pointerFrame->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->pointerFrame->Location = System::Drawing::Point(426, 11);
+			this->pointerFrame->Name = L"pointerFrame";
+			this->pointerFrame->Size = System::Drawing::Size(216, 129);
+			this->pointerFrame->TabIndex = 33;
+			this->pointerFrame->TabStop = false;
+			this->pointerFrame->Text = L"Pointer";
+			// 
+			// slider
+			// 
+			this->slider->Location = System::Drawing::Point(9, 50);
+			this->slider->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 15, 0, 0, 0 });
+			this->slider->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 15, 0, 0, System::Int32::MinValue });
+			this->slider->Name = L"slider";
+			this->slider->Size = System::Drawing::Size(198, 22);
+			this->slider->TabIndex = 25;
+			// 
+			// pointerOff
+			// 
+			this->pointerOff->AutoSize = true;
+			this->pointerOff->Location = System::Drawing::Point(98, 21);
+			this->pointerOff->Name = L"pointerOff";
+			this->pointerOff->Size = System::Drawing::Size(112, 20);
+			this->pointerOff->TabIndex = 15;
+			this->pointerOff->TabStop = true;
+			this->pointerOff->Text = L"Not Mounted";
+			this->pointerOff->UseVisualStyleBackColor = true;
+			// 
+			// pointerOn
+			// 
+			this->pointerOn->AutoSize = true;
+			this->pointerOn->Location = System::Drawing::Point(9, 21);
+			this->pointerOn->Name = L"pointerOn";
+			this->pointerOn->Size = System::Drawing::Size(84, 20);
+			this->pointerOn->TabIndex = 14;
+			this->pointerOn->TabStop = true;
+			this->pointerOn->Text = L"Mounted";
+			this->pointerOn->UseVisualStyleBackColor = true;
+			// 
+			// needleForm
+			// 
+			this->needleForm->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->needleForm->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->needleForm->Controls->Add(this->noNeedle);
+			this->needleForm->Controls->Add(this->needleC);
+			this->needleForm->Controls->Add(this->needleA);
+			this->needleForm->Controls->Add(this->needleB);
+			this->needleForm->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->needleForm->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->needleForm->Location = System::Drawing::Point(6, 76);
+			this->needleForm->Name = L"needleForm";
+			this->needleForm->Size = System::Drawing::Size(202, 48);
+			this->needleForm->TabIndex = 35;
+			this->needleForm->TabStop = false;
+			this->needleForm->Text = L"Needle";
+			// 
+			// noNeedle
+			// 
+			this->noNeedle->AutoSize = true;
+			this->noNeedle->Location = System::Drawing::Point(156, 18);
+			this->noNeedle->Name = L"noNeedle";
+			this->noNeedle->Size = System::Drawing::Size(45, 20);
+			this->noNeedle->TabIndex = 17;
+			this->noNeedle->TabStop = true;
+			this->noNeedle->Text = L"No";
+			this->noNeedle->UseVisualStyleBackColor = true;
+			// 
+			// needleC
+			// 
+			this->needleC->AutoSize = true;
+			this->needleC->Location = System::Drawing::Point(102, 18);
+			this->needleC->Name = L"needleC";
+			this->needleC->Size = System::Drawing::Size(35, 20);
+			this->needleC->TabIndex = 16;
+			this->needleC->TabStop = true;
+			this->needleC->Text = L"C";
+			this->needleC->UseVisualStyleBackColor = true;
+			// 
+			// needleA
+			// 
+			this->needleA->AutoSize = true;
+			this->needleA->Location = System::Drawing::Point(6, 18);
+			this->needleA->Name = L"needleA";
+			this->needleA->Size = System::Drawing::Size(35, 20);
+			this->needleA->TabIndex = 14;
+			this->needleA->TabStop = true;
+			this->needleA->Text = L"A";
+			this->needleA->UseVisualStyleBackColor = true;
+			// 
+			// needleB
+			// 
+			this->needleB->AutoSize = true;
+			this->needleB->Location = System::Drawing::Point(56, 18);
+			this->needleB->Name = L"needleB";
+			this->needleB->Size = System::Drawing::Size(35, 20);
+			this->needleB->TabIndex = 15;
+			this->needleB->TabStop = true;
+			this->needleB->Text = L"B";
+			this->needleB->UseVisualStyleBackColor = true;
+			// 
+			// YFrame
+			// 
+			this->YFrame->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->YFrame->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->YFrame->Controls->Add(this->yDown);
+			this->YFrame->Controls->Add(this->yUp);
+			this->YFrame->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->YFrame->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->YFrame->Location = System::Drawing::Point(148, 63);
+			this->YFrame->Name = L"YFrame";
+			this->YFrame->Size = System::Drawing::Size(197, 50);
+			this->YFrame->TabIndex = 24;
+			this->YFrame->TabStop = false;
+			this->YFrame->Text = L"Y";
+			// 
+			// yDown
+			// 
+			this->yDown->AutoSize = true;
+			this->yDown->Location = System::Drawing::Point(95, 17);
+			this->yDown->Name = L"yDown";
+			this->yDown->Size = System::Drawing::Size(72, 20);
+			this->yDown->TabIndex = 17;
+			this->yDown->TabStop = true;
+			this->yDown->Text = L"DOWN";
+			this->yDown->UseVisualStyleBackColor = true;
+			// 
+			// yUp
+			// 
+			this->yUp->AutoSize = true;
+			this->yUp->Location = System::Drawing::Point(34, 17);
+			this->yUp->Name = L"yUp";
+			this->yUp->Size = System::Drawing::Size(46, 20);
+			this->yUp->TabIndex = 14;
+			this->yUp->TabStop = true;
+			this->yUp->Text = L"UP";
+			this->yUp->UseVisualStyleBackColor = true;
+			// 
+			// XScrollFrame
+			// 
+			this->XScrollFrame->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
+				static_cast<System::Int32>(static_cast<System::Byte>(60)));
+			this->XScrollFrame->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->XScrollFrame->Controls->Add(this->xUndef);
+			this->XScrollFrame->Controls->Add(this->xRight);
+			this->XScrollFrame->Controls->Add(this->xLeft);
+			this->XScrollFrame->Controls->Add(this->xCenter);
+			this->XScrollFrame->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold));
+			this->XScrollFrame->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(239)), static_cast<System::Int32>(static_cast<System::Byte>(189)),
+				static_cast<System::Int32>(static_cast<System::Byte>(190)));
+			this->XScrollFrame->Location = System::Drawing::Point(148, 11);
+			this->XScrollFrame->Name = L"XScrollFrame";
+			this->XScrollFrame->Size = System::Drawing::Size(197, 50);
+			this->XScrollFrame->TabIndex = 23;
+			this->XScrollFrame->TabStop = false;
+			this->XScrollFrame->Text = L"X";
+			// 
+			// xUndef
+			// 
+			this->xUndef->AutoSize = true;
+			this->xUndef->Location = System::Drawing::Point(148, 18);
+			this->xUndef->Name = L"xUndef";
+			this->xUndef->Size = System::Drawing::Size(35, 20);
+			this->xUndef->TabIndex = 17;
+			this->xUndef->TabStop = true;
+			this->xUndef->Text = L"--";
+			this->xUndef->UseVisualStyleBackColor = true;
+			// 
+			// xRight
+			// 
+			this->xRight->AutoSize = true;
+			this->xRight->Location = System::Drawing::Point(100, 18);
+			this->xRight->Name = L"xRight";
+			this->xRight->Size = System::Drawing::Size(36, 20);
+			this->xRight->TabIndex = 16;
+			this->xRight->TabStop = true;
+			this->xRight->Text = L"R";
+			this->xRight->UseVisualStyleBackColor = true;
+			// 
+			// xLeft
+			// 
+			this->xLeft->AutoSize = true;
+			this->xLeft->Location = System::Drawing::Point(11, 18);
+			this->xLeft->Name = L"xLeft";
+			this->xLeft->Size = System::Drawing::Size(33, 20);
+			this->xLeft->TabIndex = 14;
+			this->xLeft->TabStop = true;
+			this->xLeft->Text = L"L";
+			this->xLeft->UseVisualStyleBackColor = true;
+			// 
+			// xCenter
+			// 
+			this->xCenter->AutoSize = true;
+			this->xCenter->Location = System::Drawing::Point(56, 18);
+			this->xCenter->Name = L"xCenter";
+			this->xCenter->Size = System::Drawing::Size(35, 20);
+			this->xCenter->TabIndex = 15;
+			this->xCenter->TabStop = true;
+			this->xCenter->Text = L"C";
+			this->xCenter->UseVisualStyleBackColor = true;
 			// 
 			// MainForm
 			// 
@@ -2963,8 +3442,9 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
-			this->ClientSize = System::Drawing::Size(1114, 819);
+			this->ClientSize = System::Drawing::Size(1114, 850);
 			this->ControlBox = false;
+			this->Controls->Add(this->pcb325_panel);
 			this->Controls->Add(this->pcb303_panel);
 			this->Controls->Add(this->pcb326_panel);
 			this->Controls->Add(this->motor_body_box);
@@ -3013,8 +3493,6 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox3->ResumeLayout(false);
 			this->groupBox3->PerformLayout();
 			this->groupBox6->ResumeLayout(false);
-			this->groupBox6->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
 			this->motor_vertical_box->ResumeLayout(false);
 			this->motor_vertical_box->PerformLayout();
 			this->motor_arm_box->ResumeLayout(false);
@@ -3037,6 +3515,22 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->groupBox7->PerformLayout();
 			this->groupBox5->ResumeLayout(false);
 			this->groupBox5->PerformLayout();
+			this->pcb325_panel->ResumeLayout(false);
+			this->pcb325_panel->PerformLayout();
+			this->positionFrame->ResumeLayout(false);
+			this->positionFrame->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopMotEna))->EndInit();
+			this->keyFrame->ResumeLayout(false);
+			this->keyFrame->PerformLayout();
+			this->pointerFrame->ResumeLayout(false);
+			this->pointerFrame->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->slider))->EndInit();
+			this->needleForm->ResumeLayout(false);
+			this->needleForm->PerformLayout();
+			this->YFrame->ResumeLayout(false);
+			this->YFrame->PerformLayout();
+			this->XScrollFrame->ResumeLayout(false);
+			this->XScrollFrame->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -3150,8 +3644,58 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 
 
 
-private: System::Void bulb_high_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-}
+	private: System::Void bulb_high_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+
+
+
+
+	private: System::Void Xm_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::XM;
+	}
+
+	private: System::Void Xm_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::NOT_PRESSED;
+	}
+	
+	private: System::Void Xp_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::XP;
+	}
+
+	private: System::Void Xp_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::NOT_PRESSED;
+	}
+
+	private: System::Void Ym_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::YM;
+	}
+
+	private: System::Void Ym_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::NOT_PRESSED;
+	}
+
+	private: System::Void Yp_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::YP;
+	}
+
+	private: System::Void Yp_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::NOT_PRESSED;
+	}
+
+	private: System::Void Zm_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::ZM;
+	}
+		   
+
+	private: System::Void Zp_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::ZP;
+	}
+
+	private: System::Void Zp_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::NOT_PRESSED;
+	}
+
+	
 
 
 };

@@ -21,6 +21,10 @@
 
 
 // Main Panel Definition
+#define MOTORS_PANEL_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyForm\\Motors.PNG")
+#define COORDINATES_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyForm\\Coordinates.PNG")
+
+
 #define XRAY_ON_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyForm\\XOn.PNG")
 #define XRAY_STDBY_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyForm\\XStdby.PNG")
 #define XRAY_READY_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyForm\\XReady.PNG")
@@ -168,6 +172,11 @@ void BiopsyForm::formInitialization(void) {
 	else {
 		demoIcon->Hide();
 	}
+
+	// Motors Panel
+	armPosition->BackgroundImage = MOTORS_PANEL_IMAGE;
+	pointerPosition->BackgroundImage = COORDINATES_IMAGE;
+
 
 	// Sets the current lamp status
 	BIOPSTATUS::Registers.collimator.light_on= false;
@@ -627,6 +636,27 @@ void BiopsyForm::evaluateAwsComponentEvent(void) {
 	if (generate_event_component) awsProtocol::EVENT_Components();
 }
 
+void BiopsyForm::evaluateArmStatus(void) {
+	float val = (float)ArmMotor::device->getCurrentPosition() / 100;
+	int ival = (int)val;
+
+	if ((val - (float)ival) >= 0.5) ival++;
+	armLabel->Text = "ARM:" + ival.ToString();
+
+	val = (float)TiltMotor::device->getCurrentPosition() / 100;
+	ival = (int)val;
+
+	if ((val - (float)ival) >= 0.5) ival++;
+	tiltLabel->Text = "TILT:" + ival.ToString();
+
+
+}
+
+void BiopsyForm::evaluatePointerStatus(void) {
+
+}
+
+
 void BiopsyForm::operatingStatusManagement(void) {
 	
 	System::DateTime date;
@@ -641,7 +671,8 @@ void BiopsyForm::operatingStatusManagement(void) {
 	evaluateDigitDisplays();
 	evaluateGridStatus();
 	evaluateAwsComponentEvent();
-
+	evaluateArmStatus();
+	evaluatePointerStatus();
 
 	// This shall be posed at the end of the management
 	evaluateReadyWarnings(false);

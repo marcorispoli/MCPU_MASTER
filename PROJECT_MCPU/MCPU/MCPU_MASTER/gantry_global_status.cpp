@@ -272,7 +272,7 @@ bool Gantry::setCloseStudy(void) {
     Exposures::reset();// Reset all the modalities
 
     ((OperatingForm^)pOperatingForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
-    ((OperatingForm^)pBiopsyForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
+    ((BiopsyForm^)pBiopsyForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
 
     return setIdle();
 }

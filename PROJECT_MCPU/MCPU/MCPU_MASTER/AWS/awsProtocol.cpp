@@ -46,6 +46,7 @@ awsProtocol::awsProtocol(void) {
     // Create the dictionary
     commandExec = gcnew Dictionary<String^, command_callback^>;
     commandExec->Add("EXEC_OpenStudy", gcnew command_callback(this, &awsProtocol::EXEC_OpenStudy));
+    commandExec->Add("EXEC_BiopsyStudy", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyStudy));
     commandExec->Add("EXEC_CloseStudy", gcnew command_callback(this, &awsProtocol::EXEC_CloseStudy));
     commandExec->Add("SET_ProjectionList", gcnew command_callback(this, &awsProtocol::SET_ProjectionList));
     commandExec->Add("EXEC_ArmPosition", gcnew command_callback(this, &awsProtocol::EXEC_ArmPosition));

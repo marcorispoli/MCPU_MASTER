@@ -60,6 +60,8 @@ using namespace System::Diagnostics;
 /// <param name=""></param>
 void  awsProtocol::EXEC_OpenStudy(void) {
 
+    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
     // Not in error condition !!!
     if (Notify::isError()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_SYSTEM_ERRORS; pDecodedFrame->errstr = "SYSTEM_ERRORS"; ackNok(); return; }
 
@@ -74,6 +76,58 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     PCB303::setAutoCollimationMode();
 
     TiltMotor::setIdlePosition();
+
+    ackOk();
+}
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_BiopsyStudy 
+/// 
+/// The AWS send this command whenever a Biopsy study should be open.
+/// 
+/// NOTE: The biopsy device may not be present when the command is sent.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_OpenStudy patient_name>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |patient_name|String|Study's patient name| 
+/// 
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_SYSTEM_ERRORS| "SYSTEM_ERRORS" | system error condition are presents|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_IDLE_MODE"| the Gantry is not in IDLE status|
+/// 
+
+/// <summary>
+/// This command shall be sent by AWS to request to Open a Biopsy Study.
+/// 
+/// </summary>
+/// <param name=""></param>
+void  awsProtocol::EXEC_BiopsyStudy(void) {
+    
+    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
+
+    // Not in error condition !!!
+    if (Notify::isError()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_SYSTEM_ERRORS; pDecodedFrame->errstr = "SYSTEM_ERRORS"; ackNok(); return; }
+
+    if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    String^ patient_name = pDecodedFrame->parameters[0];
+
+    // Open the study and assignes the patient name !!!
+    if (!Gantry::setOpenBiopsyStudy(patient_name)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
+    // With the OPEN Study, the collimator is automatically set to AUTO mode.
+    PCB303::setAutoCollimationMode();
+
 
     ackOk();
 }
@@ -109,7 +163,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 void  awsProtocol::EXEC_CloseStudy(void) {
     if (!Gantry::setCloseStudy()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
-    TiltMotor::setIdlePosition();
+    // TiltMotor::setIdlePosition();
     ackOk();
 
 }

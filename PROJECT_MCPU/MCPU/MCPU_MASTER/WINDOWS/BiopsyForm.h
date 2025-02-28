@@ -59,8 +59,9 @@ public:
 	void evaluateXrayStatus(void);
 	void evaluateReadyWarnings(bool reset);
 	void evaluateCompressorStatus(bool init);
-	
-	
+	void evaluateArmStatus(void);
+	void evaluatePointerStatus(void);
+
 	void evaluateDoorStatus(void);
 	void evaluateCollimatorStatus(void);
 	void evaluateSlideStatus(bool init);
@@ -340,6 +341,7 @@ private:
 		this->armPosition->Name = L"armPosition";
 		this->armPosition->Size = System::Drawing::Size(282, 135);
 		this->armPosition->TabIndex = 24;
+		
 		// 
 		// tiltLabel
 		// 
@@ -541,6 +543,7 @@ private:
 	private: System::Void errorButton_Click(System::Object^ sender, System::EventArgs^ e);
 	
 	private: System::Void ShiftSelection_Click(System::Object^ sender, System::EventArgs^ e);
+
 
 };
 

@@ -50,6 +50,11 @@
 "E00044", Notify::messages::ERROR_GENERATOR_FATAL_MESSAGE, "Generator Messages", "The DC BUS is Off. Check the Emergency Button activation and restart the system.",
 "E00045", Notify::messages::ERROR_POTTER_GRID_POSITION, "Potter Messages", "The Grid device is in fault condition",
 
+"E00045", Notify::messages::ERROR_BIOPSY_X_POSITIONING, "Biopsy Error", "Error in positioning the X cursor",
+"E00046", Notify::messages::ERROR_BIOPSY_Y_POSITIONING, "Biopsy Error", "Error in positioning the Y cursor",
+"E00047", Notify::messages::ERROR_BIOPSY_Z_POSITIONING, "Biopsy Error", "Error in positioning the Z cursor",
+
+
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
 "E00900", Notify::messages::ERROR_X_RAY_BUTTON_RELEASED, "X-RAY Sequence Error", "X-Ray push button early released",

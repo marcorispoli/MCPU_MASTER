@@ -306,7 +306,7 @@ private:
 		this->ZLabel->Size = System::Drawing::Size(135, 25);
 		this->ZLabel->TabIndex = 4;
 		this->ZLabel->Text = L"Z: 0.0 (mm)";
-		this->ZLabel->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->ZLabel->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		// 
 		// YLabel
 		// 
@@ -318,7 +318,7 @@ private:
 		this->YLabel->Size = System::Drawing::Size(135, 25);
 		this->YLabel->TabIndex = 3;
 		this->YLabel->Text = L"Y: 0.0 (mm)";
-		this->YLabel->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->YLabel->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		// 
 		// XLabel
 		// 
@@ -330,7 +330,7 @@ private:
 		this->XLabel->Size = System::Drawing::Size(135, 25);
 		this->XLabel->TabIndex = 2;
 		this->XLabel->Text = L"X: 0.0 (mm)";
-		this->XLabel->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->XLabel->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		// 
 		// armPosition
 		// 
@@ -341,7 +341,6 @@ private:
 		this->armPosition->Name = L"armPosition";
 		this->armPosition->Size = System::Drawing::Size(282, 135);
 		this->armPosition->TabIndex = 24;
-		
 		// 
 		// tiltLabel
 		// 
@@ -353,7 +352,7 @@ private:
 		this->tiltLabel->Size = System::Drawing::Size(135, 25);
 		this->tiltLabel->TabIndex = 2;
 		this->tiltLabel->Text = L"TILT: 0°";
-		this->tiltLabel->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->tiltLabel->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		// 
 		// armLabel
 		// 
@@ -365,7 +364,7 @@ private:
 		this->armLabel->Size = System::Drawing::Size(135, 25);
 		this->armLabel->TabIndex = 1;
 		this->armLabel->Text = L"ARM: 0°";
-		this->armLabel->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+		this->armLabel->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		// 
 		// xrayStat
 		// 

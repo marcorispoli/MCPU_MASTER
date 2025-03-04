@@ -470,6 +470,7 @@ void MainForm::pcb304Simulator(void) {
 void MainForm::pcb325Simulator(void) {
 	static bool biopOnBk = true;
 
+
 	if (biopOnBk != biopsyOn->Checked) {
 		biopOnBk = biopsyOn->Checked;
 		PCB325::device.init();
@@ -498,13 +499,13 @@ void MainForm::pcb325Simulator(void) {
 		}
 
 		// Init items here
-		if (PCB325::device.XScroll == PCB325::hardware_device::scroll::SCROLL_CENTER) xCenter->Checked = true;
-		else if (PCB325::device.XScroll == PCB325::hardware_device::scroll::SCROLL_LEFT) xLeft->Checked = true;
-		else if (PCB325::device.XScroll == PCB325::hardware_device::scroll::SCROLL_RIGHT) xRight->Checked = true;
+		if (PCB325::device.XScroll == PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_CENTER) xCenter->Checked = true;
+		else if (PCB325::device.XScroll == PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_LEFT) xLeft->Checked = true;
+		else if (PCB325::device.XScroll == PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT) xRight->Checked = true;
 		else xUndef->Checked = true;
 
 		
-		if (PCB325::device.Yupdown == PCB325::hardware_device::updown::Y_UP) yUp->Checked = true;
+		if (PCB325::device.Yup_stat) yUp->Checked = true;
 		else yDown->Checked = true;
 
 		
@@ -514,39 +515,48 @@ void MainForm::pcb325Simulator(void) {
 			slider->Show();
 			needleForm->Show();
 
+			if (PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_A) needleA->Checked = true;
+			else if (PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_B) needleB->Checked = true;
+			else if (PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C) needleC->Checked = true;
+			else noNeedle->Checked = true;
+
 		}
 		else {
 			pointerOff->Checked = true;
 			slider->Hide();
 			needleForm->Hide();
+
+			// When the pointer is not mounted the needle is detected as C
+			noNeedle->Checked = true;
+			PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C;
 		}
 		slider->Value = PCB325::device.Slider;
-		
-		if (PCB325::device.Needle == PCB325::hardware_device::needle::NEEDLE_A) needleA->Checked = true;
-		else if (PCB325::device.Needle == PCB325::hardware_device::needle::NEEDLE_B) needleB->Checked = true;
-		else if (PCB325::device.Needle == PCB325::hardware_device::needle::NEEDLE_C) needleC->Checked = true;
-		else noNeedle->Checked = true;
-
-		// Keyboard
-		keyMode->Text = PCB325::device.keybMode.ToString();
+				
 
 		// Position
 		xPos->Text = "X:" + PCB325::device.Xposition.ToString();
 		yPos->Text = "Y:" + PCB325::device.Yposition.ToString();
 		zPos->Text = "Z:" + PCB325::device.Zposition.ToString();
 
+		// Key mode
+		keyMode->Text = "NORMAL";
+
 		return;
 	}
 
 	if (!PCB325::device.connected) return;
 
-	if (xCenter->Checked) PCB325::device.XScroll = PCB325::hardware_device::scroll::SCROLL_CENTER;
-	else if (xLeft->Checked) PCB325::device.XScroll = PCB325::hardware_device::scroll::SCROLL_LEFT;
-	else if (xRight->Checked) PCB325::device.XScroll = PCB325::hardware_device::scroll::SCROLL_RIGHT;
-	else PCB325::device.XScroll = PCB325::hardware_device::scroll::SCROLL_UNDEF;
+	// Working mode
+	workingMode->Text = PCB325::device.motor_working_mode.ToString();
+
+
+	if (xCenter->Checked) PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_CENTER;
+	else if (xLeft->Checked) PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_LEFT;
+	else if (xRight->Checked) PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT;
+	else PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_UNDEF;
 	
-	if (yUp->Checked) PCB325::device.Yupdown = PCB325::hardware_device::updown::Y_UP;
-	else PCB325::device.Yupdown = PCB325::hardware_device::updown::Y_DOWN;
+	if (yUp->Checked) PCB325::device.Yup_stat = true;
+	else PCB325::device.Yup_stat = false;
 
 	if (pointerOn->Checked) {
 		PCB325::device.pointer_present = true;
@@ -554,10 +564,10 @@ void MainForm::pcb325Simulator(void) {
 		needleForm->Show();
 		PCB325::device.Slider = (int) slider->Value;
 	
-		if (needleA->Checked) PCB325::device.Needle = PCB325::hardware_device::needle::NEEDLE_A;
-		else if (needleB->Checked) PCB325::device.Needle = PCB325::hardware_device::needle::NEEDLE_B;
-		else if (needleC->Checked) PCB325::device.Needle = PCB325::hardware_device::needle::NEEDLE_C;
-		else PCB325::device.Needle = PCB325::hardware_device::needle::NEEDLE_NOT_PRESENT;
+		if (needleA->Checked) PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_A;
+		else if (needleB->Checked) PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_B;
+		else if (needleC->Checked) PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C;
+		else PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_NOT_PRESENT;
 
 	
 	}
@@ -565,20 +575,22 @@ void MainForm::pcb325Simulator(void) {
 		slider->Hide();
 		needleForm->Hide();
 		PCB325::device.pointer_present = false;
+		PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C;
 				
 	}
 	
 
 	// Keyboard
-	keyMode->Text = PCB325::device.keybMode.ToString();
-
+	if (PCB325::device.keystep_mode) keyMode->Text = "STEP";
+	else keyMode->Text = "NORMAL";
+	
 	// Position
 	xPos->Text = "X:" + PCB325::device.Xposition.ToString();
 	yPos->Text = "Y:" + PCB325::device.Yposition.ToString();
 	zPos->Text = "Z:" + PCB325::device.Zposition.ToString();
 
 	// Motor enable flag
-	if (PCB325::device.motor_enabled)  biopMotEna->BackColor = COLOR_ON;
+	if (PCB325::device.power_switch_stat)  biopMotEna->BackColor = COLOR_ON;
 	else biopMotEna->BackColor = COLOR_OFF;
 
 }

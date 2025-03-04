@@ -6,6 +6,7 @@ extern  double dtempo;
 #include <Windows.h>
 #include "PCB301/Pcb301.h"
 #include "PCB302/Pcb302.h"
+#include "PCB325/Pcb325.h"
 
 //#include "Pcb301Simulator.h"
 //#include "Pcb302Simulator.h"
@@ -354,6 +355,7 @@ private: System::Windows::Forms::GroupBox^ positionFrame;
 
 private: System::Windows::Forms::Label^ zPos;
 private: System::Windows::Forms::PictureBox^ biopMotEna;
+private: System::Windows::Forms::Label^ workingMode;
 
 
 
@@ -718,6 +720,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->leftBlade = (gcnew System::Windows::Forms::TextBox());
 			this->trapBlade = (gcnew System::Windows::Forms::TextBox());
 			this->pcb325_panel = (gcnew System::Windows::Forms::GroupBox());
+			this->workingMode = (gcnew System::Windows::Forms::Label());
 			this->biopsyOff = (gcnew System::Windows::Forms::RadioButton());
 			this->biopsyOn = (gcnew System::Windows::Forms::RadioButton());
 			this->positionFrame = (gcnew System::Windows::Forms::GroupBox());
@@ -3012,6 +3015,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb325_panel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 				static_cast<System::Int32>(static_cast<System::Byte>(60)));
 			this->pcb325_panel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->pcb325_panel->Controls->Add(this->workingMode);
 			this->pcb325_panel->Controls->Add(this->biopsyOff);
 			this->pcb325_panel->Controls->Add(this->biopsyOn);
 			this->pcb325_panel->Controls->Add(this->positionFrame);
@@ -3028,6 +3032,18 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb325_panel->TabIndex = 24;
 			this->pcb325_panel->TabStop = false;
 			this->pcb325_panel->Text = L"PCB325 - BIOPSY";
+			// 
+			// workingMode
+			// 
+			this->workingMode->AutoSize = true;
+			this->workingMode->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->workingMode->ForeColor = System::Drawing::Color::White;
+			this->workingMode->Location = System::Drawing::Point(145, 127);
+			this->workingMode->Name = L"workingMode";
+			this->workingMode->Size = System::Drawing::Size(57, 13);
+			this->workingMode->TabIndex = 34;
+			this->workingMode->Text = L"ENABLED";
 			// 
 			// biopsyOff
 			// 
@@ -3195,6 +3211,8 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->Zp->TabIndex = 30;
 			this->Zp->Text = L"Z+";
 			this->Zp->UseVisualStyleBackColor = true;
+			this->Zp->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zp_MouseDown);
+			this->Zp->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zp_MouseUp);
 			// 
 			// Yp
 			// 
@@ -3217,8 +3235,8 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->Zm->TabIndex = 29;
 			this->Zm->Text = L"Z-";
 			this->Zm->UseVisualStyleBackColor = true;
-			this->Zm->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zp_MouseDown);
-			this->Zm->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zp_MouseUp);
+			this->Zm->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zm_MouseDown);
+			this->Zm->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::Zm_MouseUp);
 			// 
 			// pointerFrame
 			// 
@@ -3685,7 +3703,10 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 	private: System::Void Zm_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
 		PCB325::device.key = PCB325::hardware_device::keypress::ZM;
 	}
-		   
+	private: System::Void Zm_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		PCB325::device.key = PCB325::hardware_device::keypress::NOT_PRESSED;
+	}
+
 
 	private: System::Void Zp_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
 		PCB325::device.key = PCB325::hardware_device::keypress::ZP;

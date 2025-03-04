@@ -220,6 +220,9 @@ void IdleForm::initIdleStatus(void) {
 	this->tubeTempOk->BackColor = Color::Transparent;
 	this->tubeTempOk->Show();
 	
+	// The Biopsy device is set in Free mode (if it should be connected)
+	PCB325::setBiopsyFreeMode();
+
 	///\todo 
 	/// Per proteggere il collimatore forse sarebbe meglio chiudere le lame
 	/// 

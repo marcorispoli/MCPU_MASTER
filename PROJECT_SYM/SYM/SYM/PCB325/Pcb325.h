@@ -6,6 +6,9 @@ using namespace System;
 ref class PCB325: public deviceInterface
 {
 public:
+	#define Z_WIDTH 1000
+	#define Y_WIDTH 300
+
 	/// <summary>
 	/// This class implement the protocol data structure as described in the protocol specification.
 	/// </summary>
@@ -293,6 +296,7 @@ public:
 
 			// To initialize the workflow
 			working_mode_init = true;
+			crash_event = false;
 		}
 
 		
@@ -322,6 +326,7 @@ public:
 		keypress key;
 		bool keystep_mode;
 
+		bool crash_event;
 		bool connected;
 
 		

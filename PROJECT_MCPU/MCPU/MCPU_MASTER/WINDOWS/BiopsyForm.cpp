@@ -263,7 +263,10 @@ void BiopsyForm::initOperatingStatus(void) {
 
 	// The Biopsy device is set in Command mode and the keyboard is set in normal mode
 	PCB325::setBiopsyCommandMode();
-	PCB325::setKeyStepMode(true);
+	PCB325::setKeyStepMode(false);
+	sequence_executing = command_execution::COMMAND_IDLE;
+	sequence_step = 0;
+	seqid = 0;
 
 	// Start the startup session	
 	operatingTimer->Start();		
@@ -662,6 +665,221 @@ void BiopsyForm::evaluatePointerStatus(void) {
 }
 
 
+int BiopsyForm::pointerHome(home_positions home, int id) {
+	
+
+	// Executing conditions
+	if (!PCB325::isBiopsyConnected()) return -1;
+	if (sequence_executing != command_execution::COMMAND_IDLE) return -2;
+
+	// Gets the target for the given home position
+	if (home == home_positions::HOME_CENTER) {
+		xtarget = (unsigned short) System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_X]);
+		ytarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Y]);
+		ztarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Z]);
+		sequence_executing = command_execution::COMMAND_HOME_CENTER;
+	}
+	else if (home == home_positions::HOME_LEFT) {
+		xtarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_X]);
+		ytarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Y]);
+		ztarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Z]);
+		sequence_executing = command_execution::COMMAND_HOME_LEFT;
+	}
+	else {
+		xtarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_X]);
+		ytarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Y]);
+		ztarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Z]);
+		sequence_executing = command_execution::COMMAND_HOME_RIGHT;
+	}
+
+	// Verifies if the actual position is aready in target
+	if (PCB325::isXtarget(xtarget) && PCB325::isYtarget(ytarget) && PCB325::isZtarget(ztarget)) {
+		sequence_executing = command_execution::COMMAND_IDLE;
+		return 0;
+	}
+
+	// Prepare for the command activation
+	seqid = id;							
+	sequence_step = 0;
+	return 1;
+	
+}
+
+int BiopsyForm::pointerXYZ(unsigned short X, unsigned short Y, unsigned short Z, int id) {
+	return 0;
+}
+
+void BiopsyForm::home_workflow(void) {
+	switch (sequence_step) {
+	case 0:
+		
+		if (PCB325::isYUp()) {
+			sequence_step = 100; // starts moving x-y-z to home
+			break;
+		}
+
+		if (PCB325::getX() < 1290) {
+			sequence_step = 10; // starts moving right
+		}else sequence_step = 20; // starts moving left
+		break;
+
+	//____________________________________________________________
+	case 10:  // starts moving right
+		if (!PCB325::moveX(0)) {
+			execution_error = 1;
+			sequence_step = 200;
+			break;
+		}
+		sequence_step++;
+		break;
+	case 11:		
+		// wait for command completion
+		if (PCB325::isPointerMoving()) break;
+		
+		// Terminated successfully
+		if (PCB325::isPointerSuccessfullyMoved()) {
+			sequence_step = 19;
+			break;
+		}
+
+		// Error
+		execution_error = 2;
+		sequence_step = 200;
+		break;
+
+	case 19: 
+		sequence_step = 30; // start requesting to y flip up
+		break;
+
+	//____________________________________________________________
+	case 20:  // starts moving left
+		if (!PCB325::moveX(PCB325::BIOPSY_MAX_X_POSITION)) {
+			execution_error = 3;
+			sequence_step = 200;
+			break;
+		}
+		sequence_step++;
+		break;
+	case 21:
+		// wait for command completion
+		if (PCB325::isPointerMoving()) break;
+
+		// Terminated successfully
+		if (PCB325::isPointerSuccessfullyMoved()) {
+			sequence_step = 29;
+			break;
+		}
+
+		// Error
+		execution_error = 4;
+		sequence_step = 200;
+		break;
+	case 29:
+		sequence_step = 30; // start requesting to y flip up
+		break;
+		
+	//____________________________________________________________
+	case 30:  // start requesting to y flip up
+		sequence_step = 39;
+		break;
+	case 39:
+		sequence_step = 100; // starts moving x-y-z to home
+		break;
+
+	//____________________________________________________________
+	case 100: // starts moving x-y-z to home
+		if (!PCB325::moveX(xtarget)) {
+			execution_error = 5;
+			sequence_step = 200;
+			break;
+		}
+		sequence_step++;		
+		break;
+	case 101:
+		// wait for command completion
+		if (PCB325::isPointerMoving()) break;
+
+		// Terminated successfully
+		if (PCB325::isPointerSuccessfullyMoved()) {
+			sequence_step++;
+			break;
+		}
+
+		// Error
+		execution_error = 6;
+		sequence_step = 200;
+		break;
+
+	case 102:
+		if (!PCB325::moveY(ytarget)) {
+			execution_error = 7;
+			sequence_step = 200;
+			break;
+		}
+		sequence_step++;
+		break;
+
+	case 103:
+		// wait for command completion
+		if (PCB325::isPointerMoving()) break;
+
+		// Terminated successfully
+		if (PCB325::isPointerSuccessfullyMoved()) {
+			sequence_step++;
+			break;
+		}
+
+		// Error
+		execution_error = 8;
+		sequence_step = 200;
+		break;
+
+	case 104:
+		if (!PCB325::moveZ(ztarget)) {
+			execution_error = 9;
+			sequence_step = 200;
+			break;
+		}
+		sequence_step++;
+		break;
+
+	case 105:
+		// wait for command completion
+		if (PCB325::isPointerMoving()) break;
+
+		// Terminated successfully
+		if (PCB325::isPointerSuccessfullyMoved()) {
+			sequence_step = 200;
+			execution_error = 0;
+			break;
+		}
+
+		// Error
+		execution_error = 10;
+		sequence_step = 200;
+		break;
+
+	case 200: // end sequence
+		if (seqid) awsProtocol::EVENT_Executed(seqid, execution_error);
+		sequence_executing = command_execution::COMMAND_IDLE;
+		break;
+	}
+}
+
+void BiopsyForm::xyz_positioning_workflow(void) {
+
+}
+
+void BiopsyForm::evaluatePointerActivations() {
+	switch (sequence_executing) {
+	case command_execution::COMMAND_HOME_CENTER: home_workflow(); break;
+	case command_execution::COMMAND_HOME_LEFT: home_workflow(); break;
+	case command_execution::COMMAND_HOME_RIGHT: home_workflow(); break;
+	case command_execution::COMMAND_XYZ_POSITIONING: xyz_positioning_workflow(); break;
+	}
+}
+
+
 void BiopsyForm::operatingStatusManagement(void) {
 	
 	System::DateTime date;
@@ -678,6 +896,7 @@ void BiopsyForm::operatingStatusManagement(void) {
 	evaluateAwsComponentEvent();
 	evaluateArmStatus();
 	evaluatePointerStatus();
+	evaluatePointerActivations();
 
 	// This shall be posed at the end of the management
 	evaluateReadyWarnings(false);

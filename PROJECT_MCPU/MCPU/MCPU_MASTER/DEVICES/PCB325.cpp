@@ -202,7 +202,9 @@ void PCB325::run_command_mode_workflow(void) {
     }
 
 }
+
 void PCB325::run_service_mode_workflow(void) {
+
     // The procedure forces the biopsy service mode to be activated
     if (protocol.status_register.motor_working_mode != ProtocolStructure::StatusRegister::motor_mode::MOTOR_SERVICE_MODE) {
         if (!device->isCommandCompleted()) return;

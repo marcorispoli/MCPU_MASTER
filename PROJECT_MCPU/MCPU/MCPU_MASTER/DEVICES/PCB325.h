@@ -12,6 +12,12 @@ ref class PCB325 : public CanDeviceProtocol
 
 public:
 
+	literal unsigned short BIOPSY_TARGET_X_RANGE = 5; //!< Minimum distance from the acceptable target  
+	literal unsigned short BIOPSY_TARGET_Y_RANGE = 5; //!< Minimum distance from the acceptable target  
+	literal unsigned short BIOPSY_TARGET_Z_RANGE = 5; //!< Minimum distance from the acceptable target  
+	literal unsigned short BIOPSY_MAX_X_POSITION = 2580; //!< Maximum axes position  
+	literal unsigned short BIOPSY_MAX_Y_POSITION = 700; //!< Maximum axes position  
+	literal unsigned short BIOPSY_MAX_Z_POSITION = 1350; //!< Maximum axes position  
 
 	PCB325() : CanDeviceProtocol(0x15, L"BIOPSY_DEVICE")
 	{
@@ -271,6 +277,12 @@ public:
 	static unsigned short getZ(void) { return protocol.status_register.z_position; }
 	static unsigned short getS(void) { return protocol.status_register.s_position; }
 
+	static bool isPointerMoving(void) {
+		if (motor_command_result == 0) return true;
+	}
+	static bool isPointerSuccessfullyMoved(void) {
+		if (motor_command_result == 1) return true;
+	}
 	static bool moveX(unsigned short x) { 
 		if (!command_mode_ready) return false;
 		if (request_motor_command != waiting_motor_command) return false;
@@ -300,6 +312,43 @@ public:
 		motor_command_result = 0;
 		return true;
 	}
+
+	static bool isXtarget(unsigned short tg) {
+		if (tg > protocol.status_register.x_position) {
+			if (tg > protocol.status_register.x_position + BIOPSY_TARGET_X_RANGE) return false;
+			return true;
+		}
+		else {
+			if (protocol.status_register.x_position < BIOPSY_TARGET_X_RANGE) return true;
+			if (tg < protocol.status_register.x_position - BIOPSY_TARGET_X_RANGE) return false;
+			return true;
+		}		
+	}
+
+	static bool isYtarget(unsigned short tg) {
+		if (tg > protocol.status_register.y_position) {
+			if (tg > protocol.status_register.y_position + BIOPSY_TARGET_Y_RANGE) return false;
+			return true;
+		}
+		else {
+			if (protocol.status_register.y_position < BIOPSY_TARGET_Y_RANGE) return true;
+			if (tg < protocol.status_register.y_position - BIOPSY_TARGET_Y_RANGE) return false;
+			return true;
+		}
+	}
+	static bool isZtarget(unsigned short tg) {
+		if (tg > protocol.status_register.z_position) {
+			if (tg > protocol.status_register.z_position + BIOPSY_TARGET_Z_RANGE) return false;
+			return true;
+		}
+		else {
+			if (protocol.status_register.z_position < BIOPSY_TARGET_Z_RANGE) return true;
+			if (tg < protocol.status_register.z_position - BIOPSY_TARGET_Z_RANGE) return false;
+			return true;
+		}
+	}
+
+	static bool isYUp(void) { return protocol.status_register.yup_detected; }
 
 	static bool activateCycleTest(void);
 	

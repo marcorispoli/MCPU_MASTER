@@ -356,6 +356,8 @@ private: System::Windows::Forms::GroupBox^ positionFrame;
 private: System::Windows::Forms::Label^ zPos;
 private: System::Windows::Forms::PictureBox^ biopMotEna;
 private: System::Windows::Forms::Label^ workingMode;
+private: System::Windows::Forms::Label^ crashLabel;
+
 
 
 
@@ -720,6 +722,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->leftBlade = (gcnew System::Windows::Forms::TextBox());
 			this->trapBlade = (gcnew System::Windows::Forms::TextBox());
 			this->pcb325_panel = (gcnew System::Windows::Forms::GroupBox());
+			this->crashLabel = (gcnew System::Windows::Forms::Label());
 			this->workingMode = (gcnew System::Windows::Forms::Label());
 			this->biopsyOff = (gcnew System::Windows::Forms::RadioButton());
 			this->biopsyOn = (gcnew System::Windows::Forms::RadioButton());
@@ -3015,6 +3018,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb325_panel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(59)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
 				static_cast<System::Int32>(static_cast<System::Byte>(60)));
 			this->pcb325_panel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->pcb325_panel->Controls->Add(this->crashLabel);
 			this->pcb325_panel->Controls->Add(this->workingMode);
 			this->pcb325_panel->Controls->Add(this->biopsyOff);
 			this->pcb325_panel->Controls->Add(this->biopsyOn);
@@ -3032,6 +3036,18 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 			this->pcb325_panel->TabIndex = 24;
 			this->pcb325_panel->TabStop = false;
 			this->pcb325_panel->Text = L"PCB325 - BIOPSY";
+			// 
+			// crashLabel
+			// 
+			this->crashLabel->AutoSize = true;
+			this->crashLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->crashLabel->ForeColor = System::Drawing::Color::Red;
+			this->crashLabel->Location = System::Drawing::Point(11, 63);
+			this->crashLabel->Name = L"crashLabel";
+			this->crashLabel->Size = System::Drawing::Size(115, 31);
+			this->crashLabel->TabIndex = 35;
+			this->crashLabel->Text = L"CRASH";
 			// 
 			// workingMode
 			// 
@@ -3717,6 +3733,7 @@ private: System::Windows::Forms::GroupBox^ pcb301_panel;
 	}
 
 	
+
 
 
 };

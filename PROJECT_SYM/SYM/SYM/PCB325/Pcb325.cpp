@@ -261,6 +261,31 @@ void PCB325::device_workflow_callback(void) {
 	// Evaluation of the safety power switch status
 	device.power_switch_stat = evaluate_power_switch_stat();
 	
+	// Evaluates a possible impact event when Y is not up
+	int xmax_pointer, xmin_pointer, xmax_base, xmin_base;
+	bool possible_crash = false;
+
+	if (!device.Yup_stat) {
+		xmax_pointer = device.Xposition + (Y_WIDTH / 2);
+		xmin_pointer = device.Xposition - (Y_WIDTH / 2);
+
+		if (device.XScroll == ProtocolStructure::StatusRegister::xscroll::SCROLL_CENTER) {
+			xmin_base = 1290 - (Z_WIDTH / 2);
+			xmax_base = 1290 + (Z_WIDTH / 2);
+		} else if (device.XScroll == ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT) {
+			xmin_base = 2580 - Z_WIDTH;
+			xmax_base = 2580;
+
+		}else if (device.XScroll == ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT) {
+			xmin_base = 0;
+			xmax_base = (Z_WIDTH);
+		}
+
+		if ((xmin_pointer <= xmax_base) && (xmin_pointer >= xmin_base)) device.crash_event = true;
+		else if ((xmax_pointer <= xmax_base) && (xmax_pointer >= xmin_base)) device.crash_event = true;
+		else device.crash_event = false;
+	}else device.crash_event = false;
+	
 	// Motor activation management
 	switch (device.motor_command) {
 	
@@ -268,9 +293,19 @@ void PCB325::device_workflow_callback(void) {
 		
 		break;
 	case hardware_device::motor_activation::MOTOR_X:
-		if (!device.power_switch_stat) motor_activation_completed(false);
-		if (request_abort_command) motor_activation_completed(false);
-		
+		if (!device.power_switch_stat) {
+			motor_activation_completed(false);
+			break;
+		}
+		if (request_abort_command) {
+			motor_activation_completed(false);
+			break;
+		}
+		if(device.crash_event) {
+			motor_activation_completed(false);
+			break;
+		}
+
 		if ( ((device.Xposition - device.Xtarget) < 20) && ((device.Xposition - device.Xtarget) > -20)) {
 			// Target position 
 			device.Xposition = device.Xtarget;
@@ -281,8 +316,18 @@ void PCB325::device_workflow_callback(void) {
 
 		break;
 	case hardware_device::motor_activation::MOTOR_Y:
-		if (!device.power_switch_stat) motor_activation_completed(false);
-		if (request_abort_command) motor_activation_completed(false);
+		if (!device.power_switch_stat) {
+			motor_activation_completed(false);
+			break;
+		}
+		if (request_abort_command) {
+			motor_activation_completed(false);
+			break;
+		}
+		if (device.crash_event) {
+			motor_activation_completed(false);
+			break;
+		}
 
 		if (((device.Yposition - device.Ytarget) < 20) && ((device.Yposition - device.Ytarget) > -20)) {
 			// Target position 
@@ -294,8 +339,18 @@ void PCB325::device_workflow_callback(void) {
 
 		break;
 	case hardware_device::motor_activation::MOTOR_Z:
-		if (!device.power_switch_stat) motor_activation_completed(false);
-		if (request_abort_command) motor_activation_completed(false);
+		if (!device.power_switch_stat) {
+			motor_activation_completed(false);
+			break;
+		}
+		if (request_abort_command) {
+			motor_activation_completed(false);
+			break;
+		}
+		if (device.crash_event) {
+			motor_activation_completed(false);
+			break;
+		}
 
 		if (((device.Zposition - device.Ztarget) < 20) && ((device.Zposition - device.Ztarget) > -20)) {
 			// Target position 

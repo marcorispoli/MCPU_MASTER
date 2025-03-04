@@ -474,7 +474,9 @@ void MainForm::pcb325Simulator(void) {
 	if (biopOnBk != biopsyOn->Checked) {
 		biopOnBk = biopsyOn->Checked;
 		PCB325::device.init();
+		crashLabel->Hide();
 		
+
 		// Connection management
 		if (biopsyOn->Checked) {
 			biopsyOn->Checked = true;
@@ -485,7 +487,7 @@ void MainForm::pcb325Simulator(void) {
 			positionFrame->Show();
 			pointerFrame->Show();
 			keyFrame->Show();
-
+			workingMode->Show();
 		}
 		else {	
 			biopsyOff->Checked = true;
@@ -496,6 +498,7 @@ void MainForm::pcb325Simulator(void) {
 			positionFrame->Hide();
 			pointerFrame->Hide();
 			keyFrame->Hide();
+			workingMode->Hide();
 		}
 
 		// Init items here
@@ -593,6 +596,9 @@ void MainForm::pcb325Simulator(void) {
 	if (PCB325::device.power_switch_stat)  biopMotEna->BackColor = COLOR_ON;
 	else biopMotEna->BackColor = COLOR_OFF;
 
+	// Crash Event
+	if (PCB325::device.crash_event) crashLabel->Show();
+	else crashLabel->Hide();
 }
 
 void MainForm::pcb326Simulator(void) {

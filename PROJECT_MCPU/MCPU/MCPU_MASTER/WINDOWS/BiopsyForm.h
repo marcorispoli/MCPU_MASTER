@@ -61,6 +61,7 @@ public:
 	void evaluateCompressorStatus(bool init);
 	void evaluateArmStatus(void);
 	void evaluatePointerStatus(void);
+	void evaluatePointerActivations(void);
 
 	void evaluateDoorStatus(void);
 	void evaluateCollimatorStatus(void);
@@ -70,6 +71,35 @@ public:
 	void evaluateGridStatus(void);
 	void evaluateAwsComponentEvent(void);
 	
+	enum class command_execution {
+		COMMAND_IDLE = 0,
+		COMMAND_HOME_CENTER,
+		COMMAND_HOME_LEFT,
+		COMMAND_HOME_RIGHT,
+		COMMAND_XYZ_POSITIONING,
+	};
+
+
+	enum class home_positions{
+		HOME_CENTER = 0,
+		HOME_LEFT,
+		HOME_RIGHT,
+	};
+
+	int pointerHome(home_positions home, int id);
+    int pointerXYZ(unsigned short X, unsigned short Y, unsigned short Z, int id);
+
+	// Status machine registers for the biopsy command execution
+	int seqid;							//!< AWS id returning identifier command
+	command_execution sequence_executing;	
+	int execution_error;
+	unsigned char sequence_step;
+	unsigned short xtarget, ytarget, ztarget;
+
+	void BiopsyForm::home_workflow(void);
+	void BiopsyForm::xyz_positioning_workflow(void);
+
+
 
 public:System::Timers::Timer^ operatingTimer;
 

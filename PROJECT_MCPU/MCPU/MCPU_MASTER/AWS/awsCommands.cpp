@@ -16,6 +16,7 @@
 #include "Generator.h"
 #include "Notify.h"
 #include "Log.h"
+#include "BiopsyForm.h"
 
 
 using namespace System::Diagnostics;
@@ -1336,7 +1337,7 @@ void   awsProtocol::GET_TubeTemperature(void) {
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::SET_Language(void) {
-    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (!Notify::setLanguage(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_LANGUAGE"; ackNok(); return; }
 
@@ -1385,7 +1386,7 @@ void   awsProtocol::GET_ProtocolRevision(void) {
     List<String^>^ lista = gcnew List<String^>;
 
     lista->Add(PROTOCOL_REVISION_CODE); 
-    ackOk(lista);
+    ;
     return;
 }
 
@@ -1459,6 +1460,36 @@ void   awsProtocol::EXEC_TestCommand(void) {
         LogClass::logInFile("TEST ON BIOPSY Z");
         unsigned short pos = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
         if (!PCB325::moveZ((unsigned short)pos)) LogClass::logInFile("FAILED");
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_C") {
+        LogClass::logInFile("TEST ON BIOPSY HOME_C");
+        int res = ((BiopsyForm^)Gantry::pBiopsyForm)->pointerHome(BiopsyForm::home_positions::HOME_CENTER, pDecodedFrame->ID);
+        if (res < 0) {
+            pDecodedFrame->errcode = -res;
+            ackNok();
+        }
+        else if (res == 0) ackOk();
+        else ackExecuting();
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_R") {
+        LogClass::logInFile("TEST ON BIOPSY HOME_R");
+        int res = ((BiopsyForm^)Gantry::pBiopsyForm)->pointerHome(BiopsyForm::home_positions::HOME_RIGHT, pDecodedFrame->ID);
+        if (res < 0) {
+            pDecodedFrame->errcode = -res;
+            ackNok();
+        }
+        else if (res == 0) ackOk();
+        else ackExecuting();
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_L") {
+        LogClass::logInFile("TEST ON BIOPSY HOME_L");
+        int res = ((BiopsyForm^)Gantry::pBiopsyForm)->pointerHome(BiopsyForm::home_positions::HOME_LEFT, pDecodedFrame->ID);
+        if (res < 0) {
+            pDecodedFrame->errcode = -res;
+            ackNok();
+        }
+        else if (res == 0) ackOk();
+        else ackExecuting();
     }
 
 

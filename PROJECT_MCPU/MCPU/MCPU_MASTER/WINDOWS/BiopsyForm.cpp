@@ -261,7 +261,10 @@ void BiopsyForm::initOperatingStatus(void) {
 	// init of the slide status view
 	evaluateSlideStatus(true);
 
-	
+	// The Biopsy device is set in Command mode and the keyboard is set in normal mode
+	PCB325::setBiopsyCommandMode();
+	PCB325::setKeyStepMode(true);
+
 	// Start the startup session	
 	operatingTimer->Start();		
 	resume();
@@ -653,7 +656,9 @@ void BiopsyForm::evaluateArmStatus(void) {
 }
 
 void BiopsyForm::evaluatePointerStatus(void) {
-
+	XLabel->Text = "X:" + PCB325::getX().ToString();
+	YLabel->Text = "Y:" + PCB325::getY().ToString();
+	ZLabel->Text = "Z:" + PCB325::getZ().ToString();
 }
 
 

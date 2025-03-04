@@ -16,48 +16,56 @@ public:
 		public:
 
 			enum class register_index {
-				SYSTEM_REGISTER = 0,	//!> This is the System Status register index
-				BATTERY_REGISTER,		//!> This is the Battery level Status register index	
+				SYSTEM_STATUS = 0,	//!> Internal statuis flag register 
+				SYSTEM_XY,			//!> Current XY pointer position
+				SYSTEM_ZS,			//!> Current Z pointer and Slider position
 				NUM_REGISTER
 			};
+
+			/// <summary>
+			///  This is the enumeration of the current motor working mode
+			/// </summary>
+			enum class motor_mode {
+				MOTOR_DISABLE_MODE = 0,
+				MOTOR_CALIBRATION_MODE,
+				MOTOR_COMMAND_MODE,
+				MOTOR_SERVICE_MODE
+			};
+
+			enum class xscroll {
+				SCROLL_UNDEF = 0,
+				SCROLL_CENTER,
+				SCROLL_LEFT,
+				SCROLL_RIGHT,
+
+			};
+
+			enum class needle {
+				NEEDLE_A = 0,
+				NEEDLE_B,
+				NEEDLE_C,
+				NEEDLE_NOT_PRESENT
+			};
+
+			
 
 			static bool decodeSystemRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
-				// Byte 0 of the register
-				system_error = sys->d0 & 0x1;
-				system_emergency = sys->d0 & 0x2;
-				system_power_down = sys->d0 & 0x4;
-				cabinet_safety_alarm = sys->d0 & 0x8;
-				soft_power_off_request = sys->d0 & 0x10;
-				batt1_low_alarm = sys->d0 & 0x20;
-				batt2_low_alarm = sys->d0 & 0x40;
-				battery_enabled = sys->d0 & 0x80;
+				// Byte 0 
+				motor_working_mode = (motor_mode) sys->d0;
 
-				// Byte 1 of the register
-				button_up_stat = sys->d1 & 0x1;
-				button_down_stat = sys->d1 & 0x2;
-				button_slide_up_stat = sys->d1 & 0x4;
-				button_slide_down_stat = sys->d1 & 0x8;
-				button_cw_stat = sys->d1 & 0x10;
-				button_ccw_stat = sys->d1 & 0x20;
-				button_body_cw = sys->d1 & 0x40;
-				button_body_ccw = sys->d1 & 0x80;
+				// Byte 1
+				motor_power_sw = sys->d1 & 0x1;
+				motor_general_enable = sys->d1 & 0x2;
+				motor_keyb_enable = sys->d1 & 0x4;
+				motor_needle_enable = sys->d1 & 0x8;
 
 				// Byte 2
-				motor_48V_ok = sys->d2 & 0x1;
-				motor_safety_switch = sys->d2 & 0x2;
-				compression_on_status = sys->d2 & 0x4;
-				xray_push_button = sys->d2 & 0x8;
-				closed_door = sys->d2 & 0x10;
-				burning_jumper_present = sys->d2 & 0x20;
-				power_lock_status = sys->d2 & 0x40;
-
-				// Byte 3
-				pedal_up_stat = sys->d3 & 0x1;
-				pedal_down_stat = sys->d3 & 0x2;
-				pedal_cmp_up_stat = sys->d3 & 0x4;
-				pedal_cmp_down_stat = sys->d3 & 0x8;
+				keystep_mode = sys->d2 & 0x1;
+				yup_detected = sys->d2 & 0x2;
+				xscroll_detected = (xscroll)((sys->d2 >> 2) & 0x3);
+				needle_detected = (needle)((sys->d2 >> 4) & 0xF);
 
 				return true;
 			}
@@ -65,200 +73,111 @@ public:
 			static Register^ encodeSystemRegister(void) {
 				Register^ sys = gcnew Register;
 
-				// Byte 0 of the register
-				if (system_error)			sys->d0 |= 0x1;
-				if (system_emergency)		sys->d0 |= 0x2;
-				if (system_power_down)		sys->d0 |= 0x4;
-				if (cabinet_safety_alarm)	sys->d0 |= 0x8;
-				if (soft_power_off_request) sys->d0 |= 0x10;
-				if (batt1_low_alarm)		sys->d0 |= 0x20;
-				if (batt2_low_alarm)		sys->d0 |= 0x40;
-				if (battery_enabled)		sys->d0 |= 0x80;
+				// Byte 0
+				sys->d0 = (unsigned char) motor_working_mode;
 
-				// Byte 1 of the register
-				if (button_up_stat) sys->d1 |= 0x1;
-				if (button_down_stat)  sys->d1 |= 0x2;
-				if (button_slide_up_stat)  sys->d1 |= 0x4;
-				if (button_slide_down_stat) sys->d1 |= 0x8;
-				if (button_cw_stat)  sys->d1 |= 0x10;
-				if (button_ccw_stat)  sys->d1 |= 0x20;
-				if (button_body_cw)  sys->d1 |= 0x40;
-				if (button_body_ccw)  sys->d1 |= 0x80;
+				// Byte 1
+				if(motor_power_sw) sys->d1 |= 0x1;
+				if(motor_general_enable)  sys->d1 |= 0x2;
+				if(motor_keyb_enable) sys->d1 |= 0x4;
+				if(motor_needle_enable)  sys->d1 |= 0x8;
 
 				// Byte 2
-				if (motor_48V_ok) sys->d2 |= 0x1;
-				if (motor_safety_switch) sys->d2 |= 0x2;
-				if (compression_on_status) sys->d2 |= 0x4;
-				if (xray_push_button) sys->d2 |= 0x8;
-				if (closed_door) sys->d2 |= 0x10;
-				if (burning_jumper_present) sys->d2 |= 0x20;
-				if (power_lock_status)sys->d2 |= 0x40;
-
-				// Byte 3
-				if (pedal_up_stat) sys->d3 |= 0x1;
-				if (pedal_down_stat) sys->d3 |= 0x2;
-				if (pedal_cmp_up_stat) sys->d3 |= 0x4;
-				if (pedal_cmp_down_stat) sys->d3 |= 0x8;
+				if(keystep_mode)  sys->d2 |= 0x1;
+				if(yup_detected)  sys->d2 |= 0x2;
+				sys->d2 |= (((unsigned char)xscroll_detected) & 0x3) << 2;
+				sys->d2 |= (((unsigned char)needle_detected) & 0xF) << 4;
 
 				return sys;
 			}
 
-
-
-			// System Status register definition
-			static bool system_error = false;		//!< An error condition is present 
-			static bool system_emergency = false;			//!< Current Emergency Status
-			static bool system_power_down = false;			//!< Current Powerdown Status 
-			static bool cabinet_safety_alarm = false;				//!< The Cabinet safety input status 
-			static bool soft_power_off_request = false;		//!< A power Off sequence is requested
-			static bool batt1_low_alarm = false;		//!< Low voltage of battery 1
-			static bool batt2_low_alarm = false;		//!< Low voltage of battery 2
-			static bool battery_enabled = false; //!< Battery enabled system button status
-			static bool button_up_stat = false;		//!> This is the current status of the Manual Keypad - Vertical Up input line
-			static bool button_down_stat = false;	//!> This is the current status of the Manual Keypad - Vertical Down input line
-			static bool button_slide_up_stat = false;//!> This is the current status of the Manual Slide-Up input line
-			static bool button_slide_down_stat = false;//!> This is the current status of the Manual Slide-Down input line
-			static bool button_cw_stat = false;	//!> This is the current status of the Manual Keypad - Arm CW input line
-			static bool button_ccw_stat = false;//!> This is the current status of the Manual Keypad - Arm CCW input line
-			static bool button_body_cw = false;		//!> This is the current status of the Manual Body-CW input line
-			static bool button_body_ccw = false;	//!> This is the current status of the Manual Body-CCW input line		
-			static bool motor_48V_ok = false;				//!< Feedback from the motor power supply
-			static bool motor_safety_switch = false;		//!< Safety switch of the 48V status
-			static bool compression_on_status = false;		//!< Actual compression signal
-			static bool xray_push_button = false;	//!> This is the current X-RAY status 
-			static bool closed_door = false;		//!> This is the current closed door status
-			static bool burning_jumper_present = false;		//!< Burning jumper present in the system
-			static bool power_lock_status = false;			//!< The power supply lock condition (for programming)
-			static bool pedal_up_stat = false;		//!> This is the current status of the Pedal Board - Vertical Up input line 
-			static bool pedal_down_stat = false;	//!> This is the current status of the Pedal Board - Vertical Down input line 
-			static bool pedal_cmp_up_stat = false;		//!> This is the current status of the Pedal Board - Compressor Up input line 
-			static bool pedal_cmp_down_stat = false;		//!> This is the current status of the Pedal Board - Compressor Down input line
-
-			static bool decodeBatteryRegister(Register^ sys) {
+			static bool decodeXYRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
-				// Byte 0 of the register
-				voltage_batt1 = sys->d0;
+				// Byte 0 + 1
+				x_position = (unsigned short) sys->d0 + 256 * (unsigned short) sys->d1;
 
-				// Byte 1 of the register
-				voltage_batt2 = sys->d1;
+				// Byte 2 + 3
+				y_position = (unsigned short)sys->d2 + 256 * (unsigned short)sys->d3;
+			
+				return true;
+			}
+
+			static Register^ encodeXYRegister(void) {
+				Register^ sys = gcnew Register;
+
+				// Byte 0
+				sys->d0 = (unsigned char)  x_position;
+				sys->d1 = (unsigned char) (x_position>>8);
+				sys->d2 = (unsigned char) y_position;
+				sys->d3 = (unsigned char) (y_position >> 8);
+
+				return sys;
+			}
+
+			
+			static bool decodeZSRegister(Register^ sys) {
+				if (sys == nullptr) return false;
+
+				// Byte 0 + 1
+				z_position = (unsigned short)sys->d0 + 256 * (unsigned short)sys->d1;
+
+				// Byte 2 + 3
+				s_position = (unsigned short)sys->d2 + 256 * (unsigned short)sys->d3;
 
 				return true;
 			}
-			static Register^ encodeBatteryRegister(void) {
+
+			static Register^ encodeZSRegister(void) {
 				Register^ sys = gcnew Register;
 
-				// Byte 0 of the register
-				sys->d0 = voltage_batt1;
-				sys->d1 = voltage_batt2;
+				// Byte 0
+				sys->d0 = (unsigned char)z_position;
+				sys->d1 = (unsigned char)(z_position >> 8);
+				sys->d2 = (unsigned char)s_position;
+				sys->d3 = (unsigned char)(s_position >> 8);
 
 				return sys;
 			}
 
-			static unsigned char voltage_batt1 = 0;		//!< 10 * voltage level of battery 1
-			static unsigned char voltage_batt2 = 0;		//!< 10 * voltage level of battery 2
+			
+			// System Status register definition
+			static motor_mode motor_working_mode;
+			static bool motor_power_sw;
+			static bool motor_general_enable;
+			static bool motor_keyb_enable;
+			static bool motor_needle_enable;
+			static bool keystep_mode;
+			static bool yup_detected;
+			static xscroll xscroll_detected;
+			static needle  needle_detected;
+			
+			// XY Status
+			static unsigned short x_position;
+			static unsigned short y_position;
+
+			// ZS Status
+			static unsigned short z_position;
+			static unsigned short s_position;
+
 
 		};
 
 		ref class DataRegister {
 		public:
 
-			enum class register_index {
-				OUTPUTS = 0,	//!> This is the System Status register index
+			enum class register_index {				
 				NUM_REGISTER
 			};
-
-			Register^ encodeOutputRegister(void) {
-
-				// Creates a register with all bytes set to 0
-				Register^ out = gcnew Register;
-
-				// Assignes the output bit status
-				if (power_lock) out->d0 |= 0x1;
-				if (motor_power_supply_ena) out->d0 |= 0x2;
-				if (motor_power_switch_ena) out->d0 |= 0x4;
-				if (compression_enable) out->d0 |= 0x8;
-				if (compression_calibration) out->d0 |= 0x10;
-				if (xray_enable) out->d0 |= 0x20;
-
-				if (burning_activation) out->d1 |= 0x1;
-				if (manual_buzzer_status) out->d1 |= 0x2;
-				if (manual_buzzer_mode) out->d1 |= 0x4;
-				if (xray_led_status) out->d1 |= 0x8;
-				if (xray_lamp1_status) out->d1 |= 0x10;
-				if (xray_lamp2_status) out->d1 |= 0x20;
-				if (button_rotation_led) out->d1 |= 0x40;
-
-
-				if (soft_power_off_request) out->d3 |= 0x40;
-				if (keep_alive) out->d3 |= 0x80;
-
-				// Returns the formatted register
-				return out;
-			}
-
-			static bool decodeOutputRegister(Register^ reg) {
-				if (reg == nullptr) return false;
-
-				power_lock = reg->d0 & 0x1;
-				motor_power_supply_ena = reg->d0 & 0x2;
-				motor_power_switch_ena = reg->d0 & 0x4;
-				compression_enable = reg->d0 & 0x8;
-				compression_calibration = reg->d0 & 0x10;
-				xray_enable = reg->d0 & 0x20;
-
-				burning_activation = reg->d1 & 0x1;
-				manual_buzzer_status = reg->d1 & 0x2;
-				manual_buzzer_mode = reg->d1 & 0x4;
-				xray_led_status = reg->d1 & 0x8;
-				xray_lamp1_status = reg->d1 & 0x10;
-				xray_lamp2_status = reg->d1 & 0x20;
-				button_rotation_led = reg->d1 & 0x40;
-
-				soft_power_off_request = reg->d3 & 0x40;
-				keep_alive = reg->d3 & 0x80;
-
-				return true;
-			}
-
-			// Data 0
-			static bool power_lock = false; //!< Activates the power lock status in the remote board
-			static bool motor_power_supply_ena = false; //!< Enables the Power supply for all motors
-			static bool motor_power_switch_ena = false; //!< Enables the Switch relay on the motor power supply safe line
-			static bool compression_enable = false;//!< Enables the compressor-enable bus hardware line
-			static bool compression_calibration = false;//!< Enables the calibration bus hardware line
-			static bool xray_enable = false; //!< Enables the activation of the X-RAY enable for the generator interface 
-
-			// Data 1
-			static bool burning_activation = false; //!< Request to activate the x-ray button via software
-			static bool manual_buzzer_status = false; //!< In case of Manual Buzzer Mode active, this is the buzzer status
-			static bool manual_buzzer_mode = false; //!< activates the Buzzer manual mode
-			static bool xray_led_status = false; //!< activates the xray led output
-			static bool xray_lamp1_status = false; //!< activates the xray lamp-1 output
-			static bool xray_lamp2_status = false; //!< activates the xray lamp-2 output
-			static bool button_rotation_led = false; //!< activates the button_rotation led output
-
-			// Data2
-			// Not implemented
-
-			// Data 3
-			static bool soft_power_off_request = false; //!< requests the power off sequence activation
-			static bool keep_alive = false; //!< keep alive bit to be toggled 
+			
 
 		};
 
 		ref class ParameterRegister {
 		public:
-			enum class register_index {
-				PARAM_REGISTER = 0,
+			enum class register_index {				
 				NUM_REGISTER
 			};
-
-			//writeParamRegister(unsigned char idx, Register^ reg)
-
-			Register^ encodeParamRegister(void) {
-				return gcnew Register(0, 0, 0, 0);
-			}
 
 		};
 
@@ -266,46 +185,75 @@ public:
 		ref class Commands {
 		public:
 			enum class command_index {
-				ABORT_COMMAND = 0,		//!< Abort Command (mandatory as for device protocol)
-				ACTIVATE_SOFT_POWEROFF,	//!< Soft power off activation
-				ACTIVATE_DEMO_TOMO,		//!< Buzzer pulse for tomo		
-				NUM_COMMANDS
+				CMD_ABORT = 0,
+				CMD_DISABLE_MODE,
+				CMD_COMMAND_MODE,
+				CMD_SERVICE_MODE,
+				CMD_CALIB_MODE,
+				CMD_MOVE_X,
+				CMD_MOVE_Y,
+				CMD_MOVE_Z,
+				CMD_ENABLE_KEYSTEP,
+				CMD_SERVICE_TEST_CYCLE
 			};
 
-			CanDeviceCommand^ encodeActivateDemoCommand(unsigned char samples, unsigned char fps) {
-				return gcnew CanDeviceCommand((unsigned char)command_index::ACTIVATE_SOFT_POWEROFF, samples, fps, 0, 0);
+			CanDeviceCommand^ encodeDisableModeCommand(void) {
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_DISABLE_MODE, 0, 0, 0, 0);
+			}
+			CanDeviceCommand^ encodeCommandModeCommand(void) {
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_COMMAND_MODE, 0, 0, 0, 0);
+			}
+			CanDeviceCommand^ encodeServiceModeCommand(void) {
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_SERVICE_MODE, 0, 0, 0, 0);
+			}
+			CanDeviceCommand^ encodeCalibModeCommand(void) {
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_CALIB_MODE, 0, 0, 0, 0);
+			}
+			CanDeviceCommand^ encodeTestCycleModeCommand(void) {
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_SERVICE_TEST_CYCLE, 0, 0, 0, 0);
+			}
+			CanDeviceCommand^ encodeMoveXCommand(int X) {
+				System::Byte d0 = (System::Byte)(X & 0xFF);
+				System::Byte d1 = (System::Byte)((X >> 8) & 0xFF);
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_MOVE_X, d0, d1, 0, 0);
+			}
+			CanDeviceCommand^ encodeMoveYCommand(int Y) {
+				System::Byte d0 = (System::Byte)(Y & 0xFF);
+				System::Byte d1 = (System::Byte)((Y >> 8) & 0xFF);
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_MOVE_Y, d0, d1, 0, 0);
+			}
+			CanDeviceCommand^ encodeMoveZCommand(int Z) {
+				System::Byte d0 = (System::Byte)(Z & 0xFF);
+				System::Byte d1 = (System::Byte)((Z >> 8) & 0xFF);
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_MOVE_Z, d0, d1, 0, 0);
+			}
+			CanDeviceCommand^ encodeKeyStepEnableCommand(bool enable) {
+
+				System::Byte d0 = (enable) ? 1 : 0;
+				return gcnew CanDeviceCommand((unsigned char)command_index::CMD_ENABLE_KEYSTEP, d0, 0, 0, 0);
 			}
 
 		};
 
 		static StatusRegister status_register;
 		static DataRegister data_register;
+		static ParameterRegister param_register;
 		static Commands command;
 	};
 
 	ref class hardware_device {
 	public:
-		enum class scroll {
-			SCROLL_CENTER = 0,	
-			SCROLL_LEFT,		
-			SCROLL_RIGHT,
-			SCROLL_UNDEF
+
+		
+
+		enum class motor_activation {
+			MOTOR_NOT_ACTIVATED = 0,
+			MOTOR_X,
+			MOTOR_Y,
+			MOTOR_Z
 		};
-		enum class updown {
-			Y_UP = 0,
-			Y_DOWN,			
-		};
-		enum class needle {
-			NEEDLE_A = 0,
-			NEEDLE_B,
-			NEEDLE_C,
-			NEEDLE_NOT_PRESENT
-		};
-		enum class keymode {
-			DISABLED = 0,
-			CALIBRATION_MODE,
-			STEP_MODE,			
-		};
+
+		
 		enum class keypress {
 			XM = 0,
 			XP,
@@ -320,8 +268,14 @@ public:
 
 		void init() {
 			connected = false;
-			motor_enabled = true;
-			motor_activated = false;
+			motor_working_mode = ProtocolStructure::StatusRegister::motor_mode::MOTOR_DISABLE_MODE;
+			power_switch_stat = false;
+			general_enable_stat = false;
+			needle_enable_stat = false;
+			keyboard_enable_stat = false;
+
+			motor_command = motor_activation::MOTOR_NOT_ACTIVATED;
+			
 			Xtarget = Xposition = 1290;
 			Ytarget = Yposition = 0;
 			Ztarget = Zposition = 0;
@@ -329,35 +283,50 @@ public:
 			pointer_present = false;
 			Slider = 15;
 
-			XScroll = scroll::SCROLL_CENTER;
-			Yupdown = updown::Y_UP;
+			XScroll = ProtocolStructure::StatusRegister::xscroll::SCROLL_CENTER;
+			Yup_stat = true;
 			
 			
-			Needle = needle::NEEDLE_NOT_PRESENT;
-			keybMode = keymode::DISABLED;
+			Needle = ProtocolStructure::StatusRegister::needle::NEEDLE_NOT_PRESENT;
 			key = keypress::NOT_PRESSED;
+			keystep_mode = false;
+
+			// To initialize the workflow
+			working_mode_init = true;
 		}
 
 		
 		// Motor section
-		bool motor_enabled;
-		bool motor_activated;
+		bool working_mode_init;
+		ProtocolStructure::StatusRegister::motor_mode motor_working_mode;
+		motor_activation motor_command;
 		int  Xposition, Yposition, Zposition;
 		int  Xtarget, Ytarget, Ztarget;
+
+		// Safety switch control 
+		bool power_switch_stat;
+		bool general_enable_stat;
+		bool needle_enable_stat;
+		bool keyboard_enable_stat;
 		
 		// Pointer
 		bool pointer_present;
 		int  Slider;
-		needle  Needle;
+		ProtocolStructure::StatusRegister::needle  Needle;
 
-		scroll  XScroll;
-		updown Yupdown;
+		// Axes control
+		ProtocolStructure::StatusRegister::xscroll  XScroll;
+		bool Yup_stat;
 		
-		keymode keybMode;
+		// External keyboard and internal buttons
 		keypress key;
+		bool keystep_mode;
+
+		bool connected;
 
 		
-		bool connected;
+		
+
 
 	};
 
@@ -381,7 +350,8 @@ public:
 	};
 
 	PCB325(void) :deviceInterface((unsigned short)0x15, setRegVal(1, 0, 0, 0), (Byte) ProtocolStructure::StatusRegister::register_index::NUM_REGISTER, (Byte)ProtocolStructure::DataRegister::register_index::NUM_REGISTER, (Byte)ProtocolStructure::ParameterRegister::register_index::NUM_REGISTER) {
-
+		request_abort_command = false;
+		request_motor_working_mode = ProtocolStructure::StatusRegister::motor_mode::MOTOR_DISABLE_MODE;
 	}
 	static void  initialize(void) {};
 	static PCB325^ board = gcnew PCB325;
@@ -397,5 +367,16 @@ public:
 	static ProtocolStructure protocol;
 
 	// Internal management
-	private:void updateStatusRegisters(void);
+	private:
+			bool request_abort_command;
+			ProtocolStructure::StatusRegister::motor_mode request_motor_working_mode;
+			
+			void updateStatusRegisters(void);
+		    void motor_disable_workflow(void);
+		    void motor_calibration_workflow(void);
+		    void motor_command_workflow(void);
+		    void motor_service_workflow(void);
+			bool evaluate_power_switch_stat(void);
+			void motor_activation_completed(bool result);
+
 };

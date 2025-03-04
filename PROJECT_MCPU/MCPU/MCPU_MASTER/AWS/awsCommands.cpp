@@ -10,6 +10,7 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
+#include "PCB325.h"
 #include "PCB326.h"
 #include "ExposureModule.h"
 #include "Generator.h"
@@ -1444,6 +1445,22 @@ void   awsProtocol::EXEC_TestCommand(void) {
         int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
         VerticalMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
     }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_X") {
+        LogClass::logInFile("TEST ON BIOPSY X");
+        unsigned short pos = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
+        if(!PCB325::moveX(pos)) LogClass::logInFile("FAILED");
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_Y") {
+        LogClass::logInFile("TEST ON BIOPSY Y");
+        unsigned short pos = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
+        if (!PCB325::moveY((unsigned short)pos)) LogClass::logInFile("FAILED");
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_Z") {
+        LogClass::logInFile("TEST ON BIOPSY Z");
+        unsigned short pos = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
+        if (!PCB325::moveZ((unsigned short)pos)) LogClass::logInFile("FAILED");
+    }
+
 
     return;
 }

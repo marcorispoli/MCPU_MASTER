@@ -209,7 +209,7 @@ void Gantry::initialize(void) {
 bool Gantry::setIdle() {
     if (current_operating_status == operating_status_options::GANTRY_IDLE) return true;
     if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) ((OperatingForm^)pOperatingForm)->close();
-    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) ((OperatingForm^)pBiopsyForm)->close();
+    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) ((BiopsyForm^)pBiopsyForm)->close();
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) ((ServiceForm^)pServiceForm)->close();
 
     current_operating_status = operating_status_options::GANTRY_IDLE;

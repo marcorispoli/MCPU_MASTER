@@ -209,18 +209,18 @@ System::Void ServiceForm::biopsyLightOn_Click(System::Object^ sender, System::Ev
 	try {
 		System::Byte ena = System::Convert::ToByte(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_POWER_LIGHT)[BiopsyConfig::PARAM_POWER_LIGHT_ENABLE]);
 		int duty = System::Convert::ToInt16(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_POWER_LIGHT)[BiopsyConfig::PARAM_POWER_LIGHT_DUTY]);
-		PCB325::setLight(ena, duty);
+		// PCB325::setLight(ena, duty);
 	}
 	catch (...) {
-		PCB325::setLight(false, 0);
+		// PCB325::setLight(false, 0);
 	}
 	
 }
 System::Void ServiceForm::biopsyLightOff_Click(System::Object^ sender, System::EventArgs^ e) {
-	PCB325::setLight(false, 0);
+	// PCB325::setLight(false, 0);
 }
 
 System::Void ServiceForm::biopsyPark_Click(System::Object^ sender, System::EventArgs^ e) {
-	PCB325::moveHome();
+	// PCB325::moveHome();
 	return;
 }

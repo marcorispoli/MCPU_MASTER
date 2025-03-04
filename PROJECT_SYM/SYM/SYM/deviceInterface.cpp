@@ -46,7 +46,7 @@ void deviceInterface::threadWork(void) {
 	device_reset_callback();
 	
 	while (true) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(_DEVICE_TASK_EXECUTION_DELAY_ms));
 		device_workflow_callback();
 	}
 }
@@ -252,13 +252,24 @@ void deviceInterface::handle_normal_frame(void) {
 
 	case (Byte)ProtocolFrameCode::FRAME_COMMAND_EXEC:
 		
-			commandResult^ result = device_command_callback(frame_index, frame_d0, frame_d1, frame_d2, frame_d3);
-			command_register = gcnew Register((Byte)result->status, (Byte)result->d0, (Byte)result->d1, (Byte)result->error);
-			buffer[3] = (Byte)(result->status);
-			buffer[4] = (Byte)(result->d0);
-			buffer[5] = (Byte)(result->d1);
-			buffer[6] = (Byte)(result->error);
+		// Busy condition
+		if ((command_executing) && (frame_index != 0)) {
+			// The command_register shall not be modified!	
+			buffer[3] = (Byte)(CommandReturnStatus::COMMAND_ERROR);
+			buffer[4] = (Byte)(0);
+			buffer[5] = (Byte)(0);
+			buffer[6] = (Byte)(CommandRegisterErrors::COMMAND_ERROR_BUSY);
+			break;
+		}
+
+		commandResult^ result = device_command_callback(frame_index, frame_d0, frame_d1, frame_d2, frame_d3);
+		command_register = gcnew Register((Byte)result->status, (Byte)result->d0, (Byte)result->d1, (Byte)result->error);
+		buffer[3] = (Byte)(result->status);
+		buffer[4] = (Byte)(result->d0);
+		buffer[5] = (Byte)(result->d1);
+		buffer[6] = (Byte)(result->error);
 		
+		if (result->status == CommandReturnStatus::COMMAND_PROCESSING) command_executing = true;
 		break;
 
 	}

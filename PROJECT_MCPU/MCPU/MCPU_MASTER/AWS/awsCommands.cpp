@@ -1,5 +1,5 @@
 
-#include "../gantry_global_status.h"
+#include "gantry_global_status.h"
 #include "awsProtocol.h"
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
@@ -16,7 +16,7 @@
 #include "Generator.h"
 #include "Notify.h"
 #include "Log.h"
-#include "BiopsyForm.h"
+#include "BiopsyStudy.h"
 
 
 using namespace System::Diagnostics;
@@ -1463,7 +1463,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
     }
     else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_C") {
         LogClass::logInFile("TEST ON BIOPSY HOME_C");
-        int res = ((BiopsyForm^)Gantry::pBiopsyForm)->pointerHome(BiopsyForm::home_positions::HOME_CENTER, pDecodedFrame->ID);
+        int res = ((BiopsyStudy^)Gantry::pBiopsyStudy)->pointerHome(BiopsyStudy::home_positions::HOME_CENTER, pDecodedFrame->ID);
         if (res < 0) {
             pDecodedFrame->errcode = -res;
             ackNok();
@@ -1473,7 +1473,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
     }
     else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_R") {
         LogClass::logInFile("TEST ON BIOPSY HOME_R");
-        int res = ((BiopsyForm^)Gantry::pBiopsyForm)->pointerHome(BiopsyForm::home_positions::HOME_RIGHT, pDecodedFrame->ID);
+        int res = ((BiopsyStudy^)Gantry::pBiopsyStudy)->pointerHome(BiopsyStudy::home_positions::HOME_RIGHT, pDecodedFrame->ID);
         if (res < 0) {
             pDecodedFrame->errcode = -res;
             ackNok();
@@ -1483,7 +1483,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
     }
     else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_L") {
         LogClass::logInFile("TEST ON BIOPSY HOME_L");
-        int res = ((BiopsyForm^)Gantry::pBiopsyForm)->pointerHome(BiopsyForm::home_positions::HOME_LEFT, pDecodedFrame->ID);
+        int res = ((BiopsyStudy^)Gantry::pBiopsyStudy)->pointerHome(BiopsyStudy::home_positions::HOME_LEFT, pDecodedFrame->ID);
         if (res < 0) {
             pDecodedFrame->errcode = -res;
             ackNok();

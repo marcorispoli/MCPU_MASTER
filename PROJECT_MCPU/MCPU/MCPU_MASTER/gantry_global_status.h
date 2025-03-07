@@ -30,7 +30,7 @@ public:
     // Forms
     static Object^ pIdleForm; //!< Pointer to the IdleForm 
     static Object^ pOperatingForm; //!< Pointer to the OperatingForm 
-    static Object^ pBiopsyForm; //!< Pointer to the OperatingForm 
+    static Object^ pBiopsyStudy; //!< Pointer to the OperatingForm 
     static Object^ pServiceForm; //!< Pointer to the ServiceForm 
     static Object^ pDebugger = nullptr; //!< Pointer to the Debugger if activated
     

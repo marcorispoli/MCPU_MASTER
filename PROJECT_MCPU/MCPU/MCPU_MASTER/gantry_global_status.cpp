@@ -1,7 +1,7 @@
 #include "gantry_global_status.h"
 #include "IdleForm.h"
 #include "OperatingForm.h"
-#include "BiopsyForm.h"
+#include "BiopsyStudy.h"
 #include "ServiceForm.h"
 #include "ConfigurationFiles.h"
 #include "Notify.h"
@@ -201,7 +201,7 @@ void Gantry::initialize(void) {
     // Creates the status Windows
     pIdleForm = gcnew IdleForm();
     pOperatingForm = gcnew OperatingForm();
-    pBiopsyForm = gcnew BiopsyForm();
+    pBiopsyStudy = gcnew BiopsyStudy();
     pServiceForm = gcnew ServiceForm();
     valuePopupWindow = gcnew ValuePopupForm();
 
@@ -209,7 +209,7 @@ void Gantry::initialize(void) {
 bool Gantry::setIdle() {
     if (current_operating_status == operating_status_options::GANTRY_IDLE) return true;
     if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) ((OperatingForm^)pOperatingForm)->close();
-    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) ((BiopsyForm^)pBiopsyForm)->close();
+    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) ((BiopsyStudy^)pBiopsyStudy)->close();
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) ((ServiceForm^)pServiceForm)->close();
 
     current_operating_status = operating_status_options::GANTRY_IDLE;
@@ -237,7 +237,7 @@ bool Gantry::setBiopsyStudy() {
     if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
 
     current_operating_status = operating_status_options::GANTRY_BIOPSY_STUDY;
-    ((BiopsyForm^)pBiopsyForm)->open();
+    ((BiopsyStudy^)pBiopsyStudy)->open();
     awsProtocol::EVENT_GantryStatus();
     return true;
 }
@@ -272,7 +272,7 @@ bool Gantry::setCloseStudy(void) {
     Exposures::reset();// Reset all the modalities
 
     ((OperatingForm^)pOperatingForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
-    ((BiopsyForm^)pBiopsyForm)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
+    ((BiopsyStudy^)pBiopsyStudy)->evaluateReadyWarnings(true); // Reset the Warnings of the ready conditions
 
     return setIdle();
 }

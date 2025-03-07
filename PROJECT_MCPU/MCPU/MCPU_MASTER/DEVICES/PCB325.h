@@ -350,6 +350,19 @@ public:
 
 	static bool isYUp(void) { return protocol.status_register.yup_detected; }
 
+	// Scroll position iniquiry
+	static bool isXC(void) { return (protocol.status_register.xscroll_detected == ProtocolStructure::StatusRegister::xscroll::SCROLL_CENTER); }
+	static bool isXL(void) { return (protocol.status_register.xscroll_detected == ProtocolStructure::StatusRegister::xscroll::SCROLL_LEFT); }
+	static bool isXR(void) { return (protocol.status_register.xscroll_detected == ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT); }
+	static bool isXU(void) { return (protocol.status_register.xscroll_detected == ProtocolStructure::StatusRegister::xscroll::SCROLL_UNDEF); }
+
+	// Group Y position evaluation respect the Z group
+	static bool isGroupYleftThanBody() { return true; }
+	static bool isGroupYrightThanBody() { return false; }
+	static bool moveXHomeLeft(void) { return true; }
+	static bool moveXHomeRight(void) { return true; }
+
+
 	static bool activateCycleTest(void);
 	
 	//static void setLight(bool status, int duty) { protocol.data_register.light_status = status;  protocol.data_register.light_duty = duty; }

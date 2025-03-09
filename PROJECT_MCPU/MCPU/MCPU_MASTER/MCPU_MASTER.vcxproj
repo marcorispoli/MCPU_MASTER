@@ -334,6 +334,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BIOPSY_STUDY\BiopsyForm.resx" />
+    <EmbeddedResource Include="BIOPSY_STUDY\BiopsyStudy.resx">
+      <DependentUpon>BIOPSY_STUDY\BiopsyStudy.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\AecSelectionDialog.resx">
       <DependentUpon>WINDOWS\AecSelectionDialog.h</DependentUpon>
     </EmbeddedResource>

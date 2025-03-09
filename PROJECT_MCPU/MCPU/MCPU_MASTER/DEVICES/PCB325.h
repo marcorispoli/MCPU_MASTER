@@ -1,6 +1,9 @@
 #pragma once
 #include "CanDeviceProtocol.h"
 
+
+
+
 /// <summary>
 /// \defgroup PCB326_Module PCB326 Module: Obstacle device module controller
 /// 
@@ -18,6 +21,9 @@ public:
 	literal unsigned short BIOPSY_MAX_X_POSITION = 2580; //!< Maximum axes position  
 	literal unsigned short BIOPSY_MAX_Y_POSITION = 700; //!< Maximum axes position  
 	literal unsigned short BIOPSY_MAX_Z_POSITION = 1350; //!< Maximum axes position  
+	literal unsigned short BIOPSY_ZBODY_WIDTH = 1000;
+	literal unsigned short BIOPSY_YBODY_WIDTH = 300;
+
 
 	PCB325() : CanDeviceProtocol(0x15, L"BIOPSY_DEVICE")
 	{
@@ -278,10 +284,10 @@ public:
 	static unsigned short getS(void) { return protocol.status_register.s_position; }
 
 	static bool isPointerMoving(void) {
-		if (motor_command_result == 0) return true;
+		return (motor_command_result == 0) ;
 	}
 	static bool isPointerSuccessfullyMoved(void) {
-		if (motor_command_result == 1) return true;
+		return (motor_command_result == 1);
 	}
 	static bool moveX(unsigned short x) { 
 		if (!command_mode_ready) return false;
@@ -357,10 +363,71 @@ public:
 	static bool isXU(void) { return (protocol.status_register.xscroll_detected == ProtocolStructure::StatusRegister::xscroll::SCROLL_UNDEF); }
 
 	// Group Y position evaluation respect the Z group
-	static bool isGroupYleftThanBody() { return true; }
-	static bool isGroupYrightThanBody() { return false; }
-	static bool moveXHomeLeft(void) { return true; }
-	static bool moveXHomeRight(void) { return true; }
+	static bool isGroupYleftThanBody() { 
+		
+		int xmax_pointer, xmin_pointer, xmax_base, xmin_base;
+
+		// Position of the Y body in X coordinate
+		xmax_pointer = protocol.status_register.x_position + (BIOPSY_YBODY_WIDTH / 2);
+		xmin_pointer = protocol.status_register.x_position - (BIOPSY_YBODY_WIDTH / 2);
+
+		// Find the coordinates of the ZBODY in X coordinate
+		if (isXC()) {
+			xmin_base = BIOPSY_MAX_X_POSITION / 2 - (BIOPSY_ZBODY_WIDTH / 2);
+			xmax_base = BIOPSY_MAX_X_POSITION / 2 + (BIOPSY_ZBODY_WIDTH / 2);
+		}
+		else if (isXL()) {
+			xmin_base = 0;
+			xmax_base = (BIOPSY_ZBODY_WIDTH);
+
+		}
+		else if (isXR() ) {
+			xmin_base = BIOPSY_MAX_X_POSITION - BIOPSY_ZBODY_WIDTH;
+			xmax_base = BIOPSY_MAX_X_POSITION;
+		}
+		if (xmin_pointer > xmax_base) return true;
+		return false;
+
+		/*
+		if ((xmin_pointer <= xmax_base) && (xmin_pointer >= xmin_base)) device.crash_event = true;
+		else if ((xmax_pointer <= xmax_base) && (xmax_pointer >= xmin_base)) device.crash_event = true;
+		else device.crash_event = false;
+		*/
+	}
+	
+	static bool isGroupYrightThanBody()  {
+
+		int xmax_pointer, xmin_pointer, xmax_base, xmin_base;
+
+		// Position of the Y body in X coordinate
+		xmax_pointer = protocol.status_register.x_position + (BIOPSY_YBODY_WIDTH / 2);
+		xmin_pointer = protocol.status_register.x_position - (BIOPSY_YBODY_WIDTH / 2);
+
+		// Find the coordinates of the ZBODY in X coordinate
+		if (isXC()) {
+			xmin_base = BIOPSY_MAX_X_POSITION / 2 - (BIOPSY_ZBODY_WIDTH / 2);
+			xmax_base = BIOPSY_MAX_X_POSITION / 2 + (BIOPSY_ZBODY_WIDTH / 2);
+		}
+		else if (isXL()) {
+			xmin_base = BIOPSY_MAX_X_POSITION - BIOPSY_ZBODY_WIDTH;
+			xmax_base = BIOPSY_MAX_X_POSITION;
+
+		}
+		else if (isXR()) {
+			xmin_base = 0;
+			xmax_base = (BIOPSY_ZBODY_WIDTH);
+		}
+		if (xmax_pointer < xmin_base) return true;
+		return false;
+		/*
+		if ((xmin_pointer <= xmax_base) && (xmin_pointer >= xmin_base)) device.crash_event = true;
+		else if ((xmax_pointer <= xmax_base) && (xmax_pointer >= xmin_base)) device.crash_event = true;
+		else device.crash_event = false;
+		*/
+	}
+	
+	static bool moveXHomeLeft(void) { return moveX(BIOPSY_MAX_X_POSITION); }
+	static bool moveXHomeRight(void) { return moveX(0); }
 
 
 	static bool activateCycleTest(void);

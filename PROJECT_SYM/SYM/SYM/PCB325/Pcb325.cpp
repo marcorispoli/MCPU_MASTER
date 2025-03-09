@@ -276,7 +276,7 @@ void PCB325::device_workflow_callback(void) {
 			xmin_base = 2580 - Z_WIDTH;
 			xmax_base = 2580;
 
-		}else if (device.XScroll == ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT) {
+		}else if (device.XScroll == ProtocolStructure::StatusRegister::xscroll::SCROLL_LEFT) {
 			xmin_base = 0;
 			xmax_base = (Z_WIDTH);
 		}

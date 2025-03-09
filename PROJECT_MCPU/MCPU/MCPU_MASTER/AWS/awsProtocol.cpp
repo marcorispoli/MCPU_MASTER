@@ -69,6 +69,12 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("EXEC_PowerOff", gcnew command_callback(this, &awsProtocol::EXEC_PowerOff));
     commandExec->Add("EXEC_TestCommand", gcnew command_callback(this, &awsProtocol::EXEC_TestCommand));
 
+    commandExec->Add("EXEC_BiopsyHoming", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyHoming));
+    commandExec->Add("EXEC_BiopsyParking", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyParking));
+    commandExec->Add("EXEC_BiopsyPointing", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyPointing));
+    commandExec->Add("SET_BiopsyImage2D", gcnew command_callback(this, &awsProtocol::SET_BiopsyImage2D));
+    
+
     // Connects the Global register callbacks to the local Events        
     ArmMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
     VerticalMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);

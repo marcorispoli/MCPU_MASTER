@@ -21,8 +21,9 @@
 
 
 // Main Panel Definition
-#define MOTORS_PANEL_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Motors.PNG")
-#define COORDINATES_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Coordinates.PNG")
+
+#define ACTIVATION_INFO_IMG  Image::FromFile(Gantry::applicationResourcePath + "Icons\\Info.PNG")
+#define CONFIRMATION_BUTTON_IMG  Image::FromFile(Gantry::applicationResourcePath + "Icons\\OK_ICON.PNG")
 
 
 #define XRAY_ON_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\XOn.PNG")
@@ -31,42 +32,52 @@
 #define DEMO_IMAGE   Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Demo.PNG")
 #define SYM_IMAGE   Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Sym.PNG")
 
-#define LAMP_OFF_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\LampOff.PNG")
-#define LAMP_ON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\LampOn.PNG")
 
+#define MOTORS_PANEL_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Motors.PNG")
+#define SLIDE_0_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\slide_to_0.PNG")
+#define SLIDE_90_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\slide_to_90.PNG")
+#define COORDINATES_IMAGE  Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Coordinates.PNG")
 
-#define SLIDE_0_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Slide0.PNG")
-#define SLIDE_10_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\Slide10.PNG")
+// Key Panel 
+#define KEY_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\key_disabled.PNG")
+#define KEY_ENABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\key_enabled.PNG")
 
-#define INFO_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\InfoIcon.PNG")
-#define WARNING_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\WarningOn.PNG")
-#define ERROR_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\AlarmOn.PNG")
-#define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\AlarmOff.PNG")
-
+// Paddle Panel
 #define PADDLE_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\CompressionNotEnabled.PNG")
 #define PADDLE_ENABLE_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ActivePaddleDetected.PNG")
 #define PADDLE_NOT_DETECTED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\PaddleNotPresent.PNG")
-
 #define THICKNESS_DISABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ThicknessDisabled.PNG")
 #define THICKNESS_ENABLED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ThicknessEnabled.PNG")
 
+// Force Panel
 #define FORCE_DISABLED_NOT_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ForceDisabledNotCompressed.PNG")
 #define FORCE_DISABLED_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ForceDisabledCompressed.PNG")
 #define FORCE_ENABLED_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ForceEnabledCompressed.PNG")
 #define FORCE_ENABLED_NOT_COMPRESSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ForceEnabledNotCompressed.PNG")
 
+// Error Panel
+#define INFO_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\InfoIcon.PNG")
+#define WARNING_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\WarningOn.PNG")
+#define ERROR_BUTTON_ON Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\AlarmOn.PNG")
+#define ERROR_BUTTON_OFF Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\AlarmOff.PNG")
 
+// 2D Image Panel
+#define IMAGE2D_DISABLED_IMG Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\image2d_disabled.PNG")
+#define IMAGE2D_ENABLED_IMG Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\image2d_enabled.PNG")
+
+// Lamp Panel
+#define LAMP_OFF_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\LampOff.PNG")
+#define LAMP_ON_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\LampOn.PNG")
+
+// Tube Temp
 #define TUBE_TEMP_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\TubeOk.PNG")
 #define TUBE_TEMP_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\TubeNok.PNG")
 
+// Door Closed
 #define DOOR_CLOSED_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\DoorClosed.PNG")
 #define DOOR_OPEN_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\DoorOpen.PNG")
 
-#define RESIDUAL_EXPOSURE_OK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ExposureLeftOk.PNG")
-#define RESIDUAL_EXPOSURE_NOK_IMAGE Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\ExposureLeftNok.PNG")
-
 #define XRAY_ICON  Image::FromFile(Gantry::applicationResourcePath + "OperatingForm\\xrayIcon.PNG")
-
 #define COMPRESSING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\COMPRESSING_ICON.PNG")
 #define ARM_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\ARM_MOTOR_ICON.PNG")
 #define BODY_EXECUTING_ICON Image::FromFile(Gantry::applicationResourcePath + "Icons\\BODY_MOTOR_ICON.PNG")
@@ -136,8 +147,32 @@ void BiopsyStudy::formInitialization(void) {
 
 	mainPanel->SetBounds(0, 0, 600, 1024);
 	
+	// Panel for activation and current biopsy status image
+	activationInfoPanel->Hide();
+	activationInfoIcon->BackgroundImage = ACTIVATION_INFO_IMG;
+	activationInfoIcon->Show();
+	activationInfoText->Show();
+
+	// Confirmation Button
+	confirmationButton->BackColor = Color::Transparent;
+	confirmationButton->BackgroundImage = CONFIRMATION_BUTTON_IMG;
+	confirmationButton->Hide();
 	
-	// Confirmation Panel Setup ____________________________________________________________
+	// Activation Panel
+	activationPanel->Size.Width = 396;
+	activationPanel->Size.Height = 364;
+	activationPanel->Location.X = 192;
+	activationPanel->Location.Y = 192;
+	activationPanel->Hide();
+
+	// Status Panel (alternative to the activation panel
+	statusPanel->Size.Width = 396;
+	statusPanel->Size.Height = 364;
+	statusPanel->Location.X = 192;
+	statusPanel->Location.Y = 192;
+	statusPanel->Show();
+
+		// Confirmation Panel Setup ____________________________________________________________
 	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
 	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
 	pShiftConf = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
@@ -175,17 +210,26 @@ void BiopsyStudy::formInitialization(void) {
 
 	// Motors Panel
 	armPosition->BackgroundImage = MOTORS_PANEL_IMAGE;
+
+	// Slide status	
+	slideButton->BackgroundImage = SLIDE_90_IMAGE;
+
+	// Pointer Panel
 	pointerPosition->BackgroundImage = COORDINATES_IMAGE;
 
-
-	// Sets the current lamp status
-	BIOPSTATUS::Registers.collimator.light_on= false;
-	lampButton->BackgroundImage = LAMP_OFF_IMAGE;
+	// Key Status
+	keyStatus->BackgroundImage = KEY_DISABLED_IMAGE;
 
 	// Error Button
-    BIOPSTATUS::Registers.alarm = false;
+	BIOPSTATUS::Registers.alarm = false;
 	alarmButton->BackgroundImage = ERROR_BUTTON_OFF;
 
+	// 2D image
+	image2DButton->BackgroundImage = IMAGE2D_DISABLED_IMG;
+
+	// Sets the current lamp status
+	BIOPSTATUS::Registers.collimator.light_on = false;
+	lampButton->BackgroundImage = LAMP_OFF_IMAGE;
 
 	// Tube Status
 	BIOPSTATUS::Registers.collimator.bulb = 0;
@@ -198,9 +242,6 @@ void BiopsyStudy::formInitialization(void) {
 	BIOPSTATUS::Registers.closed_door = false;
 	doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
 
-
-	// Slide status	
-	slideButton->BackgroundImage = SLIDE_10_IMAGE;
 
 	operatingTimer = gcnew System::Timers::Timer(100);
 	operatingTimer->Elapsed += gcnew System::Timers::ElapsedEventHandler(this, &BiopsyStudy::onOperatingTimeout);
@@ -264,9 +305,7 @@ void BiopsyStudy::initOperatingStatus(void) {
 	// The Biopsy device is set in Command mode and the keyboard is set in normal mode
 	PCB325::setBiopsyCommandMode();
 	PCB325::setKeyStepMode(false);
-	sequence_executing = command_execution::COMMAND_IDLE;
-	sequence_step = 0;
-	seqid = 0;
+	
 
 	// Start the startup session	
 	operatingTimer->Start();		
@@ -588,8 +627,8 @@ void BiopsyStudy::evaluateSlideStatus(bool init) {
 	if (stat != cur_stat) {
 		stat = cur_stat;
 
-		if(stat == 0)  slideButton->BackgroundImage = SLIDE_0_IMAGE;
-		else slideButton->BackgroundImage = SLIDE_10_IMAGE;
+		if(stat == 0)  slideButton->BackgroundImage = SLIDE_90_IMAGE;
+		else slideButton->BackgroundImage = SLIDE_0_IMAGE;
 	}
 
 	
@@ -666,224 +705,8 @@ void BiopsyStudy::evaluatePointerStatus(void) {
 
 
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="home"></param>
-/// <param name="id"></param>
-/// <returns></returns>
-int BiopsyStudy::pointerHome(home_positions home, int id) {
-	
-
-	// Executing conditions
-	if (!PCB325::isBiopsyConnected()) return -1;
-	if (sequence_executing != command_execution::COMMAND_IDLE) return -2;
-
-	// Gets the target for the given home position
-	if (home == home_positions::HOME_CENTER) {
-		xtarget = (unsigned short) System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_X]);
-		ytarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Y]);
-		ztarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Z]);
-		sequence_executing = command_execution::COMMAND_HOME_CENTER;
-	}
-	else if (home == home_positions::HOME_LEFT) {
-		xtarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_X]);
-		ytarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Y]);
-		ztarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Z]);
-		sequence_executing = command_execution::COMMAND_HOME_LEFT;
-	}
-	else {
-		xtarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_X]);
-		ytarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Y]);
-		ztarget = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Z]);
-		sequence_executing = command_execution::COMMAND_HOME_RIGHT;
-	}
-
-	// Verifies if the actual position is aready in target
-	if (PCB325::isXtarget(xtarget) && PCB325::isYtarget(ytarget) && PCB325::isZtarget(ztarget)) {
-		sequence_executing = command_execution::COMMAND_IDLE;
-		return 0;
-	}
-
-	// Prepare for the command activation
-	seqid = id;							
-	sequence_step = 0;
-	return 1;
-	
-}
-
-int BiopsyStudy::pointerXYZ(unsigned short X, unsigned short Y, unsigned short Z, int id) {
-	return 0;
-}
-
-void BiopsyStudy::home_workflow(void) {
-	switch (sequence_step) {
-	case 0:
-		
-		if (PCB325::isYUp()) {
-			sequence_step = 100; // starts moving x-y-z to home
-			break;
-		}
-
-		if (PCB325::getX() < 1290) {
-			sequence_step = 10; // starts moving right
-		}else sequence_step = 20; // starts moving left
-		break;
-
-	//____________________________________________________________
-	case 10:  // starts moving right
-		if (!PCB325::moveX(0)) {
-			execution_error = 1;
-			sequence_step = 200;
-			break;
-		}
-		sequence_step++;
-		break;
-	case 11:		
-		// wait for command completion
-		if (PCB325::isPointerMoving()) break;
-		
-		// Terminated successfully
-		if (PCB325::isPointerSuccessfullyMoved()) {
-			sequence_step = 19;
-			break;
-		}
-
-		// Error
-		execution_error = 2;
-		sequence_step = 200;
-		break;
-
-	case 19: 
-		sequence_step = 30; // start requesting to y flip up
-		break;
-
-	//____________________________________________________________
-	case 20:  // starts moving left
-		if (!PCB325::moveX(PCB325::BIOPSY_MAX_X_POSITION)) {
-			execution_error = 3;
-			sequence_step = 200;
-			break;
-		}
-		sequence_step++;
-		break;
-	case 21:
-		// wait for command completion
-		if (PCB325::isPointerMoving()) break;
-
-		// Terminated successfully
-		if (PCB325::isPointerSuccessfullyMoved()) {
-			sequence_step = 29;
-			break;
-		}
-
-		// Error
-		execution_error = 4;
-		sequence_step = 200;
-		break;
-	case 29:
-		sequence_step = 30; // start requesting to y flip up
-		break;
-		
-	//____________________________________________________________
-	case 30:  // start requesting to y flip up
-		sequence_step = 39;
-		break;
-	case 39:
-		sequence_step = 100; // starts moving x-y-z to home
-		break;
-
-	//____________________________________________________________
-	case 100: // starts moving x-y-z to home
-		if (!PCB325::moveX(xtarget)) {
-			execution_error = 5;
-			sequence_step = 200;
-			break;
-		}
-		sequence_step++;		
-		break;
-	case 101:
-		// wait for command completion
-		if (PCB325::isPointerMoving()) break;
-
-		// Terminated successfully
-		if (PCB325::isPointerSuccessfullyMoved()) {
-			sequence_step++;
-			break;
-		}
-
-		// Error
-		execution_error = 6;
-		sequence_step = 200;
-		break;
-
-	case 102:
-		if (!PCB325::moveY(ytarget)) {
-			execution_error = 7;
-			sequence_step = 200;
-			break;
-		}
-		sequence_step++;
-		break;
-
-	case 103:
-		// wait for command completion
-		if (PCB325::isPointerMoving()) break;
-
-		// Terminated successfully
-		if (PCB325::isPointerSuccessfullyMoved()) {
-			sequence_step++;
-			break;
-		}
-
-		// Error
-		execution_error = 8;
-		sequence_step = 200;
-		break;
-
-	case 104:
-		if (!PCB325::moveZ(ztarget)) {
-			execution_error = 9;
-			sequence_step = 200;
-			break;
-		}
-		sequence_step++;
-		break;
-
-	case 105:
-		// wait for command completion
-		if (PCB325::isPointerMoving()) break;
-
-		// Terminated successfully
-		if (PCB325::isPointerSuccessfullyMoved()) {
-			sequence_step = 200;
-			execution_error = 0;
-			break;
-		}
-
-		// Error
-		execution_error = 10;
-		sequence_step = 200;
-		break;
-
-	case 200: // end sequence
-		if (seqid) awsProtocol::EVENT_Executed(seqid, execution_error);
-		sequence_executing = command_execution::COMMAND_IDLE;
-		break;
-	}
-}
-
-void BiopsyStudy::xyz_positioning_workflow(void) {
-
-}
-
 void BiopsyStudy::evaluatePointerActivations() {
-	switch (sequence_executing) {
-	case command_execution::COMMAND_HOME_CENTER: home_workflow(); break;
-	case command_execution::COMMAND_HOME_LEFT: home_workflow(); break;
-	case command_execution::COMMAND_HOME_RIGHT: home_workflow(); break;
-	case command_execution::COMMAND_XYZ_POSITIONING: xyz_positioning_workflow(); break;
-	}
+
 }
 
 
@@ -1272,3 +1095,48 @@ void BiopsyStudy::evaluatePopupPanels(void) {
 	if (Notify::isInstant()) Notify::open_instant(this);
 
 }
+
+void BiopsyStudy::showProcedureImage(System::String^ action_img, System::String^ info_string, System::String^ info_icon, bool button) {
+	
+	if ((action_img == "") && (info_string == "")) {
+		statusPanel->Show();
+		activationPanel->Hide();
+	}
+	else {
+		statusPanel->Hide();
+		activationPanel->Show();
+	}
+
+	if (action_img != "") {
+		activationPanelImg->BackgroundImage = Image::FromFile(action_img);
+		activationPanelImg->Show();
+	}else activationPanelImg->Hide();
+
+	
+	if (info_string != "") {
+		activationInfoPanel->Show();
+
+		if (info_icon != "") {
+			activationInfoIcon->BackgroundImage = Image::FromFile(info_icon);
+		}
+
+		// Button presence
+		if (button ) confirmationButton->Show();
+		else confirmationButton->Hide();
+
+		// Info Field		
+		activationInfoText->Text = info_string;
+	}
+	else {
+		activationInfoPanel->Hide();
+		confirmationButton->Hide();
+	}
+
+};
+bool BiopsyStudy::getProcedureConfirmation(bool reset) { 
+	if (reset) {
+		confirmation_button_status = false;
+		
+	}
+	return confirmation_button_status; 
+};

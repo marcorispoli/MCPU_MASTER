@@ -69,6 +69,19 @@
    <b>Added the \ref EXEC_BiopsyStudy command</b>
    This command opens a Biopsy study.
 
+   <b>Added the \ref  EXEC_BiopsyHoming command</b>
+   This command executes the Biopsy Home position .
+
+   <b>Added the \ref EXEC_BiopsyParking command</b>
+   This command executes the Biopsy Parking position .
+
+   <b>Added the \ref EXEC_BiopsyPointing command</b>
+   This command executes the Biopsy pointing position .
+
+   <b>Added the \ref SET_BiopsyImage2D command</b>
+   This command handle the 2D control image presence .
+
+
    # Index
 
    ## Implemented Commands 
@@ -101,6 +114,12 @@
    +	\ref SET_EnableXrayPush
    +	\ref GET_ReadyForExposure
    +	\ref EXEC_StartXraySequence
+
+   _Biopsy Control_
+   +	\ref EXEC_BiopsyHoming
+   +	\ref EXEC_BiopsyParking
+   +	\ref EXEC_BiopsyPointing
+   +	\ref SET_BiopsyImage2D
 
    ## Implemented Events
 
@@ -373,6 +392,10 @@ private:
 	void EXEC_BiopsyStudy(void);
 	void EXEC_CloseStudy(void);
 
+	void EXEC_BiopsyHoming(void);
+	void EXEC_BiopsyParking(void);
+	void EXEC_BiopsyPointing(void);
+	void SET_BiopsyImage2D(void);
 
 	void SET_ProjectionList(void);
 	void EXEC_ArmPosition(void);

@@ -4,6 +4,7 @@
 
 	\addtogroup BiopsyModuleDescription
 
+	\subsection homingProcedure Homing Procedure Description flowchart
 
 	<div style="page-break-after: always;"></div>
 	# Homing procedure description
@@ -136,20 +137,23 @@ public:
 		HOME_CENTER = 0,
 		HOME_LEFT,
 		HOME_RIGHT,
+		UNDEFINED
 	};
 
 	// Process Status
 	static bool running;
-	static bool result;
+	static int result;
 	static bool completed;
 	static int  step;
 	static unsigned short X, Y, Z;
 	static home_positions target;
+	static int awsid; 
 
 	// Process activation procedures
 	static int activateCenter(int awsid);
 	static int activateLeft(int awsid);
 	static int activateRight(int awsid);
+	static bool isValidHome(void);
 
 	// Periodical callback handling the procedure state machine
 	static void procedure_callback(void);

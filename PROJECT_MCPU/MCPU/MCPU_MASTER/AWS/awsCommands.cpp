@@ -17,6 +17,7 @@
 #include "Notify.h"
 #include "Log.h"
 #include "BiopsyStudy.h"
+#include "BiopsyHomeProcedure.h"
 
 
 using namespace System::Diagnostics;
@@ -133,6 +134,89 @@ void  awsProtocol::EXEC_BiopsyStudy(void) {
 
     ackOk();
 }
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_BiopsyHoming 
+/// 
+/// The AWS sends this command whenever shall select a given home position.
+///  
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_BiopsyHoming home_position>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |home_position|String|"C": Center<br>"L": Left<br>"R": Right| 
+/// 
+/// 
+/// ### Command Returned Code 
+/// 
+/// + OK: if the biopsy is already in the given home position.
+/// + Executing: the command is initiated;
+/// + Nok (see table below): the command has been aborted due to errors.
+///  
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_BIOPSY_MODE"| the Gantry is not in Biopsy Study|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"NOT_A_VALID_HOME_PARAMETER"| The parameter value is not correct|
+/// |AWS_RET_DEVICE_ERROR|"ERROR SIGNALED BY THE BIOPSY DEVICE. CODE=xxx"| The device command has returned an error code|
+/// 
+/// 
+
+/// <summary>
+/// This command activates the biopsy homing procedure
+/// 
+/// </summary>
+/// <param name=""></param>
+void  awsProtocol::EXEC_BiopsyHoming(void) {
+    if (!Gantry::isBIOPSY()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_BIOPSY_MODE"; ackNok(); return; }
+
+    if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    String^ home_command = pDecodedFrame->parameters[0];
+
+    int res;
+
+    if (home_command == "C") {
+        LogClass::logInFile("AWS: COMMAND HOME CENTER REQUEST");
+        res = BiopsyHomeProcedure::activateCenter(pDecodedFrame->ID);
+        
+    }
+    else if (home_command == "L") {
+        LogClass::logInFile("AWS: COMMAND HOME LEFT REQUEST");
+        res = BiopsyHomeProcedure::activateLeft(pDecodedFrame->ID);
+    }
+    else if (home_command == "R") {
+        LogClass::logInFile("AWS: COMMAND HOME RIGHT REQUEST");
+        res = BiopsyHomeProcedure::activateRight(pDecodedFrame->ID);
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "NOT_A_VALID_HOME_PARAMETER"; ackNok(); return;
+    }
+
+    if (res < 0) {
+        LogClass::logInFile("AWS: HOME COMMAND ERROR CODE = " + res.ToString());
+        pDecodedFrame->errcode = (int) return_errors::AWS_RET_DEVICE_ERROR;
+        pDecodedFrame->errstr = "ERROR SIGNALED BY THE BIOPSY DEVICE. CODE=" + res.ToString();
+        ackNok();
+    }
+    else if (res == 0) ackOk();
+    else ackExecuting();
+    return;
+}
+
+void  awsProtocol::EXEC_BiopsyParking(void) {
+    ackNa();
+}
+void  awsProtocol::EXEC_BiopsyPointing(void) {
+    ackNa();
+}
+void  awsProtocol::SET_BiopsyImage2D(void) {
+    ackNa();
+}
+
 
 
 /// \addtogroup AWSProtocolDescription
@@ -1463,7 +1547,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
     }
     else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_C") {
         LogClass::logInFile("TEST ON BIOPSY HOME_C");
-        int res = ((BiopsyStudy^)Gantry::pBiopsyStudy)->pointerHome(BiopsyStudy::home_positions::HOME_CENTER, pDecodedFrame->ID);
+        int res = BiopsyHomeProcedure::activateCenter(pDecodedFrame->ID);
         if (res < 0) {
             pDecodedFrame->errcode = -res;
             ackNok();
@@ -1473,7 +1557,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
     }
     else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_R") {
         LogClass::logInFile("TEST ON BIOPSY HOME_R");
-        int res = ((BiopsyStudy^)Gantry::pBiopsyStudy)->pointerHome(BiopsyStudy::home_positions::HOME_RIGHT, pDecodedFrame->ID);
+        int res = BiopsyHomeProcedure::activateRight(pDecodedFrame->ID);
         if (res < 0) {
             pDecodedFrame->errcode = -res;
             ackNok();
@@ -1483,7 +1567,7 @@ void   awsProtocol::EXEC_TestCommand(void) {
     }
     else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_L") {
         LogClass::logInFile("TEST ON BIOPSY HOME_L");
-        int res = ((BiopsyStudy^)Gantry::pBiopsyStudy)->pointerHome(BiopsyStudy::home_positions::HOME_LEFT, pDecodedFrame->ID);
+        int res = BiopsyHomeProcedure::activateLeft(pDecodedFrame->ID);
         if (res < 0) {
             pDecodedFrame->errcode = -res;
             ackNok();

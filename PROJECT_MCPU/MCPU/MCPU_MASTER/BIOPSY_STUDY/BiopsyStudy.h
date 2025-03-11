@@ -78,17 +78,19 @@
 	### Y Up/Down
 
 	The Module detects the current status of the Y:
-	+ flipped Up;
-	+ flipped Down;
+	+ Tourned Up;
+	+ Tourned Down;
 
 	The pointer activation sequence depends by the current rotation position of the Y-Axes. 
 
 	### Home position
 
-	The Module implement three possible Home position:
+	The Module implements three possible Home position:
 	+ HOME CENTER: pointer in the center of the axis and the X-SCROLL set in the center and Y tourned Up;
 	+ HOME LEFT: pointer in the most left position and the X-SCROLL set in the left position and Y tourned Down;
 	+ HOME RIGHT: pointer in the most right position and the X-SCROLL set in the right position and Y tourned Down;
+
+	\note The coordinates associated to the home positions are stored into the BiopsyConfig configuration file.
 
 	Before to start any pointing activation, the pointer shall be set into one of the 
 	valid home positions.
@@ -122,11 +124,72 @@
 
 	## Pointing activation procedure
 
-	The AWS shal
+	The Pointing activation can take place only if a home position has been selected first.
+
+	The AWS command EXEC_BiopsyPointing(x,y,z) starts the positioner moving to the 
+	X,Y,Z target position.
+
+	Because the home position procedure set the X-Scroll and Y-UpDown to the correct position,
+	during the Pointing activation it is not requested any operator action.
+
+	The GUI will show the current activation step with 
+	proper graphical images. See GUI chapter for details.
+
+	\note Only when the Pointing activation successfully completes 
+	the exposures may be enabled.
+
 
 	## Parking activation procedure
 
 
+	# Motors management
+	
+	## C-ARM rotation
+	
+	When the Biopsy study is activated, the manual C-ARM rotation keyboard is enabled (green led switched On).
+
+	In Biopsy Study, the C-ARM rotation can be executed only with manual commands.
+	
+	\warning the automatic activations with the protocol command has consequently been disabled.
+
+	The maximum rotation angle in Biopsy will be limited to +/- 90°.
+
+	The current C-ARM angle is visible in a dedicated graphical box of the GUI.
+
+	During the C-ARM rotation, a Dialog on the local display shows the actual ARM angle.\n
+	During the C-ARM rotation, the displays on the Potter plane show the actual ARM angle.\n
+	When the rotation termines, after few seconds, both the Dialog and the displays will stop displayng the actual ARM angle.
+
+	\note The Isocentric vertical correction will not take place in manual C-ARM rotation.
+
+	## Tilt motor
+
+	The Tilt motor can be activated only with automatic rotation 
+	started through AWS protocol commands. 
+	
+	See the EXEC_TrxPosition protocol command for details.
+
+	\note There isn't any special rule in order to enable the Tilt to move. It can always be moved 
+	in the Biopsy Study.
+
+	## Slide motor
+
+	The module provides a dedicated graphical button in the GUI 
+	to allow the operatore to start an automatic Arm positioning in two possible 
+	Slide angles:
+	+ 0° (standard position);
+	+ 90° (usually needed with the table).
+
+	The button works toggling the current status from 0° and 90°.
+	
+	\warning for safety reason this feature is disabled with a detected compression, as usual.
+
+	\note If the operator should press the rotation button, a Dialog will appear requesting the action confirmation
+	before to start the Slide rotation.
+
+	## Vertical motor
+
+	## Body motor
 	
 */
 

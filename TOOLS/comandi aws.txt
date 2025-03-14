@@ -6,9 +6,11 @@
 < 10 %  EXEC_TestCommand BIOPSY_X 2000% >
 < 10 %  EXEC_TestCommand BIOPSY_Y 300% >
 < 10 %  EXEC_TestCommand BIOPSY_Z 1000% >
-< 10 %  EXEC_TestCommand BIOPSY_HOME_C% >
-< 10 %  EXEC_TestCommand BIOPSY_HOME_L% >
-< 10 %  EXEC_TestCommand BIOPSY_HOME_R% >
+
+< 10 %  EXEC_BiopsyHoming C% >
+< 10 %  EXEC_BiopsyHoming L% >
+< 10 %  EXEC_BiopsyHoming R% >
+
 
 <10% SET_ProjectionList LCC RCC RMLO LMLO RSIO LSIO%>
 

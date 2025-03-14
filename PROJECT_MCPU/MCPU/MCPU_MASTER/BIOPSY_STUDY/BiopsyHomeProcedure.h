@@ -4,12 +4,79 @@
 
 	\addtogroup BiopsyModuleDescription
 
-	\subsection homingProcedure Homing Procedure Description flowchart
+	# Home Procedure Description
+
+	## Procedure Overview
+
+	The Home position is the starting position of every pointing activation.
+	
+	There are three possible home positions:
+	+ Home Center position: the initial position for the upright approach;
+	+ Home Right position: the initial position for the Right approach;
+	+ Home Left position: the initial position for the Left approach;
+
+	The Home Center position refers to the upright biopsy procedure:
+	+ The X-SCROLL is set in the Center position;
+	+ The Y-AXIS is in upright position;
+	+ The X,Y,Z coordinate for the Home Center position are set into the Biopsy configuration file;
+
+	The Home Left position refers to the left approach biopsy procedure:
+	+ The X-SCROLL is set in Left position;
+	+ The Y-AXIS is in upside-down position;
+	+ The X,Y,Z coordinate for the Home Left position are set into the Biopsy configuration file;
+
+	The Home Right position refers to the right approach biopsy procedure:
+	+ The X-SCROLL is set in Right position;
+	+ The Y-AXIS is in upside-down position;
+	+ The X,Y,Z coordinate for the Home Left position are set into the Biopsy configuration file;
+
+	\warning  At the beginning of every study the current home position is invalidated
+	and any pointing activation is consequently disabled. The AWS shall command almost ones
+	a valid Home position, based on the current approach.
+
+	\note In case of unselected home position or in case a wrong position setting is detected
+	(wrong xscroll position, wrong coordinates, wrong Y-Axis Up or Down position),
+	the home position is invalidated.
+
+	\note When an invalid home position should be detected, a Warning message is activated.
+
+	## Procedure Activation
+	
+	The procedure can be activated with the AWS protocol command EXEC_BiopsyHoming().
+	See the protocol documentation for details.
+
+	\note the command can terminates instantly if the home position is already detected.
+
+	After the command is activated, the GUI will help the operator 
+	to execute the procedure as described in the following section.
+
+	\warning In case of an error sould prevent to successfully complete the command,
+	an error message will be activated until a valid activation will perform successfully.
+
+	## Procedure Description
+
+	The Home procedure is a complex procedure that requires automatic activations
+	as well as operator manual activities.
+
+	The process will drive the Pointer to the expected target position 
+	with toghether the correct Xscroll and Y-rotation positions.
+
+	During the process, if the pointer should need to cross the Base position,
+	it may be necessary to Tourn Up the Y-Axis before:
+	+ in this case, the pointer will be driven to the left or right available x-corner to let the operator to
+	tourn up the Y axis.
+
+	When the pointer is finally driven to the target X,Y,Z position, the  process will ask 
+	the operator to tourn Down the Y-axis (onlyfor the Right and Left home positions).
+
+	\note Every time the operator action is requested, and after the Gantry senses the correct executed action,
+	a graphic button will appear asking for the confirmation. This solution prevents to starts the pointer motors
+	with the operator hands still on the mechanical parts.
+
 
 	<div style="page-break-after: always;"></div>
-	# Homing procedure description
+	## Procedure Flowchart
 
-	The following flowchart describes the Homing procedure
 	\dot
 digraph {
 	compound=true;

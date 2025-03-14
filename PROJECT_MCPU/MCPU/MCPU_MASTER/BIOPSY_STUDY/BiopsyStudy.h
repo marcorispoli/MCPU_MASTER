@@ -66,22 +66,27 @@
 	See the AWS protocol description for command details.
 
 
-	# Pointer activation description
+	# Pointer Control
 
 	## General rules
 	
 	### X-SCROLL
 	
-	The X-Axe can be mechanically scrolled in three possible positions: Left, Center and Right;
+	The X-Axis can be mechanically scrolled in three possible positions: Left, Center and Right;
 	+ The Module monitors the current position identifying an invalid position selection.
+
+	\note Every Home position requires a given X-SCROLL position
 	
 	### Y Up/Down
 
-	The Module detects the current status of the Y:
+	The Module detects the current status of the Y vertical position:
 	+ Tourned Up;
 	+ Tourned Down;
 
-	The pointer activation sequence depends by the current rotation position of the Y-Axes. 
+	\note Every Home position requires a given Y position;
+
+	\note The pointer activation sequence depends by the current rotation position of the Y-Axes:
+	+ the module prevents a possible impact with the Z-Base that may be possible if the Y should be tourned Down.
 
 	### Home position
 
@@ -90,107 +95,140 @@
 	+ HOME LEFT: pointer in the most left position and the X-SCROLL set in the left position and Y tourned Down;
 	+ HOME RIGHT: pointer in the most right position and the X-SCROLL set in the right position and Y tourned Down;
 
-	\note The coordinates associated to the home positions are stored into the BiopsyConfig configuration file.
+	See the Home Procedure Description section for details.
 
-	Before to start any pointing activation, the pointer shall be set into one of the 
-	valid home positions.
+	### Pointing activation 
+
+	The module provides dedicated methods to move a Pointer to a target position detected with the X-RAY biopsy procedure.
+	The following rules are implemented in order to prevent operator mistakes:
+	+ The Pointing activation can start only when a valid Home position has been selected first;
+	+ Only one pointing at a time can be permitted: after a pointing is completed a next pointing will require a new Home position selectiuon first;
+
+	See the Pointing Procedure Description section for details.
+
+	## External Keyboard Usage
+
+	The optional external keyboard provides the operator to modify the current pointer position in all the directions (X,Y,Z)
+	with small steps of about 1mm.
+
+	The module enables the Keyboard usage only after a valid Pointing activation:
+	+ the keyboard is disabled as soon as an home position is selected;
+	+ the keyboard is disabled at the Biopsy Study activation;
+
+	The current activation status is displayed by the proper icon on the GUI:
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/key_disabled.png|The Keyboard is currently disabled|
+	|\image html ./BiopsyStudy/key_enabled.png|The Keyboard is currently enabled|
+
+	## Current Pointer Status 
+
+	When there is no activation pending (homing or pointing activities) 
+	the current pointer status is described by a graphical visualization 
+	and a coordinate box visualization.
+
+	### Grapical visualization description
 	
-	\note When a valid home position has been selected, only one pointing activation will be permitted.
-
-	\note When the Biopsy Study is open the current position is not considered as a valid home position
-	until a proper home selection command is executed.
-
-	## Home activation procedure
-
-	The AWS shall request to set the pointer in one of the available Home positions
-	calling one of the following protocol commands:
-	+ EXEC_BiopsyHome("C"): activates the Center Home position;
-	+ EXEC_BiopsyHome("L"): activates the Left Home position;
-	+ EXEC_BiopsyHome("R"): activates the Right Home position;
-
-	During the command execution, the GUI will provide graphical information
-	about the current operating status.
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/NO_HOME_STATUS.png|No valid Home position is selected (or detected)|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_CENTER_STATUS.png|The Pointer is in Home Center position|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_LEFT_STATUS.png|The Pointer is in Home Left position|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_RIGHT_STATUS.png|The Pointer is in Home Right position|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_CENTER_STATUS.png|The Pointer is pointing to a target of an upright approach|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_LEFT_STATUS.png|The Pointer is pointing to a target of a Left approach|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_RIGHT_STATUS.png|The Pointer is pointing to a target of a Right approach|
 	
-	The GUI will inform the Operator about possible required activities like:
-	+ Tourning Up or Down the Y axes if required;
-	+ Scrolling the X-Axes if required;
-	
-	\note Although the module is able to detect the valid mechanical positions,
-	every time a mechanical operation has been completed (and detected) 
-	a confirmation is requested to the operator, preventing an unexpected activation
-	with the operator hands still on the biopsy device mechanical parts.
+	### Coordinate Box
 
-	see \ref homingProcedure for activation details.
+	A GUI box will display the current X,Y,Z coordinates:
 
-	## Pointing activation procedure
-
-	The Pointing activation can take place only if a home position has been selected first.
-
-	The AWS command EXEC_BiopsyPointing(x,y,z) starts the positioner moving to the 
-	X,Y,Z target position.
-
-	Because the home position procedure set the X-Scroll and Y-UpDown to the correct position,
-	during the Pointing activation it is not requested any operator action.
-
-	The GUI will show the current activation step with 
-	proper graphical images. See GUI chapter for details.
-
-	\note Only when the Pointing activation successfully completes 
-	the exposures may be enabled.
-
-
-	## Parking activation procedure
+	\image html ./BiopsyStudy/Coordinates.png
 
 
 	# Motors management
 	
-	## C-ARM rotation
+	## C-ARM Rotation Description
 	
-	When the Biopsy study is activated, the manual C-ARM rotation keyboard is enabled (green led switched On).
+	In the Biopsy Study the following rules apply to the C-ARM motor activation:
+	- The motor can be activated only in manual mode (manual keyboard buttons);
+	- The maximum rotation angles will be limited to +/- 90°;
+	- The Isocentric correction feature is disabled (no Vertical correction will be executed);
 
-	In Biopsy Study, the C-ARM rotation can be executed only with manual commands.
+	Current angle visualization:
+	+ During the C-ARM rotation, a Dialog on the displays will show the actual ARM angle. 
+	The panel will disappear in few seconds after the activation termination;
+	+ During the C-ARM rotation, the potter's display will show the actual ARM angle;
 	
-	\warning the automatic activations with the protocol command has consequently been disabled.
+	The current C-ARM angle is currently displayed on a dedicated graphical box of the GUI:
+	\image html ./BiopsyStudy/motors.png
 
-	The maximum rotation angle in Biopsy will be limited to +/- 90°.
-
-	The current C-ARM angle is visible in a dedicated graphical box of the GUI.
-
-	During the C-ARM rotation, a Dialog on the local display shows the actual ARM angle.\n
-	During the C-ARM rotation, the displays on the Potter plane show the actual ARM angle.\n
-	When the rotation termines, after few seconds, both the Dialog and the displays will stop displayng the actual ARM angle.
-
-	\note The Isocentric vertical correction will not take place in manual C-ARM rotation.
 
 	## Tilt motor
 
-	The Tilt motor can be activated only with automatic rotation 
-	started through AWS protocol commands. 
+	The Tilt motor can be activated only with automatic rotation:
+	+ The AWS software will command a proper Tilt angle based on the current workflow operation.
 	
-	See the EXEC_TrxPosition protocol command for details.
-
-	\note There isn't any special rule in order to enable the Tilt to move. It can always be moved 
+	\note There isn't any special rule in order to enable the Tilt to move. It can always be moved
 	in the Biopsy Study.
 
+	Current angle visualization:
+	+ During the Tilt rotation, a Dialog on the displays will show the actual Tilt angle.
+	The panel will disappear in few seconds after the activation termination;
+	+ During the Tilt rotation, the potter's display will show the actual Tilt angle;
+	
+	The current Tilt angle is currently displayed on a dedicated graphical box of the GUI:
+	\image html ./BiopsyStudy/motors.png
+
+	
 	## Slide motor
 
 	The module provides a dedicated graphical button in the GUI 
-	to allow the operatore to start an automatic Arm positioning in two possible 
-	Slide angles:
+	to allow the operatore to start an automatic Slide activation in two possible 
+	target angles:
 	+ 0° (standard position);
 	+ 90° (usually needed with the table).
 
-	The button works toggling the current status from 0° and 90°.
+	\note The Isocentric correction feature is disabled (no Vertical correction will be executed);
+
+	The table below describes the button activations:
+
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/slide_to_0.png|The current Slide angle is 90°. Pressing this button the Slide motor will move to 0°|
+	|\image html ./BiopsyStudy/slide_to_90.png|The current Slide angle is 0°. Pressing this button the Slide motor will move to 90°|
 	
-	\warning for safety reason this feature is disabled with a detected compression, as usual.
+	Current angle visualization:
+	+ During the Slide rotation, a Dialog on the displays will show the actual Slide angle.
+	The panel will disappear in few seconds after the activation termination;
+	+ During the Slide rotation, the potter's display will show the actual Slide angle;
 
-	\note If the operator should press the rotation button, a Dialog will appear requesting the action confirmation
-	before to start the Slide rotation.
+	## Vertical Motor
 
-	## Vertical motor
+	In the Biopsy Study the following rules apply to the Vertical motor activation:
+	- The motor can be activated only in manual mode (manual keyboard buttons or Pedals);
+	- The Isocentric correction feature is disabled (no Vertical correction will be executed with other motor activations);
 
-	## Body motor
-	
+	Current angle visualization:
+	+ During the Slide rotation, a Dialog on the displays will show the actual Slide angle.
+	The panel will disappear in few seconds after the activation termination;
+	+ During the Slide rotation, the potter's display will show the actual Slide angle;
+	+ The current Slide angle is currently displayed on a dedicated graphical box of the GUI;
+
+
+	## Body motor	
+	No activation can be executed in Biopsy Study.
+
+	#  Compressor Management
+
+	## Compression Force
+
+	## Paddle Identification
+
+	 
+
+	# 
+
 */
 
 
@@ -231,14 +269,15 @@ private: System::Windows::Forms::Panel^ confirmationButton;
 
 
 
-private: System::Windows::Forms::Panel^ activationPanelImg;
+
 private: System::Windows::Forms::Panel^ activationInfoPanel;
 private: System::Windows::Forms::Panel^ activationInfoIcon;
 private: System::Windows::Forms::Label^ activationInfoText;
-private: System::Windows::Forms::Panel^ statusPanel;
-private: System::Windows::Forms::Panel^ keyStatus;
 
-private: System::Windows::Forms::Panel^ activationPanel;
+private: System::Windows::Forms::Panel^ keyStatus;
+private: System::Windows::Forms::Panel^ statusPanel;
+
+
 
 
 
@@ -260,7 +299,7 @@ public:
 	void evaluateCompressorStatus(bool init);
 	void evaluateArmStatus(void);
 	void evaluatePointerStatus(void);
-	void evaluatePointerActivations(void);
+	void evaluatePointerPictures(bool init);
 
 	void evaluateDoorStatus(void);
 	void evaluateCollimatorStatus(void);
@@ -277,6 +316,7 @@ public:
 	event delegate_periodical_callback^ periodical_event; //!< Event generated at the command completion
 	bool confirmation_button_status;
 
+	
 
 public:System::Timers::Timer^ operatingTimer;
 
@@ -383,12 +423,11 @@ private:
 		this->labelTime = (gcnew System::Windows::Forms::Label());
 		this->image2DButton = (gcnew System::Windows::Forms::Panel());
 		this->mainPanel = (gcnew System::Windows::Forms::Panel());
+		this->keyStatus = (gcnew System::Windows::Forms::Panel());
 		this->statusPanel = (gcnew System::Windows::Forms::Panel());
-		this->activationPanel = (gcnew System::Windows::Forms::Panel());
 		this->activationInfoPanel = (gcnew System::Windows::Forms::Panel());
 		this->activationInfoText = (gcnew System::Windows::Forms::Label());
 		this->activationInfoIcon = (gcnew System::Windows::Forms::Panel());
-		this->activationPanelImg = (gcnew System::Windows::Forms::Panel());
 		this->confirmationButton = (gcnew System::Windows::Forms::Panel());
 		this->pointerPosition = (gcnew System::Windows::Forms::Panel());
 		this->ZLabel = (gcnew System::Windows::Forms::Label());
@@ -411,9 +450,8 @@ private:
 		this->labelTubeData = (gcnew System::Windows::Forms::Label());
 		this->slideButton = (gcnew System::Windows::Forms::Panel());
 		this->lampButton = (gcnew System::Windows::Forms::Panel());
-		this->keyStatus = (gcnew System::Windows::Forms::Panel());
 		this->mainPanel->SuspendLayout();
-		this->activationPanel->SuspendLayout();
+		this->statusPanel->SuspendLayout();
 		this->activationInfoPanel->SuspendLayout();
 		this->pointerPosition->SuspendLayout();
 		this->armPosition->SuspendLayout();
@@ -475,7 +513,6 @@ private:
 		// 
 		this->mainPanel->Controls->Add(this->keyStatus);
 		this->mainPanel->Controls->Add(this->statusPanel);
-		this->mainPanel->Controls->Add(this->activationPanel);
 		this->mainPanel->Controls->Add(this->pointerPosition);
 		this->mainPanel->Controls->Add(this->armPosition);
 		this->mainPanel->Controls->Add(this->xrayStat);
@@ -496,33 +533,32 @@ private:
 		this->mainPanel->Size = System::Drawing::Size(600, 1024);
 		this->mainPanel->TabIndex = 14;
 		// 
+		// keyStatus
+		// 
+		this->keyStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+		this->keyStatus->Location = System::Drawing::Point(12, 725);
+		this->keyStatus->Name = L"keyStatus";
+		this->keyStatus->Size = System::Drawing::Size(135, 135);
+		this->keyStatus->TabIndex = 28;
+		// 
 		// statusPanel
 		// 
 		this->statusPanel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->statusPanel->Location = System::Drawing::Point(192, 181);
+		this->statusPanel->Controls->Add(this->activationInfoPanel);
+		this->statusPanel->Controls->Add(this->confirmationButton);
+		this->statusPanel->Location = System::Drawing::Point(192, 192);
 		this->statusPanel->Name = L"statusPanel";
-		this->statusPanel->Size = System::Drawing::Size(37, 10);
-		this->statusPanel->TabIndex = 27;
-		// 
-		// activationPanel
-		// 
-		this->activationPanel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->activationPanel->Controls->Add(this->activationInfoPanel);
-		this->activationPanel->Controls->Add(this->activationPanelImg);
-		this->activationPanel->Controls->Add(this->confirmationButton);
-		this->activationPanel->Location = System::Drawing::Point(192, 192);
-		this->activationPanel->Name = L"activationPanel";
-		this->activationPanel->Size = System::Drawing::Size(396, 364);
-		this->activationPanel->TabIndex = 26;
+		this->statusPanel->Size = System::Drawing::Size(396, 364);
+		this->statusPanel->TabIndex = 26;
 		// 
 		// activationInfoPanel
 		// 
 		this->activationInfoPanel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 		this->activationInfoPanel->Controls->Add(this->activationInfoText);
 		this->activationInfoPanel->Controls->Add(this->activationInfoIcon);
-		this->activationInfoPanel->Location = System::Drawing::Point(3, 292);
+		this->activationInfoPanel->Location = System::Drawing::Point(3, 304);
 		this->activationInfoPanel->Name = L"activationInfoPanel";
-		this->activationInfoPanel->Size = System::Drawing::Size(390, 69);
+		this->activationInfoPanel->Size = System::Drawing::Size(390, 57);
 		this->activationInfoPanel->TabIndex = 23;
 		// 
 		// activationInfoText
@@ -546,21 +582,13 @@ private:
 		this->activationInfoIcon->Size = System::Drawing::Size(50, 50);
 		this->activationInfoIcon->TabIndex = 1;
 		// 
-		// activationPanelImg
-		// 
-		this->activationPanelImg->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->activationPanelImg->Location = System::Drawing::Point(119, 3);
-		this->activationPanelImg->Name = L"activationPanelImg";
-		this->activationPanelImg->Size = System::Drawing::Size(274, 283);
-		this->activationPanelImg->TabIndex = 21;
-		// 
 		// confirmationButton
 		// 
 		this->confirmationButton->BackColor = System::Drawing::Color::Red;
 		this->confirmationButton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->confirmationButton->Location = System::Drawing::Point(12, 98);
+		this->confirmationButton->Location = System::Drawing::Point(98, 52);
 		this->confirmationButton->Name = L"confirmationButton";
-		this->confirmationButton->Size = System::Drawing::Size(90, 90);
+		this->confirmationButton->Size = System::Drawing::Size(200, 200);
 		this->confirmationButton->TabIndex = 1;
 		this->confirmationButton->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &BiopsyStudy::confirmationButton_MouseClick);
 		// 
@@ -784,14 +812,6 @@ private:
 		this->lampButton->TabIndex = 0;
 		this->lampButton->Click += gcnew System::EventHandler(this, &BiopsyStudy::lampButton_Click);
 		// 
-		// keyStatus
-		// 
-		this->keyStatus->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-		this->keyStatus->Location = System::Drawing::Point(12, 725);
-		this->keyStatus->Name = L"keyStatus";
-		this->keyStatus->Size = System::Drawing::Size(135, 135);
-		this->keyStatus->TabIndex = 28;
-		// 
 		// BiopsyStudy
 		// 
 		this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
@@ -804,7 +824,7 @@ private:
 		this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
 		this->mainPanel->ResumeLayout(false);
 		this->mainPanel->PerformLayout();
-		this->activationPanel->ResumeLayout(false);
+		this->statusPanel->ResumeLayout(false);
 		this->activationInfoPanel->ResumeLayout(false);
 		this->pointerPosition->ResumeLayout(false);
 		this->armPosition->ResumeLayout(false);

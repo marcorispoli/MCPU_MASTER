@@ -1,4 +1,5 @@
 #include "BiopsyStudy.h"
+#include "BiopsyHomeProcedure.h"
 #include "Notify.h"
 #include "ErrorForm.h"
 #include "gantry_global_status.h"
@@ -18,6 +19,18 @@
 #include "../DEVICES/PCB326.h"
 #include "awsProtocol.h"
 
+
+
+
+// BIOPSY STATUS IMAGES
+#define NO_HOME_SELECTED_STATUS_IMG	Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\BYM_IMG\\STATUS\\NO_HOME_STATUS.PNG")
+#define HOME_CENTER_STATUS_IMG	Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\BYM_IMG\\STATUS\\HOME_CENTER_STATUS.PNG")
+#define HOME_RIGHT_STATUS_IMG	Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\BYM_IMG\\STATUS\\HOME_RIGHT_STATUS.PNG")
+#define HOME_LEFT_STATUS_IMG	Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\BYM_IMG\\STATUS\\HOME_LEFT_STATUS.PNG")
+
+#define POINTED_CENTER_STATUS_IMG	Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\BYM_IMG\\STATUS\\POINTED_CENTER_STATUS.PNG")
+#define POINTED_RIGHT_STATUS_IMG	Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\BYM_IMG\\STATUS\\POINTED_RIGHT_STATUS.PNG")
+#define POINTED_LEFT_STATUS_IMG	Image::FromFile(Gantry::applicationResourcePath + "BiopsyStudy\\BYM_IMG\\STATUS\\POINTED_LEFT_STATUS.PNG")
 
 
 // Main Panel Definition
@@ -158,21 +171,7 @@ void BiopsyStudy::formInitialization(void) {
 	confirmationButton->BackgroundImage = CONFIRMATION_BUTTON_IMG;
 	confirmationButton->Hide();
 	
-	// Activation Panel
-	activationPanel->Size.Width = 396;
-	activationPanel->Size.Height = 364;
-	activationPanel->Location.X = 192;
-	activationPanel->Location.Y = 192;
-	activationPanel->Hide();
-
-	// Status Panel (alternative to the activation panel
-	statusPanel->Size.Width = 396;
-	statusPanel->Size.Height = 364;
-	statusPanel->Location.X = 192;
-	statusPanel->Location.Y = 192;
-	statusPanel->Show();
-
-		// Confirmation Panel Setup ____________________________________________________________
+	// Confirmation Panel Setup ____________________________________________________________
 	System::String^ confInfoTitle = "[" + Notify::TranslateNumber(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION) + "] " + Notify::TranslateTitle(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
 	System::String^ confInfoContent = Notify::TranslateContent(Notify::messages::INFO_SLIDE_ACTIVATION_CONFIRMATION);
 	pShiftConf = gcnew ConfirmationWindow(this, ConfirmationWindow::InfoType::INF_WIN, confInfoTitle, confInfoContent);
@@ -273,6 +272,12 @@ void BiopsyStudy::initOperatingStatus(void) {
 	// Init Tilt Angle 
 	float tilt_position = ((float)TiltMotor::device->getCurrentPosition() / 100);
 	tiltLabel->Text = "TILT:" + tilt_position.ToString() + "°";
+
+	// Invalidates the home position
+	BiopsyHomeProcedure::target = BiopsyHomeProcedure::home_positions::UNDEFINED;
+
+	// Initializes the pointer image panel
+	evaluatePointerPictures(true);
 
 	// Init X Cursor	
 	XLabel->Text = "X: 0";
@@ -705,7 +710,84 @@ void BiopsyStudy::evaluatePointerStatus(void) {
 
 
 
-void BiopsyStudy::evaluatePointerActivations() {
+void BiopsyStudy::evaluatePointerPictures(bool init) {
+	static bool running = false;
+	static bool valid_home = false;
+	static bool valid_pointing = false;
+
+	if (init) {
+		running = false;
+		statusPanel->Show();
+		
+		// Hides the activation items
+		confirmationButton->Hide();
+		activationInfoPanel->Hide();
+		
+
+		valid_home = false; // No home selected
+		valid_pointing = false;
+		statusPanel->BackgroundImage = NO_HOME_SELECTED_STATUS_IMG;
+		return;
+	}
+
+	// Show panels evaluation
+	if (BiopsyHomeProcedure::running) {
+		running = true;
+		valid_home = false;
+		valid_pointing = false;
+		return;
+	}
+	
+	// hides the activation items
+	if (running) {
+		confirmationButton->Hide();
+		activationInfoPanel->Hide();		
+		running = false;
+	}
+
+
+	// Verifies if a valid home has been selected
+	if (BiopsyHomeProcedure::target == BiopsyHomeProcedure::home_positions::UNDEFINED) {
+		if (valid_home) statusPanel->BackgroundImage = NO_HOME_SELECTED_STATUS_IMG;
+		valid_home = false;		
+		valid_pointing = false;
+		return;
+	}
+	
+	// Verifies if there is a valid pointing
+	if (false) {
+		if (!valid_pointing) {
+			valid_pointing = true;
+			if (BiopsyHomeProcedure::target == BiopsyHomeProcedure::home_positions::HOME_CENTER) {
+				statusPanel->BackgroundImage = POINTED_CENTER_STATUS_IMG;
+			}
+			else if (BiopsyHomeProcedure::target == BiopsyHomeProcedure::home_positions::HOME_LEFT) {
+				statusPanel->BackgroundImage = POINTED_LEFT_STATUS_IMG;
+			}
+			else if (BiopsyHomeProcedure::target == BiopsyHomeProcedure::home_positions::HOME_RIGHT) {
+				statusPanel->BackgroundImage = POINTED_RIGHT_STATUS_IMG;
+			}
+		}		
+		return;
+	}
+
+	// Shows the current valid Home
+	if (!valid_home) {
+		valid_home = true;
+		
+		// A valid home has been selected
+		if (BiopsyHomeProcedure::target == BiopsyHomeProcedure::home_positions::HOME_CENTER) {
+			statusPanel->BackgroundImage = HOME_CENTER_STATUS_IMG;
+		}
+		else if (BiopsyHomeProcedure::target == BiopsyHomeProcedure::home_positions::HOME_LEFT) {
+			statusPanel->BackgroundImage = HOME_LEFT_STATUS_IMG;
+		}
+		else if (BiopsyHomeProcedure::target == BiopsyHomeProcedure::home_positions::HOME_RIGHT) {
+			statusPanel->BackgroundImage = HOME_RIGHT_STATUS_IMG;
+		}
+	}
+
+	
 
 }
 
@@ -726,7 +808,7 @@ void BiopsyStudy::operatingStatusManagement(void) {
 	evaluateAwsComponentEvent();
 	evaluateArmStatus();
 	evaluatePointerStatus();
-	evaluatePointerActivations();
+	evaluatePointerPictures(false);
 
 	// This shall be posed at the end of the management
 	evaluateReadyWarnings(false);
@@ -1098,21 +1180,21 @@ void BiopsyStudy::evaluatePopupPanels(void) {
 
 void BiopsyStudy::showProcedureImage(System::String^ action_img, System::String^ info_string, System::String^ info_icon, bool button) {
 	
-	if ((action_img == "") && (info_string == "")) {
-		statusPanel->Show();
-		activationPanel->Hide();
+	// The button confirmation is requested
+	if (button) {
+		confirmationButton->Show();
+		statusPanel->BackgroundImage = nullptr;
 	}
 	else {
-		statusPanel->Hide();
-		activationPanel->Show();
+		confirmationButton->Hide();
+
+		// Sets the current background image
+		if (action_img != "") {
+			statusPanel->BackgroundImage = Image::FromFile(action_img);
+		}
+
 	}
 
-	if (action_img != "") {
-		activationPanelImg->BackgroundImage = Image::FromFile(action_img);
-		activationPanelImg->Show();
-	}else activationPanelImg->Hide();
-
-	
 	if (info_string != "") {
 		activationInfoPanel->Show();
 
@@ -1120,16 +1202,11 @@ void BiopsyStudy::showProcedureImage(System::String^ action_img, System::String^
 			activationInfoIcon->BackgroundImage = Image::FromFile(info_icon);
 		}
 
-		// Button presence
-		if (button ) confirmationButton->Show();
-		else confirmationButton->Hide();
-
 		// Info Field		
 		activationInfoText->Text = info_string;
 	}
 	else {
 		activationInfoPanel->Hide();
-		confirmationButton->Hide();
 	}
 
 };

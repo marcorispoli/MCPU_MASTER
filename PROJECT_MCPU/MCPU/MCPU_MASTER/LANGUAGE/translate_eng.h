@@ -125,6 +125,18 @@
 "I00025", Notify::messages::INFO_GRID_INOUT_MANUAL_MODE, "Potter Monitoring", "The Grid positioning is set to manual mode (test mode)",
 
 
+"I00026", Notify::messages::INFO_BIOPSY_CONFIRM_ACTION, "Biopsy Activation", "PRESS BUTTON TO PROCEED",
+"I00027", Notify::messages::INFO_BIOPSY_XSCROLL_UNDEFINED_ACTION, "Biopsy Activation", "SCROLL X AXIS TO A VALID POSITION",
+"I00028", Notify::messages::INFO_BIOPSY_MOVE_LEFT_ACTION, "Biopsy Activation", "X POINTER IS MOVING TO THE LEFT CORNER",
+"I00029", Notify::messages::INFO_BIOPSY_MOVE_RIGHT_ACTION, "Biopsy Activation", "X POINTER IS MOVING TO THE RIGHT CORNER",
+"I00030", Notify::messages::INFO_BIOPSY_Y_TOURN_UP_ACTION, "Biopsy Activation", "TOURN UP THE Y AXIS",
+"I00031", Notify::messages::INFO_BIOPSY_X_MOVE, "Biopsy Activation", "X POINTER IS MOVING TO THE TARGET",
+"I00032", Notify::messages::INFO_BIOPSY_Y_MOVE, "Biopsy Activation", "Y POINTER IS MOVING TO THE TARGET",
+"I00033", Notify::messages::INFO_BIOPSY_Z_MOVE, "Biopsy Activation", "Z POINTER IS MOVING TO THE TARGET",
+"I00034", Notify::messages::INFO_BIOPSY_XSCROLL_TO_CENTER_ACTION, "Biopsy Activation", "SCROLL X AXIS TO CENTER POSITION",
+"I00035", Notify::messages::INFO_BIOPSY_XSCROLL_TO_LEFT_ACTION, "Biopsy Activation", "SCROLL X AXIS TO LEFT POSITION",
+"I00036", Notify::messages::INFO_BIOPSY_XSCROLL_TO_RIGHT_ACTION, "Biopsy Activation", "SCROLL X AXIS TO RIGHT POSITION",
+"I00037", Notify::messages::INFO_BIOPSY_Y_TOURN_DOWN_ACTION, "Biopsy Activation", "TOURN DOWN THE Y AXIS",
 
 
 /* -------- LABELS ---------------------------*/

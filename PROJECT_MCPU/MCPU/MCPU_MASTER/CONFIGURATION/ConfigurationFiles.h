@@ -27,6 +27,10 @@
    \ref CollimatorConfig \n
    \ref TomoConfig \n
    \ref DetectorConfig \n
+   \ref BiopsyConfig \n
+
+   \todo ComponentConfig.cnf file: configuration file per i component (magnifier Patient Protection ...)
+   
 
 *
 * # Overview

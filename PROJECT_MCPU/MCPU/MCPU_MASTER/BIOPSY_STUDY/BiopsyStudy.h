@@ -60,90 +60,46 @@
 	The Biopsy device shall be already connected: in case the device should not be connected
 	the activation command will abort.
 
-	The AWS shall make use of the \ref EXEC_BiopsyStudy command to open the biopsy study and activate 
-	the module. 
-	
+	The AWS shall make use of the \ref EXEC_BiopsyStudy command to open the biopsy study and activate
+	the module.
+
 	See the AWS protocol description for command details.
 
+	# GUI description 
 
-	# Pointer Control
+	The Biopsy study module display a dedicate GUI following described:
 
-	## General rules
+	\image html ./BiopsyStudy/GUI.png
+
+	The section (A) of the GUI is dedicated to the header, containing the info
+	about the installation name and the current date and time;
+
+	The section (B) is dedicated to the X-RAY status and the type of running mode:
+	+ Standby: this is the not ready condition status;
+	+ Ready: the study is ready to activate any available exposure;
 	
-	### X-SCROLL
-	
-	The X-Axis can be mechanically scrolled in three possible positions: Left, Center and Right;
-	+ The Module monitors the current position identifying an invalid position selection.
+	See the following table with the possible scenarios:
 
-	\note Every Home position requires a given X-SCROLL position
-	
-	### Y Up/Down
-
-	The Module detects the current status of the Y vertical position:
-	+ Tourned Up;
-	+ Tourned Down;
-
-	\note Every Home position requires a given Y position;
-
-	\note The pointer activation sequence depends by the current rotation position of the Y-Axes:
-	+ the module prevents a possible impact with the Z-Base that may be possible if the Y should be tourned Down.
-
-	### Home position
-
-	The Module implements three possible Home position:
-	+ HOME CENTER: pointer in the center of the axis and the X-SCROLL set in the center and Y tourned Up;
-	+ HOME LEFT: pointer in the most left position and the X-SCROLL set in the left position and Y tourned Down;
-	+ HOME RIGHT: pointer in the most right position and the X-SCROLL set in the right position and Y tourned Down;
-
-	See the Home Procedure Description section for details.
-
-	### Pointing activation 
-
-	The module provides dedicated methods to move a Pointer to a target position detected with the X-RAY biopsy procedure.
-	The following rules are implemented in order to prevent operator mistakes:
-	+ The Pointing activation can start only when a valid Home position has been selected first;
-	+ Only one pointing at a time can be permitted: after a pointing is completed a next pointing will require a new Home position selectiuon first;
-
-	See the Pointing Procedure Description section for details.
-
-	## External Keyboard Usage
-
-	The optional external keyboard provides the operator to modify the current pointer position in all the directions (X,Y,Z)
-	with small steps of about 1mm.
-
-	The module enables the Keyboard usage only after a valid Pointing activation:
-	+ the keyboard is disabled as soon as an home position is selected;
-	+ the keyboard is disabled at the Biopsy Study activation;
-
-	The current activation status is displayed by the proper icon on the GUI:
 	|Icon|Description|
 	|:--:|:--:|
-	|\image html ./BiopsyStudy/key_disabled.png|The Keyboard is currently disabled|
-	|\image html ./BiopsyStudy/key_enabled.png|The Keyboard is currently enabled|
+	|\image html ./BiopsyStudy/XStdby.png|Standby status|
+	|\image html ./BiopsyStudy/XReady.png|Ready condition|
+	|\image html ./BiopsyStudy/XOn.png|Exposure sequence in progress|
+	|\image html ./BiopsyStudy/Demo.png|Exposure in demo mode|
 
-	## Current Pointer Status 
 
-	When there is no activation pending (homing or pointing activities) 
-	the current pointer status is described by a graphical visualization 
-	and a coordinate box visualization.
+	The section (C) is dedicated to the Needle position correction 
+	when a Pointing action has successfully be executed.
 
-	### Grapical visualization description
-	
-	|Icon|Description|
-	|:--:|:--:|
-	|\image html ./BiopsyStudy/BYM_IMG/STATUS/NO_HOME_STATUS.png|No valid Home position is selected (or detected)|
-	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_CENTER_STATUS.png|The Pointer is in Home Center position|
-	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_LEFT_STATUS.png|The Pointer is in Home Left position|
-	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_RIGHT_STATUS.png|The Pointer is in Home Right position|
-	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_CENTER_STATUS.png|The Pointer is pointing to a target of an upright approach|
-	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_LEFT_STATUS.png|The Pointer is pointing to a target of a Left approach|
-	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_RIGHT_STATUS.png|The Pointer is pointing to a target of a Right approach|
-	
-	### Coordinate Box
+	The section (D) is dedicated to the Pointer status and Pointer activation 
+	pictures.
 
-	A GUI box will display the current X,Y,Z coordinates:
-
-	\image html ./BiopsyStudy/Coordinates.png
+	Section (E) is dedicated to the Gantry status monitoring and 
+	activation buttons:
+	+ Slide activation button;
+	+ Message window activation button;
+	+ Collimation light activation;
+	+ Control Image activation button;
 
 
 	# Motors management
@@ -217,17 +173,243 @@
 
 
 	## Body motor	
+	
 	No activation can be executed in Biopsy Study.
 
 	#  Compressor Management
 
+	The compressor usage and performances are described in detail in a dedicated section.
+	In this description it is reported the modalities and data visualization details.
+
 	## Compression Force
 
-	## Paddle Identification
+	The current compression force is displayed in a proper box of the GUI
+	as following described:
+
+	When the AWS should set the Exposure mode without compression,
+	the Icon has the following appearence:
+	
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/ForceDisabledNotCompressed.png|No compression is detected|
+	|\image html ./BiopsyStudy/ForceDisabledCompressed.png|A compression has been detected|
+
+	When the AWS should set the Exposure mode with compression,
+	the Icon has the following appearence:
+	
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/ForceEnabledNotCompressed.png|No compression is detected|
+	|\image html ./BiopsyStudy/ForceEnabledCompressed.png|A compression has been detected|
+
+	In both conditions, if the compression should be detected, its value in N is displayed into the Icon box.
+
+	See the Exposure section for details about the available compression modes.
+
+	## Breast Thickness measurement
+
+	As described in the Compressor module section,
+	the thickness measurement takes place when:
+	+ a valid compressor paddle is detected;
+	+ a valid compression forse is detected.
+
+	A dedicated box in the GUI reports the current paddle detection status 
+	and, if applicable, the current thickness measured.
+
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/ThicknessDisabled.png|No paddle detected|
+	|\image html ./BiopsyStudy/ThicknessEnabled.png|A valid paddle is detected|
+
+	In the case a valid thickness should be available, the current value in mm
+	is displayed in the Icon Box.
 
 	 
+	# Control Image Management
+	
+	\todo Biopsy Control Image : implementare la funzione di visualizzazione immagine di controllo
 
-	# 
+	# Tube Temperature monitoring
+
+	The Biopsy Study monitors the status of the Tube 
+	providing the current information about the maximum percentage of 
+	Bulb or Stator internal sensor:
+	+ only the max value of the two sensors is displayed here.
+
+	The current percentage value is displayed in a proper GUI box:
+
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/TubeNok.png|The tube temperature is out of range (alarm condition)|
+	|\image html ./BiopsyStudy/TubeOk.png|The tube temperature is below the alarm threshold|
+	
+
+	\note in the case the percantage should exceed a threshold 
+	of 95%, no more exposure can be initiated. An error message 
+	is activated.
+
+
+	See the Collimator module for more details.
+
+
+	# Study Door Monitoring
+
+	The current status of the Study door is monitored 
+	to warn the operator in the case the door should be open.
+
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/DoorClosed.png|The study's door is closed|
+	|\image html ./BiopsyStudy/DoorOpen.png|The study's door is open|
+
+	\note In case the Door should be open the exposure is disabled for safety reasons.
+
+	# Collimation Management
+	
+	In Biopsy study the collimator works as described in the Collimator module 
+	section. No special function are handled in this operating mode.
+
+	## Collimation Light
+
+	The collimation light works as descriobed in the Collimator management section:
+	+ it is activated when the compressor is activated for a limited time.
+
+	The operator however can manually activate the collimation light
+	clicking the dedicated button on the GUI:
+
+	\image html ./BiopsyStudy/LampOff.png
+
+	When the light is On the icon changes into the following:
+
+	\image html ./BiopsyStudy/LampOn.png
+
+	# Active Messages
+
+	In case some message should be active a graphic push button
+	opens a dedicated window, showing a list of active messages:
+	+ (see \ref MessageNotifyDescription)
+
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/AlarmOff.png|No active messages are present|
+	|\image html ./BiopsyStudy/AlarmOn.png|Almost one Error message is active|
+	|\image html ./BiopsyStudy/WarningOn.png|No Errors and almost one Warning message is active|
+	
+	# Exposure Management
+
+	## Available exposure sequences
+
+	In the Biopsy Study module, the followings Exposure modes can be executed:
+	+ Manual 2D exposure;
+	+ AEC 2D exposure;
+	+ Manual 3D exposure;
+	+ AEC 3D exposure;
+
+	It is up the AWS to select the proper exposure mode based on the given workflow.
+	See the Exposure module management for details.
+
+	## Available Exposure mode options
+
+	The modul e allows to use the following options:
+	+ Compression Modes: DISABLE and KEEP are available options. The UNLOCK mode is not allowed in Biopsy study;
+	+ Collimation Mode: option to select the type of collimation;
+
+	The following options are not applicable:
+	+ Compressor UNLOCK mode: the compressor unlock mode is not allowed in Biopsy study;
+	+ Arm Mode: the current ARM angle is not controlled;
+	+ Patient protection mode: the patient protection is not present in Biopsy.
+
+	## Ready Conditions
+
+	The Module checks the following conditions in order to 
+	enable the execution of an Exposure sequence:
+	+ No active error messages;
+	+ When enabled, a valid compression shall be detected;
+	+ Valid exposure data shall be set by the AWS;
+	+ The xray push button shall be enabled by the AWS;
+
+	The not ready conditions will ativate Warning messages
+	that the operator may checks in the case of unexpected Not Ready
+	visualization status.
+
+	# Pointer Control
+
+	## General rules
+
+	### X-SCROLL
+
+	The X-Axis can be mechanically scrolled in three possible positions: Left, Center and Right;
+	+ The Module monitors the current position identifying an invalid position selection.
+
+	\note Every Home position requires a given X-SCROLL position
+
+	### Y Up/Down
+
+	The Module detects the current status of the Y vertical position:
+	+ Tourned Up;
+	+ Tourned Down;
+
+	\note Every Home position requires a given Y position;
+
+	\note The pointer activation sequence depends by the current rotation position of the Y-Axes:
+	+ the module prevents a possible impact with the Z-Base that may be possible if the Y should be tourned Down.
+
+	### Home position
+
+	The Module implements three possible Home position:
+	+ HOME CENTER: pointer in the center of the axis and the X-SCROLL set in the center and Y tourned Up;
+	+ HOME LEFT: pointer in the most left position and the X-SCROLL set in the left position and Y tourned Down;
+	+ HOME RIGHT: pointer in the most right position and the X-SCROLL set in the right position and Y tourned Down;
+
+	See the Home Procedure Description section for details.
+
+	### Pointing activation
+
+	The module provides dedicated methods to move a Pointer to a target position detected with the X-RAY biopsy procedure.
+	The following rules are implemented in order to prevent operator mistakes:
+	+ The Pointing activation can start only when a valid Home position has been selected first;
+	+ Only one pointing at a time can be permitted: after a pointing is completed a next pointing will require a new Home position selectiuon first;
+
+	See the Pointing Procedure Description section for details.
+
+	## External Keyboard Usage
+
+	The optional external keyboard provides the operator to modify the current pointer position in all the directions (X,Y,Z)
+	with small steps of about 1mm.
+
+	The module enables the Keyboard usage only after a valid Pointing activation:
+	+ the keyboard is disabled as soon as an home position is selected;
+	+ the keyboard is disabled at the Biopsy Study activation;
+
+	The current activation status is displayed by the proper icon on the GUI:
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/key_disabled.png|The Keyboard is currently disabled|
+	|\image html ./BiopsyStudy/key_enabled.png|The Keyboard is currently enabled|
+
+	## Current Pointer Status
+
+	When there is no activation pending (homing or pointing activities)
+	the current pointer status is described by a graphical visualization
+	and a coordinate box visualization.
+
+	### Grapical visualization description
+
+	|Icon|Description|
+	|:--:|:--:|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/NO_HOME_STATUS.png|No valid Home position is selected (or detected)|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_CENTER_STATUS.png|The Pointer is in Home Center position|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_LEFT_STATUS.png|The Pointer is in Home Left position|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/HOME_RIGHT_STATUS.png|The Pointer is in Home Right position|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_CENTER_STATUS.png|The Pointer is pointing to a target of an upright approach|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_LEFT_STATUS.png|The Pointer is pointing to a target of a Left approach|
+	|\image html ./BiopsyStudy/BYM_IMG/STATUS/POINTED_RIGHT_STATUS.png|The Pointer is pointing to a target of a Right approach|
+
+	### Coordinate Box
+
+	A GUI box will display the current X,Y,Z coordinates:
+
+	\image html ./BiopsyStudy/Coordinates.png
 
 */
 

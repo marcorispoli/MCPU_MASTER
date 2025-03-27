@@ -32,7 +32,7 @@
 /// + 9x21_MAG Paddle descriptor;
 /// + D75_MAG Paddle descriptor;
 /// 
-/// 
+/// \todo Format collimation for specimen
 
 ref class PaddleConfig
 {

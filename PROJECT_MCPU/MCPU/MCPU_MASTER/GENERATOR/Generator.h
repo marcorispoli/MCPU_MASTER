@@ -6,6 +6,9 @@
 /// <summary>
 /// This Module class implements the communication and control of the the SHFD Device.
 /// 
+/// \todo Implementazione comando per il power down: email (R: Pending issue SHFR Mamo -26/03/2025 Juan Miguel Andujar Morgado JuanMiguel.Andujar@sedecal.com)
+/// \todo Implementazione re-inizializzazione se lo stato del gneratore cambia a seguito di powerdown o emergency o altro)
+/// 
 /// </summary>
 /// \ingroup Exposure_Module
 /// 

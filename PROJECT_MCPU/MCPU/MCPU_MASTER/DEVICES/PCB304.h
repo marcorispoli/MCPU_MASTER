@@ -4,6 +4,11 @@
 /// <summary>
 /// \defgroup PCB304_Module PCB304 Module: Grid device module controller
 /// \ingroup CanDevice_Module  
+/// 
+/// \todo Magnifier device: implementare il protocollo di gestione dell'ingranditore
+/// 
+/// \todo Implementare la nuova gestione della luce della biopsia
+/// 
 /// </summary>
 ref class PCB304 : public CanDeviceProtocol
 {

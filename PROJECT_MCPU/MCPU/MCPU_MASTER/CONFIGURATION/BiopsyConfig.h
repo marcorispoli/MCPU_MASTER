@@ -18,7 +18,11 @@
 /// ## Parameter Description
 /// 
 /// This configuration file contains the following parameter rows: 
-/// + POWER_LIGH Power light descriptor;
+/// + HOME_CENTER_POSITION: defines the coordinates of the home center position;
+/// + HOME_RIGHT_POSITION: defines the coordinates of the home right position;
+/// + HOME_LEFT_POSITION: defines the coordinates of the home left position;
+/// + PARK:defines the coordinates of the park position;
+/// 
 ///
 
 

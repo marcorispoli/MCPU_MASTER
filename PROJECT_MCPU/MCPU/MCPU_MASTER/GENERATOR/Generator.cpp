@@ -543,6 +543,7 @@ bool Generator::generatorSetup(void) {
     R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::ProcId_Aec_Mammography_3D, R2CP::DB_SkipPulse);
     if (!handleCommandProcessedState(nullptr)) return false;
 
+    
     LogClass::logInFile("GENERATOR: Setup successfully terminated \n");
     return true;
 }
@@ -1294,4 +1295,33 @@ Generator::generator_errors Generator::generator3DPulsePreparation(System::Strin
 
     // Preparation completed
     return generator_errors::GEN_NO_ERRORS;
+}
+
+
+bool Generator::generateAnodicCurrentTable(bool large_focus) {
+ 
+    anodicMap = gcnew cli::array<cli::array<int>^>(40);
+
+
+    float KV, MAS;
+
+    for (int kv = 20; kv < 50; kv++) {
+        // Creates the array 
+        anodicMap[kv - 20] = gcnew cli::array <int> (700);
+        LogClass::logInFile("TABLE: KV-" + kv.ToString());
+        // initializes
+        for (int i = 0; i < 700; i++) anodicMap[kv - 20][i] = 0;
+
+        for (int mAs = 1; mAs < 641; mAs++) {
+            KV = (float)kv;
+            MAS = (float)mAs;
+            R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, KV, MAS, 5000);
+            if (!handleCommandProcessedState(nullptr)) break; // No More mAs selectable
+
+            selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+            anodicMap[kv - 20][mAs - 1] = (int)(selected_anode_current * 1000);            
+        }
+    }
+
+    return true;
 }

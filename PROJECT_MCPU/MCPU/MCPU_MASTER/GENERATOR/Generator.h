@@ -240,6 +240,8 @@ public:
 	inline static bool isReadyForExposure(void) { return ready_for_exposure; }
 	inline static bool isSimulatorMode(void) { return simulator_mode; }
 	
+	bool generateAnodicCurrentTable(bool large_focus);
+
 protected:
 	virtual void  setXrayEnable(bool stat) {};
 	virtual bool  getXrayPushButton(void) { return false; };
@@ -261,6 +263,7 @@ protected:
 private:
 	
 	static Generator^ device;	//!< This is the Handle of the Generator class instance 
+	static  cli::array< cli::array<int>^>^ anodicMap;
 
 	static bool simulator_mode = false; //!< This is the current real or simulating mode flag
 	Thread^ running_thread;				//!< This is the module worker thread handler

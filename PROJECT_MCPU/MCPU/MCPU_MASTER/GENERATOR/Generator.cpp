@@ -192,18 +192,6 @@ void Generator::simulatorWork(void) {
 }
 
 /// <summary>
-///  If the initial configuration of the Generator device should fail 
-///  the main thread call this routine every 1000 ms forever
-/// </summary>
-/// <param name=""></param>
-void Generator::errorLoop(void) {
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        return;
-    }
-}
-
-/// <summary>
 /// If the Service Tool Software should be detected the module main thread 
 /// calls this loop routine until the Service Tool software is closed.
 /// 
@@ -212,15 +200,158 @@ void Generator::errorLoop(void) {
 /// 
 /// <param name=""></param>
 void Generator::serviceToolLoop(void) {
-    LogClass::logInFile("Service tool detected!\n");
+    LogClass::logInFile("Generator: Service tool detected!\n");
     
     while (isServiceToolConnected()) {
         //Activates the XRAY-ENA to allows the service tool activities
         setXrayEnable(true);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
-    LogClass::logInFile("Service tool exited\n");
+    LogClass::logInFile("Generator: Service tool exited\n");
     setXrayEnable(false);
+
+}
+
+/// <summary>
+/// This routine waits for the Smarthub and the Generator connection
+/// and select the R2CP protocol version to 6.
+/// </summary>
+/// 
+/// The routine polls every 500ms the connection with the smart hub and the generator.
+/// 
+/// The routbine activates the following errors:
+/// + ERROR_GENERATOR_ERROR_CONNECTION
+/// + WARNING_GENERATOR_NOT_READY
+/// 
+/// \warning When the routine exits (connectin established) 
+/// the error WARNING_GENERATOR_NOT_READY remain active.
+/// 
+/// <param name=""></param>
+void Generator::connectSmarthHubAndGenerator(void) {
+
+    while (true) {
+        
+        // Set an initial delay to 500ms
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+        // Connectes the Smart Hub and generator
+        LogClass::logInFile("Generator: Try to connect the Smart Hub and Generator!\n");        
+        R2CP_Eth->smartHubConnected = false;
+        R2CP_Eth->generatorConnected = false;
+        
+
+        // Waits the Application and Generator connected with the smart hub
+        // Every repetition wait 1s befor to proceed to prevent over communication
+        while ((!R2CP_Eth->smartHubConnected) || (!R2CP_Eth->generatorConnected)) {
+
+            // If the ethernet should drop repeats
+            if (!isConnected()) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                R2CP_Eth->smartHubConnected = false;
+                R2CP_Eth->generatorConnected = false;
+            }
+
+            // Notify the connection
+            R2CP::CaDataDicGen::GetInstance()->Network_ConnectionRequest_Event();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            // Request the Application Node status
+            R2CP::CaDataDicGen::GetInstance()->Network_GetApplicationNodeStatus();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            // Request the Generator Node status
+            R2CP::CaDataDicGen::GetInstance()->Network_GetGeneratorNodeStatus();
+
+            // Waits 500ms
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+
+        
+        LogClass::logInFile("Generator: Set the current R2CP protocol to V6\n");
+        
+        // Updates the current protocol revision code
+        while (!R2CP::CaDataDicGen::GetInstance()->isVersionUpdated()) {
+            R2CP::CaDataDicGen::GetInstance()->Protocol_Get_Version();
+            handleCommandProcessedState(nullptr);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if (!connectionTest()) break;
+        }
+        if (!connectionTest()) continue;
+
+        // Sets the revision code to 6
+        while (true) {
+
+            // If the version is already the 6 finish here
+            if (R2CP::CaDataDicGen::GetInstance()->isProtoV6()) break;
+
+            // Set the version 6 of the protocol            
+            R2CP::CaDataDicGen::GetInstance()->Protocol_Set_Version6();
+            handleCommandProcessedState(nullptr);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            if (!connectionTest()) break;
+        }
+        if (!connectionTest()) continue;
+
+        LogClass::logInFile("Generator: Protocol successfully set to V6\n");
+        return;
+    }
+        
+    return;
+
+}
+
+/// <summary>
+/// This function waits for the initialization phase completion.
+/// </summary>
+/// 
+/// The Function checks if the DC bus error should be active.\n
+/// If the DC BUS error should be active, the function never returns.\n
+/// The global register dc_bus_error_initialization is then activated.
+/// 
+/// If the current Generator status should not be the Initialization (boot up)
+/// the return returns.
+/// 
+/// <param name="">
+/// + true: the generator completed the boot-up procedure
+/// + false: a communication error has been detected
+/// </param>
+/// <returns></returns>
+bool Generator::waitGeneratorInitialization(void){
+    LogClass::logInFile("Generator: Test Boot-Up procedure \n");
+
+    // Resets the global dc bus error
+    dc_bus_error_initialization = false;
+
+    // Clear the Generator System messages
+    while (!clearSystemMessages()) {
+        if (!connectionTest()) return false; // drop of the communication
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    while (true) {  
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        if (!connectionTest()) return false; // drop of the communication
+
+        // reset the system errors
+        clearSystemMessages();
+        
+        // Gets the internal generator status
+        updateGeneratorStatus();        
+
+        if (current_generator_status == R2CP::Stat_Standby) {
+            LogClass::logInFile("Generator: Boot-Up procedure terminated\n");
+            return true;
+        }
+
+        // Verifies if the DC bus should be ON
+        if (testDCBusError()) {
+            LogClass::logInFile("Generator: DC BUS FATAL ERROR\n");
+            dc_bus_error_initialization = true;
+            Notify::activate(Notify::messages::ERROR_GENERATOR_FATAL_MESSAGE);            
+            while (true) { std::this_thread::sleep_for(std::chrono::milliseconds(10000)); }
+        }
+        
+    }
 
 }
 
@@ -244,113 +375,45 @@ void Generator::serviceToolLoop(void) {
 /// <param name=""></param>
 void Generator::threadWork(void) {
   
-    while (true) {
-        LogClass::logInFile("Try to connect the Smart Hub and Generator!\n");
-        Notify::activate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);                
-        Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY);
+    
+    while (true) {                
 
-        R2CP_Eth->smartHubConnected = false;
-        R2CP_Eth->generatorConnected = false;
+        // Repeats all the connection phase
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+        Notify::activate(Notify::messages::ERROR_GENERATOR_INITIALIZATION);
+        Notify::deactivate(Notify::messages::ERROR_GENERATOR_SYS_MESSAGE);        
+        Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
+        
         idle_status = false;
         ready_for_exposure = false;
 
-        // Waits the Application and Generator connected with the smart hub
-        // Every repetition wait 1s befor to proceed to prevent over communication
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));        
-        while ((!R2CP_Eth->smartHubConnected) || (!R2CP_Eth->generatorConnected) ) {
+        // Tries to connect with the SmartHub and the Generator device
+        connectSmarthHubAndGenerator();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-            // If the ethernet should drop repeats
-            if (!isConnected()) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                R2CP_Eth->smartHubConnected = false;
-                R2CP_Eth->generatorConnected = false;
-            }
-            
-            // Notify the connection
-            R2CP::CaDataDicGen::GetInstance()->Network_ConnectionRequest_Event();
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        // Waits the Generator initialization: in case of false, the working routine restart with the communication check        
+        if (!waitGeneratorInitialization()) continue;        
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-            // Request the Application Node status
-            R2CP::CaDataDicGen::GetInstance()->Network_GetApplicationNodeStatus();
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-            // Request the Generator Node status
-            R2CP::CaDataDicGen::GetInstance()->Network_GetGeneratorNodeStatus();
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-        }       
-        Notify::deactivate(Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION);
-        
         // If the service Tool has been detected the procedure enters here
         // until the service tool exits
         if (isServiceToolConnected()) serviceToolLoop();
-
-        // Sets the version 6 of the protocol
-        LogClass::logInFile("Setting protocol version\n");        
-        
-        while (!R2CP::CaDataDicGen::GetInstance()->isVersionUpdated()) {
-            R2CP::CaDataDicGen::GetInstance()->Protocol_Get_Version();
-            handleCommandProcessedState(nullptr);
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            if (!connectionTest()) break;
-        }
-        if (!connectionTest()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            continue;
-        }
-     
-        while (true) {
-
-            // If the version is already the 6 finish here
-            if (R2CP::CaDataDicGen::GetInstance()->isProtoV6()) break;
-
-            // Set the version 6 of the protocol            
-            R2CP::CaDataDicGen::GetInstance()->Protocol_Set_Version6();
-            handleCommandProcessedState(nullptr);
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            if (!connectionTest()) break;
-
-        }
-
-        if (!connectionTest()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            continue;
-        }
-
-        if (isServiceToolConnected()) continue;
-
-        // Clear the system messages
-        LogClass::logInFile("Clear System Messages\n");
-        while (!clearSystemMessages()) {
-            if (!connectionTest()) break;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        }
         if (!connectionTest()) continue;
-        if (isServiceToolConnected()) continue;
         
-        // Generator setup
-        if (!generatorSetup()) {
-            if (!connectionTest()) continue;
-
-            LogClass::logInFile("Generator Setup Failed!\n");
-            Notify::activate(Notify::messages::ERROR_GENERATOR_SETUP);
-
-            errorLoop();
-            Notify::deactivate(Notify::messages::ERROR_GENERATOR_SETUP);
-            continue;
-        }
-              
-
+        // Generator Registers Setup
+        if (!generatorSetup()) continue;
+       
         // Activates the Disables Rx Message         
         setDisableRxMessage(true);
         
         LogClass::logInFile("Generator Setup Completed: Idle mode activated.\n");       
-        idle_status = true;        
-        Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
+       
+        idle_status = true;    
+        Notify::deactivate(Notify::messages::ERROR_GENERATOR_INITIALIZATION);       
 
         // Handles the Idle mode
-        generatorIdleLoop();
-        
+        generatorIdleLoop();        
         
 
     }
@@ -398,52 +461,7 @@ bool  Generator::handleCommandProcessedState(unsigned char* cd) {
     return true;
 }
 
-/// <summary>
-/// This routine is used to initialize the communication with the generator
-/// </summary>
-/// 
-/// The procedure initialize the Generator communication setting the proper protocol version 
-/// to V6.
-/// 
-/// <param name=""></param>
-/// <returns></returns>
-bool Generator::generatorInitialization(void) {
 
-    // Sets the version 6 of the protocol
-    while (true) {
-       
-        // Get the protocol
-        while (!R2CP::CaDataDicGen::GetInstance()->isVersionUpdated()) {
-            R2CP::CaDataDicGen::GetInstance()->Protocol_Get_Version();
-            handleCommandProcessedState(nullptr);
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-            if (!connectionTest()) return false;
-        }
-
-        // If the version is already the 6 finish here
-        if (R2CP::CaDataDicGen::GetInstance()->isProtoV6()) break;
-
-        // Set the version 6 of the protocol            
-        R2CP::CaDataDicGen::GetInstance()->Protocol_Set_Version6();
-        handleCommandProcessedState(nullptr);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        if (!connectionTest()) return false;
-
-    }
-    
-    // Get the current generator status
-    LogClass::logInFile("Wait the generator initialization process\n");
-
-    while (true) {
-        R2CP::CaDataDicGen::GetInstance()->Generator_Get_StatusV6();
-        if (!handleCommandProcessedState(nullptr)) return false; 
-        if (R2CP::CaDataDicGen::GetInstance()->radInterface.generatorStatusV6.GeneratorStatus != R2CP::Stat_Initialization) break;                
-        if (!connectionTest()) return false;
-    }
-
-    return true;
-}
 
 bool Generator::generatorSetup(void) {
     LogClass::logInFile("GENERATOR: Setup procedure\n");
@@ -548,6 +566,22 @@ bool Generator::generatorSetup(void) {
     return true;
 }
 
+/// <summary>
+/// This function tries to clear the active generator system messages.
+/// </summary>
+/// 
+/// The function reset all the current active messages than read again the 
+/// active messages.
+///  
+/// 
+/// <param name=""></param>
+/// <returns>
+/// + true: the function successfully executed.
+/// + false: the R2CP command failed.
+/// 
+/// \note: the function return true even if errors are still present.
+/// 
+/// </returns>
 bool Generator::clearSystemMessages(void) {
 
     // Gets all the active messages present in the generator
@@ -575,6 +609,27 @@ bool Generator::clearSystemMessages(void) {
     }else LogClass::logInFile("GENERATOR: No more system messages are present! \n");
 
     return true;
+}
+
+/// <summary>
+/// This function checks if a DC BUS error is active in the Generator device.
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <returns>
+/// + true: an error id 1404xx is active;
+/// + false: no 1404xx error is active
+/// </returns>
+bool Generator::testDCBusError(void) {
+    
+    // No errors are present
+    if (R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size() == 0) return false;
+
+    for (int i = 0; i < R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList.size(); i++) {
+        unsigned int id = R2CP::CaDataDicGen::GetInstance()->systemInterface.messageList[i];
+        if ((id >= 140400) && (id <= 140499)) return true;
+    }
+    return false;
 }
 
 

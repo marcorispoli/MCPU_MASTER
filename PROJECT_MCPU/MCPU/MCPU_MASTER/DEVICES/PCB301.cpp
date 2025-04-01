@@ -42,13 +42,16 @@ void PCB301::evaluateEvents(void) {
         else Notify::deactivate(Notify::messages::ERROR_POWER_DOWN_ERROR);
     }
 
-    // Emergency
-    if (emergency != protocol.status_register.system_emergency) {
-        emergency = protocol.status_register.system_emergency;
+    // Emergency: controlled only with the generator not in fatal error
+    // If the generator should be in Fatal Error, the contactor coil is set open by the generator
+    if (!Exposures::isFatalError()) {
+        if (emergency != protocol.status_register.system_emergency) {
+            emergency = protocol.status_register.system_emergency;
 
-        if (protocol.status_register.system_emergency) Notify::activate(Notify::messages::ERROR_EMERGENCY_BUTTON);
-        else Notify::deactivate(Notify::messages::ERROR_EMERGENCY_BUTTON);
-    }
+            if (protocol.status_register.system_emergency) Notify::activate(Notify::messages::ERROR_EMERGENCY_BUTTON);
+            else Notify::deactivate(Notify::messages::ERROR_EMERGENCY_BUTTON);
+        }
+    }else Notify::deactivate(Notify::messages::ERROR_EMERGENCY_BUTTON);
 
     // Cabinet safety
     if (cabinet != protocol.status_register.cabinet_safety_alarm) {

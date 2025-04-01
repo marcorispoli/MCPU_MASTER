@@ -1,0 +1,28 @@
+1.0.0:  initial release of the DLL
+1.1.0:  first release of the linux library
+1.2.0:  added support for the PCI-CAN
+1.3.0:  added errno to string support
+        added more debug output
+        make the linkage static
+        support for debug file logging
+1.3.1:  fixed a shared library issue
+1.4.0:  fixed latency problems
+        added ioctl for blocking read
+        added automatic flushing support of CAN frames from the read thread
+1.5.0:  added support for WinCE
+        added Peak-Wrapper-DLLs
+1.6.0:  added self reception support
+        added switching between filter modes
+        added VSCAN_SetRcvEvent function
+        added VSCAN_IOCTL_GET_API_VERSION ioctl
+1.7.0:  on WinCE all COMx devices are handled as USB-CANs
+        changed initial GetCommState to own initialization
+        added check for serial numbers
+1.8.0:  added new filtering support (for NET-CAN Plus)
+1.8.2:  drop support for ARM libraries
+1.8.3:  fix new message filter mode
+1.10.0: rework TCP connection failure handling
+        add support for enabling TCP KEEPALIVE functionality
+        drop support for Windows CE libraries
+1.10.1: fix VSCAN_IOCTL_GET_HWPARAM ioctl
+1.10.1: fix NetCAN Plus device enumeration

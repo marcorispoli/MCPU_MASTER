@@ -1021,7 +1021,13 @@ bool StartupOperatingModeForm::Startup_Generator(void) {
 		startupSubFase++;
 		break;
 
-	case 3: // Wait Generator Idle		
+	case 3: // Wait Generator Idle	
+		if (Exposures::isFatalError()) {
+			labelGeneratorActivity->Text = "FATAL ERROR:DC BUS ERROR";
+			labelGeneratorActivity->ForeColor = Color::Red;
+			return true;
+		}
+
 		if (!Exposures::isGeneratorIdle()) break;
 		startupSubFase++;
 		break;

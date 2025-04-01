@@ -56,6 +56,74 @@
 /// + Exposure Implementation: implementation of a given exposure procedures; 
 /// + Exposure Termination: handling the exposure termination;
 /// 
+/// # Generator Anodic Current and mAs handling
+/// 
+/// ## Integration Time
+/// The Dose is controlled integrating a given current for a time.
+/// The integration time is set in discrete time slots belonging to the R20 table.
+/// + R20 Slots: 12.5ms, 16ms,20ms,25ms,32ms,40ms,50ms,64ms,80ms,100ms,125ms .....
+/// 
+/// ## Anodic Current contol
+/// 
+/// The Generator device accuratelly controls the Anodic current level during the exposure.
+/// Based on the R20 discrete time slots, an XRAY tube load curve is discretized getting the maximum 
+/// anodic current that can be used for a given integration time.
+/// 
+/// ## mAs integration in two point exposure control
+/// 
+/// In two point exposure control mode, the application selects the kV and the mAs.
+/// Because the Generator doesn't measure mAs directly, but measure current and time,
+/// and because the integration time is not arbitrary  but executed in discrete temporal slots,
+/// the generator finds the best combination from time slot, maximum current that provides the 
+/// Time * I value most closed to the requested mAs.  
+/// 
+///  
+///	## mAs integration in three point exposure control
+/// 
+/// In three point exposure, the application selects the anodic current,
+/// the integration time and the kV. The mAs in this scenario is a consequence 
+/// of the selection.
+/// 
+/// ## Anodic Calculator Tool
+/// 
+/// The Generator module provides a convenient function that can be invoked 
+/// for service. This function provides, in two point tech, the whole table 
+/// of anodic current related to kV and mAs. 
+/// 
+/// The function generates a text file with one coloumn for any kV and 640 rows (one row for any mAs) 
+/// with the anodic current at the selected kV and mAs.
+/// 
+/// The Function takes several seconds to complete as polls the generator about 640 * 29 
+/// different combinations.
+/// 
+/// # Generator and the Emergency button management 
+/// 
+/// ## Generator Bootup Scenario
+/// 
+/// When the generator boots up, the internal status is set to Initialization.
+/// During this phase the generator Opens the Power Contactor coil switch until the boot up is completed.
+/// When the boot up completes, the generator closes the switch.
+/// 
+/// If the DC bus should be at low level or absent, the generator activates the alarm 1404xx and quickly opens the coil switch.
+/// This scenario can be replicated even if the Emergency button should be Open during the Generator startup.
+/// 
+/// \important The only exit strategy in this error scenario is to Warn the operator to check the Emergency Buttons 
+/// and Restart the Unit. Actually a real electric problem may keep down the Bus so this scenario cannot be self resetted by software.
+/// 
+/// ## Generator in Standby
+/// 
+/// If the system should startup with the Emergency buttons not activated, and no dc bus issues are detected,
+/// the generator terminates its startup properly. The Standby internal status is then activated.
+/// 
+/// In the case a DC bus issue should be detected, whetehr is a true dc bus problem or the Emergency Button activation,
+/// the Generator doesn't open the power contactor coil switch.
+/// 
+/// In this scenario, ence, the Application can properly detect the emergency button activation 
+/// monitoring the coil circuit (PCB301).
+/// 
+/// The Application may reset the generator error condition as soon as the Emergency button 
+/// should be detected closed again, resetting the system error.
+///  
 /// 
 /// # Module General description
 /// 
@@ -235,6 +303,7 @@ public:
 	static bool isSmartHubConnected(void);
 	static bool isGeneratorConnected(void);
 	static bool isServiceToolConnected(void);
+	static bool isFatalError(void) { return dc_bus_error_initialization; }
 
 	inline static bool isGeneratorIdle(void) { return idle_status; }
 	inline static bool isReadyForExposure(void) { return ready_for_exposure; }
@@ -269,6 +338,7 @@ private:
 	Thread^ running_thread;				//!< This is the module worker thread handler
 	static CR2CP_Eth* R2CP_Eth;			//!< This is the Tcp/Ip client connection handler with the smart-hub external software
 	
+	static bool dc_bus_error_initialization = false;   //!< The DC Bus error during initialization fase detected
 	static bool idle_status = false;		//!< The Generator is in IDLE mode
 	static bool ready_for_exposure = false; //!< The Generator is in Ready for exposure mode
 	static bool disable_rx_message = false; //!< This is the status of the disable rx message
@@ -276,6 +346,7 @@ private:
 
 	bool handleCommandProcessedState(unsigned char* code);
 	bool clearSystemMessages(void);
+	bool testDCBusError(void);
 
 	bool updateGeneratorStatus(void);
 	static unsigned char current_generator_status = 255; //!< This is the current generator status 
@@ -283,14 +354,19 @@ private:
 	bool setDisableRxMessage(bool stat);
 
 	static short sendCR2CPData(unsigned char* pMessage, unsigned short  datalength);
-    void threadWork(void);
+    
+	void threadWork(void);
 	void simulatorWork();
-	void errorLoop(void);
+
+	void connectSmarthHubAndGenerator(void);
+	bool waitGeneratorInitialization(void);
+
+	
 	void serviceToolLoop(void);
 	bool generatorIdleLoop(void);
 	bool generatorErrorMessagesLoop(void);
 	bool connectionTest(void);
-	bool generatorInitialization(void);
+	
 	bool generatorSetup(void);	
 	static float getR10Time(float ms, bool next);
 	generator_errors generatorSet3PointDatabank(unsigned char dbId, bool large_focus, float KV, float MAS, int long_pulse, int min_pulse, int max_pulse);

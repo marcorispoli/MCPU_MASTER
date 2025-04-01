@@ -26,7 +26,6 @@
 "E00021", Notify::messages::ERROR_EMERGENCY_BUTTON, "System Power Monitoring", "Emergency button activation detected!",
 "E00022", Notify::messages::ERROR_CABINET_SAFETY, "System Safety Monitoring", "Safety Cabinet activation detected!",
 "E00023", Notify::messages::ERROR_BATTERY_LOW_ERROR, "System Power Monitoring", "Battery voltage monitoring error! The battery voltage level is too low.",
-"E00024", Notify::messages::ERROR_GENERATOR_ERROR_CONNECTION, "Generator Status", "Generator device not connected",
 "E00025", Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR, "Collimator Monitoring", "The Collimator selector seams to be blocked",
 "E00026", Notify::messages::ERROR_FILTER_SELECTION_ERROR, "Collimator Monitoring", "The Filter selector seams to be blocked",
 "E00027", Notify::messages::ERROR_MIRROR_SELECTION_ERROR, "Collimator Monitoring", "The Mirror selector seams to be blocked",
@@ -46,9 +45,10 @@
 "E00039", Notify::messages::ERROR_BODY_LIMIT_SWITCH, "Body Motor Monitoring", "The limit switch is active",
 "E00040", Notify::messages::ERROR_BODY_POTENTIOMETER_READ_FAULT, "Body Motor Monitoring", "Unable to read the potentiometer input",
 "E00041", Notify::messages::ERROR_VERTICAL_LIMIT_SWITCH, "Vertical Motor Monitoring", "The limit switch is active",
-"E00042", Notify::messages::ERROR_GENERATOR_SETUP, "Generator Status Monitoring", "The Generator configuration is failed",
+"E00042", Notify::messages::ERROR_GENERATOR_INITIALIZATION, "Generator Status Monitoring", "The Generator is in Boot-Up status",
 "E00043", Notify::messages::ERROR_GENERATOR_SYS_MESSAGE, "Generator Messages", "There are error messages",
-"E00044", Notify::messages::ERROR_POTTER_GRID_POSITION, "Potter Messages", "The Grid device is in fault condition",
+"E00044", Notify::messages::ERROR_GENERATOR_FATAL_MESSAGE, "Generator Messages", "The DC BUS is Off. Check the Emergency Button activation and restart the system.",
+"E00045", Notify::messages::ERROR_POTTER_GRID_POSITION, "Potter Messages", "The Grid device is in fault condition",
 
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/

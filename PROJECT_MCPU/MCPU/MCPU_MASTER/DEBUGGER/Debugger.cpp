@@ -10,6 +10,7 @@
 #include "VerticalMotor.h"
 #include "BodyMotor.h"
 #include "SlideMotor.h"
+#include "ExposureModule.h"
 
 
 
@@ -157,6 +158,24 @@ void DebuggerCLI::rxHandler(void){
 		result_string += "PCB302> PADDLE POS:" + PCB302::device->getPaddlePosition().ToString() + "\n\r";
 		result_string += "PCB302> PADDLE FORCE:" + PCB302::device->getPaddleForce().ToString() + "\n\r";
 		send(System::Text::Encoding::Unicode->GetBytes(result_string));
+		return;
+	}
+
+	if (sFrame->Contains("ANODE_TABLE")) {
+		send(System::Text::Encoding::Unicode->GetBytes("Generator Anodic Table Generation .. "));
+		Exposures::pExposure->generateAnodicCurrentTable(true);
+		send(System::Text::Encoding::Unicode->GetBytes(" -> Completed!"));
+		return;
+	}
+
+
+	// Menu List Display
+	if (sFrame->Contains("?")) {
+		send(System::Text::Encoding::Unicode->GetBytes("---------- COMMAND LIST --------- \n\r"));
+		send(System::Text::Encoding::Unicode->GetBytes("> CANSTAT\n\r"));
+		send(System::Text::Encoding::Unicode->GetBytes("> COMPRESSOR\n\r"));
+		send(System::Text::Encoding::Unicode->GetBytes("> ANODE_TABLE\n\r"));
+		return;
 	}
 
 }

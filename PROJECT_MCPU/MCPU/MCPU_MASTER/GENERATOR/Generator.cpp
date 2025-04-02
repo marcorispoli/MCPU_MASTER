@@ -1355,28 +1355,139 @@ Generator::generator_errors Generator::generator3DPulsePreparation(System::Strin
 
 bool Generator::generateAnodicCurrentTable(bool large_focus) {
  
-    anodicMap = gcnew cli::array<cli::array<int>^>(40);
-
 
     float KV, MAS;
+    System::String^ row;
+    float maxI[30];
+    float map[30][700];
 
-    for (int kv = 20; kv < 50; kv++) {
-        // Creates the array 
-        anodicMap[kv - 20] = gcnew cli::array <int> (700);
-        LogClass::logInFile("TABLE: KV-" + kv.ToString());
+    // Crea la mappa in memoria prima di estrapolare la tabella
+    for (int kv = 20; kv <= 49; kv++) {
+        
         // initializes
-        for (int i = 0; i < 700; i++) anodicMap[kv - 20][i] = 0;
+        maxI[kv - 20] = 0;
+        for (int i = 0; i < 700; i++) map[kv - 20][i] = 0;
 
-        for (int mAs = 1; mAs < 641; mAs++) {
+        for (int mAs = 1; mAs <= 640; mAs++) {
             KV = (float)kv;
             MAS = (float)mAs;
             R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, KV, MAS, 5000);
             if (!handleCommandProcessedState(nullptr)) break; // No More mAs selectable
 
             selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
-            anodicMap[kv - 20][mAs - 1] = (int)(selected_anode_current * 1000);            
+            map[kv - 20][mAs - 1] = selected_anode_current;
+
+            // Aggiorna l'array della corrente massima
+            if (selected_anode_current > maxI[kv - 20]) maxI[kv - 20] = selected_anode_current;
         }
     }
 
+    // Creazione file documentale
+    System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(System::IO::Directory::GetCurrentDirectory() + "\\GeneratorAnodicTable.h");
+
+    sw->WriteLine("/**");
+    sw->WriteLine("\\addtogroup AnodicCurrentTable");
+    
+    //_______________________ MAX CURRENT TABLE _______________________________
+
+    sw->WriteLine("# Max Anodic Current for every kV");
+    sw->WriteLine("");
+
+    sw->WriteLine("|kV|Ia(mA)|");
+    sw->WriteLine("|:--:|:--:|");
+
+    for (int i = 20; i <= 49; i++) {
+        row = "|" + i.ToString() + "|" + maxI[i - 20].ToString();
+        sw->WriteLine(row);
+    }
+    
+    sw->WriteLine("");
+    sw->WriteLine("");
+    sw->WriteLine("");
+
+    //________________________ 20 to 29 kV TABLE ___________________________________________
+    sw->WriteLine("# Range 20 to 29 kV");
+    sw->WriteLine("");
+
+    sw->WriteLine("|mAs\/kV|20|21|22|23|24|25|26|27|28|29|");
+    sw->WriteLine("|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|");
+    
+    for (int mAs = 1; mAs <= 640; mAs++) {  
+        row = "|" + mAs.ToString() + "|";
+
+        for (int kv = 20; kv <= 29; kv++) {
+            float mA = map[kv - 20][mAs - 1];
+            if (mA == maxI[kv - 20]) {
+                row += "<b> " + mA.ToString() + " </b> |"; // Bold stile for the max value
+            }
+            else {
+                row += mA.ToString() + "|";
+            }            
+            
+        }
+        sw->WriteLine(row);
+    }
+    
+    sw->WriteLine("");
+    sw->WriteLine("");
+    sw->WriteLine("");
+
+    //________________________ 30 to 39 kV TABLE ___________________________________________
+    sw->WriteLine("# Range 30 to 39 kV");
+    sw->WriteLine("");
+
+    sw->WriteLine("|mAs\/kV|30|31|32|33|34|35|36|37|38|39|");
+    sw->WriteLine("|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|");
+    for (int mAs = 1; mAs <= 640; mAs++) {
+        row = "|" + mAs.ToString() + "|";
+
+        for (int kv = 30; kv <= 39; kv++) {
+            float mA = map[kv - 20][mAs - 1];
+            if (mA == maxI[kv - 20]) {
+                row += "<b> " + mA.ToString() + " </b> |"; // Bold stile for the max value
+            }
+            else {
+                row += mA.ToString() + "|";
+            }
+
+        }
+        sw->WriteLine(row);
+    }
+    
+    sw->WriteLine("");
+    sw->WriteLine("");
+    sw->WriteLine("");
+
+    //________________________ 40 to 49 kV TABLE ___________________________________________
+    sw->WriteLine("# Range 40 to 49 kV");
+    sw->WriteLine("");
+
+    sw->WriteLine("|mAs\/kV|40|41|42|43|44|45|46|47|48|49|");
+    sw->WriteLine("|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|");
+    for (int mAs = 1; mAs <= 640; mAs++) {
+        row = "|" + mAs.ToString() + "|";
+
+        for (int kv = 40; kv <= 49; kv++) {
+            float mA = map[kv - 20][mAs - 1];
+            if (mA == maxI[kv - 20]) {
+                row += "<b> " + mA.ToString() + " </b> |"; // Bold stile for the max value
+            }
+            else {
+                row += mA.ToString() + "|";
+            }
+
+        }
+        sw->WriteLine(row);
+    }
+
+    
+    sw->WriteLine("");
+    sw->WriteLine("");
+    sw->WriteLine("");
+
+    sw->WriteLine("*/");
+    sw->Close();
+
+    
     return true;
 }

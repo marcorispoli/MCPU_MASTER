@@ -46,6 +46,7 @@ awsProtocol::awsProtocol(void) {
     // Create the dictionary
     commandExec = gcnew Dictionary<String^, command_callback^>;
     commandExec->Add("EXEC_OpenStudy", gcnew command_callback(this, &awsProtocol::EXEC_OpenStudy));
+    commandExec->Add("EXEC_BiopsyStudy", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyStudy));
     commandExec->Add("EXEC_CloseStudy", gcnew command_callback(this, &awsProtocol::EXEC_CloseStudy));
     commandExec->Add("SET_ProjectionList", gcnew command_callback(this, &awsProtocol::SET_ProjectionList));
     commandExec->Add("EXEC_ArmPosition", gcnew command_callback(this, &awsProtocol::EXEC_ArmPosition));
@@ -67,6 +68,12 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("SET_Language", gcnew command_callback(this, &awsProtocol::SET_Language));
     commandExec->Add("EXEC_PowerOff", gcnew command_callback(this, &awsProtocol::EXEC_PowerOff));
     commandExec->Add("EXEC_TestCommand", gcnew command_callback(this, &awsProtocol::EXEC_TestCommand));
+
+    commandExec->Add("EXEC_BiopsyHoming", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyHoming));
+    commandExec->Add("EXEC_BiopsyParking", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyParking));
+    commandExec->Add("EXEC_BiopsyPointing", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyPointing));
+    commandExec->Add("SET_BiopsyImage2D", gcnew command_callback(this, &awsProtocol::SET_BiopsyImage2D));
+    
 
     // Connects the Global register callbacks to the local Events        
     ArmMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);

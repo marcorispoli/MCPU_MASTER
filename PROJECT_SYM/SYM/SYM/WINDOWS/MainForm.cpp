@@ -4,6 +4,7 @@
 #include "PCB302/PCB302.h"
 #include "PCB303/PCB303.h"
 #include "PCB304/PCB304.h"
+#include "PCB325/PCB325.h"
 #include "PCB326/PCB326.h"
 #include "MOTORS/VerticalMotor.h"
 #include "MOTORS/ArmMotor.h"
@@ -70,6 +71,7 @@ void MainForm::MainFormInitialize(void) {
 	PCB302::initialize();
 	PCB303::initialize();
 	PCB304::initialize();
+	PCB325::initialize();
 	PCB326::initialize();
 	VerticalMotor::initialize();
 	ArmMotor::initialize();
@@ -94,22 +96,31 @@ void MainForm::configurationCallback(void) {
 	if (config_command == canInterface::SIMUL_CONFIG_ACTIVE_DEVICES) {
 		if (canInterface::canDataBuffer[0] & 0x1) PCB301::board->active = true;
 		else PCB301::board->active = false;
+		PCB301::board->operating = true;
 
 		if (canInterface::canDataBuffer[0] & 0x2) PCB302::board->active = true;
 		else PCB302::board->active = false;
+		PCB302::board->operating = true;
 
 		if (canInterface::canDataBuffer[0] & 0x4) PCB303::board->active = true;
 		else PCB303::board->active = false;
+		PCB303::board->operating = true;
 
 		if (canInterface::canDataBuffer[0] & 0x8) PCB304::board->active = true;
 		else PCB304::board->active = false;
+		PCB304::board->operating = true;
 
+		if (canInterface::canDataBuffer[0] & 0x10) PCB325::board->active = true;
+		else PCB325::board->active = false;
+		// PCB325::board->operating = true; --> impostato dal pannello di Main
 
 		if (canInterface::canDataBuffer[0] & 0x20) PCB326::board->active = true;
 		else PCB326::board->active = false;
+		PCB326::board->operating = true;
 
 		if (canInterface::canDataBuffer[1] & 0x1) VerticalMotor::device->active = true;
 		else VerticalMotor::device->active = false;
+		PCB301::board->operating = true;
 
 		if (canInterface::canDataBuffer[1] & 0x2) BodyMotor::device->active = true;
 		else BodyMotor::device->active = false;
@@ -455,9 +466,141 @@ void MainForm::pcb304Simulator(void) {
 	}
 
 }
-void MainForm::pcb315Simulator(void) {
 
+void MainForm::pcb325Simulator(void) {
+	static bool biopOnBk = true;
+
+
+	if (biopOnBk != biopsyOn->Checked) {
+		biopOnBk = biopsyOn->Checked;
+		PCB325::device.init();
+		crashLabel->Hide();
+		
+
+		// Connection management
+		if (biopsyOn->Checked) {
+			biopsyOn->Checked = true;
+			PCB325::device.connected = true;
+			PCB325::board->operating = true;
+			XScrollFrame->Show();
+			YFrame->Show();
+			positionFrame->Show();
+			pointerFrame->Show();
+			keyFrame->Show();
+			workingMode->Show();
+		}
+		else {	
+			biopsyOff->Checked = true;
+			PCB325::device.connected = false;
+			PCB325::board->operating = false;
+			XScrollFrame->Hide();
+			YFrame->Hide();
+			positionFrame->Hide();
+			pointerFrame->Hide();
+			keyFrame->Hide();
+			workingMode->Hide();
+		}
+
+		// Init items here
+		if (PCB325::device.XScroll == PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_CENTER) xCenter->Checked = true;
+		else if (PCB325::device.XScroll == PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_LEFT) xLeft->Checked = true;
+		else if (PCB325::device.XScroll == PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT) xRight->Checked = true;
+		else xUndef->Checked = true;
+
+		
+		if (PCB325::device.Yup_stat) yUp->Checked = true;
+		else yDown->Checked = true;
+
+		
+		// Pointer Group
+		if (PCB325::device.pointer_present) {
+			pointerOn->Checked = true;
+			slider->Show();
+			needleForm->Show();
+
+			if (PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_A) needleA->Checked = true;
+			else if (PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_B) needleB->Checked = true;
+			else if (PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C) needleC->Checked = true;
+			else noNeedle->Checked = true;
+
+		}
+		else {
+			pointerOff->Checked = true;
+			slider->Hide();
+			needleForm->Hide();
+
+			// When the pointer is not mounted the needle is detected as C
+			noNeedle->Checked = true;
+			PCB325::device.Needle == PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C;
+		}
+		slider->Value = PCB325::device.Slider;
+				
+
+		// Position
+		xPos->Text = "X:" + PCB325::device.Xposition.ToString();
+		yPos->Text = "Y:" + PCB325::device.Yposition.ToString();
+		zPos->Text = "Z:" + PCB325::device.Zposition.ToString();
+
+		// Key mode
+		keyMode->Text = "NORMAL";
+
+		return;
+	}
+
+	if (!PCB325::device.connected) return;
+
+	// Working mode
+	workingMode->Text = PCB325::device.motor_working_mode.ToString();
+
+
+	if (xCenter->Checked) PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_CENTER;
+	else if (xLeft->Checked) PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_LEFT;
+	else if (xRight->Checked) PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_RIGHT;
+	else PCB325::device.XScroll = PCB325::ProtocolStructure::StatusRegister::xscroll::SCROLL_UNDEF;
+	
+	if (yUp->Checked) PCB325::device.Yup_stat = true;
+	else PCB325::device.Yup_stat = false;
+
+	if (pointerOn->Checked) {
+		PCB325::device.pointer_present = true;
+		slider->Show();
+		needleForm->Show();
+		PCB325::device.Slider = (int) slider->Value;
+	
+		if (needleA->Checked) PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_A;
+		else if (needleB->Checked) PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_B;
+		else if (needleC->Checked) PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C;
+		else PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_NOT_PRESENT;
+
+	
+	}
+	else {
+		slider->Hide();
+		needleForm->Hide();
+		PCB325::device.pointer_present = false;
+		PCB325::device.Needle = PCB325::ProtocolStructure::StatusRegister::needle::NEEDLE_C;
+				
+	}
+	
+
+	// Keyboard
+	if (PCB325::device.keystep_mode) keyMode->Text = "STEP";
+	else keyMode->Text = "NORMAL";
+	
+	// Position
+	xPos->Text = "X:" + PCB325::device.Xposition.ToString();
+	yPos->Text = "Y:" + PCB325::device.Yposition.ToString();
+	zPos->Text = "Z:" + PCB325::device.Zposition.ToString();
+
+	// Motor enable flag
+	if (PCB325::device.power_switch_stat)  biopMotEna->BackColor = COLOR_ON;
+	else biopMotEna->BackColor = COLOR_OFF;
+
+	// Crash Event
+	if (PCB325::device.crash_event) crashLabel->Show();
+	else crashLabel->Hide();
 }
+
 void MainForm::pcb326Simulator(void) {
 
 }
@@ -476,6 +619,7 @@ void MainForm::StartupProcedure(void) {
 	if (PCB302::board->active) pcb302Simulator();
 	if (PCB303::board->active) pcb303Simulator();
 	if (PCB304::board->active) pcb304Simulator();
+	if (PCB325::board->active) pcb325Simulator();
 	
 	// Motor power supply assignment
 	int motor_power_voltage;
@@ -622,6 +766,7 @@ void MainForm::WndProc(System::Windows::Forms::Message% m)
 		(PCB302::board->active) ? pcb302_panel->Show() : pcb302_panel->Hide();
 		(PCB303::board->active) ? pcb303_panel->Show() : pcb303_panel->Hide();
 		(PCB304::board->active) ? pcb304_panel->Show() : pcb304_panel->Hide();
+		(PCB325::board->active) ? pcb325_panel->Show() : pcb325_panel->Hide();
 		(PCB326::board->active) ? pcb326_panel->Show() : pcb326_panel->Hide();
 
 		(VerticalMotor::device->active) ? motor_vertical_box->Show() : motor_vertical_box->Hide();

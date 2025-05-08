@@ -245,6 +245,12 @@
     <ClInclude Include="WINDOWS\AecSelectionDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BIOPSY_STUDY\BiopsyStudy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BIOPSY_STUDY\BiopsyHomeProcedure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -439,6 +445,12 @@
     <ClCompile Include="WINDOWS\AecSelectionDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BIOPSY_STUDY\BiopsyStudy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BIOPSY_STUDY\BiopsyHomeProcedure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">
@@ -459,6 +471,9 @@
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\OperatingForm.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BIOPSY_STUDY\BiopsyForm.resx">
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
   </ItemGroup>

@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\BIOPSY_STUDY;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\BIOPSY_STUDY;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -137,6 +137,10 @@
   <ItemGroup>
     <ClInclude Include="AWS\awsProtocol.h" />
     <ClInclude Include="AWS\TcpIpServerCLI.h" />
+    <ClInclude Include="BIOPSY_STUDY\BiopsyHomeProcedure.h" />
+    <ClInclude Include="BIOPSY_STUDY\BiopsyStudy.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="CONFIGURATION\BiopsyConfig.h" />
     <ClInclude Include="CONFIGURATION\CollimatorConfig.h" />
     <ClInclude Include="CONFIGURATION\ConfigFile.h" />
@@ -249,6 +253,7 @@
     <ClCompile Include="AWS\awsEvents.cpp" />
     <ClCompile Include="AWS\awsProtocol.cpp" />
     <ClCompile Include="AWS\TcpIpServerCLI.cpp" />
+    <ClCompile Include="BIOPSY_STUDY\BiopsyHomeProcedure.cpp" />
     <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
     <ClCompile Include="DEBUGGER\Debugger.cpp" />
     <ClCompile Include="DEVICES\PCB325.cpp" />
@@ -271,6 +276,7 @@
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
     <ClCompile Include="VSCAN\CanSimulator.cpp" />
     <ClCompile Include="WINDOWS\AecSelectionDialog.cpp" />
+    <ClCompile Include="BIOPSY_STUDY\BiopsyStudy.cpp" />
     <ClCompile Include="WINDOWS\ConfirmationWindow.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
     <ClCompile Include="DEVICES\CanDeviceProtocol.cpp" />
@@ -327,6 +333,10 @@
     <None Include="DOC\mcpu_master_doxy" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BIOPSY_STUDY\BiopsyForm.resx" />
+    <EmbeddedResource Include="BIOPSY_STUDY\BiopsyStudy.resx">
+      <DependentUpon>BIOPSY_STUDY\BiopsyStudy.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\AecSelectionDialog.resx">
       <DependentUpon>WINDOWS\AecSelectionDialog.h</DependentUpon>
     </EmbeddedResource>

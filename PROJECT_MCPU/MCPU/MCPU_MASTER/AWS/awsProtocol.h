@@ -16,7 +16,7 @@
 \defgroup AWSProtocolDescription AWS Protocol Communication  Description
 \ingroup APPDOC
 
-   <b>PROTOCOL REVISION: 1.0.0</b>
+   <b>PROTOCOL REVISION: 1.1.0</b>
 
    # Change Log
    
@@ -64,7 +64,23 @@
 
    This document describes in detail the communication protocol with the AWS software.
 
-   
+   _Revision 1.1.0_ 
+
+   <b>Added the \ref EXEC_BiopsyStudy command</b>
+   This command opens a Biopsy study.
+
+   <b>Added the \ref  EXEC_BiopsyHoming command</b>
+   This command executes the Biopsy Home position .
+
+   <b>Added the \ref EXEC_BiopsyParking command</b>
+   This command executes the Biopsy Parking position .
+
+   <b>Added the \ref EXEC_BiopsyPointing command</b>
+   This command executes the Biopsy pointing position .
+
+   <b>Added the \ref SET_BiopsyImage2D command</b>
+   This command handle the 2D control image presence .
+
 
    # Index
 
@@ -79,6 +95,7 @@
 
    _Study Control_
    +	\ref EXEC_OpenStudy
+   +	\ref EXEC_BiopsyStudy
    +	\ref EXEC_CloseStudy
    
    _Projection and Tube-Arm Control_
@@ -97,6 +114,12 @@
    +	\ref SET_EnableXrayPush
    +	\ref GET_ReadyForExposure
    +	\ref EXEC_StartXraySequence
+
+   _Biopsy Control_
+   +	\ref EXEC_BiopsyHoming
+   +	\ref EXEC_BiopsyParking
+   +	\ref EXEC_BiopsyPointing
+   +	\ref SET_BiopsyImage2D
 
    ## Implemented Events
 
@@ -366,8 +389,13 @@ private:
 	
 	void EXEC_TestCommand(void);
 	void EXEC_OpenStudy(void);
+	void EXEC_BiopsyStudy(void);
 	void EXEC_CloseStudy(void);
 
+	void EXEC_BiopsyHoming(void);
+	void EXEC_BiopsyParking(void);
+	void EXEC_BiopsyPointing(void);
+	void SET_BiopsyImage2D(void);
 
 	void SET_ProjectionList(void);
 	void EXEC_ArmPosition(void);

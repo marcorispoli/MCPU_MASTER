@@ -1,6 +1,8 @@
 #pragma once
 #include "ConfigFile.h"
 
+
+
 /// \addtogroup ConfigurationFilesDescription 
 /// <div style="page-break-after: always;"></div>
 /// 
@@ -16,7 +18,11 @@
 /// ## Parameter Description
 /// 
 /// This configuration file contains the following parameter rows: 
-/// + POWER_LIGH Power light descriptor;
+/// + HOME_CENTER_POSITION: defines the coordinates of the home center position;
+/// + HOME_RIGHT_POSITION: defines the coordinates of the home right position;
+/// + HOME_LEFT_POSITION: defines the coordinates of the home left position;
+/// + PARK:defines the coordinates of the park position;
+/// 
 ///
 
 
@@ -27,29 +33,77 @@ public:
     
 
     literal System::String^ FILENAME = "BiopsyConfig.cnf";
-    literal int     FILE_REVISION = 2;
+    literal int     FILE_REVISION = 3;
 
 
     /// \addtogroup  ConfigurationFilesDescription 
     /// 
-    /// ### POWER_LIGH Power light Descriptor Parameters Row
+    /// ### HOME_CENTER_POSITION Home Center coordinates definition
     /// 
-    /// This parameter sets the power light characteristics.
+    /// This parameter sets Home center position coordinates.
     /// 
-    /// < POWER_LIGH,Enable,Duty>
+    /// < HOME_CENTER_POSITION,X,Y,Z>
     /// 
     /// |Param|Type|Default|Range|Descrption|
     /// |:--|:--|:--|:--|:--|
-    /// |Enable|Byte|1|0:1|Enables the activation of the power light|
-    /// |Duty|Byte|15|0:100|Percent of pwm duty cycle on the power light|
+    /// |X|Word|1290|0:2580|Set the x-coordinate of the home center position|
+    /// |Y|Word|0|0:700|Set the y-coordinate of the home center position|
+    /// |Z|Word|0|0:1350|Set the z-coordinate of the home center position|
     /// 
+    literal System::String^ PARAM_HOME_CENTER_POSITION = "HOME_CENTER_POSITION";
+    literal System::String^ PARAM_HOME_CENTER_POSITION_COMMENT = "Defines the coordinates of the Center home position";
+    literal int     PARAM_HOME_CENTER_POSITION_X = 0;
+    literal int     PARAM_HOME_CENTER_POSITION_Y = 1;
+    literal int     PARAM_HOME_CENTER_POSITION_Z = 2;
+    literal System::String^ PARAM_HOME_CENTER_POSITION_X_DEFAULT = "1290";
+    literal System::String^ PARAM_HOME_CENTER_POSITION_Y_DEFAULT = "0";
+    literal System::String^ PARAM_HOME_CENTER_POSITION_Z_DEFAULT = "0";
+
+    /// \addtogroup  ConfigurationFilesDescription 
     /// 
-    literal System::String^ PARAM_POWER_LIGHT = "POWER_LIGHT";
-    literal System::String^ PARAM_POWER_LIGHT_COMMENT = "Defines the power light performances";
-    literal int     PARAM_POWER_LIGHT_ENABLE = 0;
-    literal int     PARAM_POWER_LIGHT_DUTY = 1;
-    literal System::String^ PARAM_POWER_LIGHT_ENABLE_DEFAULT = "1";
-    literal System::String^ PARAM_POWER_LIGHT_DUTY_DEFAULT = "15";
+    /// ### HOME_RIGHT_POSITION Home Right coordinates definition
+    /// 
+    /// This parameter sets Home right position coordinates.
+    /// 
+    /// < HOME_RIGHT_POSITION,X,Y,Z>
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |X|Word|0|0:2580|Set the x-coordinate of the home right position|
+    /// |Y|Word|0|0:700|Set the y-coordinate of the home right position|
+    /// |Z|Word|0|0:1350|Set the z-coordinate of the home right position|
+    /// 
+    literal System::String^ PARAM_HOME_RIGHT_POSITION = "HOME_RIGHT_POSITION";
+    literal System::String^ PARAM_HOME_RIGHT_POSITION_COMMENT = "Defines the coordinates of the Right home position";
+    literal int     PARAM_HOME_RIGHT_POSITION_X = 0;
+    literal int     PARAM_HOME_RIGHT_POSITION_Y = 1;
+    literal int     PARAM_HOME_RIGHT_POSITION_Z = 2;
+    literal System::String^ PARAM_HOME_RIGHT_POSITION_X_DEFAULT = "0";
+    literal System::String^ PARAM_HOME_RIGHT_POSITION_Y_DEFAULT = "0";
+    literal System::String^ PARAM_HOME_RIGHT_POSITION_Z_DEFAULT = "0";
+
+    /// \addtogroup  ConfigurationFilesDescription 
+    /// 
+    /// ### HOME_LEFT_POSITION Home Left coordinates definition
+    /// 
+    /// This parameter sets Home left position coordinates.
+    /// 
+    /// < HOME_LEFT_POSITION,X,Y,Z>
+    /// 
+    /// |Param|Type|Default|Range|Descrption|
+    /// |:--|:--|:--|:--|:--|
+    /// |X|Word|2580|0:2580|Set the x-coordinate of the home left position|
+    /// |Y|Word|0|0:700|Set the y-coordinate of the home left position|
+    /// |Z|Word|0|0:1350|Set the z-coordinate of the home left position|
+    /// 
+    literal System::String^ PARAM_HOME_LEFT_POSITION = "HOME_LEFT_POSITION";
+    literal System::String^ PARAM_HOME_LEFT_POSITION_COMMENT = "Defines the coordinates of the Left home position";
+    literal int     PARAM_HOME_LEFT_POSITION_X = 0;
+    literal int     PARAM_HOME_LEFT_POSITION_Y = 1;
+    literal int     PARAM_HOME_LEFT_POSITION_Z = 2;
+    literal System::String^ PARAM_HOME_LEFT_POSITION_X_DEFAULT = "2580";
+    literal System::String^ PARAM_HOME_LEFT_POSITION_Y_DEFAULT = "0";
+    literal System::String^ PARAM_HOME_LEFT_POSITION_Z_DEFAULT = "0";
 
     /// \addtogroup  ConfigurationFilesDescription 
     /// 
@@ -78,10 +132,22 @@ public:
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR
         {
-            CONFIG_FILE_ITEM(PARAM_POWER_LIGHT, PARAM_POWER_LIGHT_COMMENT, CONFIG_FILE_DEFAULT{
-            PARAM_POWER_LIGHT_ENABLE_DEFAULT,
-            PARAM_POWER_LIGHT_DUTY_DEFAULT,
-            
+            CONFIG_FILE_ITEM(PARAM_HOME_CENTER_POSITION, PARAM_HOME_CENTER_POSITION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_HOME_CENTER_POSITION_X_DEFAULT,
+            PARAM_HOME_CENTER_POSITION_Y_DEFAULT,
+            PARAM_HOME_CENTER_POSITION_Z_DEFAULT
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_HOME_RIGHT_POSITION, PARAM_HOME_RIGHT_POSITION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_HOME_RIGHT_POSITION_X_DEFAULT,
+            PARAM_HOME_RIGHT_POSITION_Y_DEFAULT,
+            PARAM_HOME_RIGHT_POSITION_Z_DEFAULT
+            }),
+
+            CONFIG_FILE_ITEM(PARAM_HOME_LEFT_POSITION, PARAM_HOME_LEFT_POSITION_COMMENT, CONFIG_FILE_DEFAULT{
+            PARAM_HOME_LEFT_POSITION_X_DEFAULT,
+            PARAM_HOME_LEFT_POSITION_Y_DEFAULT,
+            PARAM_HOME_LEFT_POSITION_Z_DEFAULT
             }),
 
             CONFIG_FILE_ITEM(PARAM_PARK, PARAM_PARK_COMMENT, CONFIG_FILE_DEFAULT{

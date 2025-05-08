@@ -1,5 +1,5 @@
 
-#include "../gantry_global_status.h"
+#include "gantry_global_status.h"
 #include "awsProtocol.h"
 #include "ArmMotor.h"
 #include "VerticalMotor.h"
@@ -10,11 +10,14 @@
 #include "PCB302.h"
 #include "PCB303.h"
 #include "PCB304.h"
+#include "PCB325.h"
 #include "PCB326.h"
 #include "ExposureModule.h"
 #include "Generator.h"
 #include "Notify.h"
 #include "Log.h"
+#include "BiopsyStudy.h"
+#include "BiopsyHomeProcedure.h"
 
 
 using namespace System::Diagnostics;
@@ -60,6 +63,8 @@ using namespace System::Diagnostics;
 /// <param name=""></param>
 void  awsProtocol::EXEC_OpenStudy(void) {
 
+    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
     // Not in error condition !!!
     if (Notify::isError()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_SYSTEM_ERRORS; pDecodedFrame->errstr = "SYSTEM_ERRORS"; ackNok(); return; }
 
@@ -67,7 +72,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     String^ patient_name = pDecodedFrame->parameters[0];
 
     // Open the study and assignes the patient name !!!
-    if (!Gantry::setOpenStudy(patient_name)) { pDecodedFrame->errcode = (int) return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+    if (!Gantry::setOpenStandardStudy(patient_name)) { pDecodedFrame->errcode = (int) return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
 
  
     // With the OPEN Study, the collimator is automatically set to AUTO mode.
@@ -77,6 +82,141 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 
     ackOk();
 }
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_BiopsyStudy 
+/// 
+/// The AWS send this command whenever a Biopsy study should be open.
+/// 
+/// NOTE: The biopsy device may not be present when the command is sent.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_OpenStudy patient_name>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |patient_name|String|Study's patient name| 
+/// 
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_SYSTEM_ERRORS| "SYSTEM_ERRORS" | system error condition are presents|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_IDLE_MODE"| the Gantry is not in IDLE status|
+/// 
+
+/// <summary>
+/// This command shall be sent by AWS to request to Open a Biopsy Study.
+/// 
+/// </summary>
+/// <param name=""></param>
+void  awsProtocol::EXEC_BiopsyStudy(void) {
+    
+    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
+
+    // Not in error condition !!!
+    if (Notify::isError()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_SYSTEM_ERRORS; pDecodedFrame->errstr = "SYSTEM_ERRORS"; ackNok(); return; }
+
+    if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    String^ patient_name = pDecodedFrame->parameters[0];
+
+    // Open the study and assignes the patient name !!!
+    if (!Gantry::setOpenBiopsyStudy(patient_name)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
+    // With the OPEN Study, the collimator is automatically set to AUTO mode.
+    PCB303::setAutoCollimationMode();
+
+
+    ackOk();
+}
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_BiopsyHoming 
+/// 
+/// The AWS sends this command whenever shall select a given home position.
+///  
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_BiopsyHoming home_position>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |home_position|String|"C": Center<br>"L": Left<br>"R": Right| 
+/// 
+/// 
+/// ### Command Returned Code 
+/// 
+/// + OK: if the biopsy is already in the given home position.
+/// + Executing: the command is initiated;
+/// + Nok (see table below): the command has been aborted due to errors.
+///  
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_BIOPSY_MODE"| the Gantry is not in Biopsy Study|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"NOT_A_VALID_HOME_PARAMETER"| The parameter value is not correct|
+/// |AWS_RET_DEVICE_ERROR|"ERROR SIGNALED BY THE BIOPSY DEVICE. CODE=xxx"| The device command has returned an error code|
+/// 
+/// 
+
+/// <summary>
+/// This command activates the biopsy homing procedure
+/// 
+/// </summary>
+/// <param name=""></param>
+void  awsProtocol::EXEC_BiopsyHoming(void) {
+    if (!Gantry::isBIOPSY()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_BIOPSY_MODE"; ackNok(); return; }
+
+    if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    String^ home_command = pDecodedFrame->parameters[0];
+
+    int res;
+
+    if (home_command == "C") {
+        LogClass::logInFile("AWS: COMMAND HOME CENTER REQUEST");
+        res = BiopsyHomeProcedure::activateCenter(pDecodedFrame->ID);
+        
+    }
+    else if (home_command == "L") {
+        LogClass::logInFile("AWS: COMMAND HOME LEFT REQUEST");
+        res = BiopsyHomeProcedure::activateLeft(pDecodedFrame->ID);
+    }
+    else if (home_command == "R") {
+        LogClass::logInFile("AWS: COMMAND HOME RIGHT REQUEST");
+        res = BiopsyHomeProcedure::activateRight(pDecodedFrame->ID);
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "NOT_A_VALID_HOME_PARAMETER"; ackNok(); return;
+    }
+
+    if (res < 0) {
+        LogClass::logInFile("AWS: HOME COMMAND ERROR CODE = " + res.ToString());
+        pDecodedFrame->errcode = (int) return_errors::AWS_RET_DEVICE_ERROR;
+        pDecodedFrame->errstr = "ERROR SIGNALED BY THE BIOPSY DEVICE. CODE=" + res.ToString();
+        ackNok();
+    }
+    else if (res == 0) ackOk();
+    else ackExecuting();
+    return;
+}
+
+void  awsProtocol::EXEC_BiopsyParking(void) {
+    ackNa();
+}
+void  awsProtocol::EXEC_BiopsyPointing(void) {
+    ackNa();
+}
+void  awsProtocol::SET_BiopsyImage2D(void) {
+    ackNa();
+}
+
 
 
 /// \addtogroup AWSProtocolDescription
@@ -109,7 +249,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 void  awsProtocol::EXEC_CloseStudy(void) {
     if (!Gantry::setCloseStudy()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
-    TiltMotor::setIdlePosition();
+    // TiltMotor::setIdlePosition();
     ackOk();
 
 }
@@ -148,7 +288,7 @@ void  awsProtocol::EXEC_CloseStudy(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::SET_ProjectionList(void) {
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isSTANDARD()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (!ArmMotor::getProjectionsList()->setList(pDecodedFrame->parameters)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PROJECTION_IN_THE_LIST"; ackNok(); return; }
 
     ackOk();
@@ -223,7 +363,7 @@ void awsProtocol::SET_ProjectionList(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::EXEC_ArmPosition(void) {
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isSTANDARD()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if(Gantry::isMotorsActive()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "MOTORS_BUSY"; ackNok(); return; }
     if ((!ArmMotor::device->isReady())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_NOT_READY"; ackNok(); return; }
@@ -293,7 +433,7 @@ void awsProtocol::EXEC_ArmPosition(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::EXEC_AbortProjection(void) {
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Gantry::isSTANDARD()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     ArmMotor::abortTarget();
     ackOk();
 
@@ -358,7 +498,8 @@ void awsProtocol::EXEC_AbortProjection(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::EXEC_TrxPosition(void) {
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (Gantry::isMotorsActive()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "MOTORS_BUSY"; ackNok(); return; }
     if (!TiltMotor::device->isReady()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "TRX_NOT_READY"; ackNok(); return; }
@@ -443,7 +584,7 @@ void awsProtocol::EXEC_TrxPosition(void) {
 /// <param name=""></param>
 void awsProtocol::SET_TomoConfig(void) {
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     // Parameter 0: Tomo configiguration selection;
     if(!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
@@ -653,7 +794,7 @@ void awsProtocol::GET_TomoInfo(void) {
 /// <param name=""></param>
 void   awsProtocol::SET_ExposureMode(void) {
     if (pDecodedFrame->parameters->Count != 6) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     String^ exposure_type = pDecodedFrame->parameters[0];
     String^ detector_type = pDecodedFrame->parameters[1];
@@ -801,7 +942,7 @@ void   awsProtocol::SET_ExposureMode(void) {
 /// <param name=""></param>
 void   awsProtocol::SET_ExposureData(void) {
     if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     String^ pulse_param = pDecodedFrame->parameters[0];
     String^ kv_param = pDecodedFrame->parameters[1];
@@ -855,7 +996,7 @@ void   awsProtocol::SET_ExposureData(void) {
 /// <param name=""></param>
 void   awsProtocol::SET_EnableXrayPush(void) {
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!Gantry::isOPERATING()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
     
     if (pDecodedFrame->parameters[0] == "ON") Exposures::enableXrayPushButtonEvent(true);
     else  Exposures::enableXrayPushButtonEvent(false);
@@ -1280,7 +1421,7 @@ void   awsProtocol::GET_TubeTemperature(void) {
 /// </summary>
 /// <param name=""></param>
 void   awsProtocol::SET_Language(void) {
-    if (Gantry::isOPERATING()) { pDecodedFrame->errcode = pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
     if (!Notify::setLanguage(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_LANGUAGE"; ackNok(); return; }
 
@@ -1329,7 +1470,7 @@ void   awsProtocol::GET_ProtocolRevision(void) {
     List<String^>^ lista = gcnew List<String^>;
 
     lista->Add(PROTOCOL_REVISION_CODE); 
-    ackOk(lista);
+    ;
     return;
 }
 
@@ -1389,6 +1530,52 @@ void   awsProtocol::EXEC_TestCommand(void) {
         int dec = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
         VerticalMotor::device->activateAutomaticPositioning(0, pos, speed, acc, dec, true);
     }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_X") {
+        LogClass::logInFile("TEST ON BIOPSY X");
+        unsigned short pos = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
+        if(!PCB325::moveX(pos)) LogClass::logInFile("FAILED");
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_Y") {
+        LogClass::logInFile("TEST ON BIOPSY Y");
+        unsigned short pos = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
+        if (!PCB325::moveY((unsigned short)pos)) LogClass::logInFile("FAILED");
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_Z") {
+        LogClass::logInFile("TEST ON BIOPSY Z");
+        unsigned short pos = System::Convert::ToUInt16(pDecodedFrame->parameters[1]);
+        if (!PCB325::moveZ((unsigned short)pos)) LogClass::logInFile("FAILED");
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_C") {
+        LogClass::logInFile("TEST ON BIOPSY HOME_C");
+        int res = BiopsyHomeProcedure::activateCenter(pDecodedFrame->ID);
+        if (res < 0) {
+            pDecodedFrame->errcode = -res;
+            ackNok();
+        }
+        else if (res == 0) ackOk();
+        else ackExecuting();
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_R") {
+        LogClass::logInFile("TEST ON BIOPSY HOME_R");
+        int res = BiopsyHomeProcedure::activateRight(pDecodedFrame->ID);
+        if (res < 0) {
+            pDecodedFrame->errcode = -res;
+            ackNok();
+        }
+        else if (res == 0) ackOk();
+        else ackExecuting();
+    }
+    else if (pDecodedFrame->parameters[0] == "BIOPSY_HOME_L") {
+        LogClass::logInFile("TEST ON BIOPSY HOME_L");
+        int res = BiopsyHomeProcedure::activateLeft(pDecodedFrame->ID);
+        if (res < 0) {
+            pDecodedFrame->errcode = -res;
+            ackNok();
+        }
+        else if (res == 0) ackOk();
+        else ackExecuting();
+    }
+
 
     return;
 }

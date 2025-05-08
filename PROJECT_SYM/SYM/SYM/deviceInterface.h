@@ -7,13 +7,19 @@ using namespace System;
 ref class deviceInterface
 {
 public:
-	bool active;
+	bool active; // Abilita il simulatore (viene attivato da MCPU tramite configurazione)
+	bool operating; // Attivato dal simulatore per abilitare il modulo a ricevere dati dal can-bus
 
+	#define _DEVICE_TASK_EXECUTION_DELAY_ms 50
+
+	
 	enum class CommandRegisterErrors {
-		COMMAND_NO_ERROR = 0,		//!< Protocol Reserved code for the command successfully completed 
-		COMMAND_ERROR_BUSY,			//!< Protocol Reserved code for the command busy
-		COMMAND_ERROR_INVALID_PARAM,//!< Protocol Reserved code for the command with invalid parameter
-		COMMAND_ERROR_MOMENTARY_DISABLED,//!< Protocol Reserved code for the command momentary disabled
+		COMMAND_NO_ERROR = 0,				//!< Protocol Reserved code for the command successfully completed 
+		COMMAND_ERROR_BUSY=1,				//!< Protocol Reserved code for the command busy
+		COMMAND_ERROR_INVALID_PARAM=2,		//!< Protocol Reserved code for the command with invalid parameter
+		COMMAND_ERROR_MOMENTARY_DISABLED=3,	//!< Protocol Reserved code for the command momentary disabled
+		COMMAND_ERROR_NOT_IMPLEMENTED = 4,	//!< Protocol Reserved code for the command not yet implemented
+		COMMAND_ERROR_ABORT = 6,			//!< Protocol Reserved code for Abort
 
 		COMMAND_INVALID_DEVICE = 253,		//!< Command requested from an invalid thread
 		COMMAND_COMMUNICATION_ERROR = 254,//!< Command failed due to communication error
@@ -62,6 +68,24 @@ public:
 		CommandRegisterErrors error;
 	};
 
+	void commandCompleted(CommandRegisterErrors err) {
+		if (!command_executing) return;
+		if (err == CommandRegisterErrors::COMMAND_NO_ERROR) {
+			command_register = gcnew Register((Byte)CommandReturnStatus::COMMAND_SUCCESS, (Byte)0, (Byte)0, (Byte)CommandRegisterErrors::COMMAND_NO_ERROR);
+		}
+		else {
+			command_register = gcnew Register((Byte)CommandReturnStatus::COMMAND_ERROR, (Byte)0, (Byte)0, (Byte)err);
+		}
+		command_executing = false;
+	}
+
+	void commandCompleted(Byte R0, Byte R1) {
+		if (!command_executing) return;
+		command_register = gcnew Register((Byte)CommandReturnStatus::COMMAND_SUCCESS, (Byte)R0, (Byte)R1, (Byte)CommandRegisterErrors::COMMAND_NO_ERROR);
+		command_executing = false;
+	}
+
+
 	enum class ProtocolBootloaderCode {
 		BOOTLOADER_RESERVED = 0,
 		BOOTLOADER_GET_INFO,
@@ -84,6 +108,9 @@ public:
 	FRAME_DEVICE_RESET,//!< Device Reset Code
 	};
 
+/// <summary>
+///  IMplemented only to allow the full copy of the ProtocolStructures from MCPU and SIMULATOR
+/// </summary>
 public:ref class CanDeviceCommand {
 public:
 
@@ -103,51 +130,8 @@ public:
 	unsigned char d0, d1, d2, d3;
 };
 
-	  /// <summary>
-	  /// This class provides a data structure to handle a command result.
-	  /// 
-	  /// \ingroup commanControl
-	  /// </summary>
-	public:ref class CanDeviceCommandResult {
-	public:
-
-		/// <summary>
-		/// Creates a result structure assigning all the internal data.
-		/// </summary>
-		/// <param name="err">The error code</param>
-		/// <param name="ris0">The result data 0</param>
-		/// <param name="ris1">The result data 1</param>
-		CanDeviceCommandResult(CommandRegisterErrors err, unsigned char ris0, unsigned char ris1) {
-			error_code = err;
-			result0 = ris0;
-			result1 = ris1;
-		}
-
-		/// <summary>
-		/// Creates a result structure assigning only the error code.
-		/// </summary>
-		/// <param name="err">The error code</param>		
-		CanDeviceCommandResult(CommandRegisterErrors err) {
-			error_code = err;
-			result0 = 0;
-			result1 = 0;
-		}
-
-		/// <summary>
-		/// Creates a result structure assigning the NO ERROR code to the error field.
-		/// </summary>
-		/// <param name=""></param>
-		CanDeviceCommandResult(void) {
-			error_code = CommandRegisterErrors::COMMAND_NO_ERROR;
-			result0 = 0;
-			result1 = 0;
-		}
-
-		CommandRegisterErrors error_code; //|< Command completed code
-		unsigned char result0; //!< Result D0 code 
-		unsigned char result1;	//!< Result D1 code 
-	};
-
+	  
+	
 	public:ref class Register {
 	public:
 		enum class exceptions {
@@ -263,8 +247,9 @@ public:
 	static  unsigned char getRegD2(unsigned int val) { return (unsigned char)((val >> 16) & 0xFF); }
 	static  unsigned char getRegD3(unsigned int val) { return (unsigned char)((val >> 24) & 0xFF); }
 
-
+	
 protected:
+
 	virtual void device_reset_callback(void) {
 	}
 
@@ -277,6 +262,7 @@ protected:
 	}
 
 	// Register section
+	bool command_executing;
 	Register^ command_register;
 	Register^ error_register;
 	Register^ revision_register;
@@ -289,8 +275,7 @@ protected:
 
 private:
 	void threadWork(void);//!< This is the worker thread for the connection management	
-	Thread^ running_thread;//!< This is the worker thread handler
-	
+	Thread^ running_thread;//!< This is the worker thread handler	
 	unsigned short devId;
 	unsigned char  num_status;
 	unsigned char  num_data;

@@ -783,8 +783,24 @@ bool Generator::generatorErrorMessagesLoop(void) {
 /// <param name=""></param>
 /// <returns></returns>
 bool Generator::generatorIdleLoop(void) {    
-    
+    unsigned char curstat;
 
+    // Initialize Generator status
+    updateGeneratorStatus();
+    if (curstat != current_generator_status) {
+
+        // Status changed
+        if (current_generator_status == R2CP::Stat_Standby) {
+            Notify::deactivate(Notify::messages::WARNING_GENERATOR_NOT_READY);
+            ready_for_exposure = true;
+        }
+        else {
+            Notify::activate(Notify::messages::WARNING_GENERATOR_NOT_READY);
+            ready_for_exposure = false;
+        }
+    }
+
+    curstat = current_generator_status;
     while (true) {
         
         // Ethernet disconnection detected
@@ -801,7 +817,7 @@ bool Generator::generatorIdleLoop(void) {
     
 
         // Handles the Application warning message related to the actual ready status
-        unsigned char curstat = current_generator_status;
+        
         updateGeneratorStatus();
 
         if (curstat != current_generator_status) {

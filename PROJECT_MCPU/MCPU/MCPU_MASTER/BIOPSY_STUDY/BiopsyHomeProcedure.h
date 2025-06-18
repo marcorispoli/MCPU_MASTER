@@ -2,7 +2,7 @@
 
 /**
 
-	\addtogroup BiopsyModuleDescription
+	\addtogroup BiopsyOperatingModeDescription
 
 	# Home Procedure Description
 

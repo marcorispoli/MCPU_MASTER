@@ -1,17 +1,19 @@
 #pragma once
 
+
 /**
-	\defgroup BiopsyModuleImplementation Biopsy Module Source Code description
-	\ingroup APPIMPL
+	\defgroup BiopsyOperatingMode Biopsy Operating Mode Management	
 
+	This section describes the implementation of the Biopsy Operating Mode
 
-	This section describes the implementation of the Biopsy module
+	# To be implemented
+
 */
 
 
 /**
-\defgroup BiopsyModuleDescription Biopsy Module Description
-\ingroup APPDOC
+\defgroup BiopsyOperatingModeDescription Biopsy Operating Mode Description
+\ingroup BiopsyOperatingMode
 
    
     # Abstract
@@ -411,8 +413,16 @@
 
 	\image html ./BiopsyStudy/Coordinates.png
 
+
+
 */
 
+/**
+	\defgroup BiopsyOperatingModeClass Biopsy Operating Mode Implementation
+	\ingroup BiopsyOperatingMode
+
+	This section describes the class implementation details
+*/
 
 #include <windows.h>
 
@@ -422,6 +432,13 @@ using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
 
+/// <summary>
+/// 
+/// This is the Class constructor.
+/// 
+/// \ingroup BiopsyOperatingModeClass
+/// 
+/// </summary>
 public ref class BiopsyStudy :  public System::Windows::Forms::Form
 {
 #define WINMSG_TIMER WM_USER + 1

@@ -82,8 +82,8 @@ void PCB325::run_free_mode_workflow(void) {
 
     // If the actual biopsy working mode is in disable or calibration mode
     // no more action shall be performed here.
-    if (protocol.status_register.motor_working_mode == ProtocolStructure::StatusRegister::motor_mode::MOTOR_DISABLE_MODE) return;
-    if (protocol.status_register.motor_working_mode == ProtocolStructure::StatusRegister::motor_mode::MOTOR_CALIBRATION_MODE) return;
+    if (protocol.status_register.device_working_mode == ProtocolStructure::StatusRegister::device_mode::DEVICE_DISABLE_MODE) return;
+    if (protocol.status_register.device_working_mode == ProtocolStructure::StatusRegister::device_mode::DEVICE_CALIBRATION_MODE) return;
 
     // If a command is executing wait the completion event
     if (!device->isCommandCompleted()) return;
@@ -97,7 +97,7 @@ void PCB325::run_free_mode_workflow(void) {
 void PCB325::run_disable_mode_workflow(void) {
     // If the actual biopsy working mode is in disable mode
     // no more action shall be performed here.
-    if (protocol.status_register.motor_working_mode == ProtocolStructure::StatusRegister::motor_mode::MOTOR_DISABLE_MODE) return;
+    if (protocol.status_register.device_working_mode == ProtocolStructure::StatusRegister::device_mode::DEVICE_DISABLE_MODE) return;
 
     // If a command is executing wait the completion event
     if (!device->isCommandCompleted()) return;
@@ -111,7 +111,7 @@ void PCB325::run_disable_mode_workflow(void) {
 void PCB325::run_calibration_mode_workflow(void) {
     // If the actual biopsy working mode is in calibration mode
     // no more action shall be performed here.   
-    if (protocol.status_register.motor_working_mode == ProtocolStructure::StatusRegister::motor_mode::MOTOR_CALIBRATION_MODE) return;
+    if (protocol.status_register.device_working_mode == ProtocolStructure::StatusRegister::device_mode::DEVICE_CALIBRATION_MODE) return;
 
     // If a command is executing wait the completion event
     if (!device->isCommandCompleted()) return;
@@ -126,7 +126,7 @@ void PCB325::run_command_mode_workflow(void) {
     if (!device->isCommandCompleted()) return;
 
     // The procedure forces the biopsy command mode to be activated
-    if (protocol.status_register.motor_working_mode != ProtocolStructure::StatusRegister::motor_mode::MOTOR_COMMAND_MODE){    
+    if (protocol.status_register.device_working_mode != ProtocolStructure::StatusRegister::device_mode::DEVICE_COMMAND_MODE){
         command_mode_ready = false;       
         commandNoWaitCompletion(protocol.command.encodeCommandModeCommand(), 30);   
         request_motor_command = motor_command::NO_COMMAND;
@@ -206,7 +206,7 @@ void PCB325::run_command_mode_workflow(void) {
 void PCB325::run_service_mode_workflow(void) {
 
     // The procedure forces the biopsy service mode to be activated
-    if (protocol.status_register.motor_working_mode != ProtocolStructure::StatusRegister::motor_mode::MOTOR_SERVICE_MODE) {
+    if (protocol.status_register.device_working_mode != ProtocolStructure::StatusRegister::device_mode::DEVICE_SERVICE_MODE) {
         if (!device->isCommandCompleted()) return;
 
         commandNoWaitCompletion(protocol.command.encodeServiceModeCommand(), 30);

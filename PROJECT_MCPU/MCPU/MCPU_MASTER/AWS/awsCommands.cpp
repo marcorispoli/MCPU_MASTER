@@ -207,12 +207,69 @@ void  awsProtocol::EXEC_BiopsyHoming(void) {
     return;
 }
 
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_BiopsyPointing 
+/// 
+/// The AWS sends this command whenever shall move the pointer to a target position.
+///  
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_BiopsyPointing targetX targetY targetZ >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |targetX|Integer|target X position, in 0.1mm units | 
+/// |targetY|Integer|target Y position, in 0.1mm units |
+/// |targetZ|Integer|target Z position, in 0.1mm units | 
+/// 
+/// ### Command description
+/// 
+/// The AWS software shall use this command to move the needle to a target 
+/// position. 
+/// There following conditions shall be necessary to enable the command execution:
+/// + A valid Home position has been selected (center/Left or Right);
+/// + The current detected home position is present and matches with the selected ones;
+/// + The target position can be reached without impacting the body;
+/// + The Needle is not mounted on the needle holder (in this case the motor driver will be disabled!);
+/// 
+/// ### Command Returned Code 
+/// 
+/// + OK: if the biopsy is already in the given target position.
+/// + Executing: the command is initiated;
+/// + Nok (see table below): the command has been aborted due to errors.
+///  
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 3)|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_BIOPSY_MODE"| the Gantry is not in Biopsy Study|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"MISSING_A_VALID_HOME_POSITION"| There is not a valid home position selected, or the Biopsy is not in the home position|
+/// 
+/// 
+
+/// <summary>
+/// This command activates the biopsy homing procedure
+/// 
+/// </summary>
+/// <param name=""></param>
+void  awsProtocol::EXEC_BiopsyPointing(void) {
+    if (!Gantry::isBIOPSY()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_BIOPSY_MODE"; ackNok(); return; }
+    if (pDecodedFrame->Count() != 3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    
+    // Test if a Valid Home position is selected and detected:
+    if(!BiopsyHomeProcedure::isValidHome()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "MISSING_A_VALID_HOME_POSITION"; ackNok(); return; }
+
+    String^ home_command = pDecodedFrame->parameters[0];
+
+
+    ackNa();
+}
+
 void  awsProtocol::EXEC_BiopsyParking(void) {
     ackNa();
 }
-void  awsProtocol::EXEC_BiopsyPointing(void) {
-    ackNa();
-}
+
 void  awsProtocol::SET_BiopsyImage2D(void) {
     ackNa();
 }

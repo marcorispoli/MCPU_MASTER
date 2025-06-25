@@ -619,7 +619,8 @@ public:
 	/// </summary>
 	public: PCB303() : CanDeviceProtocol(0x12, L"COLLIMATOR_DEVICE")
 	{
-		collimationMode = collimationModeEnum::OPEN_MODE;
+		collimationMode = collimationModeEnum::DISABLED_COLLIMATION;
+		filterMode = filterModeEnum::DISABLED_FILTER_MODE;
 	}
 	static PCB303^ device = gcnew PCB303();
 
@@ -648,14 +649,23 @@ public:
 	///  \ingroup PCB303_Internal
 	/// </summary>
 	enum class  collimationModeEnum{
-		AUTO_COLLIMATION = 0, //!< The collimator is in Auto mode: the paddle model defines the current collimation format
+		DISABLED_COLLIMATION = 0,//!< The collimator is disabled
+		AUTO_COLLIMATION, //!< The collimator is in Auto mode: the paddle model defines the current collimation format
 		CUSTOM_COLLIMATION,   //!< The collimator is in Custom mode: the collimation format is set by the operator		
 		OPEN_MODE,			  //!< The collimator is in Open mode: the collimation format set OPEN
 		CALIBRATION_MODE,	  //!< The collimator is in Calibration mode: the collimation format is set manually by the service software
 		TOMO_MODE			  //!< The collimator is in Tomo mode: the collimation format is dinamically set by the tomo pulse sequence
 	};
 
-	
+	/// <summary>
+	///  This enumeration class describes the possible filter modes the Application can select
+	///  \ingroup PCB303_Internal
+	/// </summary>
+	enum class  filterModeEnum {
+		DISABLED_FILTER_MODE = 0,	//!< The Filter activation is not enabled
+		EXPOSURE_FILTER_MODE,		//!< The Filter is selected by the exposure
+		SERVICE_FILTER_MODE,		//!< The Filter is manually selected by the application (Service mode)		
+	};
 
 	/// \ingroup PCB303_Internal
 	///@{
@@ -669,10 +679,13 @@ public:
 		static bool valid_collimation_format = false; //!< This flag is set when the collimation format is correct and coherent with the collimationMode register
 		static int format_collimation_attempt = 0; //!< This register counts the attempt to exit from a fault condition
 
+		static filterModeEnum filterMode;
 		static System::Byte selected_filter = 0;
+		
 		static bool valid_filter_format = false;
 		static bool filter_error = false;
 		static int filter_attempt = 0; 
+		static void selectFilter(filter_index filter);
 
 		static ProtocolStructure::StatusRegister::mirror_target_code selected_mirror = ProtocolStructure::StatusRegister::mirror_target_code::OUT_FIELD;
 		static bool valid_mirror_format = false;
@@ -690,12 +703,20 @@ public:
 public:
 	/// \ingroup PCB303_Interface
 	///@{
+	static void setDisableCollimationMode(void); //!< This function sets collimation in Disable
 	static void setAutoCollimationMode(void); //!< This function sets the format collimation to AUTO mode
 	static void setOpenCollimationMode(void); //!< This function sets the format collimation to OPEN mode		
 	static void setCustomCollimationMode(System::Byte format_index);//!< This function sets the format collimation to CUSTOM mode
 
-	// Filter Commands
-	static void selectFilter(filter_index filter);
+	// Filter Commands	
+	static void setFilterDisabledMode(void){ filterMode = filterModeEnum::DISABLED_FILTER_MODE; }
+	static void setFilterExposureMode(void) { filterMode = filterModeEnum::EXPOSURE_FILTER_MODE; }
+	static void setFilterServiceMode(void) { filterMode = filterModeEnum::SERVICE_FILTER_MODE; }
+	static void selectExposureFilter(filter_index filter);
+	static void selectServiceFilter(filter_index filter);
+
+	
+
 	static int  getFilterSlot(filter_index filter);
 	static bool isValidFilter(void) { return valid_filter_format; }
 	static bool isFilterInError(void) { return filter_error; }

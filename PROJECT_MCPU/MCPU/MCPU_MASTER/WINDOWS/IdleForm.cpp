@@ -223,18 +223,12 @@ void IdleForm::initIdleStatus(void) {
 	// The Biopsy device is set in Free mode (if it should be connected)
 	PCB325::setBiopsyFreeMode();
 
-	///\todo 
-	/// Per proteggere il collimatore forse sarebbe meglio chiudere le lame
-	/// 
-	/// The collimation format is set to OPEN to protect the blades inside the collimator
-	PCB303::setOpenCollimationMode();
+	/// The collimation is disabled
+	PCB303::setDisableCollimationMode();
 
-	/// \todo
-	/// Il filtro in Idle dovrebbe essereimpostato su Piombo per proteggere la bocca del tubo
-	/// Deve essere inseritoil piombo come filtro selezionabile
-	/// 
 	/// The filter is set to "lead" in order to protect the tube output.
-	PCB303::selectFilter(PCB303::filter_index::FILTER_RH);
+	PCB303::setFilterServiceMode();
+	PCB303::selectServiceFilter(PCB303::filter_index::FILTER_LD);
 
 	/// The Mirror is set to Home and the collimation light switched Off
 	PCB303::setCollimationLight(false);

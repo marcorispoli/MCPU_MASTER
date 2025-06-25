@@ -85,6 +85,15 @@ void PCB303::filterManagement(void) {
         return;
     }
 
+    // In the case of Disabled mode, all the flags are reset and no command to the device is handled
+    if (filterMode == filterModeEnum::DISABLED_FILTER_MODE) {
+        filter_attempt = 0;
+        valid_filter_format = false;
+        Notify::deactivate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);
+        Notify::deactivate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
+        return;
+    }
+    
     // No more attempts can be done after some collimation repetition.
     
     if (valid_filter_format) filter_attempt = 0;
@@ -144,6 +153,16 @@ void PCB303::formatManagement(void) {
         valid_collimation_format = false;
         return;
     }
+
+    // In the case of Disabled mode, all the flags are reset and no command to the device is handled
+    if (collimationMode == collimationModeEnum::DISABLED_COLLIMATION) {
+        format_collimation_attempt = 0;
+        valid_collimation_format = false;
+        Notify::deactivate(Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR);
+        Notify::deactivate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
+        return;
+    }
+
 
     // No more attempts can be done after some collimation repetition.
     if (valid_collimation_format) format_collimation_attempt = 0;
@@ -351,11 +370,23 @@ bool PCB303::configurationLoop(void) {
     // Writes the next register of the Mirror data
     writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
 
+    // Sets the Filter in Disable Mode
+    PCB303::setFilterDisabledMode();
+
     if (device->isSimulatorMode()) CanSimulator::sendFilterConfiguration();
 
     return true;
 }
 
+void PCB303::setDisableCollimationMode(void) {
+    if (Exposures::isXrayRunning()) return;
+
+    if (collimationMode != collimationModeEnum::DISABLED_COLLIMATION) {
+        valid_collimation_format = false;
+        collimationMode = collimationModeEnum::DISABLED_COLLIMATION;
+    }
+
+}
 
 void PCB303::setAutoCollimationMode(void) {
     if (Exposures::isXrayRunning()) return;
@@ -436,13 +467,24 @@ int PCB303::getFilterSlot(filter_index filter) {
 void PCB303::selectFilter(filter_index filter) {
 
     // Gets the assigned slot from the filter code
-    int filter_slot = getFilterSlot(filter);
-    if (filter_slot > 4) filter_slot = 0;
-    if (selected_filter == filter_slot) return;
-    selected_filter = filter_slot;
+    int req_filter_slot = getFilterSlot(filter);    
+    if (req_filter_slot > 4) req_filter_slot = 0;
+
+    if (selected_filter == req_filter_slot) return;
+    selected_filter = req_filter_slot;
     valid_filter_format = false;
+}
+void PCB303::selectExposureFilter(filter_index filter) {
+    if (filterMode != filterModeEnum::EXPOSURE_FILTER_MODE) return;
+    selectFilter(filter);
+}
+void PCB303::selectServiceFilter(filter_index filter) {
+    if (filterMode != filterModeEnum::SERVICE_FILTER_MODE) return;
+    selectFilter(filter);
 
 }
+
+
 
 bool PCB303::waitFilterCompleted(void) {
     

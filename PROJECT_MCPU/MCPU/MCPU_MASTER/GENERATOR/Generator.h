@@ -4,6 +4,7 @@
 
 /**
 	\defgroup GeneratorModule Generator Device Management Module
+    \ingroup APPDOC
 
 	This section describes the Generator device features and the 
 	software module that control the device.
@@ -103,10 +104,10 @@
 */
 
 /**
-	\defgroup GeneratorClass Generator Class Description
+	\defgroup GeneratorClass Module Description
 	\ingroup GeneratorModule
 
-	This section describes the features of the Generator device.
+	This section describes the features of the software controlling the Generator device.
 
 	\todo Implementazione comando per il power down: email (R: Pending issue SHFR Mamo -26/03/2025 Juan Miguel Andujar Morgado JuanMiguel.Andujar@sedecal.com)
 	\todo Implementazione re-inizializzazione se lo stato del gneratore cambia a seguito di powerdown o emergency o altro)
@@ -294,21 +295,93 @@
 */
 
 /**
-	\defgroup AnodicCurrentTable Anodic Current Table
+	\defgroup GeneratorPerformances Tube Load Performances
 	\ingroup GeneratorModule
 
-	This section provides the Anodic cureent values along the kV and mAs.
+	This section provides the Generator power performance tables.
 
+ */
+
+/**
+    \defgroup GeneratorClassImplementation Module Implementation
+    \ingroup GeneratorModule
+
+    This section describes the module implementation 
 */
 
-
-
 /// <summary>
+///  \ingroup GeneratorClassImplementation
 /// 
 /// This is the Class constructor.
 /// 
-/// \ingroup GeneratorClass
+/// # Module Declaration
 /// 
+/// The Generator module class is automatically instantiated at the first 
+/// call of any of its static function.
+/// The non static function and data can be pointed with the Generator::device entry point. 
+/// 
+/// # Module Activation
+/// 
+/// The Application can start the module execution:
+/// + In normal mode with: startNormalMode() function.
+/// + In Simulation mode with: startSimulatorMode() function.
+/// 
+/// When the Application should start the module,
+/// the Normal mode thread (see \ref threadWork) or the simulation thread (see \ref simulatorWork) 
+/// will run implementing the generator (real or simulated) main loop activities.
+/// 
+/// # Normal Mode Module Management
+/// 
+/// The mudule controls the Generator device and the activities with the 
+/// generator device with a thread executing every about 100ms when no 
+/// exposure sequences are executing.
+/// 
+/// The thread handling the activities is the \ref threadWork().
+/// The following sub sections will describe the possible operating 
+/// scenario handled by the threadWork routine.
+/// 
+/// ## Startup management
+/// 
+/// When the module is started, the following activities are performed:
+/// + Connection with the Smart Hub application;
+/// + Connection with the generator, waiting the Generator Ready status;
+/// + Setup of several parameters of the Generator;
+/// + Resets of any active system message into the generator;
+/// 
+/// When the previous activities should successfully terminate
+/// the module enters the Idle Mode.
+/// 
+/// See the \ref threadWork for more details.
+/// 
+/// ## Idle management
+/// The Idle operating mode allows the application to activate an exposure sequence.
+/// 
+/// The function executing the Idle activities is : \ref generatorIdleLoop().
+/// 
+/// During the Idle mode:
+/// - the internal generator status is palled;
+/// - the internal generator system messages are polled;
+/// - the communication status with the smarth hub is polled.
+/// 
+/// In case the application should request the execution of an exposure 
+/// sequence, the module will call the \ref exposureManagementLoop() function.
+/// 
+/// see the \ref generatorIdleLoop() for more details.
+/// 
+/// ## Exposure management
+/// 
+/// 
+/// # Internal Status Management
+/// 
+/// # Exposure Preparation
+/// 
+/// # Exposure Execution
+/// 
+/// # Tools
+/// 
+/// # Simulation mode management
+/// 
+///
 /// </summary>
 ref class Generator: public TcpClientCLI
 {
@@ -320,13 +393,13 @@ public:
 	/// </summary>
 	enum class generator_errors {
 		GEN_NO_ERRORS = 0,			//!< No error code
-		GEN_INVALID_PROCEDURE,		//!< A not valid procedure has been requested
-		GEN_INVALID_PARAMS,			//!< A non valid exposure parameter has been detected
-		GEN_INVALID_STATUS,			//!< The generator is in a not expected status		
-		GEN_COMMUNICATION_ERROR,	//!< A generator command is failed
-		GEN_INTERNAL_ERROR,			//!< The generator activated internal error messages
-		GEN_BUTTON_RELEASE,			//!< The X-Ray Button has been released 
-		GEN_TIMEOUT,			    //!< Timeout generator sequence			
+		GEN_INVALID_PROCEDURE=1,		//!< A not valid procedure has been requested
+		GEN_INVALID_PARAMS=2,			//!< A non valid exposure parameter has been detected
+		GEN_INVALID_STATUS=3,			//!< The generator is in a not expected status		
+		GEN_COMMUNICATION_ERROR=4,	//!< A generator command is failed
+		GEN_INTERNAL_ERROR=5,			//!< The generator activated internal error messages
+		GEN_BUTTON_RELEASE=6,			//!< The X-Ray Button has been released 
+		GEN_TIMEOUT=7,			    //!< Timeout generator sequence			
 		GEN_LAST_ERRCODE			//!< This code shall be used by the Application Subclass to enhance the error code list during the exposures	
 	};
 

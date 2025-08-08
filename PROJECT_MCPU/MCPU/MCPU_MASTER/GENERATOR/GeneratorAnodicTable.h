@@ -1,15 +1,18 @@
 /**
-\addtogroup AnodicCurrentTable
 
-# Max Anodic Current for every kV
+\addtogroup GeneratorPerformances
 
-|kV|Ia(mA)|
-|:--:|:--:|
-||
+# Generator performances table
+ 
+|kV|Max Ia(mA)|Min Ia(mA)|Pick Power(kW)|
+|:--:|:--:|:--:|:--:|
+|20|150|120|3.5|
 
 
 
-# Range 20 to 29 kV
+# Anodic current table
+
+## 20 to 29 kV
 
 |mAs/kV|20|21|22|23|24|25|26|27|28|29|
 |:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
@@ -1947,6 +1950,4 @@
 |639|128|128|128|128|128|128|128|128|128|128|
 |640|128|128|128|128|128|128|128|128|128|128|
 
-
-
-*\
+*/

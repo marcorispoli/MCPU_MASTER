@@ -47,6 +47,12 @@ Generator::Generator(void) :TcpClientCLI( SH_IP, SH_PORT)
 /// This function starts the Generator Module in Normal (non simulated) mode
 /// </summary>
 /// 
+/// When this function is called, the Tcp Client will try to connect with the smart Hub 
+/// application in order to get connected with the R2CP nertwork and to be able to exchange 
+/// data with the Generator device.
+/// 
+/// The Main Thread is then activated.
+/// 
 /// <param name=""></param>
 void Generator::startNormalMode(void) {
     device->simulator_mode = false;
@@ -462,7 +468,14 @@ bool  Generator::handleCommandProcessedState(unsigned char* cd) {
 }
 
 
-
+/// <summary>
+/// This function initializes the Generator with the required parameters.
+/// </summary>
+/// 
+/// \note This function shall be called only with the generator device in standby mode. 
+/// 
+/// <param name="cd"></param>
+/// <returns></returns>
 bool Generator::generatorSetup(void) {
     LogClass::logInFile("GENERATOR: Setup procedure\n");
     
@@ -632,7 +645,18 @@ bool Generator::testDCBusError(void) {
     return false;
 }
 
-
+/// <summary>
+/// This function requests the internal status of the generator device.
+/// </summary>
+/// 
+/// The current_generator_status variable is updated with the actual 
+/// value of the internal status.
+/// 
+/// If the status should be changed from the last call, a log string is generated
+/// with the new updated status.
+/// 
+/// <param name=""></param>
+/// <returns>tru in case of success</returns>
 bool Generator::updateGeneratorStatus(void) {
 
     // Gets the current generator status
@@ -849,7 +873,15 @@ bool Generator::generatorIdleLoop(void) {
 }
 
 
-
+/// <summary>
+/// This function activates the "Disabel Rx Message into the generator
+/// </summary>
+/// 
+/// The Disable Rx MEssage activation prevents the generator to activate
+/// any exposure sequence.
+/// 
+/// <param name="stat"></param>
+/// <returns></returns>
 bool Generator::setDisableRxMessage(bool stat) {
     R2CP::CaDataDicGen::GetInstance()->SystemMessages_SetDisableRx(stat);
     if (!handleCommandProcessedState(nullptr)) {
@@ -1151,6 +1183,26 @@ System::String^ Generator::getGeneratorErrorString(System::String^ errstr) {
     
 }
 
+/// <summary>
+/// This function prepares the generator for the execution of a 2D single pulse procedure.
+/// </summary>
+/// 
+/// This function executes the following steps:
+/// - Set a Generator Databank R2CP::DB_Pulse with the exposure parameters;
+/// - Activates the 2D procedure that will makes use of the R2CP::DB_Pulse;
+/// - Clears the Generator system messages (if there should be activated);
+///   
+/// The procedure will log the actual exposure data received by the Generator device
+/// as a consequence of the Databank preparation.
+/// 
+/// <param name="exp_name">A synìmbolic name used for logging</param>
+/// <param name="kV">kV of the exposure</param>
+/// <param name="mAs">total mAs for the pulse</param>
+/// <param name="islargefocus">true=LARGE FOCUS, false=SMALL FOCUS</param>
+/// <param name="det_sync">true=Detector synchronization</param>
+/// <param name="grid_sync">true=Grid Synchronization</param>
+/// <param name="exp_time">Maximum exposure time in ms</param>
+/// <returns></returns>
 Generator::generator_errors Generator::generator2DPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, bool det_sync, bool grid_sync, int exp_time) {
    
     selected_anode_current = 150;
@@ -1202,6 +1254,26 @@ Generator::generator_errors Generator::generator2DPulsePreparation(System::Strin
     return generator_errors::GEN_NO_ERRORS;
 }
 
+/// <summary>
+/// This function prepares for the pre-pulse 2D procedure activation
+/// </summary>
+/// 
+/// This function executes the following steps:
+/// - Set a Generator Databank R2CP::DB_Pre with the pre pulse exposure parameters;
+/// - Activates the 2D AEC procedure for the pre pulse execution;
+/// - Clears the Generator system messages (if there should be activated);
+///   
+/// The procedure will log the actual exposure data received by the Generator device
+/// as a consequence of the Databank preparation.
+/// 
+/// <param name="exp_name">A synìmbolic name used for logging</param>
+/// <param name="kV">kV of the exposure</param>
+/// <param name="mAs">total mAs for the pulse</param>
+/// <param name="islargefocus">true=LARGE FOCUS, false=SMALL FOCUS</param>
+/// <param name="det_sync">true=Detector synchronization</param>
+/// <param name="grid_sync">true=Grid Synchronization</param>
+/// <param name="exp_time">Maximum exposure time in ms</param>
+/// <returns></returns>
 Generator::generator_errors Generator::generator2DAecPrePulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time){
     selected_anode_current = 150;
 
@@ -1254,6 +1326,26 @@ Generator::generator_errors Generator::generator2DAecPrePulsePreparation(System:
     return generator_errors::GEN_NO_ERRORS;
 }
 
+/// <summary>
+/// This function prepares for the Pulse execution of a 2D AEC procedure
+/// </summary>
+/// 
+/// This function executes the following steps:
+/// - Set a Generator Databank R2CP::DB_Pulse with the pulse exposure parameters;
+/// - Activates the 2D AEC procedure for the pulse execution;
+/// - Clears the Generator system messages (if there should be activated);
+///   
+/// The procedure will log the actual exposure data received by the Generator device
+/// as a consequence of the Databank preparation.
+/// 
+/// <param name="exp_name">A synìmbolic name used for logging</param>
+/// <param name="kV">kV of the exposure</param>
+/// <param name="mAs">total mAs for the pulse</param>
+/// <param name="islargefocus">true=LARGE FOCUS, false=SMALL FOCUS</param>
+/// <param name="det_sync">true=Detector synchronization</param>
+/// <param name="grid_sync">true=Grid Synchronization</param>
+/// <param name="exp_time">Maximum exposure time in ms</param>
+/// <returns></returns>
 Generator::generator_errors Generator::generator2DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time) {
 
     selected_anode_current = 150;
@@ -1292,6 +1384,25 @@ Generator::generator_errors Generator::generator2DAecPulsePreparation(System::St
     return generator_errors::GEN_NO_ERRORS;
 }
 
+/// <summary>
+/// This function perepares the generator to execute a 3D manual exposure sequence.
+/// </summary>
+/// 
+/// This function executes the following steps:
+/// - Sets the Databank with the 3 point technical approach (see \ref generatorSet3PointDatabank() for details);
+/// - Sets the Databank to assigne the number of tomo skip pulses;
+/// - Setup the procedure for the tomo sequence;
+/// - Activates the Procedure;
+/// 
+///  <param name="exp_name">A synìmbolic name used for logging</param>
+/// <param name="kV">kV of the exposure</param>
+/// <param name="mAs">total mAs for the pulse</param>
+/// <param name="tomo_samples">Number of valid tomo samples</param>
+/// <param name="tomo_skip">number of the initial detector pulses that will be ignored (skip pulses)</param>
+/// <param name="islargefocus">true=LARGE FOCUS, false=SMALL FOCUS</param>
+/// <param name="min_exp_time">minimum exposure time in ms for every pulse in ms</param>
+/// <param name="max_exp_time">maximum exposure time for every pulse in ms</param>
+/// <returns></returns>
 Generator::generator_errors Generator::generator3DPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time) {
     selected_anode_current = 200;
     generator_errors error;
@@ -1368,7 +1479,16 @@ Generator::generator_errors Generator::generator3DPulsePreparation(System::Strin
     return generator_errors::GEN_NO_ERRORS;
 }
 
-
+/// <summary>
+/// This function write a formatted file that will be used by Doxygen 
+/// with the Tube Load data.
+/// </summary>
+/// 
+/// The funcion can be called only when the generator is active.
+/// The function will take several seconds to complete.
+/// 
+/// <param name="large_focus"></param>
+/// <returns></returns>
 bool Generator::generateAnodicCurrentTable(bool large_focus) {
  
 
@@ -1402,27 +1522,32 @@ bool Generator::generateAnodicCurrentTable(bool large_focus) {
     System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(System::IO::Directory::GetCurrentDirectory() + "\\GeneratorAnodicTable.h");
 
     sw->WriteLine("/**");
-    sw->WriteLine("\\addtogroup AnodicCurrentTable");
+    sw->WriteLine("\\addtogroup GeneratorPerformances");
     
-    //_______________________ MAX CURRENT TABLE _______________________________
-
-    sw->WriteLine("# Max Anodic Current for every kV");
+    //_______________________ PERFORMANCES  TABLE _______________________________
+    
+    sw->WriteLine("# Generator performances table");
     sw->WriteLine("");
 
-    sw->WriteLine("|kV|Ia(mA)|");
-    sw->WriteLine("|:--:|:--:|");
+    sw->WriteLine("| kV | Max Ia(mA) | Min Ia(mA) | Pick Power(kW)|");
+    sw->WriteLine("|:--: | : --: | : --: | : --: |");
+    sw->WriteLine("|20 | 150 | 120 | 3.5 |");
 
+    /*
     for (int i = 20; i <= 49; i++) {
         row = "|" + i.ToString() + "|" + maxI[i - 20].ToString();
         sw->WriteLine(row);
-    }
+    }*/
     
     sw->WriteLine("");
     sw->WriteLine("");
     sw->WriteLine("");
 
+    sw->WriteLine("# Anodic current table");
+    sw->WriteLine("");
+
     //________________________ 20 to 29 kV TABLE ___________________________________________
-    sw->WriteLine("# Range 20 to 29 kV");
+    sw->WriteLine("## Range 20 to 29 kV");
     sw->WriteLine("");
 
     sw->WriteLine("|mAs\/kV|20|21|22|23|24|25|26|27|28|29|");
@@ -1449,7 +1574,7 @@ bool Generator::generateAnodicCurrentTable(bool large_focus) {
     sw->WriteLine("");
 
     //________________________ 30 to 39 kV TABLE ___________________________________________
-    sw->WriteLine("# Range 30 to 39 kV");
+    sw->WriteLine("## Range 30 to 39 kV");
     sw->WriteLine("");
 
     sw->WriteLine("|mAs\/kV|30|31|32|33|34|35|36|37|38|39|");
@@ -1475,7 +1600,7 @@ bool Generator::generateAnodicCurrentTable(bool large_focus) {
     sw->WriteLine("");
 
     //________________________ 40 to 49 kV TABLE ___________________________________________
-    sw->WriteLine("# Range 40 to 49 kV");
+    sw->WriteLine("## Range 40 to 49 kV");
     sw->WriteLine("");
 
     sw->WriteLine("|mAs\/kV|40|41|42|43|44|45|46|47|48|49|");

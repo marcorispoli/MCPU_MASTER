@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\BIOPSY_STUDY;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\TEST_STUDY;$(ProjectDir)\BIOPSY_STUDY;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\BIOPSY_STUDY;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VSCAN;$(ProjectDir)\MOTORS;$(ProjectDir)\MOTORS\CanOpenDriver;$(ProjectDir)\DEVICES;$(ProjectDir)\DEBUGGER;$(ProjectDir)\SIMULATOR;$(ProjectDir)\GUI;$(ProjectDir)\CONFIGURATION;$(ProjectDir)\AWS;$(ProjectDir)\LANGUAGE;$(ProjectDir)\MESSAGES;$(ProjectDir)\EXPOSURES;$(ProjectDir)\WINDOWS\SERVICE;$(ProjectDir)\TEST_STUDY;$(ProjectDir)\BIOPSY_STUDY;$(ProjectDir)\WINDOWS;$(ProjectDir)\GENERATOR;$(ProjectDir)\GENERATOR\R2CP;$(ProjectDir)\GENERATOR\R2CP\GenDataDic;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\Interfaces;$(ProjectDir)\GENERATOR\R2CP\GenDataDic\metInterfaces;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vs_can_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -161,6 +161,7 @@
     <ClInclude Include="MOTORS\Motors.h" />
     <ClInclude Include="MOTORS\SlideMotor.h" />
     <ClInclude Include="MOTORS\VerticalMotor.h" />
+    <ClInclude Include="TEST_STUDY\TestStudy.h" />
     <ClInclude Include="VSCAN\CanSimulator.h" />
     <ClInclude Include="WINDOWS\AecSelectionDialog.h">
       <FileType>CppForm</FileType>
@@ -274,6 +275,7 @@
     <ClCompile Include="MOTORS\CanOpenDriver\CanOpenNanoJ.cpp" />
     <ClCompile Include="MOTORS\SlideMotor.cpp" />
     <ClCompile Include="MOTORS\VerticalMotor.cpp" />
+    <ClCompile Include="TEST_STUDY\TestStudy.cpp" />
     <ClCompile Include="VSCAN\CanSimulator.cpp" />
     <ClCompile Include="WINDOWS\AecSelectionDialog.cpp" />
     <ClCompile Include="BIOPSY_STUDY\BiopsyStudy.cpp" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#define PROTOCOL_REVISION_CODE "1.0.0"
+#define PROTOCOL_REVISION_CODE "1.2.0"
 
 
 /**
@@ -16,7 +16,7 @@
 \defgroup AWSProtocolDescription AWS Protocol Communication  Description
 \ingroup APPDOC
 
-   <b>PROTOCOL REVISION: 1.1.0</b>
+   <b>PROTOCOL REVISION: 1.2.0</b>
 
    # Change Log
    
@@ -81,6 +81,15 @@
    <b>Added the \ref SET_BiopsyImage2D command</b>
    This command handle the 2D control image presence .
 
+   _Revision 1.2.0_
+
+   <b>Added the \ref EXEC_TestStudy command</b>
+   This command opens the Test session study.
+
+   <b>Added the \ref SET_TestMode command</b>
+   This command defines the next exposure characteristics in the Test contest.
+
+   
 
    # Index
 
@@ -96,7 +105,9 @@
    _Study Control_
    +	\ref EXEC_OpenStudy
    +	\ref EXEC_BiopsyStudy
+   +	\ref EXEC_TestStudy
    +	\ref EXEC_CloseStudy
+   
    
    _Projection and Tube-Arm Control_
    +	\ref SET_ProjectionList
@@ -110,6 +121,7 @@
    +	\ref GET_TomoInfo
    +	\ref SET_TomoConfig
    +	\ref SET_ExposureMode
+   +    \ref SET_TestMode
    +	\ref SET_ExposureData
    +	\ref SET_EnableXrayPush
    +	\ref GET_ReadyForExposure
@@ -390,6 +402,7 @@ private:
 	void EXEC_TestCommand(void);
 	void EXEC_OpenStudy(void);
 	void EXEC_BiopsyStudy(void);
+	void EXEC_TestStudy(void);
 	void EXEC_CloseStudy(void);
 
 	void EXEC_BiopsyHoming(void);
@@ -405,6 +418,7 @@ private:
 	void GET_TomoInfo(void);
 	
 	void SET_ExposureMode(void);
+	void SET_TestMode(void);
 	void SET_ExposureData(void);
 	void SET_EnableXrayPush(void);
 	void GET_ReadyForExposure(void);

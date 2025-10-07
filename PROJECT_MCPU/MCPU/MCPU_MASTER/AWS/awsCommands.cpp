@@ -135,6 +135,60 @@ void  awsProtocol::EXEC_BiopsyStudy(void) {
     ackOk();
 }
 
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_TestStudy 
+/// 
+/// The AWS sends this command whenever a Test study should be open.
+/// 
+/// NOTE: The test study is a special exposure session where the Patient 
+/// is not present. IN this session several controls are disabled, allowing 
+/// te execution of calibration and test procedures.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_TestStudy test_name>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |test_name|String|A string descriptor of the current test session| 
+/// 
+/// 
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_SYSTEM_ERRORS| "SYSTEM_ERRORS" | system error condition are presents|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_IDLE_MODE"| the Gantry is not in IDLE status|
+/// 
+
+/// <summary>
+/// The AWS sends this command whenever a Test study should be open.
+/// 
+/// </summary>
+/// <param name=""></param>
+void  awsProtocol::EXEC_TestStudy(void) {
+
+    // Only in Idle can be accepted this command
+    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
+
+    // Not in error condition !!!
+    if (Notify::isError()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_SYSTEM_ERRORS; pDecodedFrame->errstr = "SYSTEM_ERRORS"; ackNok(); return; }
+
+    if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    String^ test_name = pDecodedFrame->parameters[0];
+
+    // Open the study and assignes the patient name !!!
+    if (!Gantry::setOpenTestStudy(test_name)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
+
+    ackOk();
+}
+
+
+
 /// \addtogroup AWSProtocolDescription
 ///
 /// \subsection EXEC_BiopsyHoming 
@@ -927,6 +981,100 @@ void   awsProtocol::SET_ExposureMode(void) {
     if (arm_mode == "ARM_ENA") Exposures::setArmMode(Exposures::arm_mode_option::ARM_ENA);
     else if (arm_mode == "ARM_DIS") Exposures::setArmMode(Exposures::arm_mode_option::ARM_DIS);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_ARM_MODE"; ackNok(); return; }
+
+
+    ackOk();
+    return;
+}
+
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_TestMode
+/// 
+/// This command selects the exposure type in the Test Study
+/// 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % SET_TestMode test_type detector_type>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |test_type|String|Defines the type of the test to be executed (see table below)| 
+/// |detector_type|String|Defines the detector mounted (see table below)| 
+/// 
+/// |test_type|Description|
+/// |:--|:--|
+/// |TEST_EXPOSURE_MAN_2D|Test Exposure 2D in Manual Mode|
+/// |TEST_EXPOSURE_AEC_2D|Test Exposure 2D with pre pulse|
+/// |TEST_EXPOSURE_MAN_3D|Test Exposure 3D in Manual Mode|
+/// |TEST_EXPOSURE_AEC_3D|Test Exposure 3D with pre pulse|
+/// |TEST_EXPOSURE_STATIC_MAN_3D|Test Exposure 3D in Manual Mode with static Tube|
+/// |TEST_EXPOSURE_STATIC_AEC_3D|Test Exposure 3D with pre pulse with static Tube|
+///
+/// |detector_type (see the DetectorConfiguration.cnf description \ref DetectorConfig) |Description|
+/// |:--|:--|
+/// |GENERIC|A generic detector with tipical timing|
+/// |LMAM2V2|Analogic LMAM2V2 tuned timings|
+/// |FDIV2|Analogic LMAM2V2 tuned timings|
+/// |DRTECH|DRTECH tuned timings|
+/// |VAREX|VAREX tuned timings|
+///  
+/// \note In case the detector type name should not match any available detector 
+/// configured into the system, the GENERIC detector type is assigned as default.
+///  
+/// ### Command Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_TEST_MODE"| the Gantry is not in Test Study operating status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 6)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_TEST_TYPE" | The exp_type parameter is wrong|
+/// 
+/// 
+
+/// <summary>
+/// This command selects the test characteristics.   
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::SET_TestMode(void) {
+    if (pDecodedFrame->parameters->Count != 2) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    if (!Gantry::isTEST()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_TEST_MODE"; ackNok(); return; }
+
+    String^ test_type = pDecodedFrame->parameters[0];
+    String^ detector_type = pDecodedFrame->parameters[1];
+
+    /*
+    if (exposure_type == "MAN_2D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_2D);
+    else if (exposure_type == "AEC_2D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_2D);
+    else if (exposure_type == "MAN_3D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_3D);
+    else if (exposure_type == "AEC_3D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_3D);
+    else if (exposure_type == "MAN_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_COMBO);
+    else if (exposure_type == "AEC_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_COMBO);
+    else if (exposure_type == "MAN_AE") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_AE);
+    else if (exposure_type == "AEC_AE") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_AE);
+    else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_EXPOSURE_TYPE"; ackNok(); return; }
+    */
+
+    // Sets the detector used for the exposure
+    bool detector_found = false;
+    for (int i = 0; i < (int)DetectorConfig::detector_model_option::DETECTOR_LIST_SIZE; i++) {
+        if (((DetectorConfig::detector_model_option)i).ToString() == detector_type) {
+            Exposures::setDetectorType((DetectorConfig::detector_model_option)i);
+            detector_found = true;
+            break;
+        }
+    }
+
+    // If the detector should not be in the available list, a generic detector is selected
+    if (!detector_found) {
+        Exposures::setDetectorType(DetectorConfig::detector_model_option::GENERIC);
+        LogClass::logInFile("SET_ExposureMode: Detector not in the available list. Set the generic detector!");
+    }
 
 
     ackOk();

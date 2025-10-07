@@ -251,6 +251,9 @@
     <ClInclude Include="BIOPSY_STUDY\BiopsyHomeProcedure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TEST_STUDY\TestStudy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinFormsProject.cpp">
@@ -449,6 +452,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BIOPSY_STUDY\BiopsyHomeProcedure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TEST_STUDY\TestStudy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

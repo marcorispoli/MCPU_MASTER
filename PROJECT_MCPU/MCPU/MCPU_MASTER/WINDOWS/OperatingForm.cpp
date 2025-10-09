@@ -295,9 +295,9 @@ void OperatingForm::initOperatingStatus(void) {
 
 	// Set the Filter in Exposure selection mode
 	// Select the most common filter: Rhodium
-	PCB303::setFilterExposureMode();
-	PCB303::selectExposureFilter(PCB303::filter_index::FILTER_RH);
-
+	PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
+	PCB303::selectFilter(PCB303::filter_index::FILTER_RH);
+	
 	// Clears any Instant popup window
 	Notify::clrInstant();
 

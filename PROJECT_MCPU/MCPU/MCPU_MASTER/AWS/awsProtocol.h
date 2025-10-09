@@ -84,11 +84,10 @@
    _Revision 1.2.0_
 
    <b>Added the \ref EXEC_TestStudy command</b>
-   This command opens the Test session study.
+   This command opens the Test session study for test and calibration exposures
 
-   <b>Added the \ref SET_TestMode command</b>
-   This command defines the next exposure characteristics in the Test contest.
-
+   <b>Modified the \ref SET_ExposureMode command</b>
+   A new exposure mode has been included allowing the Tomo exposure with a static Arm for calibration
    
 
    # Index
@@ -121,7 +120,6 @@
    +	\ref GET_TomoInfo
    +	\ref SET_TomoConfig
    +	\ref SET_ExposureMode
-   +    \ref SET_TestMode
    +	\ref SET_ExposureData
    +	\ref SET_EnableXrayPush
    +	\ref GET_ReadyForExposure

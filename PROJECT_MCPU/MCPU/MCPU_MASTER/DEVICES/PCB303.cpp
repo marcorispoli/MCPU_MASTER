@@ -123,10 +123,10 @@ void PCB303::filterManagement(void) {
     
 
     // Tries to send the format selection command
-    if ((selected_filter != protocol.status_register.filter_target_index) || (protocol.status_register.filter_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+    if ((selected_slot != protocol.status_register.filter_target_index) || (protocol.status_register.filter_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
         valid_filter_format = false;
 
-        if (commandNoWaitCompletion(protocol.command.encodeSetFilterCommand(selected_filter), 30)) {
+        if (commandNoWaitCompletion(protocol.command.encodeSetFilterCommand(selected_slot), 30)) {
             filter_attempt++;         
         }        
         return;
@@ -388,7 +388,7 @@ bool PCB303::configurationLoop(void) {
     writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
 
     // Sets the Filter in Disable Mode
-    PCB303::setFilterDisabledMode();
+    PCB303::setFilterMode(filterModeEnum::DISABLED_FILTER_MODE);
 
     if (device->isSimulatorMode()) CanSimulator::sendFilterConfiguration();
 
@@ -466,6 +466,7 @@ bool PCB303::selectFilter(filter_index filter) {
     if (req_filter_slot > 4) return false;
     if (req_filter_slot < 0) return false;
 
+    selected_slot = req_filter_slot;
     if (selected_filter == filter) return true;
     selected_filter = filter;
     valid_filter_format = false;

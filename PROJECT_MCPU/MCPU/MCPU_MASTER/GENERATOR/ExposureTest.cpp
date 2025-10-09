@@ -32,7 +32,7 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
     filter = getExposurePulse(0)->filter;
     
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
-    PCB303::selectExposureFilter(filter);
+    PCB303::selectFilter(filter);
     if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     // Pulse Preparation

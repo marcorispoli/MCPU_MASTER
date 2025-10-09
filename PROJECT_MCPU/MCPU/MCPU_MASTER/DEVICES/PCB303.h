@@ -742,7 +742,8 @@ public:
 
 		static filterModeEnum filterMode;
 		static filter_index selected_filter = filter_index::FILTER_LD;
-		
+		static int selected_slot = 0;
+
 		static bool valid_filter_format = false;
 		static bool filter_error = false;
 		static int filter_attempt = 0; 

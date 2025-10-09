@@ -417,8 +417,7 @@ private:
 	void SET_TomoConfig(void);
 	void GET_TomoInfo(void);
 	
-	void SET_ExposureMode(void);
-	void SET_TestMode(void);
+	void SET_ExposureMode(void);	
 	void SET_ExposureData(void);
 	void SET_EnableXrayPush(void);
 	void GET_ReadyForExposure(void);

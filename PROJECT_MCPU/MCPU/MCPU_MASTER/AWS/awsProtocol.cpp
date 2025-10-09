@@ -56,7 +56,6 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("SET_TomoConfig", gcnew command_callback(this, &awsProtocol::SET_TomoConfig));
     commandExec->Add("GET_TomoInfo", gcnew command_callback(this, &awsProtocol::GET_TomoInfo));
     commandExec->Add("SET_ExposureMode", gcnew command_callback(this, &awsProtocol::SET_ExposureMode));
-    commandExec->Add("SET_TestMode", gcnew command_callback(this, &awsProtocol::SET_TestMode));
     commandExec->Add("SET_ExposureData", gcnew command_callback(this, &awsProtocol::SET_ExposureData));
     commandExec->Add("SET_EnableXrayPush", gcnew command_callback(this, &awsProtocol::SET_EnableXrayPush));
     commandExec->Add("GET_ReadyForExposure", gcnew command_callback(this, &awsProtocol::GET_ReadyForExposure));

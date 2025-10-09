@@ -837,6 +837,7 @@ void awsProtocol::GET_TomoInfo(void) {
 /// |AEC_2D|Exposure 2D with pre pulse|
 /// |MAN_3D|Exposure 3D in Manual Mode|
 /// |AEC_3D|Exposure 3D with pre pulse|
+/// |MAN_3D_STATIC|Exposure 3D in Manual Mode with no Tube rotation|
 /// |MAN_COMBO|Combo in manual mode|
 /// |AEC_COMBO|Combo with pre-pulse|
 /// |MAN_AE|Exposure CESM in Manual Mode|
@@ -888,6 +889,7 @@ void awsProtocol::GET_TomoInfo(void) {
 /// |ERROR CODE|ERROR STRING|DESCRIPTION|
 /// |:--|:--|:--|
 /// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_OPEN_MODE"| the Gantry is not in Open Study operating status|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"COMMAND_NOT_ALLOWED_IN_THE_CURRENT_STUDY"| The requested exposure is not allowed in the curent Study|
 /// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 6)|
 /// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_EXPOSURE_TYPE" | The exp_type parameter is wrong|
 /// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_COMPRESSION_MODE" | The compression_mode parameter is wrong|
@@ -905,7 +907,7 @@ void awsProtocol::GET_TomoInfo(void) {
 /// <param name=""></param>
 void   awsProtocol::SET_ExposureMode(void) {
     if (pDecodedFrame->parameters->Count != 6) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY()) && (!Gantry::isTEST())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     String^ exposure_type = pDecodedFrame->parameters[0];
     String^ detector_type = pDecodedFrame->parameters[1];
@@ -914,10 +916,22 @@ void   awsProtocol::SET_ExposureMode(void) {
     String^ protection_mode = pDecodedFrame->parameters[4];
     String^ arm_mode = pDecodedFrame->parameters[5];
 
-    // Setes the next exposure mode
+    // For the Test session, some of the parameter sahll be initialized and some command verified
+    if (!Gantry::isTEST()) {
+        if (exposure_type == "MAN_3D_STATIC") { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "COMMAND_NOT_ALLOWED_IN_THE_CURRENT_STUDY"; ackNok(); return; }
+        
+    }
+    else {
+        protection_mode = "PROTECTION_DIS";
+        compression_mode = "CMP_DISABLE";
+        arm_mode = "ARM_DIS";
+    }
+
+    // Sets the next exposure mode
     if (exposure_type == "MAN_2D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_2D);
     else if (exposure_type == "AEC_2D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_2D);
     else if (exposure_type == "MAN_3D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_3D);
+    else if (exposure_type == "MAN_3D_STATIC") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_3D_STATIC);
     else if (exposure_type == "AEC_3D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_3D);
     else if (exposure_type == "MAN_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_COMBO);
     else if (exposure_type == "AEC_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_COMBO);
@@ -986,101 +1000,6 @@ void   awsProtocol::SET_ExposureMode(void) {
     ackOk();
     return;
 }
-
-
-/// \addtogroup AWSProtocolDescription
-/// 
-/// <div style="page-break-after: always;"></div>
-/// 
-/// \subsection SET_TestMode
-/// 
-/// This command selects the exposure type in the Test Study
-/// 
-/// 
-/// ### Command Data Format
-/// 
-/// Frame format: <ID % SET_TestMode test_type detector_type>
-/// 
-/// |PARAMETER|Data Type|Description|
-/// |:--|:--|:--|
-/// |test_type|String|Defines the type of the test to be executed (see table below)| 
-/// |detector_type|String|Defines the detector mounted (see table below)| 
-/// 
-/// |test_type|Description|
-/// |:--|:--|
-/// |TEST_EXPOSURE_MAN_2D|Test Exposure 2D in Manual Mode|
-/// |TEST_EXPOSURE_AEC_2D|Test Exposure 2D with pre pulse|
-/// |TEST_EXPOSURE_MAN_3D|Test Exposure 3D in Manual Mode|
-/// |TEST_EXPOSURE_AEC_3D|Test Exposure 3D with pre pulse|
-/// |TEST_EXPOSURE_STATIC_MAN_3D|Test Exposure 3D in Manual Mode with static Tube|
-/// |TEST_EXPOSURE_STATIC_AEC_3D|Test Exposure 3D with pre pulse with static Tube|
-///
-/// |detector_type (see the DetectorConfiguration.cnf description \ref DetectorConfig) |Description|
-/// |:--|:--|
-/// |GENERIC|A generic detector with tipical timing|
-/// |LMAM2V2|Analogic LMAM2V2 tuned timings|
-/// |FDIV2|Analogic LMAM2V2 tuned timings|
-/// |DRTECH|DRTECH tuned timings|
-/// |VAREX|VAREX tuned timings|
-///  
-/// \note In case the detector type name should not match any available detector 
-/// configured into the system, the GENERIC detector type is assigned as default.
-///  
-/// ### Command Returned Code 
-/// 
-/// |ERROR CODE|ERROR STRING|DESCRIPTION|
-/// |:--|:--|:--|
-/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_TEST_MODE"| the Gantry is not in Test Study operating status|
-/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|the number of parameters is not correct (it should be 6)|
-/// |AWS_RET_INVALID_PARAMETER_VALUE |  "INVALID_TEST_TYPE" | The exp_type parameter is wrong|
-/// 
-/// 
-
-/// <summary>
-/// This command selects the test characteristics.   
-/// 
-/// </summary>
-/// <param name=""></param>
-void   awsProtocol::SET_TestMode(void) {
-    if (pDecodedFrame->parameters->Count != 2) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if (!Gantry::isTEST()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_TEST_MODE"; ackNok(); return; }
-
-    String^ test_type = pDecodedFrame->parameters[0];
-    String^ detector_type = pDecodedFrame->parameters[1];
-
-    /*
-    if (exposure_type == "MAN_2D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_2D);
-    else if (exposure_type == "AEC_2D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_2D);
-    else if (exposure_type == "MAN_3D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_3D);
-    else if (exposure_type == "AEC_3D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_3D);
-    else if (exposure_type == "MAN_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_COMBO);
-    else if (exposure_type == "AEC_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_COMBO);
-    else if (exposure_type == "MAN_AE") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_AE);
-    else if (exposure_type == "AEC_AE") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_AE);
-    else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_EXPOSURE_TYPE"; ackNok(); return; }
-    */
-
-    // Sets the detector used for the exposure
-    bool detector_found = false;
-    for (int i = 0; i < (int)DetectorConfig::detector_model_option::DETECTOR_LIST_SIZE; i++) {
-        if (((DetectorConfig::detector_model_option)i).ToString() == detector_type) {
-            Exposures::setDetectorType((DetectorConfig::detector_model_option)i);
-            detector_found = true;
-            break;
-        }
-    }
-
-    // If the detector should not be in the available list, a generic detector is selected
-    if (!detector_found) {
-        Exposures::setDetectorType(DetectorConfig::detector_model_option::GENERIC);
-        LogClass::logInFile("SET_ExposureMode: Detector not in the available list. Set the generic detector!");
-    }
-
-
-    ackOk();
-    return;
-}
-
 
 /// \addtogroup AWSProtocolDescription
 /// 

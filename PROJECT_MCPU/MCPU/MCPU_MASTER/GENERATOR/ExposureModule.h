@@ -210,6 +210,7 @@ public:
         MAN_2D=0, //!< The next exposure is a 2D manual mode
         AEC_2D, //!< The next exposure is a 2D with AEC
         MAN_3D, //!< The next exposure is a Tomo 3D in manual mode
+        MAN_3D_STATIC, //!< The next exposure is a Tomo 3D in manual mode without Tube Arm activation
         AEC_3D, //!< The next exposure is a Tomo 3D with AEC
         MAN_COMBO, //!< The next exposure is a Manual Combo
         AEC_COMBO, //!< The next exposure is a Combo with AEC

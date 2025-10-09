@@ -56,6 +56,7 @@ private: System::Windows::Forms::PictureBox^ biopsyLightOff;
 
 private: System::Windows::Forms::PictureBox^ biopsyLightOn;
 private: System::Windows::Forms::PictureBox^ biopsyPark;
+private: System::Windows::Forms::PictureBox^ collimationTool;
 
 
 public:System::Timers::Timer^ serviceTimer;
@@ -139,6 +140,8 @@ private:
 		this->labelTime = (gcnew System::Windows::Forms::Label());
 		this->servicePanel = (gcnew System::Windows::Forms::Panel());
 		this->calibPanel = (gcnew System::Windows::Forms::Panel());
+		this->collimationTool = (gcnew System::Windows::Forms::PictureBox());
+		this->biopsyPark = (gcnew System::Windows::Forms::PictureBox());
 		this->biopsyLightOff = (gcnew System::Windows::Forms::PictureBox());
 		this->biopsyLightOn = (gcnew System::Windows::Forms::PictureBox());
 		this->biopsyTool = (gcnew System::Windows::Forms::PictureBox());
@@ -146,19 +149,19 @@ private:
 		this->zeroSetting = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceCanc = (gcnew System::Windows::Forms::PictureBox());
 		this->serviceMenuTitle = (gcnew System::Windows::Forms::Label());
-		this->biopsyPark = (gcnew System::Windows::Forms::PictureBox());
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->rotationTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemSetup))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->BeginInit();
 		this->servicePanel->SuspendLayout();
 		this->calibPanel->SuspendLayout();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->collimationTool))->BeginInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyPark))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyLightOff))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyLightOn))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTool))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->BeginInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->BeginInit();
-		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyPark))->BeginInit();
 		this->SuspendLayout();
 		// 
 		// rotationTool
@@ -247,6 +250,7 @@ private:
 		// 
 		// calibPanel
 		// 
+		this->calibPanel->Controls->Add(this->collimationTool);
 		this->calibPanel->Controls->Add(this->biopsyPark);
 		this->calibPanel->Controls->Add(this->biopsyLightOff);
 		this->calibPanel->Controls->Add(this->biopsyLightOn);
@@ -258,12 +262,36 @@ private:
 		this->calibPanel->Size = System::Drawing::Size(600, 880);
 		this->calibPanel->TabIndex = 15;
 		// 
+		// collimationTool
+		// 
+		this->collimationTool->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+			static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->collimationTool->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->collimationTool->Location = System::Drawing::Point(409, 39);
+		this->collimationTool->Name = L"collimationTool";
+		this->collimationTool->Size = System::Drawing::Size(165, 165);
+		this->collimationTool->TabIndex = 7;
+		this->collimationTool->TabStop = false;
+		this->collimationTool->Click += gcnew System::EventHandler(this, &ServiceForm::collimationTool_Click);
+		// 
+		// biopsyPark
+		// 
+		this->biopsyPark->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
+			static_cast<System::Int32>(static_cast<System::Byte>(0)));
+		this->biopsyPark->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+		this->biopsyPark->Location = System::Drawing::Point(409, 223);
+		this->biopsyPark->Name = L"biopsyPark";
+		this->biopsyPark->Size = System::Drawing::Size(165, 165);
+		this->biopsyPark->TabIndex = 6;
+		this->biopsyPark->TabStop = false;
+		this->biopsyPark->Click += gcnew System::EventHandler(this, &ServiceForm::biopsyPark_Click);
+		// 
 		// biopsyLightOff
 		// 
 		this->biopsyLightOff->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->biopsyLightOff->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->biopsyLightOff->Location = System::Drawing::Point(237, 309);
+		this->biopsyLightOff->Location = System::Drawing::Point(223, 308);
 		this->biopsyLightOff->Name = L"biopsyLightOff";
 		this->biopsyLightOff->Size = System::Drawing::Size(165, 80);
 		this->biopsyLightOff->TabIndex = 5;
@@ -275,7 +303,7 @@ private:
 		this->biopsyLightOn->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->biopsyLightOn->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->biopsyLightOn->Location = System::Drawing::Point(237, 224);
+		this->biopsyLightOn->Location = System::Drawing::Point(223, 223);
 		this->biopsyLightOn->Name = L"biopsyLightOn";
 		this->biopsyLightOn->Size = System::Drawing::Size(165, 80);
 		this->biopsyLightOn->TabIndex = 4;
@@ -287,7 +315,7 @@ private:
 		this->biopsyTool->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->biopsyTool->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->biopsyTool->Location = System::Drawing::Point(40, 224);
+		this->biopsyTool->Location = System::Drawing::Point(26, 223);
 		this->biopsyTool->Name = L"biopsyTool";
 		this->biopsyTool->Size = System::Drawing::Size(165, 165);
 		this->biopsyTool->TabIndex = 3;
@@ -299,7 +327,7 @@ private:
 		this->exposureTool->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->exposureTool->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->exposureTool->Location = System::Drawing::Point(237, 40);
+		this->exposureTool->Location = System::Drawing::Point(223, 39);
 		this->exposureTool->Name = L"exposureTool";
 		this->exposureTool->Size = System::Drawing::Size(165, 165);
 		this->exposureTool->TabIndex = 2;
@@ -311,7 +339,7 @@ private:
 		this->zeroSetting->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 			static_cast<System::Int32>(static_cast<System::Byte>(0)));
 		this->zeroSetting->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->zeroSetting->Location = System::Drawing::Point(40, 40);
+		this->zeroSetting->Location = System::Drawing::Point(26, 39);
 		this->zeroSetting->Name = L"zeroSetting";
 		this->zeroSetting->Size = System::Drawing::Size(165, 165);
 		this->zeroSetting->TabIndex = 1;
@@ -343,18 +371,6 @@ private:
 		this->serviceMenuTitle->Text = L"TITLE";
 		this->serviceMenuTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 		// 
-		// biopsyPark
-		// 
-		this->biopsyPark->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
-			static_cast<System::Int32>(static_cast<System::Byte>(0)));
-		this->biopsyPark->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-		this->biopsyPark->Location = System::Drawing::Point(423, 224);
-		this->biopsyPark->Name = L"biopsyPark";
-		this->biopsyPark->Size = System::Drawing::Size(165, 165);
-		this->biopsyPark->TabIndex = 6;
-		this->biopsyPark->TabStop = false;
-		this->biopsyPark->Click += gcnew System::EventHandler(this, &ServiceForm::biopsyPark_Click);
-		// 
 		// ServiceForm
 		// 
 		this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(60)), static_cast<System::Int32>(static_cast<System::Byte>(60)),
@@ -377,13 +393,14 @@ private:
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->systemCalibration))->EndInit();
 		this->servicePanel->ResumeLayout(false);
 		this->calibPanel->ResumeLayout(false);
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->collimationTool))->EndInit();
+		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyPark))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyLightOff))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyLightOn))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyTool))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTool))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->zeroSetting))->EndInit();
 		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->serviceCanc))->EndInit();
-		(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->biopsyPark))->EndInit();
 		this->ResumeLayout(false);
 		this->PerformLayout();
 
@@ -403,6 +420,7 @@ private:
 	private: System::Void exposureTool_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void systemRotation_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void biopsyTool_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void collimationTool_Click(System::Object^ sender, System::EventArgs^ e);
 	
 	private: System::Void biopsyLightOn_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void biopsyLightOff_Click(System::Object^ sender, System::EventArgs^ e);

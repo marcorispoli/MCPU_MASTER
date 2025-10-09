@@ -224,7 +224,7 @@ void IdleForm::initIdleStatus(void) {
 	PCB325::setBiopsyFreeMode();
 
 	/// The collimation is disabled
-	PCB303::setDisableCollimationMode();
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::DISABLED, 0);
 
 	/// The filter is set to "lead" in order to protect the tube output.
 	PCB303::setFilterServiceMode();

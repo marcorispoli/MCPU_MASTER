@@ -290,7 +290,7 @@ void BiopsyStudy::initOperatingStatus(void) {
 
 
 	// Collimation in Auto mode
-	PCB303::setAutoCollimationMode();
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
 
 	// Clears any Instant popup window
 	Notify::clrInstant();

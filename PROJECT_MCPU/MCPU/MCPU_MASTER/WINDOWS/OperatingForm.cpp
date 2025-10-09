@@ -290,7 +290,8 @@ void OperatingForm::initOperatingStatus(void) {
 	ArmMotor::getProjectionsList()->clrList();
 
 	// Sets the current collimation dependent by the detected paddle
-	PCB303::setAutoCollimationMode();
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
+	
 
 	// Set the Filter in Exposure selection mode
 	// Select the most common filter: Rhodium

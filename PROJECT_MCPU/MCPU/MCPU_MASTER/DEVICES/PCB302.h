@@ -438,7 +438,8 @@ public:
 	static paddleCodes getPaddleCode(System::String^ tag); //!< This function returns the paddle code from the paddle name	
 	static paddleCodes getDetectedPaddleCode(void); //!< This function returns the current detected paddle code
 
-	static System::Byte getPaddleCollimationFormat(paddleCodes paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
+	static int getPaddleCollimationFormat(paddleCodes paddle_code); //!< This function returns the index of the collimation format associated at the paddle.
+	static paddleCodes getPaddleFromColliIndex(System::Byte index); //!< Return the paddle code assigned to a given collimation index
 	static System::Byte getDetectedPaddleCollimationFormat(void) { return detected_paddle_collimation_index; } //!< This function returns the collimation format index associated to the detected paddle
 	
 	/// <summary>

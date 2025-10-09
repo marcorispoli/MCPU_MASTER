@@ -6,6 +6,7 @@
 #include "../gantry_global_status.h"
 
 #include "ServiceExposureTool.h"
+#include "ServiceCollimatorTool.h"
 #include "ServiceRotationTool.h"
 #include "ServiceZeroSettingTool.h"
 #include "PCB325.h"
@@ -193,12 +194,20 @@ void ServiceForm::initCalibrationPanel(void) {
 System::Void ServiceForm::exposureTool_Click(System::Object^ sender, System::EventArgs^ e) {
 	ServiceExposureTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
 }
+
 System::Void  ServiceForm::systemRotation_Click(System::Object^ sender, System::EventArgs^ e) {
 	ServiceRotationTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
 }
+
 System::Void ServiceForm::zeroSetting_Click(System::Object^ sender, System::EventArgs^ e) {
 	ServiceZeroSettingTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
 }
+
+System::Void ServiceForm::collimationTool_Click(System::Object^ sender, System::EventArgs^ e) {
+	ServiceCollimatorTool::panel->dialog_open(this); // Opens as a Dialog the service Panel
+}
+
+
 
 System::Void ServiceForm::biopsyTool_Click(System::Object^ sender, System::EventArgs^ e) {
 	PCB325::activateCycleTest();

@@ -1,6 +1,6 @@
 #pragma once
 #include "CanDeviceProtocol.h"
-
+#include "ConfigurationFiles.h"
 
 /**
 	\defgroup PCB303DESC Collimation Management Description
@@ -272,6 +272,65 @@ public:
 		return filter_index::FILTER_RH;
 	}
 
+	/// <summary>
+	/// This class implements and read the device configuration file 
+	/// </summary>
+	ref class ConfigurationStructure {
+	public:
+
+		static cli::array<unsigned short>^ left_blade_formats = gcnew  cli::array<unsigned short> (CollimatorConfig::TOTAL_BLADE_FORMAT_NUMBERS);
+		static cli::array<unsigned short>^ right_blade_formats = gcnew  cli::array<unsigned short> (CollimatorConfig::TOTAL_BLADE_FORMAT_NUMBERS);
+		static cli::array<unsigned short>^ front_blade_formats = gcnew  cli::array<unsigned short> (CollimatorConfig::TOTAL_BLADE_FORMAT_NUMBERS);
+		static cli::array<unsigned short>^ back_blade_formats = gcnew  cli::array<unsigned short> (CollimatorConfig::TOTAL_BLADE_FORMAT_NUMBERS);		
+		static cli::array<unsigned short>^ trap_blade_formats = gcnew  cli::array<unsigned short>(CollimatorConfig::TOTAL_BLADE_FORMAT_NUMBERS);
+		static cli::array<unsigned short>^ filter_slot_steps = gcnew  cli::array<unsigned short> (CollimatorConfig::TOTAL_FILTER_SLOT_NUMBERS);
+		static unsigned char  rh_assigned_slot = 0;
+		static unsigned char  ag_assigned_slot = 0;
+		static unsigned char  al_assigned_slot = 0;
+		static unsigned char  cu_assigned_slot = 0;
+		static unsigned char  mo_assigned_slot = 0;
+		static unsigned char  ld_assigned_slot = 0;
+		static unsigned short mirror_steps;
+
+		static void reload(void) {
+
+			// Upload in the internal structurs the format blades values
+			for (int index = 0; index < CollimatorConfig::TOTAL_BLADE_FORMAT_NUMBERS; index++) {
+				System::String^ Param = "COLLI_STANDARD_FORMAT_" + index.ToString();
+				left_blade_formats[index] = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_LEFT]);
+				right_blade_formats[index] = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_RIGHT]);
+				front_blade_formats[index] = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_FRONT]);
+				back_blade_formats[index] = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_BACK]);
+				trap_blade_formats[index] = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_TRAP]);
+			}
+
+			// Upload the filter positions from the configuration file
+			filter_slot_steps[0] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_0]);
+			filter_slot_steps[1] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_1]);
+			filter_slot_steps[2] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_2]);
+			filter_slot_steps[3] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_3]);
+			filter_slot_steps[4] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_4]);
+
+			/// Updates the slot assignment to the filter materials
+			rh_assigned_slot = System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_RH_SLOT]);
+			ag_assigned_slot = System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_AG_SLOT]);
+			al_assigned_slot = System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_AL_SLOT]);
+			cu_assigned_slot = System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_CU_SLOT]);
+			mo_assigned_slot = System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_MO_SLOT]);
+			ld_assigned_slot = System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_LD_SLOT]);
+
+			// Load the steps for the mirror when in field
+			mirror_steps = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_MIRROR)[CollimatorConfig::MIRROR_INFIELD]);
+		}
+
+		ConfigurationStructure(){
+			reload();
+		}
+
+	};
+
+
+	
 	/// <summary>
 	/// This class implement the protocol data structure as described in the protocol specification.
 	/// </summary>
@@ -619,7 +678,7 @@ public:
 	/// </summary>
 	public: PCB303() : CanDeviceProtocol(0x12, L"COLLIMATOR_DEVICE")
 	{
-		collimationMode = collimationModeEnum::DISABLED_COLLIMATION;
+		collimationMode = collimationModeEnum::DISABLED;
 		filterMode = filterModeEnum::DISABLED_FILTER_MODE;
 	}
 	static PCB303^ device = gcnew PCB303();
@@ -648,44 +707,46 @@ public:
 	/// the Application can select
 	///  \ingroup PCB303_Internal
 	/// </summary>
-	enum class  collimationModeEnum{
-		DISABLED_COLLIMATION = 0,//!< The collimator is disabled
-		AUTO_COLLIMATION, //!< The collimator is in Auto mode: the paddle model defines the current collimation format
-		CUSTOM_COLLIMATION,   //!< The collimator is in Custom mode: the collimation format is set by the operator		
-		OPEN_MODE,			  //!< The collimator is in Open mode: the collimation format set OPEN
-		CALIBRATION_MODE,	  //!< The collimator is in Calibration mode: the collimation format is set manually by the service software
-		TOMO_MODE			  //!< The collimator is in Tomo mode: the collimation format is dinamically set by the tomo pulse sequence
+	public: enum class  collimationModeEnum{
+		DISABLED = 0,	//!< The collimator is disabled
+		AUTO,			//!< The collimator is in Auto mode: the paddle model defines the current collimation format
+		CUSTOM,			//!< The collimator is in Custom mode: the collimation format is set by the operator		
+		OPEN,					//!< The collimator is in Open mode: the collimation format set OPEN		
+		TOMO,					//!< The collimator is in Tomo mode: the collimation format is dinamically set by the tomo pulse sequence
+		ITEMS=TOMO
 	};
 
 	/// <summary>
 	///  This enumeration class describes the possible filter modes the Application can select
 	///  \ingroup PCB303_Internal
 	/// </summary>
-	enum class  filterModeEnum {
+	public: enum class  filterModeEnum {
 		DISABLED_FILTER_MODE = 0,	//!< The Filter activation is not enabled
-		EXPOSURE_FILTER_MODE,		//!< The Filter is selected by the exposure
-		SERVICE_FILTER_MODE,		//!< The Filter is manually selected by the application (Service mode)		
+		ACTIVE_MODE,				//!< The Filter is selectable
 	};
 
 	/// \ingroup PCB303_Internal
 	///@{
 	private: 
 		static ProtocolStructure protocol; //!< This is the structure with the Status register info
+		static ConfigurationStructure^ config = gcnew ConfigurationStructure; //!< This is the configuration file content
 
 		static collimationModeEnum collimationMode;				//!< Sets the current collimation mode 
-		static System::Byte selected_format = 0;					//!< This is the current selected format 
-		static System::Byte current_auto_format = 0;	//!< Auo Collimation format
-		static System::Byte current_custom_format = 0; //!< Manual Collimation format
+		static int selected_format = -1;						//!< This is the current selected format 
+		static int current_auto_format = -1;					//!< Auo Collimation format
+		static int current_custom_format = -1;					//!< Manual Collimation format
+		static int current_service_format = -1;					//!< Service Collimation format
+
 		static bool valid_collimation_format = false; //!< This flag is set when the collimation format is correct and coherent with the collimationMode register
 		static int format_collimation_attempt = 0; //!< This register counts the attempt to exit from a fault condition
 
 		static filterModeEnum filterMode;
-		static System::Byte selected_filter = 0;
+		static filter_index selected_filter = filter_index::FILTER_LD;
 		
 		static bool valid_filter_format = false;
 		static bool filter_error = false;
 		static int filter_attempt = 0; 
-		static void selectFilter(filter_index filter);
+		
 
 		static ProtocolStructure::StatusRegister::mirror_target_code selected_mirror = ProtocolStructure::StatusRegister::mirror_target_code::OUT_FIELD;
 		static bool valid_mirror_format = false;
@@ -703,18 +764,13 @@ public:
 public:
 	/// \ingroup PCB303_Interface
 	///@{
-	static void setDisableCollimationMode(void); //!< This function sets collimation in Disable
-	static void setAutoCollimationMode(void); //!< This function sets the format collimation to AUTO mode
-	static void setOpenCollimationMode(void); //!< This function sets the format collimation to OPEN mode		
-	static void setCustomCollimationMode(System::Byte format_index);//!< This function sets the format collimation to CUSTOM mode
+	
+	static ConfigurationStructure^ getConfig(void) { return config; }
+	static void setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index);
 
 	// Filter Commands	
-	static void setFilterDisabledMode(void){ filterMode = filterModeEnum::DISABLED_FILTER_MODE; }
-	static void setFilterExposureMode(void) { filterMode = filterModeEnum::EXPOSURE_FILTER_MODE; }
-	static void setFilterServiceMode(void) { filterMode = filterModeEnum::SERVICE_FILTER_MODE; }
-	static void selectExposureFilter(filter_index filter);
-	static void selectServiceFilter(filter_index filter);
-
+	static void setFilterMode(filterModeEnum mode);
+	static bool selectFilter(filter_index filter);
 	
 
 	static int  getFilterSlot(filter_index filter);
@@ -732,7 +788,10 @@ public:
 	static bool isTubeAlarm() { return false; }
 
 	static void resetFaults(void);//!< In case of collimation fault condition, this function starts a new collimation attempt.
+
 	inline static bool isValidCollimationFormat(void) { return valid_collimation_format; }
+	inline static int getFormatIndex(void) { return (valid_collimation_format) ? selected_format : (int)-1; }
+	inline static collimationModeEnum getFormatCollimationMode(void) { return collimationMode; }
 	///@}
 };
 

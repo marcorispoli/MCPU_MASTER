@@ -229,6 +229,9 @@
     <ClInclude Include="WINDOWS\Projections.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WINDOWS\SERVICE\ServiceCollimatorTool.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="WINDOWS\SERVICE\ServiceExposureTool.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -310,6 +313,7 @@
     <ClCompile Include="WINDOWS\MainForm.cpp" />
     <ClCompile Include="WINDOWS\OperatingForm.cpp" />
     <ClCompile Include="WINDOWS\Projections.cpp" />
+    <ClCompile Include="WINDOWS\SERVICE\ServiceCollimatorTool.cpp" />
     <ClCompile Include="WINDOWS\SERVICE\ServiceExposureTool.cpp" />
     <ClCompile Include="WINDOWS\SERVICE\ServiceForm.cpp" />
     <ClCompile Include="WINDOWS\SERVICE\ServicePaddleCalibration.cpp" />
@@ -359,6 +363,9 @@
     <EmbeddedResource Include="WINDOWS\OperatingForm.resx" />
     <EmbeddedResource Include="WINDOWS\Projections.resx">
       <DependentUpon>WINDOWS\Projections.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WINDOWS\SERVICE\ServiceCollimatorTool.resx">
+      <DependentUpon>WINDOWS\SERVICE\ServiceCollimatorTool.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WINDOWS\SERVICE\ServiceExposureTool.resx">
       <DependentUpon>WINDOWS\SERVICE\ServiceExposureTool.h</DependentUpon>

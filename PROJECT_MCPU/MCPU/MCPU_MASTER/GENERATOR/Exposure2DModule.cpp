@@ -36,6 +36,7 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
+
     if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     // Sets the Grid On Field (if not yet) : wait for the ready condition   

@@ -280,7 +280,7 @@ void OperatingForm::initOperatingStatus(void) {
 
 	// Init Arm Angle 
 	float arm_position = ((float)ArmMotor::device->getCurrentPosition() / 100);
-	angleText->Text = "[" + arm_position.ToString() + "°]";
+	angleText->Text = "[" + arm_position.ToString() + "ï¿½]";
 
 	// Init AecSelction	
 	((aecSelectionDialog^)pAec)->field_selected = 0;
@@ -289,9 +289,15 @@ void OperatingForm::initOperatingStatus(void) {
 	ArmMotor::abortTarget();
 	ArmMotor::getProjectionsList()->clrList();
 
-	// Sets the current collimation to OPEN mode
-	PCB303::setAutoCollimationMode();
+	// Sets the current collimation dependent by the detected paddle
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
+	
 
+	// Set the Filter in Exposure selection mode
+	// Select the most common filter: Rhodium
+	PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
+	PCB303::selectFilter(PCB303::filter_index::FILTER_RH);
+	
 	// Clears any Instant popup window
 	Notify::clrInstant();
 
@@ -888,7 +894,7 @@ void OperatingForm::onConfirmCanc(void) {
 void OperatingForm::onShiftConfirmOk(void) {
 
 	if (SlideMotor::device->getCurrentPosition() < 500) SlideMotor::isoAutoPosition(1000);
-	else SlideMotor::isoAutoPosition(0);
+	else SlideMotor::isoAutoPosition(0);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 	
 }
 void OperatingForm::onShiftConfirmCanc(void) {
@@ -1054,8 +1060,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			vertical = false;
 			slide = false;
 			tilt = false;
-			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
-			else Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(°)");
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(ï¿½)");
+			else Gantry::getValuePopupWindow()->open(this, ARM_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_ARM_ACTIVATED), "(ï¿½)");
 			
 			// Set the value to the current compression
 			int position = ArmMotor::device->getCurrentPosition() / 100;
@@ -1081,8 +1087,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			vertical = false;
 			slide = false;
 			tilt = false;
-			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
-			else Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(°)");
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(ï¿½)");
+			else Gantry::getValuePopupWindow()->open(this, BODY_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_BODY_ACTIVATED), "(ï¿½)");
 
 			// Set the value to the current compression
 			float position = (float)BodyMotor::device->getCurrentPosition() / 10;
@@ -1134,8 +1140,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			vertical = false;
 			slide = true;
 			tilt = false;
-			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
-			else Gantry::getValuePopupWindow()->open(this, SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(°)");
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(ï¿½)");
+			else Gantry::getValuePopupWindow()->open(this, SLIDE_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_SLIDE_ACTIVATED), "(ï¿½)");
 
 			// Set the value to the current compression
 			int position = (int)SlideMotor::device->getCurrentPosition() / 100;
@@ -1160,8 +1166,8 @@ void OperatingForm::evaluatePopupPanels(void) {
 			vertical = false;
 			slide = false;
 			tilt = true;
-			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01°)");
-			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(°)");
+			if (Gantry::getValuePopupWindow()->open_status) Gantry::getValuePopupWindow()->retitle(TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(.01ï¿½)");
+			else Gantry::getValuePopupWindow()->open(this, TILT_EXECUTING_ICON, Notify::TranslateLabel(Notify::messages::LABEL_TILT_ACTIVATED), "(ï¿½)");
 
 			// Set the value to the current compression
 			int position = (int)TiltMotor::device->getCurrentPosition() / 100;

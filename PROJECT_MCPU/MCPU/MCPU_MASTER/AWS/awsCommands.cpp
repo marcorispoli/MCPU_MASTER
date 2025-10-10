@@ -75,8 +75,8 @@ void  awsProtocol::EXEC_OpenStudy(void) {
     if (!Gantry::setOpenStandardStudy(patient_name)) { pDecodedFrame->errcode = (int) return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
 
  
-    // With the OPEN Study, the collimator is automatically set to AUTO mode.
-    PCB303::setAutoCollimationMode();
+    // With the OPEN Study, the collimator is automatically set to AUTO mode.    
+    PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO,0);
 
     TiltMotor::setIdlePosition();
 
@@ -129,7 +129,7 @@ void  awsProtocol::EXEC_BiopsyStudy(void) {
     if (!Gantry::setOpenBiopsyStudy(patient_name)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
 
     // With the OPEN Study, the collimator is automatically set to AUTO mode.
-    PCB303::setAutoCollimationMode();
+    PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
 
 
     ackOk();
@@ -964,9 +964,9 @@ void   awsProtocol::SET_ExposureMode(void) {
     
     // Collimation Mode
     if (collimation_mode == "COLLI_AUTO") {
-        PCB303::setAutoCollimationMode();
+        PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
     }else if (collimation_mode == "COLLI_CUSTOM") {
-        PCB303::setCustomCollimationMode(255); // The last available slot is reserved for custom 
+        PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::CUSTOM, 255);// The last available slot is reserved for custom 
     }
     else {
         // The AWS sets a format related to a given Paddle 
@@ -982,7 +982,7 @@ void   awsProtocol::SET_ExposureMode(void) {
         }
 
         // Gets the collimation format associated to the paddle code
-        PCB303::setCustomCollimationMode(PCB302::getPaddleCollimationFormat(paddle));
+        PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::CUSTOM, PCB302::getPaddleCollimationFormat(paddle));
 
     }
 

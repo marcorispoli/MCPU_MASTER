@@ -88,7 +88,7 @@ bool PCB302::configurationLoop(void) {
 /// </summary>
 /// <param name="paddle_code">the code of the paddle to be investigated</param>
 /// <returns>the collimation format or .-1 if the paddle is notn a valid paddle</returns>
-System::Byte PCB302::getPaddleCollimationFormat(paddleCodes paddle_code) {
+int PCB302::getPaddleCollimationFormat(paddleCodes paddle_code) {
 
 	try {
 	
@@ -108,11 +108,29 @@ System::Byte PCB302::getPaddleCollimationFormat(paddleCodes paddle_code) {
 		}
 	}
 	catch (...) {
-		return 0;
+		return -1;
 	}
 
-	return  0;
+	return  -1;
 }
+
+PCB302::paddleCodes PCB302::getPaddleFromColliIndex(System::Byte index) {
+
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_PROSTHESIS)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_PROSTHESIS;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP2D)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_BIOP2D;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_BIOP3D)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_BIOP3D;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_TOMO)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_TOMO;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_24x30_CONTACT)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_24x30_CONTACT;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_C_CONTACT)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_18x24_C_CONTACT;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_L_CONTACT)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_18x24_L_CONTACT;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_18x24_R_CONTACT)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_18x24_R_CONTACT;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_10x24_CONTACT)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_10x24_CONTACT;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x21_MAG)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_9x21_MAG;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_9x9_MAG)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_9x9_MAG;
+	if (System::Convert::ToByte(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_D75_MAG)[PaddleConfig::PADDLE_COLLIMATION]) == index) return paddleCodes::PADDLE_D75_MAG;
+	return  paddleCodes::PADDLE_NOT_DETECTED;
+}
+
 
 /// <summary>
 /// This function returns the paddle code from the paddle name
@@ -262,7 +280,7 @@ void PCB302::getDetectedPaddleData(void) {
 	}
 
 	detected_paddle = paddleCodes::PADDLE_NOT_DETECTED;
-	detected_paddle_collimation_index = 0;
+	detected_paddle_collimation_index = -1;
 	detected_paddle_offset = 0;
 	detected_paddle_weight = 0;
 	Notify::activate(Notify::messages::WARNING_MISSING_PADDLE);

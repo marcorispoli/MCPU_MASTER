@@ -85,6 +85,15 @@ void PCB303::filterManagement(void) {
         return;
     }
 
+    // In the case of Disabled mode, all the flags are reset and no command to the device is handled
+    if (filterMode == filterModeEnum::DISABLED_FILTER_MODE) {
+        filter_attempt = 0;
+        valid_filter_format = false;
+        Notify::deactivate(Notify::messages::ERROR_FILTER_SELECTION_ERROR);
+        Notify::deactivate(Notify::messages::WARNING_FILTER_OUT_OF_POSITION);
+        return;
+    }
+    
     // No more attempts can be done after some collimation repetition.
     
     if (valid_filter_format) filter_attempt = 0;
@@ -114,10 +123,10 @@ void PCB303::filterManagement(void) {
     
 
     // Tries to send the format selection command
-    if ((selected_filter != protocol.status_register.filter_target_index) || (protocol.status_register.filter_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+    if ((selected_slot != protocol.status_register.filter_target_index) || (protocol.status_register.filter_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
         valid_filter_format = false;
 
-        if (commandNoWaitCompletion(protocol.command.encodeSetFilterCommand(selected_filter), 30)) {
+        if (commandNoWaitCompletion(protocol.command.encodeSetFilterCommand(selected_slot), 30)) {
             filter_attempt++;         
         }        
         return;
@@ -145,10 +154,70 @@ void PCB303::formatManagement(void) {
         return;
     }
 
-    // No more attempts can be done after some collimation repetition.
-    if (valid_collimation_format) format_collimation_attempt = 0;
-    else  if (format_collimation_attempt > 5) {
+    // Only with a valid selection, the current selection status is evaluated
+    if (selected_format >= 0){
+        // In case the position should undefined a warning message is activated
+        if (protocol.status_register.collimation_action_status == ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
+            Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
+            valid_collimation_format = false;
+        }        
+    }
+
+
+    // A collimation target is selected  
+    int curselection = selected_format;
+    switch (collimationMode) {
+
+    case collimationModeEnum::AUTO:
+        
+        // The selected format depends by the paddle detected and its related collimation format
+        current_auto_format = PCB302::getDetectedPaddleCollimationFormat();       
+        selected_format = current_auto_format;
+        break;
+
+    case collimationModeEnum::CUSTOM:
+       
+        selected_format = current_custom_format;
+        break;
+
+    case collimationModeEnum::OPEN:
+        selected_format = 0;
+        break;
+
+    case collimationModeEnum::DISABLED:
+
+        selected_format = -1;
+        break;
+
+    case collimationModeEnum::TOMO:
+
+        selected_format = -1;
+        break;
+
+    default:
+        selected_format = -1; 
+    }
+
+    // ALWAYS: Resets of the errors if the selection is changed
+    if (selected_format != curselection) {
+        format_collimation_attempt = 0;
         valid_collimation_format = false;
+        collimation_select_error = false;
+        Notify::deactivate(Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR);
+        Notify::deactivate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
+    }
+
+    // There is not a valid format selection: no action shall be initiated
+    if (selected_format < 0) {
+        format_collimation_attempt = 0;
+        valid_collimation_format = false;
+        collimation_select_error = false;      
+        return;            
+    }
+    
+
+    // A maximum attemp has been expired: no moe collimation attempt can be initiated
+    if(format_collimation_attempt > 5) {
 
         // Activate the selectuion error if necessary
         if (!collimation_select_error) {
@@ -157,42 +226,8 @@ void PCB303::formatManagement(void) {
         }
         return;
     }
-    
 
-    // Resets the Selection error
-    if (collimation_select_error) {
-        collimation_select_error = false;
-        format_collimation_attempt = 0;
-        Notify::deactivate(Notify::messages::ERROR_COLLIMATION_SELECTION_ERROR);
-    }
-
-    // In case the position should undefined a warning message is activated
-    if (protocol.status_register.collimation_action_status == ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) {
-        Notify::activate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
-        valid_collimation_format = false;
-    }
-
-    // A collimation target is selected       
-    switch (collimationMode) {
-
-    case collimationModeEnum::AUTO_COLLIMATION:
-        // The selected format depends by the paddle detected and its related collimation format
-        current_auto_format = PCB302::getDetectedPaddleCollimationFormat();
-        selected_format = current_auto_format;
-        break;
-
-    case collimationModeEnum::CUSTOM_COLLIMATION:
-        selected_format = current_custom_format;
-        break;
-    case collimationModeEnum::OPEN_MODE:
-        selected_format = 0;
-        break;
-
-    default:
-        selected_format = 0; // Open as default 
-    }
-
-    // Tries to send the format selection command
+    // A new collimation attempt can be initiated
     if ((selected_format != protocol.status_register.collimation_target_index) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
         if (commandNoWaitCompletion(protocol.command.encodeSetFormatCommand(selected_format), 30)) {
             format_collimation_attempt++;
@@ -205,6 +240,7 @@ void PCB303::formatManagement(void) {
     if (!valid_collimation_format) {
         Notify::deactivate(Notify::messages::WARNING_COLLIMATOR_OUT_OF_POSITION);
         valid_collimation_format = true;
+        format_collimation_attempt = 0;
     }
 
     return;
@@ -351,53 +387,43 @@ bool PCB303::configurationLoop(void) {
     // Writes the next register of the Mirror data
     writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
 
+    // Sets the Filter in Disable Mode
+    PCB303::setFilterMode(filterModeEnum::DISABLED_FILTER_MODE);
+
     if (device->isSimulatorMode()) CanSimulator::sendFilterConfiguration();
 
     return true;
 }
 
-
-void PCB303::setAutoCollimationMode(void) {
+void PCB303::setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index) {
     if (Exposures::isXrayRunning()) return;
 
-    if (collimationMode != collimationModeEnum::AUTO_COLLIMATION) {
+    if (collimationMode != mode) {
         valid_collimation_format = false;
-        collimationMode = collimationModeEnum::AUTO_COLLIMATION;
+        collimationMode = mode;
     }
 
-}
+    // Special management for CUSTOM
+    if (mode == collimationModeEnum::CUSTOM) {
 
-void PCB303::setOpenCollimationMode(void) {
-    if (Exposures::isXrayRunning()) return;
-    
-    if (collimationMode != collimationModeEnum::OPEN_MODE) {
-        collimationMode = collimationModeEnum::OPEN_MODE;
-        if ((protocol.status_register.collimation_target_index != 0) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
-            valid_mirror_format = false;
+        // Assignes the custom format to the current
+        if (format_index >= NUM_COLLIMATION_SLOTS) current_custom_format = NUM_COLLIMATION_SLOTS - 1;
+        else current_custom_format = format_index;
+
+        // Removes the valid format if the custom format is different from the selected
+        if (current_custom_format != protocol.status_register.collimation_target_index) {
+            valid_collimation_format = false;
         }
     }
-    
 }
 
-/// <summary>
-/// This function sets the Custom Collimation mode
-/// 
-/// </summary>
-/// <param name="custom">This is a valid collimation code</param>
-void PCB303::setCustomCollimationMode(System::Byte format_index) {
-    if (Exposures::isXrayRunning()) return;
-
-    collimationMode = collimationModeEnum::CUSTOM_COLLIMATION;
-   
-    // Assignes the custom format to the current
-    if (format_index >= NUM_COLLIMATION_SLOTS) current_custom_format = NUM_COLLIMATION_SLOTS - 1;
-    else current_custom_format = format_index;
-
-    // Removes the valid format if the custom format is different from the selected
-    if ((current_custom_format != protocol.status_register.collimation_target_index) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
-        valid_mirror_format = false;      
+void PCB303::setFilterMode(filterModeEnum mode) { 
+    if (filterMode != mode) {
+        valid_filter_format = false;
+        filterMode = mode;
     }
 
+    return;
 }
 
 void PCB303::setCollimationLight(bool stat) {
@@ -433,16 +459,22 @@ int PCB303::getFilterSlot(filter_index filter) {
     return 0;
 }
 
-void PCB303::selectFilter(filter_index filter) {
-
+bool PCB303::selectFilter(filter_index filter) {
+    
     // Gets the assigned slot from the filter code
-    int filter_slot = getFilterSlot(filter);
-    if (filter_slot > 4) filter_slot = 0;
-    if (selected_filter == filter_slot) return;
-    selected_filter = filter_slot;
-    valid_filter_format = false;
+    int req_filter_slot = getFilterSlot(filter);    
+    if (req_filter_slot > 4) return false;
+    if (req_filter_slot < 0) return false;
 
+    selected_slot = req_filter_slot;
+    if (selected_filter == filter) return true;
+    selected_filter = filter;
+    valid_filter_format = false;
+    return true;
 }
+
+
+
 
 bool PCB303::waitFilterCompleted(void) {
     

@@ -46,6 +46,9 @@ public:
 
     literal System::String^ FILENAME = "CollimatorCalibration.cnf";
     literal int     FILE_REVISION = 1;
+    literal int     TOTAL_BLADE_FORMAT_NUMBERS = 20; 
+    literal int     TOTAL_FILTER_SLOT_NUMBERS = 5;
+
     literal int     PARAM_FORMAT_FRONT = 0;
     literal int     PARAM_FORMAT_BACK = 1;
     literal int     PARAM_FORMAT_LEFT = 2;

@@ -226,7 +226,7 @@ void TestStudy::initOperatingStatus(void) {
 	ArmMotor::getProjectionsList()->clrList();
 
 	// Sets the current collimation to OPEN mode
-	PCB303::setAutoCollimationMode();
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::OPEN, 0);
 
 	// Clears any Instant popup window
 	Notify::clrInstant();

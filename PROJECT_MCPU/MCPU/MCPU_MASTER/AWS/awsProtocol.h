@@ -89,6 +89,16 @@
    <b>Modified the \ref SET_ExposureMode command</b>
    A new exposure mode has been included allowing the Tomo exposure with a static Arm for calibration
    
+   <b>Modified the \ref SET_TomoConfig command</b>
+   Two different sintax are available:
+   + the form with only one parameter for the normal tomo sequence <SET_TomoConfig tomo_name>
+   + the form with three parameters for test and calibration <SET_TomoConfig tomo_name sample_modifier skip modifier> 
+
+   <b>Modified the \ref EXEC_ArmPosition command</b>
+   Two different sintax are available:
+   + the format syntax 1 for Patient Operating mode: <ID % EXEC_ArmPosition projection target_angle Min Max>
+   + the format syntax 2 for Test Operating mode: <ID % EXEC_ArmPosition target_angle >
+   
 
    # Index
 
@@ -362,7 +372,7 @@ private:
 		/// </summary>
 		/// <param name=""></param>
 		/// <returns></returns>
-		bool Count(void) { if (parameters == nullptr) return 0; else return parameters->Count; }
+		int Count(void) { if (parameters == nullptr) return 0; else return parameters->Count; }
 
 	};
 

@@ -105,6 +105,7 @@ void Exposures::exposureManagementLoop(bool demo) {
         case exposure_type_options::AEC_2D: exposure_err_code = aec_2d_exposure_procedure(demo); break;
         case exposure_type_options::MAN_3D: exposure_err_code = man_3d_exposure_procedure(demo); break;
         case exposure_type_options::AEC_3D: exposure_err_code = aec_3d_exposure_procedure(demo); break;
+        case exposure_type_options::MAN_3D_STATIC: exposure_err_code = man_3d_static_exposure_procedure(demo); break;
         case exposure_type_options::MAN_COMBO: exposure_err_code = man_combo_exposure_procedure(demo); break;
         case exposure_type_options::AEC_COMBO: exposure_err_code = aec_combo_exposure_procedure(demo); break;
         case exposure_type_options::MAN_AE: exposure_err_code = man_ae_exposure_procedure(demo); break;

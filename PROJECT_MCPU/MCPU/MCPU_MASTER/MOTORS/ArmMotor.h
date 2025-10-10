@@ -827,6 +827,11 @@ public:
     static bool isValidPosition(void) { return (valid_target && isInRange()); }
 
     /// <summary>
+    /// This function returns true in case the current arm position is already at the requested target.
+    /// </summary>    
+    static bool isTarget(int angle);
+
+    /// <summary>
     /// This function activates the manual zero setting procedure.
     /// 
     /// </summary>   

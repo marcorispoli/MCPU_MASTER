@@ -50,6 +50,11 @@ public:
 
         void invalidate(void) { valid = false; }
 
+        /// <summary>
+        /// Sets the current Tomo sequence parameters.
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <returns></returns>
         bool set(System::String^ cfg) {
             for (int i = 0; i < (int)TomoConfig::tomo_id::TOMO_ID_NUM; i++) {
                 if (cfg == ((TomoConfig::tomo_id)i).ToString()) {
@@ -67,6 +72,21 @@ public:
             }
             valid = false;
             return false;
+        }
+
+        /// <summary>
+        /// Sets the current Tomo sequence parameters and the requested modifiers.
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <returns></returns>
+        bool set(System::String^ cfg, int samples_modifier, int skip_modifier) {
+            set(cfg);
+            if (!valid) return false;
+            // Applies the modifier if requested
+            if (samples_modifier >= 0) tomo_samples = samples_modifier;
+            if (skip_modifier >= 0) tomo_skip = skip_modifier;
+            return true;
+
         }
 
         /// <summary>
@@ -413,6 +433,7 @@ private:
     exposure_completed_errors aec_ae_exposure_procedure(bool demo);
     exposure_completed_errors man_3d_exposure_procedure(bool demo);
     exposure_completed_errors aec_3d_exposure_procedure(bool demo);
+    exposure_completed_errors man_3d_static_exposure_procedure(bool demo);
     exposure_completed_errors man_combo_exposure_procedure(bool demo);
     exposure_completed_errors aec_combo_exposure_procedure(bool demo);    
     exposure_completed_errors test_exposure_procedure(bool demo);

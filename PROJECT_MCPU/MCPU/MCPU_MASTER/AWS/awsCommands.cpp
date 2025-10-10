@@ -415,32 +415,41 @@ void awsProtocol::SET_ProjectionList(void) {
 /// 
 /// \subsection EXEC_ArmPosition
 /// 
-/// This command shall be sent by AWS to activate the C-ARM to a given projection.
+/// This command shall be sent by AWS to activate the C-ARM to a given projection or position.
 /// 
+/// There are two forms of this command:
+/// + The standard form is dedicated to the Patient operating mode: <ID % EXEC_ArmPosition projection target_angle Min Max>
+/// + The generic form is dedicated for test and calibration mode: <ID % EXEC_ArmPosition target_angle>
+/// 
+/// In Patient Operating mode, with the first command form, the following rules applies:
 /// + The \ref SET_ProjectionList shall be received first, in order to have a valid list of acceptable projections;
-/// + In operating mode (Open Study) the AWS controls the ARM angle position using this command;
 /// + The Gantry automatically modifies the Vertical position of the C-ARM,\n
 /// in order to keep unchanged the position of the copression plane (Virtual Isometric feature);
 /// 
-/// The command may teminates in three different modes:
+/// In the Test mode with the second form:
+/// + The Arm will move to the target angle;
+/// + The Vertical position of the Arm remains unchanged.
+/// 
+/// For both command forms, the command may teminate in three different ways:
 /// + Immediate OK: the ARM is already in the requested target;
 /// + Executing: the ARM is running to the requested target;
-/// + NOK: an error prevent to select the given projection.
+/// + NOK: an error prevent to activate the ARM.
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_ArmPosition projection Angle Min Max>
+/// Frame format syntax 1: <ID % EXEC_ArmPosition projection target_angle Min Max>
+/// Frame format syntax 2: <ID % EXEC_ArmPosition target_angle >
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
 /// |projection|String|Name of the projection the AWS is selecting| 
-/// |Angle|Integer|Degree of the target angle| 
+/// |target_angle|Integer|Degree of the target angle| 
 /// |Min|Integer|Degree of the minimum acceptable angle|
 /// |Max|Integer|Degree of the maximum acceptable angle|
 /// 
-/// - Projection name: it shall be present in the list of the selectable projections (see the \ref SET_ProjectionList command);
-/// - Angle: is the target Angle the AWS assign to the projection. Is up to the AWS to decide what is the right angle.
-/// - The Min and the Max value define the acceptable range in the case the operator should manually change the projection angle:
+/// - Projection name (form 1 only): it shall be present in the list of the selectable projections (see the \ref SET_ProjectionList command);
+/// - target_angle (forms 1 and 2): is the target angle in degree.
+/// - The Min and the Max (form 1 only) value define the acceptable range in the case the operator should manually change the projection angle:
 ///     - if the actual ARM angle should be < Min or > Max the gantry will reject the Exposure activation;
 /// 
 /// NOTE: 
@@ -474,36 +483,72 @@ void awsProtocol::SET_ProjectionList(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::EXEC_ArmPosition(void) {
-    if (!Gantry::isSTANDARD()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
-    if (pDecodedFrame->parameters->Count != 4) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if(Gantry::isMotorsActive()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "MOTORS_BUSY"; ackNok(); return; }
-    if ((!ArmMotor::device->isReady())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_NOT_READY"; ackNok(); return; }
-    if ((!TiltMotor::isScoutPosition())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "TILT_NOT_IN_SCOUT"; ackNok(); return; }
 
-    
-    if (!ArmMotor::getProjectionsList()->isValidProjection(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
+    // General conditions
+    if (Gantry::isMotorsActive()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "MOTORS_BUSY"; ackNok(); return; }
 
-    int errcode = ArmMotor::setTarget(
-        Convert::ToInt16(pDecodedFrame->parameters[1]),
-        Convert::ToInt16(pDecodedFrame->parameters[2]),
-        Convert::ToInt16(pDecodedFrame->parameters[3]),
-        pDecodedFrame->parameters[0], // Projection code
-        pDecodedFrame->ID);
-    
-    // Error condition
-    if (errcode < 0) {
-        pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return;
-    }
+    // Form 1 received
+    if (pDecodedFrame->parameters->Count == 4) {
 
-    // Immediate: target already in position
-    if (errcode == 0) {
-        ackOk();
+        // Only in Patient Operating Mode
+        if (!Gantry::isSTANDARD()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_PATIENT_MODE"; ackNok(); return; }        
+
+        int errcode = ArmMotor::setTarget(
+            Convert::ToInt16(pDecodedFrame->parameters[1]),
+            Convert::ToInt16(pDecodedFrame->parameters[2]),
+            Convert::ToInt16(pDecodedFrame->parameters[3]),
+            pDecodedFrame->parameters[0], // Projection code
+            pDecodedFrame->ID);
+
+        // Command Error condition
+        if (errcode < 0) {
+            if(errcode == -1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
+            if(errcode == -2) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "TILT_NOT_IN_SCOUT"; ackNok(); return; }
+            if(errcode == -3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_MOTOR_BUSY"; ackNok(); return; }
+            pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return;
+        }
+
+        // Immediate: target already in position
+        if (errcode == 0) {
+            ackOk();
+            return;
+        }
+
+        // Command is in execution
+        ackExecuting();
         return;
-    }
 
-    // Command is in execution
-    ackExecuting();    
-    return;
+    }else if (pDecodedFrame->parameters->Count == 1) { // Form 2 received:  Only in Test Operating Mode    
+        if (!Gantry::isTEST()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_TEST_MODE"; ackNok(); return; }
+
+        int angle = Convert::ToInt16(pDecodedFrame->parameters[1]);
+
+        // Already in position
+        if (ArmMotor::isTarget(angle)) {
+            ackOk();
+            return;
+        }
+
+        // The Tilt is not in the correct position to move the Arm
+        if ((!TiltMotor::isScoutPosition())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "TILT_NOT_IN_SCOUT"; ackNok(); return; }
+        if ((!ArmMotor::device->isReady())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_MOTOR_BUSY"; ackNok(); return; }
+
+        if (ArmMotor::serviceAutoPosition(angle)) {
+            // Command is in execution
+            ackExecuting();
+            return;
+        }
+        
+        // Command error
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return;
+        
+    }
+    
+    // Wrong number of parameters
+    pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; 
+    pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; 
+    ackNok(); 
+    return; 
 
 }
 
@@ -648,15 +693,22 @@ void awsProtocol::EXEC_TrxPosition(void) {
 /// The AWS with this command can select one of the available sequences
 /// using the predefined Identifier.
 /// 
+/// \note This command can have two possible sintax: the second sintax allow to add extra parameters
+/// for test purpose. See below
+/// 
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % SET_TomoConfig tomo_name>
+/// Frame format Sintax 1: <ID % SET_TomoConfig tomo_name >
+/// Frame format Sintax 2: <ID % SET_TomoConfig tomo_name nsamples_modifier nskip_modifier>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
 /// |tomo_name|String|the predefined name assigned to the Tomo sequence to be selected| 
+/// |nsamples_modifier|Integer|(optional)Modifier of the sequence number of samples |
+/// |nskip_modifier|Integer|(optional)Modifier of the sequence number of skips|
 /// 
+/// \Note: the comnmand
 /// |tomo_name|
 /// |:--|
 /// |TOMO1F_NARROW| 
@@ -694,11 +746,24 @@ void awsProtocol::EXEC_TrxPosition(void) {
 /// </summary>
 /// <param name=""></param>
 void awsProtocol::SET_TomoConfig(void) {
-    if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
-    // Parameter 0: Tomo configiguration selection;
-    if(!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
+    if ( (pDecodedFrame->parameters->Count != 1) && 
+        (pDecodedFrame->parameters->Count != 3)) 
+    { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY()) && (!Gantry::isTEST())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+
+    // Sintax with only one parameter
+    if (pDecodedFrame->parameters->Count == 1) {
+        if (!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
+        ackOk();
+        return;
+    }
+
+    // Sintax with modifier parameters
+    int samples_modifier = Convert::ToInt16(pDecodedFrame->parameters[1]);
+    int skips_modifier = Convert::ToInt16(pDecodedFrame->parameters[2]);
+    if(!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0], samples_modifier, skips_modifier)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
     ackOk();
 
     return;

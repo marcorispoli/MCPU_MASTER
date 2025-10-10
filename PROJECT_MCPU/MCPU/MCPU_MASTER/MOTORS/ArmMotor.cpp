@@ -124,6 +124,19 @@ void ArmMotor::abortTarget(void) {
 }
 
 /// <summary>
+/// This function returns true in case the current arm position is already at the requested target.
+/// </summary>
+/// <param name="angle">this is the target angle in degree</param>
+/// <returns>true: the angle is already in target</returns>
+bool ArmMotor::isTarget(int angle) {
+    
+    // Convert the degree in the motor user units
+    int tg = angle * 100;
+    if ((device->getCurrentUposition() >= (tg - 10)) && (device->getCurrentUposition() <= (tg + 10)))  return true;
+    return false;
+}
+
+/// <summary>
 /// 
 /// 
 /// </summary>
@@ -160,8 +173,7 @@ int ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id
     }
 
     // If the device is already in target answer ok immediate
-    int tg = pos * 100;
-    if ((device->getCurrentUposition() >= (tg - 10)) && (device->getCurrentUposition() <= (tg + 10))) {
+    if (isTarget(pos)) {
         // Already in the rght position
         projections->setProjection(proj);
 
@@ -172,13 +184,17 @@ int ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id
         selected_target = pos;
         return 0; // Immediate
     }
-
+    
     if ((!TiltMotor::isScoutPosition())) {
         LogClass::logInFile("ArmMotor::setTarget() - command: error, tilt not in scout ");
         return -2;
 
     }
     
+    if (!device->isReady()) {
+        LogClass::logInFile("ArmMotor::setTarget() - motor busy ");
+        return -3;
+    }
 
     // Activate an Isocentric C-ARM rotation
     device->iso_activation_mode = true;
@@ -198,7 +214,7 @@ int ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id
 
     // Command activation failed
     valid_target = false;
-    return -3;
+    return -4;
 }
 
 /// <summary>

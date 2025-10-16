@@ -49,8 +49,7 @@ public:
         GANTRY_SERVICE,     //!< Gantry is in the Service operating mode       
     };
 
-    static const cli::array<System::String^>^ operating_status_tags = gcnew cli::array<System::String^>   { "GANTRY_STARTUP", "GANTRY_IDLE", "GANTRY_OPEN_STUDY", "GANTRY_SERVICE", "UNDEF" };//!< This is the option-tags static array
-
+    
     enum class manual_rotation_options {
         GANTRY_MANUAL_ROTATION_DISABLED = 0,    //!< The Manual rotation is globally disabled        
         GANTRY_STANDARD_STATUS_MANUAL_ROTATION, //!< Arm rotation and Vertical activation with buttons and pedals
@@ -89,7 +88,7 @@ public:
     static bool setCloseStudy(void);
     
 
-    static System::String^ getOperatingStatusName(void) { return operating_status_tags[(int)current_operating_status]; }
+    static System::String^ getOperatingStatusName(void) { return current_operating_status.ToString();}
     static bool isSERVICE(void) { return (current_operating_status == operating_status_options::GANTRY_SERVICE); }
     static bool isIDLE(void) { return (current_operating_status == operating_status_options::GANTRY_IDLE); }
     static bool isSTANDARD(void) { return (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY); }

@@ -5,13 +5,13 @@
 
 void PCB304::runningLoop(void) {
     static bool commerr = false;
-   
+
     static bool grid_error = false;
     static bool keepalive = false;
     static bool grid_out_of_position = false;
     static bool inout_auto_mode = false;
     static bool general_enable = false;
- 
+
     // Test the communication status
     if (commerr != isCommunicationError()) {
         commerr = isCommunicationError();
@@ -24,24 +24,18 @@ void PCB304::runningLoop(void) {
         error_count = 0;
     }
 
-    if (!device->isCommandCompleted()) return;
-
-    // Read the Grid Status register
+    // Always reads the grid Status register
     protocol.status_register.decodeGridRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::GRID));
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    
-    // System Error Message activation
-    if (grid_error != protocol.status_register.error) {
-        grid_error = protocol.status_register.error;
 
-        if(grid_error) Notify::activate(Notify::messages::ERROR_POTTER_GRID_POSITION);
-        else Notify::deactivate(Notify::messages::ERROR_POTTER_GRID_POSITION);
-    }
-
-    // Reads the special error register from the device in case an error should be signaled
+    // In case the errror flag should be activated the error register is updated
     if (protocol.status_register.error) {
         readErrorRegister();
+    }
 
+
+    // Reset the error only if the consecutive error are limited
+    if (protocol.status_register.error) {
         error_count++;
         if (error_count < max_num_error_resets) {
 
@@ -50,22 +44,30 @@ void PCB304::runningLoop(void) {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
     }
-   
+
+    // System Error Message activation
+    if (grid_error != protocol.status_register.error) {
+        grid_error = protocol.status_register.error;
+
+        if (grid_error) Notify::activate(Notify::messages::ERROR_POTTER_GRID_POSITION);
+        else Notify::deactivate(Notify::messages::ERROR_POTTER_GRID_POSITION);
+    }
+
 
 
     // Info on the current InOut Positioning mode
     if (inout_auto_mode != protocol.data_register.InOutAutoEnable) {
         inout_auto_mode = protocol.data_register.InOutAutoEnable;
 
-        if(!inout_auto_mode) Notify::activate(Notify::messages::INFO_GRID_INOUT_MANUAL_MODE);
+        if (!inout_auto_mode) Notify::activate(Notify::messages::INFO_GRID_INOUT_MANUAL_MODE);
         else  Notify::deactivate(Notify::messages::INFO_GRID_INOUT_MANUAL_MODE);
     }
- 
+
     // Evaluates the General Enable condition
     if (general_enable != protocol.data_register.GeneralEnable) {
         general_enable = protocol.data_register.GeneralEnable;
 
-        if(general_enable) Notify::deactivate(Notify::messages::WARNING_GRID_GENERAL_ENABLE);
+        if (general_enable) Notify::deactivate(Notify::messages::WARNING_GRID_GENERAL_ENABLE);
         else {
             Notify::activate(Notify::messages::WARNING_GRID_GENERAL_ENABLE);
             error_count = 0;
@@ -77,7 +79,7 @@ void PCB304::runningLoop(void) {
         }
     }
 
-    // Whe the General enable bit is active, the current position is evaluated
+    // When the General enable bit is active, the current position is evaluated
     if (protocol.data_register.GeneralEnable) {
 
         // Evaluates the current grid position
@@ -102,11 +104,11 @@ void PCB304::runningLoop(void) {
 
     }
 
-   
+
 
     // Always toggles the keepalive to keep the display ON
     protocol.data_register.display_keep_alive = !protocol.data_register.display_keep_alive;
-    
+
 
     // Sets the display outputs
     writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::DISPLAY_REGISTER, protocol.data_register.encodeDisplayRegister());
@@ -114,6 +116,63 @@ void PCB304::runningLoop(void) {
 
     writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    // Command execution request here: the commands can be executed only if the Auto In/Out is disabled
+    // The test commands are executed with the with delayed protocol command. So if a command completeis detected 
+    // the previous in/out status shall be restored
+    if (!device->isCommandCompleted()) return;
+    command_busy = false;
+
+    switch (command_request) {
+    case command_request_index::NO_COMMAND:
+        protocol.data_register.InOutAutoEnable = current_inout_auto_mode; // Restore the current in/out auto mode 
+
+        break;
+
+    case command_request_index::TEST_GRID_TRASLATION:
+        protocol.data_register.InOutAutoEnable = false;
+        protocol.data_register.GeneralEnable = true;
+
+        // Updates the protocol data
+        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        // In case of errors, reset errors before
+        if (protocol.status_register.error) {
+            device->commandNoWaitCompletion(protocol.command.encodeResetCommand(), 30);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        // Call the command
+        if (device->commandNoWaitCompletion(protocol.command.encodeActivateTranslationTestCommand(10, 2, 5), 30))
+            command_busy = true;
+
+        command_request = command_request_index::NO_COMMAND;
+        break;
+
+    case command_request_index::TEST_INOUT:
+        protocol.data_register.InOutAutoEnable = false;
+        protocol.data_register.GeneralEnable = true;
+
+        // Updates the protocol data
+        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        // In case of errors, reset errors before
+        if (protocol.status_register.error) {
+            device->commandNoWaitCompletion(protocol.command.encodeResetCommand(), 30);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        // Call the command
+        if (device->commandNoWaitCompletion(protocol.command.encodeActivateInOutTestCommand(10), 30))
+            command_busy = true;
+
+        command_request = command_request_index::NO_COMMAND;
+        break;
+    }
+
+
 
     return;
 }

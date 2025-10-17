@@ -243,16 +243,46 @@ public:
 
 	literal int max_num_error_resets = 5; //!< Maximum number of attempts to reset a pending error condition
 
-	static void setGridInOutTest(void) { test_grid_in_out = true; };
-	static void setAutoGridInField(void) { protocol.data_register.GeneralEnable = true; protocol.data_register.InOutAutoEnable = true; protocol.data_register.InOutStatus = true; };
-	static void setAutoGridOutField(void) { protocol.data_register.GeneralEnable = true; protocol.data_register.InOutAutoEnable = true; protocol.data_register.InOutStatus = false; };
-	static void syncGeneratorOn(void) { protocol.data_register.ManualXrayDisableEnable = false; protocol.data_register.EnableStartGrid = true; }
-	static void syncGeneratorOff(void) { protocol.data_register.ManualXrayDisableEnable = true; protocol.data_register.ManualXrayDisableStatus = true; protocol.data_register.EnableStartGrid = false; }
+	
+	static void setAutoGridInField(void) { 
+		protocol.data_register.GeneralEnable = true; 
+		protocol.data_register.InOutAutoEnable = true; 
+		protocol.data_register.InOutStatus = true; 
+		current_inout_auto_mode = protocol.data_register.InOutAutoEnable;
+	};
+	static void setAutoGridOutField(void) { 
+		protocol.data_register.GeneralEnable = true; 
+		protocol.data_register.InOutAutoEnable = true; 
+		protocol.data_register.InOutStatus = false; 
+		current_inout_auto_mode = protocol.data_register.InOutAutoEnable;
+	};
+
+	static void syncGeneratorOn(void) { 
+		protocol.data_register.ManualXrayDisableEnable = false; 
+		protocol.data_register.EnableStartGrid = true; 
+	}
+	static void syncGeneratorOff(void) { 
+		protocol.data_register.ManualXrayDisableEnable = true; 
+		protocol.data_register.ManualXrayDisableStatus = true; 
+		protocol.data_register.EnableStartGrid = false; 
+	}
+
+
+	// Status Register Content Inspection
 	inline static bool isGridOnFieldReady(void) { return protocol.status_register.inField; }
 	inline static bool isGridOffFieldReady(void) { return protocol.status_register.outField;}
-	inline static void enableStartGrid(bool status) { protocol.data_register.EnableStartGrid = status; }
-	inline static void resetErrorCount(void) { error_count = 0; }
+	inline static bool isInOutTest(void) { return protocol.status_register.inout_executing; }
+	inline static bool isTrasversalTest(void) { return protocol.status_register.transversal_executing; }
+	inline static bool isHome(void) { return protocol.status_register.home; }
+	inline static bool isCenter(void) { return protocol.status_register.center; }
+	inline static bool isGridDisableOn(void) { return protocol.status_register.xray_disable; }
+	inline static bool isGridStartOn(void) { return protocol.status_register.grid_start; }
 	inline static bool isError(void) { return protocol.status_register.error; }
+	inline static int  getTestCycle(void) {return protocol.status_register.current_test_cycle; }
+
+
+	inline static void enableStartGrid(bool status) { protocol.data_register.EnableStartGrid = status; }
+	inline static void resetErrorCount(void) { error_count = 0; }	
 	inline static void setDisplay(bool on_off) {protocol.data_register.display_on = on_off;}
 
 	static void setDisplay(short val, unsigned char decimals, bool blink, unsigned char intensity) {
@@ -263,6 +293,22 @@ public:
 		protocol.data_register.display_intensity = intensity;
 	}
 
+	inline static bool requestTestTranslation(void) {
+		if (command_busy) return false;
+		if (command_request != command_request_index::NO_COMMAND) return false;
+		command_request = command_request_index::TEST_GRID_TRASLATION;
+		return true;
+	}
+
+	inline static bool requestTestInOut(void) {
+		if (command_busy) return false;
+		if (command_request != command_request_index::NO_COMMAND) return false;
+		command_request = command_request_index::TEST_INOUT;
+		return true;
+	}
+
+	
+
 protected: 
 	void runningLoop(void) override;
 	void demoLoop(void) override;
@@ -271,5 +317,16 @@ private:
 	static bool test_grid_in_out = false;
 	static ProtocolStructure protocol; // This is the structure with the Status register info
 	static int  error_count = 0;
+	
+	static bool current_inout_auto_mode = false; //!< This is the actua requested status
+
+	enum class command_request_index {
+		NO_COMMAND = 0,
+		TEST_GRID_TRASLATION,
+		TEST_INOUT
+	};
+
+	static command_request_index command_request = command_request_index::NO_COMMAND;
+	static bool command_busy = false;
 };
 

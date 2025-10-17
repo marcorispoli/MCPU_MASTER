@@ -61,6 +61,8 @@ public:
     };
 
     enum class safety_rotation_conditions {
+
+
         GANTRY_SAFETY_OK,                       //!< No safety issues are detected
         GANTRY_SAFETY_EMERGENCY_BUTTON,         //!< The Emergency push button is detected
         GANTRY_SAFETY_POWER_DOWN,               //!< The Power down is detected

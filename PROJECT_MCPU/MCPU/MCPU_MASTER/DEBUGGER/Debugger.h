@@ -35,6 +35,22 @@ private:
 
 	int rx_rc;//!< This is the number of the received bytes
 	cli::array<System::Byte>^ rxBuffer;//!< This is the reception buffer
+	
+	enum class menu_index {
+		ROOT = 0,
+		POTTER,
+		COM,
+		GENERATOR,
+		COMPRESSOR,
+	};
+	static menu_index current_menu = menu_index::ROOT;
+
+	void handleRootCommands(System::String^ cmd); 
+	void handlePotterCommands(System::String^ cmd);
+	void handleGeneratorCommands(System::String^ cmd);
+	void handleCompressorCommands(System::String^ cmd);
+
+	void handleComCommands(System::String^ cmd);
 
 };
 

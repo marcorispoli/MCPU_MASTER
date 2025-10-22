@@ -290,8 +290,9 @@ void OperatingForm::initOperatingStatus(void) {
 	ArmMotor::getProjectionsList()->clrList();
 
 	// Sets the current collimation dependent by the detected paddle
-	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
-	
+	// PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
+	// IMQ: Collimazione OPEN
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::OPEN, 0);
 
 	// Set the Filter in Exposure selection mode
 	// Select the most common filter: Rhodium
@@ -439,31 +440,40 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 	static bool cmp_force_error = false;
 
 	// Compression Mode Warning
-	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
-		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION);
-	else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
+	// IMQ: Nessun compressore controllato
+	//if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
+	//	Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION);
+	//else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
 
 
 	// Patient Protection Mode Warning
+	// IMQ: nessuna protezione paziente
+	/*
 	bool patient_protection = (PCB302::getPatientProtection() == PCB302::PatientProtection::POSITIONED);
 
 	if ((Exposures::getProtectionMode() != Exposures::patient_protection_option::PROTECTION_DIS) && (!patient_protection))
 		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	else 
 		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
-	
+	*/
+
 	// C-Arm Mode
+	// IMQ: nessun controllo sulla proiezione
+	/*
 	if (
 		(Exposures::getArmMode() != Exposures::arm_mode_option::ARM_DIS) &&
 		(!ArmMotor::device->isValidPosition())
 		) Notify::activate(Notify::messages::WARNING_ARM_POSITION_WARNING);
 	else Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
+	*/
 
 	// Paddle identification
+	// IMQ: nessun Paddle
+	/*
 	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) &&
 		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE);
 	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
-
+	*/
 	
 	// Exposure Mode selection	
 	if (Exposures::getExposureMode() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);

@@ -459,6 +459,29 @@ int PCB303::getFilterSlot(filter_index filter) {
     return 0;
 }
 
+PCB303::filter_index PCB303::getFilterIndex(int slot) {
+
+    if (slot == (int)System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_AG_SLOT]))
+        return filter_index::FILTER_AG;
+
+    if (slot == (int)System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_AL_SLOT]))
+        return filter_index::FILTER_AL;
+
+    if (slot == (int)System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_RH_SLOT]))
+        return filter_index::FILTER_RH;
+
+    if (slot == (int)System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_CU_SLOT]))
+        return filter_index::FILTER_CU;
+
+    if (slot == (int)System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_MO_SLOT]))
+        return filter_index::FILTER_MO;
+
+    if (slot == (int)System::Convert::ToByte(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_CONFIG)[CollimatorConfig::PARAM_FILTER_CONFIG_LD_SLOT]))
+        return filter_index::FILTER_LD;
+
+    return filter_index::FILTER_MO;
+}
+
 bool PCB303::selectFilter(filter_index filter) {
     
     // Gets the assigned slot from the filter code
@@ -469,6 +492,21 @@ bool PCB303::selectFilter(filter_index filter) {
     selected_slot = req_filter_slot;
     if (selected_filter == filter) return true;
     selected_filter = filter;
+    valid_filter_format = false;
+    return true;
+}
+
+bool PCB303::selectFilterSlot(int req_filter_slot) {
+
+    // Gets the assigned slot from the filter code
+    //int req_filter_slot = getFilterSlot(filter);
+    if (req_filter_slot > 4) return false;
+    if (req_filter_slot < 0) return false;
+
+    selected_slot = req_filter_slot;
+
+    
+    selected_filter = getFilterIndex(req_filter_slot);
     valid_filter_format = false;
     return true;
 }

@@ -28,8 +28,8 @@ public:
     literal unsigned char  FOCUS_LARGE = 0;
     literal unsigned char  FOCUS_SMALL = 1;
     static Exposures^ pExposure = gcnew Exposures(); //! Self module generation
-    
-	
+
+
     ref class tomo_data {
     public:
 
@@ -66,7 +66,7 @@ public:
                     tomo_speed = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_SPEED]);
                     tomo_acc = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_ACC]);
                     tomo_dec = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_DEC]);
-                    tomo_fps = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_FPS]);                    
+                    tomo_fps = System::Convert::ToInt16(TomoConfig::Configuration->getParam(cfg)[TomoConfig::PARAM_TOMO_FPS]);
                     return true;
                 }
             }
@@ -96,7 +96,7 @@ public:
         /// <returns>true: if the name is present in the list</returns>
         bool exist(System::String^ cfg) {
             for (int i = 0; i < (int)TomoConfig::tomo_id::TOMO_ID_NUM; i++) {
-                if (cfg == ((TomoConfig::tomo_id)i).ToString())  return true;                
+                if (cfg == ((TomoConfig::tomo_id)i).ToString())  return true;
             }
             return false;
         }
@@ -127,7 +127,7 @@ public:
         }
     };
 
-    ref class exposure_pulse 
+    ref class exposure_pulse
     {
     public:
 
@@ -143,23 +143,23 @@ public:
             filter = PCB303::filter_index::FILTER_RH;
             kV = 0;
             mAs = 0;
-           
+
             // When created the pulse is invalidated for safety
             validated = false;
         };
 
         exposure_pulse(double kv, double mas, PCB303::filter_index flt) {
-            
+
             validated = false;
 
-            if ((kv > 49.0) || (kv < 20.0)) return ;
+            if ((kv > 49.0) || (kv < 20.0)) return;
             if ((mas > 640) || (mas < 0)) return;
-            
+
 
             filter = flt;
             kV = kv;// Assignes the kV
             mAs = mas;// Assignes the mAs
-           
+
             validated = true;
         };
 
@@ -181,14 +181,14 @@ public:
             validated = false;
             if ((kv > 49.0) || (kv < 20.0)) return;
             if ((mas > 640) || (mas < 0)) return;
-            
+
 
             filter = flt;
-            kV = kv;        
-            mAs = mas;      
+            kV = kv;
+            mAs = mas;
 
             pulse_samples = 0;
-            focus = fc;         
+            focus = fc;
             use_grid = gd;        // only for test
             synch_det = sync;     // only for test
             validated = true;
@@ -220,14 +220,14 @@ public:
         bool    validated; //!< This is the flag that validate the use of thhis pulse in a sequence
     };
 
-	
+
 
     /// <summary>
     /// This is the enumeration class defining all the possible exposures 
     /// 
     /// </summary>
     enum class exposure_type_options {
-        MAN_2D=0, //!< The next exposure is a 2D manual mode
+        MAN_2D = 0, //!< The next exposure is a 2D manual mode
         AEC_2D, //!< The next exposure is a 2D with AEC
         MAN_3D, //!< The next exposure is a Tomo 3D in manual mode
         MAN_3D_STATIC, //!< The next exposure is a Tomo 3D in manual mode without Tube Arm activation
@@ -239,7 +239,7 @@ public:
         TEST_2D, //!< This is a test exposure without Detector synch
         EXP_NOT_DEFINED
     };
-    
+
 
     /// <summary>
     /// This is the enumeration of the possible Compression modes.
@@ -283,8 +283,8 @@ public:
     };
     //static const cli::array<String^>^ tags = gcnew cli::array<String^>  { "PROTECTION_ENA", "PROTECTION_DIS", "UNDEF"}; //!< This is the option-tags static array
 
-    
-    
+
+
     /// <summary>
     /// This Enumeration class describes the possible results of an exposure.
     /// 
@@ -304,13 +304,13 @@ public:
     /// This class enumerates all the possible x-ray error reasons
     /// 
     /// </summary>
-    enum class exposure_completed_errors 
+    enum class exposure_completed_errors
     {
-        XRAY_NO_ERRORS = (int) Generator::generator_errors::GEN_NO_ERRORS,			//!< No error code
+        XRAY_NO_ERRORS = (int)Generator::generator_errors::GEN_NO_ERRORS,			//!< No error code
         XRAY_BUTTON_RELEASE = (int)Generator::generator_errors::GEN_BUTTON_RELEASE, //!< The X-Ray Button has been released  
-        XRAY_TIMEOUT = (int) Generator::generator_errors::GEN_TIMEOUT,			    //!< Timeout generator sequence
+        XRAY_TIMEOUT = (int)Generator::generator_errors::GEN_TIMEOUT,			    //!< Timeout generator sequence
         XRAY_COMMUNICATION_ERROR = (int)Generator::generator_errors::GEN_COMMUNICATION_ERROR,         //!< A generator command is failed        
-        XRAY_INVALID_GENERATOR_STATUS = (int) Generator::generator_errors::GEN_INVALID_STATUS,//!< The generator is in a not expected status	
+        XRAY_INVALID_GENERATOR_STATUS = (int)Generator::generator_errors::GEN_INVALID_STATUS,//!< The generator is in a not expected status	
         XRAY_ERR_CODE = (int)Generator::generator_errors::GEN_LAST_ERRCODE,         //!< Initialize the ExposureModule error codes        
         XRAY_INVALID_2D_PARAMETERS,	//!< The pexposure parameters for 2D are incorrect
         XRAY_INVALID_TOMO_PARAMETERS,	//!< The Tomo parameters has not been validated (selected)        
@@ -325,6 +325,17 @@ public:
         XRAY_INVALID_PROCEDURE,     //!< Error non defined procedure has been requested
 
     };
+
+    /// <summary>
+    /// This class enumerates all the possible focus selection modalities
+    /// 
+    /// </summary>
+    enum class focus_mode_selection_index {
+        FOCUS_AUTO = 0,
+        FOCUS_LARGE,
+        FOCUS_SMALL
+    };
+
 
     static void startSimulator(void) { getDevice()->startSimulatorMode(); }
     static void startGenerator(void) { getDevice()->startNormalMode(); }
@@ -368,6 +379,7 @@ public:
         return  pulse[seq];
     }
 
+    inline static void setFocusMode(focus_mode_selection_index mode) { focus_selection_mode = mode; }
     
     inline static bool isXrayCompleted() { return xray_completed; }
     inline static bool isXrayRunning() { return !xray_completed; }
@@ -408,6 +420,7 @@ protected:
     bool getXrayPushButton(void) override;
 
 private:
+    static focus_mode_selection_index focus_selection_mode = focus_mode_selection_index::FOCUS_AUTO;
 
     static cli::array<exposure_pulse^>^ pulse = gcnew array<exposure_pulse^> {gcnew exposure_pulse (),gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };
     static cli::array<exposure_pulse^>^ exposed = gcnew array<exposure_pulse^> {gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };

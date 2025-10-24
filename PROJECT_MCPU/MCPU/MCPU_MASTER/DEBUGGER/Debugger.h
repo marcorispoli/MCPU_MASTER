@@ -42,6 +42,8 @@ private:
 		COM,
 		GENERATOR,
 		COMPRESSOR,
+		COLLIMATOR,
+		EXPOSURES,
 	};
 	static menu_index current_menu = menu_index::ROOT;
 
@@ -49,7 +51,8 @@ private:
 	void handlePotterCommands(System::String^ cmd);
 	void handleGeneratorCommands(System::String^ cmd);
 	void handleCompressorCommands(System::String^ cmd);
-
+	void handleCollimatorCommands(System::String^ cmd);
+	void handleExposureCommands(System::String^ cmd);
 	void handleComCommands(System::String^ cmd);
 
 };

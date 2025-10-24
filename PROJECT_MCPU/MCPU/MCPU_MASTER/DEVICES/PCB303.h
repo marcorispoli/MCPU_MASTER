@@ -772,9 +772,11 @@ public:
 	// Filter Commands	
 	static void setFilterMode(filterModeEnum mode);
 	static bool selectFilter(filter_index filter);
-	
+	static bool selectFilterSlot(int req_filter_slot);
 
 	static int  getFilterSlot(filter_index filter);
+	static filter_index getFilterIndex(int slot);
+
 	static bool isValidFilter(void) { return valid_filter_format; }
 	static bool isFilterInError(void) { return filter_error; }
 	static bool	waitFilterCompleted(void);

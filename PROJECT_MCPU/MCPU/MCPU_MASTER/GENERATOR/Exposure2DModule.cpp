@@ -43,10 +43,16 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
     if (grid_synch) PCB304::syncGeneratorOn();
     else PCB304::syncGeneratorOff();
    
-    // Determines if the Focus is Small or large based on the presence of the Magnifier device
-    if (PCB302::getMagnifierFactor() != 10) large_focus = false;
-    else large_focus = true;
     
+    if (focus_selection_mode == focus_mode_selection_index::FOCUS_AUTO) {
+        // Determines if the Focus is Small or large based on the presence of the Magnifier 
+        if (PCB302::getMagnifierFactor() != 10) large_focus = false;
+        else large_focus = true;
+    }
+    else if (focus_selection_mode == focus_mode_selection_index::FOCUS_LARGE) {
+        large_focus = true;
+    }else large_focus = false;
+
     
     // The format collimation should be already configured
     if (!PCB303::isValidCollimationFormat()) {
@@ -128,9 +134,15 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     if (grid_synch) PCB304::syncGeneratorOn();
     else PCB304::syncGeneratorOff();
 
-    // Determines if the Focus is Small or large based on the presence of the Magnifier device
-    if (PCB302::getMagnifierFactor() != 10) large_focus = false;
-    else large_focus = true;
+    if (focus_selection_mode == focus_mode_selection_index::FOCUS_AUTO) {
+        // Determines if the Focus is Small or large based on the presence of the Magnifier 
+        if (PCB302::getMagnifierFactor() != 10) large_focus = false;
+        else large_focus = true;
+    }
+    else if (focus_selection_mode == focus_mode_selection_index::FOCUS_LARGE) {
+        large_focus = true;
+    }
+    else large_focus = false;
 
 
     // Verifies that a valid the format collimation is present

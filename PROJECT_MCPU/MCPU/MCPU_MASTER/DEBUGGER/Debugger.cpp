@@ -142,6 +142,8 @@ void DebuggerCLI::rxHandler(void){
 	else if (sFrame->Contains("communication:")) current_menu = menu_index::COM;
 	else if (sFrame->Contains("generator:")) current_menu = menu_index::GENERATOR;
 	else if (sFrame->Contains("compressor:")) current_menu = menu_index::COMPRESSOR;
+	else if (sFrame->Contains("collimator:")) current_menu = menu_index::COLLIMATOR;
+	else if (sFrame->Contains("exposures:")) current_menu = menu_index::EXPOSURES;
 
 	// Menu command dispatcher
 	switch (current_menu) {
@@ -150,6 +152,8 @@ void DebuggerCLI::rxHandler(void){
 	case menu_index::COM: handleComCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("communication:")); break;
 	case menu_index::GENERATOR: handleGeneratorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("generator:")); break;
 	case menu_index::COMPRESSOR: handleCompressorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("compressor:")); break;
+	case menu_index::COLLIMATOR: handleCollimatorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("collimator:")); break;
+	case menu_index::EXPOSURES: handleExposureCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("exposures:")); break;
 	default:
 		handleRootCommands(sFrame); 		
 	}
@@ -165,9 +169,11 @@ void DebuggerCLI::handleRootCommands(System::String^ cmd) {
 		lista = "potter: potter related commands\n\r";
 		lista += "communication: communication related commands\n\r";
 		lista += "compressor: compressor related commands\n\r";
-		lista += "generator: generator related commands\n\r";
-		
-		send(System::Text::Encoding::Unicode->GetBytes(lista));		
+		lista += "generator: generator related commands\n\r";		
+		lista += "collimator: collimator related commands\n\r";
+		lista += "exposures: exposures related commands\n\r";
+
+		send(System::Text::Encoding::Unicode->GetBytes(lista));
 		return;
 	}
 }
@@ -317,12 +323,100 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 	// Shows the list of available commands if no valid command is detedcted
 	System::String^ lista;
 	lista = " -> RESET - reset Board\n\r";
+	lista += " -> GET_STATUS	- Shows the protocol registers\n\r";
 	lista += " -> AUTO_GRID_IN	- Grin In Field\n\r";
 	lista += " -> AUTO_GRID_OUT	- Grid Out Field\n\r";
 	lista += " -> TRANSLATION_TEST	- Translation Test Grid 10 times\n\r";
 	lista += " -> INOUT_TEST	- Test In-Out 10 times\n\r";
 	lista += " -> SYNCH_ON		- Generator Sync On\n\r";
 	lista += " -> SYNCH_OFF		- Generator Sync Off\n\r";
+
+	send(System::Text::Encoding::Unicode->GetBytes(lista));
+	return;
+}
+
+void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
+	System::String^ stringa;
+
+	if (cmd->Contains("RESET")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command causes the PCB303 board reset.\n\r";
+			stringa += "The board parameters will be automatically uploaded by Gantry after the board startup\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(" -> Collimator Board Reset Command!\n\r"));
+		return;
+	}
+
+	if (cmd->Contains("GET_STATUS")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command returns the data content of the relevant Device Status and Data registers.\n\r";
+			stringa += "";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		stringa = "Status Register Content: \n\r";
+		stringa +=  "\n\r";
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+
+		return;
+	}
+
+	if (cmd->Contains("SELECT_FILTER_SLOT")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command selects a given Filter by slot number, from 0 to 4.\n\r";			
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Slot Selection Command!\n\r"));
+		
+		int slot = 0;
+		if (cmd->Contains(" 0")) slot = 0;
+		else if (cmd->Contains(" 1")) slot = 1;
+		else if (cmd->Contains(" 2")) slot = 2;
+		else if (cmd->Contains(" 3")) slot = 3;
+		else if (cmd->Contains(" 4")) slot = 4;
+		else {
+			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
+			return;
+		}
+		
+		PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
+		if (!PCB303::selectFilterSlot(slot)) {
+			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
+			return;
+		}
+		
+		return;
+	}
+
+	if (cmd->Contains("SELECT_FILTER_MATTER")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command selects a given Filter by matter.\n\r";
+			stringa += "Available filters are:\n\r";
+			stringa += "Cu Ag Rh Al Ag Ld \n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Matter Selection Command!\n\r"));		
+		return;
+	}
+
+
+
+
+	// Shows the list of available commands if no valid command is detedcted
+	System::String^ lista;
+	lista = " -> RESET - reset Board\n\r";
+	lista += " -> GET_STATUS	- Shows the protocol registers\n\r";
+	lista += " -> SELECT_FILTER_SLOT	- Filter selection by slot number\n\r";
+	lista += " -> SELECT_FILTER_MATTER	- Filter selection by Matter\n\r";
 
 	send(System::Text::Encoding::Unicode->GetBytes(lista));
 	return;
@@ -371,5 +465,49 @@ void DebuggerCLI::handleCompressorCommands(System::String^ cmd) {
 		send(System::Text::Encoding::Unicode->GetBytes(result_string));
 		return;
 	}
+}
+
+void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
+	System::String^ stringa = "";
+
+
+	if (cmd->Contains("SET_FOCUS")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command select the focus usage with the following modes:\n\r";
+			stringa += "- AUTO: the focus is selected automatically (magnifier device detection) \n\r";
+			stringa += "- LARGE: the focus is forced to be Large \n\r";
+			stringa += "- SMALL: the focus is forced to be Small \n\r";
+
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (cmd->Contains("AUTO")) {
+			Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_AUTO);
+			stringa = "Focus in AUTO mode \n\r";
+		}
+		else if (cmd->Contains("LARGE")) {
+			Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_LARGE);
+			stringa = "Focus in LARGE mode \n\r";
+
+		}
+		else {
+			Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_SMALL);
+			stringa = "Focus in SMALL mode \n\r";
+
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+		return;
+	}
+
+
+	// Shows the list of available commands if no valid command is detedcted
+	System::String^ lista;
+	lista = " -> SET_FOCUS - sets the current exposure focus mode\n\r";
+	lista += "\n\r";
+
+	send(System::Text::Encoding::Unicode->GetBytes(lista));
+	return;
 }
 

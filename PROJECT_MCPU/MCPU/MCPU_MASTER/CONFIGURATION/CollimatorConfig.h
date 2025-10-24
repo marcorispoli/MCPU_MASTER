@@ -659,7 +659,7 @@ public:
     /// 
     //___________________________________________________________________________________________________//
     literal System::String^ PARAM_FILTER_CONFIG = "FILTER_CONFIG";
-    literal System::String^ PARAM_FILTER_CONFIG_COMMENT = "Defines the Filter material assignment to selector slot";
+    literal System::String^ PARAM_FILTER_CONFIG_COMMENT = "Defines the Filter material assignment to selector slot: Rh, Ag, Al, Cu, Mo, Ld";
     literal int     PARAM_FILTER_CONFIG_RH_SLOT = 0;
     literal int     PARAM_FILTER_CONFIG_AG_SLOT = 1;
     literal int     PARAM_FILTER_CONFIG_AL_SLOT = 2;
@@ -667,12 +667,12 @@ public:
     literal int     PARAM_FILTER_CONFIG_MO_SLOT = 4;
     literal int     PARAM_FILTER_CONFIG_LD_SLOT = 5;
 
-    literal System::String^ PARAM_FILTER_CONFIG_RH_SLOT_DEFAULT = "0"; 
-    literal System::String^ PARAM_FILTER_CONFIG_AG_SLOT_DEFAULT = "1";
-    literal System::String^ PARAM_FILTER_CONFIG_AL_SLOT_DEFAULT = "2";
-    literal System::String^ PARAM_FILTER_CONFIG_CU_SLOT_DEFAULT = "3";
+    literal System::String^ PARAM_FILTER_CONFIG_RH_SLOT_DEFAULT = "3"; 
+    literal System::String^ PARAM_FILTER_CONFIG_AG_SLOT_DEFAULT = "4";
+    literal System::String^ PARAM_FILTER_CONFIG_AL_SLOT_DEFAULT = "0";
+    literal System::String^ PARAM_FILTER_CONFIG_CU_SLOT_DEFAULT = "1";
     literal System::String^ PARAM_FILTER_CONFIG_MO_SLOT_DEFAULT = "3";
-    literal System::String^ PARAM_FILTER_CONFIG_LD_SLOT_DEFAULT = "4";
+    literal System::String^ PARAM_FILTER_CONFIG_LD_SLOT_DEFAULT = "2";
 
     static ConfigFile^ Configuration = gcnew ConfigFile(FILENAME, FILE_REVISION,
         CONFIG_FILE_DESCRIPTOR

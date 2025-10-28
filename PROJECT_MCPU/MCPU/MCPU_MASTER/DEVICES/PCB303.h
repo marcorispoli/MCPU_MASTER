@@ -401,6 +401,13 @@ public:
 				if (sys->d2 & 0x10) light_status = light_target_code::LIGHT_ON;
 				else light_status = light_target_code::LIGHT_OFF;
 
+				if (sys->d3 & 0x1) fan_status = true;
+				else fan_status = false;
+
+				if (sys->d3 & 0x2) fan_forced = true;
+				else fan_forced = false;
+
+
 				return true;
 			}
 
@@ -425,6 +432,12 @@ public:
 
 				if (light_status == light_target_code::LIGHT_ON) sys->d2 |= 0x10;
 				else sys->d2 &= ~0x10;
+
+				if (fan_status) sys->d3 |= 0x1;
+				else sys->d3 &= ~0x1;
+
+				if (fan_forced) sys->d3 |= 0x2;
+				else sys->d3 &= ~0x2;
 
 				// Returns the formatted register
 				return sys;
@@ -470,6 +483,9 @@ public:
 
 			static unsigned char stator_temp;
 			static unsigned char bulb_temp;
+			
+			static bool fan_status;
+			static bool fan_forced;
 
 		};
 
@@ -634,6 +650,7 @@ public:
 				SET_FILTER,
 				SET_MIRROR,
 				SET_LIGHT,
+				SET_FAN_FORCE
 			};
 
 			CanDeviceCommand^ encodeSetFormatCommand(unsigned char target_format_slot) {
@@ -655,6 +672,11 @@ public:
 			CanDeviceCommand^ encodeSetLightCommand(System::Byte target_light) {
 				if (target_light > 1) return nullptr;
 				return gcnew CanDeviceCommand((unsigned char)command_index::SET_LIGHT, target_light, 0, 0, 0);
+			}
+
+			CanDeviceCommand^ encodeSetFanForcedCommand(bool stat) {
+				if(stat) return gcnew CanDeviceCommand((unsigned char)command_index::SET_FAN_FORCE, 1, 0, 0, 0);
+				else return gcnew CanDeviceCommand((unsigned char)command_index::SET_FAN_FORCE, 0, 0, 0, 0);
 			}
 
 		};
@@ -766,6 +788,22 @@ public:
 	/// \ingroup PCB303_Interface
 	///@{
 	
+	// Protocol Access Api
+	static ProtocolStructure::StatusRegister::action_code getCollimationActionStatus(void) { return protocol.status_register.collimation_action_status; }
+	static unsigned char getCollimationTargetIndex(void) { return protocol.status_register.collimation_target_index; }
+
+	static ProtocolStructure::StatusRegister::action_code getMirrorActionStatus(void) { return protocol.status_register.mirror_action_status; }
+	static ProtocolStructure::StatusRegister::mirror_target_code getMirrorTargetIndex(void) { return protocol.status_register.mirror_target_index; }
+
+	static ProtocolStructure::StatusRegister::light_target_code getLightStatus(void) { return protocol.status_register.light_status; }
+
+	static unsigned char getStatorPercTemp(void) { return protocol.status_register.stator_temp; }
+	static unsigned char getBulbPercTemp(void) { return protocol.status_register.bulb_temp; }
+
+	static bool getFanStat(void) { return protocol.status_register.fan_status; }
+	static bool getFanForced(void) { return protocol.status_register.fan_forced; }
+
+	// Configuration file access Apis
 	static ConfigurationStructure^ getConfig(void) { return config; }
 	static void setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index);
 
@@ -788,7 +826,9 @@ public:
 	static int getStatorPerc(void) { return stator_temperature_perc; }
 	static int getMaxTubePerc(void) { return max_temperature_perc; }
 
+	// Tube management commands
 	static bool isTubeAlarm() { return false; }
+	static bool setFanActivatonMode(bool forced_mode) {	return device->commandNoWaitCompletion(protocol.command.encodeSetFanForcedCommand(forced_mode), 30);}
 
 	static void resetFaults(void);//!< In case of collimation fault condition, this function starts a new collimation attempt.
 

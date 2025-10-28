@@ -352,13 +352,22 @@ void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
 
 	if (cmd->Contains("GET_STATUS")) {
 		if (cmd->Contains("?")) {
-			stringa = "This command returns the data content of the relevant Device Status and Data registers.\n\r";
-			stringa += "";
+			stringa = "This command returns the data content of the relevant Device Status and Data registers.\n\r";			
 			send(System::Text::Encoding::Unicode->GetBytes(stringa));
 			return;
 		}
 
 		stringa = "Status Register Content: \n\r";
+		stringa += "Format Collimation Action: " + PCB303::getCollimationActionStatus().ToString() + "\n\r";
+		stringa += "Format Collimation Index: " + PCB303::getCollimationTargetIndex().ToString() + "\n\r";
+		stringa += "Mirror Action: " + PCB303::getMirrorActionStatus().ToString() + "\n\r";
+		stringa += "Mirror Target: " + PCB303::getMirrorTargetIndex().ToString() + "\n\r";
+		stringa += "Light Target: " + PCB303::getLightStatus().ToString() + "\n\r";
+		stringa += "Bulb Temperature: " + PCB303::getBulbPercTemp().ToString() + "\n\r";
+		stringa += "Stator Temperature: " + PCB303::getStatorPercTemp().ToString() + "\n\r";
+		stringa += "FAN Status: " + PCB303::getFanStat().ToString() + "\n\r";
+		stringa += "FAN Forced: " + PCB303::getFanForced().ToString() + "\n\r";
+
 		stringa +=  "\n\r";
 
 		send(System::Text::Encoding::Unicode->GetBytes(stringa));
@@ -409,14 +418,46 @@ void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
 	}
 
 
+	if (cmd->Contains("SET_FAN")) {
+		if (cmd->Contains("?")) {
+			stringa  = "This command set the FAN activation mode:\n\r";
+			stringa += "- AUTO: the FAN is activated withthe Tube temperature:\n\r";
+			stringa += "- FORCED: the FAN is forced activated:\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
 
+		
+		if (cmd->Contains(" AUTO")) {
+			// Auto mode
+			if (PCB303::setFanActivatonMode(false)) {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN SET IN AUTO MODE!\n\r"));
+			}
+			else {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN ACTIVATION MODE COMMAND REFUSED!\n\r"));
+			}
+		}
+		else {
+			// Forced Mode
+			if (PCB303::setFanActivatonMode(true)) {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN SET IN FORCED MODE!\n\r"));
+			}
+			else {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN ACTIVATION MODE COMMAND REFUSED!\n\r"));
+			}
+		}
+
+
+		return;
+	}
 
 	// Shows the list of available commands if no valid command is detedcted
 	System::String^ lista;
-	lista = " -> RESET - reset Board\n\r";
-	lista += " -> GET_STATUS	- Shows the protocol registers\n\r";
-	lista += " -> SELECT_FILTER_SLOT	- Filter selection by slot number\n\r";
+	lista =  " -> RESET - reset Board\n\r";
+	lista += " -> GET_STATUS            - Shows the protocol registers\n\r";
+	lista += " -> SELECT_FILTER_SLOT    - Filter selection by slot number\n\r";
 	lista += " -> SELECT_FILTER_MATTER	- Filter selection by Matter\n\r";
+	lista += " -> SET_FAN	            - Fan Activation Mode \n\r";
 
 	send(System::Text::Encoding::Unicode->GetBytes(lista));
 	return;

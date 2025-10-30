@@ -171,6 +171,7 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
         if (large_focus) setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 1);
         else setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 0);
+        
         if (getGeneratorStatus() != R2CP::Stat_Standby) error = exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
     }
     else {

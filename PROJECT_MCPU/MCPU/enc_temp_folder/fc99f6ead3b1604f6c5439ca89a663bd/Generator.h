@@ -437,11 +437,6 @@ protected:
     generator_errors generator3DAecPrePulsePreparation(System::String^ exp_name, int tomo_samples, int tomo_skip, float kV, float mAs, bool islargefocus, int exp_time);
     generator_errors generator3DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, bool islargefocus, int min_exp_time, int max_exp_time);
 
-    //generator_errors generator2DManualPreparation();
-    //generator_errors generator2DAecPreparation();
-    //generator_errors generator3DManualPreparation();
-    //generator_errors generator3DAecPreparation();
-
     inline static float getSelectedAnodeCurrent(void) { return selected_anode_current; }
 
 private:

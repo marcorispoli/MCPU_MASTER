@@ -1479,6 +1479,182 @@ Generator::generator_errors Generator::generator3DPulsePreparation(System::Strin
     return generator_errors::GEN_NO_ERRORS;
 }
 
+
+/// <summary>
+/// This function prepares for the pre-pulse 2D procedure activation
+/// </summary>
+/// 
+/// This function executes the following steps:
+/// - Set a Generator Databank R2CP::DB_Pre with the pre pulse exposure parameters;
+/// - Activates the 2D AEC procedure for the pre pulse execution;
+/// - Clears the Generator system messages (if there should be activated);
+///   
+/// The procedure will log the actual exposure data received by the Generator device
+/// as a consequence of the Databank preparation.
+/// 
+/// <param name="exp_name">A synìmbolic name used for logging</param>
+/// <param name="kV">kV of the exposure</param>
+/// <param name="mAs">total mAs for the pulse</param>
+/// <param name="islargefocus">true=LARGE FOCUS, false=SMALL FOCUS</param>
+/// <param name="det_sync">true=Detector synchronization</param>
+/// <param name="grid_sync">true=Grid Synchronization</param>
+/// <param name="exp_time">Maximum exposure time in ms</param>
+/// <returns></returns>
+Generator::generator_errors Generator::generator3DAecPrePulsePreparation(System::String^ exp_name, int tomo_samples, int tomo_skip, float kV, float mAs, bool islargefocus, int exp_time) {
+    selected_anode_current = 150;
+
+    // Procedure inizialization for Tomo specific data
+    if (!simulator_mode) {
+
+        // Setup the 3D Databank for Tomo skip pulses
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, tomo_skip);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Set_SkipPulse_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Setup the 3D Mammography procedure    
+        R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Aec_Mammography_3D, tomo_samples);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_SetupProcedureV6 error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Assignes the Skip-Pulse Databank to the Standard 3D Mammography procedure    
+        R2CP::CaDataDicGen::GetInstance()->Generator_Assign_SkipPulse_Databank(R2CP::ProcId_Aec_Mammography_3D, R2CP::DB_SkipPulse);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Assign_SkipPulse_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Assignes the Pre Databank to the Index 1 
+        R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pre, R2CP::ProcId_Aec_Mammography_3D, 1);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_AssignDbToProc error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Assignes the Pulse Databank to the Index 2 
+        R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Aec_Mammography_3D, 2);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_AssignDbToProc error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+    }
+
+    // Load Data Bank For pre pulse    
+    if (!simulator_mode) {
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pre, islargefocus, kV, mAs, exp_time);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Set_2D_Databank(DB_Pre) error!");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pre].mA100.value) / 100;
+    }
+
+
+    System::String^ exposure_data_str;
+    exposure_data_str = "kV:" + kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + selected_anode_current; LogClass::logInFile(exposure_data_str);
+
+    if (islargefocus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
+
+    if (!simulator_mode) {
+
+        // Procedure activation
+        LogClass::logInFile(exp_name + "procedure activation");
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate3DAecProcedurePre();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_Activate3DAecProcedurePre error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Clear the active system messages
+        if (!clearSystemMessages()) {
+            LogClass::logInFile(exp_name + "SystemMessages_Clear_Message error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Status not in StandBy
+        updateGeneratorStatus();
+        if (current_generator_status != R2CP::Stat_Standby) {
+            LogClass::logInFile(exp_name + "generator not in standby error");
+            return generator_errors::GEN_INVALID_STATUS;
+        }
+
+    }
+
+    // Preparation completed
+    return generator_errors::GEN_NO_ERRORS;
+}
+
+
+/// <summary>
+/// This function perepares the generator to execute a 3D AEC pulse exposure sequence.
+/// </summary>
+/// 
+/// This function executes the following steps:
+/// - Sets the Databank with the 3 point technical approach (see \ref generatorSet3PointDatabank() for details);
+/// - Sets the Databank to assigne the number of tomo skip pulses;
+/// - Setup the procedure for the tomo sequence;
+/// - Activates the Procedure;
+/// 
+///  <param name="exp_name">A synìmbolic name used for logging</param>
+/// <param name="kV">kV of the exposure</param>
+/// <param name="mAs">total mAs for the pulse</param>
+/// <param name="tomo_samples">Number of valid tomo samples</param>
+/// <param name="tomo_skip">number of the initial detector pulses that will be ignored (skip pulses)</param>
+/// <param name="islargefocus">true=LARGE FOCUS, false=SMALL FOCUS</param>
+/// <param name="min_exp_time">minimum exposure time in ms for every pulse in ms</param>
+/// <param name="max_exp_time">maximum exposure time for every pulse in ms</param>
+/// <returns></returns>
+Generator::generator_errors Generator::generator3DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, bool islargefocus, int min_exp_time, int max_exp_time) {
+    selected_anode_current = 200;
+    generator_errors error;
+
+    if (!simulator_mode) {
+
+        //-------- Setup the 3D pulse using the 3 point approach procedure ---------------------------------------------           
+        error = generatorSet3PointDatabank(R2CP::DB_Pulse, true, kV, mAs / ((float)tomo_samples), tomo_samples, min_exp_time, max_exp_time);
+        if (error != generator_errors::GEN_NO_ERRORS) {
+            LogClass::logInFile(exp_name + "generatorSet3PointDatabank(DB_Pulse) error");
+            return error;
+        }
+
+        // Gets the Anodic current selected
+        selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+    }
+
+    System::String^ exposure_data_str;
+    exposure_data_str = "kV:" + kV; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "mAs:" + mAs; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Anodic-mA:" + selected_anode_current; LogClass::logInFile(exposure_data_str);
+
+    if (islargefocus) { exposure_data_str = "Focus: LARGE";  LogClass::logInFile(exposure_data_str); }
+    else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
+
+    
+    if (!simulator_mode) {
+
+        // Procedure activation
+        LogClass::logInFile(exp_name + " procedure activation");
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate3DAecProcedurePulse();
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_Activate3DAecProcedurePulse error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+        
+    }
+
+    // Preparation completed
+    return generator_errors::GEN_NO_ERRORS;
+}
+
+
 /// <summary>
 /// This function write a formatted file that will be used by Doxygen 
 /// with the Tube Load data.

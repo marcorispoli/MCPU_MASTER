@@ -1500,23 +1500,16 @@ Generator::generator_errors Generator::generator3DPulsePreparation(System::Strin
 /// <param name="grid_sync">true=Grid Synchronization</param>
 /// <param name="exp_time">Maximum exposure time in ms</param>
 /// <returns></returns>
-Generator::generator_errors Generator::generator3DAecPrePulsePreparation(System::String^ exp_name, int tomo_samples, int tomo_skip, float kV, float mAs, bool islargefocus, int exp_time) {
+Generator::generator_errors Generator::generator3DAecPrePulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time) {
     selected_anode_current = 150;
 
     // Procedure inizialization for Tomo specific data
     if (!simulator_mode) {
 
         // Setup the 3D Databank for Tomo skip pulses
-        R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, tomo_skip);
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, 0);
         if (!handleCommandProcessedState(nullptr)) {
             LogClass::logInFile(exp_name + "Generator_Set_SkipPulse_Databank error");
-            return generator_errors::GEN_COMMUNICATION_ERROR;
-        }
-
-        // Setup the 3D Mammography procedure    
-        R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Aec_Mammography_3D, tomo_samples);
-        if (!handleCommandProcessedState(nullptr)) {
-            LogClass::logInFile(exp_name + "Patient_SetupProcedureV6 error");
             return generator_errors::GEN_COMMUNICATION_ERROR;
         }
 
@@ -1603,18 +1596,35 @@ Generator::generator_errors Generator::generator3DAecPrePulsePreparation(System:
 /// - Setup the procedure for the tomo sequence;
 /// - Activates the Procedure;
 /// 
-///  <param name="exp_name">A synìmbolic name used for logging</param>
+///  <param name="exp_name">A symbolic name used for logging</param>
 /// <param name="kV">kV of the exposure</param>
 /// <param name="mAs">total mAs for the pulse</param>
 /// <param name="tomo_samples">Number of valid tomo samples</param>
-/// <param name="tomo_skip">number of the initial detector pulses that will be ignored (skip pulses)</param>
 /// <param name="islargefocus">true=LARGE FOCUS, false=SMALL FOCUS</param>
 /// <param name="min_exp_time">minimum exposure time in ms for every pulse in ms</param>
 /// <param name="max_exp_time">maximum exposure time for every pulse in ms</param>
 /// <returns></returns>
-Generator::generator_errors Generator::generator3DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, bool islargefocus, int min_exp_time, int max_exp_time) {
+Generator::generator_errors Generator::generator3DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time) {
     selected_anode_current = 200;
     generator_errors error;
+
+    if (!simulator_mode) {
+
+        // Setup the 3D Databank for Tomo skip pulses
+        R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, tomo_skip);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Generator_Set_SkipPulse_Databank error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+        // Setup the 3D Mammography procedure    
+        R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Aec_Mammography_3D, tomo_samples);
+        if (!handleCommandProcessedState(nullptr)) {
+            LogClass::logInFile(exp_name + "Patient_SetupProcedureV6 error");
+            return generator_errors::GEN_COMMUNICATION_ERROR;
+        }
+
+    }
 
     if (!simulator_mode) {
 

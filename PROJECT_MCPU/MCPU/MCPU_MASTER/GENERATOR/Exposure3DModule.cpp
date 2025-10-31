@@ -89,11 +89,11 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     
     
     // 3D Pulse Preparation
-    System::String^ exposure_data_str = ExpName + " ---------------- "; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "FPS:" + Exposures::getTomoExposure()->tomo_fps; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Filter:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    System::String^ exposure_data_str = ExpName + " ---------------- " + "\n";
+    exposure_data_str = "DETECTOR TYPE: " + detector_param + "\n";
+    exposure_data_str = "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time + "\n";
+    exposure_data_str = "FPS:" + Exposures::getTomoExposure()->tomo_fps + "\n";
+    exposure_data_str = "Filter:" + Exposures::getExposurePulse(0)->filter.ToString() + "\n";
     exposure_data_str = "Samples:" + Exposures::getTomoExposure()->tomo_samples; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Skips:" + Exposures::getTomoExposure()->tomo_skip; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Position Home:" + Exposures::getTomoExposure()->tomo_home; LogClass::logInFile(exposure_data_str);
@@ -400,23 +400,22 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
 
 
     // Exposure data Logging
-    System::String^ exposure_data_str = ExpName + " ---------------- "; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "DETECTOR MAX 3D PRE TIME: " + exposure_time_pre; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "FPS:" + Exposures::getTomoExposure()->tomo_fps; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Samples:" + Exposures::getTomoExposure()->tomo_samples; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Skips:" + Exposures::getTomoExposure()->tomo_skip; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Position Home:" + Exposures::getTomoExposure()->tomo_home; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Position End:" + Exposures::getTomoExposure()->tomo_end; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Speed:" + Exposures::getTomoExposure()->tomo_speed; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Ramp-Acc:" + Exposures::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Ramp-Dec:" + Exposures::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
-      
-    // Pre Pulse Preparation     
-    exposure_data_str = "\n\nPre-Pulse Data:"; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Filter:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
-    error = (exposure_completed_errors) generator3DAecPrePulsePreparation(ExpName, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, large_focus, exposure_time_pre);
+    System::String^ exposure_data_str = ExpName + " ---------------- " + "\n";
+    exposure_data_str += "DETECTOR TYPE: " + detector_param + "\n";
+    exposure_data_str += "DETECTOR MAX 3D PRE TIME: " + exposure_time_pre + "\n";
+    exposure_data_str += "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time + "\n";
+    exposure_data_str += "FPS:" + Exposures::getTomoExposure()->tomo_fps + "\n";
+    exposure_data_str += "Samples:" + Exposures::getTomoExposure()->tomo_samples + "\n";
+    exposure_data_str += "Skips:" + Exposures::getTomoExposure()->tomo_skip + "\n";
+    exposure_data_str += "Position Home:" + Exposures::getTomoExposure()->tomo_home + "\n";
+    exposure_data_str += "Position End:" + Exposures::getTomoExposure()->tomo_end + "\n";
+    exposure_data_str += "Speed:" + Exposures::getTomoExposure()->tomo_speed + "\n";
+    exposure_data_str += "Ramp-Acc:" + Exposures::getTomoExposure()->tomo_acc + "\n";
+    exposure_data_str += "Ramp-Dec:" + Exposures::getTomoExposure()->tomo_acc + "\n\n";
+    exposure_data_str += "Pre-Pulse Data:" + "\n";
+    exposure_data_str += "Filter:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+
+    error = (exposure_completed_errors) generator3DAecPrePulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, large_focus, exposure_time_pre);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 
@@ -443,8 +442,7 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
 
         // Longer Timeout: the generator checks for the correct seqeunce here
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
-        setXrayEnable(false);
-
+      
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
         if (large_focus) setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 1);
         else setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 0);
@@ -460,25 +458,6 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
     // Sends the pulse-completed event to the AWS
     awsProtocol::EVENT_exposurePulseCompleted(0);
 
-    // Waits for the Validated Pulse from the acquisition software
-    LogClass::logInFile(ExpName + "Wait for the AWS exposure data");
-    timeout = 100; // 10 seconds timeout
-    while (timeout--) {
-        if (getExposurePulse(1)->isValid()) break;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-    if (!timeout) {
-        return exposure_completed_errors::XRAY_TIMEOUT_AEC;
-    }
-    getExposurePulse(1)->validated = false;
-    LogClass::logInFile(ExpName + "AWS data Ready");
-
-    // Set the filter selected is the expected into the pulse(1). No wait for positioning here    
-    PCB303::selectFilter(getExposurePulse(1)->filter);
-
-    // Checks the filter in position
-    if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
-
 
     // Activation the Tilt Scan mode
     if (!demo) {
@@ -490,8 +469,24 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
 
     }
 
+    
+    // Waits for the Validated Pulse from the acquisition software
+    LogClass::logInFile(ExpName + "Wait for the AWS exposure data");
+    timeout = 1000; // 10 seconds timeout
+    while (timeout--) {
+        if (getExposurePulse(1)->isValid()) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    if (!timeout) {
+        return exposure_completed_errors::XRAY_TIMEOUT_AEC;
+    }
+    getExposurePulse(1)->validated = false;
+    LogClass::logInFile(ExpName + "AWS data Ready");
+
+    
     // 3D Pulse Data Setup
-    error = (exposure_completed_errors)generator3DAecPulsePreparation(ExpName, Exposures::getExposurePulse(1)->kV, Exposures::getExposurePulse(1)->mAs, Exposures::getTomoExposure()->tomo_samples, large_focus, 25, exposure_time);
+    error = (exposure_completed_errors)generator3DAecPulsePreparation(ExpName, Exposures::getExposurePulse(1)->kV, Exposures::getExposurePulse(1)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 

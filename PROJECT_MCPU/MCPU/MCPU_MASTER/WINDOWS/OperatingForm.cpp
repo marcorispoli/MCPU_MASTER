@@ -653,7 +653,7 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 		else thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
 	}
 
-	
+
 
 }
 
@@ -665,21 +665,21 @@ void OperatingForm::evaluateCompressorReleaseStatus(void) {
 		decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 		return;
 	}
-	
+
 	if (cmpmode == Exposures::getCompressorMode()) return;
 	cmpmode = Exposures::getCompressorMode();
 
 	if (cmpmode == Exposures::compression_mode_option::CMP_RELEASE) decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
 	else decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
-	
+
 }
 void OperatingForm::evaluateCollimatorStatus(void) {
-	
+
 
 	// Sets the current lamp status
 	if (PCB303::getPowerLightStatus() != OPERSTATUS::Registers.collimator.light_on) {
 		OPERSTATUS::Registers.collimator.light_on = PCB303::getPowerLightStatus();
-		if(OPERSTATUS::Registers.collimator.light_on) lampButton->BackgroundImage = LAMP_ON_IMAGE;
+		if (OPERSTATUS::Registers.collimator.light_on) lampButton->BackgroundImage = LAMP_ON_IMAGE;
 		else lampButton->BackgroundImage = LAMP_OFF_IMAGE;
 	}
 
@@ -698,7 +698,7 @@ void OperatingForm::evaluateMagStatus(void) {
 	static float curFactor = 255;
 
 	float magfactor = (float)PCB302::getMagnifierFactor() / 10;
-	if (curFactor != magfactor) {		
+	if (curFactor != magfactor) {
 		curFactor = magfactor;
 		labelMag->Text = magfactor.ToString() + "x";
 	}
@@ -710,14 +710,14 @@ void OperatingForm::evaluateDoorStatus(void) {
 	if (PCB301::isClosedDoor() != OPERSTATUS::Registers.closed_door) {
 		OPERSTATUS::Registers.closed_door = PCB301::isClosedDoor();
 
-		if (OPERSTATUS::Registers.closed_door ) {
+		if (OPERSTATUS::Registers.closed_door) {
 			doorStatus->BackgroundImage = DOOR_CLOSED_IMAGE;
 		}
 		else {
 			doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
 		}
 	}
-	
+
 }
 
 void OperatingForm::evaluateSlideStatus(bool init) {
@@ -727,31 +727,39 @@ void OperatingForm::evaluateSlideStatus(bool init) {
 	int cur_stat;
 	if (SlideMotor::device->getCurrentPosition() < 500) cur_stat = 0;
 	else cur_stat = 1;
-	
+
 	if (stat != cur_stat) {
 		stat = cur_stat;
 
-		if(stat == 0)  slideButton->BackgroundImage = SLIDE_0_IMAGE;
+		if (stat == 0)  slideButton->BackgroundImage = SLIDE_0_IMAGE;
 		else slideButton->BackgroundImage = SLIDE_10_IMAGE;
 	}
 
-	
+
 }
 
 void OperatingForm::evaluateGridStatus(void) {
 	// Evaluates the current selected Exposure mode to define what is the current grid position
 	bool inOut_Field = false; // Out Field
 
-	switch (Exposures::getExposureMode()) {
-	case Exposures::exposure_type_options::AEC_2D: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::AEC_3D: inOut_Field = false; break; // Out Field
-	case Exposures::exposure_type_options::AEC_AE: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::AEC_COMBO: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::MAN_2D: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::MAN_3D: inOut_Field = false; break; // Out Field
-	case Exposures::exposure_type_options::MAN_AE: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::MAN_COMBO: inOut_Field = true; break; // In Field
-	default:inOut_Field = true; break; // In Field
+
+	if (Exposures::getGridMode()  == Exposures::grid_mode_selection_index::GRID_IN){
+		inOut_Field = true;
+	}else if (Exposures::getGridMode() == Exposures::grid_mode_selection_index::GRID_OUT) {
+		inOut_Field = false;
+	}
+	else {
+		switch (Exposures::getExposureMode()) {
+		case Exposures::exposure_type_options::AEC_2D: inOut_Field = true; break; // In Field
+		case Exposures::exposure_type_options::AEC_3D: inOut_Field = false; break; // Out Field
+		case Exposures::exposure_type_options::AEC_AE: inOut_Field = true; break; // In Field
+		case Exposures::exposure_type_options::AEC_COMBO: inOut_Field = true; break; // In Field
+		case Exposures::exposure_type_options::MAN_2D: inOut_Field = true; break; // In Field
+		case Exposures::exposure_type_options::MAN_3D: inOut_Field = false; break; // Out Field
+		case Exposures::exposure_type_options::MAN_AE: inOut_Field = true; break; // In Field
+		case Exposures::exposure_type_options::MAN_COMBO: inOut_Field = true; break; // In Field
+		default:inOut_Field = true; break; // In Field
+		}
 	}
 
 	if(inOut_Field)	PCB304::setAutoGridInField();

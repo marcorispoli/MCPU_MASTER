@@ -261,9 +261,9 @@ public:
 		protocol.data_register.ManualXrayDisableEnable = false; 
 		protocol.data_register.EnableStartGrid = true; 
 	}
-	static void syncGeneratorOff(void) { 
+	static void syncGeneratorOff(bool xray_disable) { 
 		protocol.data_register.ManualXrayDisableEnable = true; 
-		protocol.data_register.ManualXrayDisableStatus = true; 
+		protocol.data_register.ManualXrayDisableStatus = xray_disable;
 		protocol.data_register.EnableStartGrid = false; 
 	}
 

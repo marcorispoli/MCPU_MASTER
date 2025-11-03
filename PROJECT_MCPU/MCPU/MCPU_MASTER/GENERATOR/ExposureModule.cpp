@@ -129,9 +129,6 @@ void Exposures::exposureManagementLoop(bool demo) {
     LogClass::logInFile("GENERATOR EXPOSURE RESULT:" + Exposures::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
    
 
-    // De-synch the grid device
-    PCB304::syncGeneratorOff();
-
     // Only in operating mode
     if (Exposures::getExposureMode() != Exposures::exposure_type_options::TEST_2D) {
 

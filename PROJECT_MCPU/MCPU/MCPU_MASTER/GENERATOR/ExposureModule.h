@@ -336,6 +336,16 @@ public:
         FOCUS_SMALL
     };
 
+    enum class grid_mode_selection_index {
+        GRID_AUTO = 0,
+        GRID_IN,
+        GRID_OUT
+    };
+
+    enum class tomo_mode_selection_index {
+        TOMO_AUTO = 0,
+        TOMO_CALIB,
+    };
 
     static void startSimulator(void) { getDevice()->startSimulatorMode(); }
     static void startGenerator(void) { getDevice()->startNormalMode(); }
@@ -380,7 +390,14 @@ public:
     }
 
     inline static void setFocusMode(focus_mode_selection_index mode) { focus_selection_mode = mode; }
-    
+    inline static void setGridMode(grid_mode_selection_index mode) { grid_selection_mode = mode; }
+    inline static void setTomoMode(tomo_mode_selection_index mode) { tomo_selection_mode = mode; }
+    inline static focus_mode_selection_index getFocusMode(void) { return focus_selection_mode; }
+    inline static grid_mode_selection_index getGridMode(void) { return grid_selection_mode; }
+    inline static tomo_mode_selection_index getTomoMode(void) { return tomo_selection_mode; }
+
+
+
     inline static bool isXrayCompleted() { return xray_completed; }
     inline static bool isXrayRunning() { return !xray_completed; }
     inline static void clearXrayCompleted() { xray_completed = false; }
@@ -420,7 +437,11 @@ protected:
     bool getXrayPushButton(void) override;
 
 private:
+    // The following variables set some special behavior during the exposures.
     static focus_mode_selection_index focus_selection_mode = focus_mode_selection_index::FOCUS_AUTO;
+    static grid_mode_selection_index  grid_selection_mode =  grid_mode_selection_index::GRID_AUTO;
+    static tomo_mode_selection_index  tomo_selection_mode =  tomo_mode_selection_index::TOMO_AUTO;
+
 
     static cli::array<exposure_pulse^>^ pulse = gcnew array<exposure_pulse^> {gcnew exposure_pulse (),gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };
     static cli::array<exposure_pulse^>^ exposed = gcnew array<exposure_pulse^> {gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };

@@ -118,7 +118,7 @@ void PCB304::runningLoop(void) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     // Command execution request here: the commands can be executed only if the Auto In/Out is disabled
-    // The test commands are executed with the with delayed protocol command. So if a command completeis detected 
+    // The test commands are executed with the with delayed protocol command. So if a command complete is detected 
     // the previous in/out status shall be restored
     if (!device->isCommandCompleted()) return;
     command_busy = false;

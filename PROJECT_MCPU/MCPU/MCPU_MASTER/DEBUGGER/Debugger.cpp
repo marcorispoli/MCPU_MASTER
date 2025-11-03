@@ -229,8 +229,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 
 		send(System::Text::Encoding::Unicode->GetBytes(" ->Auto Grid In Command!\n\r"));
 		PCB304::resetErrorCount();
-		PCB304::setAutoGridInField();
-		PCB304::syncGeneratorOff();
+		PCB304::setAutoGridInField();		
 		return;
 	}
 
@@ -246,8 +245,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 
 		send(System::Text::Encoding::Unicode->GetBytes(" ->Auto Grid Out Command!\n\r"));
 		PCB304::resetErrorCount();
-		PCB304::setAutoGridOutField();
-		PCB304::syncGeneratorOff();
+		PCB304::setAutoGridOutField();		
 		return;
 	}
 
@@ -314,7 +312,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 		}
 
 		// Activates the synch mode 
-		PCB304::syncGeneratorOff();
+		PCB304::syncGeneratorOff(true);
 		send(System::Text::Encoding::Unicode->GetBytes(" -> Grid Synchronization deactivated!\n\r"));
 		return;
 	}
@@ -512,7 +510,7 @@ void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
 	System::String^ stringa = "";
 
 
-	if (cmd->Contains("SET_FOCUS")) {
+	if (cmd->Contains("SET_FOCUS_MODE")) {
 		if (cmd->Contains("?")) {
 			stringa = "This command select the focus usage with the following modes:\n\r";
 			stringa += "- AUTO: the focus is selected automatically (magnifier device detection) \n\r";
@@ -542,10 +540,72 @@ void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
 		return;
 	}
 
+	if (cmd->Contains("SET_GRID_MODE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command select the Grid In/Out for the 2D exposures:\n\r";
+			stringa += "- AUTO: the grid is selected by the current operating condition \n\r";
+			stringa += "- GRID_IN: the grid is forced In Field \n\r";
+			stringa += "- GRID_OUT: the grid is forced out field \n\r";
+
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (cmd->Contains("AUTO")) {
+			Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_AUTO);
+			stringa = "GRID mode set in AUTO mode \n\r";
+		}
+		else if (cmd->Contains("GRID_IN")) {
+			Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_IN);
+			stringa = "GRID mode set in GRID_IN mode \n\r";
+
+		}
+		else {
+			Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_OUT);
+			stringa = "GRID mode set in GRID_OUT mode \n\r";
+
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+		return;
+	}
+
+	if (cmd->Contains("SET_TOMO_MODE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command select the 3D exposure behavior:\n\r";
+			stringa += "- AUTO: the 3D exposure is set normally by the current operating mode \n\r";
+			stringa += "- CALIB: the 3D is set for the calibration (steady arm with 25 pulses) \n\r";
+
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (cmd->Contains("AUTO")) {
+			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO);
+			stringa = "TOMO mode set in AUTO mode \n\r";
+		}
+		else if (cmd->Contains("CALIB")) {
+			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_CALIB);
+			stringa = "TOMO mode set in CALIB mode \n\r";
+
+		}
+		else {
+			stringa = "Wrong parameter syntax!! \n\r";
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+		return;
+	}
+
+
+
+
 
 	// Shows the list of available commands if no valid command is detedcted
 	System::String^ lista;
-	lista = " -> SET_FOCUS - sets the current exposure focus mode\n\r";
+	lista = " -> SET_FOCUS_MODE - sets the current exposure focus mode\n\r";
+	lista += " -> SET_GRID_MODE - sets the current exposure grid usage mode\n\r";
+	lista += " -> SET_TOMO_MODE - sets the current exposure Tomo usage mode\n\r";
 	lista += "\n\r";
 
 	send(System::Text::Encoding::Unicode->GetBytes(lista));

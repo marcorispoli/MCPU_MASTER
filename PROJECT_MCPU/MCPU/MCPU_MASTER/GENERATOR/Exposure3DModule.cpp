@@ -15,14 +15,21 @@ using namespace System::Collections::Generic;
 
 
 Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool demo) {
-    System::String^ ExpName ;
+    System::String^ ExpName;
     bool large_focus = true;
     bool detector_synch = true;
     int timeout;
     exposure_completed_errors error;
 
-    if (demo) ExpName = "Demo Exposure 3D Manual>";
-    else ExpName = "Exposure 3D Manual>";
+    if (demo) {
+        if (tomo_selection_mode == tomo_mode_selection_index::TOMO_CALIB) ExpName = "Exposure 3D DEMO for calibration>";
+        else ExpName = "Exposure 3D DEMO in manual mode>";
+    }
+    else {
+
+        if (tomo_selection_mode == tomo_mode_selection_index::TOMO_CALIB) ExpName = "Exposure 3D for calibration>";
+        else ExpName = "Exposure 3D in manual mode>";
+    }
 
     // Gets the Detector used in the exposure sequence:
     // The Detector determines the maximum integration time allowd and 
@@ -58,7 +65,7 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
         return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
-    PCB304::syncGeneratorOff();
+    PCB304::syncGeneratorOff(false);
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
@@ -70,18 +77,33 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
         return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
+    // Tomo Home position activation
+    
     // 20s waits for ready condition
     timeout = 200;
     while (!TiltMotor::device->isReady()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         timeout--;
-        if(!timeout) return exposure_completed_errors::XRAY_TIMEOUT_TILT_IN_HOME;
+        if (!timeout) return exposure_completed_errors::XRAY_TIMEOUT_TILT_IN_HOME;
     }
+
+    if (tomo_selection_mode == tomo_mode_selection_index::TOMO_CALIB) {
+        // Starts the Tilt positioning in Home. Further in the code the Home position is checked 
+        if (!TiltMotor::setTarget(TiltMotor::target_options::SCOUT, 0)) {
+            return exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+        }
+        LogClass::logInFile(ExpName + "TOMO IN SCOUT FOR THE CALIBRATION PROCEDURE! ");
+    }
+    else {
+
+        // Starts the Tilt positioning in Home. Further in the code the Home position is checked 
+        if (!TiltMotor::setTarget(TiltMotor::target_options::TOMO_H, 0)) {
+            return exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+        }
+        LogClass::logInFile(ExpName + "TOMO IN HOME POSITION ");
+    }
+
     
-    // Starts the Tilt positioning in Home. Further in the code the Home position is checked 
-    if (!TiltMotor::setTarget(TiltMotor::target_options::TOMO_H, 0)) {
-        return exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
-    }
 
 
    
@@ -103,7 +125,13 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     exposure_data_str = "Ramp-Dec:" + Exposures::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
     
     
-    error = (exposure_completed_errors)generator3DPulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
+    if (tomo_selection_mode == tomo_mode_selection_index::TOMO_CALIB) {
+        error = (exposure_completed_errors)generator3DPulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, 25, 0, large_focus, 25, exposure_time);
+    }
+    else {
+        error = (exposure_completed_errors)generator3DPulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
+    }
+   
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 
@@ -120,14 +148,20 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     if (TiltMotor::device->getCommandCompletedCode() != TiltMotor::MotorCompletedCodes::COMMAND_SUCCESS) {
         return Exposures::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
     }
-
+        
+    // Activate the Tube Tomo Scan
     if (!demo) {
 
-        // Activate the Tube Tomo Scan
-        if (!TiltMotor::activateTomoScan(Exposures::getTomoExposure()->tomo_end, getTomoExposure()->tomo_speed, getTomoExposure()->tomo_acc, getTomoExposure()->tomo_dec)) {
-            return Exposures::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+        if (tomo_selection_mode != tomo_mode_selection_index::TOMO_CALIB) {
+            if (!TiltMotor::activateTomoScan(Exposures::getTomoExposure()->tomo_end, getTomoExposure()->tomo_speed, getTomoExposure()->tomo_acc, getTomoExposure()->tomo_dec)) {
+                return Exposures::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+            }
+            LogClass::logInFile(ExpName + "TOMO SCAN ACTIVATION WITH SYNC ENABLED ");
+
         }
-       
+        else {
+            LogClass::logInFile(ExpName + "TOMO SCAN FOR CALIBRATION: NO TRX ACTIVATION ");
+        }
     }
    
     // Checks the filter in position
@@ -232,7 +266,7 @@ Exposures::exposure_completed_errors Exposures::man_3d_static_exposure_procedure
     }
 
     // Disables the sinch grid with the detector
-    PCB304::syncGeneratorOff();
+    PCB304::syncGeneratorOff(false);
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
@@ -370,7 +404,7 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
     }
 
     // No synch needed for tomo 
-    PCB304::syncGeneratorOff();
+    PCB304::syncGeneratorOff(false);
 
     // Filter selection for the Pre Pulse
     PCB303::selectFilter(getExposurePulse(0)->filter);

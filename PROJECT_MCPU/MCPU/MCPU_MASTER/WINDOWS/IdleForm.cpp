@@ -282,7 +282,7 @@ void IdleForm::initIdleStatus(void) {
 	/// and to left the grid out of field.
 	PCB304::resetErrorCount();
 	PCB304::setAutoGridInField();
-	PCB304::syncGeneratorOff();
+	PCB304::syncGeneratorOff(true);
 	
 	/// The Idle Operatig Mode window timer is started with 100ms schedule
 	idleTimer->Start();	

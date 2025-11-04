@@ -479,19 +479,21 @@ bool  Generator::handleCommandProcessedState(unsigned char* cd) {
 bool Generator::generatorSetup(void) {
     LogClass::logInFile("GENERATOR: Setup procedure\n");
     
-    // Setup the 2D Test (no grid)  procedure
-    LogClass::logInFile("GENERATOR: Setup 2D test no grid procedure \n");
-    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Test, 0);
+    // Setup the 2D Procedures
+    LogClass::logInFile("GENERATOR: Setup ProcId_2D_NoDet_NoGrid procedure \n");
+    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_2D_NoDet_NoGrid, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
-    // Setup the 2D Test (with grid)  procedure
-    LogClass::logInFile("GENERATOR: Setup 2D test with grid procedure \n");
-    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Test_with_grid, 0);
+    LogClass::logInFile("GENERATOR: Setup ProcId_2D_NoDet_NoGrid ProcId_2D_NoDet_WithGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_2D_NoDet_WithGrid, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
-    // Setup the 2D Mammography  procedure
-    LogClass::logInFile("GENERATOR: Setup 2D Mammography no AEC procedure \n");
-    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Standard_Mammography_2D, 0);
+    LogClass::logInFile("GENERATOR: Setup ProcId_2D_NoDet_NoGrid ProcId_2D_WithDet_NoGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_2D_WithDet_NoGrid, 0);
+    if (!handleCommandProcessedState(nullptr)) return false;
+
+    LogClass::logInFile("GENERATOR: Setup ProcId_2D_NoDet_NoGrid ProcId_2D_WithDet_WithGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_2D_WithDet_WithGrid, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 2D Mammography with AEC  procedure
@@ -524,20 +526,29 @@ bool Generator::generatorSetup(void) {
     R2CP::CaDataDicGen::GetInstance()->Generator_Set_SkipPulse_Databank(R2CP::DB_SkipPulse, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
+
+
     // Assignes the Pulse Databank to the Index 1 of the Standard test procedure
-    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Test \n");
-    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Test, 1);
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_2D_NoDet_NoGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_2D_NoDet_NoGrid, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 1 of the Standard test with grid procedure
-    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Test_with_grid \n");
-    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Test_with_grid, 1);
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_2D_NoDet_WithGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_2D_NoDet_WithGrid, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 1 of the Standard Mammography procedure
-    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Mammography_2D \n");
-    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Standard_Mammography_2D, 1);
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_2D_WithDet_NoGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_2D_WithDet_NoGrid, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
+
+    // Assignes the Pulse Databank to the Index 1 of the Standard Mammography procedure
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_2D_WithDet_WithGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_2D_WithDet_WithGrid, 1);
+    if (!handleCommandProcessedState(nullptr)) return false;
+
+
 
     // Assignes the Pre-pulse Databank to the Index 1 of the Standard Mammography with AEC procedure
     LogClass::logInFile("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_Aec_Mammography_2D \n");
@@ -1228,7 +1239,6 @@ Generator::generator_errors Generator::generator2DPulsePreparation(System::Strin
     else { exposure_data_str = "Focus: SMALL";  LogClass::logInFile(exposure_data_str); }
 
     if (!simulator_mode) {
-        if (det_sync) grid_sync = true; // Procedure activation 
         R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DProcedurePulse(det_sync, grid_sync);
         if (!handleCommandProcessedState(nullptr)) {
             LogClass::logInFile(exp_name + "Patient_Activate2DProcedurePulse error");

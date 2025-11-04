@@ -36,8 +36,8 @@ static const unsigned short  GENERATOR_NODE_ID = 6; //!< Generator Node ID
 static const unsigned short  SERVICE_TOOL_NODE_ID = 9; //!< Service Tool Node ID
 
 static const unsigned short  APPLICATION_NODE_ID = 17; //!< Node ID of the Application
-static const unsigned short  DIRECT_WORKSTATION_ID = 1; //!< Workstation ID for Test Exposures without synch
-static const unsigned short  DETECTOR_WORKSTATION_ID = 5; //!< Workstation ID for Detector synchronization signals
+static const unsigned short  DIRECT_WORKSTATION_ID = 1; 
+static const unsigned short  DYNAMIC_WORKSTATION_ID = 2; 
 
 
 ///

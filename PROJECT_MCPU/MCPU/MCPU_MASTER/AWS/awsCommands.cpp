@@ -1151,6 +1151,49 @@ void   awsProtocol::SET_ExposureData(void) {
     return;
 }
 
+void   awsProtocol::SET_TestMode(void) {
+    if (pDecodedFrame->parameters->Count != 3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS(3)"; ackNok(); return; }
+   
+    // Behavior of the Focus
+    if (pDecodedFrame->parameters[0] == "AUTO") {
+        Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_AUTO);
+    }else if(pDecodedFrame->parameters[0] == "LARGE") {
+        Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_LARGE);
+    }else if (pDecodedFrame->parameters[0] == "SMALL") {
+        Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_LARGE);
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_FOCUS_PARAMETERS"; ackNok(); return;
+    }
+
+    // Behavior of the Grid
+    if (pDecodedFrame->parameters[1] == "AUTO") {
+        Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_AUTO);
+    }
+    else if (pDecodedFrame->parameters[1] == "GRID_IN") {
+        Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_IN);
+    }
+    else if (pDecodedFrame->parameters[1] == "GRID_OUT") {
+        Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_OUT);
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_GRID_PARAMETERS"; ackNok(); return;
+    }
+
+    // Behavior of the TOMO
+    if (pDecodedFrame->parameters[2] == "AUTO") {
+        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO);
+    }else if (pDecodedFrame->parameters[2] == "CALIB") {
+        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_CALIB);
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_TOMO_PARAMETERS"; ackNok(); return;
+    }
+
+    ackOk();
+    return;
+}
+
 /// \addtogroup AWSProtocolDescription
 /// 
 /// <div style="page-break-after: always;"></div>

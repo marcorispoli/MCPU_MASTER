@@ -42,10 +42,12 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
     if (PCB304::isGridOnFieldReady()) {
         LogClass::logInFile(ExpName + "GRID IN-FIELD POSITION: Synch On  ");
         PCB304::syncGeneratorOn();
+        grid_synch = true;
     }
     else if (PCB304::isGridOffFieldReady()) {
         LogClass::logInFile(ExpName + "GRID OUT-FIELD POSITION: Synch Off  ");
         PCB304::syncGeneratorOff(false);
+        grid_synch = false;
     }
     else {
         return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;

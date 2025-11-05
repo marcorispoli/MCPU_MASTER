@@ -330,15 +330,14 @@ public:
     /// This class enumerates all the possible focus selection modalities
     /// 
     /// </summary>
-    enum class focus_mode_selection_index {
-        FOCUS_AUTO = 0,
+    enum class focus_selection_index {
+        FOCUS_AUTO=0,
         FOCUS_LARGE,
         FOCUS_SMALL
     };
 
-    enum class grid_mode_selection_index {
-        GRID_AUTO = 0,
-        GRID_IN,
+    enum class grid_selection_index {
+        GRID_IN=0,
         GRID_OUT
     };
 
@@ -389,11 +388,14 @@ public:
         return  pulse[seq];
     }
 
-    inline static void setFocusMode(focus_mode_selection_index mode) { focus_selection_mode = mode; }
-    inline static void setGridMode(grid_mode_selection_index mode) { grid_selection_mode = mode; }
+    static void setAutoFocus(void);
+    inline static void setFocus(focus_selection_index focus) { focus_selection = focus; }
+    inline static void setGrid(grid_selection_index grid) { grid_selection = grid; }
+    inline static focus_selection_index getFocus(void) { return focus_selection; }
+    inline static grid_selection_index getGrid(void) { return grid_selection; }
+
+
     inline static void setTomoMode(tomo_mode_selection_index mode) { tomo_selection_mode = mode; }
-    inline static focus_mode_selection_index getFocusMode(void) { return focus_selection_mode; }
-    inline static grid_mode_selection_index getGridMode(void) { return grid_selection_mode; }
     inline static tomo_mode_selection_index getTomoMode(void) { return tomo_selection_mode; }
 
 
@@ -438,8 +440,8 @@ protected:
 
 private:
     // The following variables set some special behavior during the exposures.
-    static focus_mode_selection_index focus_selection_mode = focus_mode_selection_index::FOCUS_AUTO;
-    static grid_mode_selection_index  grid_selection_mode =  grid_mode_selection_index::GRID_AUTO;
+    static focus_selection_index focus_selection = focus_selection_index::FOCUS_LARGE;
+    static grid_selection_index  grid_selection =  grid_selection_index::GRID_OUT;
     static tomo_mode_selection_index  tomo_selection_mode =  tomo_mode_selection_index::TOMO_AUTO;
 
 

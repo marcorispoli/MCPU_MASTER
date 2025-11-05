@@ -269,8 +269,11 @@ public:
 
 
 	// Status Register Content Inspection
-	inline static bool isGridOnFieldReady(void) { return protocol.status_register.inField; }
+	inline static bool isGridInFieldReady(void) { return protocol.status_register.inField; }
 	inline static bool isGridOffFieldReady(void) { return protocol.status_register.outField;}
+
+	static bool waitGridCompleted(void);
+
 	inline static bool isInOutTest(void) { return protocol.status_register.inout_executing; }
 	inline static bool isTrasversalTest(void) { return protocol.status_register.transversal_executing; }
 	inline static bool isHome(void) { return protocol.status_register.home; }

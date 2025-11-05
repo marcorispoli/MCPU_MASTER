@@ -202,7 +202,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 		}
 
 		stringa = "Status Register Content: \n\r";
-		stringa += "inField:" + PCB304::isGridOnFieldReady() + "\n\r";
+		stringa += "inField:" + PCB304::isGridInFieldReady() + "\n\r";
 		stringa += "outField:" + PCB304::isGridOffFieldReady() + "\n\r";
 		stringa += "InOutTestExecuting:" + PCB304::isInOutTest() + "\n\r";
 		stringa += "TransversalTestExecuting:" + PCB304::isTrasversalTest() + "\n\r";
@@ -521,17 +521,18 @@ void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
 			return;
 		}
 
+
 		if (cmd->Contains("AUTO")) {
-			Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_AUTO);
+			Exposures::setFocus(Exposures::focus_selection_index::FOCUS_AUTO);
 			stringa = "Focus in AUTO mode \n\r";
 		}
 		else if (cmd->Contains("LARGE")) {
-			Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_LARGE);
+			Exposures::setFocus(Exposures::focus_selection_index::FOCUS_LARGE);
 			stringa = "Focus in LARGE mode \n\r";
 
 		}
 		else {
-			Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_SMALL);
+			Exposures::setFocus(Exposures::focus_selection_index::FOCUS_SMALL);
 			stringa = "Focus in SMALL mode \n\r";
 
 		}
@@ -552,16 +553,17 @@ void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
 		}
 
 		if (cmd->Contains("AUTO")) {
-			Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_AUTO);
-			stringa = "GRID mode set in AUTO mode \n\r";
+			
 		}
 		else if (cmd->Contains("GRID_IN")) {
-			Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_IN);
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_IN);
+			PCB304::setAutoGridInField();
 			stringa = "GRID mode set in GRID_IN mode \n\r";
 
 		}
 		else {
-			Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_OUT);
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_OUT);
+			PCB304::setAutoGridOutField();
 			stringa = "GRID mode set in GRID_OUT mode \n\r";
 
 		}

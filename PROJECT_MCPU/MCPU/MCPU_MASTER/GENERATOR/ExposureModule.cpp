@@ -271,3 +271,7 @@ float Exposures::demo3DPulses(float mAs, int samples, int fps) {
     return 1;
 }
 
+void Exposures::setAutoFocus(void) {
+    if (PCB302::getMagnifierFactor() == 10) setFocus(focus_selection_index::FOCUS_LARGE);
+    else setFocus(focus_selection_index::FOCUS_SMALL);
+}

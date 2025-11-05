@@ -36,47 +36,37 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
-
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
-
-    if (PCB304::isGridOnFieldReady()) {
-        LogClass::logInFile(ExpName + "GRID IN-FIELD POSITION: Synch On  ");
+    
+    // Set the grid to the requested status 
+    if (getGrid() == grid_selection_index::GRID_IN) {
+        if (!PCB304::isGridInFieldReady())  PCB304::setAutoGridInField();
         PCB304::syncGeneratorOn();
         grid_synch = true;
-    }
-    else if (PCB304::isGridOffFieldReady()) {
-        LogClass::logInFile(ExpName + "GRID OUT-FIELD POSITION: Synch Off  ");
-        PCB304::syncGeneratorOff(false);
-        grid_synch = false;
+        LogClass::logInFile(ExpName + "GRID IN ");
     }
     else {
-        return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
+        if (!PCB304::isGridOffFieldReady())  PCB304::setAutoGridOutField();
+        PCB304::syncGeneratorOff(false);
+        grid_synch = false;
+        LogClass::logInFile(ExpName + "GRID OUT ");
     }
 
+    // Sets the current focus
+    if (focus_selection == focus_selection_index::FOCUS_AUTO) {
+        // Calls the Auto focus routine that will decide what is  the current focus to be used
+        setAutoFocus();
+    }
     
-    if (focus_selection_mode == focus_mode_selection_index::FOCUS_AUTO) {
-        // Determines if the Focus is Small or large based on the presence of the Magnifier 
-        if (PCB302::getMagnifierFactor() != 10) {
-            large_focus = false;
-            LogClass::logInFile(ExpName + "FOCUS SET IN AUTO MODE - Focus large ");
-        }
-        else {
-            large_focus = true;
-            LogClass::logInFile(ExpName + "FOCUS SET IN AUTO MODE - Focus Small ");
-        }
-
-    }
-    else if (focus_selection_mode == focus_mode_selection_index::FOCUS_LARGE) {
+    if (focus_selection == focus_selection_index::FOCUS_LARGE) {
         large_focus = true;
-        LogClass::logInFile(ExpName + "FOCUS FORCED TO LARGE ");
+        LogClass::logInFile(ExpName + "FOCUS LARGE ");
     }
     else {
         large_focus = false;
-        LogClass::logInFile(ExpName + "FOCUS FORCED TO SMALL ");
+        LogClass::logInFile(ExpName + "FOCUS SMALL ");
 
     }
 
-    
     // The format collimation should be already configured
     if (!PCB303::isValidCollimationFormat()) {
         return exposure_completed_errors::XRAY_COLLI_FORMAT_ERROR;
@@ -94,6 +84,9 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
 
     // Checks the filter in position
     if(!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+
+    // Checks the grid in positon
+    if (!PCB304::waitGridCompleted()) return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
 
     if (!demo) {
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
@@ -151,41 +144,35 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
-
-    // Verify the grid position
    
-    if (PCB304::isGridOnFieldReady()) {                
-        LogClass::logInFile(ExpName + "GRID IN-FIELD POSITION: Synch On  "); 
+
+    // Set the grid to the requested status 
+    if (getGrid() == grid_selection_index::GRID_IN) {
+        if (!PCB304::isGridInFieldReady())  PCB304::setAutoGridInField();
         PCB304::syncGeneratorOn();
-    }
-    else if (PCB304::isGridOffFieldReady()) {
-        LogClass::logInFile(ExpName + "GRID OUT-FIELD POSITION: Synch Off  ");
-        PCB304::syncGeneratorOff(false);
+        grid_synch = true;
+        LogClass::logInFile(ExpName + "GRID IN ");
     }
     else {
-        return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
+        if (!PCB304::isGridOffFieldReady())  PCB304::setAutoGridOutField();
+        PCB304::syncGeneratorOff(false);
+        grid_synch = false;
+        LogClass::logInFile(ExpName + "GRID OUT ");
     }
 
-    if (focus_selection_mode == focus_mode_selection_index::FOCUS_AUTO) {
-        // Determines if the Focus is Small or large based on the presence of the Magnifier 
-        if (PCB302::getMagnifierFactor() != 10) {
-            large_focus = false;
-            LogClass::logInFile(ExpName + "FOCUS SET IN AUTO MODE - Focus large ");
-        }
-        else {
-            large_focus = true;
-            LogClass::logInFile(ExpName + "FOCUS SET IN AUTO MODE - Focus Small ");
-        }
-        
+    // Sets the current focus
+    if (focus_selection == focus_selection_index::FOCUS_AUTO) {
+        // Calls the Auto focus routine that will decide what is  the current focus to be used
+        setAutoFocus();
     }
-    else if (focus_selection_mode == focus_mode_selection_index::FOCUS_LARGE) {
+
+    if (focus_selection == focus_selection_index::FOCUS_LARGE) {
         large_focus = true;
-        LogClass::logInFile(ExpName + "FOCUS FORCED TO LARGE ");
+        LogClass::logInFile(ExpName + "FOCUS LARGE ");
     }
     else {
         large_focus = false;
-        LogClass::logInFile(ExpName + "FOCUS FORCED TO SMALL ");
+        LogClass::logInFile(ExpName + "FOCUS SMALL ");
 
     }
 
@@ -208,6 +195,8 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     // Checks the filter in position
     if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
+    // Checks the grid in positon
+    if (!PCB304::waitGridCompleted()) return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
     
     if (!demo) {
         // Sequence for the AEC: only the Standby is admitted as returned code: the WaitFootRelease is not admitted here

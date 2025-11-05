@@ -738,33 +738,6 @@ void OperatingForm::evaluateSlideStatus(bool init) {
 
 }
 
-void OperatingForm::evaluateGridStatus(void) {
-	// Evaluates the current selected Exposure mode to define what is the current grid position
-	bool inOut_Field = false; // Out Field
-
-
-	if (Exposures::getGridMode()  == Exposures::grid_mode_selection_index::GRID_IN){
-		inOut_Field = true;
-	}else if (Exposures::getGridMode() == Exposures::grid_mode_selection_index::GRID_OUT) {
-		inOut_Field = false;
-	}
-	else {
-		switch (Exposures::getExposureMode()) {
-		case Exposures::exposure_type_options::AEC_2D: inOut_Field = true; break; // In Field
-		case Exposures::exposure_type_options::AEC_3D: inOut_Field = false; break; // Out Field
-		case Exposures::exposure_type_options::AEC_AE: inOut_Field = true; break; // In Field
-		case Exposures::exposure_type_options::AEC_COMBO: inOut_Field = true; break; // In Field
-		case Exposures::exposure_type_options::MAN_2D: inOut_Field = true; break; // In Field
-		case Exposures::exposure_type_options::MAN_3D: inOut_Field = false; break; // Out Field
-		case Exposures::exposure_type_options::MAN_AE: inOut_Field = true; break; // In Field
-		case Exposures::exposure_type_options::MAN_COMBO: inOut_Field = true; break; // In Field
-		default:inOut_Field = true; break; // In Field
-		}
-	}
-
-	if(inOut_Field)	PCB304::setAutoGridInField();
-	else PCB304::setAutoGridOutField();
-}
 
 void OperatingForm::evaluateAwsComponentEvent(void) {
 	bool generate_event_component = false;
@@ -808,7 +781,7 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateSlideStatus(false);
 	evaluateProjectionStatus(false);
 	evaluateDigitDisplays();
-	evaluateGridStatus();
+	
 	evaluateAwsComponentEvent();
 
 	// Evaluates the AEC field manual selection

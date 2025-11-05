@@ -206,3 +206,21 @@ void PCB304::demoLoop(void) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     return;
 }
+
+bool PCB304::waitGridCompleted(void) {
+    if (isError()) return false;
+    if ((protocol.data_register.InOutStatus == false) && (protocol.status_register.outField)) return true;
+    if ((protocol.data_register.InOutStatus == true) && (protocol.status_register.inField)) return true;
+
+    for (int i = 0; i < 200; i++) {
+
+        // If Out Field completed
+        if ((protocol.data_register.InOutStatus == false) && (protocol.status_register.outField)) return true;
+
+        // If In Field Completed
+        if ((protocol.data_register.InOutStatus == true) && (protocol.status_register.inField)) return true;
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    return false;
+}

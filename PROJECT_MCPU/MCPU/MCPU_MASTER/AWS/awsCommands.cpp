@@ -1061,6 +1061,32 @@ void   awsProtocol::SET_ExposureMode(void) {
     else if (arm_mode == "ARM_DIS") Exposures::setArmMode(Exposures::arm_mode_option::ARM_DIS);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_ARM_MODE"; ackNok(); return; }
 
+    // Grid Selection
+    bool inOut_Field = true;
+    switch (Exposures::getExposureMode()) {
+    case Exposures::exposure_type_options::AEC_2D: inOut_Field = true; break; // In Field
+    case Exposures::exposure_type_options::AEC_3D: inOut_Field = false; break; // Out Field
+    case Exposures::exposure_type_options::AEC_AE: inOut_Field = true; break; // In Field
+    case Exposures::exposure_type_options::AEC_COMBO: inOut_Field = true; break; // In Field
+    case Exposures::exposure_type_options::MAN_2D: inOut_Field = true; break; // In Field
+    case Exposures::exposure_type_options::MAN_3D: inOut_Field = false; break; // Out Field
+    case Exposures::exposure_type_options::MAN_AE: inOut_Field = true; break; // In Field
+    case Exposures::exposure_type_options::MAN_COMBO: inOut_Field = true; break; // In Field
+    default:inOut_Field = true; break; // In Field
+    }
+
+    if (inOut_Field){
+        PCB304::setAutoGridInField();
+        Exposures::setGrid(Exposures::grid_selection_index::GRID_IN);
+    }
+    else {
+        PCB304::setAutoGridOutField();
+        Exposures::setGrid(Exposures::grid_selection_index::GRID_OUT);
+
+    } 
+
+    // Set focus to Auto
+    Exposures::setFocus(Exposures::focus_selection_index::FOCUS_AUTO);
 
     ackOk();
     return;
@@ -1156,11 +1182,14 @@ void   awsProtocol::SET_TestMode(void) {
    
     // Behavior of the Focus
     if (pDecodedFrame->parameters[0] == "AUTO") {
-        Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_AUTO);
+        
+        Exposures::setFocus(Exposures::focus_selection_index::FOCUS_AUTO);
+        
     }else if(pDecodedFrame->parameters[0] == "LARGE") {
-        Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_LARGE);
+        Exposures::setFocus(Exposures::focus_selection_index::FOCUS_LARGE);
+
     }else if (pDecodedFrame->parameters[0] == "SMALL") {
-        Exposures::setFocusMode(Exposures::focus_mode_selection_index::FOCUS_LARGE);
+        Exposures::setFocus(Exposures::focus_selection_index::FOCUS_SMALL);
     }
     else {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_FOCUS_PARAMETERS"; ackNok(); return;
@@ -1168,13 +1197,15 @@ void   awsProtocol::SET_TestMode(void) {
 
     // Behavior of the Grid
     if (pDecodedFrame->parameters[1] == "AUTO") {
-        Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_AUTO);
+        // The Grid is set based on the exposure modes
     }
     else if (pDecodedFrame->parameters[1] == "GRID_IN") {
-        Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_IN);
+        Exposures::setGrid(Exposures::grid_selection_index::GRID_IN);
+        PCB304::setAutoGridInField();
     }
     else if (pDecodedFrame->parameters[1] == "GRID_OUT") {
-        Exposures::setGridMode(Exposures::grid_mode_selection_index::GRID_OUT);
+        Exposures::setGrid(Exposures::grid_selection_index::GRID_OUT);
+        PCB304::setAutoGridOutField();
     }
     else {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_GRID_PARAMETERS"; ackNok(); return;

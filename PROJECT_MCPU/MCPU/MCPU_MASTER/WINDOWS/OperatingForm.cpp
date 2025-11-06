@@ -437,46 +437,8 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 		return;
 	}
 
-	static bool cmp_force_error = false;
-
-	// Compression Mode Warning
-	// IMQ: Nessun compressore controllato
-	//if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
-	//	Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION);
-	//else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
-
-
-	// Patient Protection Mode Warning
-	// IMQ: nessuna protezione paziente
-	/*
-	bool patient_protection = (PCB302::getPatientProtection() == PCB302::PatientProtection::POSITIONED);
-
-	if ((Exposures::getProtectionMode() != Exposures::patient_protection_option::PROTECTION_DIS) && (!patient_protection))
-		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
-	else 
-		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
-	*/
-
-	// C-Arm Mode
-	// IMQ: nessun controllo sulla proiezione
-	/*
-	if (
-		(Exposures::getArmMode() != Exposures::arm_mode_option::ARM_DIS) &&
-		(!ArmMotor::device->isValidPosition())
-		) Notify::activate(Notify::messages::WARNING_ARM_POSITION_WARNING);
-	else Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
-	*/
-
-	// Paddle identification
-	// IMQ: nessun Paddle
-	/*
-	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) &&
-		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE);
-	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
-	*/
-	
 	// Exposure Mode selection	
-	if (Exposures::getExposureMode() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
+	if (Exposures::getExposureType() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	
 
@@ -488,8 +450,37 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 	// Xray Push Button Enable
 	if (!Exposures::getXrayPushButtonEvent()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
+	static bool cmp_force_error = false;
+
+	// The following ready conditions are valid only with the patient Exposure mode
+	if (Exposures::getExposureMode() != Exposures::exposure_mode_options::EXPOSURE_FOR_PATIENT) return;
+
+	// Compression Mode Warning	
+	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
+		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION);
+	else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
 
 
+	// Patient Protection Mode Warning
+	bool patient_protection = (PCB302::getPatientProtection() == PCB302::PatientProtection::POSITIONED);
+
+	if ((Exposures::getProtectionMode() != Exposures::patient_protection_option::PROTECTION_DIS) && (!patient_protection))
+		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
+	else 
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
+
+	// C-Arm Mode
+	if (
+		(Exposures::getArmMode() != Exposures::arm_mode_option::ARM_DIS) &&
+		(!ArmMotor::device->isValidPosition())
+		) Notify::activate(Notify::messages::WARNING_ARM_POSITION_WARNING);
+	else Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
+
+	// Paddle identification
+	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) &&
+		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE);
+	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
+	
 	
 }
 

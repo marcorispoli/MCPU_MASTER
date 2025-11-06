@@ -430,8 +430,8 @@ protected:
 	generator_errors generatorExecutePulseSequence(System::String^ ExpName, int ms_timeout);	
 	
     generator_errors generator2DPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, bool det_sync, bool grid_sync, int exp_time);	
-	generator_errors generator2DAecPrePulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time);
-	generator_errors generator2DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time);
+	generator_errors generator2DAecPrePulsePreparation(System::String^ exp_name, bool grid_sync, float kV, float mAs, bool islargefocus, int exp_time);
+	generator_errors generator2DAecPulsePreparation(System::String^ exp_name, bool grid_sync, float kV, float mAs, bool islargefocus, int exp_time);
 	
     generator_errors generator3DPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time);
     

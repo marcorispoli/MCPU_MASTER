@@ -497,8 +497,12 @@ bool Generator::generatorSetup(void) {
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 2D Mammography with AEC  procedure
-    LogClass::logInFile("GENERATOR: Setup 2D Mammography with AEC procedure \n");
-    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_Aec_Mammography_2D, 0);
+    LogClass::logInFile("GENERATOR: Setup 2D AEC No Grid  procedure \n");
+    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_2D_Aec_NoGrid, 0);
+    if (!handleCommandProcessedState(nullptr)) return false;
+
+    LogClass::logInFile("GENERATOR: Setup 2D AEC With Grid  procedure\n");
+    R2CP::CaDataDicGen::GetInstance()->Patient_SetupProcedureV6(R2CP::ProcId_2D_Aec_WithGrid, 0);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Setup the 3D Mammography procedure
@@ -551,14 +555,25 @@ bool Generator::generatorSetup(void) {
 
 
     // Assignes the Pre-pulse Databank to the Index 1 of the Standard Mammography with AEC procedure
-    LogClass::logInFile("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_Aec_Mammography_2D \n");
-    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pre, R2CP::ProcId_Aec_Mammography_2D, 1);
+    LogClass::logInFile("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_2D_Aec_NoGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pre, R2CP::ProcId_2D_Aec_NoGrid, 1);
     if (!handleCommandProcessedState(nullptr)) return false;
 
     // Assignes the Pulse Databank to the Index 2 of the Standard Mammography with AEC procedure
-    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 2 of the  ProcId_Aec_Mammography_2D \n");
-    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_Aec_Mammography_2D, 2);
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 2 of the  ProcId_2D_Aec_NoGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_2D_Aec_NoGrid, 2);
     if (!handleCommandProcessedState(nullptr)) return false;
+    
+    // Assignes the Pre-pulse Databank to the Index 1 of the Standard Mammography with AEC procedure
+    LogClass::logInFile("GENERATOR: Assignes Pre-Pulse Databank to Index 1 of the  ProcId_2D_Aec_WithGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pre, R2CP::ProcId_2D_Aec_WithGrid, 1);
+    if (!handleCommandProcessedState(nullptr)) return false;
+
+    // Assignes the Pulse Databank to the Index 2 of the Standard Mammography with AEC procedure
+    LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 2 of the  ProcId_2D_Aec_WithGrid \n");
+    R2CP::CaDataDicGen::GetInstance()->Generator_AssignDbToProc(R2CP::DB_Pulse, R2CP::ProcId_2D_Aec_WithGrid, 2);
+    if (!handleCommandProcessedState(nullptr)) return false;
+
 
     // Assignes the Pulse Databank to the Index 1 of the Standard 3D Mammography procedure
     LogClass::logInFile("GENERATOR: Assignes Pulse Databank to Index 1 of the  ProcId_Standard_Mammography_3D \n");
@@ -1284,7 +1299,7 @@ Generator::generator_errors Generator::generator2DPulsePreparation(System::Strin
 /// <param name="grid_sync">true=Grid Synchronization</param>
 /// <param name="exp_time">Maximum exposure time in ms</param>
 /// <returns></returns>
-Generator::generator_errors Generator::generator2DAecPrePulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time){
+Generator::generator_errors Generator::generator2DAecPrePulsePreparation(System::String^ exp_name, bool grid_sync, float kV, float mAs, bool islargefocus, int exp_time){
     selected_anode_current = 150;
 
     // Load Data Bank For pulse    
@@ -1311,7 +1326,7 @@ Generator::generator_errors Generator::generator2DAecPrePulsePreparation(System:
 
         // Procedure activation
         LogClass::logInFile(exp_name + "procedure activation");
-        R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DAecProcedurePre();
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DAecProcedurePre(grid_sync);
         if (!handleCommandProcessedState(nullptr)) {
             LogClass::logInFile(exp_name + "Patient_Activate2DAecProcedurePre error");
             return generator_errors::GEN_COMMUNICATION_ERROR;
@@ -1356,7 +1371,7 @@ Generator::generator_errors Generator::generator2DAecPrePulsePreparation(System:
 /// <param name="grid_sync">true=Grid Synchronization</param>
 /// <param name="exp_time">Maximum exposure time in ms</param>
 /// <returns></returns>
-Generator::generator_errors Generator::generator2DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time) {
+Generator::generator_errors Generator::generator2DAecPulsePreparation(System::String^ exp_name, bool grid_sync, float kV, float mAs, bool islargefocus, int exp_time) {
 
     selected_anode_current = 150;
 
@@ -1382,7 +1397,7 @@ Generator::generator_errors Generator::generator2DAecPulsePreparation(System::St
 
     if (!simulator_mode) {
         
-        R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DAecProcedurePulse();
+        R2CP::CaDataDicGen::GetInstance()->Patient_Activate2DAecProcedurePulse(grid_sync);
         if (!handleCommandProcessedState(nullptr)) {
             LogClass::logInFile(exp_name + "Patient_Activate2DAecProcedurePulse error");
             return generator_errors::GEN_COMMUNICATION_ERROR;

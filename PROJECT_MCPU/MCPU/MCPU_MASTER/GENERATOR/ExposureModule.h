@@ -240,6 +240,11 @@ public:
         EXP_NOT_DEFINED
     };
 
+    enum class exposure_mode_options {
+        EXPOSURE_FOR_PATIENT = 0,
+        EXPOSURE_FOR_TEST,
+    };
+
 
     /// <summary>
     /// This is the enumeration of the possible Compression modes.
@@ -337,7 +342,8 @@ public:
     };
 
     enum class grid_selection_index {
-        GRID_IN=0,
+        GRID_AUTO=0,
+        GRID_IN,
         GRID_OUT
     };
 
@@ -346,11 +352,13 @@ public:
         TOMO_CALIB,
     };
 
+   
+
     static void startSimulator(void) { getDevice()->startSimulatorMode(); }
     static void startGenerator(void) { getDevice()->startNormalMode(); }
 
-    static void inline setExposureMode(exposure_type_options mode) { exposure_type = mode; }
-    static exposure_type_options inline getExposureMode(void) { return exposure_type; }
+    static void inline setExposureType(exposure_type_options exp) { exposure_type = exp; }
+    static exposure_type_options inline getExposureType(void) { return exposure_type; }
 
     static void inline setDetectorType(DetectorConfig::detector_model_option detector) { detector_model = detector; }
     static DetectorConfig::detector_model_option inline getDetectorType(void) { return detector_model; }
@@ -388,7 +396,11 @@ public:
         return  pulse[seq];
     }
 
-    static void setAutoFocus(void);
+
+   
+    inline static void setExposureMode(exposure_mode_options mode) { exposure_mode = mode; }
+    inline static exposure_mode_options getExposureMode(void) { return exposure_mode; }
+    
     inline static void setFocus(focus_selection_index focus) { focus_selection = focus; }
     inline static void setGrid(grid_selection_index grid) { grid_selection = grid; }
     inline static focus_selection_index getFocus(void) { return focus_selection; }
@@ -443,7 +455,7 @@ private:
     static focus_selection_index focus_selection = focus_selection_index::FOCUS_LARGE;
     static grid_selection_index  grid_selection =  grid_selection_index::GRID_OUT;
     static tomo_mode_selection_index  tomo_selection_mode =  tomo_mode_selection_index::TOMO_AUTO;
-
+    static exposure_mode_options exposure_mode = exposure_mode_options::EXPOSURE_FOR_PATIENT;
 
     static cli::array<exposure_pulse^>^ pulse = gcnew array<exposure_pulse^> {gcnew exposure_pulse (),gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };
     static cli::array<exposure_pulse^>^ exposed = gcnew array<exposure_pulse^> {gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };

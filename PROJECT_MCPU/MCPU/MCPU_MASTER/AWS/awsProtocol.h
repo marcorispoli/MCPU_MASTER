@@ -83,9 +83,6 @@
 
    _Revision 1.2.0_
 
-   <b>Added the \ref EXEC_TestStudy command</b>
-   This command opens the Test session study for test and calibration exposures
-
    <b>Modified the \ref SET_ExposureMode command</b>
    A new exposure mode has been included allowing the Tomo exposure with a static Arm for calibration
    
@@ -114,7 +111,6 @@
    _Study Control_
    +	\ref EXEC_OpenStudy
    +	\ref EXEC_BiopsyStudy
-   +	\ref EXEC_TestStudy
    +	\ref EXEC_CloseStudy
    
    
@@ -410,7 +406,6 @@ private:
 	void EXEC_TestCommand(void);
 	void EXEC_OpenStudy(void);
 	void EXEC_BiopsyStudy(void);
-	void EXEC_TestStudy(void);
 	void EXEC_CloseStudy(void);
 
 	void EXEC_BiopsyHoming(void);

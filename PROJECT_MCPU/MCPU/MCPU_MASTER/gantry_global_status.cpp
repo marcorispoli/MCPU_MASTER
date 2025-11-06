@@ -2,7 +2,6 @@
 #include "IdleForm.h"
 #include "OperatingForm.h"
 #include "BiopsyStudy.h"
-#include "TestStudy.h"
 #include "ServiceForm.h"
 #include "ConfigurationFiles.h"
 #include "Notify.h"
@@ -211,7 +210,6 @@ bool Gantry::setIdle() {
     if (current_operating_status == operating_status_options::GANTRY_IDLE) return true;
     if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) ((OperatingForm^)pOperatingForm)->close();
     if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) ((BiopsyStudy^)pBiopsyStudy)->close();
-    if (current_operating_status == operating_status_options::GANTRY_TEST_STUDY) ((BiopsyStudy^)pTestStudy)->close();
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) ((ServiceForm^)pServiceForm)->close();
 
     current_operating_status = operating_status_options::GANTRY_IDLE;
@@ -223,7 +221,6 @@ bool Gantry::setIdle() {
 bool Gantry::setStandardStudy() {
     if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) return true;
     if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) return false;
-    if (current_operating_status == operating_status_options::GANTRY_TEST_STUDY) return false;
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) return false;
     if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
 
@@ -233,23 +230,11 @@ bool Gantry::setStandardStudy() {
     return true;
 }
 
-bool Gantry::setTestStudy() {
-    if (current_operating_status == operating_status_options::GANTRY_TEST_STUDY) return true;
-    if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) return false;
-    if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) return false;
-    if (current_operating_status == operating_status_options::GANTRY_SERVICE) return false;
-    if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
 
-    current_operating_status = operating_status_options::GANTRY_TEST_STUDY;
-    ((TestStudy^)pTestStudy)->open();
-    awsProtocol::EVENT_GantryStatus();
-    return true;
-}
 
 bool Gantry::setBiopsyStudy() {
     if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) return true;
     if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) return false;
-    if (current_operating_status == operating_status_options::GANTRY_TEST_STUDY) return false;
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) return false;
     if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
 
@@ -262,7 +247,6 @@ bool Gantry::setBiopsyStudy() {
 bool Gantry::setService() {
     if (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) return false;
     if (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY) return false;
-    if (current_operating_status == operating_status_options::GANTRY_TEST_STUDY) return false;
     if (current_operating_status == operating_status_options::GANTRY_SERVICE) return true;
     
     if (current_operating_status == operating_status_options::GANTRY_IDLE) ((IdleForm^)pIdleForm)->close();
@@ -298,11 +282,6 @@ bool Gantry::setCloseStudy(void) {
 bool Gantry::setOpenBiopsyStudy(System::String^ patient) {
     patient_name = patient;
     return setBiopsyStudy();
-}
-
-bool Gantry::setOpenTestStudy(System::String^ test) {
-    test_name = test;
-    return setTestStudy();
 }
 
 

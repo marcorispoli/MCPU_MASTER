@@ -553,19 +553,17 @@ void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
 		}
 
 		if (cmd->Contains("AUTO")) {
-			
+			// Set Grid to Auto
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_AUTO);
 		}
 		else if (cmd->Contains("GRID_IN")) {
-			Exposures::setGrid(Exposures::grid_selection_index::GRID_IN);
-			PCB304::setAutoGridInField();
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_IN);			
 			stringa = "GRID mode set in GRID_IN mode \n\r";
 
 		}
 		else {
-			Exposures::setGrid(Exposures::grid_selection_index::GRID_OUT);
-			PCB304::setAutoGridOutField();
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_OUT);			
 			stringa = "GRID mode set in GRID_OUT mode \n\r";
-
 		}
 
 		send(System::Text::Encoding::Unicode->GetBytes(stringa));

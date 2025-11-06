@@ -412,7 +412,7 @@ void BiopsyStudy::evaluateReadyWarnings(bool reset) {
 
 	
 	// Exposure Mode selection	
-	if (Exposures::getExposureMode() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
+	if (Exposures::getExposureType() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
 	
 

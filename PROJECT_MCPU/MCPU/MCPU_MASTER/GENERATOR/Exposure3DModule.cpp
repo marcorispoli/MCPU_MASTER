@@ -22,13 +22,11 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     exposure_completed_errors error;
 
     if (demo) {
-        if (tomo_selection_mode == tomo_mode_selection_index::TOMO_CALIB) ExpName = "Exposure 3D DEMO for calibration>";
-        else ExpName = "Exposure 3D DEMO in manual mode>";
+        ExpName = "Exposure 3D DEMO in manual mode>";
     }
     else {
 
-        if (tomo_selection_mode == tomo_mode_selection_index::TOMO_CALIB) ExpName = "Exposure 3D for calibration>";
-        else ExpName = "Exposure 3D in manual mode>";
+         ExpName = "Exposure 3D in manual mode>";
     }
 
     // Gets the Detector used in the exposure sequence:
@@ -65,12 +63,13 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
         return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
-    PCB304::syncGeneratorOff(false);
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
-
+    
+    // Set the Grid to Out position
+    PCB304::setAutoGridOutField();
+    PCB304::syncGeneratorOff(false);
 
     // Tilt preparation in Home
     if (!getTomoExposure()->valid) {
@@ -167,6 +166,9 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     // Checks the filter in position
     if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
+    // Checks the grid in positon
+    if (!PCB304::waitGridCompleted()) return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
+
     if (!demo) {
 
         // Longer Timeout: the generator checks for the correct seqeunce here
@@ -228,8 +230,13 @@ Exposures::exposure_completed_errors Exposures::man_3d_static_exposure_procedure
     int timeout;
     exposure_completed_errors error;
 
-    if (demo) ExpName = "Demo Exposure 3D Manual with Static Arm>";
-    else ExpName = "Exposure 3D Manual with Static Arm>";
+    if (demo) {
+        ExpName = "DEMO 3D Calibration>";
+    }
+    else {
+
+        ExpName = "3D Calibration>";
+    }
 
     // Gets the Detector used in the exposure sequence:
     // The Detector determines the maximum integration time allowd and 
@@ -265,35 +272,60 @@ Exposures::exposure_completed_errors Exposures::man_3d_static_exposure_procedure
         return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
-    // Disables the sinch grid with the detector
-    PCB304::syncGeneratorOff(false);
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
-    // The Tilt shall not be positioned in Home because the exposure is with static Arm
+    // Set the Grid to Out position
+    PCB304::setAutoGridOutField();
+    PCB304::syncGeneratorOff(false);
+
+    // Tilt preparation in Home
     if (!getTomoExposure()->valid) {
         return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
-    // --------------------- Static collimation here ------------------------------------------------------------
+    // Tomo Home position activation
 
+    // 20s waits for ready condition
+    timeout = 200;
+    while (!TiltMotor::device->isReady()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        timeout--;
+        if (!timeout) return exposure_completed_errors::XRAY_TIMEOUT_TILT_IN_HOME;
+    }
+
+    // Starts the Tilt positioning in Home. Further in the code the Home position is checked 
+    if (!TiltMotor::setTarget(TiltMotor::target_options::SCOUT, 0)) {
+        return exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+    }
+    LogClass::logInFile(ExpName + "TOMO IN SCOUT FOR THE CALIBRATION PROCEDURE! ");
+    
+
+    //  OPEN COLLIMATION FOR CALIBRATION //
+    
 
     // 3D Pulse Preparation
-    System::String^ exposure_data_str = ExpName + " ---------------- "; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "DETECTOR TYPE: " + detector_param; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "FPS:" + Exposures::getTomoExposure()->tomo_fps; LogClass::logInFile(exposure_data_str);
-    exposure_data_str = "Filter:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    System::String^ exposure_data_str = ExpName + " ---------------- " + "\n";
+    exposure_data_str = "DETECTOR TYPE: " + detector_param + "\n";
+    exposure_data_str = "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time + "\n";
+    exposure_data_str = "FPS:" + Exposures::getTomoExposure()->tomo_fps + "\n";
+    exposure_data_str = "Filter:" + Exposures::getExposurePulse(0)->filter.ToString() + "\n";
     exposure_data_str = "Samples:" + Exposures::getTomoExposure()->tomo_samples; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Skips:" + Exposures::getTomoExposure()->tomo_skip; LogClass::logInFile(exposure_data_str);
-    error = (exposure_completed_errors)generator3DPulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
+    exposure_data_str = "Position Home:" + Exposures::getTomoExposure()->tomo_home; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Position End:" + Exposures::getTomoExposure()->tomo_end; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Speed:" + Exposures::getTomoExposure()->tomo_speed; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Ramp-Acc:" + Exposures::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
+    exposure_data_str = "Ramp-Dec:" + Exposures::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
+
+
+    // Pulse preparation with 25 shots and no skip pulse for the calibration
+    error = (exposure_completed_errors)generator3DPulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, 25, 0, large_focus, 25, exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 
-
-    // Waits the Tilt completion: even if the Tilt is static, the Tilt may be activated before the exposure command.
+    // Waits the Tilt completion
     timeout = 200;
     while (!TiltMotor::device->isReady()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -301,8 +333,16 @@ Exposures::exposure_completed_errors Exposures::man_3d_static_exposure_procedure
         if (!timeout) return Exposures::exposure_completed_errors::XRAY_TIMEOUT_TILT_IN_HOME;
     }
 
+    // Verify if the Tilt has been successfully completed
+    if (TiltMotor::device->getCommandCompletedCode() != TiltMotor::MotorCompletedCodes::COMMAND_SUCCESS) {
+        return Exposures::exposure_completed_errors::XRAY_ERROR_TILT_IN_HOME;
+    }
+
     // Checks the filter in position
     if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+
+    // Checks the grid in positon
+    if (!PCB304::waitGridCompleted()) return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
 
     if (!demo) {
 
@@ -326,16 +366,16 @@ Exposures::exposure_completed_errors Exposures::man_3d_static_exposure_procedure
         PCB301::setBuzzerManualMode(true);
 
         // Activates the procedure to generate buzzer pulses at the rate of the current tomo 
-        PCB301::CanDeviceCommandResult^ result = PCB301::activateManualBuzzerTomoMode(getTomoExposure()->tomo_samples, getTomoExposure()->tomo_fps, 200, this);
+        PCB301::CanDeviceCommandResult^ result = PCB301::activateManualBuzzerTomoMode(25, getTomoExposure()->tomo_fps, 200, this);
         if (result->error_code != PCB301::CommandRegisterErrors::COMMAND_NO_ERROR) {
             LogClass::logInFile(ExpName + "activateBuzzerDemo command failed! ");
             setExposedPulse(0, gcnew exposure_pulse(epulse->getKv(), 0, epulse->getFilter()));
             error = exposure_completed_errors::XRAY_COMMUNICATION_ERROR;
         }
         else {
-            if (result->result0 != getTomoExposure()->tomo_samples) {
+            if (result->result0 != 25) {
                 LogClass::logInFile(ExpName + "activateBuzzerDemo early terminated ");
-                float mAs = epulse->getmAs() * result->result0 / getTomoExposure()->tomo_samples;
+                float mAs = epulse->getmAs() * result->result0 / 25;
                 setExposedPulse(0, gcnew exposure_pulse(epulse->getKv(), mAs, epulse->getFilter()));
                 error = exposure_completed_errors::XRAY_BUTTON_RELEASE;
             }
@@ -352,7 +392,6 @@ Exposures::exposure_completed_errors Exposures::man_3d_static_exposure_procedure
     }
 
     return error;
-
 };
 
 
@@ -403,12 +442,13 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
         return exposure_completed_errors::XRAY_INVALID_TOMO_PARAMETERS;
     }
 
-    // No synch needed for tomo 
-    PCB304::syncGeneratorOff(false);
-
+    
     // Filter selection for the Pre Pulse
     PCB303::selectFilter(getExposurePulse(0)->filter);
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+    
+    // Set the Grid to Out position
+    PCB304::setAutoGridOutField();
+    PCB304::syncGeneratorOff(false);
 
     // Tilt preparation in Home
     if (!getTomoExposure()->valid) {
@@ -471,6 +511,8 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
     // Checks the filter in position
     if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
+    // Checks the grid in positon
+    if (!PCB304::waitGridCompleted()) return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
 
     if (!demo) {
 

@@ -256,6 +256,9 @@ public:
 		protocol.data_register.InOutStatus = false; 
 		current_inout_auto_mode = protocol.data_register.InOutAutoEnable;
 	};
+	static bool isGridInFieldStatus(void) { return protocol.data_register.InOutStatus; }
+	
+	static bool waitGridCompleted(void);
 
 	static void syncGeneratorOn(void) { 
 		protocol.data_register.ManualXrayDisableEnable = false; 
@@ -271,9 +274,6 @@ public:
 	// Status Register Content Inspection
 	inline static bool isGridInFieldReady(void) { return protocol.status_register.inField; }
 	inline static bool isGridOffFieldReady(void) { return protocol.status_register.outField;}
-
-	static bool waitGridCompleted(void);
-
 	inline static bool isInOutTest(void) { return protocol.status_register.inout_executing; }
 	inline static bool isTrasversalTest(void) { return protocol.status_register.transversal_executing; }
 	inline static bool isHome(void) { return protocol.status_register.home; }

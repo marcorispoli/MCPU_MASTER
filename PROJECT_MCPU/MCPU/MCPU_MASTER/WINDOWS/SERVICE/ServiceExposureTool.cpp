@@ -312,7 +312,7 @@ System::Void ServiceExposureTool::enableXray_Click(System::Object^ sender, Syste
 		}
 
 		// Set the current exposure mode properly
-		Exposures::setExposureMode(Exposures::exposure_type_options::TEST_2D);
+		Exposures::setExposureType(Exposures::exposure_type_options::TEST_2D);
 
 		enableXray->BackgroundImage = EXPTOOL_XRAY_ON;
 		exposureLog->Clear();

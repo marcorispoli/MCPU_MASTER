@@ -453,7 +453,13 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 	static bool cmp_force_error = false;
 
 	// The following ready conditions are valid only with the patient Exposure mode
-	if (Exposures::getExposureMode() != Exposures::exposure_mode_options::EXPOSURE_FOR_PATIENT) return;
+	if (Exposures::getExposureMode() != Exposures::exposure_mode_options::EXPOSURE_FOR_PATIENT) {
+		Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
+		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
+		Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);
+		Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
+		return;
+	}
 
 	// Compression Mode Warning	
 	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))

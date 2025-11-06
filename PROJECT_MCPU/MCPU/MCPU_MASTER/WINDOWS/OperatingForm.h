@@ -60,7 +60,7 @@ public:
 	void evaluateProjectionStatus(bool init);
 	void evaluatePopupPanels(void);
 	void evaluateDigitDisplays(void);
-	void evaluateGridStatus(void);
+	
 	void evaluateAwsComponentEvent(void);
 	void onArmTargetChangedCallback(int id, int target);
 	

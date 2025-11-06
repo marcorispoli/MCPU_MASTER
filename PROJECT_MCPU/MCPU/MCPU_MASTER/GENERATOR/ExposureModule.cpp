@@ -16,7 +16,7 @@
 bool Exposures::startExposure(void) {
 
     // test if the Exposure mode is correctly set
-    if (getExposureMode() == exposure_type_options::EXP_NOT_DEFINED) return false;
+    if (getExposureType() == exposure_type_options::EXP_NOT_DEFINED) return false;
 
     // Test if the pulse 0 is actually valid
     if (!getExposurePulse(0)->validated) return false;
@@ -99,11 +99,14 @@ void Exposures::exposureManagementLoop(bool demo) {
         
         // Every Xray procedure return True if the seqeunce is completed if success.
         // In case of false returned (error condition), the   xray_exposure_error is set properly
-        switch (getExposureMode()) {
+        switch (getExposureType()) {
         case exposure_type_options::TEST_2D: exposure_err_code = test_exposure_procedure(demo);  break;
         case exposure_type_options::MAN_2D: exposure_err_code = man_2d_exposure_procedure(demo); break;
         case exposure_type_options::AEC_2D: exposure_err_code = aec_2d_exposure_procedure(demo); break;
-        case exposure_type_options::MAN_3D: exposure_err_code = man_3d_exposure_procedure(demo); break;
+        case exposure_type_options::MAN_3D: 
+            if (tomo_selection_mode == tomo_mode_selection_index::TOMO_CALIB) exposure_err_code = man_3d_static_exposure_procedure(demo);
+            else exposure_err_code = man_3d_exposure_procedure(demo); 
+            break;
         case exposure_type_options::AEC_3D: exposure_err_code = aec_3d_exposure_procedure(demo); break;
         case exposure_type_options::MAN_3D_STATIC: exposure_err_code = man_3d_static_exposure_procedure(demo); break;
         case exposure_type_options::MAN_COMBO: exposure_err_code = man_combo_exposure_procedure(demo); break;
@@ -129,11 +132,8 @@ void Exposures::exposureManagementLoop(bool demo) {
     LogClass::logInFile("GENERATOR EXPOSURE RESULT:" + Exposures::getExposureCompletedCode().ToString() + "-" + exposure_err_code.ToString());
    
 
-    // De-synch the grid device
-    PCB304::syncGeneratorOff();
-
     // Only in operating mode
-    if (Exposures::getExposureMode() != Exposures::exposure_type_options::TEST_2D) {
+    if (Exposures::getExposureType() != Exposures::exposure_type_options::TEST_2D) {
 
         // Unlock the compressor if requested
         if (Exposures::getCompressorMode() == Exposures::compression_mode_option::CMP_RELEASE) 
@@ -273,4 +273,3 @@ float Exposures::demo3DPulses(float mAs, int samples, int fps) {
     // Success 
     return 1;
 }
-

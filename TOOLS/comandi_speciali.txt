@@ -1,0 +1,4 @@
+Visualizzazione Log in Tail mode:
+
+Power shell:
+>  Get-Content -Path "C:\Users\m.rispoli\OneDrive - Metaltronica Spa\Documenti\Workspace\Git\Z190_MainCpu\PROJECT_MCPU\MCPU\x64\Debug\GANTRY_LOGS\Gantry.log" -Wait

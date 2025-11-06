@@ -142,6 +142,8 @@ void DebuggerCLI::rxHandler(void){
 	else if (sFrame->Contains("communication:")) current_menu = menu_index::COM;
 	else if (sFrame->Contains("generator:")) current_menu = menu_index::GENERATOR;
 	else if (sFrame->Contains("compressor:")) current_menu = menu_index::COMPRESSOR;
+	else if (sFrame->Contains("collimator:")) current_menu = menu_index::COLLIMATOR;
+	else if (sFrame->Contains("exposures:")) current_menu = menu_index::EXPOSURES;
 
 	// Menu command dispatcher
 	switch (current_menu) {
@@ -150,6 +152,8 @@ void DebuggerCLI::rxHandler(void){
 	case menu_index::COM: handleComCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("communication:")); break;
 	case menu_index::GENERATOR: handleGeneratorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("generator:")); break;
 	case menu_index::COMPRESSOR: handleCompressorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("compressor:")); break;
+	case menu_index::COLLIMATOR: handleCollimatorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("collimator:")); break;
+	case menu_index::EXPOSURES: handleExposureCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("exposures:")); break;
 	default:
 		handleRootCommands(sFrame); 		
 	}
@@ -165,9 +169,11 @@ void DebuggerCLI::handleRootCommands(System::String^ cmd) {
 		lista = "potter: potter related commands\n\r";
 		lista += "communication: communication related commands\n\r";
 		lista += "compressor: compressor related commands\n\r";
-		lista += "generator: generator related commands\n\r";
-		
-		send(System::Text::Encoding::Unicode->GetBytes(lista));		
+		lista += "generator: generator related commands\n\r";		
+		lista += "collimator: collimator related commands\n\r";
+		lista += "exposures: exposures related commands\n\r";
+
+		send(System::Text::Encoding::Unicode->GetBytes(lista));
 		return;
 	}
 }
@@ -196,7 +202,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 		}
 
 		stringa = "Status Register Content: \n\r";
-		stringa += "inField:" + PCB304::isGridOnFieldReady() + "\n\r";
+		stringa += "inField:" + PCB304::isGridInFieldReady() + "\n\r";
 		stringa += "outField:" + PCB304::isGridOffFieldReady() + "\n\r";
 		stringa += "InOutTestExecuting:" + PCB304::isInOutTest() + "\n\r";
 		stringa += "TransversalTestExecuting:" + PCB304::isTrasversalTest() + "\n\r";
@@ -223,8 +229,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 
 		send(System::Text::Encoding::Unicode->GetBytes(" ->Auto Grid In Command!\n\r"));
 		PCB304::resetErrorCount();
-		PCB304::setAutoGridInField();
-		PCB304::syncGeneratorOff();
+		PCB304::setAutoGridInField();		
 		return;
 	}
 
@@ -240,8 +245,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 
 		send(System::Text::Encoding::Unicode->GetBytes(" ->Auto Grid Out Command!\n\r"));
 		PCB304::resetErrorCount();
-		PCB304::setAutoGridOutField();
-		PCB304::syncGeneratorOff();
+		PCB304::setAutoGridOutField();		
 		return;
 	}
 
@@ -308,7 +312,7 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 		}
 
 		// Activates the synch mode 
-		PCB304::syncGeneratorOff();
+		PCB304::syncGeneratorOff(true);
 		send(System::Text::Encoding::Unicode->GetBytes(" -> Grid Synchronization deactivated!\n\r"));
 		return;
 	}
@@ -317,12 +321,141 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 	// Shows the list of available commands if no valid command is detedcted
 	System::String^ lista;
 	lista = " -> RESET - reset Board\n\r";
+	lista += " -> GET_STATUS	- Shows the protocol registers\n\r";
 	lista += " -> AUTO_GRID_IN	- Grin In Field\n\r";
 	lista += " -> AUTO_GRID_OUT	- Grid Out Field\n\r";
 	lista += " -> TRANSLATION_TEST	- Translation Test Grid 10 times\n\r";
 	lista += " -> INOUT_TEST	- Test In-Out 10 times\n\r";
 	lista += " -> SYNCH_ON		- Generator Sync On\n\r";
 	lista += " -> SYNCH_OFF		- Generator Sync Off\n\r";
+
+	send(System::Text::Encoding::Unicode->GetBytes(lista));
+	return;
+}
+
+void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
+	System::String^ stringa;
+
+	if (cmd->Contains("RESET")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command causes the PCB303 board reset.\n\r";
+			stringa += "The board parameters will be automatically uploaded by Gantry after the board startup\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(" -> Collimator Board Reset Command!\n\r"));
+		return;
+	}
+
+	if (cmd->Contains("GET_STATUS")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command returns the data content of the relevant Device Status and Data registers.\n\r";			
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		stringa = "Status Register Content: \n\r";
+		stringa += "Format Collimation Action: " + PCB303::getCollimationActionStatus().ToString() + "\n\r";
+		stringa += "Format Collimation Index: " + PCB303::getCollimationTargetIndex().ToString() + "\n\r";
+		stringa += "Mirror Action: " + PCB303::getMirrorActionStatus().ToString() + "\n\r";
+		stringa += "Mirror Target: " + PCB303::getMirrorTargetIndex().ToString() + "\n\r";
+		stringa += "Light Target: " + PCB303::getLightStatus().ToString() + "\n\r";
+		stringa += "Bulb Temperature: " + PCB303::getBulbPercTemp().ToString() + "\n\r";
+		stringa += "Stator Temperature: " + PCB303::getStatorPercTemp().ToString() + "\n\r";
+		stringa += "FAN Status: " + PCB303::getFanStat().ToString() + "\n\r";
+		stringa += "FAN Forced: " + PCB303::getFanForced().ToString() + "\n\r";
+
+		stringa +=  "\n\r";
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+
+		return;
+	}
+
+	if (cmd->Contains("SELECT_FILTER_SLOT")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command selects a given Filter by slot number, from 0 to 4.\n\r";			
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Slot Selection Command!\n\r"));
+		
+		int slot = 0;
+		if (cmd->Contains(" 0")) slot = 0;
+		else if (cmd->Contains(" 1")) slot = 1;
+		else if (cmd->Contains(" 2")) slot = 2;
+		else if (cmd->Contains(" 3")) slot = 3;
+		else if (cmd->Contains(" 4")) slot = 4;
+		else {
+			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
+			return;
+		}
+		
+		PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
+		if (!PCB303::selectFilterSlot(slot)) {
+			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
+			return;
+		}
+		
+		return;
+	}
+
+	if (cmd->Contains("SELECT_FILTER_MATTER")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command selects a given Filter by matter.\n\r";
+			stringa += "Available filters are:\n\r";
+			stringa += "Cu Ag Rh Al Ag Ld \n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Matter Selection Command!\n\r"));		
+		return;
+	}
+
+
+	if (cmd->Contains("SET_FAN")) {
+		if (cmd->Contains("?")) {
+			stringa  = "This command set the FAN activation mode:\n\r";
+			stringa += "- AUTO: the FAN is activated withthe Tube temperature:\n\r";
+			stringa += "- FORCED: the FAN is forced activated:\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		
+		if (cmd->Contains(" AUTO")) {
+			// Auto mode
+			if (PCB303::setFanActivatonMode(false)) {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN SET IN AUTO MODE!\n\r"));
+			}
+			else {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN ACTIVATION MODE COMMAND REFUSED!\n\r"));
+			}
+		}
+		else {
+			// Forced Mode
+			if (PCB303::setFanActivatonMode(true)) {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN SET IN FORCED MODE!\n\r"));
+			}
+			else {
+				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN ACTIVATION MODE COMMAND REFUSED!\n\r"));
+			}
+		}
+
+
+		return;
+	}
+
+	// Shows the list of available commands if no valid command is detedcted
+	System::String^ lista;
+	lista =  " -> RESET - reset Board\n\r";
+	lista += " -> GET_STATUS            - Shows the protocol registers\n\r";
+	lista += " -> SELECT_FILTER_SLOT    - Filter selection by slot number\n\r";
+	lista += " -> SELECT_FILTER_MATTER	- Filter selection by Matter\n\r";
+	lista += " -> SET_FAN	            - Fan Activation Mode \n\r";
 
 	send(System::Text::Encoding::Unicode->GetBytes(lista));
 	return;
@@ -371,5 +504,111 @@ void DebuggerCLI::handleCompressorCommands(System::String^ cmd) {
 		send(System::Text::Encoding::Unicode->GetBytes(result_string));
 		return;
 	}
+}
+
+void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
+	System::String^ stringa = "";
+
+
+	if (cmd->Contains("SET_FOCUS_MODE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command select the focus usage with the following modes:\n\r";
+			stringa += "- AUTO: the focus is selected automatically (magnifier device detection) \n\r";
+			stringa += "- LARGE: the focus is forced to be Large \n\r";
+			stringa += "- SMALL: the focus is forced to be Small \n\r";
+
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+
+		if (cmd->Contains("AUTO")) {
+			Exposures::setFocus(Exposures::focus_selection_index::FOCUS_AUTO);
+			stringa = "Focus in AUTO mode \n\r";
+		}
+		else if (cmd->Contains("LARGE")) {
+			Exposures::setFocus(Exposures::focus_selection_index::FOCUS_LARGE);
+			stringa = "Focus in LARGE mode \n\r";
+
+		}
+		else {
+			Exposures::setFocus(Exposures::focus_selection_index::FOCUS_SMALL);
+			stringa = "Focus in SMALL mode \n\r";
+
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+		return;
+	}
+
+	if (cmd->Contains("SET_GRID_MODE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command select the Grid In/Out for the 2D exposures:\n\r";
+			stringa += "- AUTO: the grid is selected by the current operating condition \n\r";
+			stringa += "- GRID_IN: the grid is forced In Field \n\r";
+			stringa += "- GRID_OUT: the grid is forced out field \n\r";
+
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (cmd->Contains("AUTO")) {
+			// Set Grid to Auto
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_AUTO);
+		}
+		else if (cmd->Contains("GRID_IN")) {
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_IN);			
+			stringa = "GRID mode set in GRID_IN mode \n\r";
+
+		}
+		else {
+			Exposures::setGrid(Exposures::grid_selection_index::GRID_OUT);			
+			stringa = "GRID mode set in GRID_OUT mode \n\r";
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+		return;
+	}
+
+	if (cmd->Contains("SET_TOMO_MODE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command select the 3D exposure behavior:\n\r";
+			stringa += "- AUTO: the 3D exposure is set normally by the current operating mode \n\r";
+			stringa += "- CALIB: the 3D is set for the calibration (steady arm with 25 pulses) \n\r";
+
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (cmd->Contains("AUTO")) {
+			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO);
+			stringa = "TOMO mode set in AUTO mode \n\r";
+		}
+		else if (cmd->Contains("CALIB")) {
+			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_CALIB);
+			stringa = "TOMO mode set in CALIB mode \n\r";
+
+		}
+		else {
+			stringa = "Wrong parameter syntax!! \n\r";
+		}
+
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+		return;
+	}
+
+
+
+
+
+	// Shows the list of available commands if no valid command is detedcted
+	System::String^ lista;
+	lista = " -> SET_FOCUS_MODE - sets the current exposure focus mode\n\r";
+	lista += " -> SET_GRID_MODE - sets the current exposure grid usage mode\n\r";
+	lista += " -> SET_TOMO_MODE - sets the current exposure Tomo usage mode\n\r";
+	lista += "\n\r";
+
+	send(System::Text::Encoding::Unicode->GetBytes(lista));
+	return;
 }
 

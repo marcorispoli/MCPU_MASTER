@@ -14,7 +14,7 @@ using namespace System::Diagnostics;
 using namespace System::Collections::Generic;
 
 Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool demo) {
-    System::String^ ExpName;    
+    System::String^ ExpName;
     bool large_focus;
     bool detector_synch = true;
     bool grid_synch = true;
@@ -36,18 +36,43 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
+    
+    // Set the grid to the requested status 
+    if (getGrid() == grid_selection_index::GRID_AUTO) {
 
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+        PCB304::setAutoGridInField(); // The normal grid status in 2D exposure is Grid In Field
 
-    // Sets the Grid On Field (if not yet) : wait for the ready condition   
-    if (grid_synch) PCB304::syncGeneratorOn();
-    else PCB304::syncGeneratorOff();
+    }
+    else if (getGrid() == grid_selection_index::GRID_IN) {
+        PCB304::setAutoGridInField();
+    }
+    else {
+        PCB304::setAutoGridOutField();
+    }
+
+    if (PCB304::isGridInFieldStatus()) {
+        grid_synch = true;
+        PCB304::syncGeneratorOn();
+        LogClass::logInFile(ExpName + "GRID IN ");
+    }
+    else {
+        grid_synch = false;
+        PCB304::syncGeneratorOff(false);
+        LogClass::logInFile(ExpName + "GRID OUT ");
+    }
+
+    // Sets the current focus
+    if (focus_selection == focus_selection_index::FOCUS_AUTO) {
+        if (PCB302::getMagnifierFactor() == 10) large_focus = true;
+        else large_focus = false;
+    }
+    else if (focus_selection == focus_selection_index::FOCUS_LARGE) large_focus = true;
+    else large_focus = false;
+    
+    if(large_focus) LogClass::logInFile(ExpName + "FOCUS LARGE ");
+    else LogClass::logInFile(ExpName + "FOCUS SMALL ");
    
-    // Determines if the Focus is Small or large based on the presence of the Magnifier device
-    if (PCB302::getMagnifierFactor() != 10) large_focus = false;
-    else large_focus = true;
-    
-    
+
     // The format collimation should be already configured
     if (!PCB303::isValidCollimationFormat()) {
         return exposure_completed_errors::XRAY_COLLI_FORMAT_ERROR;
@@ -65,6 +90,9 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
 
     // Checks the filter in position
     if(!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+
+    // Checks the grid in positon
+    if (!PCB304::waitGridCompleted()) return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
 
     if (!demo) {
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
@@ -122,15 +150,42 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(getExposurePulse(0)->filter);
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
+   
 
-    // Sets the Grid On Field (if not yet) : wait for the ready condition   
-    if (grid_synch) PCB304::syncGeneratorOn();
-    else PCB304::syncGeneratorOff();
+    // Set the grid to the requested status 
+    if (getGrid() == grid_selection_index::GRID_AUTO) {
+        
+        PCB304::setAutoGridInField(); // The normal grid status in 2D exposure is Grid In Field
 
-    // Determines if the Focus is Small or large based on the presence of the Magnifier device
-    if (PCB302::getMagnifierFactor() != 10) large_focus = false;
-    else large_focus = true;
+    }else if (getGrid() == grid_selection_index::GRID_IN) {
+        PCB304::setAutoGridInField();        
+    }
+    else {
+        PCB304::setAutoGridOutField();        
+    }
+
+    if (PCB304::isGridInFieldStatus()) {
+        grid_synch = true;
+        PCB304::syncGeneratorOn();
+        LogClass::logInFile(ExpName + "GRID IN ");
+    }
+    else {
+        grid_synch = false;
+        PCB304::syncGeneratorOff(false);
+        LogClass::logInFile(ExpName + "GRID OUT ");
+    }
+
+    // Sets the current focus
+    if (focus_selection == focus_selection_index::FOCUS_AUTO) {
+        if (PCB302::getMagnifierFactor() == 10) large_focus = true;
+        else large_focus = false;
+    }
+    else if (focus_selection == focus_selection_index::FOCUS_LARGE) large_focus = true;
+    else large_focus = false;
+
+    if (large_focus) LogClass::logInFile(ExpName + "FOCUS LARGE ");
+    else LogClass::logInFile(ExpName + "FOCUS SMALL ");
+
 
 
     // Verifies that a valid the format collimation is present
@@ -145,12 +200,14 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     exposure_data_str = "Filter Pre:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
 
     //exposure_time = 5000;
-    error = (exposure_completed_errors)generator2DAecPrePulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, large_focus,  exposure_time);
+    error = (exposure_completed_errors)generator2DAecPrePulsePreparation(ExpName, grid_synch, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, large_focus,  exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
     // Checks the filter in position
     if (!PCB303::waitFilterCompleted()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
+    // Checks the grid in positon
+    if (!PCB304::waitGridCompleted()) return Exposures::exposure_completed_errors::XRAY_GRID_ERROR;
     
     if (!demo) {
         // Sequence for the AEC: only the Standby is admitted as returned code: the WaitFootRelease is not admitted here
@@ -159,6 +216,7 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
         if (large_focus) setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 1);
         else setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 0);
+        
         if (getGeneratorStatus() != R2CP::Stat_Standby) error = exposure_completed_errors::XRAY_INVALID_GENERATOR_STATUS;
     }
     else {
@@ -218,7 +276,7 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
     // Preparation for pulse
     exposure_data_str = ExpName + "AEC PULSE DATA ---------------- "; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Filter:" + Exposures::getExposurePulse(1)->filter.ToString(); LogClass::logInFile(exposure_data_str);
-    error = (exposure_completed_errors)generator2DAecPulsePreparation(ExpName, Exposures::getExposurePulse(1)->kV, Exposures::getExposurePulse(1)->mAs, large_focus, exposure_time);
+    error = (exposure_completed_errors)generator2DAecPulsePreparation(ExpName, grid_synch, Exposures::getExposurePulse(1)->kV, Exposures::getExposurePulse(1)->mAs, large_focus, exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 

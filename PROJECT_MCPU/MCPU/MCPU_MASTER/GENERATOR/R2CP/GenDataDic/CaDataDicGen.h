@@ -180,8 +180,8 @@ namespace R2CP
 
         void Patient_Activate2DProcedurePulse(bool detector, bool grid);
 
-        void Patient_Activate2DAecProcedurePulse(void);
-        void Patient_Activate2DAecProcedurePre(void);
+        void Patient_Activate2DAecProcedurePulse(bool grid);
+        void Patient_Activate2DAecProcedurePre(bool grid);
 
         void Patient_Activate3DProcedurePulse(void);
         void Patient_Activate3DAecProcedurePulse(void);

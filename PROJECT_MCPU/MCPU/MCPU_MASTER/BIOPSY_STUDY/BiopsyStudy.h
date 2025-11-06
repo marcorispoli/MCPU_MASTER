@@ -505,7 +505,7 @@ public:
 	void evaluateSlideStatus(bool init);
 	void evaluatePopupPanels(void);
 	void evaluateDigitDisplays(void);
-	void evaluateGridStatus(void);
+	
 	void evaluateAwsComponentEvent(void);
 	
 	void showProcedureImage(System::String^ action_img, System::String^ info_string, System::String^ info_icon, bool button);

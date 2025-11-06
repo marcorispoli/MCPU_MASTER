@@ -256,20 +256,23 @@ public:
 		protocol.data_register.InOutStatus = false; 
 		current_inout_auto_mode = protocol.data_register.InOutAutoEnable;
 	};
+	static bool isGridInFieldStatus(void) { return protocol.data_register.InOutStatus; }
+	
+	static bool waitGridCompleted(void);
 
 	static void syncGeneratorOn(void) { 
 		protocol.data_register.ManualXrayDisableEnable = false; 
 		protocol.data_register.EnableStartGrid = true; 
 	}
-	static void syncGeneratorOff(void) { 
+	static void syncGeneratorOff(bool xray_disable) { 
 		protocol.data_register.ManualXrayDisableEnable = true; 
-		protocol.data_register.ManualXrayDisableStatus = true; 
+		protocol.data_register.ManualXrayDisableStatus = xray_disable;
 		protocol.data_register.EnableStartGrid = false; 
 	}
 
 
 	// Status Register Content Inspection
-	inline static bool isGridOnFieldReady(void) { return protocol.status_register.inField; }
+	inline static bool isGridInFieldReady(void) { return protocol.status_register.inField; }
 	inline static bool isGridOffFieldReady(void) { return protocol.status_register.outField;}
 	inline static bool isInOutTest(void) { return protocol.status_register.inout_executing; }
 	inline static bool isTrasversalTest(void) { return protocol.status_register.transversal_executing; }

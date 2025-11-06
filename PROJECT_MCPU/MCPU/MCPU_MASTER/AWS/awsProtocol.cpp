@@ -47,7 +47,6 @@ awsProtocol::awsProtocol(void) {
     commandExec = gcnew Dictionary<String^, command_callback^>;
     commandExec->Add("EXEC_OpenStudy", gcnew command_callback(this, &awsProtocol::EXEC_OpenStudy));
     commandExec->Add("EXEC_BiopsyStudy", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyStudy));
-    commandExec->Add("EXEC_TestStudy", gcnew command_callback(this, &awsProtocol::EXEC_TestStudy));
     commandExec->Add("EXEC_CloseStudy", gcnew command_callback(this, &awsProtocol::EXEC_CloseStudy));
     commandExec->Add("SET_ProjectionList", gcnew command_callback(this, &awsProtocol::SET_ProjectionList));
     commandExec->Add("EXEC_ArmPosition", gcnew command_callback(this, &awsProtocol::EXEC_ArmPosition));
@@ -58,6 +57,7 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("SET_ExposureMode", gcnew command_callback(this, &awsProtocol::SET_ExposureMode));
     commandExec->Add("SET_ExposureData", gcnew command_callback(this, &awsProtocol::SET_ExposureData));
     commandExec->Add("SET_EnableXrayPush", gcnew command_callback(this, &awsProtocol::SET_EnableXrayPush));
+    commandExec->Add("SET_TestMode", gcnew command_callback(this, &awsProtocol::SET_TestMode));
     commandExec->Add("GET_ReadyForExposure", gcnew command_callback(this, &awsProtocol::GET_ReadyForExposure));
     commandExec->Add("EXEC_StartXraySequence", gcnew command_callback(this, &awsProtocol::EXEC_StartXraySequence));
     commandExec->Add("GET_Compressor", gcnew command_callback(this, &awsProtocol::GET_Compressor));

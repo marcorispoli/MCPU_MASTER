@@ -290,8 +290,9 @@ void OperatingForm::initOperatingStatus(void) {
 	ArmMotor::getProjectionsList()->clrList();
 
 	// Sets the current collimation dependent by the detected paddle
-	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
-	
+	// PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::AUTO, 0);
+	// IMQ: Collimazione OPEN
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::OPEN, 0);
 
 	// Set the Filter in Exposure selection mode
 	// Select the most common filter: Rhodium
@@ -436,9 +437,25 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 		return;
 	}
 
+	// Exposure Mode selection	
+	if (Exposures::getExposureType() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
+	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
+	
+
+	// Valid Exposure Data present
+	if (!Exposures::getExposurePulse(0)->isValid()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
+	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
+
+	
+	// Xray Push Button Enable
+	if (!Exposures::getXrayPushButtonEvent()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
+	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 	static bool cmp_force_error = false;
 
-	// Compression Mode Warning
+	// The following ready conditions are valid only with the patient Exposure mode
+	if (Exposures::getExposureMode() != Exposures::exposure_mode_options::EXPOSURE_FOR_PATIENT) return;
+
+	// Compression Mode Warning	
 	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) && (PCB302::getForce() == 0))
 		Notify::activate(Notify::messages::WARNING_MISSING_COMPRESSION);
 	else Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
@@ -451,7 +468,7 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 		Notify::activate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 	else 
 		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
-	
+
 	// C-Arm Mode
 	if (
 		(Exposures::getArmMode() != Exposures::arm_mode_option::ARM_DIS) &&
@@ -463,23 +480,7 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 	if ((Exposures::getCompressorMode() != Exposures::compression_mode_option::CMP_DISABLE) &&
 		(PCB302::getDetectedPaddleCode() == PCB302::paddleCodes::PADDLE_NOT_DETECTED)) Notify::activate(Notify::messages::WARNING_WRONG_PADDLE);
 	else Notify::deactivate(Notify::messages::WARNING_WRONG_PADDLE);
-
 	
-	// Exposure Mode selection	
-	if (Exposures::getExposureMode() == Exposures::exposure_type_options::EXP_NOT_DEFINED) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
-	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_MODE);
-	
-
-	// Valid Exposure Data present
-	if (!Exposures::getExposurePulse(0)->isValid()) Notify::activate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
-	else Notify::deactivate(Notify::messages::WARNING_MISSING_EXPOSURE_DATA);
-
-	
-	// Xray Push Button Enable
-	if (!Exposures::getXrayPushButtonEvent()) Notify::activate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
-	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
-
-
 	
 }
 
@@ -643,7 +644,7 @@ void OperatingForm::evaluateCompressorStatus(bool init) {
 		else thicknessStatus->BackgroundImage = THICKNESS_ENABLED_IMAGE;
 	}
 
-	
+
 
 }
 
@@ -655,21 +656,21 @@ void OperatingForm::evaluateCompressorReleaseStatus(void) {
 		decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
 		return;
 	}
-	
+
 	if (cmpmode == Exposures::getCompressorMode()) return;
 	cmpmode = Exposures::getCompressorMode();
 
 	if (cmpmode == Exposures::compression_mode_option::CMP_RELEASE) decompressionStatus->BackgroundImage = COMPRESSION_RELEASE_IMAGE;
 	else decompressionStatus->BackgroundImage = COMPRESSION_KEEP_IMAGE;
-	
+
 }
 void OperatingForm::evaluateCollimatorStatus(void) {
-	
+
 
 	// Sets the current lamp status
 	if (PCB303::getPowerLightStatus() != OPERSTATUS::Registers.collimator.light_on) {
 		OPERSTATUS::Registers.collimator.light_on = PCB303::getPowerLightStatus();
-		if(OPERSTATUS::Registers.collimator.light_on) lampButton->BackgroundImage = LAMP_ON_IMAGE;
+		if (OPERSTATUS::Registers.collimator.light_on) lampButton->BackgroundImage = LAMP_ON_IMAGE;
 		else lampButton->BackgroundImage = LAMP_OFF_IMAGE;
 	}
 
@@ -688,7 +689,7 @@ void OperatingForm::evaluateMagStatus(void) {
 	static float curFactor = 255;
 
 	float magfactor = (float)PCB302::getMagnifierFactor() / 10;
-	if (curFactor != magfactor) {		
+	if (curFactor != magfactor) {
 		curFactor = magfactor;
 		labelMag->Text = magfactor.ToString() + "x";
 	}
@@ -700,14 +701,14 @@ void OperatingForm::evaluateDoorStatus(void) {
 	if (PCB301::isClosedDoor() != OPERSTATUS::Registers.closed_door) {
 		OPERSTATUS::Registers.closed_door = PCB301::isClosedDoor();
 
-		if (OPERSTATUS::Registers.closed_door ) {
+		if (OPERSTATUS::Registers.closed_door) {
 			doorStatus->BackgroundImage = DOOR_CLOSED_IMAGE;
 		}
 		else {
 			doorStatus->BackgroundImage = DOOR_OPEN_IMAGE;
 		}
 	}
-	
+
 }
 
 void OperatingForm::evaluateSlideStatus(bool init) {
@@ -717,36 +718,17 @@ void OperatingForm::evaluateSlideStatus(bool init) {
 	int cur_stat;
 	if (SlideMotor::device->getCurrentPosition() < 500) cur_stat = 0;
 	else cur_stat = 1;
-	
+
 	if (stat != cur_stat) {
 		stat = cur_stat;
 
-		if(stat == 0)  slideButton->BackgroundImage = SLIDE_0_IMAGE;
+		if (stat == 0)  slideButton->BackgroundImage = SLIDE_0_IMAGE;
 		else slideButton->BackgroundImage = SLIDE_10_IMAGE;
 	}
 
-	
+
 }
 
-void OperatingForm::evaluateGridStatus(void) {
-	// Evaluates the current selected Exposure mode to define what is the current grid position
-	bool inOut_Field = false; // Out Field
-
-	switch (Exposures::getExposureMode()) {
-	case Exposures::exposure_type_options::AEC_2D: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::AEC_3D: inOut_Field = false; break; // Out Field
-	case Exposures::exposure_type_options::AEC_AE: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::AEC_COMBO: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::MAN_2D: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::MAN_3D: inOut_Field = false; break; // Out Field
-	case Exposures::exposure_type_options::MAN_AE: inOut_Field = true; break; // In Field
-	case Exposures::exposure_type_options::MAN_COMBO: inOut_Field = true; break; // In Field
-	default:inOut_Field = true; break; // In Field
-	}
-
-	if(inOut_Field)	PCB304::setAutoGridInField();
-	else PCB304::setAutoGridOutField();
-}
 
 void OperatingForm::evaluateAwsComponentEvent(void) {
 	bool generate_event_component = false;
@@ -790,7 +772,7 @@ void OperatingForm::operatingStatusManagement(void) {
 	evaluateSlideStatus(false);
 	evaluateProjectionStatus(false);
 	evaluateDigitDisplays();
-	evaluateGridStatus();
+	
 	evaluateAwsComponentEvent();
 
 	// Evaluates the AEC field manual selection

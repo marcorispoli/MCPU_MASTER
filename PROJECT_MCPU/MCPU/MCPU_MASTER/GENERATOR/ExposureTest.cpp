@@ -26,7 +26,7 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
     
     // Sets the Grid On Field (if not yet) : wait for the ready condition   
     if (grid_synch) PCB304::syncGeneratorOn();
-    else PCB304::syncGeneratorOff();
+    else PCB304::syncGeneratorOff(false);
 
     // Filter selection 
     filter = getExposurePulse(0)->filter;

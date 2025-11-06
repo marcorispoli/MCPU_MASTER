@@ -428,11 +428,22 @@ protected:
 	static System::String^ getGeneratorErrorString(System::String^ errstr);
 	inline static unsigned char getGeneratorStatus(void) {return current_generator_status;}
 	generator_errors generatorExecutePulseSequence(System::String^ ExpName, int ms_timeout);	
-	generator_errors generator2DPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, bool det_sync, bool grid_sync, int exp_time);	
-	generator_errors generator2DAecPrePulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time);
-	generator_errors generator2DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time);
-	generator_errors generator3DPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time);
-	inline static float getSelectedAnodeCurrent(void) { return selected_anode_current; }
+	
+    generator_errors generator2DPulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, bool det_sync, bool grid_sync, int exp_time);	
+	generator_errors generator2DAecPrePulsePreparation(System::String^ exp_name, bool grid_sync, float kV, float mAs, bool islargefocus, int exp_time);
+	generator_errors generator2DAecPulsePreparation(System::String^ exp_name, bool grid_sync, float kV, float mAs, bool islargefocus, int exp_time);
+	
+    generator_errors generator3DPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time);
+    
+    generator_errors generator3DAecPrePulsePreparation(System::String^ exp_name, float kV, float mAs, bool islargefocus, int exp_time);
+    generator_errors generator3DAecPulsePreparation(System::String^ exp_name, float kV, float mAs, int tomo_samples, int tomo_skip, bool islargefocus, int min_exp_time, int max_exp_time);
+
+    //generator_errors generator2DManualPreparation();
+    //generator_errors generator2DAecPreparation();
+    //generator_errors generator3DManualPreparation();
+    //generator_errors generator3DAecPreparation();
+
+    inline static float getSelectedAnodeCurrent(void) { return selected_anode_current; }
 
 private:
 	

@@ -224,7 +224,8 @@ void IdleForm::initIdleStatus(void) {
 	PCB325::setBiopsyFreeMode();
 
 	/// The collimation is disabled
-	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::DISABLED, 0);
+	//PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::DISABLED, 0);
+	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::OPEN, 0);
 
 	/// The filter is set to "lead" in order to protect the tube output.
 	PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
@@ -281,7 +282,7 @@ void IdleForm::initIdleStatus(void) {
 	/// and to left the grid out of field.
 	PCB304::resetErrorCount();
 	PCB304::setAutoGridInField();
-	PCB304::syncGeneratorOff();
+	PCB304::syncGeneratorOff(true);
 	
 	/// The Idle Operatig Mode window timer is started with 100ms schedule
 	idleTimer->Start();	

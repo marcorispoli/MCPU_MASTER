@@ -136,56 +136,7 @@ void  awsProtocol::EXEC_BiopsyStudy(void) {
 }
 
 
-/// \addtogroup AWSProtocolDescription
-///
-/// \subsection EXEC_TestStudy 
-/// 
-/// The AWS sends this command whenever a Test study should be open.
-/// 
-/// NOTE: The test study is a special exposure session where the Patient 
-/// is not present. IN this session several controls are disabled, allowing 
-/// te execution of calibration and test procedures.
-/// 
-/// ### Command Data Format
-/// 
-/// Frame format: <ID % EXEC_TestStudy test_name>
-/// 
-/// |PARAMETER|Data Type|Description|
-/// |:--|:--|:--|
-/// |test_name|String|A string descriptor of the current test session| 
-/// 
-/// 
-/// ### Command Returned Code 
-/// 
-/// |ERROR CODE|ERROR STRING|DESCRIPTION|
-/// |:--|:--|:--|
-/// |AWS_RET_SYSTEM_ERRORS| "SYSTEM_ERRORS" | system error condition are presents|
-/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"| wrong number of parameters (it should be 1)|
-/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_IDLE_MODE"| the Gantry is not in IDLE status|
-/// 
 
-/// <summary>
-/// The AWS sends this command whenever a Test study should be open.
-/// 
-/// </summary>
-/// <param name=""></param>
-void  awsProtocol::EXEC_TestStudy(void) {
-
-    // Only in Idle can be accepted this command
-    if (!Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
-
-
-    // Not in error condition !!!
-    if (Notify::isError()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_SYSTEM_ERRORS; pDecodedFrame->errstr = "SYSTEM_ERRORS"; ackNok(); return; }
-
-    if (pDecodedFrame->Count() != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    String^ test_name = pDecodedFrame->parameters[0];
-
-    // Open the study and assignes the patient name !!!
-    if (!Gantry::setOpenTestStudy(test_name)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_IDLE_MODE"; ackNok(); return; }
-
-    ackOk();
-}
 
 
 
@@ -489,9 +440,8 @@ void awsProtocol::EXEC_ArmPosition(void) {
 
     // Form 1 received
     if (pDecodedFrame->parameters->Count == 4) {
-
         // Only in Patient Operating Mode
-        if (!Gantry::isSTANDARD()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_PATIENT_MODE"; ackNok(); return; }        
+        if (!Gantry::isSTANDARD()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_PATIENT_MODE"; ackNok(); return; }
 
         int errcode = ArmMotor::setTarget(
             Convert::ToInt16(pDecodedFrame->parameters[1]),
@@ -502,9 +452,9 @@ void awsProtocol::EXEC_ArmPosition(void) {
 
         // Command Error condition
         if (errcode < 0) {
-            if(errcode == -1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
-            if(errcode == -2) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "TILT_NOT_IN_SCOUT"; ackNok(); return; }
-            if(errcode == -3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_MOTOR_BUSY"; ackNok(); return; }
+            if (errcode == -1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DATA_NOT_ALLOWED; pDecodedFrame->errstr = "WRONG_PROJECTION"; ackNok(); return; }
+            if (errcode == -2) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "TILT_NOT_IN_SCOUT"; ackNok(); return; }
+            if (errcode == -3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_MOTOR_BUSY"; ackNok(); return; }
             pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return;
         }
 
@@ -517,31 +467,6 @@ void awsProtocol::EXEC_ArmPosition(void) {
         // Command is in execution
         ackExecuting();
         return;
-
-    }else if (pDecodedFrame->parameters->Count == 1) { // Form 2 received:  Only in Test Operating Mode    
-        if (!Gantry::isTEST()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_TEST_MODE"; ackNok(); return; }
-
-        int angle = Convert::ToInt16(pDecodedFrame->parameters[1]);
-
-        // Already in position
-        if (ArmMotor::isTarget(angle)) {
-            ackOk();
-            return;
-        }
-
-        // The Tilt is not in the correct position to move the Arm
-        if ((!TiltMotor::isScoutPosition())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "TILT_NOT_IN_SCOUT"; ackNok(); return; }
-        if ((!ArmMotor::device->isReady())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_BUSY; pDecodedFrame->errstr = "ARM_MOTOR_BUSY"; ackNok(); return; }
-
-        if (ArmMotor::serviceAutoPosition(angle)) {
-            // Command is in execution
-            ackExecuting();
-            return;
-        }
-        
-        // Command error
-        pDecodedFrame->errcode = (int)return_errors::AWS_RET_DEVICE_ERROR; pDecodedFrame->errstr = "DEVICE_ERROR"; ackNok(); return;
-        
     }
     
     // Wrong number of parameters
@@ -699,14 +624,13 @@ void awsProtocol::EXEC_TrxPosition(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format Sintax 1: <ID % SET_TomoConfig tomo_name >
-/// Frame format Sintax 2: <ID % SET_TomoConfig tomo_name nsamples_modifier nskip_modifier>
+/// Frame format Sintax : <ID % SET_TomoConfig tomo_name >
+///
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
 /// |tomo_name|String|the predefined name assigned to the Tomo sequence to be selected| 
-/// |nsamples_modifier|Integer|(optional)Modifier of the sequence number of samples |
-/// |nskip_modifier|Integer|(optional)Modifier of the sequence number of skips|
+/// 
 /// 
 /// \Note: the comnmand
 /// |tomo_name|
@@ -747,25 +671,10 @@ void awsProtocol::EXEC_TrxPosition(void) {
 /// <param name=""></param>
 void awsProtocol::SET_TomoConfig(void) {
 
-    if ( (pDecodedFrame->parameters->Count != 1) && 
-        (pDecodedFrame->parameters->Count != 3)) 
-    { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    
-    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY()) && (!Gantry::isTEST())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
-
-    // Sintax with only one parameter
-    if (pDecodedFrame->parameters->Count == 1) {
-        if (!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
-        ackOk();
-        return;
-    }
-
-    // Sintax with modifier parameters
-    int samples_modifier = Convert::ToInt16(pDecodedFrame->parameters[1]);
-    int skips_modifier = Convert::ToInt16(pDecodedFrame->parameters[2]);
-    if(!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0], samples_modifier, skips_modifier)) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
+    if (pDecodedFrame->parameters->Count != 1)   { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }    
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if (!Exposures::getTomoExposure()->set(pDecodedFrame->parameters[0])) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "WRONG_CONFIGURATION_ID"; ackNok(); return; }
     ackOk();
-
     return;
 }
 
@@ -972,7 +881,7 @@ void awsProtocol::GET_TomoInfo(void) {
 /// <param name=""></param>
 void   awsProtocol::SET_ExposureMode(void) {
     if (pDecodedFrame->parameters->Count != 6) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
-    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY()) && (!Gantry::isTEST())) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
+    if ((!Gantry::isSTANDARD()) && (!Gantry::isBIOPSY()) ) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_OPEN_MODE"; ackNok(); return; }
 
     String^ exposure_type = pDecodedFrame->parameters[0];
     String^ detector_type = pDecodedFrame->parameters[1];
@@ -981,27 +890,17 @@ void   awsProtocol::SET_ExposureMode(void) {
     String^ protection_mode = pDecodedFrame->parameters[4];
     String^ arm_mode = pDecodedFrame->parameters[5];
 
-    // For the Test session, some of the parameter sahll be initialized and some command verified
-    if (!Gantry::isTEST()) {
-        if (exposure_type == "MAN_3D_STATIC") { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "COMMAND_NOT_ALLOWED_IN_THE_CURRENT_STUDY"; ackNok(); return; }
-        
-    }
-    else {
-        protection_mode = "PROTECTION_DIS";
-        compression_mode = "CMP_DISABLE";
-        arm_mode = "ARM_DIS";
-    }
 
     // Sets the next exposure mode
-    if (exposure_type == "MAN_2D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_2D);
-    else if (exposure_type == "AEC_2D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_2D);
-    else if (exposure_type == "MAN_3D") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_3D);
-    else if (exposure_type == "MAN_3D_STATIC") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_3D_STATIC);
-    else if (exposure_type == "AEC_3D") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_3D);
-    else if (exposure_type == "MAN_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_COMBO);
-    else if (exposure_type == "AEC_COMBO") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_COMBO);
-    else if (exposure_type == "MAN_AE") Exposures::setExposureMode(Exposures::exposure_type_options::MAN_AE);
-    else if (exposure_type == "AEC_AE") Exposures::setExposureMode(Exposures::exposure_type_options::AEC_AE);
+    if (exposure_type == "MAN_2D") Exposures::setExposureType(Exposures::exposure_type_options::MAN_2D);
+    else if (exposure_type == "AEC_2D") Exposures::setExposureType(Exposures::exposure_type_options::AEC_2D);
+    else if (exposure_type == "MAN_3D") Exposures::setExposureType(Exposures::exposure_type_options::MAN_3D);
+    else if (exposure_type == "MAN_3D_STATIC") Exposures::setExposureType(Exposures::exposure_type_options::MAN_3D_STATIC);
+    else if (exposure_type == "AEC_3D") Exposures::setExposureType(Exposures::exposure_type_options::AEC_3D);
+    else if (exposure_type == "MAN_COMBO") Exposures::setExposureType(Exposures::exposure_type_options::MAN_COMBO);
+    else if (exposure_type == "AEC_COMBO") Exposures::setExposureType(Exposures::exposure_type_options::AEC_COMBO);
+    else if (exposure_type == "MAN_AE") Exposures::setExposureType(Exposures::exposure_type_options::MAN_AE);
+    else if (exposure_type == "AEC_AE") Exposures::setExposureType(Exposures::exposure_type_options::AEC_AE);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_EXPOSURE_TYPE"; ackNok(); return; }
 
     // Sets the detector used for the exposure
@@ -1061,6 +960,13 @@ void   awsProtocol::SET_ExposureMode(void) {
     else if (arm_mode == "ARM_DIS") Exposures::setArmMode(Exposures::arm_mode_option::ARM_DIS);
     else { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_ARM_MODE"; ackNok(); return; }
 
+    
+    // Set Grid to Auto
+    Exposures::setGrid(Exposures::grid_selection_index::GRID_AUTO);
+
+    // Set the exposure mode in Patient mode
+    Exposures::setFocus(Exposures::focus_selection_index::FOCUS_AUTO);
+    Exposures::setExposureMode(Exposures::exposure_mode_options::EXPOSURE_FOR_PATIENT);
 
     ackOk();
     return;
@@ -1147,6 +1053,55 @@ void   awsProtocol::SET_ExposureData(void) {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PARAMETERS"; ackNok(); return;
     }
    
+    ackOk();
+    return;
+}
+
+void   awsProtocol::SET_TestMode(void) {
+    if (pDecodedFrame->parameters->Count != 3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS(3)"; ackNok(); return; }
+   
+    // Behavior of the Focus
+    if (pDecodedFrame->parameters[0] == "AUTO") {
+        
+        Exposures::setFocus(Exposures::focus_selection_index::FOCUS_AUTO);
+        
+    }else if(pDecodedFrame->parameters[0] == "LARGE") {
+        Exposures::setFocus(Exposures::focus_selection_index::FOCUS_LARGE);
+
+    }else if (pDecodedFrame->parameters[0] == "SMALL") {
+        Exposures::setFocus(Exposures::focus_selection_index::FOCUS_SMALL);
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_FOCUS_PARAMETERS"; ackNok(); return;
+    }
+
+    // Behavior of the Grid
+    if (pDecodedFrame->parameters[1] == "AUTO") {
+        // Set Grid to Auto
+        Exposures::setGrid(Exposures::grid_selection_index::GRID_AUTO);
+    }
+    else if (pDecodedFrame->parameters[1] == "GRID_IN") {
+        Exposures::setGrid(Exposures::grid_selection_index::GRID_IN);
+    }
+    else if (pDecodedFrame->parameters[1] == "GRID_OUT") {
+        Exposures::setGrid(Exposures::grid_selection_index::GRID_OUT);        
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_GRID_PARAMETERS"; ackNok(); return;
+    }
+
+    // Behavior of the TOMO
+    if (pDecodedFrame->parameters[2] == "AUTO") {
+        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO);
+    }else if (pDecodedFrame->parameters[2] == "CALIB") {
+        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_CALIB);
+    }
+    else {
+        pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_TOMO_PARAMETERS"; ackNok(); return;
+    }
+
+    Exposures::setExposureMode(Exposures::exposure_mode_options::EXPOSURE_FOR_TEST);
+
     ackOk();
     return;
 }

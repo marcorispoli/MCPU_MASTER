@@ -348,8 +348,8 @@ public:
     };
 
     enum class tomo_mode_selection_index {
-        TOMO_AUTO = 0,
-        TOMO_CALIB,
+        TOMO_AUTO = 0,  //<! The configured tomo is executed in the normal way
+        TOMO_STATIC_ARM, //<! The Tomo with steady Tilt (see the calib_samples for more details)         
     };
 
    
@@ -407,9 +407,9 @@ public:
     inline static grid_selection_index getGrid(void) { return grid_selection; }
 
 
-    inline static void setTomoMode(tomo_mode_selection_index mode) { tomo_selection_mode = mode; }
+    inline static void setTomoMode(tomo_mode_selection_index mode, unsigned char samples) { tomo_selection_mode = mode; tomo_calib_samples = samples; }
     inline static tomo_mode_selection_index getTomoMode(void) { return tomo_selection_mode; }
-
+    inline static unsigned char getTomoCalibSamples(void) { return tomo_calib_samples; }
 
 
     inline static bool isXrayCompleted() { return xray_completed; }
@@ -455,6 +455,7 @@ private:
     static focus_selection_index focus_selection = focus_selection_index::FOCUS_LARGE;
     static grid_selection_index  grid_selection =  grid_selection_index::GRID_OUT;
     static tomo_mode_selection_index  tomo_selection_mode =  tomo_mode_selection_index::TOMO_AUTO;
+    static unsigned char tomo_calib_samples = 0; //<! If 0 the number of samples will be the configured. if not zero, it is the number of executed calibration pulses
     static exposure_mode_options exposure_mode = exposure_mode_options::EXPOSURE_FOR_PATIENT;
 
     static cli::array<exposure_pulse^>^ pulse = gcnew array<exposure_pulse^> {gcnew exposure_pulse (),gcnew exposure_pulse(), gcnew exposure_pulse(), gcnew exposure_pulse() };
@@ -481,6 +482,7 @@ private:
     exposure_completed_errors aec_ae_exposure_procedure(bool demo);
     exposure_completed_errors man_3d_exposure_procedure(bool demo);
     exposure_completed_errors aec_3d_exposure_procedure(bool demo);
+    exposure_completed_errors aec_3d_static_exposure_procedure(bool demo);
     exposure_completed_errors man_3d_static_exposure_procedure(bool demo);
     exposure_completed_errors man_combo_exposure_procedure(bool demo);
     exposure_completed_errors aec_combo_exposure_procedure(bool demo);    

@@ -581,12 +581,12 @@ void DebuggerCLI::handleExposureCommands(System::String^ cmd) {
 		}
 
 		if (cmd->Contains("AUTO")) {
-			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO);
+			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO, 0);
 			stringa = "TOMO mode set in AUTO mode \n\r";
 		}
 		else if (cmd->Contains("CALIB")) {
-			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_CALIB);
-			stringa = "TOMO mode set in CALIB mode \n\r";
+			Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_STATIC_ARM, 25);
+			stringa = "TOMO mode set in STATIC mode with 25 pulses\n\r";
 
 		}
 		else {

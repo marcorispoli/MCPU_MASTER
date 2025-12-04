@@ -1058,7 +1058,7 @@ void   awsProtocol::SET_ExposureData(void) {
 }
 
 void   awsProtocol::SET_TestMode(void) {
-    if (pDecodedFrame->parameters->Count != 3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS(3)"; ackNok(); return; }
+    if (pDecodedFrame->parameters->Count < 3) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS(3)"; ackNok(); return; }
    
     // Behavior of the Focus
     if (pDecodedFrame->parameters[0] == "AUTO") {
@@ -1090,11 +1090,17 @@ void   awsProtocol::SET_TestMode(void) {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_GRID_PARAMETERS"; ackNok(); return;
     }
 
+    unsigned char tomo_calib_samples = 0;
+    if (pDecodedFrame->parameters->Count > 3) {
+        tomo_calib_samples = Convert::ToByte(pDecodedFrame->parameters[3]);
+    }
+    
     // Behavior of the TOMO
     if (pDecodedFrame->parameters[2] == "AUTO") {
-        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO);
-    }else if (pDecodedFrame->parameters[2] == "CALIB") {
-        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_CALIB);
+        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_AUTO, 0);
+    }
+    else if (pDecodedFrame->parameters[2] == "CALIB") {
+        Exposures::setTomoMode(Exposures::tomo_mode_selection_index::TOMO_STATIC_ARM, tomo_calib_samples);
     }
     else {
         pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_TOMO_PARAMETERS"; ackNok(); return;

@@ -262,6 +262,7 @@
     <ClCompile Include="DEVICES\PCB325.cpp" />
     <ClCompile Include="DEVICES\PCB326.cpp" />
     <ClCompile Include="GENERATOR\Exposure2DModule.cpp" />
+    <ClCompile Include="GENERATOR\Exposure3DCalibModule.cpp" />
     <ClCompile Include="GENERATOR\Exposure3DModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureAEModule.cpp" />
     <ClCompile Include="GENERATOR\ExposureComboModule.cpp" />

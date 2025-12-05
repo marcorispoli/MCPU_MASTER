@@ -457,6 +457,9 @@
     <ClCompile Include="WINDOWS\SERVICE\ServiceCollimatorTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GENERATOR\Exposure3DCalibModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">

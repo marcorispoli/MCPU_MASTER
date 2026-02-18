@@ -540,6 +540,8 @@ void PCB303::resetFaults(void) {
 
 void PCB303::demoLoop(void) {
     valid_collimation_format = true;
+    valid_filter_format = true;
+    valid_mirror_format = true;
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     return;
 }

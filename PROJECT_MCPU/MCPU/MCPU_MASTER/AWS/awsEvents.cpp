@@ -60,6 +60,7 @@ void awsProtocol::EVENT_SelectProjection(String^ projname) {
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_SelectProjection  " + projname + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// \addtogroup AWSProtocolDescription
@@ -96,6 +97,7 @@ void awsProtocol::EVENT_AbortProjection(void) {
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_AbortProjection %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// \addtogroup AWSProtocolDescription
@@ -132,6 +134,7 @@ void awsProtocol::EVENT_GantryStatus(void) {
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_GantryStatus  " + status + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// \addtogroup AWSProtocolDescription
@@ -164,6 +167,7 @@ void awsProtocol::EVENT_Compressor(void) {
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Compressor  " + thick.ToString() + "  " + force.ToString() + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 
@@ -233,6 +237,7 @@ void awsProtocol::EVENT_Components(void) {
     device->event_counter++;
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Components  " + potter_type + " " + mag_factor + " " + paddle + " " + protection + " " + colli_tool + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 
@@ -279,6 +284,7 @@ void awsProtocol::EVENT_ReadyForExposure(void) {
     }
 
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// \addtogroup AWSProtocolDescription
@@ -312,7 +318,8 @@ void awsProtocol::EVENT_XrayPushButton(bool status) {
 
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_XrayPushButton  " + strstat + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
-   
+    LogClass::logInFile(answer);
+    
 }
 
 /// \addtogroup AWSProtocolDescription
@@ -349,6 +356,7 @@ void awsProtocol::EVENT_exposurePulseCompleted(unsigned char npulse) {
    
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_exposurePulseCompleted  " + npulse.ToString() + " %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 /// \addtogroup AWSProtocolDescription
@@ -413,6 +421,7 @@ void awsProtocol::EVENT_XraySequenceCompleted(void) {
     answer += " %>";
 
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 
 }
 
@@ -451,6 +460,7 @@ void awsProtocol::EVENT_Poweroff(void) {
 
     String^ answer = "<" + device->event_counter.ToString() + " %EVENT_Poweroff %>";
     device->event_server->send(System::Text::Encoding::Unicode->GetBytes(answer));
+    LogClass::logInFile(answer);
 }
 
 
@@ -487,6 +497,7 @@ void awsProtocol::EVENT_Executed(int id, int error) {
     const std::lock_guard<std::mutex> lock(event_mutex);
     if (error) device->eventExecutedNok(id, error);
     else device->eventExecutedOk(id);
+    
 }
 
 

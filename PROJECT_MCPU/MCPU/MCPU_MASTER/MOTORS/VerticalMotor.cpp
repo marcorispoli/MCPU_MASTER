@@ -18,8 +18,12 @@
 #define ABSOLUTE_MAX_POSITION (MAX_POSITION+50)     //!< Defines the Absolute Maximum mechanical position (invalid the zero position at the restart)
 #define ABSOLUTE_MIN_POSITION (MIN_POSITION-50)    //!< Defines the Absolute Minimum mechanical position (invalid the zero position at the restart)
 
-#define HOMING_ON_METHOD 20 //!< Zero setting approaching method starting with the Zero photocell ON
-#define HOMING_OFF_METHOD 19//!< Zero setting approaching method starting with the Zero photocell OFF
+//#define HOMING_ON_METHOD 20 //!< Zero setting approaching method starting with the Zero photocell ON
+//#define HOMING_OFF_METHOD 19//!< Zero setting approaching method starting with the Zero photocell OFF
+// Cambiato algoritmo per fermare il motore istantaneamente. Con la versione a ritorno indietro, si va ad oscurare anche la
+// fotocellula di azzeramento.
+#define HOMING_ON_METHOD 19 //!< Zero setting approaching method starting with the Zero photocell ON
+#define HOMING_OFF_METHOD 20//!< Zero setting approaching method starting with the Zero photocell OFF
 
 /// <summary>
 /// This function test high and low limit switches.

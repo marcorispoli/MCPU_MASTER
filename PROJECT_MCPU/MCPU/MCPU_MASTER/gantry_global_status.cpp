@@ -53,6 +53,8 @@ Gantry::Gantry() {
 
 void Gantry::initialize(void) {
 
+    LogClass::logInFile("GANTRY INITIALIZATION: RUNNING MODE DETECTION");
+
     // Debugger Tool Activation if requested 
     if (SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEBUG)[SystemConfig::PARAM_DEBUG_ENA] == "ON") {
         Gantry::pDebugger = gcnew DebuggerCLI(SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEBUG)[SystemConfig::PARAM_DEBUG_IP], System::Convert::ToInt16(SystemConfig::Configuration->getParam(SystemConfig::PARAM_DEBUG)[SystemConfig::PARAM_DEBUG_PORT]));
@@ -69,6 +71,9 @@ void Gantry::initialize(void) {
 
     System::String^ param;
     if (operating_normal_status) {
+        LogClass::logInFile("GANTRY  RUNNING IN NORMAL MODE");
+
+
         // System in normal operating mode
         can_driver_simulator = false;
         generator_simulator = false;
@@ -86,10 +91,11 @@ void Gantry::initialize(void) {
     }
     else if (operating_demo_status) {
         // System in Demo Mode
+        LogClass::logInFile("GANTRY  RUNNING IN DEMO MODE");
 
         can_driver_simulator = false;   // The can driver shall be present in demo mode
         pcb301_simulator = false;       // The PCB301 board shall be operating
-        pcb302_simulator = true;       // The PCB302 board shall be operating
+        pcb302_simulator = false;       // The PCB302 board shall be operating
         pcb304_simulator = true;        // The PCB304 board shall be partiually operating (only the displays) and partially set in demo
         motor_tilt_simulator = false;   // Full operating
         motor_arm_simulator = false;    // Full Operating
@@ -104,6 +110,8 @@ void Gantry::initialize(void) {
 
     }
     else {
+
+        LogClass::logInFile("GANTRY  RUNNING IN SYM MODE");
 
         // System in Simulation mode
         param = SystemConfig::PARAM_SYM_MODE;
@@ -139,64 +147,130 @@ void Gantry::initialize(void) {
             //_________________________________________________________________________
         }
         
-
-
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_CAN]) == 1)
+        
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_CAN]) == 1) {
             can_driver_simulator = false;
-        else can_driver_simulator = true;
+            LogClass::logInFile("GANTRY: CAN DRIVER IN NORMAL MODE ");
+        }
+        else {
+            LogClass::logInFile("GANTRY: CAN DRIVER IN SYM MODE ");
+            can_driver_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_GENERATOR]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_GENERATOR]) == 1) {
+            LogClass::logInFile("GANTRY: GENERATOR IN NORMAL MODE ");
             generator_simulator = false;
-        else generator_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: GENERATOR IN SYM MODE ");
+            generator_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB301]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB301]) == 1) {
+            LogClass::logInFile("GANTRY: PCB301 IN NORMAL MODE ");
             pcb301_simulator = false;
-        else pcb301_simulator = true;
+        }
+        else {
+            pcb301_simulator = true;
+            LogClass::logInFile("GANTRY: PCB301 IN SYM MODE ");
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB302]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB302]) == 1) {
+            LogClass::logInFile("GANTRY: PCB302 IN NORMAL MODE ");
             pcb302_simulator = false;
-        else pcb302_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: PCB302 IN SYM MODE ");
+            pcb302_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB303]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB303]) == 1) {
+            LogClass::logInFile("GANTRY: PCB303 IN NORMAL MODE ");
             pcb303_simulator = false;
-        else pcb303_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: PCB303 IN SYM MODE ");
+            pcb303_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB304]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB304]) == 1) {
+            LogClass::logInFile("GANTRY: PCB304 IN NORMAL MODE ");
             pcb304_simulator = false;
-        else pcb304_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: PCB304 IN SYM MODE ");
+            pcb304_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB325]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB325]) == 1) {
+            LogClass::logInFile("GANTRY: PCB325 IN NORMAL MODE ");
             pcb325_simulator = false;
-        else pcb325_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: PCB325 IN SYM MODE ");
+            pcb325_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB326]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_PCB326]) == 1) {
+            LogClass::logInFile("GANTRY: PCB326 IN NORMAL MODE ");
             pcb326_simulator = false;
-        else pcb326_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: PCB326 IN SYM MODE ");
+            pcb326_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_TILT]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_TILT]) == 1) {
+            LogClass::logInFile("GANTRY: TILT IN NORMAL MODE ");
             motor_tilt_simulator = false;
-        else motor_tilt_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: TILT IN SYM MODE ");
+            motor_tilt_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_ARM]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_ARM]) == 1) {
+            LogClass::logInFile("GANTRY: ARM IN NORMAL MODE ");
             motor_arm_simulator = false;
-        else motor_arm_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: ARM IN SYM MODE ");
+            motor_arm_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_SLIDE]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_SLIDE]) == 1) {
+            LogClass::logInFile("GANTRY: SLIDE IN NORMAL MODE ");
             motor_slide_simulator = false;
-        else motor_slide_simulator = true;
+        }
+        else {
+            motor_slide_simulator = true;
+            LogClass::logInFile("GANTRY: SLIDE IN SYM MODE ");
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_BODY]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_BODY]) == 1) {
+            LogClass::logInFile("GANTRY: BODY IN NORMAL MODE ");
             motor_body_simulator = false;
-        else motor_body_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: BODY IN SYM MODE ");
+            motor_body_simulator = true;
+        }
 
-        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_VERTICAL]) == 1)
+        if (System::Convert::ToByte(SystemConfig::Configuration->getParam(param)[SystemConfig::SYM_MODE_VERTICAL]) == 1) {
+            LogClass::logInFile("GANTRY: VERTICAL IN NORMAL MODE ");
             motor_vertical_simulator = false;
-        else motor_vertical_simulator = true;
+        }
+        else {
+            LogClass::logInFile("GANTRY: VERTICAL IN SYM MODE ");
+            motor_vertical_simulator = true;
+        }
     }
     
 
     // Set the current language for messages and GUI
     Notify::setLanguage("ENG");
+
+    LogClass::logInFile("GANTRY: PROCESSES CREATION");
 
     // Creates the status Windows
     pIdleForm = gcnew IdleForm();
@@ -204,6 +278,8 @@ void Gantry::initialize(void) {
     pBiopsyStudy = gcnew BiopsyStudy();
     pServiceForm = gcnew ServiceForm();
     valuePopupWindow = gcnew ValuePopupForm();
+
+    LogClass::logInFile("GANTRY: PROCESSES CREATED");
 
 }
 bool Gantry::setIdle() {

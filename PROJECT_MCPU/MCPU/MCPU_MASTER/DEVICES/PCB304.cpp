@@ -2,6 +2,7 @@
 #include "PCB304.h"
 #include "Notify.h"
 #include <thread>
+#include "gantry_global_status.h"
 
 void PCB304::runningLoop(void) {
     static bool commerr = false;
@@ -203,11 +204,18 @@ void PCB304::demoLoop(void) {
         protocol.status_register.center = true;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    // In Demo mode the display shall still run
+    writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::DISPLAY_REGISTER, protocol.data_register.encodeDisplayRegister());
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     return;
 }
 
 bool PCB304::waitGridCompleted(void) {
+    // In Demo mode the function returns always true.
+    if (Gantry::isOperatingDemo()) return true;
+
+    // In normal or Simulator mode it shall run as expected
     if (isError()) return false;
     if ((protocol.data_register.InOutStatus == false) && (protocol.status_register.outField)) return true;
     if ((protocol.data_register.InOutStatus == true) && (protocol.status_register.inField)) return true;

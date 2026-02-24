@@ -87,20 +87,20 @@ void Gantry::initialize(void) {
     else if (operating_demo_status) {
         // System in Demo Mode
 
-        can_driver_simulator = false; // The can driver shall be present in demo mode
-        pcb301_simulator = false; // The PCB301 board shall be operating
-        pcb302_simulator = false; // The PCB302 board shall be operating
-        pcb304_simulator = false;  // The PCB304 board shall be emulated
-        motor_tilt_simulator = false;
-        motor_arm_simulator = false;
-        motor_body_simulator = false;
-        motor_vertical_simulator = false;
-        motor_slide_simulator = false;
+        can_driver_simulator = false;   // The can driver shall be present in demo mode
+        pcb301_simulator = false;       // The PCB301 board shall be operating
+        pcb302_simulator = true;       // The PCB302 board shall be operating
+        pcb304_simulator = true;        // The PCB304 board shall be partiually operating (only the displays) and partially set in demo
+        motor_tilt_simulator = false;   // Full operating
+        motor_arm_simulator = false;    // Full Operating
+        motor_body_simulator = false;   // Full operating
+        motor_vertical_simulator = false;   // Full Operating
+        motor_slide_simulator = false;      // Full Operating
 
-        generator_simulator = true;   // The generator shall be emulated 
-        pcb303_simulator = true;  // The PCB303 board shall be emulated        
-        pcb325_simulator = true;  // The PCB325 board shall be emulated
-        pcb326_simulator = true;  // The PCB326 board shall be emulated
+        generator_simulator = true;     // The generator shall be emulated 
+        pcb303_simulator = true;        // The PCB303 board shall be emulated        
+        pcb325_simulator = true;        // The PCB325 board shall be emulated
+        pcb326_simulator = true;        // The PCB326 board shall be emulated
 
     }
     else {

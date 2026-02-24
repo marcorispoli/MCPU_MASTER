@@ -63,7 +63,7 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
 
     // Sets the current focus
     if (focus_selection == focus_selection_index::FOCUS_AUTO) {
-        if (PCB302::getMagnifierFactor() == 10) large_focus = true;
+        if (PCB304::getMagnifierFactor() == 10) large_focus = true;
         else large_focus = false;
     }
     else if (focus_selection == focus_selection_index::FOCUS_LARGE) large_focus = true;
@@ -177,7 +177,7 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
 
     // Sets the current focus
     if (focus_selection == focus_selection_index::FOCUS_AUTO) {
-        if (PCB302::getMagnifierFactor() == 10) large_focus = true;
+        if (PCB304::getMagnifierFactor() == 10) large_focus = true;
         else large_focus = false;
     }
     else if (focus_selection == focus_selection_index::FOCUS_LARGE) large_focus = true;

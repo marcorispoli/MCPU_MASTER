@@ -311,6 +311,10 @@ public:
 	}
 
 	
+	// Deve essere implementata
+	static unsigned char getMagnifierFactor(void) {
+		 return 10;
+	}
 
 protected: 
 	void runningLoop(void) override;

@@ -431,7 +431,7 @@ public:
 
 
 	
-	static void setCompressorUnlock(void) { PCB302::device->commandNoWaitCompletion(protocol.command.encodeSetUnlockCommand(), 30); } //!< This function unlocks the compression
+	static void setCompressorUnlock(void);
 	
 public:
 	
@@ -462,34 +462,12 @@ public:
 		else return PatientProtection::UNDETECTED;
 	}
 	
-	/// <summary>
-	/// This function return the current detected Magnifier Factor
-	/// </summary>
-	/// 
-	/// The Magnifier device is a special component that can be mounted in the 
-	/// special slots of the Mammo unit: its presence is detetced by the compressor device.
-	/// 
-	/// The Magnifier device can be set in one of the possible magnification factor:
-	/// +1.5x;
-	/// +1.8x;
-	/// +2.0x
-	/// 
-	/// This function returns the current magnification factor multiplied 10: (15, 18, 20)
-	/// 
-	/// In the case no Magnifier devioce should be detected the function will returns 10.
-	/// 
-	/// <param name=""></param>
-	/// <returns>The detected Magnifier Factor [10, 15, 18, 20] </returns>
-	static unsigned char getMagnifierFactor(void) {
-		if (protocol.status_register.component == ProtocolStructure::ComponentCode::MAGNIFIER_DEVICE_15x) return 15;
-		else if (protocol.status_register.component == ProtocolStructure::ComponentCode::MAGNIFIER_DEVICE_18x) return 18;
-		else if (protocol.status_register.component == ProtocolStructure::ComponentCode::MAGNIFIER_DEVICE_20x) return 20;
-		else return 10;
-	}
+	
 
 
 protected: 	
 	void runningLoop(void) override;
+	void demoLoop(void) override;
 	bool configurationLoop(void) override;
 
 private: 

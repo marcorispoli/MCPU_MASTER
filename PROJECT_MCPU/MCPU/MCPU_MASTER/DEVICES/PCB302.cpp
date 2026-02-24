@@ -1,6 +1,8 @@
 
 #include "PCB303.h"
 #include "PCB302.h"
+#include "PCB301.h"
+#include "PCB304.h"
 #include "ConfigurationFiles.h"
 #include "../gantry_global_status.h"
 #include "ArmMotor.h"
@@ -313,9 +315,9 @@ void PCB302::runningLoop(void) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
 	// The magnifier correction (if present)
-	if (getMagnifierFactor() == 10) protocol.data_register.magnifier_offset = 0;
-	else if (getMagnifierFactor() == 15) protocol.data_register.magnifier_offset = 150;
-	else if (getMagnifierFactor() == 18) protocol.data_register.magnifier_offset = 180;
+	if (PCB304::getMagnifierFactor() == 10) protocol.data_register.magnifier_offset = 0;
+	else if (PCB304::getMagnifierFactor() == 15) protocol.data_register.magnifier_offset = 150;
+	else if (PCB304::getMagnifierFactor() == 18) protocol.data_register.magnifier_offset = 180;
 	else  protocol.data_register.magnifier_offset = 200;
 
 	// Gets the detected paddle parameters: code, weight and offset
@@ -369,3 +371,48 @@ void PCB302::runningLoop(void) {
 	return;
 }
 
+
+
+void PCB302::demoLoop(void) {
+
+	protocol.status_register.idle_status = true;
+	position_calibrated = true;
+	force_calibrated = true;
+
+
+	// Paddle Detection
+	detected_paddle = paddleCodes::PADDLE_TOMO;
+	detected_paddle_collimation_index = getPaddleCollimationFormat(detected_paddle);
+	detected_paddle_offset = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_TOMO)[PaddleConfig::PADDLE_POSITION_OFFSET]);
+	detected_paddle_weight = System::Convert::ToInt16(PaddleConfig::Configuration->getParam(PaddleConfig::PARAM_PADDLE_TOMO)[PaddleConfig::PADDLE_WEIGHT]);
+	Notify::deactivate(Notify::messages::WARNING_MISSING_PADDLE);
+
+	// Patient protection
+	protocol.status_register.component = ProtocolStructure::ComponentCode::PATIENT_PROTECTION_POSITIONED;
+
+	
+	// Simulation of the compression using the compression pedals from the PCB301
+	if (PCB301::get_cmp_up_stat()) {
+		breast_thickness = 0;
+		compression_force = 0;
+	}else if (PCB301::get_cmp_down_stat()) {
+		breast_thickness = 40;
+		compression_force = 100;
+	}
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	return;
+}
+
+void PCB302::setCompressorUnlock(void) {
+	
+	// In demo clears the compression data
+	if (Gantry::isOperatingDemo()) {
+		compression_force = 0;
+		breast_thickness = 0;
+		return;
+	}
+
+	PCB302::device->commandNoWaitCompletion(protocol.command.encodeSetUnlockCommand(), 30);
+} //!< This function unlocks the compression

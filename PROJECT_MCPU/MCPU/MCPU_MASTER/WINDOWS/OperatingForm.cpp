@@ -694,7 +694,7 @@ void OperatingForm::evaluateCollimatorStatus(void) {
 void OperatingForm::evaluateMagStatus(void) {
 	static float curFactor = 255;
 
-	float magfactor = (float)PCB302::getMagnifierFactor() / 10;
+	float magfactor = (float)PCB304::getMagnifierFactor() / 10;
 	if (curFactor != magfactor) {
 		curFactor = magfactor;
 		labelMag->Text = magfactor.ToString() + "x";
@@ -755,8 +755,8 @@ void OperatingForm::evaluateAwsComponentEvent(void) {
 	}
 	
 	// Checks for mag factor changes
-	if (mag != PCB302::getMagnifierFactor()) {
-		mag = PCB302::getMagnifierFactor();
+	if (mag != PCB304::getMagnifierFactor()) {
+		mag = PCB304::getMagnifierFactor();
 		generate_event_component = true;
 	}
 

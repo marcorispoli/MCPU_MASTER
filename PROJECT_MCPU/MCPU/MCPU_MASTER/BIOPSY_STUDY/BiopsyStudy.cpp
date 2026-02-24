@@ -659,8 +659,8 @@ void BiopsyStudy::evaluateAwsComponentEvent(void) {
 	}
 	
 	// Checks for mag factor changes
-	if (mag != PCB302::getMagnifierFactor()) {
-		mag = PCB302::getMagnifierFactor();
+	if (mag != PCB304::getMagnifierFactor()) {
+		mag = PCB304::getMagnifierFactor();
 		generate_event_component = true;
 	}
 

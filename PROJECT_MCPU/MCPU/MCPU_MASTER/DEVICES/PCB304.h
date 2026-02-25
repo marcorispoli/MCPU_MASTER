@@ -95,15 +95,21 @@ public:
 				// Creates a register with all bytes set to 0
 				Register^ out = gcnew Register;
 
-				if(display_on) out->d0 |= 0x1;
+				if (display_on) out->d0 |= 0x1;
 				if (display_blink) out->d0 |= 0x2;
-				if (display_reverse) out->d0 |= 0x4;
-				if (display_keep_alive) out->d0 |= 0x8;
-				out->d0 |= ((dot_position & 0x0f) << 4);
+				if (display_reverse_r) out->d0 |= 0x4;
+				if (display_reverse_l) out->d0 |= 0x8;
+				out->d0 |= ((dot_position & 0x03) << 4);
+				if(display_cmp_icon) out->d0 |= 0x40;
+				if (display_rot_icon) out->d0 |= 0x80;
 
-				out->d1 = (display_intensity & 0x0f);
-				
-				unsigned short val = (unsigned short) display_value;
+	
+				//D1
+				if (display_keep_alive) out->d1 |= 0x1;
+				out->d1 |= (display_intensity & 0x03) << 4;
+
+				// D2-D3
+				unsigned short val = (unsigned short)display_value;
 				out->d2 = (unsigned char)(val & 0xFF);
 				out->d3 = (unsigned char)((val >> 8) & 0xFF);
 
@@ -114,12 +120,20 @@ public:
 			static bool decodeDisplayRegister(Register^ sys) {
 				if (sys == nullptr) return false;
 
+				// D0
 				display_on = sys->d0 & 0x1;
 				display_blink = sys->d0 & 0x2;
-				display_reverse = sys->d0 & 0x4;
-				display_keep_alive = sys->d0 & 0x8;
-				dot_position = (sys->d0 & 0xF0) >> 4;
-				display_intensity = sys->d1 & 0x0F;
+				display_reverse_r = sys->d0 & 0x4;
+				display_reverse_l = sys->d0 & 0x8;
+				dot_position = 0x30 & ((sys->d1 & 0xF0) >> 4);
+				display_cmp_icon = sys->d0 & 0x40;
+				display_rot_icon = sys->d0 & 0x80;
+
+				//D1
+				display_keep_alive = sys->d1 & 0x1;
+				display_intensity = sys->d1 >> 4;
+
+				// D2-D3
 				display_value = sys->d2 + 256 * sys->d3;
 				return true;
 			}
@@ -127,8 +141,11 @@ public:
 
 			static bool display_on = false;
 			static bool display_blink = false;
-			static bool display_reverse = false;
+			static bool display_reverse_r = false;
+			static bool display_reverse_l = false;
 			static bool display_keep_alive = false;
+			static bool display_cmp_icon = false;
+			static bool display_rot_icon = false;
 			static unsigned char dot_position = 0;
 			static unsigned char display_intensity = 0;
 			static short display_value = 0;
@@ -288,12 +305,22 @@ public:
 	inline static void resetErrorCount(void) { error_count = 0; }	
 	inline static void setDisplay(bool on_off) {protocol.data_register.display_on = on_off;}
 
-	static void setDisplay(short val, unsigned char decimals, bool blink, unsigned char intensity) {
+	static void setDisplay(short val, unsigned char decimals, bool blink, unsigned char intensity, bool reverse_r, bool reverse_l, bool cmp_icon) {
 		protocol.data_register.display_on = true;
 		protocol.data_register.display_blink = blink;
 		protocol.data_register.display_value = val;
 		protocol.data_register.dot_position = decimals;
 		protocol.data_register.display_intensity = intensity;
+		protocol.data_register.display_reverse_r = reverse_r;
+		protocol.data_register.display_reverse_l = reverse_l;
+		if (cmp_icon) {
+			protocol.data_register.display_cmp_icon = true;
+			protocol.data_register.display_rot_icon = false;
+		}
+		else {
+			protocol.data_register.display_cmp_icon = false;
+			protocol.data_register.display_rot_icon = true;
+		}
 	}
 
 	inline static bool requestTestTranslation(void) {
@@ -318,7 +345,7 @@ public:
 
 protected: 
 	void runningLoop(void) override;
-	void demoLoop(void) override;
+	
 
 private:
 	static bool test_grid_in_out = false;

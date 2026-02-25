@@ -526,7 +526,7 @@ ref class PCB301 :  public CanDeviceProtocol
 			};
 
 			CanDeviceCommand^ encodeActivateDemoCommand(unsigned char samples, unsigned char fps) {
-				return gcnew CanDeviceCommand((unsigned char)command_index::ACTIVATE_SOFT_POWEROFF, samples, fps, 0, 0);
+				return gcnew CanDeviceCommand((unsigned char)command_index::ACTIVATE_DEMO_TOMO, samples, fps, 0, 0);
 			}
 
 		};

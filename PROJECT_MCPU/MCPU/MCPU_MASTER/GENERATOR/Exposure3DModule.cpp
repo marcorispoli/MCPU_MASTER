@@ -165,8 +165,12 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
         exposure_pulse^ epulse = Exposures::getExposurePulse(0);
 
         // Activate the Buzzer in manual mode
-        PCB301::setBuzzerManualMode(true);
+        //PCB301::setBuzzerManualMode(true);
 
+        setExposedPulse(0, gcnew exposure_pulse(epulse->getKv(), epulse->getmAs(), epulse->getFilter()));
+        error = exposure_completed_errors::XRAY_NO_ERRORS;
+
+        /*
         // Activates the procedure to generate buzzer pulses at the rate of the current tomo 
         PCB301::CanDeviceCommandResult^ result = PCB301::activateManualBuzzerTomoMode(getTomoExposure()->tomo_samples, getTomoExposure()->tomo_fps, 200, this);
         if (result->error_code != PCB301::CommandRegisterErrors::COMMAND_NO_ERROR) {
@@ -185,11 +189,11 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
                 setExposedPulse(0, gcnew exposure_pulse(epulse->getKv(), epulse->getmAs(), epulse->getFilter()));
                 error = exposure_completed_errors::XRAY_NO_ERRORS;
             }
-        }
+        }*/
         
 
         // Monitor the 
-        PCB301::setBuzzerManualMode(false);
+        //PCB301::setBuzzerManualMode(false);
 
     }
     

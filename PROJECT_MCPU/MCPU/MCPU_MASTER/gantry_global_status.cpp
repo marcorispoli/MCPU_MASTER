@@ -96,7 +96,7 @@ void Gantry::initialize(void) {
         can_driver_simulator = false;   // The can driver shall be present in demo mode
         pcb301_simulator = false;       // The PCB301 board shall be operating
         pcb302_simulator = false;       // The PCB302 board shall be operating
-        pcb304_simulator = true;        // The PCB304 board shall be partiually operating (only the displays) and partially set in demo
+        pcb304_simulator = false;        // The PCB304 board shall be partiually operating (only the displays) and partially set in demo
         motor_tilt_simulator = false;   // Full operating
         motor_arm_simulator = false;    // Full Operating
         motor_body_simulator = false;   // Full operating

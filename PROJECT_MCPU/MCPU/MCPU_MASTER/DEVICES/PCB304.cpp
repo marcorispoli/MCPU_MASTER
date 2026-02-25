@@ -25,6 +25,48 @@ void PCB304::runningLoop(void) {
         error_count = 0;
     }
 
+    // In Demo mode Only the Display works
+    if (Gantry::isOperatingDemo()) {
+
+        // If the simulator is not connected, the errors are disabled and the
+        // status of the grid is set according with the requested status.
+        Notify::deactivate(Notify::messages::INFO_GRID_INOUT_MANUAL_MODE);
+        Notify::deactivate(Notify::messages::ERROR_POTTER_GRID_POSITION);
+        Notify::deactivate(Notify::messages::WARNING_GRID_OUT_OF_POSITION);
+        protocol.status_register.error = false;
+        protocol.status_register.inout_executing = false;
+        protocol.status_register.transversal_executing = false;
+
+        if (protocol.data_register.InOutAutoEnable) {
+            protocol.status_register.inField = protocol.data_register.InOutStatus;
+            protocol.status_register.outField = !protocol.data_register.InOutStatus;
+        }
+
+        if (protocol.status_register.inField) {
+            protocol.status_register.home = true;
+            protocol.status_register.center = false;
+        }
+        else {
+            protocol.status_register.home = false;
+            protocol.status_register.center = true;
+        }
+
+        // Always toggles the keepalive to keep the display ON
+        protocol.data_register.display_keep_alive = !protocol.data_register.display_keep_alive;
+
+        // In Demo mode the display shall still run
+        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::DISPLAY_REGISTER, protocol.data_register.encodeDisplayRegister());
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        protocol.data_register.GeneralEnable = false;
+        protocol.data_register.InOutAutoEnable = false;
+        writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::GRID_REGISTER, protocol.data_register.encodeGridRegister());
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        return;
+        
+    }
+
     // Always reads the grid Status register
     protocol.status_register.decodeGridRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::GRID));
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -179,37 +221,7 @@ void PCB304::runningLoop(void) {
 }
 
 
-void PCB304::demoLoop(void) {
-    
-    // If the simulator is not connected, the errors are disabled and the
-    // status of the grid is set according with the requested status.
-    Notify::deactivate(Notify::messages::INFO_GRID_INOUT_MANUAL_MODE);
-    Notify::deactivate(Notify::messages::ERROR_POTTER_GRID_POSITION);
-    Notify::deactivate(Notify::messages::WARNING_GRID_OUT_OF_POSITION);
-    protocol.status_register.error = false;
-    protocol.status_register.inout_executing = false;
-    protocol.status_register.transversal_executing = false;
 
-    if (protocol.data_register.InOutAutoEnable) {
-        protocol.status_register.inField = protocol.data_register.InOutStatus;
-        protocol.status_register.outField = !protocol.data_register.InOutStatus;
-    }
-
-    if (protocol.status_register.inField) {
-        protocol.status_register.home = true;
-        protocol.status_register.center = false;
-    }
-    else {
-        protocol.status_register.home = false;
-        protocol.status_register.center = true;
-    }
-
-    // In Demo mode the display shall still run
-    writeDataRegister((unsigned char)ProtocolStructure::DataRegister::register_index::DISPLAY_REGISTER, protocol.data_register.encodeDisplayRegister());
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-    return;
-}
 
 bool PCB304::waitGridCompleted(void) {
     // In Demo mode the function returns always true.

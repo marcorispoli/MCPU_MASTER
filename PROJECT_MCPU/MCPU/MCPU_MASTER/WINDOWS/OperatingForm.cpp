@@ -906,6 +906,21 @@ void OperatingForm::evaluateDigitDisplays(void) {
 	if (PCB302::getForce()) {
 		blink = false;
 		intensity = 0;
+		bool r_rev = false;
+		bool l_rev = false;
+		int ang = (ArmMotor::device->getCurrentPosition() / 100);
+		
+		if (ang > 5) {
+			l_rev = false;
+			r_rev = true;
+		}else if (ang < -5) {
+			l_rev = true;
+			r_rev = false;
+		}
+		else {
+			l_rev = false;
+			r_rev = false;
+		}
 
 		if (PCB302::isDownwardActivationStatus()) intensity = 0xf;
 		else intensity = 0;
@@ -917,7 +932,7 @@ void OperatingForm::evaluateDigitDisplays(void) {
 		if (dspval < 30) blink = true;
 		else blink = false;
 		
-		PCB304::setDisplay(dspval, digits, blink, intensity);
+		PCB304::setDisplay(dspval, digits, blink, intensity,r_rev,l_rev,true);
 		return;
 	}
 	
@@ -928,7 +943,7 @@ void OperatingForm::evaluateDigitDisplays(void) {
 		// Degrees
 		digits = 0;
 		dspval = (ArmMotor::device->getCurrentPosition() / 100);
-		PCB304::setDisplay(dspval, digits, blink, intensity);
+		PCB304::setDisplay(dspval, digits, blink, intensity,false,false,false);
 		return;
 	}
 
@@ -939,7 +954,7 @@ void OperatingForm::evaluateDigitDisplays(void) {
 		// Degrees
 		digits = 0;
 		dspval = (BodyMotor::device->getCurrentPosition() / 10);
-		PCB304::setDisplay(dspval, digits, blink, intensity);
+		PCB304::setDisplay(dspval, digits, blink, intensity,false,false,false);
 		return;
 	}
 
@@ -950,7 +965,7 @@ void OperatingForm::evaluateDigitDisplays(void) {
 		// Degrees
 		digits = 0;
 		dspval = (SlideMotor::device->getCurrentPosition() / 100);
-		PCB304::setDisplay(dspval, digits, blink, intensity);
+		PCB304::setDisplay(dspval, digits, blink, intensity,false,false,false);
 		return;
 	}
 

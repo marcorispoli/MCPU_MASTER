@@ -649,7 +649,9 @@ void IdleForm::idleStatusManagement(void) {
 
 	/// The popup event dialog activation is evaluated.
 	evaluatePopupPanels();
+	
 
+	
 }
 
 /// <summary>

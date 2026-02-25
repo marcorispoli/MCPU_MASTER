@@ -393,9 +393,11 @@ void PCB302::demoLoop(void) {
 	
 	// Simulation of the compression using the compression pedals from the PCB301
 	if (PCB301::get_cmp_up_stat()) {
+		LogClass::logInFile("DEMO COMPRESSOR UP");
 		breast_thickness = 0;
 		compression_force = 0;
 	}else if (PCB301::get_cmp_down_stat()) {
+		LogClass::logInFile("DEMO COMPRESSOR DOWN");
 		breast_thickness = 40;
 		compression_force = 100;
 	}

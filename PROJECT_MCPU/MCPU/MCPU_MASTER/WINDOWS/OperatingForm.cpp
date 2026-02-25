@@ -452,8 +452,8 @@ void OperatingForm::evaluateReadyWarnings(bool reset) {
 	else Notify::deactivate(Notify::messages::WARNING_XRAY_BUTTON_DISABLED);
 	static bool cmp_force_error = false;
 
-	// The following ready conditions are valid only with the patient Exposure mode
-	if (Exposures::getExposureMode() != Exposures::exposure_mode_options::EXPOSURE_FOR_PATIENT) {
+	// The following ready conditions are valid only with the patient Exposure mode and without DEMO
+	if (Gantry::isOperatingDemo() || (Exposures::getExposureMode() != Exposures::exposure_mode_options::EXPOSURE_FOR_PATIENT)) {
 		Notify::deactivate(Notify::messages::WARNING_MISSING_COMPRESSION);
 		Notify::deactivate(Notify::messages::WARNING_MISSING_PATIENT_PROTECTION);
 		Notify::deactivate(Notify::messages::WARNING_ARM_POSITION_WARNING);

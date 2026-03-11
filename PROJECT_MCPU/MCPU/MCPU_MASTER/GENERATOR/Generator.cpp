@@ -1056,14 +1056,14 @@ Generator::generator_errors Generator::generatorExecutePulseSequence(System::Str
 /// a different approach shall be followed:
 /// 
 /// The 3 point method allow to set the kV, the Anodic m Amps and the milliseconds of exposure.
-/// The Anodic current can be controlle with enough accuracy, wheathe the Exposure time can be selected in a discrete 
+/// The Anodic current can be controlle with enough accuracy, whether the Exposure time can be selected in a discrete 
 /// range of values in the R10 table.
 /// 
 /// The method consist of the following procedure:
-/// - The 2 point databank is uploaded into the generator with the mAs in integer format:\n
+/// - The 2 point databank is uploaded into the generator with the mAs rounded to the higher integer value:\n
 ///     this step is necessary to know what is the available anodic current for the kV and mAs range selected;
 /// - The generator then will assignes the proper anodic current and the integration time requested;
-/// - The procedure select a new integration time bigger than the one selected by the genrator (in the R10 scale) so that \n
+/// - The procedure select a new integration time bigger than the one selected by the generator (in the R10 scale) so that \n
 ///   it will be possible to use a lower anodic current (a bigger value could not be usable because of Tube limitations);
 /// - A new anodic current is calculated based on the requested mAs and integration time;
 /// - A databank with 3 point tech is then uploaded with the new calculated data.
@@ -1706,50 +1706,90 @@ bool Generator::generateAnodicCurrentTable(bool large_focus) {
     float KV, MAS;
     System::String^ row;
     float maxI[30];
+    float minI[30];
+    float maxPower[30];
+    float masLimit[30];
     float map[30][700];
+    
 
     // Crea la mappa in memoria prima di estrapolare la tabella
     for (int kv = 20; kv <= 49; kv++) {
         
         // initializes
         maxI[kv - 20] = 0;
+        minI[kv - 20] = 255;
+        maxPower[kv - 20] = 0;
+        masLimit[kv - 20] = 640;
+  
         for (int i = 0; i < 700; i++) map[kv - 20][i] = 0;
 
         for (int mAs = 1; mAs <= 640; mAs++) {
             KV = (float)kv;
             MAS = (float)mAs;
-            R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, KV, MAS, 5000);
-            if (!handleCommandProcessedState(nullptr)) break; // No More mAs selectable
-
+            R2CP::CaDataDicGen::GetInstance()->Generator_Set_2D_Databank(R2CP::DB_Pulse, large_focus, KV, MAS, 4500);
+            if (!handleCommandProcessedState(nullptr)) {
+                LogClass::logInFile("Anodic Table: kV" + kv + " Limit Mas = " +  mAs);
+                masLimit[kv - 20] = mAs;
+                break; // No More mAs selectable
+            }
             selected_anode_current = ((float)R2CP::CaDataDicGen::GetInstance()->radInterface.DbDefinitions[R2CP::DB_Pulse].mA100.value) / 100;
+            if ((mAs * 1000 / selected_anode_current) > 4500) {
+                LogClass::logInFile("Anodic Table: kV" + kv + " Limit Mas = " + mAs);
+                masLimit[kv - 20] = mAs;
+                break; // No More mAs selectable
+            }
+
             map[kv - 20][mAs - 1] = selected_anode_current;
 
-            // Aggiorna l'array della corrente massima
+            // Aggiorna l'array della corrente massima        
             if (selected_anode_current > maxI[kv - 20]) maxI[kv - 20] = selected_anode_current;
+            if (selected_anode_current < minI[kv - 20]) minI[kv - 20] = selected_anode_current;
+
+            // Calcola la potenz
+            float power = KV * selected_anode_current/1000;
+            if (power > maxPower[kv - 20]) maxPower[kv - 20] = power;
         }
     }
 
     // Creazione file documentale
-    System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(System::IO::Directory::GetCurrentDirectory() + "\\GeneratorAnodicTable.h");
+    System::IO::StreamWriter^ sw;
+    if (large_focus) {
+        sw = gcnew System::IO::StreamWriter(System::IO::Directory::GetCurrentDirectory() + "\\GeneratorAnodicTableLarge.h");
+    }
+    else {
+        sw = gcnew System::IO::StreamWriter(System::IO::Directory::GetCurrentDirectory() + "\\GeneratorAnodicTableSmall.h");
+    }
+    
 
     sw->WriteLine("/**");
     sw->WriteLine("\\addtogroup GeneratorPerformances");
     
     //_______________________ PERFORMANCES  TABLE _______________________________
     
-    sw->WriteLine("# Generator performances table");
+    if (large_focus) {
+        sw->WriteLine("# Generator performances table for Large Focus");
+    }
+    else {
+        sw->WriteLine("# Generator performances table for Small Focus");
+    }
+    
+    sw->WriteLine("");
+    sw->WriteLine("NOTE: The maximum mAs value refers to a 2D sequence with a maximum integration time (Detector limitation) of 5 seconds");
+    sw->WriteLine("and the 2D grid disable time.");
+    sw->WriteLine("In a Tomo scan the mAs can be limited by a smaller maximum integration time ");
+    sw->WriteLine("depending by the Detector and the Sampling rate.");
+    sw->WriteLine("");
     sw->WriteLine("");
 
-    sw->WriteLine("| kV | Max Ia(mA) | Min Ia(mA) | Pick Power(kW)|");
-    sw->WriteLine("|:--: | : --: | : --: | : --: |");
-    sw->WriteLine("|20 | 150 | 120 | 3.5 |");
-
-    /*
-    for (int i = 20; i <= 49; i++) {
-        row = "|" + i.ToString() + "|" + maxI[i - 20].ToString();
-        sw->WriteLine(row);
-    }*/
+    sw->WriteLine("| kV | Max Ia(mA) | Min Ia(mA) | mAs Limit | Pick Power(kW)|");
+    sw->WriteLine("|:--: | : --: | : --: | : --: | : --: |");
     
+    for (int i = 20; i <= 49; i++) {
+        row = "|" + i.ToString() + "|" + maxI[i - 20].ToString() + "|" + minI[i - 20].ToString() + "|" + masLimit[i - 20] + "|" + maxPower[i - 20].ToString() + "|";
+        sw->WriteLine(row);
+    }
+    
+
     sw->WriteLine("");
     sw->WriteLine("");
     sw->WriteLine("");
@@ -1769,12 +1809,24 @@ bool Generator::generateAnodicCurrentTable(bool large_focus) {
 
         for (int kv = 20; kv <= 29; kv++) {
             float mA = map[kv - 20][mAs - 1];
-            if (mA == maxI[kv - 20]) {
-                row += "<b> " + mA.ToString() + " </b> |"; // Bold stile for the max value
+            float power = mA * kv / 1000;
+
+            if (mA == 0) {
+                row += "-"; // limit mAs
             }
             else {
-                row += mA.ToString() + "|";
-            }            
+                if (mA == maxI[kv - 20]) {
+                    row += "<b> " + mA.ToString() + " </b>"; // Bold stile for the max value
+                }
+                else {
+                    row += mA.ToString();
+                }
+
+                if (power >= maxPower[kv - 20]) {
+                    row += " <b>P( " + power.ToString() + ")</b>";
+                }
+            }
+            row += "|";
             
         }
         sw->WriteLine(row);
@@ -1795,13 +1847,24 @@ bool Generator::generateAnodicCurrentTable(bool large_focus) {
 
         for (int kv = 30; kv <= 39; kv++) {
             float mA = map[kv - 20][mAs - 1];
-            if (mA == maxI[kv - 20]) {
-                row += "<b> " + mA.ToString() + " </b> |"; // Bold stile for the max value
+            float power = mA * kv / 1000;
+
+            if (mA == 0) {
+                row += "-"; // limit mAs
             }
             else {
-                row += mA.ToString() + "|";
-            }
+                if (mA == maxI[kv - 20]) {
+                    row += "<b> " + mA.ToString() + " </b>"; // Bold stile for the max value
+                }
+                else {
+                    row += mA.ToString();
+                }
 
+                if (power >= maxPower[kv - 20]) {
+                    row += " <b>P( " + power.ToString() + ")</b>";
+                }
+            }
+            row += "|";
         }
         sw->WriteLine(row);
     }
@@ -1821,13 +1884,24 @@ bool Generator::generateAnodicCurrentTable(bool large_focus) {
 
         for (int kv = 40; kv <= 49; kv++) {
             float mA = map[kv - 20][mAs - 1];
-            if (mA == maxI[kv - 20]) {
-                row += "<b> " + mA.ToString() + " </b> |"; // Bold stile for the max value
+            float power = mA * kv / 1000;
+
+            if (mA == 0) {
+                row += "-"; // limit mAs
             }
             else {
-                row += mA.ToString() + "|";
-            }
+                if (mA == maxI[kv - 20]) {
+                    row += "<b> " + mA.ToString() + " </b>"; // Bold stile for the max value
+                }
+                else {
+                    row += mA.ToString();
+                }
 
+                if (power >= maxPower[kv - 20]) {
+                    row += " <b>P( " + power.ToString() + ")</b>";
+                }
+            }
+            row += "|";
         }
         sw->WriteLine(row);
     }

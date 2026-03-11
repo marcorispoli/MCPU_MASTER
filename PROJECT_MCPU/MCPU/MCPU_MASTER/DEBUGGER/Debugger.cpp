@@ -487,9 +487,17 @@ void DebuggerCLI::handleGeneratorCommands(System::String^ cmd) {
 	if (cmd->Contains("ANODE_TABLE")) {
 		send(System::Text::Encoding::Unicode->GetBytes("Generator Anodic Table Generation .. "));
 		Exposures::pExposure->generateAnodicCurrentTable(true);
+		Exposures::pExposure->generateAnodicCurrentTable(false);
 		send(System::Text::Encoding::Unicode->GetBytes(" -> Completed!"));
 		return;
 	}
+
+	// Shows the list of available commands if no valid command is detedcted
+	System::String^ lista;
+	lista = " -> ANODE_TABLE - generates the Tube load curve\n\r";
+	lista += "\n\r";
+
+	send(System::Text::Encoding::Unicode->GetBytes(lista));
 	
 }
 void DebuggerCLI::handleCompressorCommands(System::String^ cmd) {

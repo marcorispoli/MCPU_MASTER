@@ -60,6 +60,7 @@ void PCB302::moduleInitialize(void) {
 /// <param name=""></param>
 /// <returns></returns>
 bool PCB302::configurationLoop(void) {
+	LogClass::logInFile("PCB302: Executes Configuration");
 
 	if (position_calibrated) {
 		// Uploads the calibrated position parameters

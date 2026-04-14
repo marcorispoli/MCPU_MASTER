@@ -337,6 +337,7 @@ void PCB303::resetLoop(void) {
 bool PCB303::configurationLoop(void) {
     
     
+    LogClass::logInFile("PCB303: Executes Configuration");
 
     // Read the parameters from the configuration files
     System::String^ Param;
@@ -395,6 +396,23 @@ bool PCB303::configurationLoop(void) {
     return true;
 }
 
+/// <summary>
+/// This function forces the module to reselect the current collimaiton mode.
+/// </summary>
+/// 
+/// The module usually selects a collimation format ones when requested.
+/// This function triggers the device to select the collimation ones more.
+/// 
+/// The function is useful when the configuration file should be changed
+/// and the current format position should be refresh with the new 
+/// position paramters.
+/// 
+/// <param name=""></param>
+void PCB303::refreshFormatCollimationMode(void) {
+    valid_collimation_format = false;
+}
+
+
 void PCB303::setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index) {
     if (Exposures::isXrayRunning()) return;
 
@@ -415,6 +433,16 @@ void PCB303::setFormatCollimationMode(collimationModeEnum mode, unsigned char fo
             valid_collimation_format = false;
         }
     }
+}
+
+
+/// <summary>
+/// This function forces the module to reselect the current filter.
+/// </summary>
+/// 
+/// <param name=""></param>
+void PCB303::refreshFilter(void) {
+    valid_filter_format = false;
 }
 
 void PCB303::setFilterMode(filterModeEnum mode) { 

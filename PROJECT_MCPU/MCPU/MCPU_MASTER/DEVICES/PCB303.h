@@ -806,11 +806,13 @@ public:
 	// Configuration file access Apis
 	static ConfigurationStructure^ getConfig(void) { return config; }
 	static void setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index);
+	static void refreshFormatCollimationMode(void);
 
 	// Filter Commands	
 	static void setFilterMode(filterModeEnum mode);
 	static bool selectFilter(filter_index filter);
 	static bool selectFilterSlot(int req_filter_slot);
+	static void refreshFilter(void);
 
 	static int  getFilterSlot(filter_index filter);
 	static filter_index getFilterIndex(int slot);

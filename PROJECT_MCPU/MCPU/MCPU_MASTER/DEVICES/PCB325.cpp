@@ -15,7 +15,9 @@
 /// <param name=""></param>
 /// <returns>true if the configuration success</returns>
 bool PCB325::configurationLoop(void) {
-    LogClass::logInFile("PCB325: CONFIGURED");
+    LogClass::logInFile("PCB325: Executes Configuration");
+
+
     return true;
 }
 

@@ -179,6 +179,11 @@ bool CanDeviceProtocol::send(unsigned char d0, unsigned char d1, unsigned char d
     
 }
 
+bool CanDeviceProtocol::activateConfigurationFase(void) {
+    if (internal_status != status_options::DEVICE_RUNNING) return false;
+    internal_status = status_options::DEVICE_CONFIGURATION;
+    return true;
+}
 
 void CanDeviceProtocol::mainWorker(void) {
     LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: thread started: wait run command");

@@ -11,7 +11,7 @@
 #include "BodyMotor.h"
 #include "SlideMotor.h"
 #include "ExposureModule.h"
-
+#include <thread>
 
 
 
@@ -449,6 +449,39 @@ void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
 		return;
 	}
 
+
+	if (cmd->Contains("CONFIGURATION")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command force the Collimaotr configursation file to be reloaded.\n\r";
+			stringa += "The PCB303 is reconfigurated with hthe new parameters.\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		// Reload the configuration file
+		CollimatorConfig::Configuration->loadFile();
+
+		// Restart the Configuration fase 
+		if(!PCB303::device->activateConfigurationFase()) {
+			send(System::Text::Encoding::Unicode->GetBytes("Unable to activate the PCB303 configuration fase!\n\r"));
+			return;
+		}
+
+		// Wait the configuration completion
+		while (!PCB303::device->isRunning()) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+
+		// Refresh the current collimation format
+		PCB303::refreshFormatCollimationMode();
+
+		// Refresh the current filter
+		PCB303::refreshFilter();
+
+		send(System::Text::Encoding::Unicode->GetBytes("->PCB303 is reconfigured ..\n\r"));
+		return;
+	}
+
 	// Shows the list of available commands if no valid command is detedcted
 	System::String^ lista;
 	lista =  " -> RESET - reset Board\n\r";
@@ -456,6 +489,7 @@ void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
 	lista += " -> SELECT_FILTER_SLOT    - Filter selection by slot number\n\r";
 	lista += " -> SELECT_FILTER_MATTER	- Filter selection by Matter\n\r";
 	lista += " -> SET_FAN	            - Fan Activation Mode \n\r";
+	lista += " -> CONFIGURATION	        - Read the config file and update the configuration \n\r";
 
 	send(System::Text::Encoding::Unicode->GetBytes(lista));
 	return;

@@ -74,6 +74,7 @@ void PCB326::handleSystemStatusRegister(void) {
 /// <param name=""></param>
 /// <returns>true if the configuration success</returns>
 bool PCB326::configurationLoop(void) {
+    LogClass::logInFile("PCB326: Executes Configuration");
 
     selected_gen_sens = (GeneralSensOption) System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_GAIN]);
     selected_sensor_sens = (SensorSensOption) System::Convert::ToByte(MotorConfig::Configuration->getParam(MotorConfig::PARAM_OBSTACLE)[MotorConfig::PARAM_OBSTACLE_SENSITIVITY]);

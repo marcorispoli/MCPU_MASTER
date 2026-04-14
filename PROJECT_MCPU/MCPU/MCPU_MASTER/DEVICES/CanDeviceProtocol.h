@@ -703,6 +703,17 @@ public:
 	inline bool isCommunicationError(void) { return communication_error; }
 
 	/// <summary>
+	/// This function tests if the module is in running mode (config completed)
+	/// </summary>
+	/// \ingroup moduleControl
+	/// 
+	/// <param name=""></param>
+	/// <returns>true: is in running mode</returns>	
+	inline bool isRunning(void) {
+		return (internal_status == status_options::DEVICE_RUNNING);
+	}
+
+	/// <summary>
 	/// This function returns the Module operating status
 	/// </summary>
 	/// \ingroup moduleControl
@@ -745,7 +756,15 @@ public:
 	inline System::String^ getAppRevision(void) { return app_maj.ToString() + "." + app_min.ToString() + "." + app_sub.ToString(); }
 	
 
-	
+	/// <summary>
+	/// This function restart the device configuration fase.
+	/// </summary>
+	/// \ingroup moduleControl
+	/// 
+	/// <param name=""></param>
+	/// <returns>true if ther command can be executed</returns>
+	bool activateConfigurationFase(void);
+
 	
 	/// <summary>
 	///  This is a non blocking thread safe function sending a command to the remote device.
@@ -862,6 +881,7 @@ public:
 	inline System::String^ getCanCommunicationMonitorString(void) { return can_communication_monitor.getStatFormattedString(); }
 
 protected:
+	
 	
 	CanDeviceCommunicationMonitor can_communication_monitor; //!< This is the debug class 
 

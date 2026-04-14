@@ -100,6 +100,7 @@ using namespace CANOPEN;
 #define OD_2035_00  0x2035, 0x00 ,ODRegister::SDODataDimension::R4B  // Lower Voltage Warning Level
 #define OD_2036_00  0x2036, 0x00 ,ODRegister::SDODataDimension::R4B  // Open Loop Current Reduction Idle Time
 #define OD_2037_00  0x2037, 0x00 ,ODRegister::SDODataDimension::R4B  // Open Loop Current Reduction Value/factor
+#define OD_2039_02  0x2039, 0x02 ,ODRegister::SDODataDimension::R4B  // Iq Motor Current
 
 
 // I2t Parameters

@@ -183,6 +183,8 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     bool error_condition;
     bool motor_started = false;
     unsigned int ctrlw;
+    int current_monitor_tmo;
+    int current_torque;
 
     if (external_position_mode) {
         // If this is the external source, befor to proceed initializes the encoder at 
@@ -284,6 +286,9 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
     // Measuring the actuation time
     typedef std::chrono::high_resolution_clock clock;
     clock::time_point start ;
+
+    current_monitor_tmo = 5;
+    current_torque = 0;
 
     while (true) {
         // Read the current position 
@@ -399,6 +404,21 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
         command_ms_tmo -= 50;
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
+        if (current_monitor_tmo) {
+            current_monitor_tmo--;
+            if (!current_monitor_tmo) {
+                current_monitor_tmo = 5;
+
+                // legge il valore della corrente
+                if (blocking_readOD(OD_2039_02)) {
+                    unsigned int Imot = rxSdoRegister->data;
+                    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MOTOR CURRENT: " + System::Convert::ToString(Imot) + " (mA)");                    
+                }
+                
+            }
+            
+            
+        }
     } // End of main controlling loop
     
 

@@ -38,6 +38,20 @@
 ///         + Lead;
 ///     + Every material can be assigned to a given filter slot
 /// 
+/// ## Format Collimation Details
+/// 
+/// The format collimation is determined by four numeic values corresponding
+/// to the position of the collimator blades: 
+/// + the frontal blade position
+/// + the back blade position
+/// + the left blade position
+/// + the right blade position
+/// 
+/// With a SID of 70 cm, the pixels per posiiton units are (approximately):
+/// + Left and Right blades: 0.362 px/unit
+/// + Back and Front blades: 0.451 px/unit
+/// 
+/// 
 /// 
 
 ref class CollimatorConfig

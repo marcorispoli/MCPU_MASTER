@@ -301,7 +301,8 @@ void CanOpenMotor::manageManualServicePositioning(void) {
 
 
 void CanOpenMotor::manageManualPositioning(void) {
-    
+    int current_monitor_tmo;
+
     MotorCompletedCodes termination_code;
 
     if (external_position_mode) {
@@ -396,6 +397,7 @@ void CanOpenMotor::manageManualPositioning(void) {
         return;
     }
 
+    current_monitor_tmo = 5;
     while (true) {
 
         // Test the abort request flag
@@ -481,6 +483,21 @@ void CanOpenMotor::manageManualPositioning(void) {
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        if (current_monitor_tmo) {
+            current_monitor_tmo--;
+            if (!current_monitor_tmo) {
+                current_monitor_tmo = 5;
+
+                // legge il valore della corrente
+                if (blocking_readOD(OD_2039_02)) {
+                    int Imot = (int)rxSdoRegister->data;
+                    LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MOTOR CURRENT: " + System::Convert::ToString(Imot) + " (mA)");
+                }
+
+            }
+
+
+        }
 
     } // End of main controlling loop
 

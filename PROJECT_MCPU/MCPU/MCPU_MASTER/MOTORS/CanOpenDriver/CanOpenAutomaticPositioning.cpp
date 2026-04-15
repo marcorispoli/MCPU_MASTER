@@ -411,7 +411,7 @@ void CanOpenMotor::manageAutomaticPositioning(void) {
 
                 // legge il valore della corrente
                 if (blocking_readOD(OD_2039_02)) {
-                    unsigned int Imot = rxSdoRegister->data;
+                    int Imot = (int) rxSdoRegister->data;
                     LogClass::logInFile("Motor Device <" + System::Convert::ToString(device_id) + ">: MOTOR CURRENT: " + System::Convert::ToString(Imot) + " (mA)");                    
                 }
                 

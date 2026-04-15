@@ -39,7 +39,7 @@
 /// 
 /// <param name=""></param>
 
-BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", MotorConfig::PARAM_BODY, Notify::messages::ERROR_BODY_MOTOR_HOMING, MIN_ROTATION_ANGLE, MAX_ROTATION_ANGLE, ROT_PER_DEGREE, EXTERNAL_K, false)
+BodyMotor::BodyMotor(void): CANOPEN::CanOpenMotor((unsigned char)CANOPEN::MotorDeviceAddresses::BODY_ID, L"MOTOR_BODY", MotorConfig::PARAM_BODY, Notify::messages::ERROR_BODY_MOTOR_HOMING, MIN_ROTATION_ANGLE, MAX_ROTATION_ANGLE, ROT_PER_DEGREE, EXTERNAL_K, true)
 {
     // Sets +/- 0.2 ° as the acceptable target range
     setTargetRange(2, 2);

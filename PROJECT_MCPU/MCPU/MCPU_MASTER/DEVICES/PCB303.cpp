@@ -520,6 +520,7 @@ bool PCB303::selectFilter(filter_index filter) {
     selected_slot = req_filter_slot;
     if (selected_filter == filter) return true;
     selected_filter = filter;
+    filter_attempt = 0; // Reset error counter
     valid_filter_format = false;
     return true;
 }
@@ -536,6 +537,7 @@ bool PCB303::selectFilterSlot(int req_filter_slot) {
     
     selected_filter = getFilterIndex(req_filter_slot);
     valid_filter_format = false;
+    filter_attempt = 0; // Reset error counter
     return true;
 }
 

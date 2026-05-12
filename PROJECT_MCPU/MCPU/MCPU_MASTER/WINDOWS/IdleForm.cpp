@@ -228,9 +228,9 @@ void IdleForm::initIdleStatus(void) {
 	PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::OPEN, 0);
 
 	/// The filter is set to "lead" in order to protect the tube output.
-	PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
 	PCB303::selectFilter(PCB303::filter_index::FILTER_LD);
-
+	PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
+	
 	/// The Mirror is set to Home and the collimation light switched Off
 	PCB303::setCollimationLight(false);
 

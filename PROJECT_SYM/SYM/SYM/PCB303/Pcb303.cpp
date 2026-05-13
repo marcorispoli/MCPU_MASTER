@@ -133,6 +133,14 @@ PCB303::commandResult^ PCB303::device_command_callback(unsigned char cmd, unsign
 
 	case ProtocolStructure::Commands::command_index::SET_FORMAT:
 		if (d0 >= NUM_COLLIMATION_SLOTS) return gcnew commandResult(deviceInterface::CommandRegisterErrors::COMMAND_ERROR_INVALID_PARAM);
+		
+		// non forced mode and already in target
+		if (d1 == 0) {
+			if ((d0 == device.format_index)&&(device.format_action_command == ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+				break;
+			}
+		}
+
 		device.format_index = d0;
 		device.format_action_command = ProtocolStructure::StatusRegister::action_code::STAT_POSITIONING;
 

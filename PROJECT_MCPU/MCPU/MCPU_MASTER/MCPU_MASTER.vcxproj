@@ -259,6 +259,7 @@
     <ClCompile Include="BIOPSY_STUDY\BiopsyHomeProcedure.cpp" />
     <ClCompile Include="CONFIGURATION\ConfigFile.cpp" />
     <ClCompile Include="DEBUGGER\Debugger.cpp" />
+    <ClCompile Include="DEBUGGER\IRS_Collimator.cpp" />
     <ClCompile Include="DEVICES\PCB325.cpp" />
     <ClCompile Include="DEVICES\PCB326.cpp" />
     <ClCompile Include="GENERATOR\Exposure2DModule.cpp" />

@@ -14,11 +14,49 @@
 #include <thread>
 
 
+#define IRS_REVISION "1.0"
 
 using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Threading;
 using namespace System::Diagnostics;
+
+System::String^ DebuggerCLI::getStringParam(int index, System::String^ stringa) {
+	int i = 0;
+	int j = 0;
+	int k = 0;
+	System::String^ risultato = "";
+
+	// Finds the parameter position
+	i = 0;
+	for (j = 0; j < stringa->Length; j++) {
+		if ((Char)stringa[j] == ' ') {
+			for (k = j; k < stringa->Length; k++) {
+				if ((Char)stringa[k] != ' ') {						
+					break;
+				}
+			}
+			if (k >= stringa->Length) return "";
+			
+			// Ha trovato la posizione
+			if (i == index) {
+				j = k;
+				break;
+			}
+			j = k-1;
+			i++;
+		}
+	}	
+	if (j >= stringa->Length) return "";
+
+	// Costruisce il dato
+	for (k = j; k < stringa->Length; k++) {
+		if ((Char)stringa[k] == ' ') break;
+		risultato += stringa[k];
+	}
+
+	return risultato;
+}
 
 DebuggerCLI::DebuggerCLI(System::String^ ip, int port)
 {
@@ -89,6 +127,12 @@ void DebuggerCLI::threadWork(void) {
 		// Notifies the connection status
 		connection_event(true);
 		
+		System::String^ stringa = "WELCOME TO IRS INTERFACE, REVISION " + IRS_REVISION + " \r\n \r\n";
+		send(System::Text::Encoding::Unicode->GetBytes(stringa));
+
+		// Sends the main menu
+		handleRootCommands("?");
+
 		while (true) {
 			try{
 				rx_rc = clientSocket->Receive(rxBuffer);
@@ -328,168 +372,6 @@ void DebuggerCLI::handlePotterCommands(System::String^ cmd) {
 	lista += " -> INOUT_TEST	- Test In-Out 10 times\n\r";
 	lista += " -> SYNCH_ON		- Generator Sync On\n\r";
 	lista += " -> SYNCH_OFF		- Generator Sync Off\n\r";
-
-	send(System::Text::Encoding::Unicode->GetBytes(lista));
-	return;
-}
-
-void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
-	System::String^ stringa;
-
-	if (cmd->Contains("RESET")) {
-		if (cmd->Contains("?")) {
-			stringa = "This command causes the PCB303 board reset.\n\r";
-			stringa += "The board parameters will be automatically uploaded by Gantry after the board startup\n\r";
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		send(System::Text::Encoding::Unicode->GetBytes(" -> Collimator Board Reset Command!\n\r"));
-		return;
-	}
-
-	if (cmd->Contains("GET_STATUS")) {
-		if (cmd->Contains("?")) {
-			stringa = "This command returns the data content of the relevant Device Status and Data registers.\n\r";			
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		stringa = "Status Register Content: \n\r";
-		stringa += "Format Collimation Action: " + PCB303::getCollimationActionStatus().ToString() + "\n\r";
-		stringa += "Format Collimation Index: " + PCB303::getCollimationTargetIndex().ToString() + "\n\r";
-		stringa += "Mirror Action: " + PCB303::getMirrorActionStatus().ToString() + "\n\r";
-		stringa += "Mirror Target: " + PCB303::getMirrorTargetIndex().ToString() + "\n\r";
-		stringa += "Light Target: " + PCB303::getLightStatus().ToString() + "\n\r";
-		stringa += "Bulb Temperature: " + PCB303::getBulbPercTemp().ToString() + "\n\r";
-		stringa += "Stator Temperature: " + PCB303::getStatorPercTemp().ToString() + "\n\r";
-		stringa += "FAN Status: " + PCB303::getFanStat().ToString() + "\n\r";
-		stringa += "FAN Forced: " + PCB303::getFanForced().ToString() + "\n\r";
-
-		stringa +=  "\n\r";
-
-		send(System::Text::Encoding::Unicode->GetBytes(stringa));
-
-		return;
-	}
-
-	if (cmd->Contains("SELECT_FILTER_SLOT")) {
-		if (cmd->Contains("?")) {
-			stringa = "This command selects a given Filter by slot number, from 0 to 4.\n\r";			
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Slot Selection Command!\n\r"));
-		
-		int slot = 0;
-		if (cmd->Contains(" 0")) slot = 0;
-		else if (cmd->Contains(" 1")) slot = 1;
-		else if (cmd->Contains(" 2")) slot = 2;
-		else if (cmd->Contains(" 3")) slot = 3;
-		else if (cmd->Contains(" 4")) slot = 4;
-		else {
-			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
-			return;
-		}
-		
-		PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
-		if (!PCB303::selectFilterSlot(slot)) {
-			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
-			return;
-		}
-		
-		return;
-	}
-
-	if (cmd->Contains("SELECT_FILTER_MATTER")) {
-		if (cmd->Contains("?")) {
-			stringa = "This command selects a given Filter by matter.\n\r";
-			stringa += "Available filters are:\n\r";
-			stringa += "Cu Ag Rh Al Ag Ld \n\r";
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Matter Selection Command!\n\r"));		
-		return;
-	}
-
-
-	if (cmd->Contains("SET_FAN")) {
-		if (cmd->Contains("?")) {
-			stringa  = "This command set the FAN activation mode:\n\r";
-			stringa += "- AUTO: the FAN is activated withthe Tube temperature:\n\r";
-			stringa += "- FORCED: the FAN is forced activated:\n\r";
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		
-		if (cmd->Contains(" AUTO")) {
-			// Auto mode
-			if (PCB303::setFanActivatonMode(false)) {
-				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN SET IN AUTO MODE!\n\r"));
-			}
-			else {
-				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN ACTIVATION MODE COMMAND REFUSED!\n\r"));
-			}
-		}
-		else {
-			// Forced Mode
-			if (PCB303::setFanActivatonMode(true)) {
-				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN SET IN FORCED MODE!\n\r"));
-			}
-			else {
-				send(System::Text::Encoding::Unicode->GetBytes(" ->FAN ACTIVATION MODE COMMAND REFUSED!\n\r"));
-			}
-		}
-
-
-		return;
-	}
-
-
-	if (cmd->Contains("CONFIGURATION")) {
-		if (cmd->Contains("?")) {
-			stringa = "This command force the Collimaotr configursation file to be reloaded.\n\r";
-			stringa += "The PCB303 is reconfigurated with hthe new parameters.\n\r";
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		// Reload the configuration file
-		CollimatorConfig::Configuration->loadFile();
-
-		// Restart the Configuration fase 
-		if(!PCB303::device->activateConfigurationFase()) {
-			send(System::Text::Encoding::Unicode->GetBytes("Unable to activate the PCB303 configuration fase!\n\r"));
-			return;
-		}
-
-		// Wait the configuration completion
-		while (!PCB303::device->isRunning()) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		}
-
-		// Refresh the current collimation format
-		PCB303::refreshFormatCollimationMode();
-
-		// Refresh the current filter
-		PCB303::refreshFilter();
-
-		send(System::Text::Encoding::Unicode->GetBytes("->PCB303 is reconfigured ..\n\r"));
-		return;
-	}
-
-	// Shows the list of available commands if no valid command is detedcted
-	System::String^ lista;
-	lista =  " -> RESET - reset Board\n\r";
-	lista += " -> GET_STATUS            - Shows the protocol registers\n\r";
-	lista += " -> SELECT_FILTER_SLOT    - Filter selection by slot number\n\r";
-	lista += " -> SELECT_FILTER_MATTER	- Filter selection by Matter\n\r";
-	lista += " -> SET_FAN	            - Fan Activation Mode \n\r";
-	lista += " -> CONFIGURATION	        - Read the config file and update the configuration \n\r";
 
 	send(System::Text::Encoding::Unicode->GetBytes(lista));
 	return;

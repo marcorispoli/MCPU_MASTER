@@ -86,6 +86,14 @@
 
 		NOTE: different paddles can share the same format collimation slot if necessary.
 
+	## Format collimation for test and calibration
+	
+	To override the normal collimation activities and directly select 
+	a collimation format manually:
+	
+	+ Set the DISABLED mode: this mode prevents the format collimation loop to control and force 
+	a given collimation format to be selected in the collimator device.
+	+ Send the protocol commands to performs the requestedcollimation activities
 
 	## Format Selection Rules
 	
@@ -659,6 +667,12 @@ public:
 				return gcnew CanDeviceCommand((unsigned char)command_index::SET_FORMAT, target_format_slot, 0, 0, 0);
 			}
 
+			CanDeviceCommand^ encodeSetManualFormatCommand(unsigned char target_format_slot) {
+				// if the index is out of range, the collimatin will be st to OPEN in the device
+				if (target_format_slot >= NUM_COLLIMATION_SLOTS) target_format_slot = 0;
+				return gcnew CanDeviceCommand((unsigned char)command_index::SET_FORMAT, target_format_slot, 1, 0, 0);
+			}
+
 			CanDeviceCommand^ encodeSetFilterCommand(unsigned char target_filter_slot) {
 				if (target_filter_slot >= 5) return nullptr;
 				return gcnew CanDeviceCommand((unsigned char)command_index::SET_FILTER, target_filter_slot, 0, 0, 0);
@@ -807,6 +821,9 @@ public:
 	static ConfigurationStructure^ getConfig(void) { return config; }
 	static void setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index);
 	static void refreshFormatCollimationMode(void);
+	static bool setFormatConfiguration(int slot, int front, int back, int left, int right, int trap, bool store);
+	static bool selectManualCollimationFormat(int slot);
+	static bool storeCollimationFormat(int slot);
 
 	// Filter Commands	
 	static void setFilterMode(filterModeEnum mode);

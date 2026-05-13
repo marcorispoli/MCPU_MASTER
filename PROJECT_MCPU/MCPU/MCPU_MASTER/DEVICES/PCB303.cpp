@@ -216,7 +216,7 @@ void PCB303::formatManagement(void) {
     }
     
 
-    // A maximum attemp has been expired: no moe collimation attempt can be initiated
+    // A maximum attemp has been expired: no more collimation attempt can be initiated
     if(format_collimation_attempt > 5) {
 
         // Activate the selectuion error if necessary
@@ -326,6 +326,55 @@ void PCB303::resetLoop(void) {
     Notify::activate(Notify::messages::ERROR_PCB303_RESET);
 }
 
+
+bool PCB303::setFormatConfiguration(int slot, int front, int back, int left, int right, int trap, bool store) {
+    if (slot < 0) return false;
+    if (slot >= protocol.parameter_register.format_collimation->Length) return false;
+
+    // Upload parameters related to the modified slot
+    protocol.parameter_register.format_collimation[slot]->front = front;
+    protocol.parameter_register.format_collimation[slot]->back = back;
+    protocol.parameter_register.format_collimation[slot]->left = left;
+    protocol.parameter_register.format_collimation[slot]->right = right;
+    protocol.parameter_register.format_collimation[slot]->trap = trap;
+
+    
+    device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::FB_FORMAT_SLOT_IDX + slot, protocol.parameter_register.encodeFBCollimationSlotRegister(slot));
+    device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::LR_FORMAT_SLOT_IDX + slot, protocol.parameter_register.encodeLRCollimationSlotRegister(slot));    
+    device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX + slot, protocol.parameter_register.encodeTrapCollimationSlotRegister(slot));
+
+   // Store if requested in the Configuratin file
+    if (store) {
+        System::String^ Param = "COLLI_STANDARD_FORMAT_" + slot.ToString();
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_FRONT, front.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_BACK, back.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_LEFT, left.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_RIGHT, right.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_TRAP, trap.ToString());
+        CollimatorConfig::Configuration->storeFile();
+    }
+
+    return true;
+}
+
+bool PCB303::storeCollimationFormat(int slot) {
+    if (slot < 0) return false;
+    if (slot >= protocol.parameter_register.format_collimation->Length) return false;
+
+    System::String^ Param = "COLLI_STANDARD_FORMAT_" + slot.ToString();
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_FRONT, protocol.parameter_register.format_collimation[slot]->front.ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_BACK, protocol.parameter_register.format_collimation[slot]->back.ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_LEFT, protocol.parameter_register.format_collimation[slot]->left.ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_RIGHT, protocol.parameter_register.format_collimation[slot]->right.ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_TRAP, protocol.parameter_register.format_collimation[slot]->trap.ToString());
+    CollimatorConfig::Configuration->storeFile();
+
+    return true;
+}
+
+
+
+
 /// <summary>
 /// This is the configuration loop routine executed at the beginning of the 
 /// device connection, before to execute the runningLoop() routine.
@@ -395,6 +444,7 @@ bool PCB303::configurationLoop(void) {
 
     return true;
 }
+
 
 /// <summary>
 /// This function forces the module to reselect the current collimaiton mode.
@@ -541,7 +591,12 @@ bool PCB303::selectFilterSlot(int req_filter_slot) {
     return true;
 }
 
-
+bool PCB303::selectManualCollimationFormat(int slot) {
+    if (device->commandNoWaitCompletion(protocol.command.encodeSetManualFormatCommand(selected_format), 30)) {
+        return true;
+    }
+    else return false;
+}
 
 
 bool PCB303::waitFilterCompleted(void) {

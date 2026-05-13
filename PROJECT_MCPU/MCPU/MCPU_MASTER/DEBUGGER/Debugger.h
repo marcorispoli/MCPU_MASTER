@@ -51,9 +51,13 @@ private:
 	void handlePotterCommands(System::String^ cmd);
 	void handleGeneratorCommands(System::String^ cmd);
 	void handleCompressorCommands(System::String^ cmd);
+	
 	void handleCollimatorCommands(System::String^ cmd);
+	void DebuggerCLI::CollimatorCommandList(void);
+	void handle2DFormatCommands(System::String^ cmd);
+	
 	void handleExposureCommands(System::String^ cmd);
 	void handleComCommands(System::String^ cmd);
-
+	System::String^ getStringParam(int index, System::String^ cmd);
 };
 

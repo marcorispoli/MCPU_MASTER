@@ -819,14 +819,24 @@ public:
 
 	// Configuration file access Apis
 	static ConfigurationStructure^ getConfig(void) { return config; }
+
+	// Format collimation commands
 	static void setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index);
 	static void refreshFormatCollimationMode(void);
 	static bool setFormatConfiguration(int slot, int front, int back, int left, int right, int trap, bool store);
+	static void loadFormatCollimationConfiguration(bool read_file, bool upload_device);
+
 	static bool selectManualCollimationFormat(int slot);
 	static bool storeCollimationFormat(int slot);
 
 	// Filter Commands	
+	static bool setFilterPositionConfiguration(int slot0, int slot1, int slot2, int slot3, int slot4, bool store);
+	static void storeFilterPositionConfiguration(void);
+	static void loadFilterPositionConfiguration(bool read_file, bool upload_device);
+
+
 	static void setFilterMode(filterModeEnum mode);
+	static filterModeEnum getFilterMode(void) { return filterMode; }
 	static bool selectFilter(filter_index filter);
 	static bool selectFilterSlot(int req_filter_slot);
 	static void refreshFilter(void);
@@ -838,9 +848,14 @@ public:
 	static bool isFilterInError(void) { return filter_error; }
 	static bool	waitFilterCompleted(void);
 
+	// Light and Mirror Commands
+	static bool setLightConfiguration(int mirror_position, bool store);
+	static void storeLightConfiguration(void);
+	static void loadCollimatorLightConfiguration(bool read_file, bool upload_device);
 	static void setCollimationLight(bool stat);
 	static bool getPowerLightStatus(void) { return (protocol.status_register.light_status == ProtocolStructure::StatusRegister::light_target_code::LIGHT_ON) ? true : false; }
 	
+	// Tube temperature commands
 	static int getBulbPerc(void) { return bulb_temperature_perc; }
 	static int getStatorPerc(void) { return stator_temperature_perc; }
 	static int getMaxTubePerc(void) { return max_temperature_perc; }

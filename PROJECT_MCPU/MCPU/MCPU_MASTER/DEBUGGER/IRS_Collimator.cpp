@@ -17,20 +17,218 @@ void DebuggerCLI::CollimatorCommandList(void) {
 	// Shows the list of available commands if no valid command is detedcted
 	System::String^ lista;
 	lista = " -> RESET - reset Board\n\r";
-	lista += " -> GET_STATUS            - Shows the protocol registers\n\r";
-	lista += " -> SELECT_FILTER_SLOT    - Filter selection by slot number\n\r";
-	lista += " -> SELECT_FILTER_MATTER	- Filter selection by Matter\n\r";
+	lista += " -> GET_STATUS            - Shows the protocol registers\n\r";	
 	lista += " -> SET_FAN	            - Fan Activation Mode \n\r";
 
 	lista += " \r\n --- 2D Format Collimation Commands ----------------------------------------- \n\r \r\n";
 	lista += " -> FORMAT_MODE	     - Set the current format collimation handling mode \n\r";
 	lista += " -> FORMAT_SET_SLOT	 - Set the collimation data of a given slot \n\r";
 	lista += " -> FORMAT_STORE_SLOT	 - Stores the slot's format data in the configuration file \n\r";
+	lista += " -> FORMAT_RELOAD		 - Reload the format parameters from the configuration file \n\r";
 	lista += " -> FORMAT_SELECT_SLOT - Select the collimation slot \n\r";
 
+	lista += " \r\n --- Filter Commands ----------------------------------------- \n\r \r\n";
+	lista += " -> FILTER_SET_MODE				- Sets the current operating mode (ACTIVE/DISABLED)\n\r";
+	lista += " -> FILTER_SELECT_SLOT			- Select a Filter by slot number (0 to 4)\n\r";
+	lista += " -> FILTER_SELECT_MATTER			- Select a Filter by Matter (Rh, Al, Cu, Rh, Ld, Mo)\n\r";
+	lista += " -> FILTER_SET_SLOT_POSITION		- Sets the position of the Slot\n\r";
+	lista += " -> FILTER_STORE_SLOT_POSITION	- Stores the Slot position in the configuration file\n\r";
+	lista += " -> FILTER_RELOAD					- Reloads the filter position from the config. file\n\r";
+
+	lista += " \r\n --- Mirror And Light Commands ----------------------------------------- \n\r \r\n";
+	lista += " -> COLLIMATOR_LIGHT_ACTIVATE		- Set the current mirror and light On/Off \n\r";
+	lista += " -> COLLIMATOR_LIGHT_POSITION		- Set the mirror position  \n\r";
+	lista += " -> COLLIMATOR_LIGHT_STORE		- Store the mirror position  \n\r";
+	lista += " -> COLLIMATOR_LIGHT_RELOAD		- Reload the mirror position from the configuration file \n\r";
 
 	send(System::Text::Encoding::Unicode->GetBytes(lista));
 	return;
+}
+
+void DebuggerCLI::handleFilterCommands(System::String^ cmd) {
+	System::String^ stringa;
+	if (cmd->Contains("FILTER_SET_MODE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command sets the filter operating mode\n\r";
+			stringa += "Syntax: FILTER_SET_MODE status \n\r";
+			stringa += "status -> ACTIVE / DISABLED\n\r";
+			stringa += "If DISABLED the filter cannot be activated\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (cmd->Contains("ACTIVE")) {
+			PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
+			send(System::Text::Encoding::Unicode->GetBytes("The Filter is Active \n\r"));
+			return;
+		}
+		else {
+			PCB303::setFilterMode(PCB303::filterModeEnum::DISABLED_FILTER_MODE);
+			send(System::Text::Encoding::Unicode->GetBytes("The Filter is not Active \n\r"));
+			return;
+		}
+		return;
+	}
+
+	if (cmd->Contains("FILTER_SELECT_SLOT")) {
+		if (cmd->Contains("?")) {
+			
+			stringa = "This command select a filter by the slot number\n\r";
+			stringa += "Syntax: FILTER_SELECT_SLOT slot \n\r";
+			stringa += "slot -> 0 to 4\n\r";
+			stringa += "The Filter shall be ACTIVE to be selected\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+			
+		}
+
+		if (PCB303::getFilterMode() == PCB303::filterModeEnum::DISABLED_FILTER_MODE) {
+			send(System::Text::Encoding::Unicode->GetBytes("The Filter is in DISABLED mode and cannot be activated.\n\r"));
+			return;
+		}
+
+		System::String^ param;
+		int slot;
+
+		// Slot number
+		param = getStringParam(0, cmd);
+		if (param == "") {
+			send(System::Text::Encoding::Unicode->GetBytes("Invalid Slot Parameter \r\n"));
+			return;
+		}
+		slot = System::Convert::ToInt16(param);
+		if ((slot < 0)||(slot>4)) {
+			send(System::Text::Encoding::Unicode->GetBytes("Invalid Slot Parameter \r\n"));
+			return;
+		}
+
+		if (!PCB303::selectFilterSlot(slot)) {
+			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
+			return;
+		}
+		send(System::Text::Encoding::Unicode->GetBytes("Command Executed\n\r"));
+
+		return;
+	}
+
+	if (cmd->Contains("FILTER_SELECT_MATTER")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command select a filter by the Matter name\n\r";
+			stringa += "Syntax: FILTER_SELECT_MATTER matter \n\r";
+			stringa += "Matters: Cu Ag Rh Al Ag Ld Mo\n\r";		
+			stringa += "The Filter shall be ACTIVE to be selected\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (PCB303::getFilterMode() == PCB303::filterModeEnum::DISABLED_FILTER_MODE) {
+			send(System::Text::Encoding::Unicode->GetBytes("The Filter is in DISABLED mode and cannot be activated.\n\r"));
+			return;
+		}
+
+		if(cmd->Contains("Cu")) PCB303::selectFilter(PCB303::filter_index::FILTER_CU);
+		else if (cmd->Contains("Ag")) PCB303::selectFilter(PCB303::filter_index::FILTER_AG);
+		else if (cmd->Contains("Rh")) PCB303::selectFilter(PCB303::filter_index::FILTER_RH);
+		else if (cmd->Contains("Al")) PCB303::selectFilter(PCB303::filter_index::FILTER_AL);
+		else if (cmd->Contains("Ld")) PCB303::selectFilter(PCB303::filter_index::FILTER_LD);
+		else if (cmd->Contains("Mo")) PCB303::selectFilter(PCB303::filter_index::FILTER_MO);
+		else {
+			send(System::Text::Encoding::Unicode->GetBytes("Invalid Matter \r\n"));
+			return;
+		}
+		send(System::Text::Encoding::Unicode->GetBytes("Command Executed\n\r"));
+		return;
+	}
+
+
+
+	send(System::Text::Encoding::Unicode->GetBytes("Not Implemented Command \r\n"));
+}
+
+void DebuggerCLI::handleCollimatorLightCommands(System::String^ cmd) {
+	System::String^ stringa;
+
+	if (cmd->Contains("COLLIMATOR_LIGHT_ACTIVATE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command activates both the Light and the Mirror:\n\r";
+			stringa += "Sintax: COLLIMATOR_LIGHT_ACTIVATE ON/OFF \n\r";
+			stringa += "COLLIMATOR_LIGHT_ACTIVATE ON -> Mirror In-Field and Light On\n\r";
+			stringa += "COLLIMATOR_LIGHT_ACTIVATE OFF -> Mirror Out-Field and Light Off\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		if (cmd->Contains("ON")) {
+			PCB303::setCollimationLight(true);
+			send(System::Text::Encoding::Unicode->GetBytes("Light Activated \r\n"));
+		}
+		else {
+			PCB303::setCollimationLight(false);
+			send(System::Text::Encoding::Unicode->GetBytes("Light Switched Off \r\n"));
+		}
+
+		return;
+	}
+
+	if (cmd->Contains("COLLIMATOR_LIGHT_POSITION")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command sets the position of the Mirror when In-Field:\n\r";
+			stringa += "Syntax: COLLIMATOR_LIGHT_POSITION value \n\r";
+			stringa += "value -> The position of the mirror when In-Field\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+		System::String^ param;
+		int position;
+
+		// Slot number
+		param = getStringParam(0, cmd);
+		if (param == "") {
+			send(System::Text::Encoding::Unicode->GetBytes("Invalid Mirror Parameter \r\n"));
+			return;
+		}
+
+		position = System::Convert::ToInt16(param);
+		
+		if (!PCB303::setLightConfiguration(position,false)) {
+			send(System::Text::Encoding::Unicode->GetBytes("Invalid Mirror Parameter \r\n"));
+		}
+		else {
+			send(System::Text::Encoding::Unicode->GetBytes("Mirror Position Successfully Set\r\n"));
+		}
+		return;
+	}
+
+	if (cmd->Contains("COLLIMATOR_LIGHT_STORE")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command stores the mirror position in the Collimation configuration file:\n\r";
+			stringa += "Syntax: COLLIMATOR_LIGHT_STORE \n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+		
+		PCB303::storeLightConfiguration();
+		send(System::Text::Encoding::Unicode->GetBytes("Mirror Parameter Successfully stored\r\n"));
+
+		return;
+	}
+
+	// Load the configuration file and upload the collimator device
+	if (cmd->Contains("COLLIMATOR_LIGHT_RELOAD")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command reloads the collimator light parameters from the configuration file\n\r";
+			stringa += "Syntax: COLLIMATOR_LIGHT_RELOAD\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+
+		PCB303::loadCollimatorLightConfiguration(true, true);
+		send(System::Text::Encoding::Unicode->GetBytes("Configuration file read and collimator device updated!\r\n"));
+		return;
+	}
+
+
+	send(System::Text::Encoding::Unicode->GetBytes("Not Implemented Command \r\n"));
 }
 
 void DebuggerCLI::handle2DFormatCommands(System::String^ cmd) {
@@ -53,6 +251,8 @@ void DebuggerCLI::handle2DFormatCommands(System::String^ cmd) {
 			PCB303::setFormatCollimationMode(PCB303::collimationModeEnum::DISABLED, 0);
 			send(System::Text::Encoding::Unicode->GetBytes("Format collimation set in DISABLED mode \r\n"));
 		}
+
+		return;
 	}
 
 	if (cmd->Contains("FORMAT_STORE_SLOT")) {
@@ -237,6 +437,23 @@ void DebuggerCLI::handle2DFormatCommands(System::String^ cmd) {
 
 		return;
 	}
+
+	// Load the configuration file and upload the collimator device
+	if (cmd->Contains("FORMAT_RELOAD")) {
+		if (cmd->Contains("?")) {
+			stringa = "This command reloads all the format parameters from the configuration file\n\r";
+			stringa += "Sintax: FORMAT_RELOAD\n\r";
+			send(System::Text::Encoding::Unicode->GetBytes(stringa));
+			return;
+		}
+		
+		PCB303::loadFormatCollimationConfiguration(true, true);
+		send(System::Text::Encoding::Unicode->GetBytes("Configuration file read and collimator device updated!\r\n"));
+		return;
+	}
+
+	
+	send(System::Text::Encoding::Unicode->GetBytes("Not Implemented Command \r\n"));
 }
 
 void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
@@ -279,48 +496,7 @@ void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
 		return;
 	}
 
-	if (cmd->Contains("SELECT_FILTER_SLOT")) {
-		if (cmd->Contains("?")) {
-			stringa = "This command selects a given Filter by slot number, from 0 to 4.\n\r";			
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Slot Selection Command!\n\r"));
-		
-		int slot = 0;
-		if (cmd->Contains(" 0")) slot = 0;
-		else if (cmd->Contains(" 1")) slot = 1;
-		else if (cmd->Contains(" 2")) slot = 2;
-		else if (cmd->Contains(" 3")) slot = 3;
-		else if (cmd->Contains(" 4")) slot = 4;
-		else {
-			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
-			return;
-		}
-		
-		PCB303::setFilterMode(PCB303::filterModeEnum::ACTIVE_MODE);
-		if (!PCB303::selectFilterSlot(slot)) {
-			send(System::Text::Encoding::Unicode->GetBytes(" ->Invalid Slot Number!\n\r"));
-			return;
-		}
-		
-		return;
-	}
-
-	if (cmd->Contains("SELECT_FILTER_MATTER")) {
-		if (cmd->Contains("?")) {
-			stringa = "This command selects a given Filter by matter.\n\r";
-			stringa += "Available filters are:\n\r";
-			stringa += "Cu Ag Rh Al Ag Ld \n\r";
-			send(System::Text::Encoding::Unicode->GetBytes(stringa));
-			return;
-		}
-
-		send(System::Text::Encoding::Unicode->GetBytes(" ->Filter Matter Selection Command!\n\r"));		
-		return;
-	}
-
+	
 
 	if (cmd->Contains("SET_FAN")) {
 		if (cmd->Contains("?")) {
@@ -360,6 +536,16 @@ void DebuggerCLI::handleCollimatorCommands(System::String^ cmd) {
 		return;
 	}
 
+	if (cmd->Contains("FILTER_")) {
+		handleFilterCommands(cmd);
+		return;
+	}
+	
+	if (cmd->Contains("COLLIMATOR_LIGHT")) {
+		handleCollimatorLightCommands(cmd);
+		return;
+	}
+	
 	
 	CollimatorCommandList();
 	return;

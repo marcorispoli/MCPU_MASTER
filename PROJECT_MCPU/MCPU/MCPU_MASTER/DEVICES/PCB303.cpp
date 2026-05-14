@@ -372,8 +372,142 @@ bool PCB303::storeCollimationFormat(int slot) {
     return true;
 }
 
+void PCB303::loadFormatCollimationConfiguration(bool read_file, bool upload_device) {
+    
+    System::String^ Param;
+
+    if (read_file) {
+        // Upload the configuration file content into the Proocol registers
+        for (int index = 0; index < protocol.parameter_register.format_collimation->Length; index++) {
+            Param = "COLLI_STANDARD_FORMAT_" + index.ToString();
+            protocol.parameter_register.format_collimation[index]->front = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_FRONT]);
+            protocol.parameter_register.format_collimation[index]->back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_BACK]);
+            protocol.parameter_register.format_collimation[index]->left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_LEFT]);
+            protocol.parameter_register.format_collimation[index]->right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_RIGHT]);
+            protocol.parameter_register.format_collimation[index]->trap = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_TRAP]);
+        }
+
+    }
+
+    if (upload_device) {
+        // Writes the first 20 register of the Front-Back datas
+        for (int index = 0; index < NUM_COLLIMATION_SLOTS; index++) {
+            device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::FB_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeFBCollimationSlotRegister(index));
+
+        }
+
+        // Writes the next 20 registers of the Left-Right datas
+        for (int index = 0; index < NUM_COLLIMATION_SLOTS; index++) {
+            device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::LR_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeLRCollimationSlotRegister(index));
+        }
+
+        // Writes the next 10 registers of the Trap datas
+        for (int index = 0; index < NUM_COLLIMATION_SLOTS / 2; index++) {
+            device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeTrapCollimationSlotRegister(index));
+        }
+    }
+    
+}
+
+void PCB303::loadCollimatorLightConfiguration(bool read_file, bool upload_device) {
+
+    System::String^ Param;
+
+    if (read_file) {
+        protocol.parameter_register.mirror_slot = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_MIRROR)[CollimatorConfig::MIRROR_INFIELD]);
+    }
+
+    if (upload_device) {
+        // Writes the next register of the Mirror data
+        device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
+    }
+
+}
 
 
+
+bool PCB303::setLightConfiguration(int mirror_position, bool store) {
+    if (mirror_position > 10000) return false;
+    if (mirror_position < 0) return false;
+
+    protocol.parameter_register.mirror_slot = mirror_position;
+    device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
+
+    // Store if requested in the Configuratin file
+    if (store) {
+        System::String^ Param = "PARAM_MIRROR";
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::MIRROR_INFIELD , mirror_position.ToString());
+        CollimatorConfig::Configuration->storeFile();
+    }
+
+    return true;
+}
+
+void PCB303::storeLightConfiguration(void) {
+        System::String^ Param = "PARAM_MIRROR";
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::MIRROR_INFIELD, protocol.parameter_register.mirror_slot.ToString());
+        CollimatorConfig::Configuration->storeFile();
+}
+
+bool PCB303::setFilterPositionConfiguration(int slot0, int slot1, int slot2, int slot3, int slot4, bool store) {
+    if (slot0 < 0) return false;
+    if (slot1 < 0) return false;
+    if (slot2 < 0) return false;
+    if (slot3 < 0) return false;
+    if (slot4 < 0) return false;
+
+    // Upload the filter positions from the configuration file
+    protocol.parameter_register.filter_slots[0] = slot0;
+    protocol.parameter_register.filter_slots[1] = slot1;
+    protocol.parameter_register.filter_slots[2] = slot2;
+    protocol.parameter_register.filter_slots[3] = slot3;
+    protocol.parameter_register.filter_slots[4] = slot4;
+
+    // Store if requested in the Configuratin file
+    if (store) {
+        System::String^ Param = "PARAM_FILTER_POSITION";
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_0,slot0.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_1, slot1.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_2, slot2.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_3, slot3.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_4, slot4.ToString());
+        CollimatorConfig::Configuration->storeFile();
+    }
+
+    return true;
+}
+
+void PCB303::storeFilterPositionConfiguration(void) {
+    System::String^ Param = "PARAM_FILTER_POSITION";
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_0, protocol.parameter_register.filter_slots[0].ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_1, protocol.parameter_register.filter_slots[1].ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_2, protocol.parameter_register.filter_slots[2].ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_3, protocol.parameter_register.filter_slots[3].ToString());
+    CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FILTER_POSITION_4, protocol.parameter_register.filter_slots[4].ToString());
+    CollimatorConfig::Configuration->storeFile();
+}
+
+void PCB303::loadFilterPositionConfiguration(bool read_file, bool upload_device) {
+
+    System::String^ Param;
+
+    if (read_file) {
+        // Upload the filter positions from the configuration file
+        protocol.parameter_register.filter_slots[0] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_0]);
+        protocol.parameter_register.filter_slots[1] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_1]);
+        protocol.parameter_register.filter_slots[2] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_2]);
+        protocol.parameter_register.filter_slots[3] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_3]);
+        protocol.parameter_register.filter_slots[4] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_4]);
+    }
+
+    if (upload_device) {
+        // Writes the next 3 registers of the Filter datas
+        for (int index = 0; index < 3; index++) {
+            device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::FILTER_SLOT_IDX + index, protocol.parameter_register.encodeFilterSlotRegister(index));
+        }
+    }
+
+}
 
 /// <summary>
 /// This is the configuration loop routine executed at the beginning of the 
@@ -388,55 +522,16 @@ bool PCB303::configurationLoop(void) {
     
     LogClass::logInFile("PCB303: Executes Configuration");
 
-    // Read the parameters from the configuration files
-    System::String^ Param;
-   
-    // Upload the configuration file content into the Proocol registers
-    for (int index= 0; index < protocol.parameter_register.format_collimation->Length; index++) {
-        Param = "COLLI_STANDARD_FORMAT_" + index.ToString();
-        protocol.parameter_register.format_collimation[index]->front = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_FRONT]);
-        protocol.parameter_register.format_collimation[index]->back = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_BACK]);
-        protocol.parameter_register.format_collimation[index]->left = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_LEFT]);
-        protocol.parameter_register.format_collimation[index]->right = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_RIGHT]);
-        protocol.parameter_register.format_collimation[index]->trap = System::Convert::ToInt16(CollimatorConfig::Configuration->getParam(Param)[CollimatorConfig::PARAM_FORMAT_TRAP]);
-    }
-
-    // Upload the filter positions from the configuration file
-    protocol.parameter_register.filter_slots[0] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_0]);
-    protocol.parameter_register.filter_slots[1] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_1]);
-    protocol.parameter_register.filter_slots[2] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_2]);
-    protocol.parameter_register.filter_slots[3] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_3]);
-    protocol.parameter_register.filter_slots[4] = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_FILTER_POSITION)[CollimatorConfig::PARAM_FILTER_POSITION_4]);
+    // Upload and Update the data from the configuration file and updates the devices
+    loadFormatCollimationConfiguration(true, true);
 
     // Upload the mirror position from the configuration file
-    protocol.parameter_register.mirror_slot = System::Convert::ToUInt16(CollimatorConfig::Configuration->getParam(CollimatorConfig::PARAM_MIRROR)[CollimatorConfig::MIRROR_INFIELD]);
+    loadCollimatorLightConfiguration(true, true);
 
-    // Download into the divice the Parameters
-   
-    // Writes the first 20 register of the Front-Back datas
-    for (int index = 0; index < NUM_COLLIMATION_SLOTS; index++) {
-        writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::FB_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeFBCollimationSlotRegister(index));
-    
-    }
+    // Upload the filter position from the configuration file
+    loadFilterPositionConfiguration(true, true);
 
-    // Writes the next 20 registers of the Left-Right datas
-    for (int index = 0; index < NUM_COLLIMATION_SLOTS; index++) {
-        writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::LR_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeLRCollimationSlotRegister(index));
-    }
-
-    // Writes the next 10 registers of the Trap datas
-    for (int index = 0; index < NUM_COLLIMATION_SLOTS / 2; index++) {
-        writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX + index, protocol.parameter_register.encodeTrapCollimationSlotRegister(index));
-    }
-
-    // Writes the next 3 registers of the Filter datas
-    for (int index = 0; index < 3; index++) {
-        writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::FILTER_SLOT_IDX + index, protocol.parameter_register.encodeFilterSlotRegister(index));
-    }
-
-    // Writes the next register of the Mirror data
-    writeParamRegister((System::Byte) ProtocolStructure::ParameterRegister::register_index::MIRROR_SLOT_IDX, protocol.parameter_register.encodeMirrorRegister());
-
+  
     // Sets the Filter in Disable Mode
     PCB303::setFilterMode(filterModeEnum::DISABLED_FILTER_MODE);
 

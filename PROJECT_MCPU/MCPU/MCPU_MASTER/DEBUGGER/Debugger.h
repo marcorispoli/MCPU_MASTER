@@ -53,9 +53,11 @@ private:
 	void handleCompressorCommands(System::String^ cmd);
 	
 	void handleCollimatorCommands(System::String^ cmd);
-	void DebuggerCLI::CollimatorCommandList(void);
+	void CollimatorCommandList(void);
 	void handle2DFormatCommands(System::String^ cmd);
-	
+	void handleCollimatorLightCommands(System::String^ cmd);
+	void handleFilterCommands(System::String^ cmd);
+
 	void handleExposureCommands(System::String^ cmd);
 	void handleComCommands(System::String^ cmd);
 	System::String^ getStringParam(int index, System::String^ cmd);

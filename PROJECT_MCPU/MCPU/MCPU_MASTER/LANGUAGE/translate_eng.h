@@ -54,6 +54,7 @@
 "E00046", Notify::messages::ERROR_BIOPSY_Y_POSITIONING, "Biopsy Error", "Error in positioning the Y cursor",
 "E00047", Notify::messages::ERROR_BIOPSY_Z_POSITIONING, "Biopsy Error", "Error in positioning the Z cursor",
 
+"E00050", Notify::messages::ERROR_VERTICAL_MOTOR_ABNORMAL_CURRENT, "Vertical Motor Monitoring", "Too High Motor Torque detected. Service required.",
 
 
 /* -------- X-RAY SEQUENCE ERRROS ---------------------------*/
@@ -88,6 +89,8 @@
 "W00021", Notify::messages::WARNING_GENERATOR_SERVICE_MODE, "Generator Monitoring", "The Generator is in Service Mode",
 "W00022", Notify::messages::WARNING_GRID_OUT_OF_POSITION, "Potter Monitoring", "The grid is not in the expected position",
 "W00023", Notify::messages::WARNING_GRID_GENERAL_ENABLE, "Potter Monitoring", "The grid activation is momentary disabled",
+
+"W00024", Notify::messages::WARNING_VERTICAL_MOTOR_ABNORMAL_CURRENT, "Vertical Motor Monitoring", "Abnormal Motor Torque detected. Service required.",
 
 
 /* -------- INFO ---------------------------*/
@@ -137,6 +140,8 @@
 "I00035", Notify::messages::INFO_BIOPSY_XSCROLL_TO_LEFT_ACTION, "Biopsy Activation", "SCROLL X AXIS TO LEFT POSITION",
 "I00036", Notify::messages::INFO_BIOPSY_XSCROLL_TO_RIGHT_ACTION, "Biopsy Activation", "SCROLL X AXIS TO RIGHT POSITION",
 "I00037", Notify::messages::INFO_BIOPSY_Y_TOURN_DOWN_ACTION, "Biopsy Activation", "TOURN DOWN THE Y AXIS",
+
+"I00038", Notify::messages::INFO_VERTICAL_MOTOR_ABNORMAL_CURRENT, "Vertical Motor Monitoring", "Abnormal Motor Torque detected. Contact the Service",
 
 
 /* -------- LABELS ---------------------------*/

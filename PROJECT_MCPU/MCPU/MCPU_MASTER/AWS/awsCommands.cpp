@@ -41,7 +41,7 @@ using namespace System::Diagnostics;
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_OpenStudy patient_name>
+/// Frame format: <ID % EXEC_OpenStudy patient_name %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -93,7 +93,7 @@ void  awsProtocol::EXEC_OpenStudy(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_OpenStudy patient_name>
+/// Frame format: <ID % EXEC_OpenStudy patient_name %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -149,7 +149,7 @@ void  awsProtocol::EXEC_BiopsyStudy(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_BiopsyHoming home_position>
+/// Frame format: <ID % EXEC_BiopsyHoming home_position %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -221,7 +221,7 @@ void  awsProtocol::EXEC_BiopsyHoming(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_BiopsyPointing targetX targetY targetZ >
+/// Frame format: <ID % EXEC_BiopsyPointing targetX targetY targetZ %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -291,7 +291,7 @@ void  awsProtocol::SET_BiopsyImage2D(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_CloseStudy >
+/// Frame format: <ID % EXEC_CloseStudy %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -330,7 +330,7 @@ void  awsProtocol::EXEC_CloseStudy(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % SET_ProjectionList proj1, proj2, .. , proj-n>
+/// Frame format: <ID % SET_ProjectionList proj1, proj2, .. , proj-n %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -388,8 +388,8 @@ void awsProtocol::SET_ProjectionList(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format syntax 1: <ID % EXEC_ArmPosition projection target_angle Min Max>
-/// Frame format syntax 2: <ID % EXEC_ArmPosition target_angle >
+/// Frame format syntax 1: <ID % EXEC_ArmPosition projection target_angle Min Max %>
+/// Frame format syntax 2: <ID % EXEC_ArmPosition target_angle %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -496,7 +496,7 @@ void awsProtocol::EXEC_ArmPosition(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_AbortProjection >
+/// Frame format: <ID % EXEC_AbortProjection %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -546,7 +546,7 @@ void awsProtocol::EXEC_AbortProjection(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_TrxPosition trx_target>
+/// Frame format: <ID % EXEC_TrxPosition trx_target %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -624,7 +624,7 @@ void awsProtocol::EXEC_TrxPosition(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format Sintax : <ID % SET_TomoConfig tomo_name >
+/// Frame format Sintax : <ID % SET_TomoConfig tomo_name %>
 ///
 /// 
 /// |PARAMETER|Data Type|Description|
@@ -733,7 +733,7 @@ void awsProtocol::SET_TomoConfig(void) {
 /// 
 /// ### Command Success Returned Code 
 /// 
-/// <ID % OK  home end skip samples fps >
+/// <ID % OK  home end skip samples fps %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -794,7 +794,7 @@ void awsProtocol::GET_TomoInfo(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % SET_ExposureMode exp_type detector_type compression_mode collimation_mode protection_mode arm_mode >
+/// Frame format: <ID % SET_ExposureMode exp_type detector_type compression_mode collimation_mode protection_mode arm_mode %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -999,7 +999,7 @@ void   awsProtocol::SET_ExposureMode(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % SET_ExposureData pulse_number kV mAs filter>
+/// Frame format: <ID % SET_ExposureData pulse_number kV mAs filter %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1124,7 +1124,7 @@ void   awsProtocol::SET_TestMode(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % SET_EnableXrayPush enable_status>
+/// Frame format: <ID % SET_EnableXrayPush enable_status %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1166,7 +1166,7 @@ void   awsProtocol::SET_EnableXrayPush(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % GET_ReadyForExposure >
+/// Frame format: <ID % GET_ReadyForExposure %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1209,7 +1209,7 @@ void   awsProtocol::GET_ReadyForExposure(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % EXEC_StartXraySequence >
+/// Frame format: <ID % EXEC_StartXraySequence %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1263,7 +1263,7 @@ void   awsProtocol::EXEC_StartXraySequence(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % GET_Compressor >
+/// Frame format: <ID % GET_Compressor %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1312,7 +1312,7 @@ void   awsProtocol::GET_Compressor(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % GET_Components >
+/// Frame format: <ID % GET_Components %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1388,7 +1388,7 @@ void   awsProtocol::GET_Components(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % GET_Trx >
+/// Frame format: <ID % GET_Trx %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1445,7 +1445,7 @@ void   awsProtocol::GET_Trx(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % GET_Arm >
+/// Frame format: <ID % GET_Arm %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1497,7 +1497,7 @@ void   awsProtocol::GET_Arm(void) {
 /// 
 /// ### Command Success Returned Code 
 /// 
-/// <ID % OK anode bulb stator >
+/// <ID % OK anode bulb stator %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1540,7 +1540,7 @@ void   awsProtocol::GET_TubeTemperature(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % SET_Language language>
+/// Frame format: <ID % SET_Language language %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1590,7 +1590,7 @@ void   awsProtocol::SET_Language(void) {
 /// 
 /// ### Command Data Format
 /// 
-/// Frame format: <ID % GET_ProtocolRevision >
+/// Frame format: <ID % GET_ProtocolRevision %>
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
@@ -1620,7 +1620,7 @@ void   awsProtocol::GET_ProtocolRevision(void) {
     List<String^>^ lista = gcnew List<String^>;
 
     lista->Add(PROTOCOL_REVISION_CODE); 
-    ;
+    
     return;
 }
 
@@ -1729,3 +1729,246 @@ void   awsProtocol::EXEC_TestCommand(void) {
 
     return;
 }
+
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection SET_FormatCollimationData
+/// 
+/// This command sets the Collimator 2D-Format blade's position
+/// for a given Paddle format. 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % SET_FormatCollimationData format front back left right %>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |format|String|One of a possible collimated format|
+/// |front|Integer|A position value (0 .. 5000) for the frontal blade|
+/// |back|Integer|A position value (0 .. 5000) for the back blade|
+/// |left|Integer|A position value (0 .. 5000) for the left blade|
+/// |right|Integer|A position value (0 .. 5000) for the right blade|
+/// 
+/// Follows a list of possible collimation formats (see \ref the SET_ExposureMode command)
+/// 
+/// |format|
+/// |:--|
+/// |COLLI_CUSTOM | 
+/// |PADDLE_PROSTHESIS|
+/// |PADDLE_BIOP2D|
+/// |PADDLE_BIOP3D|
+/// |PADDLE_TOMO|
+/// |PADDLE_24x30_CONTACT|
+/// |PADDLE_18x24_C_CONTACT|
+/// |PADDLE_18x24_L_CONTACT|
+/// |PADDLE_18x24_R_CONTACT|
+/// |PADDLE_10x24_CONTACT|
+/// |PADDLE_9x21_MAG|
+/// |PADDLE_9x9_MAG|
+/// |PADDLE_D75_MAG|
+/// ||
+/// 
+/// 
+/// ### Error Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_CLOSE_MODE"| The command can be executed only in Open Study status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|Wrong number of parameters received (it should be 5)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"INVALID_PADDLE_FORMAT"| Wrong collimation paddle format|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"INVALID_BLADES_DATA"| Wrong blades value|
+
+ 
+/// <summary>
+/// This command sets the format collimation blade position .
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::SET_FormatCollimationData(void) {
+    //if (Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    if (pDecodedFrame->parameters->Count != 5) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+    
+    // Gets the collimation slot
+    int collimation_slot = PCB303::getCollimationSlot(pDecodedFrame->parameters[0]);
+    if(collimation_slot < 0) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PADDLE_FORMAT"; ackNok(); return; }
+
+    // Gets the blade parameters
+    int front = System::Convert::ToInt16(pDecodedFrame->parameters[1]);
+    int back = System::Convert::ToInt16(pDecodedFrame->parameters[2]);
+    int left = System::Convert::ToInt16(pDecodedFrame->parameters[3]);
+    int right = System::Convert::ToInt16(pDecodedFrame->parameters[4]);
+
+    // Set the collimation data in the register and updates the collimator device
+    if(!PCB303::setFormatConfiguration(collimation_slot, front, back, left, right, 0, false)) 
+    { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_BLADES_DATA"; ackNok(); return; }
+
+    ackOk();
+    return;
+}
+
+/// \addtogroup AWSProtocolDescription
+/// 
+/// <div style="page-break-after: always;"></div>
+/// 
+/// \subsection GET_FormatCollimationData
+/// 
+/// This command returns the Collimator 2D-Format blade's position for a given Paddle format. 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % GET_FormatCollimationData format %>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |format|String|One of a possible collimated format|
+/// 
+/// Follows a list of possible collimation formats (see \ref the SET_ExposureMode command)
+/// 
+/// |format|
+/// |:--|
+/// |COLLI_CUSTOM | 
+/// |PADDLE_PROSTHESIS|
+/// |PADDLE_BIOP2D|
+/// |PADDLE_BIOP3D|
+/// |PADDLE_TOMO|
+/// |PADDLE_24x30_CONTACT|
+/// |PADDLE_18x24_C_CONTACT|
+/// |PADDLE_18x24_L_CONTACT|
+/// |PADDLE_18x24_R_CONTACT|
+/// |PADDLE_10x24_CONTACT|
+/// |PADDLE_9x21_MAG|
+/// |PADDLE_9x9_MAG|
+/// |PADDLE_D75_MAG|
+/// ||
+/// 
+/// ### Command Success Returned Code 
+/// 
+/// <ID % OK slot front back left right >
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |slot|Integer|the collimation slot assigned to the paddle|
+/// |front|Integer|the current front blade position|
+/// |back|Integer|the current back blade position|
+/// |left|Integer|the current left blade position|
+/// |right|Integer|the current right blade position|
+/// 
+/// ### Error Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_CLOSE_MODE"| The command can be executed only in Open Study status|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|Wrong number of parameters received (it should be 1)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"INVALID_PADDLE_FORMAT"| Wrong collimation paddle format|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"INVALID_SLOT_FORMAT"| Wrong assigned slot to the paddle |
+
+
+/// <summary>
+/// This command gets the blade positions of a given collimation format.
+/// 
+/// </summary>
+/// <param name=""></param>
+void   awsProtocol::GET_FormatCollimationData(void) {
+   // if (Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+
+    // Gets the collimation slot
+    int collimation_slot = PCB303::getCollimationSlot(pDecodedFrame->parameters[0]);
+    if (collimation_slot < 0) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PADDLE_FORMAT"; ackNok(); return; }
+
+
+    // Gets the current blad's data
+    PCB303::formatData^ blades = PCB303::getFormatConfiguration(collimation_slot);
+    if(blades == nullptr) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_SLOT_FORMAT"; ackNok(); return; }
+
+
+    // Create the list of the results
+    List<String^>^ lista = gcnew List<String^>;
+
+    lista->Add(blades->slot.ToString());
+    lista->Add(blades->front.ToString());
+    lista->Add(blades->back.ToString());
+    lista->Add(blades->left.ToString());
+    lista->Add(blades->right.ToString());
+    
+    ackOk(lista);
+    return;
+}
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_StoreFormatCollimationData 
+/// 
+/// This command stores the given format into the Collimator Configuration file.
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_StoreFormatCollimationData format %>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |format|String|One of a possible collimated format|
+/// 
+/// Follows a list of possible collimation formats (see \ref the SET_ExposureMode command)
+/// 
+/// |format|
+/// |:--|
+/// |COLLI_CUSTOM | 
+/// |PADDLE_PROSTHESIS|
+/// |PADDLE_BIOP2D|
+/// |PADDLE_BIOP3D|
+/// |PADDLE_TOMO|
+/// |PADDLE_24x30_CONTACT|
+/// |PADDLE_18x24_C_CONTACT|
+/// |PADDLE_18x24_L_CONTACT|
+/// |PADDLE_18x24_R_CONTACT|
+/// |PADDLE_10x24_CONTACT|
+/// |PADDLE_9x21_MAG|
+/// |PADDLE_9x9_MAG|
+/// |PADDLE_D75_MAG|
+/// ||
+/// 
+/// 
+/// ### Error Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_PARAMETERS|"WRONG_NUMBER_OF_PARAMETERS"|Wrong number of parameters received (it should be 1)|
+/// |AWS_RET_INVALID_PARAMETER_VALUE|"INVALID_PADDLE_FORMAT"| Wrong collimation paddle format|
+/// 
+
+/// <summary>
+/// This command sytores the collimation slot data in the Configuration file.
+/// 
+/// </summary>
+/// <param name=""></param>
+void  awsProtocol::EXEC_StoreFormatCollimationData(void) {
+    if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
+
+    // Gets the collimation slot
+    int collimation_slot = PCB303::getCollimationSlot(pDecodedFrame->parameters[0]);
+    if (collimation_slot < 0) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PADDLE_FORMAT"; ackNok(); return; }
+
+
+    PCB303::storeCollimationFormat(collimation_slot);
+
+    ackOk();
+}
+
+void  awsProtocol::EXEC_FormatCollimationUpdate(void) {
+    // if (Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    PCB303::updateCurrentCollimationMode();
+    ackOk();
+}
+
+/*
+commandExec->Add("EXEC_FormatCollimationUpdate", gcnew command_callback(this, &awsProtocol::EXEC_FormatCollimationUpdate));
+
+commandExec->Add("GET_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::GET_CollimationLightPositionData));
+commandExec->Add("SET_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::SET_CollimationLightPositionData));
+commandExec->Add("EXEC_CollimationLight", gcnew command_callback(this, &awsProtocol::EXEC_CollimationLight));
+commandExec->Add("EXEC_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::EXEC_CollimationLightPositionData));
+*/

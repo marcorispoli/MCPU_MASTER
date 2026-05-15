@@ -97,3 +97,28 @@
 < 10 %  EXEC_TestCommand OBSTACLE CONFIG 0 2 0 1 % >
 
 < 10 %  EXEC_TestCommand ARM 9000 200 100 100 % >
+
+/////////////////////////////// COLLIMATION /////////////////////////////////////////////////////
+ |COLLI_CUSTOM | 
+/// |PADDLE_PROSTHESIS|
+/// |PADDLE_BIOP2D|
+/// |PADDLE_BIOP3D|
+/// |PADDLE_TOMO|
+/// |PADDLE_24x30_CONTACT|
+/// |PADDLE_18x24_C_CONTACT|
+/// |PADDLE_18x24_L_CONTACT|
+/// |PADDLE_18x24_R_CONTACT|
+/// |PADDLE_10x24_CONTACT|
+/// |PADDLE_9x21_MAG|
+/// |PADDLE_9x9_MAG|
+/// |PADDLE_D75_MAG|
+
+< 10 %  SET_FormatCollimationData PADDLE_TOMO 10 20 30 40 % >
+< 10 %  GET_FormatCollimationData PADDLE_TOMO % >
+
+< 10 %  SET_FormatCollimationData COLLI_CUSTOM 100 200 300 400 % >
+< 10 %  GET_FormatCollimationData COLLI_CUSTOM % >
+
+< 10 %  EXEC_StoreFormatCollimationData COLLI_CUSTOM % >
+< 10 %  EXEC_StoreFormatCollimationData PADDLE_TOMO % >
+

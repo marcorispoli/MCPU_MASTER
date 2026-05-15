@@ -774,6 +774,7 @@ public:
 		static int current_service_format = -1;					//!< Service Collimation format
 
 		static bool valid_collimation_format = false; //!< This flag is set when the collimation format is correct and coherent with the collimationMode register
+		static bool force_collimation_command = false;//!< This flag forces the collimator device to repeat the current collimation 
 		static int format_collimation_attempt = 0; //!< This register counts the attempt to exit from a fault condition
 
 		static filterModeEnum filterMode;
@@ -821,9 +822,20 @@ public:
 	static ConfigurationStructure^ getConfig(void) { return config; }
 
 	// Format collimation commands
+	static int  getCollimationSlot(System::String^ format_name);
 	static void setFormatCollimationMode(collimationModeEnum mode, unsigned char format_index);
-	static void refreshFormatCollimationMode(void);
+	static void updateCurrentCollimationMode(void);
 	static bool setFormatConfiguration(int slot, int front, int back, int left, int right, int trap, bool store);
+	
+	ref class  formatData {
+	public:
+		int slot;
+		int front;
+		int back;
+		int left;
+		int right;
+	}; 
+	static formatData^ getFormatConfiguration(int slot);
 	static void loadFormatCollimationConfiguration(bool read_file, bool upload_device);
 
 	static bool selectManualCollimationFormat(int slot);

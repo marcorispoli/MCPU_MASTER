@@ -75,7 +75,17 @@ awsProtocol::awsProtocol(void) {
     commandExec->Add("EXEC_BiopsyPointing", gcnew command_callback(this, &awsProtocol::EXEC_BiopsyPointing));
     commandExec->Add("SET_BiopsyImage2D", gcnew command_callback(this, &awsProtocol::SET_BiopsyImage2D));
     
+    commandExec->Add("GET_FormatCollimationData", gcnew command_callback(this, &awsProtocol::GET_FormatCollimationData));
+    commandExec->Add("SET_FormatCollimationData", gcnew command_callback(this, &awsProtocol::SET_FormatCollimationData));
+    commandExec->Add("EXEC_FormatCollimationUpdate", gcnew command_callback(this, &awsProtocol::EXEC_FormatCollimationUpdate));
+    commandExec->Add("EXEC_StoreFormatCollimationData", gcnew command_callback(this, &awsProtocol::EXEC_StoreFormatCollimationData));
 
+    commandExec->Add("GET_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::GET_CollimationLightPositionData));
+    commandExec->Add("SET_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::SET_CollimationLightPositionData));
+    commandExec->Add("EXEC_CollimationLight", gcnew command_callback(this, &awsProtocol::EXEC_CollimationLight));
+    commandExec->Add("EXEC_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::EXEC_CollimationLightPositionData));
+
+ 
     // Connects the Global register callbacks to the local Events        
     ArmMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);
     VerticalMotor::device->command_completed_event += gcnew CANOPEN::CanOpenMotor::delegate_command_completed_callback(&awsProtocol::EVENT_Executed);

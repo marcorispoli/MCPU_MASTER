@@ -228,10 +228,20 @@ void PCB303::formatManagement(void) {
     }
 
     // A new collimation attempt can be initiated
-    if ((selected_format != protocol.status_register.collimation_target_index) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
-        if (commandNoWaitCompletion(protocol.command.encodeSetFormatCommand(selected_format), 30)) {
-            format_collimation_attempt++;
+    if ((force_collimation_command) || (selected_format != protocol.status_register.collimation_target_index) || (protocol.status_register.collimation_action_status != ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED)) {
+        
+        if (force_collimation_command) {
+            if (commandNoWaitCompletion(protocol.command.encodeSetManualFormatCommand(selected_format), 30)) {
+                format_collimation_attempt++;
+                force_collimation_command = false;
+            }
         }
+        else {
+            if (commandNoWaitCompletion(protocol.command.encodeSetFormatCommand(selected_format), 30)) {
+                format_collimation_attempt++;
+            }
+        }
+        
         valid_collimation_format = false;
         return;
     }
@@ -326,6 +336,42 @@ void PCB303::resetLoop(void) {
     Notify::activate(Notify::messages::ERROR_PCB303_RESET);
 }
 
+/// <summary>
+/// This function returns the assigned slot of the requested collimation format
+/// </summary>
+/// <param name="format_name">A name of the collimation format</param>
+/// <returns>
+/// + -1: invalid format name
+/// + >=0: collimation slot
+/// 
+/// </returns>
+int  PCB303::getCollimationSlot(System::String^ format_name) {
+    
+    if (format_name == "COLLI_CUSTOM") return protocol.parameter_register.format_collimation->Length - 1; // last collimation slot reserved
+
+    // Gets the paddle code from the paddle name (tag)     
+    PCB302::paddleCodes paddle = PCB302::getPaddleCode(format_name);
+    if (paddle == PCB302::paddleCodes::PADDLE_NOT_DETECTED) return -1;
+
+    // Gets the collimation slot
+   return PCB302::getPaddleCollimationFormat(paddle);
+
+
+}
+
+PCB303::formatData^ PCB303::getFormatConfiguration(int slot) {
+    if (slot < 0) return nullptr;
+    if (slot >= protocol.parameter_register.format_collimation->Length) return nullptr;
+
+    formatData^ blades = gcnew formatData();
+    blades->slot = slot;
+    blades->front = protocol.parameter_register.format_collimation[slot]->front;
+    blades->back = protocol.parameter_register.format_collimation[slot]->back;
+    blades->left = protocol.parameter_register.format_collimation[slot]->left;
+    blades->right = protocol.parameter_register.format_collimation[slot]->right;
+
+    return blades;
+}
 
 bool PCB303::setFormatConfiguration(int slot, int front, int back, int left, int right, int trap, bool store) {
     if (slot < 0) return false;
@@ -341,7 +387,7 @@ bool PCB303::setFormatConfiguration(int slot, int front, int back, int left, int
     
     device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::FB_FORMAT_SLOT_IDX + slot, protocol.parameter_register.encodeFBCollimationSlotRegister(slot));
     device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::LR_FORMAT_SLOT_IDX + slot, protocol.parameter_register.encodeLRCollimationSlotRegister(slot));    
-    device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX + slot, protocol.parameter_register.encodeTrapCollimationSlotRegister(slot));
+    device->writeParamRegister((System::Byte)ProtocolStructure::ParameterRegister::register_index::TR_FORMAT_SLOT_IDX + (slot/2), protocol.parameter_register.encodeTrapCollimationSlotRegister(slot/2));
 
    // Store if requested in the Configuratin file
     if (store) {
@@ -553,8 +599,9 @@ bool PCB303::configurationLoop(void) {
 /// position paramters.
 /// 
 /// <param name=""></param>
-void PCB303::refreshFormatCollimationMode(void) {
+void PCB303::updateCurrentCollimationMode(void) {
     valid_collimation_format = false;
+    force_collimation_command = true;
 }
 
 

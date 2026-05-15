@@ -137,6 +137,19 @@
    +	\ref EXEC_BiopsyPointing
    +	\ref SET_BiopsyImage2D
 
+   _Format Collimation Calibration Process_
+   +	\ref GET_FormatCollimationData
+   +	\ref SET_FormatCollimationData
+   +	\ref EXEC_FormatCollimationUpdate
+   +	\ref EXEC_StoreFormatCollimationData
+
+   _Mirror and Light Collimation Calibration Process_
+   +	\ref GET_CollimationLightPositionData
+   +	\ref SET_CollimationLightPositionData
+   +	\ref EXEC_CollimationLight
+   +	\ref EXEC_CollimationLightPositionData
+
+
    ## Implemented Events
 
    +	\ref EVENT_SelectProjection
@@ -439,6 +452,19 @@ private:
 	void EXEC_PowerOff(void) { ackNa(); };
 	void AWS_NotRecognizedCommand(void) { ackNa(); };
 
+	// Format Collimation Calibration Functions
+	void GET_FormatCollimationData(void);
+	void SET_FormatCollimationData(void);
+	void EXEC_FormatCollimationUpdate(void);
+	void EXEC_StoreFormatCollimationData(void);
+
+	// Mirror and Liht Collimation Calibration Functions
+	void GET_CollimationLightPositionData(void) { ackNa(); };
+	void SET_CollimationLightPositionData(void) { ackNa(); };
+	void EXEC_CollimationLight(void) { ackNa(); };
+	void EXEC_CollimationLightPositionData(void) { ackNa(); };
+
+	
 	/// @}
 
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#define PROTOCOL_REVISION_CODE "1.2.0"
+#define PROTOCOL_REVISION_CODE "1.2.1"
 
 
 /**
@@ -16,7 +16,11 @@
 \defgroup AWSProtocolDescription AWS Protocol Communication  Description
 \ingroup APPDOC
 
-   <b>PROTOCOL REVISION: 1.2.0</b>
+   <b>PROTOCOL REVISION: 1.2.1</b>
+	
+   # Abstract
+
+   This document describes in detail the communication protocol with the AWS software.
 
    # Change Log
    
@@ -59,11 +63,7 @@
 	The command now checks if the current position is already at the requested target.
 	In the case of already in Target, the command is istantly accepted.
 
-   <div style="page-break-after: always;"></div>
-   # Abstract
-
-   This document describes in detail the communication protocol with the AWS software.
-
+  
    _Revision 1.1.0_ 
 
    <b>Added the \ref EXEC_BiopsyStudy command</b>
@@ -96,6 +96,13 @@
    + the format syntax 1 for Patient Operating mode: <ID % EXEC_ArmPosition projection target_angle Min Max>
    + the format syntax 2 for Test Operating mode: <ID % EXEC_ArmPosition target_angle >
    
+   _Revision 1.2.1_
+   <b>Introduced the commands to allow the 2D Format Collimation Calibration.</b>
+   +	\ref GET_FormatCollimationData : returns the blade positions (front, ,back, left, right) for a given collimation format.
+   +	\ref SET_FormatCollimationData : sets the new blade positions (front, ,back, left, right) for a given collimation format.
+   +	\ref EXEC_FormatCollimationUpdate : executes a collimation refresh to let the collimator to update the new blade's positions.
+   +	\ref EXEC_StoreFormatCollimationData: stores one single format or ALl formats in the configuration file.
+
 
    # Index
 
@@ -143,12 +150,7 @@
    +	\ref EXEC_FormatCollimationUpdate
    +	\ref EXEC_StoreFormatCollimationData
 
-   _Mirror and Light Collimation Calibration Process_
-   +	\ref GET_CollimationLightPositionData
-   +	\ref SET_CollimationLightPositionData
-   +	\ref EXEC_CollimationLight
-   +	\ref EXEC_CollimationLightPositionData
-
+   
 
    ## Implemented Events
 

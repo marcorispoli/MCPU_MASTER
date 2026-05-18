@@ -1903,6 +1903,7 @@ void   awsProtocol::GET_FormatCollimationData(void) {
 /// \subsection EXEC_StoreFormatCollimationData 
 /// 
 /// This command stores the given format into the Collimator Configuration file.
+/// The command can also store All the formats in the configuration file 
 /// 
 /// ### Command Data Format
 /// 
@@ -1910,12 +1911,13 @@ void   awsProtocol::GET_FormatCollimationData(void) {
 /// 
 /// |PARAMETER|Data Type|Description|
 /// |:--|:--|:--|
-/// |format|String|One of a possible collimated format|
+/// |format|String|One of a possible collimated format or a key "ALL"|
 /// 
 /// Follows a list of possible collimation formats (see \ref the SET_ExposureMode command)
 /// 
 /// |format|
 /// |:--|
+/// |ALL| 
 /// |COLLI_CUSTOM | 
 /// |PADDLE_PROSTHESIS|
 /// |PADDLE_BIOP2D|
@@ -1948,24 +1950,59 @@ void   awsProtocol::GET_FormatCollimationData(void) {
 void  awsProtocol::EXEC_StoreFormatCollimationData(void) {
     if (pDecodedFrame->parameters->Count != 1) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_PARAMETERS; pDecodedFrame->errstr = "WRONG_NUMBER_OF_PARAMETERS"; ackNok(); return; }
 
-    // Gets the collimation slot
-    int collimation_slot = PCB303::getCollimationSlot(pDecodedFrame->parameters[0]);
-    if (collimation_slot < 0) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PADDLE_FORMAT"; ackNok(); return; }
-
-
-    PCB303::storeCollimationFormat(collimation_slot);
+    if (pDecodedFrame->parameters[0] == "ALL") {
+        PCB303::storeAllCollimationFormat();
+    }
+    else {
+        // Gets the collimation slot
+        int collimation_slot = PCB303::getCollimationSlot(pDecodedFrame->parameters[0]);
+        if (collimation_slot < 0) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_INVALID_PARAMETER_VALUE; pDecodedFrame->errstr = "INVALID_PADDLE_FORMAT"; ackNok(); return; }
+        PCB303::storeCollimationFormat(collimation_slot);
+    }
 
     ackOk();
 }
 
+
+/// \addtogroup AWSProtocolDescription
+///
+/// \subsection EXEC_FormatCollimationUpdate 
+/// 
+/// This command executes an update of the current collimation format.
+/// The Update allows to change the current collimation pattern 
+/// without change the collimation format to force an update. 
+/// 
+/// ### Command Data Format
+/// 
+/// Frame format: <ID % EXEC_FormatCollimationUpdate %>
+/// 
+/// |PARAMETER|Data Type|Description|
+/// |:--|:--|:--|
+/// |-|-|-|
+/// 
+/// ### Error Returned Code 
+/// 
+/// |ERROR CODE|ERROR STRING|DESCRIPTION|
+/// |:--|:--|:--|
+/// |AWS_RET_WRONG_OPERATING_STATUS|"NOT_IN_CLOSE_MODE"|Only in Open Study can be executed this command|
+/// 
+
+/// <summary>
+/// This command executes an update of the current collimation format.
+/// 
+/// The Update allows to change the current collimation pattern 
+/// without change the collimation format to force an update. 
+/// 
+/// 
+/// </summary>
+/// <param name=""></param>
 void  awsProtocol::EXEC_FormatCollimationUpdate(void) {
-    // if (Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
+    //if (Gantry::isIDLE()) { pDecodedFrame->errcode = (int)return_errors::AWS_RET_WRONG_OPERATING_STATUS; pDecodedFrame->errstr = "NOT_IN_CLOSE_MODE"; ackNok(); return; }
     PCB303::updateCurrentCollimationMode();
     ackOk();
 }
 
 /*
-commandExec->Add("EXEC_FormatCollimationUpdate", gcnew command_callback(this, &awsProtocol::EXEC_FormatCollimationUpdate));
 
 commandExec->Add("GET_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::GET_CollimationLightPositionData));
 commandExec->Add("SET_CollimationLightPositionData", gcnew command_callback(this, &awsProtocol::SET_CollimationLightPositionData));

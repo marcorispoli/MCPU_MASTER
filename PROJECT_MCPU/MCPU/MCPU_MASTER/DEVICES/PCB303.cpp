@@ -418,6 +418,22 @@ bool PCB303::storeCollimationFormat(int slot) {
     return true;
 }
 
+void PCB303::storeAllCollimationFormat(void) {
+        
+    for (int index = 0; index < protocol.parameter_register.format_collimation->Length; index++) {
+        System::String^ Param = "COLLI_STANDARD_FORMAT_" + index.ToString();
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_FRONT, protocol.parameter_register.format_collimation[index]->front.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_BACK, protocol.parameter_register.format_collimation[index]->back.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_LEFT, protocol.parameter_register.format_collimation[index]->left.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_RIGHT, protocol.parameter_register.format_collimation[index]->right.ToString());
+        CollimatorConfig::Configuration->setParam(Param, CollimatorConfig::PARAM_FORMAT_TRAP, protocol.parameter_register.format_collimation[index]->trap.ToString());
+        
+    }
+    
+    CollimatorConfig::Configuration->storeFile();
+    return ;
+}
+
 void PCB303::loadFormatCollimationConfiguration(bool read_file, bool upload_device) {
     
     System::String^ Param;

@@ -840,6 +840,7 @@ public:
 
 	static bool selectManualCollimationFormat(int slot);
 	static bool storeCollimationFormat(int slot);
+	static void storeAllCollimationFormat(void);
 
 	// Filter Commands	
 	static bool setFilterPositionConfiguration(int slot0, int slot1, int slot2, int slot3, int slot4, bool store);

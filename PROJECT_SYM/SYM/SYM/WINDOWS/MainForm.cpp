@@ -626,15 +626,14 @@ void MainForm::StartupProcedure(void) {
 	int motor_power_safe_voltage;
 
 	if (PCB301::board->active) {
-		if (PCB301::outputs.power_48VDC_stat) motor_power_safe_voltage = 48000;
-		else motor_power_safe_voltage = 0;
-	}else motor_power_safe_voltage = 48000;
+		if (PCB301::outputs.power_48VDC_stat) motor_power_voltage = 48000;
+		else motor_power_voltage = 0;
+	}else motor_power_voltage = 48000;
 
 	if (PCB301::board->active) {
-		if ((PCB301::outputs.power_48VDC_stat) && (PCB301::outputs.power_48SW_stat)) motor_power_voltage = 48000;
-		else motor_power_voltage = 0;
+		motor_power_safe_voltage = (PCB301::outputs.power_48SW_stat) ? motor_power_voltage : 0;
 	}
-	else motor_power_voltage = 48000;
+	else motor_power_safe_voltage = 48000;
 
 	if (VerticalMotor::device->active) {
 		VerticalMotor::device->voltage_supply_mV = motor_power_safe_voltage;

@@ -218,6 +218,36 @@ int ArmMotor::setTarget(int pos, int low, int high, System::String^ proj, int id
 }
 
 /// <summary>
+/// This command sests only the target position that the ARM should 
+/// have at the exposure event. The command do not activate the motor.
+/// 
+/// </summary>
+/// <param name="pos">this is the target position in 0.01 degrees</param>
+/// <param name="low">lower angle of the acceptable range</param>
+/// <param name="high">higher angl of the acceptable range</param>
+/// <param name="proj">projection name</param>
+/// <param name="id">AWS command identifier (if greater than 0)</param>
+/// <returns></returns>
+int ArmMotor::setProjection(int pos, int low, int high, System::String^ proj, int id) {
+    
+    // Checks the validity of the requested projection
+    if (!projections->isValidProjection(proj)) {
+        LogClass::logInFile("ArmMotor::setProjection() - wrong projection requested: " + proj);
+        return -1;
+    }
+
+    projections->setProjection(proj);
+
+    // Assignes the target data
+    allowed_low = low * 100;
+    allowed_high = high * 100;
+    valid_target = true;
+    selected_target = pos;
+    return 0;
+}
+
+
+/// <summary>
 /// This is the service automatic activation that is not valid for an exposure.
 /// </summary>
 /// 

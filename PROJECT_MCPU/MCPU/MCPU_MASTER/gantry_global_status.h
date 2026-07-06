@@ -92,6 +92,12 @@ public:
     static bool isSTANDARD(void) { return (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY); }
     static bool isBIOPSY(void) { return (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY); }    
     static bool isSTARTUP(void) { return (current_operating_status == operating_status_options::GANTRY_STARTUP); }
+    static bool isPATIENT(void) { 
+        return (
+            (current_operating_status == operating_status_options::GANTRY_STANDARD_STUDY) ||
+            (current_operating_status == operating_status_options::GANTRY_BIOPSY_STUDY))
+            ; 
+    }
 
     static bool setIdle(void);
     static void setStartup(void);

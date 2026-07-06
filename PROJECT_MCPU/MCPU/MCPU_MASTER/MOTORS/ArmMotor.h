@@ -850,6 +850,14 @@ public:
     static int setTarget(int pos, int low, int high, System::String^ proj, int id);
 
     /// <summary>
+    /// This is the method that only set the desired target but without activating the ARM.
+    /// This command is used when only a manual motor activation shpould be allowed 
+    /// but finally the positione should at the target position.
+    /// 
+    /// </summary>    
+    static int setProjection(int pos, int low, int high, System::String^ proj, int id);
+
+    /// <summary>
     /// This function invalidate a current selected target.
     /// </summary>
     static void abortTarget(void);

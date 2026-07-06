@@ -332,7 +332,7 @@ void PCB302::runningLoop(void) {
 	if (protocol.status_register.compression_on) {
 
 		breast_thickness = protocol.status_register.paddle_position - protocol.data_register.magnifier_offset - detected_paddle_offset;
-		compression_force = protocol.status_register.paddle_force * 2;
+		compression_force = protocol.status_register.paddle_force;
 	}
 	else {
 		compression_force = 0;

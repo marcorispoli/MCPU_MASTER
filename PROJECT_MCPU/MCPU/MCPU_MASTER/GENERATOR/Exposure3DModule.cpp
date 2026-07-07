@@ -20,6 +20,11 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     bool detector_synch = true;
     int timeout;
     exposure_completed_errors error;
+    unsigned char current_exposure_pulse_number;
+
+    // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
+    current_exposure_pulse_number = EXP_PULSE_0;
+
 
     if (demo) {
         ExpName = "Exposure 3D DEMO in manual mode>";
@@ -65,7 +70,7 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
 
 
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
-    PCB303::selectFilter(getExposurePulse(0)->filter);
+    PCB303::selectFilter(getExposurePulse(current_exposure_pulse_number)->filter);
     
     // Set the Grid to Out position
     PCB304::setAutoGridOutField();
@@ -101,7 +106,7 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     exposure_data_str = "DETECTOR TYPE: " + detector_param + "\n";
     exposure_data_str = "DETECTOR MAX 3D INTEGRATION TIME: " + exposure_time + "\n";
     exposure_data_str = "FPS:" + Exposures::getTomoExposure()->tomo_fps + "\n";
-    exposure_data_str = "Filter:" + Exposures::getExposurePulse(0)->filter.ToString() + "\n";
+    exposure_data_str = "Filter:" + Exposures::getExposurePulse(current_exposure_pulse_number)->filter.ToString() + "\n";
     exposure_data_str = "Samples:" + Exposures::getTomoExposure()->tomo_samples; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Skips:" + Exposures::getTomoExposure()->tomo_skip; LogClass::logInFile(exposure_data_str);
     exposure_data_str = "Position Home:" + Exposures::getTomoExposure()->tomo_home; LogClass::logInFile(exposure_data_str);
@@ -111,7 +116,7 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     exposure_data_str = "Ramp-Dec:" + Exposures::getTomoExposure()->tomo_acc; LogClass::logInFile(exposure_data_str);
     
     
-    error = (exposure_completed_errors)generator3DPulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
+    error = (exposure_completed_errors)generator3DPulsePreparation(ExpName, Exposures::getExposurePulse(current_exposure_pulse_number)->kV, Exposures::getExposurePulse(current_exposure_pulse_number)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 
@@ -149,9 +154,10 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
         setXrayEnable(false);
 
+        
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
-        if (large_focus) setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 1);
-        else setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 0);
+        if (large_focus) setExposedData(DB_INDEX_3D_MANUAL_PULSE, current_exposure_pulse_number, getExposurePulse(current_exposure_pulse_number)->filter, LARGE_FOCUS_IDX);
+        else setExposedData(DB_INDEX_3D_MANUAL_PULSE, current_exposure_pulse_number, getExposurePulse(current_exposure_pulse_number)->filter, SMALL_FOCUS_IDX);
 
     }
     else {
@@ -162,12 +168,12 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
         if (!TiltMotor::setTarget(TiltMotor::target_options::TOMO_E, 0)) return exposure_completed_errors::XRAY_POSITIONING_ERROR;
 
         // Demo pulse implementation
-        exposure_pulse^ epulse = Exposures::getExposurePulse(0);
+        exposure_pulse^ epulse = Exposures::getExposurePulse(current_exposure_pulse_number);
 
         // Activate the Buzzer in manual mode
         //PCB301::setBuzzerManualMode(true);
 
-        setExposedPulse(0, gcnew exposure_pulse(epulse->getKv(), epulse->getmAs(), epulse->getFilter()));
+        setExposedPulse(current_exposure_pulse_number, gcnew exposure_pulse(epulse->getKv(), epulse->getmAs(), epulse->getFilter()));
         error = exposure_completed_errors::XRAY_NO_ERRORS;
 
         /*
@@ -210,6 +216,11 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
     bool detector_synch = true;
     int timeout;
     exposure_completed_errors error;
+    unsigned char current_exposure_pulse_number;
+
+    // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
+    current_exposure_pulse_number = EXP_PULSE_0;
+
 
     if (demo) ExpName = "Demo Exposure 3D AEC >";
     else ExpName = "Exposure 3D AEC >";
@@ -252,7 +263,7 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
 
     
     // Filter selection for the Pre Pulse
-    PCB303::selectFilter(getExposurePulse(0)->filter);
+    PCB303::selectFilter(getExposurePulse(current_exposure_pulse_number)->filter);
     
     // Set the Grid to Out position
     PCB304::setAutoGridOutField();
@@ -295,9 +306,9 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
     exposure_data_str += "Ramp-Acc:" + Exposures::getTomoExposure()->tomo_acc + "\n";
     exposure_data_str += "Ramp-Dec:" + Exposures::getTomoExposure()->tomo_acc + "\n\n";
     exposure_data_str += "Pre-Pulse Data:" + "\n";
-    exposure_data_str += "Filter:" + Exposures::getExposurePulse(0)->filter.ToString(); LogClass::logInFile(exposure_data_str);
+    exposure_data_str += "Filter:" + Exposures::getExposurePulse(current_exposure_pulse_number)->filter.ToString(); LogClass::logInFile(exposure_data_str);
 
-    error = (exposure_completed_errors) generator3DAecPrePulsePreparation(ExpName, Exposures::getExposurePulse(0)->kV, Exposures::getExposurePulse(0)->mAs, large_focus, exposure_time_pre);
+    error = (exposure_completed_errors) generator3DAecPrePulsePreparation(ExpName, Exposures::getExposurePulse(current_exposure_pulse_number)->kV, Exposures::getExposurePulse(current_exposure_pulse_number)->mAs, large_focus, exposure_time_pre);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 
@@ -326,10 +337,10 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
 
         // Longer Timeout: the generator checks for the correct seqeunce here
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
-      
+             
         // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
-        if (large_focus) setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 1);
-        else setExposedData(1, (unsigned char)0, getExposurePulse(0)->filter, 0);
+        if (large_focus) setExposedData(DB_INDEX_3D_AEC_PRE, current_exposure_pulse_number, getExposurePulse(current_exposure_pulse_number)->filter, LARGE_FOCUS_IDX);
+        else setExposedData(DB_INDEX_3D_AEC_PRE, current_exposure_pulse_number, getExposurePulse(current_exposure_pulse_number)->filter, SMALL_FOCUS_IDX);
 
     }
     else {
@@ -340,7 +351,10 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
     if (error != exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
     // Sends the pulse-completed event to the AWS
-    awsProtocol::EVENT_exposurePulseCompleted(0);
+    awsProtocol::EVENT_exposurePulseCompleted(current_exposure_pulse_number);
+
+    // EXPOSURE PULSE #1: The Pulse section of the AEC sequence _________________________________________________________________________
+    current_exposure_pulse_number = EXP_PULSE_1;
 
 
     // Activation the Tilt Scan mode
@@ -358,19 +372,19 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
     LogClass::logInFile(ExpName + "Wait for the AWS exposure data");
     timeout = 1000; // 10 seconds timeout
     while (timeout--) {
-        if (getExposurePulse(1)->isValid()) break;
+        if (getExposurePulse(current_exposure_pulse_number)->isValid()) break;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     if (!timeout) {
         return exposure_completed_errors::XRAY_TIMEOUT_AEC;
     }
-    getExposurePulse(1)->validated = false;
+    getExposurePulse(current_exposure_pulse_number)->validated = false;
     LogClass::logInFile(ExpName + "AWS data Ready");
 
     
     // 3D Pulse Data Setup
-    error = (exposure_completed_errors)generator3DAecPulsePreparation(ExpName, Exposures::getExposurePulse(1)->kV, Exposures::getExposurePulse(1)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
+    error = (exposure_completed_errors)generator3DAecPulsePreparation(ExpName, Exposures::getExposurePulse(current_exposure_pulse_number)->kV, Exposures::getExposurePulse(current_exposure_pulse_number)->mAs, Exposures::getTomoExposure()->tomo_samples, Exposures::getTomoExposure()->tomo_skip, large_focus, 25, exposure_time);
     if (error != Exposures::exposure_completed_errors::XRAY_NO_ERRORS) return error;
 
 
@@ -380,9 +394,9 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
         error = (exposure_completed_errors)generatorExecutePulseSequence(ExpName, 40000);
         setXrayEnable(false);
 
-        // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!!
-        if (large_focus) setExposedData(2, (unsigned char)0, getExposurePulse(0)->filter, 1);
-        else setExposedData(2, (unsigned char)0, getExposurePulse(0)->filter, 0);
+        // The index is the number associated to the Databank in the procedure definition. It is not the Databank index value itself!! 
+        if (large_focus) setExposedData(DB_INDEX_3D_AEC_PULSE, current_exposure_pulse_number, getExposurePulse(current_exposure_pulse_number)->filter, LARGE_FOCUS_IDX);
+        else setExposedData(DB_INDEX_3D_AEC_PULSE, current_exposure_pulse_number, getExposurePulse(current_exposure_pulse_number)->filter, SMALL_FOCUS_IDX);
 
     }
     else {

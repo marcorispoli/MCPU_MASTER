@@ -403,6 +403,21 @@ public:
 		GEN_LAST_ERRCODE			//!< This code shall be used by the Application Subclass to enhance the error code list during the exposures	
 	};
 
+    #define DB_INDEX_2D_MANUAL_PULSE    1
+    #define DB_INDEX_2D_AEC_PRE         1
+    #define DB_INDEX_2D_AEC_PULSE       2
+    #define DB_INDEX_3D_MANUAL_PULSE    1
+    #define DB_INDEX_3D_AEC_PRE         1
+    #define DB_INDEX_3D_AEC_PULSE       2
+
+    #define EXP_PULSE_0 ((unsigned char)0)
+    #define EXP_PULSE_1 ((unsigned char)1)
+    #define EXP_PULSE_2 ((unsigned char)2)
+    #define EXP_PULSE_3 ((unsigned char)3)
+
+    #define LARGE_FOCUS_IDX 1
+    #define SMALL_FOCUS_IDX 0
+
 	static void startNormalMode(void);
 	static void startSimulatorMode(void);
 	static bool isSmartHubConnected(void);

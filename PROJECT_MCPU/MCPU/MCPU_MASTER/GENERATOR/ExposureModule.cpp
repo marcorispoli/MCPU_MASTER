@@ -7,6 +7,7 @@
 #include "Notify.h"
 #include "awsProtocol.h"
 #include "ArmMotor.h"
+#include "TiltMotor.h"
 #include "PCB301.h"
 #include "PCB302.h"
 #include "PCB304.h"
@@ -121,6 +122,9 @@ void Exposures::exposureManagementLoop(bool demo) {
             exposure_err_code = Exposures::exposure_completed_errors::XRAY_INVALID_PROCEDURE;
         }
     }
+
+    // If the Sequence involved a Tomo scan, the Tilt abort command is always sent in case of an error
+    TiltMotor::abortTomoScan();
 
     // Removes the X-RAY ena signal 
     Exposures::setXrayEnable(false);

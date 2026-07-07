@@ -383,7 +383,10 @@ public:
         return target_options::UNDEF;
     }
     
-    
+    static void abortTomoScan(void) {
+        if (!device->isRunning()) return;
+        device->abortActivation();
+    }
 
 protected:
 

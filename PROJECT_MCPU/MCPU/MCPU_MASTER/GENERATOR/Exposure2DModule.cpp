@@ -26,6 +26,8 @@ Exposures::exposure_completed_errors Exposures::man_2d_exposure_procedure(bool d
     // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_0;
 
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
 
     if (demo) ExpName = "Demo Exposure 2D Manual>";
     else ExpName = "Exposure 2D Manual>";
@@ -144,6 +146,9 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
 
     // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_0;
+    
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
 
 
     if (demo) ExpName = "Demo Exposure 2D + AEC>";
@@ -261,6 +266,9 @@ Exposures::exposure_completed_errors Exposures::aec_2d_exposure_procedure(bool d
 
     // EXPOSURE PULSE #1: The Pulse section of the AEC sequence _________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_1;
+    
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
 
     // Waits for the Validated Pulse from the acquisition software
     int timeout = 100; // 10 seconds timeout

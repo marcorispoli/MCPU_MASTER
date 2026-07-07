@@ -22,6 +22,9 @@ Exposures::exposure_completed_errors Exposures::man_3d_static_exposure_procedure
     int timeout;
     exposure_completed_errors error;
 
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
     if (demo) {
         ExpName = "DEMO 3D Calibration>";
     }
@@ -204,6 +207,10 @@ Exposures::exposure_completed_errors Exposures::aec_3d_static_exposure_procedure
     int timeout;
     exposure_completed_errors error;
 
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
+
     if (demo) ExpName = "Demo Exposure 3D AEC IN CALIBRATION>";
     else ExpName = "Exposure 3D AEC IN CALIBRATION>";
 
@@ -337,6 +344,8 @@ Exposures::exposure_completed_errors Exposures::aec_3d_static_exposure_procedure
     // Sends the pulse-completed event to the AWS
     awsProtocol::EVENT_exposurePulseCompleted(0);
 
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
 
 
     // Waits for the Validated Pulse from the acquisition software

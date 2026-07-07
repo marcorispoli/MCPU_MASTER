@@ -31,6 +31,9 @@ Exposures::exposure_completed_errors Exposures::man_ae_exposure_procedure(bool d
 
     // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_0;
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
 
     if (demo) ExpName = "Demo Exposure CESM(AE) Manual>";
     else ExpName = "Exposure CESM (AE)  Manual>";
@@ -140,6 +143,10 @@ Exposures::exposure_completed_errors Exposures::man_ae_exposure_procedure(bool d
     awsProtocol::EVENT_exposurePulseCompleted(current_exposure_pulse_number);
     
     current_exposure_pulse_number = EXP_PULSE_1;
+    
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
 
     // The filter is quickly set here 
     PCB303::selectFilter(PCB303::filter_index::FILTER_CU);
@@ -218,6 +225,9 @@ Exposures::exposure_completed_errors Exposures::aec_ae_exposure_procedure(bool d
 
     // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_0;
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
 
     if (demo) ExpName = "Demo Exposure AE + AEC>";
     else ExpName = "Exposure AE + AEC>";
@@ -328,6 +338,9 @@ Exposures::exposure_completed_errors Exposures::aec_ae_exposure_procedure(bool d
     
     // EXPOSURE PULSE #1: The Pulse section of the AEC sequence _________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_1;
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
 
     // Waits for the Validated Pulse from the acquisition software
     int timeout = 100; // 10 seconds timeout
@@ -398,6 +411,9 @@ Exposures::exposure_completed_errors Exposures::aec_ae_exposure_procedure(bool d
 
     // ______________ HIGH ENERGY EXPOSURE PULSE: Pulse #2  _______________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_2;
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
 
     // The filter is quickly set here as CU (usually is CU)
     PCB303::selectFilter(PCB303::filter_index::FILTER_CU);

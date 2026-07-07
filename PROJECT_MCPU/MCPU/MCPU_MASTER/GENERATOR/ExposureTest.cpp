@@ -21,6 +21,9 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
     int timeout;
     exposure_completed_errors  error;
   
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
     if (demo) ExpName = "Demo Exposure Test >";
     else ExpName = "Exposure Test >";
     

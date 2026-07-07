@@ -25,6 +25,9 @@ Exposures::exposure_completed_errors Exposures::man_3d_exposure_procedure(bool d
     // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_0;
 
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+
 
     if (demo) {
         ExpName = "Exposure 3D DEMO in manual mode>";
@@ -220,6 +223,8 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
 
     // PULSE NUMBER 0 IN THE SEQUENCE __________________________________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_0;
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
 
 
     if (demo) ExpName = "Demo Exposure 3D AEC >";
@@ -355,6 +360,8 @@ Exposures::exposure_completed_errors Exposures::aec_3d_exposure_procedure(bool d
 
     // EXPOSURE PULSE #1: The Pulse section of the AEC sequence _________________________________________________________________________
     current_exposure_pulse_number = EXP_PULSE_1;
+    // Resets of the Internal Generator Module exposed pulses for all data-banks    
+    if (!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
 
 
     // Activation the Tilt Scan mode

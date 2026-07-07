@@ -75,8 +75,7 @@ void Exposures::exposureManagementLoop(bool demo) {
 
     exposure_completed_errors exposure_err_code;
 
-    // Resets of the Internal Generator Module exposed pulses for all data-banks    
-    if(!demo) R2CP::CaDataDicGen::GetInstance()->resetExecutedPulse();
+   
 
     // Reset of the Application Exposure Pulses
     setExposedPulse(0, gcnew exposure_pulse());

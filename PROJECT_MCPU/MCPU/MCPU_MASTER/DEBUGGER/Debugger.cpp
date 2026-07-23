@@ -188,6 +188,7 @@ void DebuggerCLI::rxHandler(void){
 	else if (sFrame->Contains("compressor:")) current_menu = menu_index::COMPRESSOR;
 	else if (sFrame->Contains("collimator:")) current_menu = menu_index::COLLIMATOR;
 	else if (sFrame->Contains("exposures:")) current_menu = menu_index::EXPOSURES;
+	else if (sFrame->Contains("biopsy:")) current_menu = menu_index::BIOPSY;
 
 	// Menu command dispatcher
 	switch (current_menu) {
@@ -197,6 +198,7 @@ void DebuggerCLI::rxHandler(void){
 	case menu_index::GENERATOR: handleGeneratorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("generator:")); break;
 	case menu_index::COMPRESSOR: handleCompressorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("compressor:")); break;
 	case menu_index::COLLIMATOR: handleCollimatorCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("collimator:")); break;
+	case menu_index::BIOPSY: handleBiopsyCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("biopsy:")); break;
 	case menu_index::EXPOSURES: handleExposureCommands(sFrame); send(System::Text::Encoding::Unicode->GetBytes("exposures:")); break;
 	default:
 		handleRootCommands(sFrame); 		
@@ -216,7 +218,7 @@ void DebuggerCLI::handleRootCommands(System::String^ cmd) {
 		lista += "generator: generator related commands\n\r";		
 		lista += "collimator: collimator related commands\n\r";
 		lista += "exposures: exposures related commands\n\r";
-
+		lista += "biopsy: biopsy related commands\n\r";
 		send(System::Text::Encoding::Unicode->GetBytes(lista));
 		return;
 	}

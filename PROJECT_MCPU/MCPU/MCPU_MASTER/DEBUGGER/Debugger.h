@@ -43,6 +43,7 @@ private:
 		GENERATOR,
 		COMPRESSOR,
 		COLLIMATOR,
+		BIOPSY,
 		EXPOSURES,
 	};
 	static menu_index current_menu = menu_index::ROOT;
@@ -57,6 +58,9 @@ private:
 	void handle2DFormatCommands(System::String^ cmd);
 	void handleCollimatorLightCommands(System::String^ cmd);
 	void handleFilterCommands(System::String^ cmd);
+
+	void handleBiopsyCommands(System::String^ cmd);
+	void BiopsyCommandList(void);
 
 	void handleExposureCommands(System::String^ cmd);
 	void handleComCommands(System::String^ cmd);

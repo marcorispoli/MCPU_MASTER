@@ -77,6 +77,13 @@ public:
 		literal unsigned short BIOPSY_YBODY_WIDTH = 300;
 	};
 
+	enum class working_mode {
+		BIOPSY_FREE_MODE = 0,			//!< The Biopsy device is left operating in self defined mode (calibration/disable)
+		BIOPSY_DISABLE_MODE,		//!< The Biopsy is forced to be in disable mode
+		BIOPSY_CALIBRATION_MODE,	//!< The Biopsy is forced to be in calibration mode
+		BIOPSY_COMMAND_MODE,		//!< The Biopsy is forced to be in command mode
+		BIOPSY_SERVICE_MODE			//!< The Biopsy is forced to be in service mode
+	};
 
 	/// <summary>
 	/// \defgroup BiopProtocol Can Device Protocol Description
@@ -104,9 +111,10 @@ public:
 			///  This is the enumeration of the status register available INDEXES
 			/// </summary>
 			enum class register_index {
-				SYSTEM_STATUS = 0,	//!> Internal statuis flag register 
+				SYSTEM_STATUS = 0,	//!> Internal status flag register 
 				SYSTEM_XY,			//!> Current XY pointer position
 				SYSTEM_ZS,			//!> Current Z pointer and Slider position
+				SYSTEM_ANALOG,		//!> Raw value of sensors and inputs
 				NUM_REGISTER
 			};
 
@@ -128,10 +136,10 @@ public:
 			/// 
 			/// </summary>
 			enum class xscroll_code {
-				XSCROLL_UNDEF = 0,	//!> The xscroll position is undefined
-				XSCROLL_CENTER,		//!> The xscroll position is CENTER
-				XSCROLL_LEFT,		//!> The xscroll position is LEFT
-				XSCROLL_RIGHT,		//!> The xscroll position is RIGHT
+				XSCROLL_UNDEF = 0,     //!< No detected position
+				XSCROLL_RIGHT = 1,          //!< Right position detected
+				XSCROLL_CENTER = 2,         //!< Center position detected
+				XSCROLL_LEFT = 3,           //!< Left position detected
 
 			};
 
@@ -141,12 +149,49 @@ public:
 			/// 
 			/// </summary>
 			enum class needle_code {
-				NEEDLE_A = 0,	//!> The detected needle is type A
-				NEEDLE_B,		//!> The detected needle is type B
-				NEEDLE_C,		//!> The detected needle is type C
-				NEEDLE_NOT_PRESENT	//!> The needle is not detetected
+				NEEDLE_UNDETECTED = 0,    //!< No detected position
+				NEEDLE_A = 1,             //!< Type A adapter
+				NEEDLE_B = 2,             //!< Type B Adapter
+				NEEDLE_C = 3,             //!< Type C adapter
+				NEEDLE_DISCONNECTED = 4,  //!< The Slider is not mounted on the Y axis
 			};
 
+			ref class Keyboard {
+			public:
+				void set(unsigned char val) {
+					key_pressed = false;
+					if (val & 1) { xm = true; key_pressed = true; }
+					else xm = false;
+					if (val & 2) { xp = true; key_pressed = true; }
+					else xp = false;
+					if (val & 4) { ym = true; key_pressed = true; }
+					else ym = false;
+					if (val & 8) { yp = true; key_pressed = true; }
+					else yp = false;
+					if (val & 0x10) { zm = true; key_pressed = true; }
+					else zm = false;
+					if (val & 0x20) { zp = true; key_pressed = true; }
+					else zp = false;
+				}
+				unsigned char get(void) {
+					unsigned char val = 0;
+					if (xm) val |= 1;
+					if (xp) val |= 2;
+					if (ym) val |= 4;
+					if (yp) val |= 8;
+					if (zm) val |= 0x10;
+					if (zp) val |= 0x20;
+					return val;
+
+				}
+				static bool xm = false;
+				static bool xp = false;
+				static bool ym = false;
+				static bool yp = false;
+				static bool zm = false;
+				static bool zp = false;
+				static bool key_pressed = false;
+			};
 
 			/// <summary>
 			/// This is the method to decode the content of the register_index::SYSTEM_STATUS  downloaded from the device.
@@ -161,7 +206,7 @@ public:
 			/// + \ref motor_power_sw;
 			/// + \ref motor_general_enable;
 			/// + \ref motor_keyb_enable;
-			/// + \ref motor_needle_enable;
+			/// + \ref motor_needle_disable;
 			/// + \ref keystep_mode;
 			/// + \ref yup_detected;
 			/// + \ref xscroll_detected;
@@ -179,7 +224,7 @@ public:
 				motor_power_sw = sys->d1 & 0x1;
 				motor_general_enable = sys->d1 & 0x2;
 				motor_keyb_enable = sys->d1 & 0x4;
-				motor_needle_enable = sys->d1 & 0x8;
+				motor_needle_disable = sys->d1 & 0x8;
 
 				// Byte 2
 				keystep_mode = sys->d2 & 0x1;
@@ -187,6 +232,7 @@ public:
 				xscroll_detected = (xscroll_code) ((sys->d2 >> 2) & 0x3);
 				needle_detected = (needle_code) ((sys->d2 >> 4) & 0xF);
 
+				// Byte 3 - Spare
 				return true;
 			}
 
@@ -218,7 +264,7 @@ public:
 				if (motor_power_sw) sys->d1 |= 0x1;
 				if (motor_general_enable)  sys->d1 |= 0x2;
 				if (motor_keyb_enable) sys->d1 |= 0x4;
-				if (motor_needle_enable)  sys->d1 |= 0x8;
+				if (motor_needle_disable)  sys->d1 |= 0x8;
 
 				// Byte 2
 				if (keystep_mode)  sys->d2 |= 0x1;
@@ -328,8 +374,42 @@ public:
 			}
 
 
-			
-			static device_mode device_working_mode; //!< SYSTEM_STATUS: this is the device current working mode
+
+			/// <summary>
+			/// This is the method to decode the content of the register_index::SYSTEM_ANALOG  downloaded from the device.
+			/// 
+			/// </summary>
+			/// 
+			/// <param name="sys"></param>
+			/// <returns>true: success</returns>
+			static bool decodeAnalogRegister(Register^ sys) {
+				if (sys == nullptr) return false;
+
+				xscroll_anl = sys->d0;
+				needle_anl = sys->d1;
+				motor_pwr_anl = sys->d2;
+				keyb.set(sys->d3);
+				return true;
+			}
+			static Register^ encodeAnalogRegister(void) {
+				Register^ sys = gcnew Register;
+
+				// Byte 0
+				sys->d0 = (unsigned char)xscroll_anl;
+				sys->d1 = (unsigned char)needle_anl;
+				sys->d2 = (unsigned char)motor_pwr_anl;
+				sys->d3 = (unsigned char)keyb.get();
+
+				return sys;
+			}
+
+
+			static unsigned char xscroll_anl;
+			static unsigned char needle_anl;
+			static unsigned char motor_pwr_anl;
+			static Keyboard keyb;
+
+			static device_mode  device_working_mode; //!< SYSTEM_STATUS: this is the device current working mode
 			static xscroll_code xscroll_detected;	//!< SYSTEM_STATUS: this is the device current x-scroll position
 			static needle_code  needle_detected;	//!< SYSTEM_STATUS: this is the device current needle detected code
 			
@@ -367,7 +447,7 @@ public:
 			/// \note The Power Switch logic activation is as follows:
 			/// + SWITCH = motor_general_enable && [( motor_keyb_enable || motor_needle_enable)]
 			/// 
-			static bool motor_needle_enable;		
+			static bool motor_needle_disable;
 
 			/// <summary>
 			/// SYSTEM_STATUS:keystep_mode: this is the key_step enabled flag 
@@ -570,6 +650,22 @@ public:
 		static ParameterRegister parameter_register;//!< This is the Parameter register structure content
 		static Commands command;//!< This is the Command register structure content
 	};
+
+	// Exploring the content of the status register 
+	static ProtocolStructure::StatusRegister::device_mode getDeviceMode(void) { return protocol.status_register.device_working_mode; }
+	static ProtocolStructure::StatusRegister::xscroll_code getXScrollCode(void) { return protocol.status_register.xscroll_detected; }
+	static ProtocolStructure::StatusRegister::needle_code getNeedleCode(void) { return protocol.status_register.needle_detected; }
+	static bool getPowerSwitchStat(void) { return protocol.status_register.motor_power_sw; }
+	static bool getGeneralEnableStat(void) { return protocol.status_register.motor_general_enable; }
+	static bool getKeybEnableStat(void) { return protocol.status_register.motor_keyb_enable; }
+	static bool getNeedleDisableStat(void) { return protocol.status_register.motor_needle_disable; }
+	static bool getKeyStepStat(void) { return protocol.status_register.keystep_mode; }
+	static bool getYUpStat(void) { return protocol.status_register.yup_detected; }
+	static unsigned char getXscrollAnalog(void) { return protocol.status_register.xscroll_anl; }
+	static unsigned char getNeedleAnalog(void) { return protocol.status_register.needle_anl; }
+	static unsigned char getMotorPowerAnalog(void) { return protocol.status_register.motor_pwr_anl; }
+	static unsigned char getKeboardAnalog(void) { return protocol.status_register.keyb.get(); }
+	
 
 	/// <summary>
 	/// \defgroup BiopCommandWoorkingModeApi Device Working Mode Commands
@@ -986,12 +1082,11 @@ public:
 
 	static bool moveXHomeLeft(void) { return moveX(ConstantDefinition::BIOPSY_MAX_X_POSITION); }
 	static bool moveXHomeRight(void) { return moveX(0); }
-
-
 	static bool activateCycleTest(void);
 	
-	//static void setLight(bool status, int duty) { protocol.data_register.light_status = status;  protocol.data_register.light_duty = duty; }
-	static void moveHome(void) { command_home_request = true; }
+	static working_mode getWorkingMode(void) { return biopsy_working_mode; }
+
+	
 	/// @}
 
 protected: 	
@@ -1004,18 +1099,11 @@ private:
 	static bool keystep_mode = false;
 	static bool command_mode_ready = false;
 
-	static bool service_cycle_test = false;
-	static bool command_home_request = false;
+	static bool service_cycle_test = false;	
 	static int sequence = 0;
 
 	
-	enum class working_mode {
-		BIOPSY_FREE_MODE = 0,			//!< The Biopsy device is left operating in self defined mode (calibration/disable)
-		BIOPSY_DISABLE_MODE,		//!< The Biopsy is forced to be in disable mode
-		BIOPSY_CALIBRATION_MODE,	//!< The Biopsy is forced to be in calibration mode
-		BIOPSY_COMMAND_MODE,		//!< The Biopsy is forced to be in command mode
-		BIOPSY_SERVICE_MODE			//!< The Biopsy is forced to be in service mode
-	};
+	
 
 	static working_mode request_working_mode = working_mode::BIOPSY_FREE_MODE;
 	static working_mode biopsy_working_mode = working_mode::BIOPSY_FREE_MODE;

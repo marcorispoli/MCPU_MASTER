@@ -41,16 +41,18 @@ void PCB325::runningLoop(void) {
     protocol.status_register.decodeSystemRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_STATUS));
     protocol.status_register.decodeXYRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_XY));
     protocol.status_register.decodeZSRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_ZS));
-    
+    protocol.status_register.decodeAnalogRegister(readStatusRegister((unsigned char)ProtocolStructure::StatusRegister::register_index::SYSTEM_ANALOG));
+
+    // a pending command shall terminate before to execute any other activity
+    if (!device->isCommandCompleted()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        return;
+    }
+
+
     // Verifies if a change working mode is requested
     if (request_working_mode != biopsy_working_mode) {
         
-        // a pending command shall terminate before
-        if (!device->isCommandCompleted()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            return;
-        }            
-
         biopsy_working_mode = request_working_mode;
         command_mode_ready = false;
         resetPositioningErrorMessages();
@@ -80,6 +82,22 @@ bool PCB325::activateCycleTest(void) {
     return true;
 }
 
+/// <summary>
+/// This workflow left the Biopsy device operate stand alone without the control of the GAntry.
+/// </summary>
+/// 
+/// This working flow shall be activated in the case the Biopsy device should set in calibration
+/// mode even if it is mounted on the Gantry. 
+/// Usually this can be useful in the case a calibration procedure should be executed 
+/// directly on the Mammo Unit.
+/// 
+/// This workflow should be activate by mean of the service Panel
+/// for calibration sepcific activities.
+/// 
+/// The routine verifies if the current device status is in Disable Mode or Calibration mode.
+/// If the device is not in one of those status, it sends a command to the device to change in Disable mode.
+/// 
+/// <param name=""></param>
 void PCB325::run_free_mode_workflow(void) {
 
     // If the actual biopsy working mode is in disable or calibration mode
@@ -87,9 +105,7 @@ void PCB325::run_free_mode_workflow(void) {
     if (protocol.status_register.device_working_mode == ProtocolStructure::StatusRegister::device_mode::DEVICE_DISABLE_MODE) return;
     if (protocol.status_register.device_working_mode == ProtocolStructure::StatusRegister::device_mode::DEVICE_CALIBRATION_MODE) return;
 
-    // If a command is executing wait the completion event
-    if (!device->isCommandCompleted()) return;
-
+   
     // If a different working mode is present, the MOTOR_DISABLE_MODE is activated 
     commandNoWaitCompletion(protocol.command.encodeDisableModeCommand(), 30);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));

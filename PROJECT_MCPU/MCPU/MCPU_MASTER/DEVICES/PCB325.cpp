@@ -194,8 +194,13 @@ void PCB325::run_command_mode_workflow(void) {
     // Command verification
     if (waiting_motor_command != motor_command::NO_COMMAND) {
         if (device->isCommandError()) {
+            unsigned char error = (unsigned char) device->getCommandError();
+            if (error >= (unsigned char)CanDeviceProtocol::CommandRegisterErrors::COMMAND_ERROR_APPLICATION) {
+                LogClass::logInFile("BIOPSY MOTOR ACTIVATION FAILED: " + ((ProtocolStructure::Commands::command_errors)error).ToString());
+            }
+            else LogClass::logInFile("BIOPSY MOTOR ACTIVATION FAILED");
+
             motor_command_result = -1;
-            LogClass::logInFile("BIOPSY MOTOR ACTIVATION FAILED");
             if(waiting_motor_command == motor_command::MOTOR_X) 
                 Notify::activate(Notify::messages::ERROR_BIOPSY_X_POSITIONING);
             else if (waiting_motor_command == motor_command::MOTOR_Y)

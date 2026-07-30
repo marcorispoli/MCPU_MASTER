@@ -204,12 +204,16 @@ public:
 		COMMAND_ERROR_BUSY,			//!< Protocol Reserved code for the command busy
 		COMMAND_ERROR_INVALID_PARAM,//!< Protocol Reserved code for the command with invalid parameter
 		COMMAND_ERROR_MOMENTARY_DISABLED,//!< Protocol Reserved code for the command momentary disabled
-		
+		COMMAND_ERROR_NOT_AVAILABLE, //!< Protocol Reserved code for the command not yet available at the current device revision
+		COMMAND_ERROR_DEVICE_RETURN_CODE, //!< Protocol Reserved code for a wrong device protocol implementation code
+		COMMAND_ERROR_ABORT_CODE,   //!< Protocol Reserved code for an Aborted command
+		COMMAND_ERROR_APPLICATION,  //!< Protocol Reserved codes application specific
+
 		COMMAND_INVALID_DEVICE=253,		//!< Command requested from an invalid thread
 		COMMAND_COMMUNICATION_ERROR=254,//!< Command failed due to communication error
 		COMMAND_DEVICE_TMO = 255		//!< Command execution timeout
 	};
-
+		  
 	/// <summary>
 	/// This is the command Code of the protocol frames
 	///  \ingroup protocolModule

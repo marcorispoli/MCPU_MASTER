@@ -51,6 +51,20 @@ BiopsyHomeProcedure::BiopsyHomeProcedure() {
 	result = 0;
 	
 	target = home_positions::UNDEFINED;
+
+	// Assignes the home positions
+	XCHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_X]);
+	YCHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Y]);
+	ZCHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Z]);
+
+	XLHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_X]);
+	YLHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Y]);
+	ZLHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Z]);
+
+	XRHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_X]);
+	YRHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Y]);
+	ZRHOME = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Z]);
+
 	((BiopsyStudy^)Gantry::pBiopsyStudy)->periodical_event += gcnew BiopsyStudy::delegate_periodical_callback(procedure_callback);
 }
 
@@ -72,19 +86,18 @@ int BiopsyHomeProcedure::activateCenter(int id) {
 	if (!PCB325::isBiopsyConnected()) return -1; // Biopsy not connected
 	if (running) return -2; // Busy
 	
+	// Assignes the Target
+	target = home_positions::HOME_CENTER;
+
 	// Assignes the targets
-	X = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_X]);
-	Y = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Y]);
-	Z = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Z]);
+	X = XCHOME;
+	Y = YCHOME;
+	Z = ZCHOME;
 	
-	// Verifies if it is already in target
-	if (PCB325::isXtarget(X) && PCB325::isYtarget(Y) && PCB325::isZtarget(Z) && PCB325::isXC()) {
-		target = home_positions::HOME_CENTER;
-		return 0;
-	}
+	// Verifies if it is in target 
+	if (isValidHome()) return 0;
 
 	// Activate the procedure callback
-	target = home_positions::HOME_CENTER;
 	step = 0;
 	completed = false;
 	running = true;
@@ -110,19 +123,18 @@ int BiopsyHomeProcedure::activateLeft(int id) {
 	if (!PCB325::isBiopsyConnected()) return -1; // Biopsy not connected
 	if (running) return -2; // Busy
 
-	// Executing conditions
-	X = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_X]);
-	Y = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Y]);
-	Z = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Z]);
-	
-	// Verifies if it is already in target
-	if (PCB325::isXtarget(X) && PCB325::isYtarget(Y) && PCB325::isZtarget(Z) && PCB325::isXL()) {
-		target = home_positions::HOME_LEFT;
-		return 0;
-	}
+	// Assignes the Target
+	target = home_positions::HOME_LEFT;
+
+	// Assignes the targets
+	X = XLHOME;
+	Y = YLHOME;
+	Z = ZLHOME;
+
+	// Verifies if it is in target 
+	if (isValidHome()) return 0;
 
 	// Activate the procedure callback
-	target = home_positions::HOME_LEFT;
 	step = 0;
 	completed = false;
 	running = true;
@@ -148,18 +160,18 @@ int BiopsyHomeProcedure::activateRight(int id) {
 	if (!PCB325::isBiopsyConnected()) return -1; // Biopsy not connected
 	if (running) return -2; // Busy
 
-	X = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_X]);
-	Y = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Y]);
-	Z = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Z]);
-	
-	// Verifies if it is already in target
-	if (PCB325::isXtarget(X) && PCB325::isYtarget(Y) && PCB325::isZtarget(Z) && PCB325::isXR()) {
-		target = home_positions::HOME_RIGHT;
-		return 0;
-	}
+	// Assignes the Target
+	target = home_positions::HOME_RIGHT;
+
+	// Assignes the targets
+	X = XRHOME;
+	Y = YRHOME;
+	Z = ZRHOME;
+
+	// Verifies if it is in target 
+	if (isValidHome()) return 0;
 
 	// Activate the procedure callback
-	target = home_positions::HOME_RIGHT;
 	step = 0;
 	completed = false;
 	running = true;
@@ -184,41 +196,29 @@ bool BiopsyHomeProcedure::isValidHome(void) {
 	if (target == home_positions::UNDEFINED) return false;
 
 	if (target == home_positions::HOME_CENTER) {
-		// Assignes the targets
-		x = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_X]);
-		y = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Y]);
-		z = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_CENTER_POSITION)[BiopsyConfig::PARAM_HOME_CENTER_POSITION_Z]);
-
+		
 		// Verifies if it is already in target
-		if (PCB325::isXtarget(x) && PCB325::isYtarget(y) && PCB325::isZtarget(z) && PCB325::isXC()) {
+		if (PCB325::isXtarget(XCHOME) && PCB325::isYtarget(YCHOME) && PCB325::isZtarget(ZCHOME) && PCB325::isXC() && PCB325::isYUp()) {
 			return true;
 		}
-		target = home_positions::UNDEFINED;
+		
 		return false;
 	}
 	else if (target == home_positions::HOME_LEFT) {
-		// Executing conditions
-		x = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_X]);
-		y = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Y]);
-		z = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_LEFT_POSITION)[BiopsyConfig::PARAM_HOME_LEFT_POSITION_Z]);
 
 		// Verifies if it is already in target
-		if (PCB325::isXtarget(x) && PCB325::isYtarget(y) && PCB325::isZtarget(z) && PCB325::isXL()) {
+		if (PCB325::isXtarget(XLHOME) && PCB325::isYtarget(YLHOME) && PCB325::isZtarget(ZLHOME) && PCB325::isXL() && (!PCB325::isYUp()) ) {
 			return true;
 		}
-		target = home_positions::UNDEFINED;
-		return false;
+
+		return false;		
 	}
 	else {
-		x = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_X]);
-		y = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Y]);
-		z = (unsigned short)System::Convert::ToInt32(BiopsyConfig::Configuration->getParam(BiopsyConfig::PARAM_HOME_RIGHT_POSITION)[BiopsyConfig::PARAM_HOME_RIGHT_POSITION_Z]);
-
 		// Verifies if it is already in target
-		if (PCB325::isXtarget(x) && PCB325::isYtarget(y) && PCB325::isZtarget(z) && PCB325::isXR()) {
+		if (PCB325::isXtarget(XRHOME) && PCB325::isYtarget(YRHOME) && PCB325::isZtarget(ZRHOME) && PCB325::isXR() && (!PCB325::isYUp())) {
 			return true;
 		}
-		target = home_positions::UNDEFINED;
+
 		return false;
 	}
 
@@ -260,11 +260,16 @@ enum {
 void BiopsyHomeProcedure::procedure_callback(void) {
 	if (!running) return;
 
+	
+
 	switch (step) {
 	case INIT_PROC: 
 		// Scroll Undefined State evaluation
 		if (PCB325::isXU()) step = SET_VALID_SCROLL_INIT;
 		else step = EVAL_YUP_INIT;
+
+		// Set to true the confirmation at the beginning
+		BIOPSY->confirmation_button_status = true;
 		break;
 
 // --------------------------------------------------------------------------------------
@@ -283,7 +288,9 @@ void BiopsyHomeProcedure::procedure_callback(void) {
 
 	case CONFIRM_VALID_SCROLL_POSITIONING:
 		if (!BIOPSY->getProcedureConfirmation(false)) break;
-		step = EVAL_YUP_INIT;
+		
+		if (isValidHome()) step = PROCEDURE_COMPLETED;
+		else step = EVAL_YUP_INIT;
 		break;
 
 	// --------------------------------------------------------------------------------------
@@ -325,7 +332,9 @@ void BiopsyHomeProcedure::procedure_callback(void) {
 			result = 3;
 			break;
 		}
-		step = YUP_EXECUTE_FLIP_UP;
+
+		if (isValidHome()) step = PROCEDURE_COMPLETED;
+		else step = YUP_EXECUTE_FLIP_UP;
 		break;
 
 	case YUP_EXECUTE_FLIP_UP:
@@ -343,12 +352,16 @@ void BiopsyHomeProcedure::procedure_callback(void) {
 	
 	case YUP_EXECUTE_FLIP_UP_WAIT_CONFIRMATION:
 		if(!BIOPSY->getProcedureConfirmation(false)) break;
-		step = EXECUTE_XYZ_INIT;
+		
+		if (isValidHome()) step = PROCEDURE_COMPLETED;
+		else step = EXECUTE_XYZ_INIT;
 		break;
 
-		// --------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------
+	// The first activation shall be Z so that the The cursor X can move free when Up
 	case EXECUTE_XYZ_INIT:
-
+		BIOPSY->showProcedureImage("", PROCEDURE_Z_MOVE_TO_TARGET_INFO, INFO_ICON, false);
+		/*
 		if(target == home_positions::HOME_LEFT)
 			BIOPSY->showProcedureImage(PROCEDURE_X_MOVE_TO_HOME_LEFT_IMG, PROCEDURE_X_MOVE_TO_TARGET_INFO, INFO_ICON, false);
 		else if (target == home_positions::HOME_RIGHT)
@@ -356,17 +369,17 @@ void BiopsyHomeProcedure::procedure_callback(void) {
 		else {
 			if(PCB325::isXL()) BIOPSY->showProcedureImage(PROCEDURE_X_MOVE_TO_HOME_CENTER_FROM_LEFT_IMG, PROCEDURE_X_MOVE_TO_TARGET_INFO, INFO_ICON, false);
 			else BIOPSY->showProcedureImage(PROCEDURE_X_MOVE_TO_HOME_CENTER_FROM_RIGHT_IMG, PROCEDURE_X_MOVE_TO_TARGET_INFO, INFO_ICON, false);
-		}
+		}*/
 
-		if (!PCB325::moveX(X)) {
+		if (!PCB325::moveZ(Z)) {
 			step = PROCEDURE_ERROR;
 			result = 4;
 			break;
 		}
-		step = XYZ_WAIT_X;
+		step = XYZ_WAIT_Z;
 		break;
 
-	case XYZ_WAIT_X:
+	case XYZ_WAIT_Z:
 		if (PCB325::isPointerMoving()) break;
 		if (!PCB325::isPointerSuccessfullyMoved()) {
 			step = PROCEDURE_ERROR;
@@ -392,23 +405,33 @@ void BiopsyHomeProcedure::procedure_callback(void) {
 			break;
 		}
 
-		BIOPSY->showProcedureImage("", PROCEDURE_Z_MOVE_TO_TARGET_INFO, INFO_ICON, false);
-		if (!PCB325::moveZ(Z)) {
+		if (target == home_positions::HOME_LEFT)
+			BIOPSY->showProcedureImage(PROCEDURE_X_MOVE_TO_HOME_LEFT_IMG, PROCEDURE_X_MOVE_TO_TARGET_INFO, INFO_ICON, false);
+		else if (target == home_positions::HOME_RIGHT)
+			BIOPSY->showProcedureImage(PROCEDURE_X_MOVE_TO_HOME_RIGHT_IMG, PROCEDURE_X_MOVE_TO_TARGET_INFO, INFO_ICON, false);
+		else {
+			if (PCB325::isXL()) BIOPSY->showProcedureImage(PROCEDURE_X_MOVE_TO_HOME_CENTER_FROM_LEFT_IMG, PROCEDURE_X_MOVE_TO_TARGET_INFO, INFO_ICON, false);
+			else BIOPSY->showProcedureImage(PROCEDURE_X_MOVE_TO_HOME_CENTER_FROM_RIGHT_IMG, PROCEDURE_X_MOVE_TO_TARGET_INFO, INFO_ICON, false);
+		}
+
+		if (!PCB325::moveX(X)) {
 			step = PROCEDURE_ERROR;
 			result = 8;
 			break;
 		}
-		step = XYZ_WAIT_Z;
+		step = XYZ_WAIT_X;
 		break;
 
-	case XYZ_WAIT_Z:
+	case XYZ_WAIT_X:
 		if (PCB325::isPointerMoving()) break;
 		if (!PCB325::isPointerSuccessfullyMoved()) {
 			step = PROCEDURE_ERROR;
 			result = 9;
 			break;
 		}
-		step = EXECUTE_XSCROLL_INIT;
+		
+		if (isValidHome()) step = PROCEDURE_COMPLETED;
+		else step = EXECUTE_XSCROLL_INIT;
 		break;
 	
 	// --------------------------------------------------------------------------------------
@@ -466,15 +489,13 @@ void BiopsyHomeProcedure::procedure_callback(void) {
 
 	case EXECUTE_XSCROLL_WAIT_CONFIRMATION:
 		if (!BIOPSY->getProcedureConfirmation(false)) break;
-		step = EXECUTE_Y_FLIP_DOWN_INIT;
+		
+		if (isValidHome()) step = PROCEDURE_COMPLETED;
+		else step = EXECUTE_Y_FLIP_DOWN_INIT;
 		break;
 
 	// --------------------------------------------------------------------------------------		
 	case EXECUTE_Y_FLIP_DOWN_INIT:
-		if (target == home_positions::HOME_CENTER) {
-			step = PROCEDURE_COMPLETED;
-			break;
-		}
 		
 		if(target == home_positions::HOME_LEFT)	BIOPSY->showProcedureImage(PROCEDURE_Y_FLIP_DOWN_LEFT_IMG, PROCEDURE_Y_FLIP_DOWN_REQUEST_INFO,ACTION_ICON, false);
 		else	BIOPSY->showProcedureImage(PROCEDURE_Y_FLIP_DOWN_RIGHT_IMG, PROCEDURE_Y_FLIP_DOWN_REQUEST_INFO, ACTION_ICON, false);

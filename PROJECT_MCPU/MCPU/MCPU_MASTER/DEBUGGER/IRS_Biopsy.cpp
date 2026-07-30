@@ -16,6 +16,8 @@
 #include "BiopsyHomeProcedure.h"
 #include <thread>
 
+#define BIOPSY ((BiopsyStudy^) Gantry::pBiopsyStudy)
+
 void DebuggerCLI::BiopsyCommandList(void) {
 	// Shows the list of available commands if no valid command is detedcted
 	System::String^ lista;
@@ -63,8 +65,8 @@ void DebuggerCLI::handleBiopsyCommands(System::String^ cmd) {
 
 		stringa =  "- DRIVER WORKING MODE: " + PCB325::getWorkingMode().ToString() + " \n\r";
 		stringa += "- DEVICE WORKING MODE: " + PCB325::getDeviceMode().ToString() + " \n\r";
-		stringa += "- XSCROLL: CODE=" + PCB325::getXScrollCode().ToString() + ", ANL=" + PCB325::getXscrollAnalog() + "\n\r";
-		stringa += "- NEEDLE: CODE=" + PCB325::getNeedleCode().ToString() + ", ANL=" + PCB325::getNeedleAnalog() + "\n\r";
+		stringa += "- XSCROLL: " + PCB325::getXScrollCode().ToString() + ", ANL=" + PCB325::getXscrollAnalog() + "\n\r";
+		stringa += "- NEEDLE: " + PCB325::getNeedleCode().ToString() + ", ANL=" + PCB325::getNeedleAnalog() + "\n\r";
 		stringa += "- Y-UP STATUS: " + PCB325::getYUpStat().ToString() + "\n\r";
 		stringa += "- X-POSITION: " + PCB325::getX().ToString() + "\n\r";
 		stringa += "- Y-POSITION: " + PCB325::getY().ToString() + "\n\r";
@@ -74,7 +76,7 @@ void DebuggerCLI::handleBiopsyCommands(System::String^ cmd) {
 		stringa += "- GENERAL ENABLE FLAG: " + PCB325::getGeneralEnableStat().ToString() + "\n\r";
 		stringa += "- NEEDLE DISABLE FLAG: " + PCB325::getNeedleDisableStat().ToString() + "\n\r";
 		stringa += "- KEYB ENABLE FLAG: " + PCB325::getKeybEnableStat().ToString() + "\n\r";
-		stringa += "- KEYB CODE=" + PCB325::getKeboardAnalog().ToString() +  "\n\r";
+		stringa += "- KEYB CODE:" + PCB325::getKeboardAnalog().ToString() +  "\n\r";
 		stringa += "- KEYSTEP ENABLE FLAG: " + PCB325::getKeyStepStat().ToString() + "\n\r";
 		stringa += "- MOTOR POWER SUPPLY: " + PCB325::getMotorPowerAnalog().ToString() + "\n\r";
 
@@ -283,8 +285,15 @@ void DebuggerCLI::handleBiopsyCommands(System::String^ cmd) {
 			return;
 		}
 		Z = System::Convert::ToInt16(param);
-		if (Z > PCB325::ConstantDefinition::BIOPSY_MAX_Z_POSITION) {
-			stringa = "ERROR! Z Out Of Range. Max value is " + PCB325::ConstantDefinition::BIOPSY_MAX_Z_POSITION + "\n\r";
+
+		int zlimit;
+		if(PCB325::isYUp()) 
+			zlimit = PCB325::ConstantDefinition::BIOPSY_MAX_CENTER_Z_POSITION;
+		else
+			zlimit = PCB325::ConstantDefinition::BIOPSY_MAX_LAT_Z_POSITION;
+
+		if (Z > zlimit) {
+			stringa = "ERROR! Z Out Of Range. Max Z value in this Home position is: " + zlimit.ToString() + "\n\r";
 			send(System::Text::Encoding::Unicode->GetBytes(stringa));
 			return;
 		}

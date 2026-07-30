@@ -212,6 +212,11 @@ public:
 	static int result;
 	static bool completed;
 	static int  step;
+
+	static unsigned short XCHOME, YCHOME, ZCHOME;
+	static unsigned short XRHOME, YRHOME, ZRHOME;
+	static unsigned short XLHOME, YLHOME, ZLHOME;
+
 	static unsigned short X, Y, Z;
 	static home_positions target;
 	static int awsid; 

@@ -373,8 +373,14 @@ void CanDeviceProtocol::InternalRunningLoop(void) {
         }
 
         // Error condition
-        LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Terminated in Error");
         command_error = getRxRegister()->b6;
+        if (command_error < (unsigned char)CommandRegisterErrors::COMMAND_ERROR_APPLICATION) {            
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Executed Error:" + ((CommandRegisterErrors) command_error).ToString());
+        }
+        else {
+            LogClass::logInFile("Device Board <" + System::Convert::ToString(device_id) + ">: Command Executed Error:" + command_error.ToString());
+        }
+
         command_executing = false;
         return;
             

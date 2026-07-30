@@ -72,8 +72,10 @@ public:
 		literal unsigned short BIOPSY_TARGET_Z_RANGE = 5; //!< Minimum distance from the acceptable target  
 		literal unsigned short BIOPSY_MAX_X_POSITION = 2580; //!< Maximum axes position  
 		literal unsigned short BIOPSY_MAX_Y_POSITION = 700; //!< Maximum axes position  
-		literal unsigned short BIOPSY_MAX_Z_POSITION = 1350; //!< Maximum axes position  
-		literal unsigned short BIOPSY_ZBODY_WIDTH = 1000;
+		literal unsigned short BIOPSY_MAX_CENTER_Z_POSITION = 1200; //!< Maximum axes position  
+		literal unsigned short BIOPSY_MAX_LAT_Z_POSITION = 1450; //!< Maximum axes position  
+		literal unsigned short BIOPSY_ZBODY_WIDTH = 1000; //!< Z Body widht
+		literal unsigned short BIOPSY_ZBODY_OFFSET = 300; //!< The part of the body exceeding the X zero position 
 		literal unsigned short BIOPSY_YBODY_WIDTH = 300;
 	};
 
@@ -155,6 +157,9 @@ public:
 				NEEDLE_C = 3,             //!< Type C adapter
 				NEEDLE_DISCONNECTED = 4,  //!< The Slider is not mounted on the Y axis
 			};
+
+			
+
 
 			ref class Keyboard {
 			public:
@@ -516,6 +521,13 @@ public:
 				CMD_MOVE_Z,				//!< Move Z axis command
 				CMD_ENABLE_KEYSTEP,		//!< Enable keyboard step mode
 				CMD_SERVICE_TEST_CYCLE	//!< Cycle Test Command Activation
+			};
+
+			enum class command_errors {
+				MOTOR_ERROR_OBSTACLE = (unsigned char)CanDeviceProtocol::CommandRegisterErrors::COMMAND_ERROR_APPLICATION,
+				MOTOR_ERROR_TIMEOUT,
+				MOTOR_ERROR_KEY_RELEASED,
+				MOTOR_ERROR_KEY_PRESSED,
 			};
 
 			/// <summary>
@@ -980,20 +992,21 @@ public:
 		xmax_pointer = protocol.status_register.x_position + (ConstantDefinition::BIOPSY_YBODY_WIDTH / 2);
 		xmin_pointer = protocol.status_register.x_position - (ConstantDefinition::BIOPSY_YBODY_WIDTH / 2);
 
-		// Find the coordinates of the ZBODY in X coordinate
+		/// Find the coordinates of the ZBODY in X coordinate
 		if (isXC()) {
 			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION / 2 - (ConstantDefinition::BIOPSY_ZBODY_WIDTH / 2);
 			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION / 2 + (ConstantDefinition::BIOPSY_ZBODY_WIDTH / 2);
 		}
 		else if (isXL()) {
-			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION - ConstantDefinition::BIOPSY_ZBODY_WIDTH;
+			xmin_base = 0;
+			xmax_base = (ConstantDefinition::BIOPSY_ZBODY_WIDTH)-(ConstantDefinition::BIOPSY_ZBODY_OFFSET);
+		}
+		else if (isXR()) {
+			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION - ConstantDefinition::BIOPSY_ZBODY_WIDTH + (ConstantDefinition::BIOPSY_ZBODY_OFFSET);
 			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION;
 		}
-		else if (isXR() ) {			
-			xmin_base = 0;
-			xmax_base = (ConstantDefinition::BIOPSY_ZBODY_WIDTH);
-		}
-		if (xmin_pointer > xmax_base) return true;
+
+		if (xmax_pointer > xmax_base) return true;
 		return false;
 
 		/*
@@ -1013,21 +1026,21 @@ public:
 		xmax_pointer = protocol.status_register.x_position + (ConstantDefinition::BIOPSY_YBODY_WIDTH / 2);
 		xmin_pointer = protocol.status_register.x_position - (ConstantDefinition::BIOPSY_YBODY_WIDTH / 2);
 
-		// Find the coordinates of the ZBODY in X coordinate
+		/// Find the coordinates of the ZBODY in X coordinate
 		if (isXC()) {
 			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION / 2 - (ConstantDefinition::BIOPSY_ZBODY_WIDTH / 2);
 			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION / 2 + (ConstantDefinition::BIOPSY_ZBODY_WIDTH / 2);
 		}
 		else if (isXL()) {
-			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION - ConstantDefinition::BIOPSY_ZBODY_WIDTH;
-			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION;
-
+			xmin_base = 0;
+			xmax_base = (ConstantDefinition::BIOPSY_ZBODY_WIDTH)-(ConstantDefinition::BIOPSY_ZBODY_OFFSET);
 		}
 		else if (isXR()) {
-			xmin_base = 0;
-			xmax_base = (ConstantDefinition::BIOPSY_ZBODY_WIDTH);
+			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION - ConstantDefinition::BIOPSY_ZBODY_WIDTH + (ConstantDefinition::BIOPSY_ZBODY_OFFSET);
+			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION;
 		}
-		if (xmax_pointer < xmin_base) return true;
+
+		if (xmin_pointer < xmin_base) return true;
 		return false;
 		/*
 		if ((xmin_pointer <= xmax_base) && (xmin_pointer >= xmin_base)) device.crash_event = true;
@@ -1052,32 +1065,36 @@ public:
 			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION / 2 - (ConstantDefinition::BIOPSY_ZBODY_WIDTH / 2);
 			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION / 2 + (ConstantDefinition::BIOPSY_ZBODY_WIDTH / 2);
 		}
-		else if (isXL()) {
-			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION - ConstantDefinition::BIOPSY_ZBODY_WIDTH;
-			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION;
-
+		else if (isXL()) {			
+			xmin_base = 0;
+			xmax_base = (ConstantDefinition::BIOPSY_ZBODY_WIDTH) - (ConstantDefinition::BIOPSY_ZBODY_OFFSET);
 		}
 		else if (isXR()) {
-			xmin_base = 0;
-			xmax_base = (ConstantDefinition::BIOPSY_ZBODY_WIDTH);
+			xmin_base = ConstantDefinition::BIOPSY_MAX_X_POSITION - ConstantDefinition::BIOPSY_ZBODY_WIDTH + (ConstantDefinition::BIOPSY_ZBODY_OFFSET);
+			xmax_base = ConstantDefinition::BIOPSY_MAX_X_POSITION;
 		}
 
-		if (xmax_pointer < xmin_base) {
-			// Y is Right of the Body 
-			if (target_x < protocol.status_register.x_position) return false;
+		if (xmax_pointer > xmax_base) {
+			// Y is in the left side
+			if (target_x > protocol.status_register.x_position) return false; // Is moving Left side
+			if (xmin_pointer <= xmax_base) return true; // Y against in contact with the base
+			if ((protocol.status_register.x_position - target_x) > (xmin_pointer - xmax_base)) return true; // crash
+			return false;
+		}
+		else if (xmin_pointer < xmin_base) {
+			// Y is in the Right Side
+			if (target_x < protocol.status_register.x_position) return false; // Is moving Right side
+			if (xmax_pointer >= xmin_base) return true; // Y against in contact with the base
 			if ((target_x - protocol.status_register.x_position) > (xmin_base - xmax_pointer)) return true; // crash
 			return false;
 		}
-		else if (xmin_pointer > xmax_base) {
-			// Y is Left of the Body 
-			if (target_x > protocol.status_register.x_position) return false;
-			if ((protocol.status_register.x_position - target_x ) > (xmin_pointer - xmax_base)) return true; // crash
-			return false;
-
+		else {
+		    // Y is in between
+			if (!isYUp()) return true;
 		}
-		
-		return true; // Crash 
-		
+
+		return false;
+
 	}
 
 	static bool moveXHomeLeft(void) { return moveX(ConstantDefinition::BIOPSY_MAX_X_POSITION); }

@@ -760,9 +760,7 @@ bool PCB303::selectManualCollimationFormat(int slot) {
 bool PCB303::waitFilterCompleted(void) {
     
     for (int i = 0; i < 200; i++) {
-        if (valid_filter_format) return true;
-        if (filter_error) return false;
-        if (protocol.status_register.filter_action_status == ProtocolStructure::StatusRegister::action_code::STAT_UNDEFINED) return false;
+        if (valid_filter_format) return true;                
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     return false;
@@ -785,6 +783,11 @@ void PCB303::demoLoop(void) {
     valid_collimation_format = true;
     valid_filter_format = true;
     valid_mirror_format = true;
+
+    protocol.status_register.filter_action_status = ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED;
+    protocol.status_register.collimation_action_status = ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED;
+    protocol.status_register.mirror_action_status = ProtocolStructure::StatusRegister::action_code::STAT_POSITIONED;
+
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     return;
 }

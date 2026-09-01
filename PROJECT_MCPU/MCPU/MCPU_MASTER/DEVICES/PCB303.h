@@ -782,7 +782,7 @@ public:
 		static int selected_slot = 0;
 
 		static bool valid_filter_format = false;
-		static bool filter_error = false;
+		//static bool filter_error = false;
 		static int filter_attempt = 0; 
 		
 
@@ -858,7 +858,7 @@ public:
 	static filter_index getFilterIndex(int slot);
 
 	static bool isValidFilter(void) { return valid_filter_format; }
-	static bool isFilterInError(void) { return filter_error; }
+	
 	static bool	waitFilterCompleted(void);
 
 	// Light and Mirror Commands

@@ -36,7 +36,6 @@ Exposures::exposure_completed_errors Exposures::test_exposure_procedure(bool dem
     
     // Set the filter selected is the expected into the pulse(0). No wait for positioning here    
     PCB303::selectFilter(filter);
-    if (PCB303::isFilterInError()) return Exposures::exposure_completed_errors::XRAY_FILTER_ERROR;
 
     // Pulse Preparation
     System::String^ exposure_data_str = ExpName + " PULSE DATA ---------------- "; LogClass::logInFile(exposure_data_str);   
